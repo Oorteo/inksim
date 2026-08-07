@@ -5,6 +5,15 @@ It opens embroidery files, displays their stitch sequence, and lets the user
 inspect or replay the design before production. It is implemented as a small
 Python/wxPython/Numba application with its own standalone user interface.
 
+## Project status
+
+InkSim is an experimental and actively evolving project. Much of its code was
+created and iterated with substantial assistance from custom AI and LLM tools,
+then reviewed, corrected, and tested during development. It is provided as-is
+for experimentation and development, while already offering a useful way to
+inspect stitch order, replay designs, and create preview images before
+production.
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines, including
 AI-assisted development and checking the provenance and licenses of submitted
 code and other material.
@@ -24,6 +33,48 @@ The program is useful for:
 - NumPy and Numba;
 - Pillow;
 - pystitch.
+
+## Installation
+
+The project uses `pyproject.toml` and `uv.lock` for dependency management.
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first.
+
+### Linux
+
+On supported Linux distributions, set up the environment with:
+
+```bash
+./scripts/setup_linux.sh
+```
+
+The script detects the operating system and selects the matching wxPython
+package source. It asks before changing an existing `.venv`; use `-y` for a
+clean, non-interactive setup that removes and recreates it:
+
+```bash
+./scripts/setup_linux.sh -y
+```
+
+The script is Linux-only. It selects a matching wxPython package source for
+supported distributions and asks before changing an existing `.venv`.
+
+### Windows and macOS
+
+On Windows or macOS, create or update the environment directly from the
+project files:
+
+```bash
+uv sync
+```
+
+This uses the wxPython package available for the selected platform. The Linux
+setup script must not be run on Windows or macOS.
+
+Start the application on either platform with:
+
+```bash
+uv run python src/inksim/inksim.py
+```
 
 The repository already contains the project dependency configuration. From the
 repository root, use the project environment:
@@ -254,3 +305,7 @@ Check the patch for whitespace errors:
 ```bash
 git diff --check -- src/inksim/inksim.py README.md
 ```
+
+## License
+
+InkSim is released under the [GNU General Public License v3 or later](LICENSE).
