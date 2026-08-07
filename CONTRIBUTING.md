@@ -26,10 +26,13 @@ knowingly infringe copyright, patent, license, trademark, privacy, or other
 rights. This includes checking code, documentation, images, data, and examples
 produced with AI assistance.
 
-AI systems can reproduce or closely resemble code from their training data.
-When generated output contains a distinctive implementation, comments, text,
-or other material, investigate its provenance and applicable license before
-using it. Do not assume that an AI-generated answer is original or license-free.
+AI systems can reproduce or closely resemble code from their training data,
+particularly when generation uses a low temperature or otherwise deterministic
+settings. This is common in programming workflows, but it is not guaranteed for
+every tool or configuration. When generated output contains a distinctive
+implementation, comments, text, or other material, investigate its provenance
+and applicable license before using it. Do not assume that an AI-generated
+answer is original or license-free.
 
 Useful free or open-source checks include:
 
