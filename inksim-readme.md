@@ -25,7 +25,7 @@ The repository already contains the project dependency configuration. From the
 repository root, use the project environment:
 
 ```bash
-bin/inksim.py
+./inksim
 ```
 
 The script also contains a fallback to virtual-environment bootstrap. When it is
@@ -37,26 +37,26 @@ itself with that interpreter.
 Open an empty viewer:
 
 ```bash
-bin/inksim.py
+./inksim
 ```
 
 Open a design immediately:
 
 ```bash
-bin/inksim.py design.dst
+./inksim design.dst
 ```
 
 Start playback from the first stitch:
 
 ```bash
-bin/inksim.py design.dst --play
+./inksim design.dst --play
 ```
 
 Start fullscreen or choose an explicit window geometry:
 
 ```bash
-bin/inksim.py design.dst --fullscreen
-bin/inksim.py design.dst --size 1600x1000 --position 100,50
+./inksim design.dst --fullscreen
+./inksim design.dst --size 1600x1000 --position 100,50
 ```
 
 ## Interactive Controls
@@ -184,9 +184,9 @@ and end markers are interpreted while the stitch sequence is converted.
 InkSim supports three non-interactive export modes:
 
 ```bash
-bin/inksim.py design.dst --simple-png output.png
-bin/inksim.py design.dst --png shaded-output.png
-bin/inksim.py design.dst --icon preview.png
+./inksim design.dst --simple-png output.png
+./inksim design.dst --png shaded-output.png
+./inksim design.dst --icon preview.png
 ```
 
 Options:
@@ -241,11 +241,11 @@ Likely future rendering improvements include:
 Run the syntax check with the project environment:
 
 ```bash
-python3 -m py_compile bin/inksim.py
+python3 -m py_compile src/inksim/inksim.py
 ```
 
 Check the patch for whitespace errors:
 
 ```bash
-git diff --check -- bin/inksim.py bin/inksim-readme.md
+git diff --check -- src/inksim/inksim.py inksim-readme.md
 ```
