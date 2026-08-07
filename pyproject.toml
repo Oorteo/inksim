@@ -15,9 +15,16 @@ dependencies = [
     "pystitch==1.0.0",
 ]
 
-# [project.scripts]
-# inksim = "inksim:main"
 
-# [build-system]
-# requires = ["uv_build>=0.12.2,<0.13.0"]
-# build-backend = "uv_build"
+[project.urls]
+Homepage = "https://github.com/karnigen/inksim"
+Repository = "https://github.com/karnigen/inksim.git"
+Issues = "https://github.com/karnigen/inksim/issues"
+
+
+[project.scripts]
+inksim = "inksim:main"
+
+[build-system]
+requires = ["uv_build>=0.12.2,<0.13.0"]
+build-backend = "uv_build"
