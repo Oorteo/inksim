@@ -37,16 +37,12 @@ answer is original or license-free.
 Useful free or open-source checks include:
 
 - GitHub Code Search and repository history for distinctive code or text;
-- [grep.app](https://grep.app/) for public source-code searches;
-- [ScanCode Toolkit](https://github.com/aboutcode-org/scancode-toolkit) for
-  identifying licenses and copyright notices in source trees; and
-- [FOSSology](https://www.fossology.org/) for deeper open-source license
-  and provenance review.
+- [grep.app](https://grep.app/) for public source-code searches.
 
-These tools can find likely matches and license information, but they cannot
-prove that a contribution is legally clear. Record the source and license of
-any material that is intentionally reused, and do not include material whose
-license is incompatible with InkSim or whose provenance cannot be established.
+These searches can find likely matches, but they cannot prove that a
+contribution is legally clear. Record the source and license of any material
+that is intentionally reused, and do not include material whose provenance
+cannot be established.
 
 ## Before submitting a change
 
