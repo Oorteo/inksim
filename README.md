@@ -50,6 +50,18 @@ inksim design.pes --play
 - [User guide](docs/user-guide.md)
 - [Contributing](CONTRIBUTING.md)
 
+## Background
+
+I started working on embroidery tooling in 2013 with a small project called Orca.
+It began as a C++/Qt experiment with graph algorithms for Inkscape on Linux and
+later grew into a digitizer and a stitch viewer. An old recording of the viewer is here:
+
+[Orca viewer demo](https://www.youtube.com/watch?v=VKle5ApsMnA)
+
+InkSim is a new, standalone implementation of the same viewer idea, written from scratch in Python, wxPython and Numba and focused on quickly previewing embroidery files. It's a small viewer I was missing myself, so I kept it as a lightweight tool and I'm sharing it here in case it's useful for others in the Inkscape / Ink/Stitch community.
+
+Thanks to the Ink/Stitch project and its community for keeping this space alive and inspiring.
+
 ## License
 
 InkSim is released under the [GNU General Public License v3 or later](LICENSE).
