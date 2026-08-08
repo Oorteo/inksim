@@ -2624,7 +2624,7 @@ def _parse_pair(value, name, separator):
     return first, second
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description=APP_TITLE)
     parser.add_argument("input_file", nargs="?", help="Input embroidery file")
     parser.add_argument(
@@ -2731,3 +2731,7 @@ if __name__ == "__main__":
         frame.Destroy()
         raise SystemExit(0 if success else 1)
     app.MainLoop()
+
+
+if __name__ == "__main__":
+    main()
