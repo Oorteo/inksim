@@ -1,13 +1,13 @@
 # InkSim
 
+<p align="center">
+  <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview" width="400">
+</p>
+
 InkSim is a standalone interactive embroidery simulator and preview renderer.
 It opens embroidery files, displays their stitch sequence, and lets the user
 inspect or replay the design before production. It is implemented as a small
 Python/wxPython/Numba application with its own standalone user interface.
-
-<p align="center">
-  <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview">
-</p>
 
 ## Project status
 
