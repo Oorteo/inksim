@@ -22,7 +22,7 @@ uv tool install inksim
 Then run it directly from your shell:
 
 ```bash
-inksim design.dst
+inksim design.pes
 ```
 
 Linux users need a wxPython wheel matching their distribution. For example,
@@ -39,8 +39,8 @@ versions, `pip`/virtual-environment installation, and developer setup.
 
 ```bash
 inksim
-inksim design.dst
-inksim design.dst --play
+inksim design.pes
+inksim design.pes --play
 ```
 
 ## Documentation

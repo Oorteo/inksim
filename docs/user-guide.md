@@ -49,9 +49,9 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 InkSim supports three non-interactive export modes:
 
 ```bash
-uv run inksim design.dst --simple-png output.png
-uv run inksim design.dst --png shaded-output.png
-uv run inksim design.dst --icon preview.png
+uv run inksim design.pes --simple-png output.png
+uv run inksim design.pes --png shaded-output.png
+uv run inksim design.pes --icon preview.png
 ```
 
 | Option                    | Description                                 |
@@ -65,11 +65,13 @@ uv run inksim design.dst --icon preview.png
 
 ## Supported Files
 
-The open dialog builds its file filter from the reader formats reported by
-`pystitch.EmbPattern.supported_formats()`. Thread colors are read from the
-pattern thread list when available; files without colors use a deterministic
-fallback palette. Jumps, color changes, trims, stops, slow, fast, and end
-markers are interpreted while loading.
+InkSim supports all embroidery file formats with a reader reported by
+`pystitch.EmbPattern.supported_formats()`. The open dialog builds its file
+filter from those formats, so the supported extensions follow the installed
+version of the pystitch library rather than a separate hard-coded list.
+Thread colors are read from the pattern thread list when available; files
+without colors use a deterministic fallback palette. Jumps, color changes,
+trims, stops, slow, fast, and end markers are interpreted while loading.
 
 ## Rendering Notes
 

@@ -15,7 +15,7 @@ uv tool install inksim
 The command is then available as `inksim`:
 
 ```bash
-inksim design.dst
+inksim design.pes
 ```
 
 If the command is not found, let `uv` add its tool directory to the shell
@@ -55,7 +55,7 @@ and install the package with `pip`:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install inksim
-inksim design.dst
+inksim design.pes
 ```
 
 On Linux, pass the matching wxPython extras index to `pip` as well:
@@ -84,7 +84,7 @@ Run the checked-out version with:
 
 ```bash
 uv run inksim
-uv run inksim design.dst
+uv run inksim design.pes
 ```
 
 On Linux, if the required wxPython wheel is not available from the default
@@ -106,7 +106,7 @@ The repository also contains the legacy Linux setup helper. It can recreate
 Start playback, fullscreen mode, or an explicitly sized window with:
 
 ```bash
-inksim design.dst --play
-inksim design.dst --fullscreen
-inksim design.dst --size 1600x1000 --position 100,50
+inksim design.pes --play
+inksim design.pes --fullscreen
+inksim design.pes --size 1600x1000 --position 100,50
 ```
