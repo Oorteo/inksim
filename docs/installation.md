@@ -94,11 +94,12 @@ package index, use the distribution-specific extras index while syncing:
 uv sync --find-links https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04
 ```
 
-The repository also contains the legacy Linux setup helper. It can recreate
-`.venv` and select a wxPython source automatically on supported distributions:
+The repository also contains a setup helper. It can recreate `.venv` on macOS,
+Linux, and Windows when run from Git Bash or WSL; on supported Linux
+distributions it also selects the wxPython source automatically:
 
 ```bash
-./scripts/setup_linux.sh
+./scripts/setup_uv_venv.sh
 ```
 
 ## Running options
