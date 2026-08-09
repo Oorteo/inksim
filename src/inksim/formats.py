@@ -13,7 +13,7 @@ def get_supported_input_wildcard():
 def get_supported_input_extensions():
     """Return lowercase filename extensions readable by pystitch."""
     extensions = set()
-    for file_type in emb.EmbPattern.supported_formats():
+    for file_type in emb.supported_formats():
         if file_type.get("reader") is None:
             continue
         file_extensions = file_type.get("extensions", ())

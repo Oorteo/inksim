@@ -5,6 +5,7 @@ import wx
 from ..formats import get_supported_input_extensions
 from .viewer import EmbroideryViewerPanel
 
+
 class EmbroideryOpenDialog(wx.Dialog):
     """Browse embroidery files with an in-app design preview."""
 
@@ -76,8 +77,11 @@ class EmbroideryOpenDialog(wx.Dialog):
             ),
             key=lambda path: path.name.lower(),
         )
-        self.file_list.Set([path.name for path in files])
+        file_names = [path.name for path in files]
+        self.file_list.Set(file_names)
+        self._resize_file_list(file_names)
         self.file_paths = files
+        self.selected_path = None
         if files:
             selected_index = 0
             if self.initial_file:
@@ -87,6 +91,23 @@ class EmbroideryOpenDialog(wx.Dialog):
                         break
             self.file_list.SetSelection(selected_index)
             self.OnSelect(None)
+
+    def _resize_file_list(self, file_names):
+        """Fit the file list to its names without starving the preview pane."""
+        minimum_width = 160
+        preview_width = 400
+        content_margin = 32
+        widest_name = max(
+            (self.file_list.GetTextExtent(name)[0] for name in file_names),
+            default=0,
+        )
+        available_width = max(
+            minimum_width,
+            self.GetClientSize().width - preview_width - content_margin,
+        )
+        list_width = min(max(minimum_width, widest_name + 32), available_width)
+        self.file_list.SetMinSize((list_width, -1))
+        self.Layout()
 
     def OnSelect(self, event):
         """Load the selected file into the preview panel."""
