@@ -24,6 +24,7 @@ class Frame(wx.Frame):
     def __init__(
         self,
         initial_file=None,
+        initial_directory=None,
         fullscreen=False,
         window_size=None,
         window_position=None,
@@ -60,7 +61,9 @@ class Frame(wx.Frame):
         self.config = wx.Config(APP_TITLE)
         self.last_directory = self.config.Read("last_directory", "")
         self.current_file_path = None
-        if initial_file and Path(initial_file).is_file():
+        if initial_directory and Path(initial_directory).is_dir():
+            self.last_directory = str(Path(initial_directory).resolve())
+        elif initial_file and Path(initial_file).is_file():
             self.current_file_path = Path(initial_file).resolve()
             self.last_directory = str(self.current_file_path.parent)
             self.config.Write("last_directory", self.last_directory)
@@ -233,6 +236,9 @@ class Frame(wx.Frame):
                 self.Show()
             if initial_file_loaded:
                 wx.CallAfter(self._finish_initial_display, autoplay)
+
+        if initial_directory:
+            wx.CallAfter(self.OnOpen, None)
 
     def _finish_initial_display(self, autoplay):
         """Finish the one-time startup layout before playback begins.

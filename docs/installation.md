@@ -111,3 +111,9 @@ inksim design.pes --play
 inksim design.pes --fullscreen
 inksim design.pes --size 1600x1000 --position 100,50
 ```
+
+Pass a directory, including `.`, to open the file dialog in that directory:
+
+```bash
+inksim .
+```

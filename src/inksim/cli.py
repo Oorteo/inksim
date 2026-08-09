@@ -11,6 +11,7 @@ import wx
 from .constants import APP_TITLE
 from .gui.frame import Frame
 
+
 def _parse_pair(value, name, separator):
     """Parse two integer values used for window geometry."""
     parts = value.split(separator)
@@ -29,7 +30,11 @@ def _parse_pair(value, name, separator):
 
 def main():
     parser = argparse.ArgumentParser(description=APP_TITLE)
-    parser.add_argument("input_file", nargs="?", help="Input embroidery file")
+    parser.add_argument(
+        "input_file",
+        nargs="?",
+        help="Input embroidery file or directory",
+    )
     parser.add_argument(
         "-f", "--fullscreen", action="store_true",
         help="Open the simulator fullscreen",
@@ -107,14 +112,20 @@ def main():
             "an input embroidery file is required for export; "
             "use: inksim INPUT_FILE --simple-png OUTPUT.png"
         )
-    if args.input_file and not Path(args.input_file).is_file():
-        parser.error(f"input embroidery file not found: {args.input_file}")
+    input_path = Path(args.input_file) if args.input_file else None
+    if input_path and not (input_path.is_file() or input_path.is_dir()):
+        parser.error(f"input path not found: {args.input_file}")
+    if export_requested and input_path and not input_path.is_file():
+        parser.error("an input embroidery file is required for export")
 
     window_size = args.size
     window_position = args.position
     app=wx.App(not export_requested)
     frame = Frame(
-        initial_file=args.input_file,
+        initial_file=str(input_path) if input_path and input_path.is_file() else None,
+        initial_directory=(
+            str(input_path) if input_path and input_path.is_dir() else None
+        ),
         fullscreen=args.fullscreen,
         window_size=window_size,
         window_position=window_position,
