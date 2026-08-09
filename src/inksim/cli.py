@@ -6,48 +6,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from pathlib import Path
-import sys
-import os
 import argparse
 
-#-------------------------------------------------------------------
-# Dual run: system python3 or .venv python
-
-script_dir = Path(__file__).resolve().parent
-
 from .constants import *
-
-def ensure_venv():
-    if sys.prefix != sys.base_prefix:
-        return
-
-    active_venv = os.environ.get("VIRTUAL_ENV")
-    if active_venv:
-        project_root = Path(active_venv).resolve()
-    else:
-        project_root = next(
-            (
-                parent
-                for parent in (script_dir, *script_dir.parents)
-                if (parent / "pyproject.toml").is_file()
-            ),
-            None,
-        )
-        if project_root is None:
-            return
-        project_root = project_root / ".venv"
-
-    if os.name == "nt":
-        venv_python = project_root / "Scripts" / "python.exe"
-    else:
-        venv_python = project_root / "bin" / "python"
-
-    if venv_python.exists():
-        os.execv(venv_python, [venv_python] + sys.argv)
-
-# restart the virtual environment if not already active
-ensure_venv()
-#-------------------------------------------------------------------
 
 import wx
 import wx.html
