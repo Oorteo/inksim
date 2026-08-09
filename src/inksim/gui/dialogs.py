@@ -58,6 +58,7 @@ class EmbroideryOpenDialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnCancel, id=wx.ID_CANCEL)
 
         self.RefreshFiles()
+        wx.CallAfter(self.file_list.SetFocus)
 
     def RefreshFiles(self):
         """Refresh the list for the current directory."""

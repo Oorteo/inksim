@@ -28,8 +28,9 @@ class EmbroideryViewerPanel(wx.Panel):
 
     def __init__(self, parent, progress_bar):
         """Create an empty viewer connected to the progress bar."""
-        super().__init__(parent)
+        super().__init__(parent, style=wx.WANTS_CHARS)
         self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
+        self.SetDoubleBuffered(True)
         self.zoom = 1.0
         self.pan_x, self.pan_y = 400, 300
         self.drag_start = None
@@ -80,6 +81,7 @@ class EmbroideryViewerPanel(wx.Panel):
         self.play_step = self.play_speed_levels[self.play_speed_index]
         self.is_playing = False
         self.Bind(wx.EVT_TIMER, self.OnPlayTimer, self.play_timer)
+        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_MOUSEWHEEL, self.OnWheel)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
@@ -88,7 +90,9 @@ class EmbroideryViewerPanel(wx.Panel):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.SetFocus()
+
+    def OnEraseBackground(self, e):
+        """Keep wxMSW from clearing the canvas before a buffered repaint."""
 
     def OnSize(self, e):
         """Invalidate the bitmap and retry deferred initial fitting."""
@@ -812,7 +816,6 @@ class EmbroideryViewerPanel(wx.Panel):
         self.Refresh()
         if self.progress_bar:
             self.progress_bar.Refresh()
-        self.SetFocus()
         return True
 
     def CalculateStitchDensity(self):
@@ -844,7 +847,7 @@ class EmbroideryViewerPanel(wx.Panel):
 
     def OnPaint(self, e):
         """Render the current viewport, using the cached bitmap when possible."""
-        dc = wx.PaintDC(self)
+        dc = wx.BufferedPaintDC(self)
         dc.Clear()
         if self._pending_fit_to_screen:
             return
@@ -1065,8 +1068,9 @@ class EmbroideryViewerPanel(wx.Panel):
         """Start panning from the current mouse position."""
         self.drag_start = e.GetPosition()
         self.pan_start = (self.pan_x, self.pan_y)
-        self.CaptureMouse()
         self.SetFocus()
+        if not self.HasCapture():
+            self.CaptureMouse()
 
     def OnLeftUp(self, e):
         """Stop panning and clean up any progress-bar mouse capture."""
@@ -1086,4 +1090,4 @@ class EmbroideryViewerPanel(wx.Panel):
             dy = e.GetPosition()[1] - self.drag_start[1]
             self.pan_x = self.pan_start[0] + dx
             self.pan_y = self.pan_start[1] + dy
-            self.Refresh()
+            self.Refresh(eraseBackground=False)

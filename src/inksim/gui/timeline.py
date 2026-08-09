@@ -13,7 +13,9 @@ class ProgressBarPanel(wx.Panel):
         super().__init__(parent, size=(-1, 58))
         self.viewer = viewer_panel
         self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
+        self.SetDoubleBuffered(True)
         self.SetBackgroundColour(wx.Colour(250, 250, 250))
+        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_LEFT_DOWN, self.OnClick)
         self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
@@ -24,6 +26,10 @@ class ProgressBarPanel(wx.Panel):
         self.margin_x = 24
         self.bar_y = 8
         self.bar_h = 14
+
+    def OnEraseBackground(self, e):
+        """Keep wxMSW from clearing the timeline before painting."""
+        pass
 
     def OnClick(self, e):
         """Start seeking at the mouse position."""
@@ -66,7 +72,7 @@ class ProgressBarPanel(wx.Panel):
 
     def OnPaint(self, e):
         """Paint the color timeline, progress overlay, knob, and labels."""
-        dc = wx.PaintDC(self)
+        dc = wx.BufferedPaintDC(self)
         w, _ = self.GetSize()
         dc.SetBackground(wx.Brush(wx.Colour(250, 250, 250)))
         dc.Clear()
