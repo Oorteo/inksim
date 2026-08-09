@@ -90,7 +90,6 @@ class EmbroideryViewerPanel(wx.Panel):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.SetFocus()
 
     def OnEraseBackground(self, e):
         """Keep wxMSW from clearing the canvas before a buffered repaint."""
@@ -817,7 +816,6 @@ class EmbroideryViewerPanel(wx.Panel):
         self.Refresh()
         if self.progress_bar:
             self.progress_bar.Refresh()
-        self.SetFocus()
         return True
 
     def CalculateStitchDensity(self):
