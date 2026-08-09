@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+### call inksim as package, so that it can be run from anywhere,
+###      even if the current working directory is not the project root
+
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec "$PROJECT_DIR/src/inksim/inksim.py" "$@"
+
+export PYTHONPATH="$PROJECT_DIR/src${PYTHONPATH:+:$PYTHONPATH}"
+
+# Prefer the project's virtual environment.  Without one, use the system
+# Python while keeping the caller's working directory unchanged.
+if [[ -x "$PROJECT_DIR/.venv/bin/python" ]]; then
+    exec "$PROJECT_DIR/.venv/bin/python" -m inksim "$@"
+else
+    exec python3 -m inksim "$@"
+fi
