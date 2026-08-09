@@ -1,7 +1,7 @@
 [project]
 # SPDX-License-Identifier: GPL-3.0-or-later
 name = "inksim"
-version = "0.1.4"
+version = "0.1.5"
 description = "Interactive embroidery simulator"
 authors = [{ name = "Tony Karnigen" }]
 readme = "README.md"
@@ -12,7 +12,7 @@ dependencies = [
     "numba",
     "numpy",
     "pillow",
-    "pystitch==1.0.0",
+    "pystitch",
 ]
 
 
@@ -23,7 +23,7 @@ Issues = "https://github.com/karnigen/inksim/issues"
 
 
 [project.scripts]
-inksim = "inksim:main"
+inksim = "inksim.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.2,<0.13.0"]
