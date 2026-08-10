@@ -840,6 +840,7 @@ class EmbroideryViewerPanel(QWidget):
         dc = QPainter(self)
         dc.fillRect(self.rect(), QColor(255, 255, 255))
         if self._pending_fit_to_screen:
+            dc.end()
             return
         if not self.need_redraw and self.cached_bitmap:
             zoom_ratio = self.zoom / self.cached_zoom
@@ -860,18 +861,22 @@ class EmbroideryViewerPanel(QWidget):
                 )
             self.DrawAnalysisOverlays(dc)
             self.DrawNeedleOverlay(dc)
+            dc.end()
             return
         w, h = self.width(), self.height()
         if self.stitches_np.shape[0] == 0:
             dc.setFont(QFont(self.font().family(), 14))
             dc.drawText(
+                20,
+                20,
                 "Open an embroidery file via File > Open or pass it as a command-line argument",
-                20,
-                20,
             )
             dc.drawText(
+                20,
+                45,
                 "H=help, Space=play/pause, Ctrl+Arrows=color, Alt+Arrows=1",
-                20, 45)
+            )
+            dc.end()
             return
         use_shaded = self.zoom > 1.2
         buf = np.full((h, w, 3), 255, dtype=np.uint8)
