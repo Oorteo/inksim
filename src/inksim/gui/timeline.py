@@ -1,4 +1,4 @@
-from PySide6.QtCore import QPoint, Qt
+from PySide6.QtCore import QPoint, QRect, Qt
 from PySide6.QtGui import QColor, QPainter, QPen
 from PySide6.QtWidgets import QWidget
 
@@ -171,11 +171,31 @@ class ProgressBarPanel(QWidget):
                          f"{self.viewer.color_count} color sections")
         else:
             txt_right = ""
-        text_y = self.bar_y + self.bar_h + 6
-        painter.drawText(bar_x, text_y, txt_left)
-        center_width = painter.fontMetrics().horizontalAdvance(txt_center)
-        painter.drawText(bar_x + (bar_width - center_width) // 2, text_y, txt_center)
+        font_metrics = painter.fontMetrics()
+        text_top = self.bar_y + self.bar_h + 3
+        text_height = font_metrics.height()
+        left_width = int(bar_width * 0.45)
+        center_width = int(bar_width * 0.15)
+        right_width = bar_width - left_width - center_width
+        left_rect = QRect(bar_x, text_top, left_width, text_height)
+        center_rect = QRect(bar_x + left_width, text_top,
+                            center_width, text_height)
+        right_rect = QRect(bar_x + left_width + center_width, text_top,
+                           right_width, text_height)
+        painter.drawText(
+            left_rect,
+            Qt.AlignLeft | Qt.AlignVCenter,
+            font_metrics.elidedText(txt_left, Qt.ElideRight, left_width),
+        )
+        painter.drawText(
+            center_rect,
+            Qt.AlignCenter | Qt.AlignVCenter,
+            font_metrics.elidedText(txt_center, Qt.ElideRight, center_width),
+        )
         if txt_right:
-            right_width = painter.fontMetrics().horizontalAdvance(txt_right)
-            painter.drawText(bar_x + bar_width - right_width, text_y, txt_right)
+            painter.drawText(
+                right_rect,
+                Qt.AlignRight | Qt.AlignVCenter,
+                font_metrics.elidedText(txt_right, Qt.ElideRight, right_width),
+            )
         painter.end()
