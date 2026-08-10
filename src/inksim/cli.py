@@ -186,9 +186,6 @@ def main():
         fullscreen=args.fullscreen,
         window_size=window_size,
         window_position=window_position,
-        autoplay=args.play,
-        batch=export_requested,
-        defer_show=True,
     )
     if export_requested:
         success = True
