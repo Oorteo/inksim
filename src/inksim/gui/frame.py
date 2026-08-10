@@ -168,7 +168,15 @@ class Frame(QMainWindow):
             self.OpenFile(dialog.GetPath())
 
     def _choose_export_path(self, title):
-        path, _ = QFileDialog.getSaveFileName(self, title, "", "PNG files (*.png)")
+        export_directory = Path(self.last_directory or Path.cwd())
+        if self.current_file_path is not None:
+            export_directory = self.current_file_path.parent
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            title,
+            str(export_directory),
+            "PNG files (*.png)",
+        )
         return Path(path).with_suffix(".png") if path else None
 
     def ExportPng(self, path, icon=False, dpi=300, background="transparent", grid=False, shaded=False):
