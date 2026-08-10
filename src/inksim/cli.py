@@ -198,11 +198,11 @@ def main():
                 continue
             exported = frame.ExportPng(
                 export_path,
-                icon=bool(args.export_icon),
-                dpi=96 if args.export_icon else args.dpi,
+                icon=args.export_icon is not None,
+                dpi=96 if args.export_icon is not None else args.dpi,
                 background=args.export_background,
                 grid=args.export_grid,
-                shaded=bool(args.export_shaded_png),
+                shaded=args.export_shaded_png is not None,
             )
             if exported:
                 print(f"Exported {input_path} -> {export_path}")
