@@ -164,7 +164,7 @@ class EmbroideryViewerPanel(QWidget):
         if self.progress_bar:
             self.progress_bar.update()
 
-    def OnPlayTimer(self, e):
+    def OnPlayTimer(self, e=None):
         """Advance playback by one timer step in the current direction."""
         total = self.stitches_np.shape[0]
         if total == 0:
