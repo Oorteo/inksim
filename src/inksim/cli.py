@@ -7,11 +7,12 @@ import argparse
 import sys
 from pathlib import Path
 
+from PySide6.QtCore import QEventLoop
 from PySide6.QtWidgets import QApplication
 
 from .constants import APP_TITLE
 from .gui.frame import Frame
-from .gui.splash import SplashScreen
+from .gui.splash import RendererWarmupThread, SplashScreen
 
 
 def _parse_pair(value, name, separator):
@@ -220,21 +221,27 @@ def main():
         raise SystemExit(0 if success else 1)
     splash = SplashScreen()
     splash.show_centered()
-    splash.set_progress(10, "Preparing InkSim...")
+    splash.set_message("Preparing InkSim...")
+    warmup = RendererWarmupThread()
+    warmup_loop = QEventLoop()
+    warmup.finished.connect(warmup_loop.quit)
+    warmup.start()
+    warmup_loop.exec()
+    warmup.wait()
     frame.show_initial_window(
         False,
         str(first_input) if first_input and first_input.is_dir() else None,
     )
     app.processEvents()
     if first_input is not None and first_input.is_file():
-        splash.set_progress(20, f"Loading {first_input.name}...")
+        splash.set_message(f"Loading {first_input.name}...")
         if not frame.OpenFile(str(first_input)):
             frame.close()
             splash.close_after()
             raise SystemExit(1)
         if args.play:
             frame.viewer.ToggleAutoPlay(forward=True)
-    splash.set_progress(100, "Ready")
+    splash.set_message("Ready")
     splash.close_after()
     app.exec()
 
