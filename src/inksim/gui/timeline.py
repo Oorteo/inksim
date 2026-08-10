@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QPoint, Qt
 from PySide6.QtGui import QColor, QPainter, QPen
 from PySide6.QtWidgets import QWidget
 
@@ -89,6 +89,7 @@ class ProgressBarPanel(QWidget):
             painter.setPen(QColor(120, 120, 120))
             painter.drawText(bar_x, self.bar_y + 22,
                              "No file loaded - open an embroidery file")
+            painter.end()
             return
 
         stitches = self.viewer.stitches_np
@@ -138,9 +139,11 @@ class ProgressBarPanel(QWidget):
                 painter.setBrush(color)
                 painter.setPen(QPen(color))
                 marker_y = self.bar_y + marker_index * 5
-                painter.drawPolygon([(marker_x, marker_y),
-                                     (marker_x - 4, marker_y + 5),
-                                     (marker_x + 4, marker_y + 5)])
+                painter.drawPolygon([
+                    QPoint(marker_x, marker_y),
+                    QPoint(marker_x - 4, marker_y + 5),
+                    QPoint(marker_x + 4, marker_y + 5),
+                ])
         progress_width = int(visible / total * bar_width)
         painter.setBrush(QColor(255, 255, 255, 150))
         painter.setPen(Qt.NoPen)
@@ -175,3 +178,4 @@ class ProgressBarPanel(QWidget):
         if txt_right:
             right_width = painter.fontMetrics().horizontalAdvance(txt_right)
             painter.drawText(bar_x + bar_width - right_width, text_y, txt_right)
+        painter.end()
