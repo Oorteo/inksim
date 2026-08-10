@@ -1,10 +1,15 @@
 from pathlib import Path
 
 from PIL import Image, ImageFilter
-from PySide6.QtCore import QSettings, QTimer, Qt
+from PySide6.QtCore import QSettings, QTimer
 from PySide6.QtGui import QAction, QKeySequence
-from PySide6.QtWidgets import (QApplication, QFileDialog, QDialog, QMainWindow,
-                               QMessageBox, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QMainWindow,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ..constants import *
 from ..render import render_export_image
@@ -111,7 +116,12 @@ class Frame(QMainWindow):
             if step == 10:
                 action.setChecked(True)
         playback.addSeparator()
-        self._action(playback, "Play/Pause", lambda: self.viewer.ToggleAutoPlay(True), "Space")
+        self._action(
+            playback,
+            "Play/Pause",
+            lambda checked=False: self.viewer.ToggleAutoPlay(),
+            "Space",
+        )
         self._action(playback, "Next color", lambda: (self.viewer.JumpToColor(1), self._refresh_after_color_jump()))
         self._action(playback, "Prev color", lambda: (self.viewer.JumpToColor(-1), self._refresh_after_color_jump()))
         self.menubar = self.menuBar()

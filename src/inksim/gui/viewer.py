@@ -185,13 +185,14 @@ class EmbroideryViewerPanel(QWidget):
         if self.progress_bar:
             self.progress_bar.update()
 
-    def ToggleAutoPlay(self, forward=True):
+    def ToggleAutoPlay(self, forward=None):
         """Start or stop playback, choosing its direction when starting."""
         if self.is_playing:
             self.play_timer.stop()
             self.is_playing = False
         else:
-            self._last_dir = 1 if forward else -1
+            if forward is not None:
+                self._last_dir = 1 if forward else -1
             self.play_timer.start(self.play_speed)
             self.is_playing = True
 
@@ -385,7 +386,7 @@ class EmbroideryViewerPanel(QWidget):
             self.visible_count = total
             changed = True
         elif key == Qt.Key_Space:
-            self.ToggleAutoPlay(forward=self._last_dir > 0)
+            self.ToggleAutoPlay()
             return
         elif key in (ord("+"), ord("="), Qt.Key_Plus):
             self.line_width = min(1.0, self.line_width + 0.1)
