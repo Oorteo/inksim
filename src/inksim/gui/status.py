@@ -1,29 +1,29 @@
-import wx
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QHBoxLayout, QPushButton, QWidget
 
-class ModeStatusPanel(wx.Panel):
+class ModeStatusPanel(QWidget):
     """Clickable indicators for the main viewer display modes."""
 
     def __init__(self, parent, viewer):
-        super().__init__(parent, size=(-1, 38))
+        super().__init__(parent)
         self.viewer = viewer
-        self.SetBackgroundColour(wx.Colour(245, 245, 245))
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.setFixedHeight(38)
+        self.setStyleSheet("background: rgb(245, 245, 245)")
+        sizer = QHBoxLayout(self)
+        sizer.setContentsMargins(4, 3, 4, 3)
         self.buttons = {}
         for mode in ("R", "X", "J", "V"):
-            button = wx.Button(self, label=mode, size=(32, 32))
-            button.SetMinSize((32, 32))
-            button.Bind(wx.EVT_BUTTON, self.OnModeClick)
+            button = QPushButton(mode, self)
+            button.setFixedSize(32, 32)
+            button.clicked.connect(lambda checked=False, m=mode: self.OnModeClick(m))
             self.buttons[mode] = button
-            sizer.Add(button, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 4)
-        self.SetSizer(sizer)
+            sizer.addWidget(button)
+        sizer.addStretch()
         self.RefreshIndicators()
 
-    def OnModeClick(self, event):
-        for mode, button in self.buttons.items():
-            if event.GetEventObject() is button:
-                self.viewer.ToggleDisplayMode(mode)
-                self.viewer.SetFocus()
-                return
+    def OnModeClick(self, mode):
+        self.viewer.ToggleDisplayMode(mode)
+        self.viewer.setFocus()
 
     def RefreshIndicators(self):
         states = {
@@ -37,13 +37,13 @@ class ModeStatusPanel(wx.Panel):
         for mode, button in self.buttons.items():
             state = jump_state if mode == "J" else int(states[mode])
             if mode == "J" and state == 2:
-                color = wx.Colour(210, 145, 45)
+                color = QColor(210, 145, 45)
             elif state:
-                color = wx.Colour(75, 140, 90)
+                color = QColor(75, 140, 90)
             else:
-                color = wx.Colour(225, 225, 225)
-            button.SetBackgroundColour(color)
-            button.SetForegroundColour(
-                wx.WHITE if state else wx.Colour(45, 45, 45)
+                color = QColor(225, 225, 225)
+            foreground = "white" if state else "rgb(45, 45, 45)"
+            button.setStyleSheet(
+                f"background: {color.name()}; color: {foreground};"
             )
-        self.Layout()
+        self.layout().activate()

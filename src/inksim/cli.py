@@ -6,7 +6,7 @@
 import argparse
 from pathlib import Path
 
-import wx
+from PySide6.QtWidgets import QApplication
 
 from .constants import APP_TITLE
 from .gui.frame import Frame
@@ -92,7 +92,7 @@ def main():
         action="store_true",
         help="Add a 10 mm grid to exported PNG",
     )
-    args=parser.parse_args()
+    args = parser.parse_args()
 
     export_paths = [
         path for path in (
@@ -120,7 +120,7 @@ def main():
 
     window_size = args.size
     window_position = args.position
-    app=wx.App(not export_requested)
+    app = QApplication.instance() or QApplication([])
     frame = Frame(
         initial_file=str(input_path) if input_path and input_path.is_file() else None,
         initial_directory=(
@@ -142,9 +142,9 @@ def main():
             grid=args.export_grid,
             shaded=bool(args.export_shaded_png),
         )
-        frame.Destroy()
+        frame.close()
         raise SystemExit(0 if success else 1)
-    app.MainLoop()
+    app.exec()
 
 
 if __name__ == "__main__":

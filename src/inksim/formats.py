@@ -4,7 +4,7 @@ import pystitch as emb
 
 
 def get_supported_input_wildcard():
-    """Build a wx file filter from the formats readable by pystitch."""
+    """Build a file filter from the formats readable by pystitch."""
     extensions = get_supported_input_extensions()
     patterns = ";".join(f"*.{ext}" for ext in sorted(extensions))
     return f"Embroidery files ({patterns})|{patterns}|All files|*.*"

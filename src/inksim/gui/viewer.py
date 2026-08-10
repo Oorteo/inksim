@@ -1,11 +1,18 @@
-from pathlib import Path
 import time
 
-import numba
 import numpy as np
 import pystitch as emb
-import wx
-import wx.html
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPen, QPixmap
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QMessageBox,
+    QPushButton,
+    QTextBrowser,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ..constants import *
 from ..render import (
@@ -17,7 +24,8 @@ from ..render import (
     render_shaded_numba,
 )
 
-class EmbroideryViewerPanel(wx.Panel):
+
+class EmbroideryViewerPanel(QWidget):
     """Fast interactive embroidery preview with playback and viewport controls.
 
     Stitch data is kept in a NumPy array and rendered into a bitmap by the
@@ -28,9 +36,9 @@ class EmbroideryViewerPanel(wx.Panel):
 
     def __init__(self, parent, progress_bar):
         """Create an empty viewer connected to the progress bar."""
-        super().__init__(parent, style=wx.WANTS_CHARS)
-        self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
-        self.SetDoubleBuffered(True)
+        super().__init__(parent)
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setAcceptDrops(True)
         self.zoom = 1.0
         self.pan_x, self.pan_y = 400, 300
         self.drag_start = None
@@ -74,44 +82,34 @@ class EmbroideryViewerPanel(wx.Panel):
         self.settings_dialog = None
         self._last_dir = 1
         self._pending_fit_to_screen = False
-        self.play_timer = wx.Timer(self)
+        self.play_timer = QTimer(self)
         self.play_speed = 20
         self.play_speed_levels = (1, 5, 10, 20, 40, 80)
         self.play_speed_index = 2
         self.play_step = self.play_speed_levels[self.play_speed_index]
         self.is_playing = False
-        self.Bind(wx.EVT_TIMER, self.OnPlayTimer, self.play_timer)
-        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_MOUSEWHEEL, self.OnWheel)
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
-        self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-        self.Bind(wx.EVT_MOTION, self.OnMotion)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.play_timer.timeout.connect(self.OnPlayTimer)
 
     def OnEraseBackground(self, e):
-        """Keep wxMSW from clearing the canvas before a buffered repaint."""
+        """Keep the canvas from clearing before a buffered repaint."""
 
     def OnSize(self, e):
         """Invalidate the bitmap and retry deferred initial fitting."""
         self.need_redraw = True
         if self._pending_fit_to_screen and self.stitches_np.shape[0] > 0:
-            wx.CallAfter(self._try_fit_to_screen)
-        e.Skip()
+            QTimer.singleShot(0, self._try_fit_to_screen)
 
     def _try_fit_to_screen(self, retries=20):
-        """Fit the design once wx has assigned a usable panel size."""
+        """Fit the design once Qt has assigned a usable panel size."""
         if not self._pending_fit_to_screen:
             return
-        w, h = self.GetSize()
-        # On startup wx can briefly report tiny panel sizes.
+        w, h = self.width(), self.height()
+        # On startup Qt can briefly report tiny panel sizes.
         # If we fit at that moment, the design appears tiny in the top-left.
         # Retry shortly until layout stabilizes.
         if w < 120 or h < 120:
             if retries > 0:
-                wx.CallLater(30, self._try_fit_to_screen, retries - 1)
+                QTimer.singleShot(30, lambda: self._try_fit_to_screen(retries - 1))
             return
         self._pending_fit_to_screen = False
         self.FitToScreen()
@@ -125,7 +123,7 @@ class EmbroideryViewerPanel(wx.Panel):
         bh = max_y - min_y
         bw = max(bw, 1)
         bh = max(bh, 1)
-        w, h = self.GetSize()
+        w, h = self.width(), self.height()
         if w < 10 or h < 10:
             w, h = 1200, 800
         zoom_x = (w * 0.8) / bw
@@ -138,16 +136,13 @@ class EmbroideryViewerPanel(wx.Panel):
         if self.stitches_np.shape[0] == 0:
             return
         try:
-            display_index = wx.Display.GetFromWindow(self)
-            if display_index == wx.NOT_FOUND:
-                display_index = 0
-            ppi = wx.Display(display_index).GetPPI()
-            ppi_x = float(ppi.x)
-            ppi_y = float(ppi.y)
+            screen = self.screen()
+            ppi_x = float(screen.logicalDotsPerInchX())
+            ppi_y = float(screen.logicalDotsPerInchY())
             if ppi_x <= 0 or ppi_y <= 0:
                 raise ValueError("invalid display PPI")
             pixels_per_mm = (ppi_x + ppi_y) / (2.0 * 25.4)
-        except (AttributeError, TypeError, ValueError, wx.PyNoAppError):
+        except (AttributeError, TypeError, ValueError):
             pixels_per_mm = 96.0 / 25.4
         self.zoom = pixels_per_mm
         self.CenterDesign()
@@ -156,7 +151,7 @@ class EmbroideryViewerPanel(wx.Panel):
         """Center the loaded design without changing its current zoom."""
         if self.stitches_np.shape[0] == 0:
             return
-        w, h = self.GetSize()
+        w, h = self.width(), self.height()
         if w < 10 or h < 10:
             w, h = 1200, 800
         min_x, min_y, max_x, max_y = self.bounds
@@ -165,39 +160,39 @@ class EmbroideryViewerPanel(wx.Panel):
         self.pan_x = w / 2 - cx * self.zoom
         self.pan_y = h / 2 - cy * self.zoom
         self.need_redraw = True
-        self.Refresh()
+        self.update()
         if self.progress_bar:
-            self.progress_bar.Refresh()
+            self.progress_bar.update()
 
     def OnPlayTimer(self, e):
         """Advance playback by one timer step in the current direction."""
         total = self.stitches_np.shape[0]
         if total == 0:
-            self.play_timer.Stop()
+            self.play_timer.stop()
             self.is_playing = False
             return
         self.visible_count += self.play_step * self._last_dir
         if self.visible_count >= total:
             self.visible_count = total
-            self.play_timer.Stop()
+            self.play_timer.stop()
             self.is_playing = False
         elif self.visible_count <= 0:
             self.visible_count = 0
-            self.play_timer.Stop()
+            self.play_timer.stop()
             self.is_playing = False
         self.need_redraw = True
-        self.Refresh()
+        self.update()
         if self.progress_bar:
-            self.progress_bar.Refresh()
+            self.progress_bar.update()
 
     def ToggleAutoPlay(self, forward=True):
         """Start or stop playback, choosing its direction when starting."""
         if self.is_playing:
-            self.play_timer.Stop()
+            self.play_timer.stop()
             self.is_playing = False
         else:
             self._last_dir = 1 if forward else -1
-            self.play_timer.Start(self.play_speed)
+            self.play_timer.start(self.play_speed)
             self.is_playing = True
 
     def AdjustPlaybackSpeed(self, direction):
@@ -217,7 +212,7 @@ class EmbroideryViewerPanel(wx.Panel):
     def OnKeyUp(self, e):
         """Reset key-repeat throttling after a key is released."""
         self._last_key_time = 0
-        e.Skip()
+        e.accept()
 
     def JumpToColor(self, direction):
         """Move to the next or previous recorded thread-color boundary."""
@@ -315,19 +310,19 @@ class EmbroideryViewerPanel(wx.Panel):
     def OnKeyDown(self, e):
         """Handle playback, navigation, display, and view shortcut keys."""
         now = time.time()
-        key = e.GetKeyCode()
-        is_alt = e.AltDown()
-        is_ctrl = e.ControlDown()
+        key = e.key()
+        is_alt = bool(e.modifiers() & Qt.AltModifier)
+        is_ctrl = bool(e.modifiers() & Qt.ControlModifier)
         # Let menu mnemonics and global shortcuts pass through
         # Alt+F, Alt+P for menu, Ctrl+Q for Quit, Ctrl+O for Open etc.
         if is_alt and key in (ord('F'), ord('f'), ord('P'), ord('p')):
-            e.Skip()
+            e.ignore()
             return
         if is_ctrl and key in (ord('Q'), ord('q'), ord('O'), ord('o')):
-            e.Skip()
+            e.ignore()
             return
         is_space_or_c = key in (
-            wx.WXK_SPACE,
+            Qt.Key_Space,
             ord("C"),
             ord("c"),
         )
@@ -337,27 +332,27 @@ class EmbroideryViewerPanel(wx.Panel):
             return
         self._last_key_time = now
         total = self.stitches_np.shape[0]
-        is_shift = e.ShiftDown()
+        is_shift = bool(e.modifiers() & Qt.ShiftModifier)
         changed = False
         highlight_needle = False
         step = 1 if is_alt else self.step_size
         if is_shift and not is_alt and not is_ctrl and key in (
-                wx.WXK_RIGHT,
-                wx.WXK_LEFT,
+                Qt.Key_Right,
+                Qt.Key_Left,
         ):
-            changed = self.JumpToCommand(1 if key == wx.WXK_RIGHT else -1)
+            changed = self.JumpToCommand(1 if key == Qt.Key_Right else -1)
             highlight_needle = changed
             if changed and self.is_playing:
-                self.play_timer.Stop()
+                self.play_timer.stop()
                 self.is_playing = False
         elif self.is_playing and not is_alt and not is_ctrl and key in (
-                wx.WXK_RIGHT,
-                wx.WXK_LEFT,
+                Qt.Key_Right,
+                Qt.Key_Left,
         ):
-            key_direction = 1 if key == wx.WXK_RIGHT else -1
+            key_direction = 1 if key == Qt.Key_Right else -1
             changed = self.AdjustPlaybackSpeed(key_direction * self._last_dir)
-        elif is_ctrl and key in (wx.WXK_RIGHT, wx.WXK_LEFT):
-            if key == wx.WXK_RIGHT:
+        elif is_ctrl and key in (Qt.Key_Right, Qt.Key_Left):
+            if key == Qt.Key_Right:
                 self.JumpToColor(1)
                 self._last_dir = 1
             else:
@@ -365,44 +360,44 @@ class EmbroideryViewerPanel(wx.Panel):
                 self._last_dir = -1
             changed = True
             highlight_needle = True
-        elif key == wx.WXK_RIGHT:
+        elif key == Qt.Key_Right:
             if self.visible_count < total:
                 self.visible_count = min(total, self.visible_count + step)
                 self._last_dir = 1
                 changed = True
-        elif key == wx.WXK_LEFT:
+        elif key == Qt.Key_Left:
             if self.visible_count > 0:
                 self.visible_count = max(0, self.visible_count - step)
                 self._last_dir = -1
                 changed = True
-        elif key == wx.WXK_UP:
+        elif key == Qt.Key_Up:
             self.visible_count = min(total, self.visible_count + step * 10)
             self._last_dir = 1
             changed = True
-        elif key == wx.WXK_DOWN:
+        elif key == Qt.Key_Down:
             self.visible_count = max(0, self.visible_count - step * 10)
             self._last_dir = -1
             changed = True
-        elif key == wx.WXK_HOME:
+        elif key == Qt.Key_Home:
             self.visible_count = 0
             changed = True
-        elif key == wx.WXK_END:
+        elif key == Qt.Key_End:
             self.visible_count = total
             changed = True
-        elif key == wx.WXK_SPACE:
+        elif key == Qt.Key_Space:
             self.ToggleAutoPlay(forward=self._last_dir > 0)
             return
-        elif key in (ord("+"), ord("="), wx.WXK_NUMPAD_ADD):
+        elif key in (ord("+"), ord("="), Qt.Key_Plus):
             self.line_width = min(1.0, self.line_width + 0.1)
             changed = True
-        elif key in (ord("-"), ord("_"), wx.WXK_NUMPAD_SUBTRACT):
+        elif key in (ord("-"), ord("_"), Qt.Key_Minus):
             self.line_width = max(0.1, self.line_width - 0.1)
             changed = True
         elif key in (ord("["), ord("{"), ord("]"), ord("}")):
             shading_delta = self.shading_step
             if key in (ord("["), ord("{")):
                 shading_delta = -shading_delta
-            if e.ShiftDown() or key in (ord("{"), ord("}")):
+            if is_shift or key in (ord("{"), ord("}")):
                 self.light_factor = max(
                     0.0,
                     min(1.0, self.light_factor + shading_delta),
@@ -422,16 +417,16 @@ class EmbroideryViewerPanel(wx.Panel):
         elif key == ord("1") and not is_alt and not is_ctrl:
             self.SetOneToOne()
             return
-        elif key == wx.WXK_F11:
-            frame = wx.GetTopLevelParent(self)
+        elif key == Qt.Key_F11:
+            frame = self.window()
             if hasattr(frame, "ToggleFullScreen"):
                 frame.ToggleFullScreen()
                 return
         elif key in (ord("G"), ord("g")) and not is_alt and not is_ctrl:
             self.show_grid = not self.show_grid
-            frame = wx.GetTopLevelParent(self)
+            frame = self.window()
             if hasattr(frame, "gridItem"):
-                frame.gridItem.Check(self.show_grid)
+                frame.gridItem.setChecked(self.show_grid)
             changed = True
         elif key in (ord("J"), ord("j")) and not is_alt and not is_ctrl:
             self.ToggleDisplayMode("J")
@@ -458,33 +453,33 @@ class EmbroideryViewerPanel(wx.Panel):
         elif key in (ord("I"), ord("i")) and not is_alt and not is_ctrl:
             self.ShowSettings()
             return
-        elif key == wx.WXK_ESCAPE:
+        elif key == Qt.Key_Escape:
             if self.is_playing:
-                self.play_timer.Stop()
+                self.play_timer.stop()
                 self.is_playing = False
                 return
         if changed:
             if highlight_needle:
                 self.HighlightNeedle()
             if (self.is_playing and key
-                    in (wx.WXK_UP, wx.WXK_DOWN, wx.WXK_HOME, wx.WXK_END)
+                    in (Qt.Key_Up, Qt.Key_Down, Qt.Key_Home, Qt.Key_End)
                     and not is_ctrl):
-                self.play_timer.Stop()
+                self.play_timer.stop()
                 self.is_playing = False
             self.need_redraw = True
-            self.Refresh()
+            self.update()
             if self.progress_bar:
-                self.progress_bar.Refresh()
+                self.progress_bar.update()
         else:
-            e.Skip()
+            e.ignore()
 
     def ToggleDisplayMode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
         if mode == "R":
             self.show_realistic = not self.show_realistic
-            frame = wx.GetTopLevelParent(self)
+            frame = self.window()
             if hasattr(frame, "realisticItem"):
-                frame.realisticItem.Check(self.show_realistic)
+                frame.realisticItem.setChecked(self.show_realistic)
         elif mode == "X":
             self.show_density = not self.show_density
             if self.show_density and not self.density_ready:
@@ -502,7 +497,7 @@ class EmbroideryViewerPanel(wx.Panel):
                 self.risky_jumps_only = False
         self.RefreshModeIndicators()
         self.need_redraw = True
-        self.Refresh()
+        self.update()
 
     def RefreshModeIndicators(self):
         if self.mode_panel is not None:
@@ -512,51 +507,46 @@ class EmbroideryViewerPanel(wx.Panel):
         """Helper to show HTML content in a resizable dialog with HtmlWindow."""
         dialog = getattr(self, key)
         if dialog is not None:
-            dialog.Close()
+            dialog.close()
             return
-        dlg = wx.Dialog(self,
-                        title=title,
-                        size=(width, height),
-                        style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-                        | wx.MAXIMIZE_BOX)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        html_win = wx.html.HtmlWindow(dlg, style=wx.html.HW_SCROLLBAR_AUTO)
+        dlg = QDialog(self)
+        dlg.setWindowTitle(title)
+        dlg.resize(width, height)
+        sizer = QVBoxLayout(dlg)
+        html_win = QTextBrowser(dlg)
         styled_html = f"""
         <html><head></head><body>
         {html_content}
         </body></html>
         """
-        html_win.SetPage(styled_html)
-        sizer.Add(html_win, 1, wx.EXPAND | wx.ALL, 6)
-        btn_sizer = wx.StdDialogButtonSizer()
-        ok_btn = wx.Button(dlg, wx.ID_OK)
-        ok_btn.SetDefault()
-        btn_sizer.AddButton(ok_btn)
-        btn_sizer.Realize()
-        ok_btn.Bind(wx.EVT_BUTTON, lambda event: dlg.Close())
-        sizer.Add(btn_sizer, 0, wx.ALIGN_RIGHT | wx.ALL, 6)
-        dlg.SetSizer(sizer)
-        dlg.Layout()
-        dlg.CentreOnParent()
+        html_win.setHtml(styled_html)
+        sizer.addWidget(html_win)
+        ok_btn = QPushButton("OK", dlg)
+        ok_btn.setDefault(True)
+        ok_btn.clicked.connect(dlg.close)
+        sizer.addWidget(ok_btn, alignment=Qt.AlignRight)
+        dlg.adjustSize()
+        dlg.setMinimumSize(width, height)
+        dlg.move(self.window().geometry().center() - dlg.rect().center())
         def on_close(event):
             setattr(self, key, None)
-            dlg.Destroy()
+            event.accept()
 
-        dlg.Bind(wx.EVT_CLOSE, on_close)
+        dlg.closeEvent = on_close
         def on_dialog_key(event):
-            key_code = event.GetKeyCode()
+            key_code = event.key()
             closes_dialog = (
                 (key == "help_dialog" and key_code in (ord("H"), ord("h")))
                 or (key == "settings_dialog" and key_code in (ord("I"), ord("i")))
             )
             if closes_dialog:
-                dlg.Close()
+                dlg.close()
                 return
-            event.Skip()
+            event.ignore()
 
-        dlg.Bind(wx.EVT_CHAR_HOOK, on_dialog_key)
+        dlg.keyPressEvent = on_dialog_key
         setattr(self, key, dlg)
-        dlg.Show()
+        dlg.show()
 
     def ShowHelp(self):
         """Show keyboard and mouse controls in a compact 2-column HtmlWindow."""
@@ -704,8 +694,8 @@ class EmbroideryViewerPanel(wx.Panel):
         """Load an embroidery file into renderable stitch segments."""
         try:
             pattern = emb.read(path)
-        except Exception as ex:
-            wx.MessageBox(f"Failed to load embroidery file: {ex}", "Error")
+        except (OSError, RuntimeError, ValueError) as ex:
+            QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
             return False
         segs = []
         last_x = last_y = 0
@@ -806,27 +796,27 @@ class EmbroideryViewerPanel(wx.Panel):
             self.bounds = (min_x, min_y, max_x, max_y)
             self.visible_count = self.stitches_np.shape[0]
             self.color_boundaries = sorted(
-                set(boundary for boundary in self.color_boundaries
-                    if boundary < len(segs)))
+                {boundary for boundary in self.color_boundaries
+                 if boundary < len(segs)})
             self.color_count = len(self.color_boundaries)
             if fit_to_screen:
                 self._pending_fit_to_screen = True
-                wx.CallAfter(self._try_fit_to_screen)
+                QTimer.singleShot(0, self._try_fit_to_screen)
         self.need_redraw = True
-        self.Refresh()
+        self.update()
         if self.progress_bar:
-            self.progress_bar.Refresh()
+            self.progress_bar.update()
         return True
 
     def CalculateStitchDensity(self):
         """Calculate the density map once, on demand, using the Numba kernel."""
         if self.density_ready or len(self.stitch_points_np) == 0:
             return
-        frame = wx.GetTopLevelParent(self)
-        if hasattr(frame, "SetStatusText"):
-            frame.SetStatusText("Calculating stitch density...")
-        wx.BeginBusyCursor()
-        wx.SafeYield(frame, True)
+        frame = self.window()
+        if hasattr(frame, "statusBar"):
+            frame.statusBar().showMessage("Calculating stitch density...")
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.processEvents()
         min_x, min_y, max_x, max_y = self.bounds
         try:
             self.stitch_density_np = calculate_stitch_density_numba(
@@ -837,18 +827,18 @@ class EmbroideryViewerPanel(wx.Panel):
                 max_y,
             )
         finally:
-            wx.EndBusyCursor()
+            QApplication.restoreOverrideCursor()
         self.density_ready = True
-        if hasattr(frame, "SetStatusText"):
-            frame.SetStatusText("Density map ready")
-            wx.CallLater(1500, frame.SetStatusText, DEFAULT_STATUS_TEXT)
+        if hasattr(frame, "statusBar"):
+            frame.statusBar().showMessage("Density map ready")
+            QTimer.singleShot(1500, lambda: frame.statusBar().showMessage(DEFAULT_STATUS_TEXT))
         self.need_redraw = True
-        self.Refresh()
+        self.update()
 
-    def OnPaint(self, e):
+    def paintEvent(self, e):
         """Render the current viewport, using the cached bitmap when possible."""
-        dc = wx.BufferedPaintDC(self)
-        dc.Clear()
+        dc = QPainter(self)
+        dc.fillRect(self.rect(), QColor(255, 255, 255))
         if self._pending_fit_to_screen:
             return
         if not self.need_redraw and self.cached_bitmap:
@@ -856,42 +846,30 @@ class EmbroideryViewerPanel(wx.Panel):
             if abs(zoom_ratio - 1.0) < 0.001:
                 pan_delta_x = round(self.pan_x - self.cached_pan_x)
                 pan_delta_y = round(self.pan_y - self.cached_pan_y)
-                dc.DrawBitmap(self.cached_bitmap, pan_delta_x, pan_delta_y)
+                dc.drawPixmap(pan_delta_x, pan_delta_y, self.cached_bitmap)
             else:
-                bitmap_width = self.cached_bitmap.GetWidth()
-                bitmap_height = self.cached_bitmap.GetHeight()
+                bitmap_width = self.cached_bitmap.width()
+                bitmap_height = self.cached_bitmap.height()
                 preview_x = round(self.pan_x - zoom_ratio * self.cached_pan_x)
                 preview_y = round(self.pan_y - zoom_ratio * self.cached_pan_y)
-                source_dc = wx.MemoryDC()
-                source_dc.SelectObject(self.cached_bitmap)
-                try:
-                    dc.StretchBlit(
-                        preview_x,
-                        preview_y,
-                        round(bitmap_width * zoom_ratio),
-                        round(bitmap_height * zoom_ratio),
-                        source_dc,
-                        0,
-                        0,
-                        bitmap_width,
-                        bitmap_height,
-                    )
-                finally:
-                    source_dc.SelectObject(wx.NullBitmap)
+                dc.drawPixmap(
+                    preview_x, preview_y,
+                    round(bitmap_width * zoom_ratio),
+                    round(bitmap_height * zoom_ratio),
+                    self.cached_bitmap,
+                )
             self.DrawAnalysisOverlays(dc)
             self.DrawNeedleOverlay(dc)
             return
-        w, h = self.GetSize()
+        w, h = self.width(), self.height()
         if self.stitches_np.shape[0] == 0:
-            dc.SetFont(
-                wx.Font(14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
-                        wx.FONTWEIGHT_NORMAL))
-            dc.DrawText(
+            dc.setFont(QFont(self.font().family(), 14))
+            dc.drawText(
                 "Open an embroidery file via File > Open or pass it as a command-line argument",
                 20,
                 20,
             )
-            dc.DrawText(
+            dc.drawText(
                 "H=help, Space=play/pause, Ctrl+Arrows=color, Alt+Arrows=1",
                 20, 45)
             return
@@ -939,17 +917,17 @@ class EmbroideryViewerPanel(wx.Panel):
                 self.pan_x,
                 self.pan_y,
             )
-        img = wx.Image(w, h)
-        img.SetData(buf.tobytes())
-        bmp = wx.Bitmap(img)
+        img = QImage(buf.data, w, h, 3 * w, QImage.Format_RGB888).copy()
+        bmp = QPixmap.fromImage(img)
         self.cached_bitmap = bmp
         self.cached_pan_x = self.pan_x
         self.cached_pan_y = self.pan_y
         self.cached_zoom = self.zoom
         self.need_redraw = False
-        dc.DrawBitmap(bmp, 0, 0)
+        dc.drawPixmap(0, 0, bmp)
         self.DrawAnalysisOverlays(dc)
         self.DrawNeedleOverlay(dc)
+        dc.end()
 
     def DrawAnalysisOverlays(self, dc):
         """Draw optional jump paths and local stitch-density diagnostics."""
@@ -959,10 +937,9 @@ class EmbroideryViewerPanel(wx.Panel):
                     continue
                 if self.risky_jumps_only and not risky:
                     continue
-                color = wx.Colour(220, 45, 45) if risky else wx.Colour(
-                    100, 100, 100)
-                dc.SetPen(wx.Pen(color, 2, wx.PENSTYLE_SHORT_DASH))
-                dc.DrawLine(
+                color = QColor(220, 45, 45) if risky else QColor(100, 100, 100)
+                dc.setPen(QPen(color, 2, Qt.DashLine))
+                dc.drawLine(
                     int(x1 * self.zoom + self.pan_x),
                     int(y1 * self.zoom + self.pan_y),
                     int(x2 * self.zoom + self.pan_x),
@@ -988,20 +965,23 @@ class EmbroideryViewerPanel(wx.Panel):
             arm, radius, outer_radius = 48, 16, 28
         else:
             arm, radius, outer_radius = 14, 6, 0
-        dc.SetPen(wx.Pen(wx.Colour(10, 10, 10), 8 if outer_radius else 4))
-        dc.DrawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
-        dc.DrawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
+        dc.setPen(QPen(QColor(10, 10, 10), 8 if outer_radius else 4))
+        dc.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
+        dc.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
         if outer_radius:
-            dc.SetBrush(wx.TRANSPARENT_BRUSH)
-            dc.DrawCircle(needle_x, needle_y, outer_radius)
-        dc.SetPen(wx.Pen(wx.Colour(255, 255, 255), 3 if outer_radius else 2))
-        dc.SetBrush(wx.TRANSPARENT_BRUSH)
-        dc.DrawCircle(needle_x, needle_y, radius)
-        dc.DrawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
-        dc.DrawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
-        dc.SetBrush(wx.Brush(wx.Colour(255, 220, 40)))
-        dc.SetPen(wx.Pen(wx.Colour(10, 10, 10), 2))
-        dc.DrawCircle(needle_x, needle_y, 5 if outer_radius else 3)
+            dc.setBrush(Qt.NoBrush)
+            dc.drawEllipse(needle_x - outer_radius, needle_y - outer_radius,
+                           outer_radius * 2, outer_radius * 2)
+        dc.setPen(QPen(QColor(255, 255, 255), 3 if outer_radius else 2))
+        dc.setBrush(Qt.NoBrush)
+        dc.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
+        dc.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
+        dc.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
+        dc.setBrush(QColor(255, 220, 40))
+        dc.setPen(QPen(QColor(10, 10, 10), 2))
+        marker_radius = 5 if outer_radius else 3
+        dc.drawEllipse(needle_x - marker_radius, needle_y - marker_radius,
+                       marker_radius * 2, marker_radius * 2)
 
     def HighlightNeedle(self):
         """Pulse a large needle marker after user navigation."""
@@ -1010,84 +990,104 @@ class EmbroideryViewerPanel(wx.Panel):
         self.needle_highlighted = True
         self.needle_highlight_stage = 2
         if self._needle_highlight_timer is not None:
-            self._needle_highlight_timer.Stop()
-        self._needle_highlight_timer = wx.CallLater(
-            200,
-            self._SetNeedleHighlightStage,
-            1,
-        )
-        self.Refresh()
+            self._needle_highlight_timer.stop()
+        self._needle_highlight_timer = QTimer(self)
+        self._needle_highlight_timer.setSingleShot(True)
+        self._needle_highlight_timer.timeout.connect(
+            lambda: self._SetNeedleHighlightStage(1))
+        self._needle_highlight_timer.start(200)
+        self.update()
 
     def _SetNeedleHighlightStage(self, stage):
         """Advance the temporary needle marker through its visual pulse."""
         if not self.show_needle:
             return
         self.needle_highlight_stage = stage
-        self.Refresh()
+        self.update()
         if stage == 1:
-            self._needle_highlight_timer = wx.CallLater(
-                300,
-                self.StopNeedleHighlight,
-            )
+            self._needle_highlight_timer = QTimer(self)
+            self._needle_highlight_timer.setSingleShot(True)
+            self._needle_highlight_timer.timeout.connect(self.StopNeedleHighlight)
+            self._needle_highlight_timer.start(300)
 
     def StopNeedleHighlight(self):
         """Return the needle crosshair to its normal size."""
         self.needle_highlighted = False
         self.needle_highlight_stage = 0
         self._needle_highlight_timer = None
-        self.Refresh()
+        self.update()
 
     def OnWheel(self, e):
         """Zoom around the mouse position while preserving its world point."""
-        mx, my = e.GetPosition()
+        position = e.position().toPoint()
+        mx, my = position.x(), position.y()
         old = self.zoom
-        self.zoom *= 1.15 if e.GetWheelRotation() > 0 else 1 / 1.15
+        self.zoom *= 1.15 if e.angleDelta().y() > 0 else 1 / 1.15
         self.zoom = max(0.05, min(50.0, self.zoom))
         scale = self.zoom / old
         self.pan_x = mx - scale * (mx - self.pan_x)
         self.pan_y = my - scale * (my - self.pan_y)
         if self.zoom_render_timer is not None:
-            self.zoom_render_timer.Stop()
+            self.zoom_render_timer.stop()
         if self.cached_bitmap:
             self.need_redraw = False
-            self.zoom_render_timer = wx.CallLater(
-                140,
-                self._finish_zoom_render,
-            )
+            self.zoom_render_timer = QTimer(self)
+            self.zoom_render_timer.setSingleShot(True)
+            self.zoom_render_timer.timeout.connect(self._finish_zoom_render)
+            self.zoom_render_timer.start(140)
         else:
             self.need_redraw = True
-        self.Refresh()
+        self.update()
 
     def _finish_zoom_render(self):
         """Schedule a full-quality render after zooming settles."""
         self.zoom_render_timer = None
         self.need_redraw = True
-        self.Refresh()
+        self.update()
 
     def OnLeftDown(self, e):
         """Start panning from the current mouse position."""
-        self.drag_start = e.GetPosition()
+        self.drag_start = e.position().toPoint()
         self.pan_start = (self.pan_x, self.pan_y)
-        self.SetFocus()
-        if not self.HasCapture():
-            self.CaptureMouse()
+        self.setFocus()
+        self.grabMouse()
 
     def OnLeftUp(self, e):
         """Stop panning and clean up any progress-bar mouse capture."""
-        if self.HasCapture():
-            self.ReleaseMouse()
+        self.releaseMouse()
         self.drag_start = None
         self.need_redraw = True
-        self.Refresh()
+        self.update()
         if self.progress_bar and self.progress_bar.dragging:
             self.progress_bar.dragging = False
-            if self.progress_bar.HasCapture(): self.progress_bar.ReleaseMouse()
+            self.progress_bar.releaseMouse()
 
     def OnMotion(self, e):
         """Update the viewport offset while the user drags the canvas."""
-        if self.drag_start and e.Dragging() and e.LeftIsDown():
-            dx = e.GetPosition()[0] - self.drag_start[0]
-            dy = e.GetPosition()[1] - self.drag_start[1]
+        if self.drag_start and e.buttons() & Qt.LeftButton:
+            position = e.position().toPoint()
+            dx = position.x() - self.drag_start.x()
+            dy = position.y() - self.drag_start.y()
             self.pan_x = self.pan_start[0] + dx
             self.pan_y = self.pan_start[1] + dy
-            self.Refresh(eraseBackground=False)
+            self.update()
+
+    def keyPressEvent(self, event):
+        self.OnKeyDown(event)
+
+    def keyReleaseEvent(self, event):
+        self.OnKeyUp(event)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.OnLeftDown(event)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.OnLeftUp(event)
+
+    def mouseMoveEvent(self, event):
+        self.OnMotion(event)
+
+    def wheelEvent(self, event):
+        self.OnWheel(event)

@@ -14,7 +14,7 @@ case "${1:-}" in
 esac
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
-PYTHON_VERSION="${PYTHON_VERSION:-3.12}"
+PYTHON_VERSION="${PYTHON_VERSION:-3.14}"
 SYNC_OPTIONS=()
 if [[ "$(uname -s)" == Linux ]]; then
     source /etc/os-release

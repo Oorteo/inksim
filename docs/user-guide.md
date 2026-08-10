@@ -83,7 +83,7 @@ Loaded designs are kept in a NumPy array with one row per stitch segment:
 
 Coordinates are converted from pystitch units to millimeters and projected to
 screen pixels using `screen = world * zoom + pan`. Numba kernels render the
-RGB buffer used by the wxPython viewer.
+RGB buffer used by the PySide6 viewer.
 
 The realistic renderer adds a procedural fabric background, cylindrical thread
 shading, highlights, shadows, and anti-aliased edges. It is intentionally

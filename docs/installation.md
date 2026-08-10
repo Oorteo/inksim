@@ -27,24 +27,8 @@ uv tool update-shell
 
 ## Linux
 
-The PyPI package does not include a binary wxPython wheel for Linux. Use the
-wxPython extras index matching your distribution. For Ubuntu 24.04:
-
-```bash
-uv tool install --find-links https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04 inksim
-```
-
-Other available indexes are listed at the
-[wxPython Linux extras](https://extras.wxpython.org/wxPython4/extras/linux/gtk3/)
-page. Replace the distribution directory in `--find-links`, for example:
-
-```bash
-uv tool install --find-links https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04 inksim
-```
-
-The available directory must match both the Linux distribution and its
-wxPython/Python compatibility. The extras page currently includes Ubuntu,
-Debian, Fedora, Rocky, and CentOS directories.
+PySide6-Essentials is installed from PyPI together with InkSim, so no
+distribution-specific GUI wheel index is required.
 
 ## Alternative: pip and venv
 
@@ -56,12 +40,6 @@ python -m venv .venv
 . .venv/bin/activate
 python -m pip install inksim
 inksim design.pes
-```
-
-On Linux, pass the matching wxPython extras index to `pip` as well:
-
-```bash
-python -m pip install --find-links https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04 inksim
 ```
 
 The activation command differs on Windows:
@@ -87,16 +65,8 @@ uv run inksim
 uv run inksim design.pes
 ```
 
-On Linux, if the required wxPython wheel is not available from the default
-package index, use the distribution-specific extras index while syncing:
-
-```bash
-uv sync --find-links https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04
-```
-
 The repository also contains a setup helper. It can recreate `.venv` on macOS,
-Linux, and Windows when run from Git Bash or WSL; on supported Linux
-distributions it also selects the wxPython source automatically:
+Linux, and Windows when run from Git Bash or WSL:
 
 ```bash
 ./scripts/setup_uv_venv.sh

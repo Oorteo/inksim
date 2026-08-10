@@ -3,7 +3,7 @@
 InkSim is a standalone interactive embroidery simulator and preview renderer.
 It opens embroidery files, displays their stitch sequence, and lets the user
 inspect or replay the design before production. It is implemented as a small
-Python/wxPython/Numba application with its own standalone user interface.
+Python/PySide6/Numba application with its own standalone user interface.
 
 <p align="center">
   <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview" width="350">
@@ -25,15 +25,8 @@ Then run it directly from your shell:
 inksim design.pes
 ```
 
-Linux users need a wxPython wheel matching their distribution. For example,
-Ubuntu 24.04 users can install InkSim with:
-
-```bash
-uv tool install --find-links https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04 inksim
-```
-
-See [installation and running](docs/installation.md) for other Linux
-versions, `pip`/virtual-environment installation, and developer setup.
+See [installation and running](docs/installation.md) for `pip`/virtual-environment
+installation and developer setup.
 
 ## Quick start
 
@@ -58,7 +51,7 @@ later grew into a digitizer and a stitch viewer. An old recording of the viewer 
 
 [Orca viewer demo](https://www.youtube.com/watch?v=VKle5ApsMnA)
 
-InkSim is a new, standalone implementation of the same viewer idea, written from scratch in Python, wxPython and Numba and focused on quickly previewing embroidery files. It's a small viewer I was missing myself, so I kept it as a lightweight tool and I'm sharing it here in case it's useful for others in the Inkscape / Ink/Stitch community.
+InkSim is a new, standalone implementation of the same viewer idea, written from scratch in Python, PySide6 and Numba and focused on quickly previewing embroidery files. It's a small viewer I was missing myself, so I kept it as a lightweight tool and I'm sharing it here in case it's useful for others in the Inkscape / Ink/Stitch community.
 
 Thanks to the Ink/Stitch project and its community for keeping this space alive and inspiring.
 
