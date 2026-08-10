@@ -86,9 +86,6 @@ class ProgressBarPanel(QWidget):
         painter.setPen(QPen(QColor(200, 200, 200)))
         painter.drawRoundedRect(bar_rect, 4, 4)
         if total == 0:
-            painter.setPen(QColor(120, 120, 120))
-            painter.drawText(bar_x, self.bar_y + 22,
-                             "No file loaded - open an embroidery file")
             painter.end()
             return
 
