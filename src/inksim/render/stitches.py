@@ -1,6 +1,8 @@
-from ..constants import MAX_RENDER_LINE_WIDTH_PX, MAX_RENDER_STEPS
 import numba
 import numpy as np
+
+from ..constants import MAX_RENDER_LINE_WIDTH_PX, MAX_RENDER_STEPS
+
 
 @numba.njit
 def render_realistic_numba(
@@ -272,8 +274,8 @@ def render_shaded_numba(
                                 normal_position = ox * normal_x + oy * normal_y
                                 # -1 .. 1 across the thread width
                                 across = normal_position / hw if hw > 0.001 else 0.0
-                                if across < -1.0: across = -1.0
-                                if across >  1.0: across =  1.0
+                                across = max(across, -1.0)
+                                across = min(across, 1.0)
                                 across_abs = across if across >= 0 else -across
 
                                 # Smooth cylinder: 1 - across^2
@@ -319,3 +321,54 @@ def render_shaded_numba(
                                 buf[yi, xi, 0] = (buf[yi, xi, 0] + r)//2
                                 buf[yi, xi, 1] = (buf[yi, xi, 1] + g)//2
                                 buf[yi, xi, 2] = (buf[yi, xi, 2] + b)//2
+
+
+@numba.njit
+def render_simple_numba(
+    buf,
+    stitches,
+    visible_count,
+    zoom,
+    pan_x,
+    pan_y,
+    line_width,
+    dark_factor=0.0,
+    light_factor=0.0,
+):
+    """Render stitches with their source color and a uniform width."""
+    height, width, _ = buf.shape
+    effective_width = min(
+        MAX_RENDER_LINE_WIDTH_PX,
+        max(1.0, line_width * zoom),
+    )
+    radius = effective_width * 0.5
+    radius_int = max(1, int(np.ceil(radius)))
+
+    for index in range(visible_count):
+        x1 = stitches[index, 0] * zoom + pan_x
+        y1 = stitches[index, 1] * zoom + pan_y
+        x2 = stitches[index, 2] * zoom + pan_x
+        y2 = stitches[index, 3] * zoom + pan_y
+        dx = x2 - x1
+        dy = y2 - y1
+        length = np.sqrt(dx * dx + dy * dy)
+        if length <= 0.0:
+            continue
+        steps = max(1, int(np.ceil(length)))
+        red = int(stitches[index, 4])
+        green = int(stitches[index, 5])
+        blue = int(stitches[index, 6])
+        for step in range(steps + 1):
+            ratio = step / steps
+            center_x = int(x1 + dx * ratio)
+            center_y = int(y1 + dy * ratio)
+            for offset_y in range(-radius_int, radius_int + 1):
+                for offset_x in range(-radius_int, radius_int + 1):
+                    if offset_x * offset_x + offset_y * offset_y > radius * radius:
+                        continue
+                    pixel_x = center_x + offset_x
+                    pixel_y = center_y + offset_y
+                    if 0 <= pixel_x < width and 0 <= pixel_y < height:
+                        buf[pixel_y, pixel_x, 0] = red
+                        buf[pixel_y, pixel_x, 1] = green
+                        buf[pixel_y, pixel_x, 2] = blue

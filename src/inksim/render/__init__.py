@@ -10,4 +10,8 @@ from .registry import (
 	preview_stitches,
 	render_stitches,
 )
-from .stitches import render_realistic_numba, render_shaded_numba
+from .stitches import (
+	render_realistic_numba,
+	render_shaded_numba,
+	render_simple_numba,
+)

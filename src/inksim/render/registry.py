@@ -5,7 +5,11 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .stitches import render_realistic_numba, render_shaded_numba
+from .stitches import (
+    render_realistic_numba,
+    render_shaded_numba,
+    render_simple_numba,
+)
 
 
 @dataclass(frozen=True)
@@ -18,6 +22,7 @@ class StitchRenderer:
 
 
 STITCH_RENDERERS = (
+    StitchRenderer("simple", "Simple", render_simple_numba),
     StitchRenderer("shaded", "Shaded", render_shaded_numba),
     StitchRenderer("realistic", "Realistic", render_realistic_numba),
 )
@@ -39,7 +44,7 @@ def render_stitches(
 ):
     """Render stitches using a registered renderer."""
     renderer = RENDERERS_BY_KEY[renderer_key]
-    if renderer_key == "realistic":
+    if renderer_key in ("realistic", "simple"):
         renderer.render(
             buffer,
             stitches,
