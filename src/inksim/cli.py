@@ -58,20 +58,26 @@ def main():
     parser.add_argument(
         "--simple-png",
         dest="export_png",
+        nargs="?",
+        const="",
         metavar="PATH",
-        help="Export a clean print PNG and exit",
+        help="Export a clean print PNG and exit (default: INPUT-simple.png)",
     )
     parser.add_argument(
         "--png",
         dest="export_shaded_png",
+        nargs="?",
+        const="",
         metavar="PATH",
-        help="Export a shaded print PNG and exit",
+        help="Export a shaded print PNG and exit (default: INPUT.png)",
     )
     parser.add_argument(
         "--icon",
         dest="export_icon",
+        nargs="?",
+        const="",
         metavar="PATH",
-        help="Export a clean 256px preview PNG and exit",
+        help="Export a 256px preview PNG and exit (default: INPUT_thumb.png)",
     )
     parser.add_argument(
         "--dpi",
@@ -94,19 +100,19 @@ def main():
     )
     args = parser.parse_args()
 
-    export_paths = [
-        path for path in (
+    export_values = [
+        value for value in (
             args.export_png,
             args.export_shaded_png,
             args.export_icon,
         )
-        if path
+        if value is not None
     ]
-    if len(export_paths) > 1:
+    if len(export_values) > 1:
         parser.error("choose only one export option at a time")
     if args.dpi <= 0:
         parser.error("DPI must be greater than zero")
-    export_requested = bool(export_paths)
+    export_requested = bool(export_values)
     if export_requested and not args.input_file:
         parser.error(
             "an input embroidery file is required for export; "
@@ -117,6 +123,27 @@ def main():
         parser.error(f"input path not found: {args.input_file}")
     if export_requested and input_path and not input_path.is_file():
         parser.error("an input embroidery file is required for export")
+
+    if export_requested:
+        if args.export_png is not None:
+            export_path = (
+                input_path.parent / f"{input_path.stem}-simple.png"
+                if not args.export_png
+                else Path(args.export_png)
+            )
+        elif args.export_shaded_png is not None:
+            export_path = (
+                input_path.parent / f"{input_path.stem}.png"
+                if not args.export_shaded_png
+                else Path(args.export_shaded_png)
+            )
+        else:
+            export_path = (
+                input_path.parent / f"{input_path.stem}_thumb.png"
+                if not args.export_icon
+                else Path(args.export_icon)
+            )
+        export_path = export_path.with_suffix(".png")
 
     window_size = args.size
     window_position = args.position
@@ -133,7 +160,6 @@ def main():
         batch=export_requested,
     )
     if export_requested:
-        export_path = export_paths[0]
         success = frame.ExportPng(
             export_path,
             icon=bool(args.export_icon),

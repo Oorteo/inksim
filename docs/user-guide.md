@@ -49,19 +49,24 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 InkSim supports three non-interactive export modes:
 
 ```bash
+uv run inksim design.pes --simple-png
+uv run inksim design.pes --png
+uv run inksim design.pes --icon
+
+# Or provide an explicit output path
 uv run inksim design.pes --simple-png output.png
 uv run inksim design.pes --png shaded-output.png
 uv run inksim design.pes --icon preview.png
 ```
 
-| Option                    | Description                                 |
-| ------------------------- | ------------------------------------------- |
-| `--simple-png PATH`       | Flat PNG at the design's physical size      |
-| `--png PATH`              | Shaded PNG at the design's physical size    |
-| `--icon PATH`             | 256 x 256 transparent preview               |
-| `--dpi N`                 | DPI for print-sized exports; default is 300 |
-| `--bg transparent\|white` | Select the export background                |
-| `--grid`                  | Add a 10 mm grid to the exported image      |
+| Option                    | Description                                          |
+| ------------------------- | ---------------------------------------------------- |
+| `--simple-png [PATH]`     | Flat PNG; defaults to `INPUT-simple.png`             |
+| `--png [PATH]`            | Shaded PNG; defaults to `INPUT.png`                  |
+| `--icon [PATH]`           | 256 x 256 preview PNG; defaults to `INPUT_thumb.png` |
+| `--dpi N`                 | DPI for print-sized exports; default is 300          |
+| `--bg transparent\|white` | Select the export background                         |
+| `--grid`                  | Add a 10 mm grid to the exported image               |
 
 ## Supported Files
 

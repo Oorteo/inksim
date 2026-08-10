@@ -167,17 +167,25 @@ class Frame(QMainWindow):
         if dialog.exec() == QDialog.Accepted:
             self.OpenFile(dialog.GetPath())
 
-    def _choose_export_path(self, title):
+    def _default_export_name(self, suffix):
+        base_name = self.current_file_path.stem if self.current_file_path else "inksim"
+        return f"{base_name}{suffix}"
+
+    def _choose_export_path(self, title, default_name, file_filter, extension):
         export_directory = Path(self.last_directory or Path.cwd())
         if self.current_file_path is not None:
             export_directory = self.current_file_path.parent
+        default_path = export_directory / default_name
         path, _ = QFileDialog.getSaveFileName(
             self,
             title,
-            str(export_directory),
-            "PNG files (*.png)",
+            str(default_path),
+            file_filter,
         )
-        return Path(path).with_suffix(".png") if path else None
+        if not path:
+            return None
+        selected_path = Path(path)
+        return selected_path.with_suffix(extension)
 
     def ExportPng(self, path, icon=False, dpi=300, background="transparent", grid=False, shaded=False):
         if self.viewer.stitches_np.shape[0] == 0:
@@ -200,15 +208,30 @@ class Frame(QMainWindow):
         return True
 
     def ExportPrintPng(self, event=None):
-        path = self._choose_export_path("Export PNG for print")
+        path = self._choose_export_path(
+            "Export PNG for print",
+            self._default_export_name("-simple.png"),
+            "PNG files (*.png)",
+            ".png",
+        )
         if path: self.ExportPng(path, dpi=300)
 
     def ExportShadedPng(self, event=None):
-        path = self._choose_export_path("Export shaded PNG for print")
+        path = self._choose_export_path(
+            "Export shaded PNG for print",
+            self._default_export_name(".png"),
+            "PNG files (*.png)",
+            ".png",
+        )
         if path: self.ExportPng(path, dpi=300, shaded=True)
 
     def ExportIconPng(self, event=None):
-        path = self._choose_export_path("Export preview PNG")
+        path = self._choose_export_path(
+            "Export preview PNG",
+            self._default_export_name("_thumb.png"),
+            "PNG files (*.png)",
+            ".png",
+        )
         if path: self.ExportPng(path, icon=True, dpi=96)
 
     def OpenFile(self, path):
