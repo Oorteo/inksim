@@ -182,18 +182,13 @@ def main():
     splash.show_centered()
     splash.set_progress(10, "Preparing InkSim...")
     first_input = input_paths[0] if input_paths else None
-    if first_input is not None:
-        splash.set_progress(20, f"Loading {first_input.name}...")
     frame = Frame(
-        initial_file=str(first_input) if first_input and first_input.is_file() else None,
-        initial_directory=(
-            str(first_input) if first_input and first_input.is_dir() else None
-        ),
         fullscreen=args.fullscreen,
         window_size=window_size,
         window_position=window_position,
         autoplay=args.play,
         batch=export_requested,
+        defer_show=True,
     )
     if export_requested:
         success = True
@@ -229,6 +224,19 @@ def main():
         frame.close()
         splash.close_after()
         raise SystemExit(0 if success else 1)
+    frame.show_initial_window(
+        False,
+        str(first_input) if first_input and first_input.is_dir() else None,
+    )
+    app.processEvents()
+    if first_input is not None and first_input.is_file():
+        splash.set_progress(20, f"Loading {first_input.name}...")
+        if not frame.OpenFile(str(first_input)):
+            frame.close()
+            splash.close_after()
+            raise SystemExit(1)
+        if args.play:
+            frame.viewer.ToggleAutoPlay(forward=True)
     splash.set_progress(100, "Ready")
     splash.close_after()
     app.exec()

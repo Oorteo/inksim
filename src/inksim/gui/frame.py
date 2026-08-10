@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from PIL import Image, ImageFilter
-from PySide6.QtCore import QSettings, QTimer
+from PySide6.QtCore import QSettings, Qt, QTimer
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import (
     QDialog,
@@ -24,12 +24,19 @@ class Frame(QMainWindow):
 
     def __init__(self, initial_file=None, initial_directory=None,
                  fullscreen=False, window_size=None, window_position=None,
-                 autoplay=False, batch=False):
+                 autoplay=False, batch=False, defer_show=False):
         super().__init__()
+        self._deferred_startup = defer_show
+        if defer_show:
+            self.setAttribute(Qt.WA_DontShowOnScreen)
+            self.setUpdatesEnabled(False)
         self.setWindowTitle(APP_TITLE)
         self.resize(*(window_size or (1200, 980)))
         self.setAcceptDrops(True)
         self.is_fullscreen = False
+        self._startup_fullscreen = fullscreen
+        self._startup_window_size = window_size
+        self._startup_window_position = window_position
         self._should_maximize_default = not window_size and not fullscreen
         self.config = QSettings(APP_TITLE, APP_TITLE)
         self.last_directory = self.config.value("last_directory", "", str)
@@ -65,9 +72,17 @@ class Frame(QMainWindow):
         if initial_file_loaded:
             self.setWindowTitle(f"{APP_TITLE} - {Path(initial_file).name} - "
                                 f"{self.viewer.stitches_np.shape[0]} sts")
-        if batch:
+        if batch or defer_show:
             return
-        if fullscreen:
+        self.show_initial_window(autoplay, initial_directory)
+
+    def show_initial_window(self, autoplay=False, initial_directory=None):
+        """Show the fully initialized window after optional startup work."""
+        if self._deferred_startup:
+            self.setAttribute(Qt.WA_DontShowOnScreen, False)
+            self.setUpdatesEnabled(True)
+            self._deferred_startup = False
+        if self._startup_fullscreen:
             self.is_fullscreen = True
             self.mode_status.hide()
             self.show()
