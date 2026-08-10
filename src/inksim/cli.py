@@ -11,6 +11,7 @@ from PySide6.QtWidgets import QApplication
 
 from .constants import APP_TITLE
 from .gui.frame import Frame
+from .gui.splash import SplashScreen
 
 
 def _parse_pair(value, name, separator):
@@ -177,7 +178,12 @@ def main():
     window_size = args.size
     window_position = args.position
     app = QApplication.instance() or QApplication([])
+    splash = SplashScreen()
+    splash.show_centered()
+    splash.set_progress(10, "Preparing InkSim...")
     first_input = input_paths[0] if input_paths else None
+    if first_input is not None:
+        splash.set_progress(20, f"Loading {first_input.name}...")
     frame = Frame(
         initial_file=str(first_input) if first_input and first_input.is_file() else None,
         initial_directory=(
@@ -191,7 +197,14 @@ def main():
     )
     if export_requested:
         success = True
-        for input_path, export_path in zip(input_paths, export_paths):
+        total_inputs = len(input_paths)
+        for index, (input_path, export_path) in enumerate(
+            zip(input_paths, export_paths), 1
+        ):
+            splash.set_progress(
+                20 + int((index - 1) / total_inputs * 70),
+                f"Reading {input_path.name} ({index}/{total_inputs})...",
+            )
             if not frame.OpenFile(str(input_path)):
                 success = False
                 print(f"Failed to load {input_path}", file=sys.stderr)
@@ -209,8 +222,15 @@ def main():
             else:
                 success = False
                 print(f"Failed to export {input_path}", file=sys.stderr)
+            splash.set_progress(
+                20 + int(index / total_inputs * 80),
+                f"Finished {input_path.name} ({index}/{total_inputs})",
+            )
         frame.close()
+        splash.close_after()
         raise SystemExit(0 if success else 1)
+    splash.set_progress(100, "Ready")
+    splash.close_after()
     app.exec()
 
 
