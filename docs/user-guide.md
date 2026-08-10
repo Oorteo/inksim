@@ -77,7 +77,8 @@ When several input files are supplied, omitting the output path creates one
 PNG next to each input. An explicit output path must be an existing directory
 and is used as the destination directory for all generated PNGs. Existing
 files are never overwritten without confirmation; use `-y` or `--yes` for
-unattended batch jobs. The GUI currently opens only the first supplied input.
+unattended batch jobs. Batch exports stay console-only and report progress as
+`[n/N]`; the GUI currently opens only the first supplied input.
 
 ## Supported Files
 

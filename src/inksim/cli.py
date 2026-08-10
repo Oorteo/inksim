@@ -178,9 +178,6 @@ def main():
     window_size = args.size
     window_position = args.position
     app = QApplication.instance() or QApplication([])
-    splash = SplashScreen()
-    splash.show_centered()
-    splash.set_progress(10, "Preparing InkSim...")
     first_input = input_paths[0] if input_paths else None
     frame = Frame(
         fullscreen=args.fullscreen,
@@ -193,13 +190,12 @@ def main():
         for index, (input_path, export_path) in enumerate(
             zip(input_paths, export_paths), 1
         ):
-            splash.set_progress(
-                20 + int((index - 1) / total_inputs * 70),
-                f"Reading {input_path.name} ({index}/{total_inputs})...",
-            )
             if not frame.OpenFile(str(input_path)):
                 success = False
-                print(f"Failed to load {input_path}", file=sys.stderr)
+                print(
+                    f"[{index}/{total_inputs}] Failed to load {input_path}",
+                    file=sys.stderr,
+                )
                 continue
             exported = frame.ExportPng(
                 export_path,
@@ -210,17 +206,21 @@ def main():
                 shaded=args.export_shaded_png is not None,
             )
             if exported:
-                print(f"Exported {input_path} -> {export_path}")
+                print(
+                    f"[{index}/{total_inputs}] Exported "
+                    f"{input_path} -> {export_path}"
+                )
             else:
                 success = False
-                print(f"Failed to export {input_path}", file=sys.stderr)
-            splash.set_progress(
-                20 + int(index / total_inputs * 80),
-                f"Finished {input_path.name} ({index}/{total_inputs})",
-            )
+                print(
+                    f"[{index}/{total_inputs}] Failed to export {input_path}",
+                    file=sys.stderr,
+                )
         frame.close()
-        splash.close_after()
         raise SystemExit(0 if success else 1)
+    splash = SplashScreen()
+    splash.show_centered()
+    splash.set_progress(10, "Preparing InkSim...")
     frame.show_initial_window(
         False,
         str(first_input) if first_input and first_input.is_dir() else None,
