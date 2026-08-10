@@ -94,6 +94,7 @@ class Frame(QMainWindow):
         self.gridItem = self._action(file_menu, "Show 1cm grid", self.OnToggleGrid, "G", True)
         self.gridItem.setChecked(True)
         self.realisticItem = self._action(file_menu, "Realistic thread render", self.OnToggleRealistic, "R", True)
+        self._action(file_menu, "Choose stitch renderer...", self.viewer.SelectRenderer)
         self._action(file_menu, "Help", self.viewer.ShowHelp, "H")
         file_menu.addSeparator()
         self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.RotateDesign(-1))
@@ -148,10 +149,7 @@ class Frame(QMainWindow):
         self.viewer.RefreshModeIndicators()
 
     def OnToggleRealistic(self, checked):
-        self.viewer.show_realistic = checked
-        self.viewer.need_redraw = True
-        self.viewer.update()
-        self.viewer.RefreshModeIndicators()
+        self.viewer.SetRenderer("realistic" if checked else "shaded")
 
     def OnOpen(self):
         dialog = EmbroideryOpenDialog(self, self.last_directory, self.current_file_path)

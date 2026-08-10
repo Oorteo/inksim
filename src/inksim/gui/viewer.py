@@ -26,12 +26,12 @@ from PySide6.QtWidgets import (
 
 from ..constants import *
 from ..render import (
+    RENDERERS_BY_KEY,
     calculate_stitch_density_numba,
     render_density_numba,
     render_fabric_numba,
     render_grid_numba,
-    render_realistic_numba,
-    render_shaded_numba,
+    render_stitches,
 )
 from .help import show_help
 from .settings import show_settings
@@ -64,6 +64,7 @@ class EmbroideryViewerPanel(QWidget):
         self.show_grid = True
         self.show_stitches = True
         self.show_realistic = False
+        self.active_renderer = "shaded"
         self.show_density = False
         self.show_jumps = False
         self.risky_jumps_only = False
@@ -489,7 +490,9 @@ class EmbroideryViewerPanel(QWidget):
     def ToggleDisplayMode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
         if mode == "R":
-            self.show_realistic = not self.show_realistic
+            self.SetRenderer(
+                "shaded" if self.active_renderer == "realistic" else "realistic"
+            )
             frame = self.window()
             if hasattr(frame, "realisticItem"):
                 frame.realisticItem.setChecked(self.show_realistic)
@@ -511,6 +514,27 @@ class EmbroideryViewerPanel(QWidget):
         self.RefreshModeIndicators()
         self.need_redraw = True
         self.update()
+
+    def SetRenderer(self, renderer_key):
+        """Select a registered stitch renderer and refresh the canvas."""
+        if renderer_key not in RENDERERS_BY_KEY:
+            raise ValueError(f"unknown stitch renderer: {renderer_key}")
+        self.active_renderer = renderer_key
+        self.show_realistic = renderer_key == "realistic"
+        frame = self.window()
+        if hasattr(frame, "realisticItem"):
+            frame.realisticItem.setChecked(self.show_realistic)
+        self.need_redraw = True
+        self.update()
+        self.RefreshModeIndicators()
+
+    def SelectRenderer(self):
+        """Open the renderer picker dialog."""
+        from .renderer_picker import RendererPickerDialog
+
+        dialog = RendererPickerDialog(self, self.active_renderer)
+        if dialog.exec():
+            self.SetRenderer(dialog.selected_renderer)
 
     def RefreshModeIndicators(self):
         if self.mode_panel is not None:
@@ -770,40 +794,25 @@ class EmbroideryViewerPanel(QWidget):
             )
             dc.end()
             return
-        use_shaded = self.zoom > 1.2
         buf = np.full((h, w, 3), 255, dtype=np.uint8)
-        use_realistic = self.show_realistic and self.zoom > 1.2
-        if use_realistic:
+        if self.active_renderer == "realistic" and self.zoom > 1.2:
             render_fabric_numba(buf, self.zoom)
         if self.show_grid:
             render_grid_numba(buf, self.zoom, self.pan_x, self.pan_y)
         if self.show_stitches and self.stitches_np.shape[
                 0] > 0 and self.visible_count > 0:
-            if use_realistic:
-                render_realistic_numba(
-                    buf,
-                    self.stitches_np,
-                    self.visible_count,
-                    self.zoom,
-                    self.pan_x,
-                    self.pan_y,
-                    self.line_width,
-                    self.dark_factor,
-                    self.light_factor,
-                )
-            else:
-                render_shaded_numba(
-                    buf,
-                    self.stitches_np,
-                    self.visible_count,
-                    self.zoom,
-                    self.pan_x,
-                    self.pan_y,
-                    use_shaded,
-                    self.line_width,
-                    self.dark_factor,
-                    self.light_factor,
-                )
+            render_stitches(
+                self.active_renderer,
+                buf,
+                self.stitches_np,
+                self.visible_count,
+                self.zoom,
+                self.pan_x,
+                self.pan_y,
+                self.line_width,
+                self.dark_factor,
+                self.light_factor,
+            )
         if self.show_density and len(self.stitch_points_np) > 0:
             render_density_numba(
                 buf,
