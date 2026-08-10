@@ -3,14 +3,24 @@ import time
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPen, QPixmap
+from PySide6.QtGui import (
+    QColor,
+    QFont,
+    QImage,
+    QKeySequence,
+    QPainter,
+    QPen,
+    QPixmap,
+    QShortcut,
+    QTextTable,
+)
 from PySide6.QtWidgets import (
     QApplication,
     QDialog,
+    QGridLayout,
     QMessageBox,
     QPushButton,
     QTextBrowser,
-    QVBoxLayout,
     QWidget,
 )
 
@@ -506,8 +516,10 @@ class EmbroideryViewerPanel(QWidget):
         if self.mode_panel is not None:
             self.mode_panel.RefreshIndicators()
 
-    def _show_markdown_dialog(self, key, title, markdown_content, width=1050, height=700):
-        """Helper to show Markdown content in a resizable dialog."""
+    def _show_markdown_columns_dialog(
+        self, key, title, sections, columns=3, width=1050, height=700
+    ):
+        """Show Markdown sections side by side in a responsive Qt grid."""
         dialog = getattr(self, key)
         if dialog is not None:
             dialog.close()
@@ -515,33 +527,48 @@ class EmbroideryViewerPanel(QWidget):
         dlg = QDialog(self)
         dlg.setWindowTitle(title)
         dlg.resize(width, height)
-        sizer = QVBoxLayout(dlg)
-        markdown_win = QTextBrowser(dlg)
-        markdown_win.setMarkdown(markdown_content)
-        sizer.addWidget(markdown_win)
-        ok_btn = QPushButton("OK", dlg)
-        ok_btn.setDefault(True)
-        ok_btn.clicked.connect(dlg.close)
-        sizer.addWidget(ok_btn, alignment=Qt.AlignRight)
-        dlg.adjustSize()
+        grid = QGridLayout(dlg)
+        grid.setSpacing(12)
+        for index, (heading, markdown) in enumerate(sections):
+            browser = QTextBrowser(dlg)
+            browser.document().setDefaultStyleSheet(
+                "table { border: none; margin-top: 8px; margin-bottom: 8px; }"
+                "th, td { border: none; padding: 6px 12px; }"
+                "th { font-weight: bold; color: #30343b; }"
+                "code { background-color: #f4f4f4; padding: 2px 4px; }"
+            )
+            browser.setMarkdown(f"# {heading}\n\n{markdown}")
+            for child_frame in browser.document().rootFrame().childFrames():
+                if isinstance(child_frame, QTextTable):
+                    table_format = child_frame.format()
+                    table_format.setBorder(0)
+                    table_format.setCellPadding(6)
+                    child_frame.setFormat(table_format)
+            browser.setFrameShape(QTextBrowser.NoFrame)
+            grid.addWidget(browser, index // columns, index % columns)
+        close_btn = QPushButton("Close", dlg)
+        close_btn.setDefault(True)
+        close_btn.clicked.connect(dlg.close)
+        close_btn.setFocus()
+        grid.addWidget(close_btn, (len(sections) + columns - 1) // columns, 0,
+                        1, columns, alignment=Qt.AlignRight)
+        for sequence in ("Esc", "Return", "Space"):
+            shortcut = QShortcut(QKeySequence(sequence), dlg)
+            shortcut.setContext(Qt.WindowShortcut)
+            shortcut.activated.connect(dlg.close)
         dlg.setMinimumSize(width, height)
         dlg.move(self.window().geometry().center() - dlg.rect().center())
         def on_close(event):
             setattr(self, key, None)
             event.accept()
-
         dlg.closeEvent = on_close
         def on_dialog_key(event):
             key_code = event.key()
-            closes_dialog = (
-                (key == "help_dialog" and key_code in (ord("H"), ord("h")))
-                or (key == "settings_dialog" and key_code in (ord("I"), ord("i")))
-            )
-            if closes_dialog:
+            shortcut = "H" if key == "help_dialog" else "I"
+            if key_code in (ord(shortcut), ord(shortcut.lower())):
                 dlg.close()
                 return
             event.ignore()
-
         dlg.keyPressEvent = on_dialog_key
         setattr(self, key, dlg)
         dlg.show()

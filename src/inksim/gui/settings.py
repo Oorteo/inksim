@@ -17,15 +17,14 @@ def _jump_state(viewer):
     return "risky only" if viewer.risky_jumps_only else "all"
 
 
-def settings_markdown(viewer):
-    """Build a Markdown snapshot of the current viewer state."""
+def settings_sections(viewer):
+    """Build Markdown sections for the current viewer state."""
     total = viewer.stitches_np.shape[0]
     min_x, min_y, max_x, max_y = viewer.bounds
     width = max_x - min_x
     height = max_y - min_y
-    return f"""# InkSim Settings
-
-## Design
+    return (
+        ("Design", f"""
 
 | Property | Value |
 | --- | --- |
@@ -34,8 +33,8 @@ def settings_markdown(viewer):
 | Bounds | {width:.1f} x {height:.1f} mm |
 | Minimum | {min_x:.1f}, {min_y:.1f} |
 | Maximum | {max_x:.1f}, {max_y:.1f} |
-
-## Viewport
+"""),
+    ("Viewport", f"""
 
 | Property | Value |
 | --- | --- |
@@ -48,16 +47,16 @@ def settings_markdown(viewer):
 | Density | {_state(viewer.show_density)} |
 | Needle | {_state(viewer.show_needle)} |
 | Gradient | {_state(viewer.zoom > 1.2)} |
-
-## Density
+"""),
+    ("Density", f"""
 
 | Property | Value |
 | --- | --- |
 | Radius | {DENSITY_RADIUS_MM:.1f} mm |
 | Warning | {DENSITY_WARNING_PER_MM2:.1f} /mm^2 |
 | Critical | {DENSITY_CRITICAL_PER_MM2:.1f} /mm^2 |
-
-## Rendering
+"""),
+    ("Rendering", f"""
 
 | Property | Value |
 | --- | --- |
@@ -65,8 +64,8 @@ def settings_markdown(viewer):
 | Dark factor | {viewer.dark_factor:.2f} |
 | Light factor | {viewer.light_factor:.2f} |
 | Shading step | {viewer.shading_step:.2f} |
-
-## Playback
+"""),
+    ("Playback", f"""
 
 | Property | Value |
 | --- | --- |
@@ -75,15 +74,17 @@ def settings_markdown(viewer):
 | Timer step | {viewer.play_step} |
 | Direction | {"forward" if viewer._last_dir > 0 else "backward"} |
 | Playing | {_state(viewer.is_playing)} |
-"""
+"""),
+    )
 
 
 def show_settings(viewer):
     """Show a Markdown snapshot of the current viewer state."""
-    viewer._show_markdown_dialog(
+    viewer._show_markdown_columns_dialog(
         "settings_dialog",
         "Settings - InkSim",
-        settings_markdown(viewer),
-        width=900,
-        height=700,
+        settings_sections(viewer),
+        columns=5,
+        width=1100,
+        height=560,
     )

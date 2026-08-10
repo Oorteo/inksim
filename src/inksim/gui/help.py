@@ -1,16 +1,15 @@
 """Markdown help content for the InkSim viewer."""
 
-HELP_MARKDOWN = """# InkSim Help
-
-## Mouse
+HELP_SECTIONS = (
+    ("Mouse", """
 
 | Action | Result |
 | --- | --- |
 | Wheel | Zoom |
 | Drag | Pan |
 | Click timeline | Seek stitch |
-
-## Playback
+"""),
+    ("Playback", """
 
 | Key | Result |
 | --- | --- |
@@ -22,8 +21,8 @@ HELP_MARKDOWN = """# InkSim Help
 | Home / End | First or last stitch |
 | Space | Play or pause |
 | Esc | Stop playback |
-
-## View
+"""),
+    ("View", """
 
 | Key | Result |
 | --- | --- |
@@ -39,23 +38,25 @@ HELP_MARKDOWN = """# InkSim Help
 | R | Toggle realistic rendering |
 | H | Toggle help |
 | I | Toggle settings |
-
-## Rendering
+"""),
+    ("Rendering", """
 
 | Key | Result |
 | --- | --- |
 | + / - | Change thread width |
 | [ / ] | Adjust dark shading |
 | Shift + [ / ] | Adjust light shading |
-"""
+"""),
+)
 
 
 def show_help(viewer):
     """Show the viewer help dialog."""
-    viewer._show_markdown_dialog(
+    viewer._show_markdown_columns_dialog(
         "help_dialog",
         "Help - InkSim",
-        HELP_MARKDOWN,
-        width=900,
-        height=650,
+        HELP_SECTIONS,
+        columns=4,
+        width=1100,
+        height=500,
     )
