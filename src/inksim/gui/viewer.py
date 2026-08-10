@@ -23,6 +23,8 @@ from ..render import (
     render_realistic_numba,
     render_shaded_numba,
 )
+from .help import show_help
+from .settings import show_settings
 
 
 class EmbroideryViewerPanel(QWidget):
@@ -504,8 +506,8 @@ class EmbroideryViewerPanel(QWidget):
         if self.mode_panel is not None:
             self.mode_panel.RefreshIndicators()
 
-    def _show_html_dialog(self, key, title, html_content, width=1050, height=700):
-        """Helper to show HTML content in a resizable dialog with HtmlWindow."""
+    def _show_markdown_dialog(self, key, title, markdown_content, width=1050, height=700):
+        """Helper to show Markdown content in a resizable dialog."""
         dialog = getattr(self, key)
         if dialog is not None:
             dialog.close()
@@ -514,14 +516,9 @@ class EmbroideryViewerPanel(QWidget):
         dlg.setWindowTitle(title)
         dlg.resize(width, height)
         sizer = QVBoxLayout(dlg)
-        html_win = QTextBrowser(dlg)
-        styled_html = f"""
-        <html><head></head><body>
-        {html_content}
-        </body></html>
-        """
-        html_win.setHtml(styled_html)
-        sizer.addWidget(html_win)
+        markdown_win = QTextBrowser(dlg)
+        markdown_win.setMarkdown(markdown_content)
+        sizer.addWidget(markdown_win)
         ok_btn = QPushButton("OK", dlg)
         ok_btn.setDefault(True)
         ok_btn.clicked.connect(dlg.close)
@@ -550,143 +547,10 @@ class EmbroideryViewerPanel(QWidget):
         dlg.show()
 
     def ShowHelp(self):
-        """Show keyboard and mouse controls in a compact 2-column HtmlWindow."""
-        # <!-- <div align="center"><font size="10"><b>{APP_TITLE} - Help</b></font></div> -->
-
-        html = """
-        <table class="layout" valign="top"><tr valign="top">
-        <td class="col" valign="top">
-            <font size="5"><b>Mouse</b></font><br>
-            <table class="inner" valign="top">
-                <tr><td><b>Wheel</b></td><td>Zoom</td></tr>
-                <tr><td><b>Drag</b></td><td>Pan</td></tr>
-                <tr><td nowrap="nowrap"><b>Click bar</b></td><td nowrap="nowrap">Seek stitch</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Playback</b></font><br>
-            <table class="inner" valign="top">
-                <tr><td><b>Right/Left</b></td><td nowrap="nowrap">Speed up/down (playing)</td></tr>
-                <tr><td><b></b></td><td nowrap="nowrap">Next/prev N stitches</td></tr>
-                <tr><td><b>Alt+Right/Left</b></td><td>Next/prev 1 stitch</td></tr>
-                <tr><td><b>Shift+Right/Left</b></td><td>Next/prev command</td></tr>
-                <tr><td><b>Ctrl+Right/Left</b></td><td>Next/prev color</td></tr>
-                <tr><td><b>Up/Down</b></td><td>Fast seek 10x</td></tr>
-                <tr><td><b>Home/End</b></td><td>First/last stitch</td></tr>
-                <tr><td><b>Space</b></td><td>Play/pause</td></tr>
-                <tr><td><b>Esc</b></td><td>Stop</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>View</b></font><br>
-            <table class="inner" valign="top">
-                <tr><td><b>C</b></td><td>Center design</td></tr>
-                <tr><td><b>F</b></td><td>Fit to window</td></tr>
-                <tr><td><b>F11</b></td><td>Fullscreen</td></tr>
-                <tr><td><b>1</b></td><td>Physical 1:1 size</td></tr>
-                <tr><td><b>V</b></td><td>Toggle embroidery</td></tr>
-                <tr><td><b>G</b></td><td>Toggle grid</td></tr>
-                <tr><td><b>N</b></td><td>Toggle needle</td></tr>
-                <tr><td><b>J</b></td><td>Toggle jumps (off->all->risky)</td></tr>
-                <tr><td><b>X</b></td><td>Toggle density map</td></tr>
-                <tr><td><b>R</b></td><td>Toggle realistic 2.5D</td></tr>
-                <tr><td><b>H</b></td><td>Toggle help</td></tr>
-                <tr><td><b>I</b></td><td>Toggle settings</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Rendering</b></font><br>
-            <table class="inner" valign="top">
-                <tr><td><b>+/-</b></td><td nowrap="nowrap">Thread width</td></tr>
-                <tr><td><b>[/]</b></td><td nowrap="nowrap">Dark shading</td></tr>
-                <tr><td><b>Shift+[/]</b></td><td nowrap="nowrap">Light shading</td></tr>
-            </table>
-        </td>
-        </tr></table>
-        """
-        self._show_html_dialog("help_dialog", "Help - " + APP_TITLE,
-                               html,
-                               width=1050,
-                               height=580)
+        show_help(self)
 
     def ShowSettings(self):
-        """Show viewer state in a compact 2-column HtmlWindow without scrolling."""
-        total = self.stitches_np.shape[0]
-        min_x, min_y, max_x, max_y = self.bounds
-        bw = max_x - min_x
-        bh = max_y - min_y
-        density_mode = "on" if self.show_density else "off"
-        jump_mode = "risky only" if self.risky_jumps_only else "all" if self.show_jumps else "off"
-
-        def badge(on):
-            cls = "badge-on" if on else "badge-off"
-            txt = "ON" if on else "OFF"
-            return f'<span class="badge {cls}">{txt}</span>'
-
-        def badge_text(txt, is_on):
-            cls = "badge-on" if is_on else "badge-off"
-            return f'<span class="badge {cls}">{txt}</span>'
-
-        # <font size="13"><b>{APP_TITLE} - Settings</b></font><br>
-        html = f"""
-        <table class="layout"><tr>
-        <td class="col" valign="top">
-            <font size="5"><b>Design</b></font><br>
-            <table class="inner">
-                <tr><td><b>Stitches</b></td><td>{self.visible_count} / {total}</td></tr>
-                <tr><td><b>Colors</b></td><td>{self.color_count}</td></tr>
-                <tr><td><b>Bounds</b></td><td nowrap="nowrap">{bw:.1f} x {bh:.1f} mm</td></tr>
-                <tr><td><b>Min</b></td><td nowrap="nowrap">{min_x:.1f}, {min_y:.1f}</td></tr>
-                <tr><td><b>Max</b></td><td nowrap="nowrap">{max_x:.1f}, {max_y:.1f}</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Viewport</b></font><br>
-            <table class="inner">
-                <tr><td><b>Zoom</b></td><td>{self.zoom:.3f}x</td></tr>
-                <tr><td><b>Pan</b></td><td nowrap="nowrap">{self.pan_x:.0f}, {self.pan_y:.0f} px</td></tr>
-                <tr><td><b>Grid</b></td><td>{badge(self.show_grid)}</td></tr>
-                <tr><td><b>Embroidery</b></td><td>{badge(self.show_stitches)}</td></tr>
-                <tr><td><b>Realistic</b></td><td>{badge(self.show_realistic)}</td></tr>
-                <tr><td><b>Jumps</b></td><td>{badge_text(jump_mode, self.show_jumps)}</td></tr>
-                <tr><td><b>Density</b></td><td>{badge_text(density_mode, self.show_density)}</td></tr>
-                <tr><td><b>Needle</b></td><td>{badge(self.show_needle)}</td></tr>
-                <tr><td><b>Gradient</b></td><td>{badge(self.zoom > 1.2)}</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Density</b></font><br>
-            <table class="inner">
-                <tr><td><b>Radius</b></td><td nowrap="nowrap">{DENSITY_RADIUS_MM:.1f} mm</td></tr>
-                <tr><td><b>Warning</b></td><td nowrap="nowrap">{DENSITY_WARNING_PER_MM2:.1f} /mm²</td></tr>
-                <tr><td><b>Critical</b></td><td nowrap="nowrap">{DENSITY_CRITICAL_PER_MM2:.1f} /mm²</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Rendering</b></font><br>
-            <table class="inner">
-                <tr><td nowrap="nowrap"><b>Line width</b></td><td nowrap="nowrap">{self.line_width:.2f} mm</td></tr>
-                <tr><td nowrap="nowrap"><b>Dark factor</b></td><td>{self.dark_factor:.2f}</td></tr>
-                <tr><td nowrap="nowrap"><b>Light factor</b></td><td>{self.light_factor:.2f}</td></tr>
-                <tr><td nowrap="nowrap"><b>Shading step</b></td><td>{self.shading_step:.2f}</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Playback</b></font><br>
-            <table class="inner">
-                <tr><td><b>Step size</b></td><td>{self.step_size}</td></tr>
-                <tr><td><b>Interval</b></td><td nowrap="nowrap">{self.play_speed} ms</td></tr>
-                <tr><td nowrap="nowrap"><b>Timer step</b></td><td>{self.play_step}</td></tr>
-                <tr><td><b>Direction</b></td><td>{'forward' if self._last_dir > 0 else 'backward'}</td></tr>
-                <tr><td><b>Playing</b></td><td>{badge(self.is_playing)}</td></tr>
-            </table>
-        </td>
-        </tr></table>
-        """
-        self._show_html_dialog("settings_dialog", "Settings - " + APP_TITLE,
-                               html,
-                               width=1050,
-                               height=620)
+        show_settings(self)
 
     def SetStepSize(self, size):
         self.step_size = max(1, size)
