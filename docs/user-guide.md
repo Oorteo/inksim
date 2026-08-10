@@ -57,6 +57,10 @@ uv run inksim design.pes --icon
 uv run inksim design.pes --simple-png output.png
 uv run inksim design.pes --png shaded-output.png
 uv run inksim design.pes --icon preview.png
+
+# Batch export; each input gets its own basename-derived PNG
+uv run inksim *.pes --png
+uv run inksim *.pes --png exports/ -y
 ```
 
 | Option                    | Description                                          |
@@ -67,6 +71,13 @@ uv run inksim design.pes --icon preview.png
 | `--dpi N`                 | DPI for print-sized exports; default is 300          |
 | `--bg transparent\|white` | Select the export background                         |
 | `--grid`                  | Add a 10 mm grid to the exported image               |
+| `-y`, `--yes`             | Overwrite existing batch output without asking       |
+
+When several input files are supplied, omitting the output path creates one
+PNG next to each input. An explicit output path must be an existing directory
+and is used as the destination directory for all generated PNGs. Existing
+files are never overwritten without confirmation; use `-y` or `--yes` for
+unattended batch jobs. The GUI currently opens only the first supplied input.
 
 ## Supported Files
 

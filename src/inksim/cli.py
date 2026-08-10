@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
+import sys
 from pathlib import Path
 
 from PySide6.QtWidgets import QApplication
@@ -32,8 +33,8 @@ def main():
     parser = argparse.ArgumentParser(description=APP_TITLE)
     parser.add_argument(
         "input_file",
-        nargs="?",
-        help="Input embroidery file or directory",
+        nargs="*",
+        help="Input embroidery file(s) or directory",
     )
     parser.add_argument(
         "-f", "--fullscreen", action="store_true",
@@ -98,6 +99,11 @@ def main():
         action="store_true",
         help="Add a 10 mm grid to exported PNG",
     )
+    parser.add_argument(
+        "-y", "--yes",
+        action="store_true",
+        help="Overwrite existing batch export files without asking",
+    )
     args = parser.parse_args()
 
     export_values = [
@@ -118,40 +124,64 @@ def main():
             "an input embroidery file is required for export; "
             "use: inksim INPUT_FILE --simple-png OUTPUT.png"
         )
-    input_path = Path(args.input_file) if args.input_file else None
-    if input_path and not (input_path.is_file() or input_path.is_dir()):
-        parser.error(f"input path not found: {args.input_file}")
-    if export_requested and input_path and not input_path.is_file():
-        parser.error("an input embroidery file is required for export")
-
+    input_paths = [Path(value) for value in args.input_file]
+    for input_path in input_paths:
+        if not (input_path.is_file() or input_path.is_dir()):
+            parser.error(f"input path not found: {input_path}")
     if export_requested:
+        directories = [path for path in input_paths if path.is_dir()]
+        if directories or any(not path.is_file() for path in input_paths):
+            parser.error("batch export requires embroidery files, not directories")
+
+    export_paths = []
+    if export_requested:
+        export_value = export_values[0]
         if args.export_png is not None:
-            export_path = (
-                input_path.parent / f"{input_path.stem}-simple.png"
-                if not args.export_png
-                else Path(args.export_png)
-            )
+            default_suffix = "-simple.png"
         elif args.export_shaded_png is not None:
-            export_path = (
-                input_path.parent / f"{input_path.stem}.png"
-                if not args.export_shaded_png
-                else Path(args.export_shaded_png)
-            )
+            default_suffix = ".png"
         else:
-            export_path = (
-                input_path.parent / f"{input_path.stem}_thumb.png"
-                if not args.export_icon
-                else Path(args.export_icon)
-            )
-        export_path = export_path.with_suffix(".png")
+            default_suffix = "_thumb.png"
+        explicit_path = Path(export_value) if export_value else None
+        if len(input_paths) > 1 and explicit_path is not None:
+            if not explicit_path.is_dir():
+                parser.error(
+                    "an explicit output path for multiple inputs must be "
+                    "an existing directory"
+                )
+            export_paths = [
+                explicit_path / f"{input_path.stem}{default_suffix}"
+                for input_path in input_paths
+            ]
+        else:
+            export_paths = [
+                (input_path.parent / f"{input_path.stem}{default_suffix}")
+                if explicit_path is None
+                else explicit_path
+                for input_path in input_paths
+            ]
+        export_paths = [path.with_suffix(".png") for path in export_paths]
+        if len(set(export_paths)) != len(export_paths):
+            parser.error("input files produce duplicate output paths")
+        if not args.yes:
+            existing_paths = [path for path in export_paths if path.exists()]
+            if existing_paths:
+                prompt = "Overwrite existing file(s)? [y/N] "
+                try:
+                    answer = input(prompt).strip().lower()
+                except EOFError:
+                    answer = ""
+                if answer not in ("y", "yes"):
+                    parser.error("export cancelled")
 
     window_size = args.size
     window_position = args.position
     app = QApplication.instance() or QApplication([])
+    first_input = input_paths[0] if input_paths else None
     frame = Frame(
-        initial_file=str(input_path) if input_path and input_path.is_file() else None,
+        initial_file=str(first_input) if first_input and first_input.is_file() else None,
         initial_directory=(
-            str(input_path) if input_path and input_path.is_dir() else None
+            str(first_input) if first_input and first_input.is_dir() else None
         ),
         fullscreen=args.fullscreen,
         window_size=window_size,
@@ -160,14 +190,25 @@ def main():
         batch=export_requested,
     )
     if export_requested:
-        success = frame.ExportPng(
-            export_path,
-            icon=bool(args.export_icon),
-            dpi=96 if args.export_icon else args.dpi,
-            background=args.export_background,
-            grid=args.export_grid,
-            shaded=bool(args.export_shaded_png),
-        )
+        success = True
+        for input_path, export_path in zip(input_paths, export_paths):
+            if not frame.OpenFile(str(input_path)):
+                success = False
+                print(f"Failed to load {input_path}", file=sys.stderr)
+                continue
+            exported = frame.ExportPng(
+                export_path,
+                icon=bool(args.export_icon),
+                dpi=96 if args.export_icon else args.dpi,
+                background=args.export_background,
+                grid=args.export_grid,
+                shaded=bool(args.export_shaded_png),
+            )
+            if exported:
+                print(f"Exported {input_path} -> {export_path}")
+            else:
+                success = False
+                print(f"Failed to export {input_path}", file=sys.stderr)
         frame.close()
         raise SystemExit(0 if success else 1)
     app.exec()
