@@ -11,7 +11,7 @@ from PySide6.QtCore import QEventLoop
 from PySide6.QtWidgets import QApplication
 
 from .constants import APP_TITLE
-from .gui.frame import Frame
+from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
 
 
@@ -180,7 +180,7 @@ def main():
     window_position = args.position
     app = QApplication.instance() or QApplication([])
     first_input = input_paths[0] if input_paths else None
-    frame = Frame(
+    frame = MainWindow(
         fullscreen=args.fullscreen,
         window_size=window_size,
         window_position=window_position,
@@ -191,14 +191,14 @@ def main():
         for index, (input_path, export_path) in enumerate(
             zip(input_paths, export_paths), 1
         ):
-            if not frame.OpenFile(str(input_path)):
+            if not frame.open_file(str(input_path)):
                 success = False
                 print(
                     f"[{index}/{total_inputs}] Failed to load {input_path}",
                     file=sys.stderr,
                 )
                 continue
-            exported = frame.ExportPng(
+            exported = frame.export_png(
                 export_path,
                 icon=args.export_icon is not None,
                 dpi=96 if args.export_icon is not None else args.dpi,
@@ -235,7 +235,7 @@ def main():
     app.processEvents()
     if first_input is not None and first_input.is_file():
         splash.set_message(f"Loading {first_input.name}...")
-        if not frame.OpenFile(str(first_input)):
+        if not frame.open_file(str(first_input)):
             frame.close()
             splash.close_after()
             raise SystemExit(1)

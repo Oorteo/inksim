@@ -1,7 +1,7 @@
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import QHBoxLayout, QPushButton, QWidget
 
-class ModeStatusPanel(QWidget):
+class ModeBar(QWidget):
     """Clickable indicators for the main viewer display modes."""
 
     def __init__(self, parent, viewer):

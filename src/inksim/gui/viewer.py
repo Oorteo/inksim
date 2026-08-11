@@ -86,7 +86,7 @@ class EmbroideryViewerPanel(QWidget):
         self.cached_pan_y = self.pan_y
         self.cached_zoom = self.zoom
         self.zoom_render_timer = None
-        self.need_redraw = True
+        self._cache_valid = False
         self.progress_bar = progress_bar
         self.mode_panel = None
         self._last_key_time = 0
@@ -103,12 +103,13 @@ class EmbroideryViewerPanel(QWidget):
         self.is_playing = False
         self.play_timer.timeout.connect(self.OnPlayTimer)
 
-    def OnEraseBackground(self, e):
-        """Keep the canvas from clearing before a buffered repaint."""
+    def invalidate_cache(self):
+        self._cache_valid = False
+        self.update()
 
     def OnSize(self, e):
         """Invalidate the bitmap and retry deferred initial fitting."""
-        self.need_redraw = True
+        self.invalidate_cache()
         if self._pending_fit_to_screen and self.stitches_np.shape[0] > 0:
             QTimer.singleShot(0, self._try_fit_to_screen)
 
@@ -172,7 +173,7 @@ class EmbroideryViewerPanel(QWidget):
         cy = (min_y + max_y) / 2
         self.pan_x = w / 2 - cx * self.zoom
         self.pan_y = h / 2 - cy * self.zoom
-        self.need_redraw = True
+        self.invalidate_cache()
         self.update()
         if self.progress_bar:
             self.progress_bar.update()
@@ -193,7 +194,7 @@ class EmbroideryViewerPanel(QWidget):
             self.visible_count = 0
             self.play_timer.stop()
             self.is_playing = False
-        self.need_redraw = True
+        self.invalidate_cache()
         self.update()
         if self.progress_bar:
             self.progress_bar.update()
@@ -318,7 +319,7 @@ class EmbroideryViewerPanel(QWidget):
             float(rotated_corners[:, 0].max()),
             float(rotated_corners[:, 1].max()),
         )
-        self.need_redraw = True
+        self.invalidate_cache()
         self.CenterDesign()
 
     def OnKeyDown(self, e):
@@ -433,8 +434,8 @@ class EmbroideryViewerPanel(QWidget):
             return
         elif key == Qt.Key_F11:
             frame = self.window()
-            if hasattr(frame, "ToggleFullScreen"):
-                frame.ToggleFullScreen()
+            if hasattr(frame, "toggle_full_screen"):
+                frame.toggle_full_screen()
                 return
         elif key in (ord("G"), ord("g")) and not is_alt and not is_ctrl:
             self.show_grid = not self.show_grid
@@ -480,7 +481,7 @@ class EmbroideryViewerPanel(QWidget):
                     and not is_ctrl):
                 self.play_timer.stop()
                 self.is_playing = False
-            self.need_redraw = True
+            self.invalidate_cache()
             self.update()
             if self.progress_bar:
                 self.progress_bar.update()
@@ -512,7 +513,7 @@ class EmbroideryViewerPanel(QWidget):
                 self.show_jumps = False
                 self.risky_jumps_only = False
         self.RefreshModeIndicators()
-        self.need_redraw = True
+        self.invalidate_cache()
         self.update()
 
     def SetRenderer(self, renderer_key):
@@ -524,7 +525,7 @@ class EmbroideryViewerPanel(QWidget):
         frame = self.window()
         if hasattr(frame, "realisticItem"):
             frame.realisticItem.setChecked(self.show_realistic)
-        self.need_redraw = True
+        self.invalidate_cache()
         self.update()
         self.RefreshModeIndicators()
 
@@ -718,7 +719,7 @@ class EmbroideryViewerPanel(QWidget):
             if fit_to_screen:
                 self._pending_fit_to_screen = True
                 QTimer.singleShot(0, self._try_fit_to_screen)
-        self.need_redraw = True
+        self.invalidate_cache()
         self.update()
         if self.progress_bar:
             self.progress_bar.update()
@@ -748,7 +749,7 @@ class EmbroideryViewerPanel(QWidget):
         if hasattr(frame, "statusBar"):
             frame.statusBar().showMessage("Density map ready")
             QTimer.singleShot(1500, lambda: frame.statusBar().showMessage(DEFAULT_STATUS_TEXT))
-        self.need_redraw = True
+        self.invalidate_cache()
         self.update()
 
     def paintEvent(self, e):
@@ -759,7 +760,7 @@ class EmbroideryViewerPanel(QWidget):
         if self._pending_fit_to_screen:
             dc.end()
             return
-        if not self.need_redraw and self.cached_bitmap:
+        if self._cache_valid and self.cached_bitmap:
             zoom_ratio = self.zoom / self.cached_zoom
             if abs(zoom_ratio - 1.0) < 0.001:
                 pan_delta_x = round(self.pan_x - self.cached_pan_x)
@@ -836,7 +837,7 @@ class EmbroideryViewerPanel(QWidget):
         self.cached_pan_x = self.pan_x
         self.cached_pan_y = self.pan_y
         self.cached_zoom = self.zoom
-        self.need_redraw = False
+        self._cache_valid = True
         dc.drawPixmap(0, 0, bmp)
         if self.active_renderer == "simple":
             self.DrawSimpleStitches(dc)
@@ -965,19 +966,19 @@ class EmbroideryViewerPanel(QWidget):
         if self.zoom_render_timer is not None:
             self.zoom_render_timer.stop()
         if self.cached_bitmap:
-            self.need_redraw = False
+            self._cache_valid = True
             self.zoom_render_timer = QTimer(self)
             self.zoom_render_timer.setSingleShot(True)
             self.zoom_render_timer.timeout.connect(self._finish_zoom_render)
             self.zoom_render_timer.start(140)
         else:
-            self.need_redraw = True
+            self.invalidate_cache()
         self.update()
 
     def _finish_zoom_render(self):
         """Schedule a full-quality render after zooming settles."""
         self.zoom_render_timer = None
-        self.need_redraw = True
+        self.invalidate_cache()
         self.update()
 
     def OnLeftDown(self, e):
@@ -991,7 +992,7 @@ class EmbroideryViewerPanel(QWidget):
         """Stop panning and clean up any progress-bar mouse capture."""
         self.releaseMouse()
         self.drag_start = None
-        self.need_redraw = True
+        self.invalidate_cache()
         self.update()
         if self.progress_bar and self.progress_bar.dragging:
             self.progress_bar.dragging = False

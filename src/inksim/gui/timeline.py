@@ -3,7 +3,7 @@ from PySide6.QtGui import QColor, QPainter, QPen
 from PySide6.QtWidgets import QWidget
 
 
-class ProgressBarPanel(QWidget):
+class TimelineWidget(QWidget):
     """Interactive stitch timeline shown below the embroidery viewer."""
 
     def __init__(self, parent, viewer_panel):
@@ -18,9 +18,6 @@ class ProgressBarPanel(QWidget):
         self.margin_x = 24
         self.bar_y = 8
         self.bar_h = 14
-
-    def OnEraseBackground(self, event):
-        pass
 
     def OnClick(self, event):
         self.dragging = True
@@ -67,7 +64,7 @@ class ProgressBarPanel(QWidget):
         ratio = max(0.0, min(1.0, (mouse_x - self.margin_x) / bar_width
                              if bar_width > 0 else 0))
         self.viewer.visible_count = int(ratio * total)
-        self.viewer.need_redraw = True
+        self.viewer.invalidate_cache()
         self.viewer.update()
         self.update()
 

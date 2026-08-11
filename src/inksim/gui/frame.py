@@ -14,12 +14,12 @@ from PySide6.QtWidgets import (
 from ..constants import *
 from ..render import render_export_image
 from .dialogs import EmbroideryOpenDialog
-from .status import ModeStatusPanel
-from .timeline import ProgressBarPanel
+from .status import ModeBar
+from .timeline import TimelineWidget
 from .viewer import EmbroideryViewerPanel
 
 
-class Frame(QMainWindow):
+class MainWindow(QMainWindow):
     """Main InkSim window coordinating the viewer and playback controls."""
 
     def __init__(self, fullscreen=False, window_size=None, window_position=None):
@@ -37,8 +37,8 @@ class Frame(QMainWindow):
         main_panel = QWidget(self)
         layout = QVBoxLayout(main_panel)
         self.viewer = EmbroideryViewerPanel(main_panel, None)
-        self.progress = ProgressBarPanel(main_panel, self.viewer)
-        self.mode_status = ModeStatusPanel(main_panel, self.viewer)
+        self.progress = TimelineWidget(main_panel, self.viewer)
+        self.mode_status = ModeBar(main_panel, self.viewer)
         self.viewer.mode_panel = self.mode_status
         self.viewer.progress_bar = self.progress
         layout.addWidget(self.viewer, 1)
@@ -70,7 +70,7 @@ class Frame(QMainWindow):
             directory_path = Path(initial_directory)
             if directory_path.is_dir():
                 self.last_directory = str(directory_path.resolve())
-            QTimer.singleShot(0, lambda: self.OnOpen())
+            QTimer.singleShot(0, self.open_file_dialog)
 
     def _action(self, menu, text, slot, shortcut=None, checkable=False):
         action = QAction(text, self)
@@ -83,17 +83,17 @@ class Frame(QMainWindow):
 
     def _build_menus(self):
         file_menu = self.menuBar().addMenu("&File")
-        self._action(file_menu, "Open embroidery file", self.OnOpen, "Ctrl+O")
+        self._action(file_menu, "Open embroidery file", self.open_file_dialog, "Ctrl+O")
         export_menu = file_menu.addMenu("Export")
-        self._action(export_menu, "Shaded PNG for print...", self.ExportShadedPng)
-        self._action(export_menu, "Preview PNG...", self.ExportIconPng)
-        self._action(export_menu, "Simple PNG for print...", self.ExportPrintPng)
-        self._action(file_menu, "Center design", lambda: self.viewer.CenterDesign(), "C")
-        self._action(file_menu, "Fit design to window", lambda: self.viewer.FitToScreen(), "F")
-        self._action(file_menu, "Fullscreen", self.ToggleFullScreen, "F11")
-        self.gridItem = self._action(file_menu, "Show 1cm grid", self.OnToggleGrid, "G", True)
-        self.gridItem.setChecked(True)
-        self.realisticItem = self._action(file_menu, "Realistic thread render", self.OnToggleRealistic, "R", True)
+        self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png)
+        self._action(export_menu, "Preview PNG...", self.export_icon_png)
+        self._action(export_menu, "Simple PNG for print...", self.export_print_png)
+        self._action(file_menu, "Center design", self.viewer.CenterDesign, "C")
+        self._action(file_menu, "Fit design to window", self.viewer.FitToScreen, "F")
+        self._action(file_menu, "Fullscreen", self.toggle_full_screen, "F11")
+        self.grid_action = self._action(file_menu, "Show 1cm grid", self.toggle_grid, "G", True)
+        self.grid_action.setChecked(True)
+        self.realistic_action = self._action(file_menu, "Realistic thread render", self.toggle_realistic, "R", True)
         self._action(file_menu, "Choose stitch renderer...", self.viewer.SelectRenderer)
         self._action(file_menu, "Help", self.viewer.ShowHelp, "H")
         file_menu.addSeparator()
@@ -121,7 +121,7 @@ class Frame(QMainWindow):
     def _finish_initial_display(self, autoplay):
         self._main_panel.layout().activate()
         self.viewer.FitToScreen()
-        self.viewer.need_redraw = True
+        self.viewer.invalidate_cache()
         self.viewer.update()
         self.progress.update()
         if autoplay:
@@ -129,7 +129,7 @@ class Frame(QMainWindow):
             self.viewer.ToggleAutoPlay(forward=True)
 
     def _refresh_after_color_jump(self):
-        self.viewer.need_redraw = True
+        self.viewer.invalidate_cache()
         self.viewer.update()
         self.progress.update()
 
@@ -139,22 +139,19 @@ class Frame(QMainWindow):
             self.viewer.is_playing = False
         event.accept()
 
-    def OnCharHook(self, event):
-        event.ignore()
-
-    def OnToggleGrid(self, checked):
+    def toggle_grid(self, checked):
         self.viewer.show_grid = checked
-        self.viewer.need_redraw = True
+        self.viewer.invalidate_cache()
         self.viewer.update()
         self.viewer.RefreshModeIndicators()
 
-    def OnToggleRealistic(self, checked):
-        self.viewer.SetRenderer("realistic" if checked else "shaded")
+    def toggle_realistic(self, checked):
+        self.viewer.set_renderer("realistic" if checked else "shaded")
 
-    def OnOpen(self):
+    def open_file_dialog(self):
         dialog = EmbroideryOpenDialog(self, self.last_directory, self.current_file_path)
         if dialog.exec() == QDialog.Accepted:
-            self.OpenFile(dialog.GetPath())
+            self.open_file(dialog.selected_path)
 
     def _default_export_name(self, suffix):
         base_name = self.current_file_path.stem if self.current_file_path else "inksim"
@@ -176,7 +173,7 @@ class Frame(QMainWindow):
         selected_path = Path(path)
         return selected_path.with_suffix(extension)
 
-    def ExportPng(self, path, icon=False, dpi=300, background="transparent", grid=False, shaded=False):
+    def export_png(self, path, icon=False, dpi=300, background="transparent", grid=False, shaded=False):
         if self.viewer.stitches_np.shape[0] == 0:
             return False
         if icon:
@@ -196,34 +193,34 @@ class Frame(QMainWindow):
         image.save(path, "PNG", pnginfo=metadata, dpi=(dpi, dpi))
         return True
 
-    def ExportPrintPng(self, event=None):
+    def export_print_png(self, event=None):
         path = self._choose_export_path(
             "Export PNG for print",
             self._default_export_name("-simple.png"),
             "PNG files (*.png)",
             ".png",
         )
-        if path: self.ExportPng(path, dpi=300)
+        if path: self.export_png(path, dpi=300)
 
-    def ExportShadedPng(self, event=None):
+    def export_shaded_png(self, event=None):
         path = self._choose_export_path(
             "Export shaded PNG for print",
             self._default_export_name(".png"),
             "PNG files (*.png)",
             ".png",
         )
-        if path: self.ExportPng(path, dpi=300, shaded=True)
+        if path: self.export_png(path, dpi=300, shaded=True)
 
-    def ExportIconPng(self, event=None):
+    def export_icon_png(self, event=None):
         path = self._choose_export_path(
             "Export preview PNG",
             self._default_export_name("_thumb.png"),
             "PNG files (*.png)",
             ".png",
         )
-        if path: self.ExportPng(path, icon=True, dpi=96)
+        if path: self.export_png(path, icon=True, dpi=96)
 
-    def OpenFile(self, path):
+    def open_file(self, path):
         selected_path = Path(path).resolve()
         if not self.viewer.LoadDesign(str(selected_path), fit_to_screen=True):
             return False
@@ -237,7 +234,7 @@ class Frame(QMainWindow):
         self.progress.update()
         return True
 
-    def ToggleFullScreen(self):
+    def toggle_full_screen(self):
         self.is_fullscreen = not self.is_fullscreen
         self.mode_status.setVisible(not self.is_fullscreen)
         self.showFullScreen() if self.is_fullscreen else self.showNormal()
@@ -251,5 +248,5 @@ class Frame(QMainWindow):
     def dropEvent(self, event):
         urls = event.mimeData().urls()
         if urls:
-            self.OpenFile(urls[0].toLocalFile())
+            self.open_file(urls[0].toLocalFile())
             event.acceptProposedAction()
