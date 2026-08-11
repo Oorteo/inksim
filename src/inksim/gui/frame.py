@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
         self.is_fullscreen = False
         self._startup_fullscreen = fullscreen
         self._should_maximize_default = not window_size and not fullscreen
-        self.config = QSettings(APP_TITLE, APP_TITLE)
+        self.config = QSettings(APP_ORGANIZATION, APP_TITLE)
         self.last_directory = self.config.value("last_directory", "", str)
         self.current_file_path = None
 

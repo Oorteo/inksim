@@ -2,6 +2,7 @@
 """Application constants shared by the InkSim modules."""
 
 APP_TITLE = "InkSim"
+APP_ORGANIZATION = "InkSim"
 DEFAULT_STATUS_TEXT = (
 	"Space=play/pause | C=center | F=fit | F11=fullscreen | "
 	"Ctrl+Arrows=color | G=grid H=help"
