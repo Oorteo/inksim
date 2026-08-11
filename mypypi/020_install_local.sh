@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 # Install the locally built wheel as an isolated uv tool; no PyPI upload occurs.
 # Runs on macOS, Linux, or Windows via Bash (Git Bash/WSL).
+
+# We want to execute: uv tool install ....
+
 set -euo pipefail
 set -x
 
-script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source_path="${BASH_SOURCE[0]}"
+# Resolve symlinks portably; this is the Bash equivalent of readlink -f.
+while [[ -L "$source_path" ]]; do
+    script_dir="$(cd -P "$(dirname "$source_path")" && pwd)"
+    source_path="$(readlink "$source_path")"
+    [[ "$source_path" = /* ]] || source_path="$script_dir/$source_path"
+done
+script_dir="$(cd -P "$(dirname "$source_path")" && pwd)"
 project_root="$(cd -- "$script_dir/.." && pwd)"
-python_version="${PYTHON_VERSION:-3.12}"
+python_version="${PYTHON_VERSION:-3.14}"
 
 shopt -s nullglob
 wheels=("$project_root"/dist/inksim-*.whl)

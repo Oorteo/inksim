@@ -4,8 +4,15 @@ set -euo pipefail
 ### call inksim as package, so that it can be run from anywhere,
 ###      even if the current working directory is not the project root
 
-SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
-PROJECT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+SOURCE="${BASH_SOURCE[0]}"
+# Resolve symlinks portably; this is the Bash equivalent of readlink -f.
+while [[ -L "$SOURCE" ]]; do
+    SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ "$SOURCE" = /* ]] || SOURCE="$SCRIPT_DIR/$SOURCE"
+done
+SCRIPT_PATH="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)/$(basename "$SOURCE")"
+PROJECT_DIR="$(dirname "$SCRIPT_PATH")"
 
 export PYTHONPATH="$PROJECT_DIR/src${PYTHONPATH:+:$PYTHONPATH}"
 

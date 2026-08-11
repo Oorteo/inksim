@@ -1,8 +1,16 @@
 #!/usr/bin/bash
-set -e
+
+set -euo pipefail
 set -x
 
-script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source_path="${BASH_SOURCE[0]}"
+# Resolve symlinks portably; this is the Bash equivalent of readlink -f.
+while [[ -L "$source_path" ]]; do
+    script_dir="$(cd -P "$(dirname "$source_path")" && pwd)"
+    source_path="$(readlink "$source_path")"
+    [[ "$source_path" = /* ]] || source_path="$script_dir/$source_path"
+done
+script_dir="$(cd -P "$(dirname "$source_path")" && pwd)"
 project_root="$(cd -- "$script_dir/.." && pwd)"
 cd "$project_root"
 pwd

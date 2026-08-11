@@ -13,7 +13,14 @@ case "${1:-}" in
     ;;
 esac
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+SOURCE="${BASH_SOURCE[0]}"
+# Resolve symlinks portably; this is the Bash equivalent of readlink -f.
+while [[ -L "$SOURCE" ]]; do
+    SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ "$SOURCE" = /* ]] || SOURCE="$SCRIPT_DIR/$SOURCE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
 PYTHON_VERSION="${PYTHON_VERSION:-3.14}"
 SYNC_OPTIONS=()
 if [[ "$(uname -s)" == Linux ]]; then
