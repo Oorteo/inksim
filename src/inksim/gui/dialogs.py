@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 from PySide6.QtCore import QTimer, Qt
@@ -6,7 +7,7 @@ from PySide6.QtWidgets import (QComboBox, QDialog, QDialogButtonBox,
                                QPushButton, QSplitter, QVBoxLayout, QWidget)
 
 from ..formats import get_supported_input_extensions
-from .viewer import EmbroideryViewerWidget
+from .viewer import EmbroideryViewerWidget, density_debug
 
 
 class EmbroideryOpenDialog(QDialog):
@@ -88,10 +89,16 @@ class EmbroideryOpenDialog(QDialog):
         if row < 0 or row >= len(self.file_paths):
             return
         self.selected_path = self.file_paths[row]
+        density_debug(f"dialog row changed row={row} path={self.selected_path!s}")
+        started_at = time.perf_counter()
         self.preview.load_design(
             str(self.selected_path),
             fit_to_screen=True,
             precompute_density=False,
+        )
+        density_debug(
+            f"dialog preview load returned row={row} "
+            f"elapsed={time.perf_counter() - started_at:.3f}s"
         )
 
     def open_selected(self):

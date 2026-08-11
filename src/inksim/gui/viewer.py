@@ -1,3 +1,5 @@
+import logging
+import os
 import time
 
 import numpy as np
@@ -44,6 +46,32 @@ from .help import show_help
 from .settings import show_settings
 
 
+logger = logging.getLogger("inksim.density")
+logger.setLevel(logging.DEBUG)
+logger.propagate = False
+logger.addHandler(logging.NullHandler())
+if os.environ.get("INKSIM_DENSITY_DEBUG"):
+    log_path = os.environ.get(
+        "INKSIM_DENSITY_LOG",
+        "/tmp/inksim-density-debug.log",
+    )
+    try:
+        file_handler = logging.FileHandler(log_path, encoding="utf-8")
+    except OSError:
+        pass
+    else:
+        file_handler.setFormatter(
+            logging.Formatter(
+                "%(created).6f thread=%(thread)d %(message)s"
+            )
+        )
+        logger.addHandler(file_handler)
+
+
+def density_debug(message):
+    logger.debug(message)
+
+
 class DensityWorkerSignals(QObject):
     finished = Signal(int, object)
     failed = Signal(int, object)
@@ -58,6 +86,8 @@ class DensityWorker(QRunnable):
         self.signals = DensityWorkerSignals()
 
     def run(self):
+        density_debug(f"worker start request={self.request_id}")
+        started_at = time.perf_counter()
         min_x, min_y, max_x, max_y = self.bounds
         try:
             density = calculate_stitch_density_numba(
@@ -68,8 +98,17 @@ class DensityWorker(QRunnable):
                 max_y,
             )
         except Exception as error:
+            density_debug(
+                f"worker failed request={self.request_id} "
+                f"elapsed={time.perf_counter() - started_at:.3f}s "
+                f"error={error!r}"
+            )
             self.signals.failed.emit(self.request_id, error)
         else:
+            density_debug(
+                f"worker finished request={self.request_id} "
+                f"elapsed={time.perf_counter() - started_at:.3f}s"
+            )
             self.signals.finished.emit(self.request_id, density)
 
 
@@ -124,6 +163,7 @@ class EmbroideryViewerWidget(QWidget):
         self.density_ready = False
         self._density_request_id = 0
         self._density_worker = None
+        self._paint_sequence = 0
         self.cached_bitmap = None
         self.cached_pan_x = self.pan_x
         self.cached_pan_y = self.pan_y
@@ -650,6 +690,10 @@ class EmbroideryViewerWidget(QWidget):
 
     def load_design(self, path, fit_to_screen=True, precompute_density=True):
         """Load an embroidery file into renderable stitch segments."""
+        started_at = time.perf_counter()
+        density_debug(
+            f"load start path={path!r} precompute_density={precompute_density}"
+        )
         try:
             pattern = emb.read(path)
         except (OSError, RuntimeError, ValueError) as ex:
@@ -768,6 +812,10 @@ class EmbroideryViewerWidget(QWidget):
             self.progress_bar.update()
         if precompute_density and len(self.stitch_points_np) > 0:
             self._start_density_calculation()
+        density_debug(
+            f"load finished path={path!r} stitches={len(self.stitches_np)} "
+            f"elapsed={time.perf_counter() - started_at:.3f}s"
+        )
         return True
 
     def calculate_stitch_density(self):
@@ -778,6 +826,10 @@ class EmbroideryViewerWidget(QWidget):
 
     def _start_density_calculation(self, show_status=False):
         if self.density_ready or self._density_worker is not None:
+            density_debug(
+                f"worker skipped request={self._density_request_id} "
+                f"ready={self.density_ready} active={self._density_worker is not None}"
+            )
             return
         if show_status:
             self.status_message.emit("Calculating stitch density...", 0)
@@ -789,9 +841,17 @@ class EmbroideryViewerWidget(QWidget):
         worker.signals.finished.connect(self._density_ready)
         worker.signals.failed.connect(self._density_failed)
         self._density_worker = worker
+        density_debug(
+            f"worker queued request={self._density_request_id} "
+            f"points={len(self.stitch_points_np)}"
+        )
         QThreadPool.globalInstance().start(worker)
 
     def _density_ready(self, request_id, density):
+        density_debug(
+            f"result received request={request_id} "
+            f"current={self._density_request_id}"
+        )
         if request_id != self._density_request_id:
             return
         self._density_worker = None
@@ -801,6 +861,10 @@ class EmbroideryViewerWidget(QWidget):
         self.invalidate_cache()
 
     def _density_failed(self, request_id, error):
+        density_debug(
+            f"error received request={request_id} "
+            f"current={self._density_request_id} error={error!r}"
+        )
         if request_id != self._density_request_id:
             return
         self._density_worker = None
@@ -808,6 +872,17 @@ class EmbroideryViewerWidget(QWidget):
 
     def paintEvent(self, e):
         """Render the current viewport, using the cached bitmap when possible."""
+        self._paint_sequence += 1
+        paint_sequence = self._paint_sequence
+        paint_started_at = time.perf_counter()
+        if os.environ.get("INKSIM_DENSITY_DEBUG"):
+            QTimer.singleShot(
+                0,
+                lambda: density_debug(
+                    f"paint finished sequence={paint_sequence} "
+                    f"elapsed={time.perf_counter() - paint_started_at:.3f}s"
+                ),
+            )
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.fillRect(self.rect(), QColor(255, 255, 255))
