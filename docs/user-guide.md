@@ -113,16 +113,22 @@ exports skip the calculation.
 ## Performance Diagnostics
 
 Density and preview timing diagnostics are disabled by default. Enable them
-when investigating slow file changes or rendering:
+when investigating slow file changes or rendering. The default log path is
+next to the first input file, using its basename with a `.log` suffix. Without
+an input file, the default is `inksim.log` in the current directory:
 
 ```bash
-INKSIM_DENSITY_DEBUG=1 \
-INKSIM_DENSITY_LOG="$PWD/inksim-density-debug.log" \
-uv run python -m inksim
+uv run inksim --debug design.pes
+uv run inksim --dbg design.pes
+uv run inksim design.pes --log diagnostics/run.log
 ```
+
+`--debug` and `--dbg` are aliases. `--log FILE` implies debug logging and
+creates missing parent directories. The same settings can be supplied through
+the `INKSIM_DEBUG` and `INKSIM_LOG` environment variables.
 
 The log records file loading, preview painting, and density-worker lifecycle
 events, including thread IDs and elapsed times. In the open dialog, entries
 with `precompute_density=False` confirm that density is not being calculated
 for arrow-key preview navigation. The logger is silent and creates no file
-unless `INKSIM_DENSITY_DEBUG=1` is set.
+unless debug logging is enabled.

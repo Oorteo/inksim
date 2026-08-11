@@ -4,12 +4,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
 from PySide6.QtWidgets import QApplication
 
 from .constants import APP_TITLE
+from .debug import configure_logging
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
 
@@ -30,6 +32,17 @@ def _parse_pair(value, name, separator):
     return first, second
 
 
+def _default_log_path(input_paths):
+    if not input_paths:
+        return Path("inksim.log")
+    input_path = input_paths[0]
+    if input_path.is_file():
+        return input_path.with_suffix(".log")
+    if input_path.is_dir():
+        return input_path / "inksim.log"
+    return Path("inksim.log")
+
+
 def main():
     parser = argparse.ArgumentParser(description=APP_TITLE)
     parser.add_argument(
@@ -44,6 +57,14 @@ def main():
     parser.add_argument(
         "-p", "--play", action="store_true",
         help="Start simulation playback immediately",
+    )
+    parser.add_argument(
+        "--debug", "--dbg", action="store_true",
+        help="Enable debug logging",
+    )
+    parser.add_argument(
+        "--log", type=Path, metavar="FILE",
+        help="Write debug logging to FILE (implies --debug)",
     )
     parser.add_argument(
         "--size",
@@ -174,6 +195,20 @@ def main():
                     answer = ""
                 if answer not in ("y", "yes"):
                     parser.error("export cancelled")
+
+    debug_enabled = args.debug or args.log is not None or bool(
+        os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG")
+    )
+    log_path = (
+        args.log
+        or (Path(os.environ["INKSIM_LOG"]) if os.environ.get("INKSIM_LOG") else None)
+        or _default_log_path(input_paths)
+    )
+    if debug_enabled:
+        try:
+            configure_logging(True, log_path)
+        except OSError as ex:
+            parser.error(f"cannot create debug log {log_path}: {ex}")
 
     window_size = args.size
     window_position = args.position

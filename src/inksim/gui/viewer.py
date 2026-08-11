@@ -1,5 +1,3 @@
-import logging
-import os
 import time
 
 import numpy as np
@@ -34,6 +32,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..constants import *
+from ..debug import is_enabled, logger
 from ..render import (
     RENDERERS_BY_KEY,
     calculate_stitch_density_numba,
@@ -44,28 +43,6 @@ from ..render import (
 )
 from .help import show_help
 from .settings import show_settings
-
-
-logger = logging.getLogger("inksim.density")
-logger.setLevel(logging.DEBUG)
-logger.propagate = False
-logger.addHandler(logging.NullHandler())
-if os.environ.get("INKSIM_DENSITY_DEBUG"):
-    log_path = os.environ.get(
-        "INKSIM_DENSITY_LOG",
-        "/tmp/inksim-density-debug.log",
-    )
-    try:
-        file_handler = logging.FileHandler(log_path, encoding="utf-8")
-    except OSError:
-        pass
-    else:
-        file_handler.setFormatter(
-            logging.Formatter(
-                "%(created).6f thread=%(thread)d %(message)s"
-            )
-        )
-        logger.addHandler(file_handler)
 
 
 def density_debug(message):
@@ -875,7 +852,7 @@ class EmbroideryViewerWidget(QWidget):
         self._paint_sequence += 1
         paint_sequence = self._paint_sequence
         paint_started_at = time.perf_counter()
-        if os.environ.get("INKSIM_DENSITY_DEBUG"):
+        if is_enabled():
             QTimer.singleShot(
                 0,
                 lambda: density_debug(
