@@ -151,6 +151,8 @@ class EmbroideryViewerWidget(QWidget):
         self._density_result_timer.timeout.connect(self._poll_density_results)
         self._density_result_timer.start(50)
         self._paint_sequence = 0
+        self._render_buffer = None
+        self._render_buffer_size = None
         self.cached_bitmap = None
         self.cached_pan_x = self.pan_x
         self.cached_pan_y = self.pan_y
@@ -176,6 +178,14 @@ class EmbroideryViewerWidget(QWidget):
     def invalidate_cache(self):
         self._cache_valid = False
         self.update()
+
+    def _get_render_buffer(self, width, height):
+        size = (width, height)
+        if self._render_buffer_size != size:
+            self._render_buffer = np.empty((height, width, 3), dtype=np.uint8)
+            self._render_buffer_size = size
+        self._render_buffer.fill(255)
+        return self._render_buffer
 
     def resizeEvent(self, event):
         """Invalidate the bitmap and retry deferred initial fitting."""
@@ -928,7 +938,7 @@ class EmbroideryViewerWidget(QWidget):
             )
             painter.end()
             return
-        buf = np.full((h, w, 3), 255, dtype=np.uint8)
+        buf = self._get_render_buffer(w, h)
         if self.active_renderer == "realistic" and self.zoom > 1.2:
             render_fabric_numba(buf, self.zoom)
         if self.show_grid:
