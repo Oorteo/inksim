@@ -22,7 +22,7 @@ class ModeBar(QWidget):
         self.update_indicators()
 
     def toggle_mode(self, mode):
-        self.viewer.ToggleDisplayMode(mode)
+        self.viewer.toggle_display_mode(mode)
         self.viewer.setFocus()
 
     def update_indicators(self):

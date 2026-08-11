@@ -88,22 +88,22 @@ class MainWindow(QMainWindow):
         self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png)
         self._action(export_menu, "Preview PNG...", self.export_icon_png)
         self._action(export_menu, "Simple PNG for print...", self.export_print_png)
-        self._action(file_menu, "Center design", self.viewer.CenterDesign, "C")
-        self._action(file_menu, "Fit design to window", self.viewer.FitToScreen, "F")
+        self._action(file_menu, "Center design", self.viewer.center_design, "C")
+        self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen, "F")
         self._action(file_menu, "Fullscreen", self.toggle_full_screen, "F11")
         self.grid_action = self._action(file_menu, "Show 1cm grid", self.toggle_grid, "G", True)
         self.grid_action.setChecked(True)
         self.realistic_action = self._action(file_menu, "Realistic thread render", self.toggle_realistic, "R", True)
-        self._action(file_menu, "Choose stitch renderer...", self.viewer.SelectRenderer)
-        self._action(file_menu, "Help", self.viewer.ShowHelp, "H")
+        self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer)
+        self._action(file_menu, "Help", self.viewer.show_help, "H")
         file_menu.addSeparator()
-        self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.RotateDesign(-1))
-        self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.RotateDesign(1))
+        self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.rotate_design(-1))
+        self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))
         file_menu.addSeparator()
         self._action(file_menu, "Quit", self.close, "Ctrl+Q")
         playback = self.menuBar().addMenu("&Playback")
         for step in (1, 10, 50, 100, 500):
-            action = self._action(playback, f"Step {step}", lambda checked=False, s=step: self.viewer.SetStepSize(s))
+            action = self._action(playback, f"Step {step}", lambda checked=False, s=step: self.viewer.set_step_size(s))
             action.setCheckable(True)
             if step == 10:
                 action.setChecked(True)
@@ -111,22 +111,22 @@ class MainWindow(QMainWindow):
         self._action(
             playback,
             "Play/Pause",
-            lambda checked=False: self.viewer.ToggleAutoPlay(),
+            lambda checked=False: self.viewer.toggle_auto_play(),
             "Space",
         )
-        self._action(playback, "Next color", lambda: (self.viewer.JumpToColor(1), self._refresh_after_color_jump()))
-        self._action(playback, "Prev color", lambda: (self.viewer.JumpToColor(-1), self._refresh_after_color_jump()))
+        self._action(playback, "Next color", lambda: (self.viewer.jump_to_color(1), self._refresh_after_color_jump()))
+        self._action(playback, "Prev color", lambda: (self.viewer.jump_to_color(-1), self._refresh_after_color_jump()))
         self.menubar = self.menuBar()
 
     def _finish_initial_display(self, autoplay):
         self._main_panel.layout().activate()
-        self.viewer.FitToScreen()
+        self.viewer.fit_to_screen()
         self.viewer.invalidate_cache()
         self.viewer.update()
         self.progress.update()
         if autoplay:
             self.viewer.visible_count = 0
-            self.viewer.ToggleAutoPlay(forward=True)
+            self.viewer.toggle_auto_play(forward=True)
 
     def _refresh_after_color_jump(self):
         self.viewer.invalidate_cache()
@@ -143,7 +143,7 @@ class MainWindow(QMainWindow):
         self.viewer.show_grid = checked
         self.viewer.invalidate_cache()
         self.viewer.update()
-        self.viewer.RefreshModeIndicators()
+        self.viewer.update_mode_indicators()
 
     def toggle_realistic(self, checked):
         self.viewer.set_renderer("realistic" if checked else "shaded")
@@ -222,7 +222,7 @@ class MainWindow(QMainWindow):
 
     def open_file(self, path):
         selected_path = Path(path).resolve()
-        if not self.viewer.LoadDesign(str(selected_path), fit_to_screen=True):
+        if not self.viewer.load_design(str(selected_path), fit_to_screen=True):
             return False
         self.current_file_path = selected_path
         self.last_directory = str(selected_path.parent)

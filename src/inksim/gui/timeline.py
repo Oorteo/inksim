@@ -24,7 +24,7 @@ class TimelineWidget(QWidget):
             self.dragging = True
             self.drag_moved = False
             self.seek(event.position().x())
-            self.viewer.HighlightNeedle()
+            self.viewer.highlight_needle()
             self.grabMouse()
             event.accept()
         else:
@@ -34,7 +34,7 @@ class TimelineWidget(QWidget):
         if event.button() == Qt.LeftButton:
             if self.dragging:
                 self.seek(event.position().x())
-                self.viewer.HighlightNeedle()
+                self.viewer.highlight_needle()
                 self.releaseMouse()
                 self.dragging = False
                 self.drag_moved = False

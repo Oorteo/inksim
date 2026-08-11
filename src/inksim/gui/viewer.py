@@ -127,9 +127,9 @@ class EmbroideryViewerPanel(QWidget):
                 QTimer.singleShot(30, lambda: self._try_fit_to_screen(retries - 1))
             return
         self._pending_fit_to_screen = False
-        self.FitToScreen()
+        self.fit_to_screen()
 
-    def FitToScreen(self):
+    def fit_to_screen(self):
         """Center the loaded design and scale it to fit the viewport."""
         if self.stitches_np.shape[0] == 0:
             return
@@ -144,9 +144,9 @@ class EmbroideryViewerPanel(QWidget):
         zoom_x = (w * 0.8) / bw
         zoom_y = (h * 0.8) / bh
         self.zoom = min(zoom_x, zoom_y)
-        self.CenterDesign()
+        self.center_design()
 
-    def SetOneToOne(self):
+    def set_one_to_one(self):
         """Display the design at its physical size when display PPI is known."""
         if self.stitches_np.shape[0] == 0:
             return
@@ -160,9 +160,9 @@ class EmbroideryViewerPanel(QWidget):
         except (AttributeError, TypeError, ValueError):
             pixels_per_mm = 96.0 / 25.4
         self.zoom = pixels_per_mm
-        self.CenterDesign()
+        self.center_design()
 
-    def CenterDesign(self):
+    def center_design(self):
         """Center the loaded design without changing its current zoom."""
         if self.stitches_np.shape[0] == 0:
             return
@@ -200,7 +200,7 @@ class EmbroideryViewerPanel(QWidget):
         if self.progress_bar:
             self.progress_bar.update()
 
-    def ToggleAutoPlay(self, forward=None):
+    def toggle_auto_play(self, forward=None):
         """Start or stop playback, choosing its direction when starting."""
         if self.is_playing:
             self.play_timer.stop()
@@ -211,7 +211,7 @@ class EmbroideryViewerPanel(QWidget):
             self.play_timer.start(self.play_speed)
             self.is_playing = True
 
-    def AdjustPlaybackSpeed(self, direction):
+    def adjust_playback_speed(self, direction):
         """Increase or decrease playback speed while preserving its direction."""
         new_index = max(
             0,
@@ -230,7 +230,7 @@ class EmbroideryViewerPanel(QWidget):
         self._last_key_time = 0
         event.accept()
 
-    def JumpToColor(self, direction):
+    def jump_to_color(self, direction):
         """Move to the next or previous recorded thread-color boundary."""
         if not self.color_boundaries:
             return
@@ -257,7 +257,7 @@ class EmbroideryViewerPanel(QWidget):
             else:
                 self.visible_count = prev
 
-    def JumpToCommand(self, direction):
+    def jump_to_command(self, direction):
         """Move to the nearest recorded JUMP, TRIM, or color-change event."""
         positions = sorted(self.command_events)
         current = self.visible_count
@@ -275,7 +275,7 @@ class EmbroideryViewerPanel(QWidget):
         self.visible_count = target
         return True
 
-    def RotateDesign(self, quarter_turns):
+    def rotate_design(self, quarter_turns):
         """Rotate the loaded design by quarter turns around its center."""
         if self.stitches_np.shape[0] == 0:
             return
@@ -321,7 +321,7 @@ class EmbroideryViewerPanel(QWidget):
             float(rotated_corners[:, 1].max()),
         )
         self.invalidate_cache()
-        self.CenterDesign()
+        self.center_design()
 
     def keyPressEvent(self, e):
         """Handle playback, navigation, display, and view shortcut keys."""
@@ -356,7 +356,7 @@ class EmbroideryViewerPanel(QWidget):
                 Qt.Key_Right,
                 Qt.Key_Left,
         ):
-            changed = self.JumpToCommand(1 if key == Qt.Key_Right else -1)
+            changed = self.jump_to_command(1 if key == Qt.Key_Right else -1)
             highlight_needle = changed
             if changed and self.is_playing:
                 self.play_timer.stop()
@@ -366,13 +366,13 @@ class EmbroideryViewerPanel(QWidget):
                 Qt.Key_Left,
         ):
             key_direction = 1 if key == Qt.Key_Right else -1
-            changed = self.AdjustPlaybackSpeed(key_direction * self._last_dir)
+            changed = self.adjust_playback_speed(key_direction * self._last_dir)
         elif is_ctrl and key in (Qt.Key_Right, Qt.Key_Left):
             if key == Qt.Key_Right:
-                self.JumpToColor(1)
+                self.jump_to_color(1)
                 self._last_dir = 1
             else:
-                self.JumpToColor(-1)
+                self.jump_to_color(-1)
                 self._last_dir = -1
             changed = True
             highlight_needle = True
@@ -401,7 +401,7 @@ class EmbroideryViewerPanel(QWidget):
             self.visible_count = total
             changed = True
         elif key == Qt.Key_Space:
-            self.ToggleAutoPlay()
+            self.toggle_auto_play()
             return
         elif key in (ord("+"), ord("="), Qt.Key_Plus):
             self.line_width = min(1.0, self.line_width + 0.1)
@@ -425,13 +425,13 @@ class EmbroideryViewerPanel(QWidget):
                 )
             changed = True
         elif key in (ord("C"), ord("c")) and not is_alt and not is_ctrl:
-            self.CenterDesign()
+            self.center_design()
             return
         elif key in (ord("F"), ord("f")) and not is_alt and not is_ctrl:
-            self.FitToScreen()
+            self.fit_to_screen()
             return
         elif key == ord("1") and not is_alt and not is_ctrl:
-            self.SetOneToOne()
+            self.set_one_to_one()
             return
         elif key == Qt.Key_F11:
             frame = self.window()
@@ -445,29 +445,29 @@ class EmbroideryViewerPanel(QWidget):
                 frame.gridItem.setChecked(self.show_grid)
             changed = True
         elif key in (ord("J"), ord("j")) and not is_alt and not is_ctrl:
-            self.ToggleDisplayMode("J")
+            self.toggle_display_mode("J")
             changed = True
         elif key in (ord("X"), ord("x")) and not is_alt and not is_ctrl:
-            self.ToggleDisplayMode("X")
+            self.toggle_display_mode("X")
             changed = True
         elif key in (ord("V"), ord("v")) and not is_alt and not is_ctrl:
-            self.ToggleDisplayMode("V")
+            self.toggle_display_mode("V")
             changed = True
         elif key in (ord("R"), ord("r")) and not is_alt and not is_ctrl:
-            self.ToggleDisplayMode("R")
+            self.toggle_display_mode("R")
             changed = True
         elif key in (ord("N"), ord("n")) and not is_alt and not is_ctrl:
             self.show_needle = not self.show_needle
             if self.show_needle:
-                self.HighlightNeedle()
+                self.highlight_needle()
             else:
-                self.StopNeedleHighlight()
+                self.stop_needle_highlight()
             changed = True
         elif key in (ord("H"), ord("h")) and not is_alt and not is_ctrl:
-            self.ShowHelp()
+            self.show_help()
             return
         elif key in (ord("I"), ord("i")) and not is_alt and not is_ctrl:
-            self.ShowSettings()
+            self.show_settings()
             return
         elif key == Qt.Key_Escape:
             if self.is_playing:
@@ -476,7 +476,7 @@ class EmbroideryViewerPanel(QWidget):
                 return
         if changed:
             if highlight_needle:
-                self.HighlightNeedle()
+                self.highlight_needle()
             if (self.is_playing and key
                     in (Qt.Key_Up, Qt.Key_Down, Qt.Key_Home, Qt.Key_End)
                     and not is_ctrl):
@@ -489,10 +489,10 @@ class EmbroideryViewerPanel(QWidget):
         else:
             e.ignore()
 
-    def ToggleDisplayMode(self, mode):
+    def toggle_display_mode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
         if mode == "R":
-            self.SetRenderer(
+            self.set_renderer(
                 "shaded" if self.active_renderer == "realistic" else "realistic"
             )
             frame = self.window()
@@ -501,7 +501,7 @@ class EmbroideryViewerPanel(QWidget):
         elif mode == "X":
             self.show_density = not self.show_density
             if self.show_density and not self.density_ready:
-                self.CalculateStitchDensity()
+                self.calculate_stitch_density()
         elif mode == "V":
             self.show_stitches = not self.show_stitches
         elif mode == "J":
@@ -513,11 +513,11 @@ class EmbroideryViewerPanel(QWidget):
             else:
                 self.show_jumps = False
                 self.risky_jumps_only = False
-        self.RefreshModeIndicators()
+        self.update_mode_indicators()
         self.invalidate_cache()
         self.update()
 
-    def SetRenderer(self, renderer_key):
+    def set_renderer(self, renderer_key):
         """Select a registered stitch renderer and refresh the canvas."""
         if renderer_key not in RENDERERS_BY_KEY:
             raise ValueError(f"unknown stitch renderer: {renderer_key}")
@@ -528,17 +528,17 @@ class EmbroideryViewerPanel(QWidget):
             frame.realisticItem.setChecked(self.show_realistic)
         self.invalidate_cache()
         self.update()
-        self.RefreshModeIndicators()
+        self.update_mode_indicators()
 
-    def SelectRenderer(self):
+    def select_renderer(self):
         """Open the renderer picker dialog."""
         from .renderer_picker import RendererPickerDialog
 
         dialog = RendererPickerDialog(self, self.active_renderer)
         if dialog.exec():
-            self.SetRenderer(dialog.selected_renderer)
+            self.set_renderer(dialog.selected_renderer)
 
-    def RefreshModeIndicators(self):
+    def update_mode_indicators(self):
         if self.mode_panel is not None:
             self.mode_panel.update_indicators()
 
@@ -599,16 +599,16 @@ class EmbroideryViewerPanel(QWidget):
         setattr(self, key, dlg)
         dlg.show()
 
-    def ShowHelp(self):
+    def show_help(self):
         show_help(self)
 
-    def ShowSettings(self):
+    def show_settings(self):
         show_settings(self)
 
-    def SetStepSize(self, size):
+    def set_step_size(self, size):
         self.step_size = max(1, size)
 
-    def LoadDesign(self, path, fit_to_screen=True):
+    def load_design(self, path, fit_to_screen=True):
         """Load an embroidery file into renderable stitch segments."""
         try:
             pattern = emb.read(path)
@@ -726,7 +726,7 @@ class EmbroideryViewerPanel(QWidget):
             self.progress_bar.update()
         return True
 
-    def CalculateStitchDensity(self):
+    def calculate_stitch_density(self):
         """Calculate the density map once, on demand, using the Numba kernel."""
         if self.density_ready or len(self.stitch_points_np) == 0:
             return
@@ -755,49 +755,49 @@ class EmbroideryViewerPanel(QWidget):
 
     def paintEvent(self, e):
         """Render the current viewport, using the cached bitmap when possible."""
-        dc = QPainter(self)
-        dc.setRenderHint(QPainter.Antialiasing)
-        dc.fillRect(self.rect(), QColor(255, 255, 255))
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.fillRect(self.rect(), QColor(255, 255, 255))
         if self._pending_fit_to_screen:
-            dc.end()
+            painter.end()
             return
         if self._cache_valid and self.cached_bitmap:
             zoom_ratio = self.zoom / self.cached_zoom
             if abs(zoom_ratio - 1.0) < 0.001:
                 pan_delta_x = round(self.pan_x - self.cached_pan_x)
                 pan_delta_y = round(self.pan_y - self.cached_pan_y)
-                dc.drawPixmap(pan_delta_x, pan_delta_y, self.cached_bitmap)
+                painter.drawPixmap(pan_delta_x, pan_delta_y, self.cached_bitmap)
             else:
                 bitmap_width = self.cached_bitmap.width()
                 bitmap_height = self.cached_bitmap.height()
                 preview_x = round(self.pan_x - zoom_ratio * self.cached_pan_x)
                 preview_y = round(self.pan_y - zoom_ratio * self.cached_pan_y)
-                dc.drawPixmap(
+                painter.drawPixmap(
                     preview_x, preview_y,
                     round(bitmap_width * zoom_ratio),
                     round(bitmap_height * zoom_ratio),
                     self.cached_bitmap,
                 )
             if self.active_renderer == "simple":
-                self.DrawSimpleStitches(dc)
-            self.DrawAnalysisOverlays(dc)
-            self.DrawNeedleOverlay(dc)
-            dc.end()
+                self.draw_simple_stitches(painter)
+            self.draw_analysis_overlays(painter)
+            self.draw_needle_overlay(painter)
+            painter.end()
             return
         w, h = self.width(), self.height()
         if self.stitches_np.shape[0] == 0:
-            dc.setFont(QFont(self.font().family(), 14))
-            dc.drawText(
+            painter.setFont(QFont(self.font().family(), 14))
+            painter.drawText(
                 20,
                 20,
                 "Open an embroidery file via File > Open or pass it as a command-line argument",
             )
-            dc.drawText(
+            painter.drawText(
                 20,
                 45,
                 "H=help, Space=play/pause, Ctrl+Arrows=color, Alt+Arrows=1",
             )
-            dc.end()
+            painter.end()
             return
         buf = np.full((h, w, 3), 255, dtype=np.uint8)
         if self.active_renderer == "realistic" and self.zoom > 1.2:
@@ -839,14 +839,14 @@ class EmbroideryViewerPanel(QWidget):
         self.cached_pan_y = self.pan_y
         self.cached_zoom = self.zoom
         self._cache_valid = True
-        dc.drawPixmap(0, 0, bmp)
+        painter.drawPixmap(0, 0, bmp)
         if self.active_renderer == "simple":
-            self.DrawSimpleStitches(dc)
-        self.DrawAnalysisOverlays(dc)
-        self.DrawNeedleOverlay(dc)
-        dc.end()
+            self.draw_simple_stitches(painter)
+        self.draw_analysis_overlays(painter)
+        self.draw_needle_overlay(painter)
+        painter.end()
 
-    def DrawSimpleStitches(self, painter):
+    def draw_simple_stitches(self, painter):
         """Draw flat-color stitches with Qt's antialiased vector painter."""
         if not self.show_stitches or self.visible_count == 0:
             return
@@ -866,7 +866,7 @@ class EmbroideryViewerPanel(QWidget):
                 )
             )
 
-    def DrawAnalysisOverlays(self, dc):
+    def draw_analysis_overlays(self, painter):
         """Draw optional jump paths and local stitch-density diagnostics."""
         if self.show_jumps:
             for x1, y1, x2, y2, risky, stitch_index in self.jump_segments:
@@ -875,15 +875,15 @@ class EmbroideryViewerPanel(QWidget):
                 if self.risky_jumps_only and not risky:
                     continue
                 color = QColor(220, 45, 45) if risky else QColor(100, 100, 100)
-                dc.setPen(QPen(color, 2, Qt.DashLine))
-                dc.drawLine(
+                painter.setPen(QPen(color, 2, Qt.DashLine))
+                painter.drawLine(
                     int(x1 * self.zoom + self.pan_x),
                     int(y1 * self.zoom + self.pan_y),
                     int(x2 * self.zoom + self.pan_x),
                     int(y2 * self.zoom + self.pan_y),
                 )
 
-    def DrawNeedleOverlay(self, dc):
+    def draw_needle_overlay(self, painter):
         """Draw the current needle position above the cached stitch bitmap."""
         if not self.show_stitches or not self.show_needle or self.stitches_np.shape[
                 0] == 0:
@@ -902,25 +902,25 @@ class EmbroideryViewerPanel(QWidget):
             arm, radius, outer_radius = 48, 16, 28
         else:
             arm, radius, outer_radius = 14, 6, 0
-        dc.setPen(QPen(QColor(10, 10, 10), 8 if outer_radius else 4))
-        dc.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
-        dc.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
+        painter.setPen(QPen(QColor(10, 10, 10), 8 if outer_radius else 4))
+        painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
+        painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
         if outer_radius:
-            dc.setBrush(Qt.NoBrush)
-            dc.drawEllipse(needle_x - outer_radius, needle_y - outer_radius,
+            painter.setBrush(Qt.NoBrush)
+            painter.drawEllipse(needle_x - outer_radius, needle_y - outer_radius,
                            outer_radius * 2, outer_radius * 2)
-        dc.setPen(QPen(QColor(255, 255, 255), 3 if outer_radius else 2))
-        dc.setBrush(Qt.NoBrush)
-        dc.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
-        dc.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
-        dc.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
-        dc.setBrush(QColor(255, 220, 40))
-        dc.setPen(QPen(QColor(10, 10, 10), 2))
+        painter.setPen(QPen(QColor(255, 255, 255), 3 if outer_radius else 2))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
+        painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
+        painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
+        painter.setBrush(QColor(255, 220, 40))
+        painter.setPen(QPen(QColor(10, 10, 10), 2))
         marker_radius = 5 if outer_radius else 3
-        dc.drawEllipse(needle_x - marker_radius, needle_y - marker_radius,
+        painter.drawEllipse(needle_x - marker_radius, needle_y - marker_radius,
                        marker_radius * 2, marker_radius * 2)
 
-    def HighlightNeedle(self):
+    def highlight_needle(self):
         """Pulse a large needle marker after user navigation."""
         if not self.show_needle:
             return
@@ -944,10 +944,10 @@ class EmbroideryViewerPanel(QWidget):
         if stage == 1:
             self._needle_highlight_timer = QTimer(self)
             self._needle_highlight_timer.setSingleShot(True)
-            self._needle_highlight_timer.timeout.connect(self.StopNeedleHighlight)
+            self._needle_highlight_timer.timeout.connect(self.stop_needle_highlight)
             self._needle_highlight_timer.start(300)
 
-    def StopNeedleHighlight(self):
+    def stop_needle_highlight(self):
         """Return the needle crosshair to its normal size."""
         self.needle_highlighted = False
         self.needle_highlight_stage = 0

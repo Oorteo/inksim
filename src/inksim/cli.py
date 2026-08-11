@@ -240,7 +240,7 @@ def main():
             splash.close_after()
             raise SystemExit(1)
         if args.play:
-            frame.viewer.ToggleAutoPlay(forward=True)
+            frame.viewer.toggle_auto_play(forward=True)
     splash.set_message("Ready")
     splash.close_after()
     app.exec()
