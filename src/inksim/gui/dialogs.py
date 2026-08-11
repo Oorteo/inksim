@@ -88,7 +88,11 @@ class EmbroideryOpenDialog(QDialog):
         if row < 0 or row >= len(self.file_paths):
             return
         self.selected_path = self.file_paths[row]
-        self.preview.load_design(str(self.selected_path), fit_to_screen=True)
+        self.preview.load_design(
+            str(self.selected_path),
+            fit_to_screen=True,
+            precompute_density=False,
+        )
 
     def open_selected(self):
         if self.selected_path:

@@ -2,7 +2,15 @@ import time
 
 import numpy as np
 import pystitch as emb
-from PySide6.QtCore import QLineF, Qt, QTimer, Signal
+from PySide6.QtCore import (
+    QLineF,
+    QObject,
+    QRunnable,
+    QThreadPool,
+    Qt,
+    QTimer,
+    Signal,
+)
 from PySide6.QtGui import (
     QColor,
     QFont,
@@ -15,7 +23,6 @@ from PySide6.QtGui import (
     QTextTable,
 )
 from PySide6.QtWidgets import (
-    QApplication,
     QDialog,
     QGridLayout,
     QMessageBox,
@@ -35,6 +42,35 @@ from ..render import (
 )
 from .help import show_help
 from .settings import show_settings
+
+
+class DensityWorkerSignals(QObject):
+    finished = Signal(int, object)
+    failed = Signal(int, object)
+
+
+class DensityWorker(QRunnable):
+    def __init__(self, request_id, points, bounds):
+        super().__init__()
+        self.request_id = request_id
+        self.points = points
+        self.bounds = bounds
+        self.signals = DensityWorkerSignals()
+
+    def run(self):
+        min_x, min_y, max_x, max_y = self.bounds
+        try:
+            density = calculate_stitch_density_numba(
+                self.points,
+                min_x,
+                min_y,
+                max_x,
+                max_y,
+            )
+        except Exception as error:
+            self.signals.failed.emit(self.request_id, error)
+        else:
+            self.signals.finished.emit(self.request_id, density)
 
 
 class EmbroideryViewerWidget(QWidget):
@@ -86,6 +122,8 @@ class EmbroideryViewerWidget(QWidget):
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
         self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
         self.density_ready = False
+        self._density_request_id = 0
+        self._density_worker = None
         self.cached_bitmap = None
         self.cached_pan_x = self.pan_x
         self.cached_pan_y = self.pan_y
@@ -610,7 +648,7 @@ class EmbroideryViewerWidget(QWidget):
     def set_step_size(self, size):
         self.step_size = max(1, size)
 
-    def load_design(self, path, fit_to_screen=True):
+    def load_design(self, path, fit_to_screen=True, precompute_density=True):
         """Load an embroidery file into renderable stitch segments."""
         try:
             pattern = emb.read(path)
@@ -632,6 +670,8 @@ class EmbroideryViewerWidget(QWidget):
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
         self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
         self.density_ready = False
+        self._density_request_id += 1
+        self._density_worker = None
         jump_run_indices = []
         for st in pattern.stitches:
             x = st[0] / 10.0
@@ -726,30 +766,45 @@ class EmbroideryViewerWidget(QWidget):
         self.update()
         if self.progress_bar:
             self.progress_bar.update()
+        if precompute_density and len(self.stitch_points_np) > 0:
+            self._start_density_calculation()
         return True
 
     def calculate_stitch_density(self):
         """Calculate the density map once, on demand, using the Numba kernel."""
         if self.density_ready or len(self.stitch_points_np) == 0:
             return
-        self.status_message.emit("Calculating stitch density...", 0)
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        QApplication.processEvents()
-        min_x, min_y, max_x, max_y = self.bounds
-        try:
-            self.stitch_density_np = calculate_stitch_density_numba(
-                self.stitch_points_np,
-                min_x,
-                min_y,
-                max_x,
-                max_y,
-            )
-        finally:
-            QApplication.restoreOverrideCursor()
+        self._start_density_calculation(show_status=True)
+
+    def _start_density_calculation(self, show_status=False):
+        if self.density_ready or self._density_worker is not None:
+            return
+        if show_status:
+            self.status_message.emit("Calculating stitch density...", 0)
+        worker = DensityWorker(
+            self._density_request_id,
+            self.stitch_points_np.copy(),
+            self.bounds,
+        )
+        worker.signals.finished.connect(self._density_ready)
+        worker.signals.failed.connect(self._density_failed)
+        self._density_worker = worker
+        QThreadPool.globalInstance().start(worker)
+
+    def _density_ready(self, request_id, density):
+        if request_id != self._density_request_id:
+            return
+        self._density_worker = None
+        self.stitch_density_np = density
         self.density_ready = True
         self.status_message.emit("Density map ready", 1500)
         self.invalidate_cache()
-        self.update()
+
+    def _density_failed(self, request_id, error):
+        if request_id != self._density_request_id:
+            return
+        self._density_worker = None
+        self.status_message.emit(f"Density calculation failed: {error}", 5000)
 
     def paintEvent(self, e):
         """Render the current viewport, using the cached bitmap when possible."""

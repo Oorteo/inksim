@@ -225,9 +225,13 @@ class MainWindow(QMainWindow):
         )
         if path: self.export_png(path, icon=True, dpi=96)
 
-    def open_file(self, path):
+    def open_file(self, path, precompute_density=True):
         selected_path = Path(path).resolve()
-        if not self.viewer.load_design(str(selected_path), fit_to_screen=True):
+        if not self.viewer.load_design(
+            str(selected_path),
+            fit_to_screen=True,
+            precompute_density=precompute_density,
+        ):
             return False
         self.current_file_path = selected_path
         self.last_directory = str(selected_path.parent)

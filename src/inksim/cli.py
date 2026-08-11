@@ -190,7 +190,7 @@ def main():
         for index, (input_path, export_path) in enumerate(
             zip(input_paths, export_paths), 1
         ):
-            if not frame.open_file(str(input_path)):
+            if not frame.open_file(str(input_path), precompute_density=False):
                 success = False
                 print(
                     f"[{index}/{total_inputs}] Failed to load {input_path}",
