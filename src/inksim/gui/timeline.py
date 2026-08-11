@@ -19,43 +19,38 @@ class TimelineWidget(QWidget):
         self.bar_y = 8
         self.bar_h = 14
 
-    def OnClick(self, event):
-        self.dragging = True
-        self.drag_moved = False
-        self.Seek(event.position().x())
-        self.viewer.HighlightNeedle()
-        self.grabMouse()
-
-    def OnLeftUp(self, event):
-        if self.dragging:
-            self.Seek(event.position().x())
-            self.viewer.HighlightNeedle()
-            self.releaseMouse()
-            self.dragging = False
-            self.drag_moved = False
-
-    def OnMotionClick(self, event):
-        if self.dragging and event.buttons() & Qt.LeftButton:
-            self.drag_moved = True
-            self.Seek(event.position().x())
-
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
-            self.OnClick(event)
+            self.dragging = True
+            self.drag_moved = False
+            self.seek(event.position().x())
+            self.viewer.HighlightNeedle()
+            self.grabMouse()
+            event.accept()
         else:
             super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
-            self.OnLeftUp(event)
+            if self.dragging:
+                self.seek(event.position().x())
+                self.viewer.HighlightNeedle()
+                self.releaseMouse()
+                self.dragging = False
+                self.drag_moved = False
+            event.accept()
         else:
             super().mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event):
-        self.OnMotionClick(event)
-        super().mouseMoveEvent(event)
+        if self.dragging and event.buttons() & Qt.LeftButton:
+            self.drag_moved = True
+            self.seek(event.position().x())
+            event.accept()
+        else:
+            super().mouseMoveEvent(event)
 
-    def Seek(self, mouse_x):
+    def seek(self, mouse_x):
         width = self.width()
         total = self.viewer.stitches_np.shape[0]
         if total == 0 or width == 0:

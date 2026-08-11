@@ -101,17 +101,18 @@ class EmbroideryViewerPanel(QWidget):
         self.play_speed_index = 2
         self.play_step = self.play_speed_levels[self.play_speed_index]
         self.is_playing = False
-        self.play_timer.timeout.connect(self.OnPlayTimer)
+        self.play_timer.timeout.connect(self.advance_playback)
 
     def invalidate_cache(self):
         self._cache_valid = False
         self.update()
 
-    def OnSize(self, e):
+    def resizeEvent(self, event):
         """Invalidate the bitmap and retry deferred initial fitting."""
         self.invalidate_cache()
         if self._pending_fit_to_screen and self.stitches_np.shape[0] > 0:
             QTimer.singleShot(0, self._try_fit_to_screen)
+        super().resizeEvent(event)
 
     def _try_fit_to_screen(self, retries=20):
         """Fit the design once Qt has assigned a usable panel size."""
@@ -178,7 +179,7 @@ class EmbroideryViewerPanel(QWidget):
         if self.progress_bar:
             self.progress_bar.update()
 
-    def OnPlayTimer(self, e=None):
+    def advance_playback(self):
         """Advance playback by one timer step in the current direction."""
         total = self.stitches_np.shape[0]
         if total == 0:
@@ -224,10 +225,10 @@ class EmbroideryViewerPanel(QWidget):
         self.play_step = self.play_speed_levels[new_index]
         return True
 
-    def OnKeyUp(self, e):
+    def keyReleaseEvent(self, event):
         """Reset key-repeat throttling after a key is released."""
         self._last_key_time = 0
-        e.accept()
+        event.accept()
 
     def JumpToColor(self, direction):
         """Move to the next or previous recorded thread-color boundary."""
@@ -322,7 +323,7 @@ class EmbroideryViewerPanel(QWidget):
         self.invalidate_cache()
         self.CenterDesign()
 
-    def OnKeyDown(self, e):
+    def keyPressEvent(self, e):
         """Handle playback, navigation, display, and view shortcut keys."""
         now = time.time()
         key = e.key()
@@ -953,7 +954,7 @@ class EmbroideryViewerPanel(QWidget):
         self._needle_highlight_timer = None
         self.update()
 
-    def OnWheel(self, e):
+    def wheelEvent(self, e):
         """Zoom around the mouse position while preserving its world point."""
         position = e.position().toPoint()
         mx, my = position.x(), position.y()
@@ -981,14 +982,14 @@ class EmbroideryViewerPanel(QWidget):
         self.invalidate_cache()
         self.update()
 
-    def OnLeftDown(self, e):
+    def mousePressEvent(self, e):
         """Start panning from the current mouse position."""
         self.drag_start = e.position().toPoint()
         self.pan_start = (self.pan_x, self.pan_y)
         self.setFocus()
         self.grabMouse()
 
-    def OnLeftUp(self, e):
+    def mouseReleaseEvent(self, e):
         """Stop panning and clean up any progress-bar mouse capture."""
         self.releaseMouse()
         self.drag_start = None
@@ -998,7 +999,7 @@ class EmbroideryViewerPanel(QWidget):
             self.progress_bar.dragging = False
             self.progress_bar.releaseMouse()
 
-    def OnMotion(self, e):
+    def mouseMoveEvent(self, e):
         """Update the viewport offset while the user drags the canvas."""
         if self.drag_start and e.buttons() & Qt.LeftButton:
             position = e.position().toPoint()
@@ -1007,23 +1008,3 @@ class EmbroideryViewerPanel(QWidget):
             self.pan_x = self.pan_start[0] + dx
             self.pan_y = self.pan_start[1] + dy
             self.update()
-
-    def keyPressEvent(self, event):
-        self.OnKeyDown(event)
-
-    def keyReleaseEvent(self, event):
-        self.OnKeyUp(event)
-
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.OnLeftDown(event)
-
-    def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.OnLeftUp(event)
-
-    def mouseMoveEvent(self, event):
-        self.OnMotion(event)
-
-    def wheelEvent(self, event):
-        self.OnWheel(event)
