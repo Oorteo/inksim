@@ -1,4 +1,4 @@
-from PySide6.QtCore import QPoint, QRect, Qt
+from PySide6.QtCore import QPoint, QRect, Qt, Signal
 from PySide6.QtGui import QColor, QPainter, QPen
 from PySide6.QtWidgets import QWidget
 
@@ -6,12 +6,12 @@ from PySide6.QtWidgets import QWidget
 class TimelineWidget(QWidget):
     """Interactive stitch timeline shown below the embroidery viewer."""
 
+    seek_requested = Signal(int)
+
     def __init__(self, parent, viewer_panel):
         super().__init__(parent)
         self.viewer = viewer_panel
         self.setMinimumHeight(58)
-        self.setAttribute(Qt.WA_OpaquePaintEvent)
-        self.setAutoFillBackground(True)
         self.setStyleSheet("background: rgb(250, 250, 250)")
         self.dragging = False
         self.drag_moved = False
@@ -58,9 +58,7 @@ class TimelineWidget(QWidget):
         bar_width = width - 2 * self.margin_x
         ratio = max(0.0, min(1.0, (mouse_x - self.margin_x) / bar_width
                              if bar_width > 0 else 0))
-        self.viewer.visible_count = int(ratio * total)
-        self.viewer.invalidate_cache()
-        self.viewer.update()
+        self.seek_requested.emit(int(ratio * total))
         self.update()
 
     def paintEvent(self, event):

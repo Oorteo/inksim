@@ -205,6 +205,12 @@ class EmbroideryViewerWidget(QWidget):
         if self.progress_bar:
             self.progress_bar.update()
 
+    def seek_to(self, visible_count):
+        total = self.stitches_np.shape[0]
+        self.visible_count = max(0, min(total, visible_count))
+        self.invalidate_cache()
+        self.update()
+
     def toggle_auto_play(self, forward=None):
         """Start or stop playback, choosing its direction when starting."""
         if self.is_playing:
@@ -336,16 +342,15 @@ class EmbroideryViewerWidget(QWidget):
         is_ctrl = bool(e.modifiers() & Qt.ControlModifier)
         # Let menu mnemonics and global shortcuts pass through
         # Alt+F, Alt+P for menu, Ctrl+Q for Quit, Ctrl+O for Open etc.
-        if is_alt and key in (ord('F'), ord('f'), ord('P'), ord('p')):
+        if is_alt and key in (Qt.Key_F, Qt.Key_P):
             e.ignore()
             return
-        if is_ctrl and key in (ord('Q'), ord('q'), ord('O'), ord('o')):
+        if is_ctrl and key in (Qt.Key_Q, Qt.Key_O):
             e.ignore()
             return
         is_space_or_c = key in (
             Qt.Key_Space,
-            ord("C"),
-            ord("c"),
+            Qt.Key_C,
         )
         if (not is_space_or_c
                 and now - self._last_key_time < self._key_throttle
@@ -408,17 +413,17 @@ class EmbroideryViewerWidget(QWidget):
         elif key == Qt.Key_Space:
             self.toggle_auto_play()
             return
-        elif key in (ord("+"), ord("="), Qt.Key_Plus):
+        elif key in (Qt.Key_Plus, Qt.Key_Equal):
             self.line_width = min(1.0, self.line_width + 0.1)
             changed = True
-        elif key in (ord("-"), ord("_"), Qt.Key_Minus):
+        elif key in (Qt.Key_Minus, Qt.Key_Underscore):
             self.line_width = max(0.1, self.line_width - 0.1)
             changed = True
-        elif key in (ord("["), ord("{"), ord("]"), ord("}")):
+        elif key in (Qt.Key_BracketLeft, Qt.Key_BracketRight):
             shading_delta = self.shading_step
-            if key in (ord("["), ord("{")):
+            if key == Qt.Key_BracketLeft:
                 shading_delta = -shading_delta
-            if is_shift or key in (ord("{"), ord("}")):
+            if is_shift:
                 self.light_factor = max(
                     0.0,
                     min(1.0, self.light_factor + shading_delta),
@@ -429,45 +434,45 @@ class EmbroideryViewerWidget(QWidget):
                     min(1.0, self.dark_factor + shading_delta),
                 )
             changed = True
-        elif key in (ord("C"), ord("c")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_C and not is_alt and not is_ctrl:
             self.center_design()
             return
-        elif key in (ord("F"), ord("f")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_F and not is_alt and not is_ctrl:
             self.fit_to_screen()
             return
-        elif key == ord("1") and not is_alt and not is_ctrl:
+        elif key == Qt.Key_1 and not is_alt and not is_ctrl:
             self.set_one_to_one()
             return
         elif key == Qt.Key_F11:
             self.fullscreen_requested.emit()
             return
-        elif key in (ord("G"), ord("g")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_G and not is_alt and not is_ctrl:
             self.show_grid = not self.show_grid
             self.grid_toggled.emit(self.show_grid)
             changed = True
-        elif key in (ord("J"), ord("j")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_J and not is_alt and not is_ctrl:
             self.toggle_display_mode("J")
             changed = True
-        elif key in (ord("X"), ord("x")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_X and not is_alt and not is_ctrl:
             self.toggle_display_mode("X")
             changed = True
-        elif key in (ord("V"), ord("v")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_V and not is_alt and not is_ctrl:
             self.toggle_display_mode("V")
             changed = True
-        elif key in (ord("R"), ord("r")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_R and not is_alt and not is_ctrl:
             self.toggle_display_mode("R")
             changed = True
-        elif key in (ord("N"), ord("n")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_N and not is_alt and not is_ctrl:
             self.show_needle = not self.show_needle
             if self.show_needle:
                 self.highlight_needle()
             else:
                 self.stop_needle_highlight()
             changed = True
-        elif key in (ord("H"), ord("h")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_H and not is_alt and not is_ctrl:
             self.show_help()
             return
-        elif key in (ord("I"), ord("i")) and not is_alt and not is_ctrl:
+        elif key == Qt.Key_I and not is_alt and not is_ctrl:
             self.show_settings()
             return
         elif key == Qt.Key_Escape:
@@ -587,7 +592,8 @@ class EmbroideryViewerWidget(QWidget):
         def on_dialog_key(event):
             key_code = event.key()
             shortcut = "H" if key == "help_dialog" else "I"
-            if key_code in (ord(shortcut), ord(shortcut.lower())):
+            shortcut_key = Qt.Key_H if shortcut == "H" else Qt.Key_I
+            if key_code == shortcut_key:
                 dlg.close()
                 return
             event.ignore()
@@ -923,11 +929,11 @@ class EmbroideryViewerWidget(QWidget):
         self._needle_highlight_timer = QTimer(self)
         self._needle_highlight_timer.setSingleShot(True)
         self._needle_highlight_timer.timeout.connect(
-            lambda: self._SetNeedleHighlightStage(1))
+            lambda: self._set_needle_highlight_stage(1))
         self._needle_highlight_timer.start(200)
         self.update()
 
-    def _SetNeedleHighlightStage(self, stage):
+    def _set_needle_highlight_stage(self, stage):
         """Advance the temporary needle marker through its visual pulse."""
         if not self.show_needle:
             return

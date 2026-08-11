@@ -46,4 +46,3 @@ class ModeBar(QWidget):
             button.setStyleSheet(
                 f"background: {color.name()}; color: {foreground};"
             )
-        self.layout().activate()

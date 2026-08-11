@@ -16,8 +16,7 @@ class EmbroideryOpenDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("Open embroidery file")
         self.resize(1100, 720)
-        self.selected_path = None
-        self._modal_result = None
+        self.selected_path: Path | None = None
         self.current_directory = Path(initial_directory or Path.cwd()).resolve()
         self.initial_file = Path(selected_file).resolve() if selected_file else None
         self.extensions = get_supported_input_extensions()
@@ -91,18 +90,12 @@ class EmbroideryOpenDialog(QDialog):
         self.selected_path = self.file_paths[row]
         self.preview.load_design(str(self.selected_path), fit_to_screen=True)
 
-    def open_selected(self, event=None):
+    def open_selected(self):
         if self.selected_path:
-            self._finish_modal(QDialog.Accepted)
+            self.accept()
 
-    def cancel_dialog(self, event=None):
-        self._finish_modal(QDialog.Rejected)
-
-    def _finish_modal(self, result):
-        if self._modal_result is not None:
-            return
-        self._modal_result = result
-        self.done(result)
+    def cancel_dialog(self):
+        self.reject()
 
     def change_directory(self):
         self.set_directory(self.directory_text.currentText())
@@ -122,7 +115,3 @@ class EmbroideryOpenDialog(QDialog):
                                                       str(self.current_directory))
         if directory:
             self.set_directory(directory)
-
-    @property
-    def path(self):
-        return str(self.selected_path) if self.selected_path else ""

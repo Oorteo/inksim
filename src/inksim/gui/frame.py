@@ -39,6 +39,7 @@ class MainWindow(QMainWindow):
         self.viewer = EmbroideryViewerWidget(main_panel, None)
         self.progress = TimelineWidget(main_panel, self.viewer)
         self.mode_status = ModeBar(main_panel, self.viewer)
+        self.progress.seek_requested.connect(self.viewer.seek_to)
         self.viewer.mode_panel = self.mode_status
         self.viewer.progress_bar = self.progress
         layout.addWidget(self.viewer, 1)
@@ -122,16 +123,14 @@ class MainWindow(QMainWindow):
         )
         self._action(playback, "Next color", lambda: (self.viewer.jump_to_color(1), self._refresh_after_color_jump()))
         self._action(playback, "Prev color", lambda: (self.viewer.jump_to_color(-1), self._refresh_after_color_jump()))
-        self.menubar = self.menuBar()
 
     def _finish_initial_display(self, autoplay):
-        self._main_panel.layout().activate()
         self.viewer.fit_to_screen()
         self.viewer.invalidate_cache()
         self.viewer.update()
         self.progress.update()
         if autoplay:
-            self.viewer.visible_count = 0
+            self.viewer.seek_to(0)
             self.viewer.toggle_auto_play(forward=True)
 
     def _refresh_after_color_jump(self):
@@ -157,7 +156,7 @@ class MainWindow(QMainWindow):
     def open_file_dialog(self):
         dialog = EmbroideryOpenDialog(self, self.last_directory, self.current_file_path)
         if dialog.exec() == QDialog.Accepted:
-            self.open_file(dialog.path)
+            self.open_file(dialog.selected_path)
 
     def _default_export_name(self, suffix):
         base_name = self.current_file_path.stem if self.current_file_path else "inksim"
@@ -199,7 +198,7 @@ class MainWindow(QMainWindow):
         image.save(path, "PNG", pnginfo=metadata, dpi=(dpi, dpi))
         return True
 
-    def export_print_png(self, event=None):
+    def export_print_png(self):
         path = self._choose_export_path(
             "Export PNG for print",
             self._default_export_name("-simple.png"),
@@ -208,7 +207,7 @@ class MainWindow(QMainWindow):
         )
         if path: self.export_png(path, dpi=300)
 
-    def export_shaded_png(self, event=None):
+    def export_shaded_png(self):
         path = self._choose_export_path(
             "Export shaded PNG for print",
             self._default_export_name(".png"),
@@ -217,7 +216,7 @@ class MainWindow(QMainWindow):
         )
         if path: self.export_png(path, dpi=300, shaded=True)
 
-    def export_icon_png(self, event=None):
+    def export_icon_png(self):
         path = self._choose_export_path(
             "Export preview PNG",
             self._default_export_name("_thumb.png"),
