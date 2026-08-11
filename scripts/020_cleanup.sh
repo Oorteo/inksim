@@ -41,11 +41,13 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
 }
 
 declare -a TARGETS=()
+# Find generated artifacts outside .venv; the virtual environment is opt-in.
 while IFS= read -r -d '' target; do
     TARGETS+=("$target")
 done < <(
     find "$PROJECT_ROOT" \
         -path "$PROJECT_ROOT/.git" -prune -o \
+        -path "$PROJECT_ROOT/.venv" -prune -o \
         -type d \( \
         -name '__pycache__' -o \
         -name '.pytest_cache' -o \

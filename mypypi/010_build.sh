@@ -1,7 +1,20 @@
 #!/usr/bin/bash
-
+# Prepare the README for PyPI and build the project package.
 set -euo pipefail
-set -x
+
+assume_yes=false
+case "${1:-}" in
+"") ;;
+-y | --yes) assume_yes=true ;;
+-h | --help)
+    printf 'Usage: %s [-y|--yes]\n' "$0"
+    exit 0
+    ;;
+*)
+    printf 'Usage: %s [-y|--yes]\n' "$0" >&2
+    exit 1
+    ;;
+esac
 
 source_path="${BASH_SOURCE[0]}"
 # Resolve symlinks portably; this is the Bash equivalent of readlink -f.
@@ -11,7 +24,15 @@ while [[ -L "$source_path" ]]; do
     [[ "$source_path" = /* ]] || source_path="$script_dir/$source_path"
 done
 script_dir="$(cd -P "$(dirname "$source_path")" && pwd)"
-project_root="$(cd -- "$script_dir/.." && pwd)"
+# Find the project root instead of assuming this script is one level below it.
+project_root="$script_dir"
+while [[ ! -f "$project_root/pyproject.toml" && "$project_root" != "/" ]]; do
+    project_root="$(cd -- "$project_root/.." && pwd)"
+done
+[[ -f "$project_root/pyproject.toml" ]] || {
+    echo "Could not find pyproject.toml above $script_dir." >&2
+    exit 1
+}
 cd "$project_root"
 pwd
 
@@ -28,6 +49,21 @@ docs_ref="${INKSIM_DOCS_REF:-$(git branch --show-current)}"
 if [[ -z "$docs_ref" ]]; then
     docs_ref="$(git rev-parse --short HEAD)"
 fi
+
+printf '\nBuild plan for: %s\n' "$project_root"
+printf '  Remove existing dist/ and build/ directories.\n'
+printf '  Prepare README links for PyPI temporarily.\n'
+printf '  Build the package with uv.\n'
+if [[ "$assume_yes" != true ]]; then
+    printf 'Continue? [y/N] '
+    read -r answer
+    [[ "$answer" =~ ^[Yy]$ ]] || {
+        printf 'Build cancelled.\n'
+        exit 0
+    }
+fi
+
+set -x
 readme_backup="$(mktemp)"
 cp "$project_root/README.md" "$readme_backup"
 trap 'cp "$readme_backup" "$project_root/README.md"; rm -f "$readme_backup"' EXIT
