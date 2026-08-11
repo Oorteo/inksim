@@ -3,7 +3,7 @@ from time import monotonic
 
 from PySide6.QtCore import Qt, QThread, QTimer
 from PySide6.QtGui import QColor, QPainter, QPen, QPixmap
-from PySide6.QtWidgets import QLabel, QSplashScreen, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QLabel, QSplashScreen, QVBoxLayout, QWidget
 
 from ..render import (
     render_fabric_numba,
