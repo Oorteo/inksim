@@ -94,6 +94,10 @@ class MainWindow(QMainWindow):
         self.grid_action = self._action(file_menu, "Show 1cm grid", self.toggle_grid, "G", True)
         self.grid_action.setChecked(True)
         self.realistic_action = self._action(file_menu, "Realistic thread render", self.toggle_realistic, "R", True)
+        self.viewer.grid_toggled.connect(self.grid_action.setChecked)
+        self.viewer.renderer_changed.connect(
+            lambda renderer: self.realistic_action.setChecked(renderer == "realistic")
+        )
         self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer)
         self._action(file_menu, "Help", self.viewer.show_help, "H")
         file_menu.addSeparator()

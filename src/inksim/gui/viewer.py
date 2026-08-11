@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 import pystitch as emb
-from PySide6.QtCore import QLineF, Qt, QTimer
+from PySide6.QtCore import QLineF, Qt, QTimer, Signal
 from PySide6.QtGui import (
     QColor,
     QFont,
@@ -45,6 +45,9 @@ class EmbroideryViewerWidget(QWidget):
     current stitch position, zoom and pan, grid visibility, playback, and
     keyboard/mouse interaction.
     """
+
+    grid_toggled = Signal(bool)
+    renderer_changed = Signal(str)
 
     def __init__(self, parent, progress_bar):
         """Create an empty viewer connected to the progress bar."""
@@ -440,9 +443,7 @@ class EmbroideryViewerWidget(QWidget):
                 return
         elif key in (ord("G"), ord("g")) and not is_alt and not is_ctrl:
             self.show_grid = not self.show_grid
-            frame = self.window()
-            if hasattr(frame, "gridItem"):
-                frame.gridItem.setChecked(self.show_grid)
+            self.grid_toggled.emit(self.show_grid)
             changed = True
         elif key in (ord("J"), ord("j")) and not is_alt and not is_ctrl:
             self.toggle_display_mode("J")
@@ -495,9 +496,6 @@ class EmbroideryViewerWidget(QWidget):
             self.set_renderer(
                 "shaded" if self.active_renderer == "realistic" else "realistic"
             )
-            frame = self.window()
-            if hasattr(frame, "realisticItem"):
-                frame.realisticItem.setChecked(self.show_realistic)
         elif mode == "X":
             self.show_density = not self.show_density
             if self.show_density and not self.density_ready:
@@ -523,9 +521,7 @@ class EmbroideryViewerWidget(QWidget):
             raise ValueError(f"unknown stitch renderer: {renderer_key}")
         self.active_renderer = renderer_key
         self.show_realistic = renderer_key == "realistic"
-        frame = self.window()
-        if hasattr(frame, "realisticItem"):
-            frame.realisticItem.setChecked(self.show_realistic)
+        self.renderer_changed.emit(renderer_key)
         self.invalidate_cache()
         self.update()
         self.update_mode_indicators()
