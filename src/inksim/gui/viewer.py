@@ -1,10 +1,11 @@
+from collections import deque
+from threading import Lock
 import time
 
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import (
     QLineF,
-    QObject,
     QRunnable,
     QThreadPool,
     Qt,
@@ -49,12 +50,8 @@ def density_debug(message):
     logger.debug(message)
 
 
-class DensityResultBus(QObject):
-    finished = Signal(int, int, object)
-    failed = Signal(int, int, object)
-
-
-density_result_bus = DensityResultBus()
+density_results = deque()
+density_results_lock = Lock()
 
 
 class DensityWorker(QRunnable):
@@ -83,13 +80,19 @@ class DensityWorker(QRunnable):
                 f"elapsed={time.perf_counter() - started_at:.3f}s "
                 f"error={error!r}"
             )
-            density_result_bus.failed.emit(self.owner_id, self.request_id, error)
+            with density_results_lock:
+                density_results.append(
+                    ("failed", self.owner_id, self.request_id, error)
+                )
         else:
             density_debug(
                 f"worker finished request={self.request_id} "
                 f"elapsed={time.perf_counter() - started_at:.3f}s"
             )
-            density_result_bus.finished.emit(self.owner_id, self.request_id, density)
+            with density_results_lock:
+                density_results.append(
+                    ("finished", self.owner_id, self.request_id, density)
+                )
 
 
 class EmbroideryViewerWidget(QWidget):
@@ -144,8 +147,9 @@ class EmbroideryViewerWidget(QWidget):
         self._density_request_id = 0
         self._density_worker = None
         self._density_owner_id = id(self)
-        density_result_bus.finished.connect(self._density_ready)
-        density_result_bus.failed.connect(self._density_failed)
+        self._density_result_timer = QTimer(self)
+        self._density_result_timer.timeout.connect(self._poll_density_results)
+        self._density_result_timer.start(50)
         self._paint_sequence = 0
         self.cached_bitmap = None
         self.cached_pan_x = self.pan_x
@@ -829,13 +833,27 @@ class EmbroideryViewerWidget(QWidget):
         )
         QThreadPool.globalInstance().start(worker)
 
-    def _density_ready(self, owner_id, request_id, density):
+    def _poll_density_results(self):
+        own_results = []
+        other_results = []
+        with density_results_lock:
+            while density_results:
+                result = density_results.popleft()
+                (own_results if result[1] == self._density_owner_id
+                 else other_results).append(result)
+            density_results.extend(other_results)
+        for result_type, _, request_id, result in own_results:
+            if result_type == "finished":
+                self._density_ready(request_id, result)
+            else:
+                self._density_failed(request_id, result)
+
+    def _density_ready(self, request_id, density):
         density_debug(
-            f"result received owner={owner_id} request={request_id} "
+            f"result received request={request_id} "
             f"current={self._density_request_id}"
         )
-        if (owner_id != self._density_owner_id
-                or request_id != self._density_request_id):
+        if request_id != self._density_request_id:
             return
         self._density_worker = None
         self.stitch_density_np = density
@@ -843,13 +861,12 @@ class EmbroideryViewerWidget(QWidget):
         self.status_message.emit("Density map ready", 1500)
         self.invalidate_cache()
 
-    def _density_failed(self, owner_id, request_id, error):
+    def _density_failed(self, request_id, error):
         density_debug(
-            f"error received owner={owner_id} request={request_id} "
+            f"error received request={request_id} "
             f"current={self._density_request_id} error={error!r}"
         )
-        if (owner_id != self._density_owner_id
-                or request_id != self._density_request_id):
+        if request_id != self._density_request_id:
             return
         self._density_worker = None
         self.status_message.emit(f"Density calculation failed: {error}", 5000)
