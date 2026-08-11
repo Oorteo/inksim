@@ -3,12 +3,7 @@ from time import monotonic
 
 from PySide6.QtCore import Qt, QThread, QTimer
 from PySide6.QtGui import QColor, QPainter, QPen, QPixmap
-from PySide6.QtWidgets import (
-    QApplication,
-    QLabel,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import QLabel, QSplashScreen, QVBoxLayout, QWidget
 
 from ..render import (
     render_fabric_numba,
@@ -75,7 +70,7 @@ class LoadingSpinner(QWidget):
         painter.end()
 
 
-class SplashScreen(QWidget):
+class SplashScreen(QSplashScreen):
     """Small frameless startup window with an activity indicator."""
 
     def __init__(self, parent=None):
@@ -120,7 +115,6 @@ class SplashScreen(QWidget):
 
     def set_message(self, message):
         self.status.setText(message)
-        QApplication.processEvents()
 
     def show_centered(self):
         screen = QApplication.primaryScreen()
@@ -129,7 +123,6 @@ class SplashScreen(QWidget):
         self.show()
         self._shown_at = monotonic()
         self.spinner.start()
-        QApplication.processEvents()
 
     def close_after(self, minimum_ms=1500):
         """Close after the minimum visible time has elapsed."""
