@@ -540,7 +540,7 @@ class EmbroideryViewerPanel(QWidget):
 
     def RefreshModeIndicators(self):
         if self.mode_panel is not None:
-            self.mode_panel.RefreshIndicators()
+            self.mode_panel.update_indicators()
 
     def _show_markdown_columns_dialog(
         self, key, title, sections, columns=3, width=1050, height=700

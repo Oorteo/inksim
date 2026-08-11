@@ -15,17 +15,17 @@ class ModeBar(QWidget):
         for mode in ("R", "X", "J", "V"):
             button = QPushButton(mode, self)
             button.setFixedSize(32, 32)
-            button.clicked.connect(lambda checked=False, m=mode: self.OnModeClick(m))
+            button.clicked.connect(lambda checked=False, m=mode: self.toggle_mode(m))
             self.buttons[mode] = button
             sizer.addWidget(button)
         sizer.addStretch()
-        self.RefreshIndicators()
+        self.update_indicators()
 
-    def OnModeClick(self, mode):
+    def toggle_mode(self, mode):
         self.viewer.ToggleDisplayMode(mode)
         self.viewer.setFocus()
 
-    def RefreshIndicators(self):
+    def update_indicators(self):
         states = {
             "R": self.viewer.show_realistic,
             "X": self.viewer.show_density,

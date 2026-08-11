@@ -151,7 +151,7 @@ class MainWindow(QMainWindow):
     def open_file_dialog(self):
         dialog = EmbroideryOpenDialog(self, self.last_directory, self.current_file_path)
         if dialog.exec() == QDialog.Accepted:
-            self.open_file(dialog.selected_path)
+            self.open_file(dialog.path)
 
     def _default_export_name(self, suffix):
         base_name = self.current_file_path.stem if self.current_file_path else "inksim"

@@ -46,16 +46,16 @@ class EmbroideryOpenDialog(QDialog):
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
         root_layout.addWidget(buttons)
         self.file_list.currentRowChanged.connect(self._on_row_changed)
-        self.file_list.itemDoubleClicked.connect(self.OnOpen)
-        self.directory_text.lineEdit().returnPressed.connect(self.OnDirectoryEnter)
-        up_button.clicked.connect(self.OnUp)
-        browse_button.clicked.connect(self.OnBrowse)
-        buttons.accepted.connect(self.OnOpen)
-        buttons.rejected.connect(self.OnCancel)
-        self.RefreshFiles()
+        self.file_list.itemDoubleClicked.connect(self.open_selected)
+        self.directory_text.lineEdit().returnPressed.connect(self.change_directory)
+        up_button.clicked.connect(self.go_to_parent_directory)
+        browse_button.clicked.connect(self.browse_directory)
+        buttons.accepted.connect(self.open_selected)
+        buttons.rejected.connect(self.cancel_dialog)
+        self.refresh_files()
         QTimer.singleShot(0, self.file_list.setFocus)
 
-    def RefreshFiles(self):
+    def refresh_files(self):
         if not self.current_directory.is_dir():
             return
         directories = sorted((path for path in self.current_directory.iterdir()
@@ -91,40 +91,38 @@ class EmbroideryOpenDialog(QDialog):
         self.selected_path = self.file_paths[row]
         self.preview.LoadDesign(str(self.selected_path), fit_to_screen=True)
 
-    def OnSelect(self, event):
-        self._on_row_changed(self.file_list.currentRow())
-
-    def OnOpen(self, event=None):
+    def open_selected(self, event=None):
         if self.selected_path:
-            self._EndModalOnce(QDialog.Accepted)
+            self._finish_modal(QDialog.Accepted)
 
-    def OnCancel(self, event=None):
-        self._EndModalOnce(QDialog.Rejected)
+    def cancel_dialog(self, event=None):
+        self._finish_modal(QDialog.Rejected)
 
-    def _EndModalOnce(self, result):
+    def _finish_modal(self, result):
         if self._modal_result is not None:
             return
         self._modal_result = result
         self.done(result)
 
-    def OnDirectoryEnter(self):
-        self.SetDirectory(self.directory_text.currentText())
+    def change_directory(self):
+        self.set_directory(self.directory_text.currentText())
 
-    def SetDirectory(self, directory):
+    def set_directory(self, directory):
         path = Path(directory).expanduser().resolve()
         if path.is_dir() and path != self.current_directory:
             self.current_directory = path
             self.initial_file = None
-            self.RefreshFiles()
+            self.refresh_files()
 
-    def OnUp(self):
-        self.SetDirectory(self.current_directory.parent)
+    def go_to_parent_directory(self):
+        self.set_directory(self.current_directory.parent)
 
-    def OnBrowse(self):
+    def browse_directory(self):
         directory = QFileDialog.getExistingDirectory(self, "Choose directory",
                                                       str(self.current_directory))
         if directory:
-            self.SetDirectory(directory)
+            self.set_directory(directory)
 
-    def GetPath(self):
+    @property
+    def path(self):
         return str(self.selected_path) if self.selected_path else ""
