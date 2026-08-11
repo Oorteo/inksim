@@ -49,19 +49,21 @@ def density_debug(message):
     logger.debug(message)
 
 
-class DensityWorkerSignals(QObject):
-    finished = Signal(int, object)
-    failed = Signal(int, object)
+class DensityResultBus(QObject):
+    finished = Signal(int, int, object)
+    failed = Signal(int, int, object)
+
+
+density_result_bus = DensityResultBus()
 
 
 class DensityWorker(QRunnable):
-    def __init__(self, request_id, points, bounds):
+    def __init__(self, owner_id, request_id, points, bounds):
         super().__init__()
-        self.setAutoDelete(False)
+        self.owner_id = owner_id
         self.request_id = request_id
         self.points = points
         self.bounds = bounds
-        self.signals = DensityWorkerSignals()
 
     def run(self):
         density_debug(f"worker start request={self.request_id}")
@@ -81,13 +83,13 @@ class DensityWorker(QRunnable):
                 f"elapsed={time.perf_counter() - started_at:.3f}s "
                 f"error={error!r}"
             )
-            self.signals.failed.emit(self.request_id, error)
+            density_result_bus.failed.emit(self.owner_id, self.request_id, error)
         else:
             density_debug(
                 f"worker finished request={self.request_id} "
                 f"elapsed={time.perf_counter() - started_at:.3f}s"
             )
-            self.signals.finished.emit(self.request_id, density)
+            density_result_bus.finished.emit(self.owner_id, self.request_id, density)
 
 
 class EmbroideryViewerWidget(QWidget):
@@ -141,6 +143,9 @@ class EmbroideryViewerWidget(QWidget):
         self.density_ready = False
         self._density_request_id = 0
         self._density_worker = None
+        self._density_owner_id = id(self)
+        density_result_bus.finished.connect(self._density_ready)
+        density_result_bus.failed.connect(self._density_failed)
         self._paint_sequence = 0
         self.cached_bitmap = None
         self.cached_pan_x = self.pan_x
@@ -812,12 +817,11 @@ class EmbroideryViewerWidget(QWidget):
         if show_status:
             self.status_message.emit("Calculating stitch density...", 0)
         worker = DensityWorker(
+            self._density_owner_id,
             self._density_request_id,
             self.stitch_points_np.copy(),
             self.bounds,
         )
-        worker.signals.finished.connect(self._density_ready)
-        worker.signals.failed.connect(self._density_failed)
         self._density_worker = worker
         density_debug(
             f"worker queued request={self._density_request_id} "
@@ -825,12 +829,13 @@ class EmbroideryViewerWidget(QWidget):
         )
         QThreadPool.globalInstance().start(worker)
 
-    def _density_ready(self, request_id, density):
+    def _density_ready(self, owner_id, request_id, density):
         density_debug(
-            f"result received request={request_id} "
+            f"result received owner={owner_id} request={request_id} "
             f"current={self._density_request_id}"
         )
-        if request_id != self._density_request_id:
+        if (owner_id != self._density_owner_id
+                or request_id != self._density_request_id):
             return
         self._density_worker = None
         self.stitch_density_np = density
@@ -838,12 +843,13 @@ class EmbroideryViewerWidget(QWidget):
         self.status_message.emit("Density map ready", 1500)
         self.invalidate_cache()
 
-    def _density_failed(self, request_id, error):
+    def _density_failed(self, owner_id, request_id, error):
         density_debug(
-            f"error received request={request_id} "
+            f"error received owner={owner_id} request={request_id} "
             f"current={self._density_request_id} error={error!r}"
         )
-        if request_id != self._density_request_id:
+        if (owner_id != self._density_owner_id
+                or request_id != self._density_request_id):
             return
         self._density_worker = None
         self.status_message.emit(f"Density calculation failed: {error}", 5000)
