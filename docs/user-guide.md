@@ -113,9 +113,11 @@ exports skip the calculation.
 ## Performance Diagnostics
 
 Density and preview timing diagnostics are disabled by default. Enable them
-when investigating slow file changes or rendering. The default log path is
-next to the first input file, using its basename with a `.log` suffix. Without
-an input file, the default is `inksim.log` in the current directory:
+when investigating slow file changes or rendering. When run from the project
+root, the default log path is `log/inksim.log`. The `log` directory is created
+automatically. Outside the project root, the default log path is next to the
+first input file, using its basename with a `.log` suffix; without an input
+file it is `inksim.log` in the current directory:
 
 ```bash
 uv run inksim --debug design.pes

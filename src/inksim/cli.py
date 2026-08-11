@@ -33,6 +33,11 @@ def _parse_pair(value, name, separator):
 
 
 def _default_log_path(input_paths):
+    project_root = Path.cwd()
+    if (project_root / "pyproject.toml").is_file() and (
+        project_root / "src" / "inksim"
+    ).is_dir():
+        return project_root / "log" / "inksim.log"
     if not input_paths:
         return Path("inksim.log")
     input_path = input_paths[0]
