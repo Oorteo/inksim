@@ -48,6 +48,8 @@ class EmbroideryViewerWidget(QWidget):
 
     grid_toggled = Signal(bool)
     renderer_changed = Signal(str)
+    fullscreen_requested = Signal()
+    status_message = Signal(str, int)
 
     def __init__(self, parent, progress_bar):
         """Create an empty viewer connected to the progress bar."""
@@ -437,10 +439,8 @@ class EmbroideryViewerWidget(QWidget):
             self.set_one_to_one()
             return
         elif key == Qt.Key_F11:
-            frame = self.window()
-            if hasattr(frame, "toggle_full_screen"):
-                frame.toggle_full_screen()
-                return
+            self.fullscreen_requested.emit()
+            return
         elif key in (ord("G"), ord("g")) and not is_alt and not is_ctrl:
             self.show_grid = not self.show_grid
             self.grid_toggled.emit(self.show_grid)
@@ -726,9 +726,7 @@ class EmbroideryViewerWidget(QWidget):
         """Calculate the density map once, on demand, using the Numba kernel."""
         if self.density_ready or len(self.stitch_points_np) == 0:
             return
-        frame = self.window()
-        if hasattr(frame, "statusBar"):
-            frame.statusBar().showMessage("Calculating stitch density...")
+        self.status_message.emit("Calculating stitch density...", 0)
         QApplication.setOverrideCursor(Qt.WaitCursor)
         QApplication.processEvents()
         min_x, min_y, max_x, max_y = self.bounds
@@ -743,9 +741,7 @@ class EmbroideryViewerWidget(QWidget):
         finally:
             QApplication.restoreOverrideCursor()
         self.density_ready = True
-        if hasattr(frame, "statusBar"):
-            frame.statusBar().showMessage("Density map ready")
-            QTimer.singleShot(1500, lambda: frame.statusBar().showMessage(DEFAULT_STATUS_TEXT))
+        self.status_message.emit("Density map ready", 1500)
         self.invalidate_cache()
         self.update()
 

@@ -98,6 +98,8 @@ class MainWindow(QMainWindow):
         self.viewer.renderer_changed.connect(
             lambda renderer: self.realistic_action.setChecked(renderer == "realistic")
         )
+        self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
+        self.viewer.status_message.connect(self.statusBar().showMessage)
         self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer)
         self._action(file_menu, "Help", self.viewer.show_help, "H")
         file_menu.addSeparator()
