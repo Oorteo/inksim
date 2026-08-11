@@ -7,7 +7,6 @@ import argparse
 import sys
 from pathlib import Path
 
-from PySide6.QtCore import QEventLoop
 from PySide6.QtWidgets import QApplication
 
 from .constants import APP_TITLE
@@ -222,28 +221,28 @@ def main():
     splash = SplashScreen()
     splash.show_centered()
     splash.set_message("Preparing InkSim...")
-    warmup = RendererWarmupThread()
-    warmup_loop = QEventLoop()
-    warmup.finished.connect(warmup_loop.quit)
+    warmup = RendererWarmupThread(app)
+
+    def finish_startup():
+        frame.show_initial_window(
+            False,
+            str(first_input) if first_input and first_input.is_dir() else None,
+        )
+        if first_input is not None and first_input.is_file():
+            splash.set_message(f"Loading {first_input.name}...")
+            if not frame.open_file(str(first_input)):
+                frame.close()
+                splash.close_after()
+                app.exit(1)
+                return
+            if args.play:
+                frame.viewer.toggle_auto_play(forward=True)
+        splash.set_message("Ready")
+        splash.close_after()
+
+    warmup.finished.connect(finish_startup)
     warmup.start()
-    warmup_loop.exec()
-    warmup.wait()
-    frame.show_initial_window(
-        False,
-        str(first_input) if first_input and first_input.is_dir() else None,
-    )
-    app.processEvents()
-    if first_input is not None and first_input.is_file():
-        splash.set_message(f"Loading {first_input.name}...")
-        if not frame.open_file(str(first_input)):
-            frame.close()
-            splash.close_after()
-            raise SystemExit(1)
-        if args.play:
-            frame.viewer.toggle_auto_play(forward=True)
-    splash.set_message("Ready")
-    splash.close_after()
-    app.exec()
+    raise SystemExit(app.exec())
 
 
 if __name__ == "__main__":
