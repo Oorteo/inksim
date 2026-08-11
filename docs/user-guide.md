@@ -105,5 +105,24 @@ RGB buffer used by the PySide6 viewer.
 The realistic renderer adds a procedural fabric background, cylindrical thread
 shading, highlights, shadows, and anti-aliased edges. It is intentionally
 approximate and can exaggerate sewing direction or dark gaps in satin areas.
-The density map is calculated lazily when enabled and cached until a new design
-is loaded.
+The density map is prepared in the background after a design is loaded in the
+main viewer and cached until a new design is loaded. The open-dialog preview
+does not calculate density while moving between files, and command-line PNG
+exports skip the calculation.
+
+## Performance Diagnostics
+
+Density and preview timing diagnostics are disabled by default. Enable them
+when investigating slow file changes or rendering:
+
+```bash
+INKSIM_DENSITY_DEBUG=1 \
+INKSIM_DENSITY_LOG="$PWD/inksim-density-debug.log" \
+uv run python -m inksim
+```
+
+The log records file loading, preview painting, and density-worker lifecycle
+events, including thread IDs and elapsed times. In the open dialog, entries
+with `precompute_density=False` confirm that density is not being calculated
+for arrow-key preview navigation. The logger is silent and creates no file
+unless `INKSIM_DENSITY_DEBUG=1` is set.
