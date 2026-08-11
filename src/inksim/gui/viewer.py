@@ -57,6 +57,7 @@ class DensityWorkerSignals(QObject):
 class DensityWorker(QRunnable):
     def __init__(self, request_id, points, bounds):
         super().__init__()
+        self.setAutoDelete(False)
         self.request_id = request_id
         self.points = points
         self.bounds = bounds
