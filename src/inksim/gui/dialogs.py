@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (QComboBox, QDialog, QDialogButtonBox,
                                QPushButton, QSplitter, QVBoxLayout, QWidget)
 
 from ..formats import get_supported_input_extensions
-from .viewer import EmbroideryViewerPanel
+from .viewer import EmbroideryViewerWidget
 
 
 class EmbroideryOpenDialog(QDialog):
@@ -34,7 +34,7 @@ class EmbroideryOpenDialog(QDialog):
         self.file_list = QListWidget(self)
         preview_container = QWidget(self)
         preview_container.setLayout(QVBoxLayout())
-        self.preview = EmbroideryViewerPanel(preview_container, None)
+        self.preview = EmbroideryViewerWidget(preview_container, None)
         self.preview.show_grid = False
         self.preview.show_needle = False
         preview_container.layout().addWidget(self.preview)

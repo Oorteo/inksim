@@ -37,7 +37,7 @@ from .help import show_help
 from .settings import show_settings
 
 
-class EmbroideryViewerPanel(QWidget):
+class EmbroideryViewerWidget(QWidget):
     """Fast interactive embroidery preview with playback and viewport controls.
 
     Stitch data is kept in a NumPy array and rendered into a bitmap by the

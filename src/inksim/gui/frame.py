@@ -16,7 +16,7 @@ from ..render import render_export_image
 from .dialogs import EmbroideryOpenDialog
 from .status import ModeBar
 from .timeline import TimelineWidget
-from .viewer import EmbroideryViewerPanel
+from .viewer import EmbroideryViewerWidget
 
 
 class MainWindow(QMainWindow):
@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
 
         main_panel = QWidget(self)
         layout = QVBoxLayout(main_panel)
-        self.viewer = EmbroideryViewerPanel(main_panel, None)
+        self.viewer = EmbroideryViewerWidget(main_panel, None)
         self.progress = TimelineWidget(main_panel, self.viewer)
         self.mode_status = ModeBar(main_panel, self.viewer)
         self.viewer.mode_panel = self.mode_status
