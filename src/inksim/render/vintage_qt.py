@@ -58,7 +58,7 @@ def render_vintage_qt(
         path.closeSubpath()
 
         base = QColor(int(stitch[4]), int(stitch[5]), int(stitch[6]))
-        dark = base.darker(120)
+        dark = base.darker(110)
         hue, saturation, lightness, alpha = base.getHsl()
         light = QColor.fromHsl(
             hue,
