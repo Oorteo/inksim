@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from .stitches import (
     render_realistic_numba,
     render_shaded_numba,
+    render_shaded_volume_numba,
     render_simple_qt,
 )
 from .vintage_qt import render_vintage_qt
@@ -25,6 +26,7 @@ STITCH_RENDERERS = (
     StitchRenderer("simple", "Simple", "vector", None),
     StitchRenderer("vintage", "Vintage", "vector", render_vintage_qt),
     StitchRenderer("shaded", "Shaded", "raster", render_shaded_numba),
+    StitchRenderer("shaded_volume", "Shaded Volume", "raster", render_shaded_volume_numba),
     StitchRenderer("realistic", "Realistic", "raster", render_realistic_numba),
 )
 
@@ -51,7 +53,7 @@ def render_stitches(
     renderer = RENDERERS_BY_KEY[renderer_key]
     if renderer.kind != "raster" or renderer.render is None:
         raise ValueError(f"renderer is not raster-based: {renderer_key}")
-    if renderer_key == "realistic":
+    if renderer_key in ("realistic", "shaded_volume"):
         renderer.render(
             buffer,
             stitches,

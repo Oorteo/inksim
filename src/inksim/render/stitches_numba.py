@@ -241,9 +241,10 @@ def render_shaded_numba(
 
             # Optional gradient along the segment to make stitches less flat.
             if use_shaded:
-                r = int(r_dark + (r_light - r_dark) * t)
-                g = int(g_dark + (g_light - g_dark) * t)
-                b = int(b_dark + (b_light - b_dark) * t)
+                profile = t
+                r = int(r_dark + (r_light - r_dark) * profile)
+                g = int(g_dark + (g_light - g_dark) * profile)
+                b = int(b_dark + (b_light - b_dark) * profile)
             else:
                 r = r_base
                 g = g_base
@@ -321,3 +322,86 @@ def render_shaded_numba(
                                 buf[yi, xi, 0] = (buf[yi, xi, 0] + r)//2
                                 buf[yi, xi, 1] = (buf[yi, xi, 1] + g)//2
                                 buf[yi, xi, 2] = (buf[yi, xi, 2] + b)//2
+
+
+@numba.njit
+def render_shaded_volume_numba(
+    buf,
+    stitches,
+    visible_count,
+    zoom,
+    pan_x,
+    pan_y,
+    line_width,
+    dark_factor,
+    light_factor,
+):
+    """Render shaded stitches with a dark-light-dark axial thread profile."""
+    height, width, _ = buf.shape
+    effective_width = min(
+        MAX_RENDER_LINE_WIDTH_PX,
+        max(1.5, line_width * zoom),
+    )
+    half_width = effective_width * 0.5
+    margin = int(np.ceil(half_width + 1.5))
+
+    for i in range(visible_count):
+        x1 = stitches[i, 0] * zoom + pan_x
+        y1 = stitches[i, 1] * zoom + pan_y
+        x2 = stitches[i, 2] * zoom + pan_x
+        y2 = stitches[i, 3] * zoom + pan_y
+        dx = x2 - x1
+        dy = y2 - y1
+        length_squared = dx * dx + dy * dy
+        if length_squared <= 0.0:
+            continue
+        length = np.sqrt(length_squared)
+        tx = dx / length
+        ty = dy / length
+        nx = -ty
+        ny = tx
+
+        min_x = max(0, int(np.floor(min(x1, x2) - margin)))
+        max_x = min(width - 1, int(np.ceil(max(x1, x2) + margin)))
+        min_y = max(0, int(np.floor(min(y1, y2) - margin)))
+        max_y = min(height - 1, int(np.ceil(max(y1, y2) + margin)))
+
+        r_base = int(stitches[i, 4])
+        g_base = int(stitches[i, 5])
+        b_base = int(stitches[i, 6])
+        r_dark = r_base * (0.75 + 0.25 * dark_factor)
+        g_dark = g_base * (0.75 + 0.25 * dark_factor)
+        b_dark = b_base * (0.75 + 0.25 * dark_factor)
+        r_light = r_base + (255 - r_base) * min(1.0, light_factor + 0.15)
+        g_light = g_base + (255 - g_base) * min(1.0, light_factor + 0.15)
+        b_light = b_base + (255 - b_base) * min(1.0, light_factor + 0.15)
+
+        for py in range(min_y, max_y + 1):
+            for px in range(min_x, max_x + 1):
+                vx = px - x1
+                vy = py - y1
+                along = vx * tx + vy * ty
+                if along < 0.0:
+                    end_x = vx
+                    end_y = vy
+                    distance = np.sqrt(end_x * end_x + end_y * end_y)
+                    along = 0.0
+                elif along > length:
+                    end_x = vx - dx
+                    end_y = vy - dy
+                    distance = np.sqrt(end_x * end_x + end_y * end_y)
+                    along = length
+                else:
+                    distance = abs(vx * nx + vy * ny)
+                if distance > half_width + 0.5:
+                    continue
+
+                t = along / length
+                profile = 1.0 - abs(2.0 * t - 1.0)
+                rr = r_dark + (r_light - r_dark) * profile
+                gg = g_dark + (g_light - g_dark) * profile
+                bb = b_dark + (b_light - b_dark) * profile
+                alpha = min(1.0, max(0.0, half_width + 0.5 - distance))
+                buf[py, px, 0] = int(buf[py, px, 0] * (1.0 - alpha) + rr * alpha)
+                buf[py, px, 1] = int(buf[py, px, 1] * (1.0 - alpha) + gg * alpha)
+                buf[py, px, 2] = int(buf[py, px, 2] * (1.0 - alpha) + bb * alpha)
