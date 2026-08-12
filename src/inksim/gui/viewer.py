@@ -751,17 +751,6 @@ class EmbroideryViewerWidget(QWidget):
                     round(bitmap_height * zoom_ratio),
                     self.cached_bitmap,
                 )
-            if self.active_renderer == "simple":
-                render_simple_qt(
-                    painter,
-                    self.stitches_np,
-                    self.visible_count,
-                    self.zoom,
-                    self.pan_x,
-                    self.pan_y,
-                    self.line_width,
-                    self.show_stitches,
-                )
             self.draw_analysis_overlays(painter)
             self.draw_needle_overlay(painter)
             painter.end()
@@ -799,16 +788,11 @@ class EmbroideryViewerWidget(QWidget):
             self.show_density,
         )
         img = QImage(buf.data, w, h, 3 * w, QImage.Format_RGB888).copy()
-        bmp = QPixmap.fromImage(img)
-        self.cached_bitmap = bmp
-        self.cached_pan_x = self.pan_x
-        self.cached_pan_y = self.pan_y
-        self.cached_zoom = self.zoom
-        self._cache_valid = True
-        painter.drawPixmap(0, 0, bmp)
         if self.active_renderer == "simple":
+            stitch_painter = QPainter(img)
+            stitch_painter.setRenderHint(QPainter.Antialiasing)
             render_simple_qt(
-                painter,
+                stitch_painter,
                 self.stitches_np,
                 self.visible_count,
                 self.zoom,
@@ -817,6 +801,14 @@ class EmbroideryViewerWidget(QWidget):
                 self.line_width,
                 self.show_stitches,
             )
+            stitch_painter.end()
+        bmp = QPixmap.fromImage(img)
+        self.cached_bitmap = bmp
+        self.cached_pan_x = self.pan_x
+        self.cached_pan_y = self.pan_y
+        self.cached_zoom = self.zoom
+        self._cache_valid = True
+        painter.drawPixmap(0, 0, bmp)
         self.draw_analysis_overlays(painter)
         self.draw_needle_overlay(painter)
         painter.end()
