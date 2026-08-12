@@ -52,11 +52,14 @@ def render_stitches(
     line_width,
     dark_factor,
     light_factor,
+    show_stitches=True,
 ):
     """Render stitches using a registered renderer."""
     renderer = RENDERERS_BY_KEY[renderer_key]
     if renderer.kind != "raster" or renderer.render is None:
         raise ValueError(f"renderer is not raster-based: {renderer_key}")
+    if not show_stitches or visible_count == 0:
+        return
     if renderer_key in (
         "realistic",
         "realistic_twist",

@@ -796,6 +796,7 @@ class EmbroideryViewerWidget(QWidget):
             self.light_factor,
             self.show_grid,
             self.show_density and self.active_renderer not in VECTOR_RENDERERS,
+            self.show_stitches,
         )
         img = QImage(buf.data, w, h, 3 * w, QImage.Format_RGB888).copy()
         if self.active_renderer in VECTOR_RENDERERS:

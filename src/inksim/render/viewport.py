@@ -21,6 +21,7 @@ def render_viewport_raster(
     light_factor,
     show_grid,
     show_density,
+    show_stitches=True,
 ):
     """Compose the non-Qt viewport layers into an RGB buffer."""
     if active_renderer == "realistic" and zoom > 1.2:
@@ -43,6 +44,7 @@ def render_viewport_raster(
             line_width,
             dark_factor,
             light_factor,
+            show_stitches,
         )
     if show_density and len(stitch_points) > 0:
         render_density_numba(
