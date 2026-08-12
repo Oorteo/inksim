@@ -47,40 +47,8 @@ if ((${#wheels[@]} != 1)); then
 fi
 
 install_options=(--force --reinstall --python "$python_version")
-if [[ "$(uname -s)" == Linux ]]; then
-    if [[ -z "${WXPYTHON_PLATFORM:-}" ]]; then
-        [[ -r /etc/os-release ]] || {
-            echo "Cannot detect the Linux distribution; set WXPYTHON_PLATFORM manually." >&2
-            exit 1
-        }
-
-        source /etc/os-release
-        case "${ID:-}" in
-        ubuntu) WXPYTHON_PLATFORM="ubuntu-${VERSION_ID}" ;;
-        linuxmint)
-            case "${UBUNTU_CODENAME:-}" in
-            noble) WXPYTHON_PLATFORM=ubuntu-24.04 ;;
-            jammy) WXPYTHON_PLATFORM=ubuntu-22.04 ;;
-            focal) WXPYTHON_PLATFORM=ubuntu-20.04 ;;
-            *) WXPYTHON_PLATFORM= ;;
-            esac
-            ;;
-        centos | debian | fedora | rocky) WXPYTHON_PLATFORM="${ID}-${VERSION_ID%%.*}" ;;
-        *) WXPYTHON_PLATFORM= ;;
-        esac
-    fi
-
-    [[ -n "$WXPYTHON_PLATFORM" ]] || {
-        echo "Unsupported Linux distribution; set WXPYTHON_PLATFORM manually." >&2
-        exit 1
-    }
-
-    wxpython_url="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/$WXPYTHON_PLATFORM"
-    install_options+=(--find-links "$wxpython_url")
-fi
 
 printf 'Installing local wheel: %s\n' "${wheels[0]}"
-printf 'wxPython source: %s\n' "${wxpython_url:-PyPI}"
 
 if [[ "$assume_yes" != true ]]; then
     printf 'Continue with uv tool install? [y/N] '
