@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
 from ..constants import *
 from ..render import render_export_image
 from .dialogs import EmbroideryOpenDialog
+from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
 from .viewer import EmbroideryViewerWidget
@@ -47,6 +48,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.progress)
         self.setCentralWidget(main_panel)
         self._main_panel = main_panel
+        self.shortcut_filter = ViewerShortcutFilter(self, self.viewer)
         self._build_menus()
         self.statusBar().showMessage(DEFAULT_STATUS_TEXT)
 
@@ -89,20 +91,21 @@ class MainWindow(QMainWindow):
         self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png)
         self._action(export_menu, "Preview PNG...", self.export_icon_png)
         self._action(export_menu, "Simple PNG for print...", self.export_print_png)
-        self._action(file_menu, "Center design", self.viewer.center_design, "C")
-        self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen, "F")
-        self._action(file_menu, "Fullscreen", self.toggle_full_screen, "F11")
+        self._action(file_menu, "Center design", self.viewer.center_design)
+        self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen)
+        self._action(file_menu, "Fullscreen", self.toggle_full_screen)
         self.grid_action = self._action(file_menu, "Show 1cm grid", self.toggle_grid, "G", True)
         self.grid_action.setChecked(True)
-        self.realistic_action = self._action(file_menu, "Realistic thread render", self.toggle_realistic, "Z", True)
+        self.realistic_action = self._action(file_menu, "Realistic thread render", self.toggle_realistic, checkable=True)
         self.viewer.grid_toggled.connect(self.grid_action.setChecked)
         self.viewer.renderer_changed.connect(
             lambda renderer: self.realistic_action.setChecked(renderer == "realistic")
         )
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
         self.viewer.status_message.connect(self.statusBar().showMessage)
-        self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer, "R")
-        self._action(file_menu, "Help", self.viewer.show_help, "H")
+        self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer)
+        self._action(file_menu, "Help", self.viewer.show_help)
+        self._action(file_menu, "Settings", self.viewer.show_settings)
         file_menu.addSeparator()
         self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.rotate_design(-1))
         self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))

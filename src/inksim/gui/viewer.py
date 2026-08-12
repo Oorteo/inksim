@@ -162,8 +162,6 @@ class EmbroideryViewerWidget(QWidget):
         self._cache_valid = False
         self.progress_bar = progress_bar
         self.mode_panel = None
-        self._last_key_time = 0
-        self._key_throttle = 0.03
         self.help_dialog = None
         self.settings_dialog = None
         self._last_dir = 1
@@ -312,11 +310,6 @@ class EmbroideryViewerWidget(QWidget):
         self.play_step = self.play_speed_levels[new_index]
         return True
 
-    def keyReleaseEvent(self, event):
-        """Reset key-repeat throttling after a key is released."""
-        self._last_key_time = 0
-        event.accept()
-
     def jump_to_color(self, direction):
         """Move to the next or previous recorded thread-color boundary."""
         if not self.color_boundaries:
@@ -409,170 +402,6 @@ class EmbroideryViewerWidget(QWidget):
         )
         self.invalidate_cache()
         self.center_design()
-
-    def keyPressEvent(self, e):
-        """Handle playback, navigation, display, and view shortcut keys."""
-        now = time.time()
-        key = e.key()
-        is_alt = bool(e.modifiers() & Qt.AltModifier)
-        is_ctrl = bool(e.modifiers() & Qt.ControlModifier)
-        # Let menu mnemonics and global shortcuts pass through
-        # Alt+F, Alt+P for menu, Ctrl+Q for Quit, Ctrl+O for Open etc.
-        if is_alt and key in (Qt.Key_F, Qt.Key_P):
-            e.ignore()
-            return
-        if is_ctrl and key in (Qt.Key_Q, Qt.Key_O):
-            e.ignore()
-            return
-        is_space_or_c = key in (
-            Qt.Key_Space,
-            Qt.Key_C,
-        )
-        if (not is_space_or_c
-                and now - self._last_key_time < self._key_throttle
-                and not is_alt and not is_ctrl):
-            return
-        self._last_key_time = now
-        total = self.stitches_np.shape[0]
-        is_shift = bool(e.modifiers() & Qt.ShiftModifier)
-        changed = False
-        highlight_needle = False
-        step = 1 if is_alt else self.step_size
-        if is_shift and not is_alt and not is_ctrl and key in (
-                Qt.Key_Right,
-                Qt.Key_Left,
-        ):
-            changed = self.jump_to_command(1 if key == Qt.Key_Right else -1)
-            highlight_needle = changed
-            if changed and self.is_playing:
-                self.play_timer.stop()
-                self.is_playing = False
-        elif self.is_playing and not is_alt and not is_ctrl and key in (
-                Qt.Key_Right,
-                Qt.Key_Left,
-        ):
-            key_direction = 1 if key == Qt.Key_Right else -1
-            changed = self.adjust_playback_speed(key_direction * self._last_dir)
-        elif is_ctrl and key in (Qt.Key_Right, Qt.Key_Left):
-            if key == Qt.Key_Right:
-                self.jump_to_color(1)
-                self._last_dir = 1
-            else:
-                self.jump_to_color(-1)
-                self._last_dir = -1
-            changed = True
-            highlight_needle = True
-        elif key == Qt.Key_Right:
-            if self.visible_count < total:
-                self.visible_count = min(total, self.visible_count + step)
-                self._last_dir = 1
-                changed = True
-        elif key == Qt.Key_Left:
-            if self.visible_count > 0:
-                self.visible_count = max(0, self.visible_count - step)
-                self._last_dir = -1
-                changed = True
-        elif key == Qt.Key_Up:
-            self.visible_count = min(total, self.visible_count + step * 10)
-            self._last_dir = 1
-            changed = True
-        elif key == Qt.Key_Down:
-            self.visible_count = max(0, self.visible_count - step * 10)
-            self._last_dir = -1
-            changed = True
-        elif key == Qt.Key_Home:
-            self.visible_count = 0
-            changed = True
-        elif key == Qt.Key_End:
-            self.visible_count = total
-            changed = True
-        elif key == Qt.Key_Space:
-            self.toggle_auto_play()
-            return
-        elif key in (Qt.Key_Plus, Qt.Key_Equal):
-            self.line_width = min(1.0, self.line_width + 0.1)
-            changed = True
-        elif key in (Qt.Key_Minus, Qt.Key_Underscore):
-            self.line_width = max(0.1, self.line_width - 0.1)
-            changed = True
-        elif key in (Qt.Key_BracketLeft, Qt.Key_BracketRight):
-            shading_delta = self.shading_step
-            if key == Qt.Key_BracketLeft:
-                shading_delta = -shading_delta
-            if is_shift:
-                self.light_factor = max(
-                    0.0,
-                    min(1.0, self.light_factor + shading_delta),
-                )
-            else:
-                self.dark_factor = max(
-                    0.05,
-                    min(1.0, self.dark_factor + shading_delta),
-                )
-            changed = True
-        elif key == Qt.Key_C and not is_alt and not is_ctrl:
-            self.center_design()
-            return
-        elif key == Qt.Key_F and not is_alt and not is_ctrl:
-            self.fit_to_screen()
-            return
-        elif key == Qt.Key_1 and not is_alt and not is_ctrl:
-            self.set_one_to_one()
-            return
-        elif key == Qt.Key_F11:
-            self.fullscreen_requested.emit()
-            return
-        elif key == Qt.Key_G and not is_alt and not is_ctrl:
-            self.show_grid = not self.show_grid
-            self.grid_toggled.emit(self.show_grid)
-            changed = True
-        elif key == Qt.Key_J and not is_alt and not is_ctrl:
-            self.toggle_display_mode("J")
-            changed = True
-        elif key == Qt.Key_X and not is_alt and not is_ctrl:
-            self.toggle_display_mode("X")
-            changed = True
-        elif key == Qt.Key_V and not is_alt and not is_ctrl:
-            self.toggle_display_mode("V")
-            changed = True
-        elif key == Qt.Key_Z and not is_alt and not is_ctrl:
-            self.toggle_display_mode("Z")
-            changed = True
-        elif key == Qt.Key_R and not is_alt and not is_ctrl:
-            self.select_renderer()
-            changed = True
-        elif key == Qt.Key_N and not is_alt and not is_ctrl:
-            self.show_needle = not self.show_needle
-            if self.show_needle:
-                self.highlight_needle()
-            else:
-                self.stop_needle_highlight()
-            changed = True
-        elif key == Qt.Key_H and not is_alt and not is_ctrl:
-            self.show_help()
-            return
-        elif key == Qt.Key_I and not is_alt and not is_ctrl:
-            self.show_settings()
-            return
-        elif key == Qt.Key_Escape:
-            if self.is_playing:
-                self.play_timer.stop()
-                self.is_playing = False
-                return
-        if changed:
-            if highlight_needle:
-                self.highlight_needle()
-            if (self.is_playing and key
-                    in (Qt.Key_Up, Qt.Key_Down, Qt.Key_Home, Qt.Key_End)
-                    and not is_ctrl):
-                self.play_timer.stop()
-                self.is_playing = False
-            self.invalidate_cache()
-            self.update()
-            if self.progress_bar:
-                self.progress_bar.update()
-        else:
-            e.ignore()
 
     def toggle_display_mode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
