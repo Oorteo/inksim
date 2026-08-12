@@ -97,10 +97,22 @@ class ViewerShortcutFilter(QObject):
             viewer.toggle_auto_play()
             return True
         elif key in (Qt.Key_Plus, Qt.Key_Equal):
-            viewer.line_width = min(1.0, viewer.line_width + 0.1)
+            old_zoom = viewer.zoom
+            viewer.zoom = min(50.0, viewer.zoom * 1.15)
+            scale = viewer.zoom / old_zoom
+            center_x = viewer.width() / 2
+            center_y = viewer.height() / 2
+            viewer.pan_x = center_x - scale * (center_x - viewer.pan_x)
+            viewer.pan_y = center_y - scale * (center_y - viewer.pan_y)
             changed = True
         elif key in (Qt.Key_Minus, Qt.Key_Underscore):
-            viewer.line_width = max(0.1, viewer.line_width - 0.1)
+            old_zoom = viewer.zoom
+            viewer.zoom = max(0.05, viewer.zoom / 1.15)
+            scale = viewer.zoom / old_zoom
+            center_x = viewer.width() / 2
+            center_y = viewer.height() / 2
+            viewer.pan_x = center_x - scale * (center_x - viewer.pan_x)
+            viewer.pan_y = center_y - scale * (center_y - viewer.pan_y)
             changed = True
         elif key in (
             Qt.Key_BracketLeft,
@@ -111,15 +123,20 @@ class ViewerShortcutFilter(QObject):
             shading_delta = viewer.shading_step
             if key in (Qt.Key_BracketLeft, Qt.Key_BraceLeft):
                 shading_delta = -shading_delta
-            if is_shift:
+            if is_ctrl and not is_alt:
+                viewer.dark_factor = max(
+                    0.0,
+                    min(1.0, viewer.dark_factor + shading_delta),
+                )
+            elif is_alt and not is_ctrl:
                 viewer.light_factor = max(
                     0.0,
                     min(1.0, viewer.light_factor + shading_delta),
                 )
-            else:
-                viewer.dark_factor = max(
-                    0.05,
-                    min(1.0, viewer.dark_factor + shading_delta),
+            elif not is_ctrl and not is_alt:
+                viewer.line_width = max(
+                    0.1,
+                    min(1.0, viewer.line_width + shading_delta),
                 )
             changed = True
         elif key == Qt.Key_C and not is_alt and not is_ctrl:

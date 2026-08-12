@@ -44,9 +44,10 @@ HELP_SECTIONS = (
 
 | Key | Result |
 | --- | --- |
-| + / - | Change thread width |
-| [ / ] | Adjust dark shading |
-| Shift + [ / ] | Adjust light shading |
+| [ / ] | Change thread width |
+| Ctrl + [ / ] | Adjust dark shading |
+| Alt + [ / ] | Adjust light shading |
+| + / - | Zoom |
 """),
 )
 

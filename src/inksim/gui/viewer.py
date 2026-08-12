@@ -810,6 +810,8 @@ class EmbroideryViewerWidget(QWidget):
                 self.pan_x,
                 self.pan_y,
                 self.line_width,
+                self.dark_factor,
+                self.light_factor,
                 self.show_stitches,
             )
             stitch_painter.end()

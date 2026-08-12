@@ -3,6 +3,8 @@
 from PySide6.QtCore import QLineF, QPointF, Qt
 from PySide6.QtGui import QBrush, QColor, QGradient, QLinearGradient, QPainterPath
 
+from ..constants import DEFAULT_DARK_FACTOR, DEFAULT_LIGHT_FACTOR
+
 
 def render_vintage_qt(
     painter,
@@ -12,6 +14,8 @@ def render_vintage_qt(
     pan_x,
     pan_y,
     line_width,
+    dark_factor=DEFAULT_DARK_FACTOR,
+    light_factor=DEFAULT_LIGHT_FACTOR,
     show_stitches=True,
 ):
     """Draw stitches as filled, shaded thread capsules in Qt."""
@@ -57,14 +61,20 @@ def render_vintage_qt(
         )
         path.closeSubpath()
 
-        base = QColor(int(stitch[4]), int(stitch[5]), int(stitch[6]))
-        dark = base.darker(110)
-        hue, saturation, lightness, alpha = base.getHsl()
-        light = QColor.fromHsl(
-            hue,
-            saturation,
-            min(255, lightness + 70),
-            alpha,
+        base_red = int(stitch[4])
+        base_green = int(stitch[5])
+        base_blue = int(stitch[6])
+        dark_scale = 0.65 + 0.35 * dark_factor
+        light_amount = min(1.0, 0.35 + 0.9 * light_factor)
+        dark = QColor(
+            int(base_red * dark_scale),
+            int(base_green * dark_scale),
+            int(base_blue * dark_scale),
+        )
+        light = QColor(
+            int(base_red + (255 - base_red) * light_amount),
+            int(base_green + (255 - base_green) * light_amount),
+            int(base_blue + (255 - base_blue) * light_amount),
         )
         gradient_start = QPointF(
             start.x() + tangent_x * length * 0.1,
