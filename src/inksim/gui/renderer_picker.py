@@ -1,7 +1,7 @@
 """Renderer selection dialog with a live representative preview."""
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QImage, QPixmap
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -47,16 +47,7 @@ class RendererPickerDialog(QDialog):
 
     def _update_preview(self):
         renderer_key = self.renderer_combo.currentData()
-        buffer = preview_stitches(renderer_key)
-        height, width, channels = buffer.shape
-        image = QImage(
-            buffer.data,
-            width,
-            height,
-            channels * width,
-            QImage.Format_RGB888,
-        ).copy()
-        self.preview.setPixmap(QPixmap.fromImage(image))
+        self.preview.setPixmap(QPixmap.fromImage(preview_stitches(renderer_key)))
 
     def _accept_selection(self):
         self.selected_renderer = self.renderer_combo.currentData()

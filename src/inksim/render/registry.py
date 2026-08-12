@@ -4,11 +4,12 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 import numpy as np
+from PySide6.QtCore import QLineF, Qt
+from PySide6.QtGui import QColor, QImage, QPainter, QPen
 
 from .stitches import (
     render_realistic_numba,
     render_shaded_numba,
-    render_simple_numba,
 )
 
 
@@ -18,13 +19,14 @@ class StitchRenderer:
 
     key: str
     label: str
-    render: Callable
+    kind: str
+    render: Callable | None
 
 
 STITCH_RENDERERS = (
-    StitchRenderer("simple", "Simple", render_simple_numba),
-    StitchRenderer("shaded", "Shaded", render_shaded_numba),
-    StitchRenderer("realistic", "Realistic", render_realistic_numba),
+    StitchRenderer("simple", "Simple", "vector", None),
+    StitchRenderer("shaded", "Shaded", "raster", render_shaded_numba),
+    StitchRenderer("realistic", "Realistic", "raster", render_realistic_numba),
 )
 
 RENDERERS_BY_KEY = {renderer.key: renderer for renderer in STITCH_RENDERERS}
@@ -44,7 +46,9 @@ def render_stitches(
 ):
     """Render stitches using a registered renderer."""
     renderer = RENDERERS_BY_KEY[renderer_key]
-    if renderer_key in ("realistic", "simple"):
+    if renderer.kind != "raster" or renderer.render is None:
+        raise ValueError(f"renderer is not raster-based: {renderer_key}")
+    if renderer_key == "realistic":
         renderer.render(
             buffer,
             stitches,
@@ -73,7 +77,6 @@ def render_stitches(
 
 def preview_stitches(renderer_key, width=360, height=220):
     """Render a small representative preview for the renderer picker."""
-    buffer = np.full((height, width, 3), 255, dtype=np.uint8)
     stitches = np.array(
         [
             (35, 45, 145, 150, 220, 55, 65),
@@ -82,7 +85,30 @@ def preview_stitches(renderer_key, width=360, height=220):
         ],
         dtype=np.float32,
     )
+    if renderer_key == "simple":
+        image = QImage(width, height, QImage.Format_RGB888)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        pen = QPen()
+        pen.setWidthF(0.55)
+        pen.setCapStyle(Qt.RoundCap)
+        pen.setJoinStyle(Qt.RoundJoin)
+        for stitch in stitches:
+            pen.setColor(QColor(int(stitch[4]), int(stitch[5]), int(stitch[6])))
+            painter.setPen(pen)
+            painter.drawLine(QLineF(stitch[0], stitch[1], stitch[2], stitch[3]))
+        painter.end()
+        return image
+
+    buffer = np.full((height, width, 3), 255, dtype=np.uint8)
     render_stitches(
         renderer_key, buffer, stitches, len(stitches), 1.0, 0, 0, 0.55, 0.75, 0.45
     )
-    return buffer
+    return QImage(
+        buffer.data,
+        width,
+        height,
+        3 * width,
+        QImage.Format_RGB888,
+    ).copy()
