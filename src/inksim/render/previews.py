@@ -3,9 +3,7 @@
 import numpy as np
 from PySide6.QtGui import QColor, QImage, QPainter
 
-from .registry import render_stitches
-from .registry import RENDERERS_BY_KEY
-from .stitches_qt import render_simple_qt
+from .registry import VECTOR_RENDERERS, render_stitches
 
 
 def preview_stitches(renderer_key, width=360, height=220):
@@ -18,17 +16,14 @@ def preview_stitches(renderer_key, width=360, height=220):
         ],
         dtype=np.float32,
     )
-    if renderer_key in ("simple", "vintage"):
+    if renderer_key in VECTOR_RENDERERS:
         image = QImage(width, height, QImage.Format_RGB888)
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         painter.setRenderHint(QPainter.Antialiasing)
-        if renderer_key == "simple":
-            render_simple_qt(painter, stitches, len(stitches), 1.0, 0, 0, 0.55)
-        else:
-            RENDERERS_BY_KEY[renderer_key].render(
-                painter, stitches, len(stitches), 1.0, 0, 0, 0.55
-            )
+        VECTOR_RENDERERS[renderer_key](
+            painter, stitches, len(stitches), 1.0, 0, 0, 0.55
+        )
         painter.end()
         return image
 

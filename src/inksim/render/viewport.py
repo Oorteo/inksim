@@ -3,7 +3,7 @@
 from .density import render_density_numba
 from .fabric import render_fabric_numba
 from .grid import render_grid_numba
-from .registry import render_stitches
+from .registry import VECTOR_RENDERERS, render_stitches
 
 
 def render_viewport_raster(
@@ -28,7 +28,7 @@ def render_viewport_raster(
     if show_grid:
         render_grid_numba(buffer, zoom, pan_x, pan_y)
     if (
-        active_renderer not in ("simple", "vintage")
+        active_renderer not in VECTOR_RENDERERS
         and stitches.shape[0] > 0
         and visible_count > 0
     ):

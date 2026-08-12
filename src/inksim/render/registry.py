@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from .stitches import (
     render_realistic_numba,
     render_shaded_numba,
+    render_simple_qt,
 )
 from .vintage_qt import render_vintage_qt
 
@@ -28,6 +29,10 @@ STITCH_RENDERERS = (
 )
 
 RENDERERS_BY_KEY = {renderer.key: renderer for renderer in STITCH_RENDERERS}
+VECTOR_RENDERERS = {
+    "simple": render_simple_qt,
+    "vintage": render_vintage_qt,
+}
 
 
 def render_stitches(

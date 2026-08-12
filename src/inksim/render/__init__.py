@@ -8,6 +8,7 @@ from .previews import preview_stitches
 from .registry import (
 	RENDERERS_BY_KEY,
 	STITCH_RENDERERS,
+	VECTOR_RENDERERS,
 	render_stitches,
 )
 from .stitches import (
