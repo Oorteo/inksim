@@ -13,6 +13,7 @@ from .registry import (
 )
 from .stitches import (
 	render_realistic_numba,
+	render_realistic_twist_numba,
 	render_shaded_numba,
 	render_shaded_volume_numba,
 )

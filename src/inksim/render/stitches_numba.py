@@ -162,6 +162,114 @@ def render_realistic_numba(
 
 
 @numba.njit
+def render_realistic_twist_numba(
+    buf,
+    stitches,
+    visible_count,
+    zoom,
+    pan_x,
+    pan_y,
+    line_width,
+    dark_factor,
+    light_factor,
+):
+    """Render stable cylindrical threads with a subtle symmetric helical sheen."""
+    height, width, _ = buf.shape
+    thread_radius = max(0.75, line_width * zoom * 0.5)
+    margin = int(np.ceil(thread_radius + 1.5))
+    twist_pitch = max(2.0, zoom)
+
+    for i in range(visible_count):
+        x1 = stitches[i, 0] * zoom + pan_x
+        y1 = stitches[i, 1] * zoom + pan_y
+        x2 = stitches[i, 2] * zoom + pan_x
+        y2 = stitches[i, 3] * zoom + pan_y
+        dx = x2 - x1
+        dy = y2 - y1
+        length_squared = dx * dx + dy * dy
+        if length_squared <= 0.0:
+            continue
+        length = np.sqrt(length_squared)
+        tx = dx / length
+        ty = dy / length
+        nx = -ty
+        ny = tx
+
+        min_x = max(0, int(np.floor(min(x1, x2) - margin)))
+        max_x = min(width - 1, int(np.ceil(max(x1, x2) + margin)))
+        min_y = max(0, int(np.floor(min(y1, y2) - margin)))
+        max_y = min(height - 1, int(np.ceil(max(y1, y2) + margin)))
+
+        r_base = int(stitches[i, 4])
+        g_base = int(stitches[i, 5])
+        b_base = int(stitches[i, 6])
+        world_mid_x = (stitches[i, 0] + stitches[i, 2]) * 0.5
+        world_mid_y = (stitches[i, 1] + stitches[i, 3]) * 0.5
+        phase_seed = np.sin(
+            world_mid_x * 12.9898
+            + world_mid_y * 78.233
+            + i * 37.719
+            + r_base * 0.017
+            + g_base * 0.031
+            + b_base * 0.047
+        ) * 43758.5453
+        phase = phase_seed - np.floor(phase_seed)
+        phase_offset = 2.0 * np.pi * phase
+        r_dark = r_base * (0.72 + 0.28 * dark_factor)
+        g_dark = g_base * (0.72 + 0.28 * dark_factor)
+        b_dark = b_base * (0.72 + 0.28 * dark_factor)
+        light_amount = 0.08 + 0.18 * light_factor
+        helix_strength = 0.10 + 0.55 * light_factor
+        r_light = r_base + (255 - r_base) * light_amount
+        g_light = g_base + (255 - g_base) * light_amount
+        b_light = b_base + (255 - b_base) * light_amount
+
+        for py in range(min_y, max_y + 1):
+            for px in range(min_x, max_x + 1):
+                vx = px - x1
+                vy = py - y1
+                along = vx * tx + vy * ty
+                if along < 0.0:
+                    distance = np.sqrt(vx * vx + vy * vy)
+                    along_pos = 0.0
+                elif along > length:
+                    end_x = vx - dx
+                    end_y = vy - dy
+                    distance = np.sqrt(end_x * end_x + end_y * end_y)
+                    along_pos = length
+                else:
+                    across_distance = vx * nx + vy * ny
+                    distance = abs(across_distance)
+                    along_pos = along
+                if distance > thread_radius + 0.5:
+                    continue
+
+                across = max(-1.0, min(1.0, (vx * nx + vy * ny) / thread_radius))
+                cylinder = np.sqrt(max(0.0, 1.0 - across * across))
+                normalized_along = along_pos / length
+                symmetric_along = min(normalized_along, 1.0 - normalized_along)
+                wave_count = max(1.0, np.floor(length / twist_pitch + 0.5))
+                helix = 0.5 + 0.5 * np.cos(
+                    2.0 * np.pi * symmetric_along * wave_count
+                    + abs(across) * np.pi
+                    + phase_offset
+                )
+                intensity = (
+                    0.54
+                    + 0.12 * cylinder
+                    + helix_strength * (2.0 * helix - 1.0)
+                )
+                rr = min(255.0, r_dark + (r_light - r_dark) * intensity)
+                gg = min(255.0, g_dark + (g_light - g_dark) * intensity)
+                bb = min(255.0, b_dark + (b_light - b_dark) * intensity)
+
+                alpha = min(1.0, max(0.0, thread_radius + 0.5 - distance))
+                buf[py, px, 0] = int(buf[py, px, 0] * (1.0 - alpha) + rr * alpha)
+                buf[py, px, 1] = int(buf[py, px, 1] * (1.0 - alpha) + gg * alpha)
+                buf[py, px, 2] = int(buf[py, px, 2] * (1.0 - alpha) + bb * alpha)
+
+
+@numba.njit
 def render_shaded_numba(
     buf,
     stitches,
