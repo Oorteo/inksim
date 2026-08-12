@@ -406,8 +406,8 @@ class EmbroideryViewerWidget(QWidget):
         if mode == "Z":
             self.set_renderer(
                 self._non_realistic_renderer
-                if self.active_renderer == "realistic"
-                else "realistic"
+                if self.show_realistic
+                else "shaded_volume_natural"
             )
         elif mode == "X":
             self.show_density = not self.show_density
@@ -432,10 +432,10 @@ class EmbroideryViewerWidget(QWidget):
         """Select a registered stitch renderer and refresh the canvas."""
         if renderer_key not in RENDERERS_BY_KEY:
             raise ValueError(f"unknown stitch renderer: {renderer_key}")
-        if renderer_key != "realistic":
+        if renderer_key not in ("realistic", "shaded_volume_natural"):
             self._non_realistic_renderer = renderer_key
         self.active_renderer = renderer_key
-        self.show_realistic = renderer_key == "realistic"
+        self.show_realistic = renderer_key in ("realistic", "shaded_volume_natural")
         self.renderer_changed.emit(renderer_key)
         self.invalidate_cache()
         self.update()

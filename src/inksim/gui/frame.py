@@ -99,7 +99,9 @@ class MainWindow(QMainWindow):
         self.realistic_action = self._action(file_menu, "Realistic thread render", self.toggle_realistic, checkable=True)
         self.viewer.grid_toggled.connect(self.grid_action.setChecked)
         self.viewer.renderer_changed.connect(
-            lambda renderer: self.realistic_action.setChecked(renderer == "realistic")
+            lambda renderer: self.realistic_action.setChecked(
+                renderer in ("realistic", "shaded_volume_natural")
+            )
         )
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
         self.viewer.status_message.connect(self.statusBar().showMessage)

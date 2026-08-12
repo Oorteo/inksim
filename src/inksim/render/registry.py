@@ -8,6 +8,7 @@ from .stitches import (
     render_realistic_twist_numba,
     render_shaded_numba,
     render_shaded_volume_numba,
+    render_shaded_volume_natural_numba,
     render_simple_qt,
 )
 from .vintage_qt import render_vintage_qt
@@ -28,6 +29,7 @@ STITCH_RENDERERS = (
     StitchRenderer("vintage", "Vintage", "vector", render_vintage_qt),
     StitchRenderer("shaded", "Shaded", "raster", render_shaded_numba),
     StitchRenderer("shaded_volume", "Shaded Volume", "raster", render_shaded_volume_numba),
+    StitchRenderer("shaded_volume_natural", "Shaded Volume Natural", "raster", render_shaded_volume_natural_numba),
     StitchRenderer("realistic", "Realistic", "raster", render_realistic_numba),
     StitchRenderer("realistic_twist", "Realistic Twist", "raster", render_realistic_twist_numba),
 )
@@ -55,7 +57,12 @@ def render_stitches(
     renderer = RENDERERS_BY_KEY[renderer_key]
     if renderer.kind != "raster" or renderer.render is None:
         raise ValueError(f"renderer is not raster-based: {renderer_key}")
-    if renderer_key in ("realistic", "realistic_twist", "shaded_volume"):
+    if renderer_key in (
+        "realistic",
+        "realistic_twist",
+        "shaded_volume",
+        "shaded_volume_natural",
+    ):
         renderer.render(
             buffer,
             stitches,

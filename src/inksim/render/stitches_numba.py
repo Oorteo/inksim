@@ -162,6 +162,104 @@ def render_realistic_numba(
 
 
 @numba.njit
+def render_shaded_volume_natural_numba(
+    buf,
+    stitches,
+    visible_count,
+    zoom,
+    pan_x,
+    pan_y,
+    line_width,
+    dark_factor,
+    light_factor,
+):
+    """Render volume-shaded stitches with subtle per-stitch shade variation."""
+    height, width, _ = buf.shape
+    effective_width = min(
+        MAX_RENDER_LINE_WIDTH_PX,
+        max(1.5, line_width * zoom),
+    )
+    half_width = effective_width * 0.5
+    margin = int(np.ceil(half_width + 1.5))
+
+    for i in range(visible_count):
+        x1 = stitches[i, 0] * zoom + pan_x
+        y1 = stitches[i, 1] * zoom + pan_y
+        x2 = stitches[i, 2] * zoom + pan_x
+        y2 = stitches[i, 3] * zoom + pan_y
+        dx = x2 - x1
+        dy = y2 - y1
+        length_squared = dx * dx + dy * dy
+        if length_squared <= 0.0:
+            continue
+        length = np.sqrt(length_squared)
+        tx = dx / length
+        ty = dy / length
+        nx = -ty
+        ny = tx
+
+        min_x = max(0, int(np.floor(min(x1, x2) - margin)))
+        max_x = min(width - 1, int(np.ceil(max(x1, x2) + margin)))
+        min_y = max(0, int(np.floor(min(y1, y2) - margin)))
+        max_y = min(height - 1, int(np.ceil(max(y1, y2) + margin)))
+
+        r_base = int(stitches[i, 4])
+        g_base = int(stitches[i, 5])
+        b_base = int(stitches[i, 6])
+        phase_seed = np.sin(
+            (stitches[i, 0] + stitches[i, 2]) * 17.13
+            + (stitches[i, 1] + stitches[i, 3]) * 31.71
+            + i * 11.37
+            + r_base * 0.013
+            + g_base * 0.021
+            + b_base * 0.034
+        ) * 43758.5453
+        phase = phase_seed - np.floor(phase_seed)
+        dark_variation = 0.96 + 0.08 * phase
+        light_variation = 0.96 + 0.08 * (1.0 - phase)
+        r_dark = r_base * (0.65 + 0.35 * dark_factor) * dark_variation
+        g_dark = g_base * (0.65 + 0.35 * dark_factor) * dark_variation
+        b_dark = b_base * (0.65 + 0.35 * dark_factor) * dark_variation
+        light_amount = min(1.0, 0.35 + 0.9 * light_factor)
+        r_light = (r_base + (255 - r_base) * light_amount) * light_variation
+        g_light = (g_base + (255 - g_base) * light_amount) * light_variation
+        b_light = (b_base + (255 - b_base) * light_amount) * light_variation
+
+        for py in range(min_y, max_y + 1):
+            for px in range(min_x, max_x + 1):
+                vx = px - x1
+                vy = py - y1
+                along = vx * tx + vy * ty
+                if along < 0.0:
+                    end_x = vx
+                    end_y = vy
+                    distance = np.sqrt(end_x * end_x + end_y * end_y)
+                    along = 0.0
+                elif along > length:
+                    end_x = vx - dx
+                    end_y = vy - dy
+                    distance = np.sqrt(end_x * end_x + end_y * end_y)
+                    along = length
+                else:
+                    distance = abs(vx * nx + vy * ny)
+                if distance > half_width + 0.5:
+                    continue
+
+                t = along / length
+                profile = 1.0 - abs(2.0 * t - 1.0)
+                local_variation = 1.0 + 0.025 * np.sin(
+                    2.0 * np.pi * t + phase * 2.0 * np.pi
+                )
+                rr = min(255.0, (r_dark + (r_light - r_dark) * profile) * local_variation)
+                gg = min(255.0, (g_dark + (g_light - g_dark) * profile) * local_variation)
+                bb = min(255.0, (b_dark + (b_light - b_dark) * profile) * local_variation)
+                alpha = min(1.0, max(0.0, half_width + 0.5 - distance))
+                buf[py, px, 0] = int(buf[py, px, 0] * (1.0 - alpha) + rr * alpha)
+                buf[py, px, 1] = int(buf[py, px, 1] * (1.0 - alpha) + gg * alpha)
+                buf[py, px, 2] = int(buf[py, px, 2] * (1.0 - alpha) + bb * alpha)
+
+
+@numba.njit
 def render_realistic_twist_numba(
     buf,
     stitches,
@@ -251,14 +349,20 @@ def render_realistic_twist_numba(
                 wave_count = max(1.0, np.floor(length / twist_pitch + 0.5))
                 helix = 0.5 + 0.5 * np.cos(
                     2.0 * np.pi * symmetric_along * wave_count
-                    + abs(across) * np.pi
                     + phase_offset
                 )
+                endpoint_span = min(0.5, 3.0 * thread_radius / length)
+                endpoint_position = min(1.0, symmetric_along / endpoint_span)
+                endpoint_fade = endpoint_position * endpoint_position
+                endpoint_fade = endpoint_fade * (3.0 - 2.0 * endpoint_position)
+                helix *= endpoint_fade
                 intensity = (
                     0.54
                     + 0.12 * cylinder
                     + helix_strength * (2.0 * helix - 1.0)
                 )
+                endpoint_shadow = (1.0 - endpoint_fade) * (1.0 - endpoint_fade)
+                intensity -= 0.22 * endpoint_shadow
                 rr = min(255.0, r_dark + (r_light - r_dark) * intensity)
                 gg = min(255.0, g_dark + (g_light - g_dark) * intensity)
                 bb = min(255.0, b_dark + (b_light - b_dark) * intensity)
