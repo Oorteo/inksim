@@ -16,3 +16,4 @@ from .stitches import (
 )
 from .stitches_qt import render_simple_qt
 from .viewport import render_viewport_raster
+from .vintage_qt import render_vintage_qt

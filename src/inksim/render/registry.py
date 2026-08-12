@@ -7,6 +7,7 @@ from .stitches import (
     render_realistic_numba,
     render_shaded_numba,
 )
+from .vintage_qt import render_vintage_qt
 
 
 @dataclass(frozen=True)
@@ -21,6 +22,7 @@ class StitchRenderer:
 
 STITCH_RENDERERS = (
     StitchRenderer("simple", "Simple", "vector", None),
+    StitchRenderer("vintage", "Vintage", "vector", render_vintage_qt),
     StitchRenderer("shaded", "Shaded", "raster", render_shaded_numba),
     StitchRenderer("realistic", "Realistic", "raster", render_realistic_numba),
 )

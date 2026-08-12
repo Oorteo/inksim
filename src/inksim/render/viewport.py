@@ -28,7 +28,7 @@ def render_viewport_raster(
     if show_grid:
         render_grid_numba(buffer, zoom, pan_x, pan_y)
     if (
-        active_renderer != "simple"
+        active_renderer not in ("simple", "vintage")
         and stitches.shape[0] > 0
         and visible_count > 0
     ):

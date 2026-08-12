@@ -37,6 +37,7 @@ from ..render import (
     RENDERERS_BY_KEY,
     calculate_stitch_density_numba,
     render_simple_qt,
+    render_vintage_qt,
     render_viewport_raster,
 )
 from .help import show_help
@@ -788,10 +789,15 @@ class EmbroideryViewerWidget(QWidget):
             self.show_density,
         )
         img = QImage(buf.data, w, h, 3 * w, QImage.Format_RGB888).copy()
-        if self.active_renderer == "simple":
+        if self.active_renderer in ("simple", "vintage"):
             stitch_painter = QPainter(img)
             stitch_painter.setRenderHint(QPainter.Antialiasing)
-            render_simple_qt(
+            render_function = (
+                render_simple_qt
+                if self.active_renderer == "simple"
+                else render_vintage_qt
+            )
+            render_function(
                 stitch_painter,
                 self.stitches_np,
                 self.visible_count,
