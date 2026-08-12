@@ -1,7 +1,7 @@
 """Renderer selection dialog with a live representative preview."""
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QKeySequence, QPixmap, QShortcut
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -43,6 +43,18 @@ class RendererPickerDialog(QDialog):
         buttons.accepted.connect(self._accept_selection)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
+
+        ok_button = buttons.button(QDialogButtonBox.StandardButton.Ok)
+        cancel_button = buttons.button(QDialogButtonBox.StandardButton.Cancel)
+        ok_button.setDefault(True)
+        ok_button.setAutoDefault(True)
+        cancel_button.setDefault(False)
+        cancel_button.setAutoDefault(False)
+        self.setTabOrder(self.renderer_combo, ok_button)
+        self.setTabOrder(ok_button, cancel_button)
+        self._confirm_shortcut = QShortcut(QKeySequence("Ctrl+Return"), self)
+        self._confirm_shortcut.setContext(Qt.WindowShortcut)
+        self._confirm_shortcut.activated.connect(self._accept_selection)
         self._update_preview()
 
     def _update_preview(self):
