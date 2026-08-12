@@ -12,7 +12,7 @@ class ModeBar(QWidget):
         sizer = QHBoxLayout(self)
         sizer.setContentsMargins(4, 3, 4, 3)
         self.buttons = {}
-        for mode in ("R", "X", "J", "V"):
+        for mode in ("Z", "X", "J", "V"):
             button = QPushButton(mode, self)
             button.setFixedSize(32, 32)
             button.clicked.connect(lambda checked=False, m=mode: self.toggle_mode(m))
@@ -27,7 +27,7 @@ class ModeBar(QWidget):
 
     def update_indicators(self):
         states = {
-            "R": self.viewer.show_realistic,
+            "Z": self.viewer.show_realistic,
             "X": self.viewer.show_density,
             "V": self.viewer.show_stitches,
         }

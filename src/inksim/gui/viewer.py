@@ -534,8 +534,11 @@ class EmbroideryViewerWidget(QWidget):
         elif key == Qt.Key_V and not is_alt and not is_ctrl:
             self.toggle_display_mode("V")
             changed = True
+        elif key == Qt.Key_Z and not is_alt and not is_ctrl:
+            self.toggle_display_mode("Z")
+            changed = True
         elif key == Qt.Key_R and not is_alt and not is_ctrl:
-            self.toggle_display_mode("R")
+            self.select_renderer()
             changed = True
         elif key == Qt.Key_N and not is_alt and not is_ctrl:
             self.show_needle = not self.show_needle
@@ -572,7 +575,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def toggle_display_mode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
-        if mode == "R":
+        if mode == "Z":
             self.set_renderer(
                 "shaded" if self.active_renderer == "realistic" else "realistic"
             )

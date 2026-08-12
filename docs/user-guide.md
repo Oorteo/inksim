@@ -34,7 +34,8 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 | `1`                   | Display at physical 1:1 size when display PPI is available |
 | `G`                   | Toggle the 1 cm helper grid                                |
 | `V`                   | Toggle embroidery visibility                               |
-| `R`                   | Toggle realistic thread rendering and fabric background    |
+| `Z`                   | Toggle realistic thread rendering and fabric background    |
+| `R`                   | Choose a stitch renderer                                   |
 | `J`                   | Cycle jumps: off, all jumps, risky jumps only              |
 | `X`                   | Toggle the stitch-density map                              |
 | `N`                   | Toggle the needle marker                                   |
