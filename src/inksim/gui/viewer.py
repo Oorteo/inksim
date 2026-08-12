@@ -453,6 +453,15 @@ class EmbroideryViewerWidget(QWidget):
         if self.mode_panel is not None:
             self.mode_panel.update_indicators()
 
+    def reset_render_settings(self):
+        """Restore the default thread width and shading factors."""
+        self.line_width = 0.4
+        self.dark_factor = 0.75
+        self.light_factor = 0.45
+        self.invalidate_cache()
+        self.update()
+        self.update_mode_indicators()
+
     def _show_markdown_columns_dialog(
         self, key, title, sections, columns=3, width=1050, height=700
     ):

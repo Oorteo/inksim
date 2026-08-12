@@ -187,6 +187,7 @@ class ViewerShortcutFilter(QObject):
                 viewer.is_playing = False
             viewer.invalidate_cache()
             viewer.update()
+            viewer.update_mode_indicators()
             if viewer.progress_bar:
                 viewer.progress_bar.update()
         return True

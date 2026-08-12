@@ -1,5 +1,5 @@
 from PySide6.QtGui import QColor
-from PySide6.QtWidgets import QHBoxLayout, QPushButton, QWidget
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QStyle, QWidget
 
 class ModeBar(QWidget):
     """Clickable indicators for the main viewer display modes."""
@@ -18,7 +18,16 @@ class ModeBar(QWidget):
             button.clicked.connect(lambda checked=False, m=mode: self.toggle_mode(m))
             self.buttons[mode] = button
             sizer.addWidget(button)
+        self.settings_label = QLabel(self)
+        self.settings_label.setMinimumWidth(180)
         sizer.addStretch()
+        sizer.addWidget(self.settings_label)
+        self.reset_button = QPushButton(self)
+        self.reset_button.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
+        self.reset_button.setToolTip("Reset line width and shading factors")
+        self.reset_button.setFixedSize(32, 32)
+        self.reset_button.clicked.connect(self.viewer.reset_render_settings)
+        sizer.addWidget(self.reset_button)
         self.update_indicators()
 
     def toggle_mode(self, mode):
@@ -26,6 +35,11 @@ class ModeBar(QWidget):
         self.viewer.setFocus()
 
     def update_indicators(self):
+        self.settings_label.setText(
+            f"DF: {self.viewer.dark_factor:.2f}  "
+            f"LF: {self.viewer.light_factor:.2f}  "
+            f"LW: {self.viewer.line_width:.2f}"
+        )
         states = {
             "Z": self.viewer.show_realistic,
             "X": self.viewer.show_density,
