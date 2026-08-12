@@ -128,6 +128,7 @@ class EmbroideryViewerWidget(QWidget):
         self.show_stitches = True
         self.show_realistic = False
         self.active_renderer = "shaded"
+        self._non_realistic_renderer = "shaded"
         self.show_density = False
         self.show_jumps = False
         self.risky_jumps_only = False
@@ -577,7 +578,9 @@ class EmbroideryViewerWidget(QWidget):
         """Toggle a mode or advance the three-state JUMP mode."""
         if mode == "Z":
             self.set_renderer(
-                "shaded" if self.active_renderer == "realistic" else "realistic"
+                self._non_realistic_renderer
+                if self.active_renderer == "realistic"
+                else "realistic"
             )
         elif mode == "X":
             self.show_density = not self.show_density
@@ -602,6 +605,8 @@ class EmbroideryViewerWidget(QWidget):
         """Select a registered stitch renderer and refresh the canvas."""
         if renderer_key not in RENDERERS_BY_KEY:
             raise ValueError(f"unknown stitch renderer: {renderer_key}")
+        if renderer_key != "realistic":
+            self._non_realistic_renderer = renderer_key
         self.active_renderer = renderer_key
         self.show_realistic = renderer_key == "realistic"
         self.renderer_changed.emit(renderer_key)

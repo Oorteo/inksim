@@ -151,7 +151,7 @@ class MainWindow(QMainWindow):
         self.viewer.update_mode_indicators()
 
     def toggle_realistic(self, checked):
-        self.viewer.set_renderer("realistic" if checked else "shaded")
+        self.viewer.toggle_display_mode("Z")
 
     def open_file_dialog(self):
         dialog = EmbroideryOpenDialog(self, self.last_directory, self.current_file_path)
