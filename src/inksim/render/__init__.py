@@ -4,10 +4,10 @@ from .density import calculate_stitch_density_numba, render_density_numba
 from .export import render_export_image
 from .fabric import render_fabric_numba
 from .grid import render_grid_numba
+from .previews import preview_stitches
 from .registry import (
 	RENDERERS_BY_KEY,
 	STITCH_RENDERERS,
-	preview_stitches,
 	render_stitches,
 )
 from .stitches import (
