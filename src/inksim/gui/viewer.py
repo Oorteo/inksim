@@ -116,17 +116,17 @@ class EmbroideryViewerWidget(QWidget):
         self.pan_x, self.pan_y = 400, 300
         self.drag_start = None
         self.pan_start = (0, 0)
-        self.line_width = 0.4
-        self.dark_factor = 0.75
-        self.light_factor = 0.45
+        self.line_width = DEFAULT_LINE_WIDTH_MM
+        self.dark_factor = DEFAULT_DARK_FACTOR
+        self.light_factor = DEFAULT_LIGHT_FACTOR
         self.shading_step = 0.05
         self.visible_count = 0
         self.step_size = 10
         self.show_grid = True
         self.show_stitches = True
         self.show_realistic = False
-        self.active_renderer = "shaded"
-        self._non_realistic_renderer = "shaded"
+        self.active_renderer = "shaded_volume"
+        self._non_realistic_renderer = "shaded_volume"
         self.show_density = False
         self.show_jumps = False
         self.risky_jumps_only = False
@@ -455,9 +455,9 @@ class EmbroideryViewerWidget(QWidget):
 
     def reset_render_settings(self):
         """Restore the default thread width and shading factors."""
-        self.line_width = 0.4
-        self.dark_factor = 0.75
-        self.light_factor = 0.45
+        self.line_width = DEFAULT_LINE_WIDTH_MM
+        self.dark_factor = DEFAULT_DARK_FACTOR
+        self.light_factor = DEFAULT_LIGHT_FACTOR
         self.invalidate_cache()
         self.update()
         self.update_mode_indicators()
