@@ -5,7 +5,6 @@ import time
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import (
-    QLineF,
     QRunnable,
     QThreadPool,
     Qt,
@@ -41,6 +40,7 @@ from ..render import (
     render_fabric_numba,
     render_grid_numba,
     render_stitches,
+    render_simple_qt,
 )
 from .help import show_help
 from .settings import show_settings
@@ -926,7 +926,16 @@ class EmbroideryViewerWidget(QWidget):
                     self.cached_bitmap,
                 )
             if self.active_renderer == "simple":
-                self.draw_simple_stitches(painter)
+                render_simple_qt(
+                    painter,
+                    self.stitches_np,
+                    self.visible_count,
+                    self.zoom,
+                    self.pan_x,
+                    self.pan_y,
+                    self.line_width,
+                    self.show_stitches,
+                )
             self.draw_analysis_overlays(painter)
             self.draw_needle_overlay(painter)
             painter.end()
@@ -988,30 +997,19 @@ class EmbroideryViewerWidget(QWidget):
         self._cache_valid = True
         painter.drawPixmap(0, 0, bmp)
         if self.active_renderer == "simple":
-            self.draw_simple_stitches(painter)
+            render_simple_qt(
+                painter,
+                self.stitches_np,
+                self.visible_count,
+                self.zoom,
+                self.pan_x,
+                self.pan_y,
+                self.line_width,
+                self.show_stitches,
+            )
         self.draw_analysis_overlays(painter)
         self.draw_needle_overlay(painter)
         painter.end()
-
-    def draw_simple_stitches(self, painter):
-        """Draw flat-color stitches with Qt's antialiased vector painter."""
-        if not self.show_stitches or self.visible_count == 0:
-            return
-        pen = QPen()
-        pen.setWidthF(max(1.0, self.line_width * self.zoom))
-        pen.setCapStyle(Qt.RoundCap)
-        pen.setJoinStyle(Qt.RoundJoin)
-        for stitch in self.stitches_np[:self.visible_count]:
-            pen.setColor(QColor(int(stitch[4]), int(stitch[5]), int(stitch[6])))
-            painter.setPen(pen)
-            painter.drawLine(
-                QLineF(
-                    stitch[0] * self.zoom + self.pan_x,
-                    stitch[1] * self.zoom + self.pan_y,
-                    stitch[2] * self.zoom + self.pan_x,
-                    stitch[3] * self.zoom + self.pan_y,
-                )
-            )
 
     def draw_analysis_overlays(self, painter):
         """Draw optional jump paths and local stitch-density diagnostics."""

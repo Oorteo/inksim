@@ -4,13 +4,13 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 import numpy as np
-from PySide6.QtCore import QLineF, Qt
-from PySide6.QtGui import QColor, QImage, QPainter, QPen
+from PySide6.QtGui import QColor, QImage, QPainter
 
 from .stitches import (
     render_realistic_numba,
     render_shaded_numba,
 )
+from .stitches_qt import render_simple_qt
 
 
 @dataclass(frozen=True)
@@ -90,14 +90,7 @@ def preview_stitches(renderer_key, width=360, height=220):
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         painter.setRenderHint(QPainter.Antialiasing)
-        pen = QPen()
-        pen.setWidthF(0.55)
-        pen.setCapStyle(Qt.RoundCap)
-        pen.setJoinStyle(Qt.RoundJoin)
-        for stitch in stitches:
-            pen.setColor(QColor(int(stitch[4]), int(stitch[5]), int(stitch[6])))
-            painter.setPen(pen)
-            painter.drawLine(QLineF(stitch[0], stitch[1], stitch[2], stitch[3]))
+        render_simple_qt(painter, stitches, len(stitches), 1.0, 0, 0, 0.55)
         painter.end()
         return image
 
