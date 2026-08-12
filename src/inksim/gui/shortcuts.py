@@ -102,9 +102,14 @@ class ViewerShortcutFilter(QObject):
         elif key in (Qt.Key_Minus, Qt.Key_Underscore):
             viewer.line_width = max(0.1, viewer.line_width - 0.1)
             changed = True
-        elif key in (Qt.Key_BracketLeft, Qt.Key_BracketRight):
+        elif key in (
+            Qt.Key_BracketLeft,
+            Qt.Key_BracketRight,
+            Qt.Key_BraceLeft,
+            Qt.Key_BraceRight,
+        ):
             shading_delta = viewer.shading_step
-            if key == Qt.Key_BracketLeft:
+            if key in (Qt.Key_BracketLeft, Qt.Key_BraceLeft):
                 shading_delta = -shading_delta
             if is_shift:
                 viewer.light_factor = max(

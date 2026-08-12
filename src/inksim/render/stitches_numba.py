@@ -369,12 +369,13 @@ def render_shaded_volume_numba(
         r_base = int(stitches[i, 4])
         g_base = int(stitches[i, 5])
         b_base = int(stitches[i, 6])
-        r_dark = r_base * (0.88 + 0.12 * dark_factor)
-        g_dark = g_base * (0.88 + 0.12 * dark_factor)
-        b_dark = b_base * (0.88 + 0.12 * dark_factor)
-        r_light = r_base + (255 - r_base) * min(1.0, light_factor + 0.15)
-        g_light = g_base + (255 - g_base) * min(1.0, light_factor + 0.15)
-        b_light = b_base + (255 - b_base) * min(1.0, light_factor + 0.15)
+        r_dark = r_base * (0.65 + 0.35 * dark_factor)
+        g_dark = g_base * (0.65 + 0.35 * dark_factor)
+        b_dark = b_base * (0.65 + 0.35 * dark_factor)
+        light_amount = min(1.0, 0.35 + 0.9 * light_factor)
+        r_light = r_base + (255 - r_base) * light_amount
+        g_light = g_base + (255 - g_base) * light_amount
+        b_light = b_base + (255 - b_base) * light_amount
 
         for py in range(min_y, max_y + 1):
             for px in range(min_x, max_x + 1):
