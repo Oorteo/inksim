@@ -37,6 +37,7 @@ from ..render import (
     RENDERERS_BY_KEY,
     VECTOR_RENDERERS,
     calculate_stitch_density_numba,
+    render_density_numba,
     render_viewport_raster,
 )
 from .help import show_help
@@ -785,7 +786,7 @@ class EmbroideryViewerWidget(QWidget):
             self.dark_factor,
             self.light_factor,
             self.show_grid,
-            self.show_density,
+            self.show_density and self.active_renderer not in VECTOR_RENDERERS,
         )
         img = QImage(buf.data, w, h, 3 * w, QImage.Format_RGB888).copy()
         if self.active_renderer in VECTOR_RENDERERS:
@@ -803,6 +804,20 @@ class EmbroideryViewerWidget(QWidget):
                 self.show_stitches,
             )
             stitch_painter.end()
+            if self.show_density and len(self.stitch_points_np) > 0:
+                row_stride = img.bytesPerLine()
+                image_bytes = np.frombuffer(img.bits(), dtype=np.uint8)
+                image_rows = image_bytes.reshape((h, row_stride))
+                image_buffer = image_rows[:, :3 * w].reshape((h, w, 3))
+                render_density_numba(
+                    image_buffer,
+                    self.stitch_points_np,
+                    self.stitch_density_np,
+                    self.visible_count,
+                    self.zoom,
+                    self.pan_x,
+                    self.pan_y,
+                )
         bmp = QPixmap.fromImage(img)
         self.cached_bitmap = bmp
         self.cached_pan_x = self.pan_x
