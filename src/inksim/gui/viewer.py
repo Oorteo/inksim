@@ -36,11 +36,8 @@ from ..debug import is_enabled, logger
 from ..render import (
     RENDERERS_BY_KEY,
     calculate_stitch_density_numba,
-    render_density_numba,
-    render_fabric_numba,
-    render_grid_numba,
-    render_stitches,
     render_simple_qt,
+    render_viewport_raster,
 )
 from .help import show_help
 from .settings import show_settings
@@ -785,38 +782,22 @@ class EmbroideryViewerWidget(QWidget):
             painter.end()
             return
         buf = self._get_render_buffer(w, h)
-        if self.active_renderer == "realistic" and self.zoom > 1.2:
-            render_fabric_numba(buf, self.zoom)
-        if self.show_grid:
-            render_grid_numba(buf, self.zoom, self.pan_x, self.pan_y)
-        if (
-            self.active_renderer != "simple"
-            and self.show_stitches
-            and self.stitches_np.shape[0] > 0
-            and self.visible_count > 0
-        ):
-            render_stitches(
-                self.active_renderer,
-                buf,
-                self.stitches_np,
-                self.visible_count,
-                self.zoom,
-                self.pan_x,
-                self.pan_y,
-                self.line_width,
-                self.dark_factor,
-                self.light_factor,
-            )
-        if self.show_density and len(self.stitch_points_np) > 0:
-            render_density_numba(
-                buf,
-                self.stitch_points_np,
-                self.stitch_density_np,
-                self.visible_count,
-                self.zoom,
-                self.pan_x,
-                self.pan_y,
-            )
+        render_viewport_raster(
+            buf,
+            self.active_renderer,
+            self.stitches_np,
+            self.visible_count,
+            self.stitch_points_np,
+            self.stitch_density_np,
+            self.zoom,
+            self.pan_x,
+            self.pan_y,
+            self.line_width,
+            self.dark_factor,
+            self.light_factor,
+            self.show_grid,
+            self.show_density,
+        )
         img = QImage(buf.data, w, h, 3 * w, QImage.Format_RGB888).copy()
         bmp = QPixmap.fromImage(img)
         self.cached_bitmap = bmp

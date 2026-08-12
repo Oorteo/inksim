@@ -15,3 +15,4 @@ from .stitches import (
 	render_shaded_numba,
 )
 from .stitches_qt import render_simple_qt
+from .viewport import render_viewport_raster
