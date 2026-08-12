@@ -12,9 +12,16 @@ class ModeBar(QWidget):
         sizer = QHBoxLayout(self)
         sizer.setContentsMargins(4, 3, 4, 3)
         self.buttons = {}
+        tooltips = {
+            "Z": "Toggle realistic thread rendering",
+            "X": "Toggle stitch density overlay",
+            "J": "Cycle jump display: off, all, risky only",
+            "V": "Toggle stitch visibility",
+        }
         for mode in ("Z", "X", "J", "V"):
             button = QPushButton(mode, self)
             button.setFixedSize(32, 32)
+            button.setToolTip(tooltips[mode])
             button.clicked.connect(lambda checked=False, m=mode: self.toggle_mode(m))
             self.buttons[mode] = button
             sizer.addWidget(button)
