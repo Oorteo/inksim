@@ -1,353 +1,306 @@
 from pathlib import Path
+import time
 
-from PIL import Image, ImageFilter
-import wx
+from PySide6.QtCore import QEvent, QSettings, QTimer, Qt
+from PySide6.QtGui import QAction, QIcon, QKeySequence
+from PySide6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QFileDialog,
+    QLabel,
+    QMainWindow,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ..constants import *
 from ..render import render_export_image
 from .dialogs import EmbroideryOpenDialog
-from .drop_target import EmbroideryFileDropTarget
-from .status import ModeStatusPanel
-from .timeline import ProgressBarPanel
-from .viewer import EmbroideryViewerPanel
+from .about import show_about
+from .shortcuts import ViewerShortcutFilter
+from .status import ModeBar
+from .timeline import TimelineWidget
+from .viewer import EmbroideryViewerWidget
 
-class Frame(wx.Frame):
-    """Main InkSim window coordinating the viewer and playback controls.
 
-    The initial design is loaded before the frame is shown.  Fullscreen
-    startup also gives the frame the display size before loading the design,
-    then performs one final fit after wx has completed the layout.  This avoids
-    showing an incorrectly positioned design while GTK applies fullscreen
-    geometry asynchronously.
-    """
+class MainWindow(QMainWindow):
+    """Main InkSim window coordinating the viewer and playback controls."""
 
     def __init__(
         self,
-        initial_file=None,
-        initial_directory=None,
         fullscreen=False,
         window_size=None,
         window_position=None,
-        autoplay=False,
-        batch=False,
+        server_mode=False,
     ):
-        """Build the application window and optionally open a design file."""
-        # Decide initial size before super().__init__
-        # -f: use display size
-        # default MaxWindow: also use display size so first FitToScreen is already correct
-        # explicit --size: use that size
-        init_size = (1200, 980)
-        should_maximize_default = False
-        if not window_size:
-            try:
-                disp = wx.Display(0).GetGeometry()
-                disp_size = (disp.GetWidth(), disp.GetHeight())
-                if fullscreen:
-                    init_size = disp_size
-                else:
-                    # default MaxWindow behavior requested by user
-                    init_size = disp_size
-                    should_maximize_default = True
-            except Exception:
-                init_size = (1200, 980)
-                should_maximize_default = not fullscreen
-        else:
-            init_size = window_size
-
-        super().__init__(None, title=APP_TITLE, size=init_size)
+        super().__init__()
+        self.setWindowTitle(APP_TITLE)
+        self.setWindowIcon(QIcon(str(
+            Path(__file__).parent.parent / "assets" / "app_icons" / "inksim.svg")))
+        self.resize(*(window_size or (1200, 980)))
+        self.setAcceptDrops(True)
         self.is_fullscreen = False
-        self._should_maximize_default = should_maximize_default
-        # TODO: Consider migrating wx.Config to an explicit XDG config path.
-        self.config = wx.Config(APP_TITLE)
-        self.last_directory = self.config.Read("last_directory", "")
+        self.server_mode = server_mode
+        self._allow_close = False
+        self._startup_fullscreen = fullscreen
+        self._should_maximize_default = not window_size and not fullscreen
+        self.config = QSettings(APP_ORGANIZATION, APP_TITLE)
+        self.last_directory = self.config.value("last_directory", "", str)
         self.current_file_path = None
-        if initial_directory and Path(initial_directory).is_dir():
-            self.last_directory = str(Path(initial_directory).resolve())
-        elif initial_file and Path(initial_file).is_file():
-            self.current_file_path = Path(initial_file).resolve()
-            self.last_directory = str(self.current_file_path.parent)
-            self.config.Write("last_directory", self.last_directory)
-            self.config.Flush()
+        self._source_mtime_ns = None
+        self._last_source_check = 0.0
+        self._source_check_interval_s = 0.4
+        self._is_reloading_from_disk = False
 
-        # Create the main panel, viewer, and progress bar, and arrange them vertically.
-        main_panel = wx.Panel(self)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        self.viewer = EmbroideryViewerPanel(main_panel, None)
-        self.progress = ProgressBarPanel(main_panel, self.viewer)
-        self.mode_status = ModeStatusPanel(main_panel, self.viewer)
+        main_panel = QWidget(self)
+        layout = QVBoxLayout(main_panel)
+        self.viewer = EmbroideryViewerWidget(main_panel, None)
+        self.progress = TimelineWidget(main_panel, self.viewer)
+        self.mode_status = ModeBar(main_panel, self.viewer)
+        self.progress.seek_requested.connect(self.viewer.seek_to)
         self.viewer.mode_panel = self.mode_status
         self.viewer.progress_bar = self.progress
-        self.viewer.SetDropTarget(EmbroideryFileDropTarget(self))
-
-        sizer.Add(self.viewer, 1, wx.EXPAND)
-        sizer.Add(self.mode_status, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 6)
-        sizer.Add(self.progress, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM,
-                  6)
-        main_panel.SetSizer(sizer)
+        layout.addWidget(self.viewer, 1)
+        layout.addWidget(self.mode_status)
+        layout.addWidget(self.progress)
+        self.setCentralWidget(main_panel)
         self._main_panel = main_panel
-        frame_sizer = wx.BoxSizer(wx.VERTICAL)
-        frame_sizer.Add(main_panel, 1, wx.EXPAND)
-        self.SetSizer(frame_sizer)
+        self.shortcut_filter = ViewerShortcutFilter(self, self.viewer)
+        self._build_menus()
+        self.statusBar().showMessage(DEFAULT_STATUS_TEXT)
+        QApplication.instance().installEventFilter(self)
 
-        # Build the menu bar with file and playback options, and bind them to handlers.
-        menubar = wx.MenuBar()
-
-        fileMenu = wx.Menu()
-        openItem = fileMenu.Append(wx.ID_OPEN, "Open embroidery file\tCtrl+O")
-        exportMenu = wx.Menu()
-        exportShadedItem = exportMenu.Append(
-            wx.ID_ANY, "Shaded PNG for print..."
-        )
-        exportIconItem = exportMenu.Append(wx.ID_ANY, "Preview PNG...")
-        exportPrintItem = exportMenu.Append(wx.ID_ANY, "Simple PNG for print...")
-        fileMenu.AppendSubMenu(exportMenu, "Export")
-        centerItem = fileMenu.Append(wx.ID_ANY, "Center design\tC")
-        fitItem = fileMenu.Append(wx.ID_ANY, "Fit design to window\tF")
-        fullscreenItem = fileMenu.Append(wx.ID_ANY, "Fullscreen\tF11")
-        gridItem = fileMenu.AppendCheckItem(wx.ID_ANY, "Show 1cm grid\tG")
-        gridItem.Check(True)
-        realisticItem = fileMenu.AppendCheckItem(
-            wx.ID_ANY, "Realistic thread render\tR"
-        )
-        helpItem = fileMenu.Append(wx.ID_ANY, "Help\tH")
-        fileMenu.AppendSeparator()
-        rotateLeftItem = fileMenu.Append(wx.ID_ANY, "Rotate left 90 deg")
-        rotateRightItem = fileMenu.Append(wx.ID_ANY, "Rotate right 90 deg")
-        fileMenu.AppendSeparator()
-        quitItem = fileMenu.Append(wx.ID_EXIT, "Quit\tCtrl+Q")
-        menubar.Append(fileMenu, "&File")
-
-        playbackMenu = wx.Menu()
-        s1 = playbackMenu.AppendRadioItem(wx.ID_ANY, "Step 1 (Alt+Arrows)")
-        s10 = playbackMenu.AppendRadioItem(wx.ID_ANY, "Step 10")
-        s10.Check(True)
-        s50 = playbackMenu.AppendRadioItem(wx.ID_ANY, "Step 50")
-        s100 = playbackMenu.AppendRadioItem(wx.ID_ANY, "Step 100")
-        s500 = playbackMenu.AppendRadioItem(wx.ID_ANY, "Step 500")
-        playbackMenu.AppendSeparator()
-
-        playItem = playbackMenu.Append(wx.ID_ANY, "Play/Pause\tSpace")
-        nextCol = playbackMenu.Append(wx.ID_ANY, "Next color\tCtrl+Right")
-        prevCol = playbackMenu.Append(wx.ID_ANY, "Prev color\tCtrl+Left")
-        menubar.Append(playbackMenu, "&Playback")
-        self.SetMenuBar(menubar)
-
-        # Store menubar reference for key handling
-        self.menubar = menubar
-        self.fileMenu = fileMenu
-        self.playbackMenu = playbackMenu
-        self.gridItem = gridItem
-        self.realisticItem = realisticItem
-
-        # Global accelerators
-        # Alt+F / Alt+P are handled by mnemonics in menu titles (&File / &Playback).
-        # wxWidgets automatically exposes them as Alt+F and Alt+P.
-        # Ctrl+Q for Quit is added explicitly via AcceleratorTable.
-        accel_tbl = wx.AcceleratorTable([
-            (wx.ACCEL_CTRL, ord('Q'), quitItem.GetId()),
-        ])
-        self.SetAcceleratorTable(accel_tbl)
-
-        # Ensure Ctrl+Q works even when viewer has focus.
-        # Alt+F / Alt+P are left to native menu bar mnemonics (no PopupMenu on attached menu).
-        self.Bind(wx.EVT_CHAR_HOOK, self.OnCharHook)
-
-        # Bind menu items to their handlers.
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
-        self.Bind(wx.EVT_MENU, self.OnOpen, openItem)
-        self.Bind(wx.EVT_MENU, self.ExportPrintPng, exportPrintItem)
-        self.Bind(wx.EVT_MENU, self.ExportShadedPng, exportShadedItem)
-        self.Bind(wx.EVT_MENU, self.ExportIconPng, exportIconItem)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.CenterDesign(), centerItem)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.FitToScreen(), fitItem)
-        self.Bind(wx.EVT_MENU, lambda e: self.ToggleFullScreen(), fullscreenItem)
-        self.Bind(wx.EVT_MENU, self.OnToggleGrid, gridItem)
-        self.Bind(wx.EVT_MENU, self.OnToggleRealistic, realisticItem)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.ShowHelp(), helpItem)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.RotateDesign(-1), rotateLeftItem)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.RotateDesign(1), rotateRightItem)
-        self.Bind(wx.EVT_MENU, lambda e: self.Close(), quitItem)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.SetStepSize(1), s1)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.SetStepSize(10), s10)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.SetStepSize(50), s50)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.SetStepSize(100), s100)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.SetStepSize(500), s500)
-        self.Bind(wx.EVT_MENU, lambda e: self.viewer.ToggleAutoPlay(True),
-                  playItem)
-        self.Bind(
-            wx.EVT_MENU, lambda e: self.viewer.JumpToColor(1) or self.
-            _refresh_after_color_jump(), nextCol)
-        self.Bind(
-            wx.EVT_MENU, lambda e: self.viewer.JumpToColor(-1) or self.
-            _refresh_after_color_jump(), prevCol)
-
-        # Set up the status bar with instructions.
-        self.CreateStatusBar()
-        self.SetStatusText(DEFAULT_STATUS_TEXT)
-
-        # Window geometry
-        if window_size:
-            self.SetSize(window_size)
         if window_position:
-            self.SetPosition(window_position)
-        elif not window_size and not fullscreen and not should_maximize_default:
-            self.Centre()
+            self.move(*window_position)
+        elif not window_size and not fullscreen:
+            self.move(self.screen().availableGeometry().center() - self.rect().center())
 
-        # Load design with no auto-fit, we will fit explicitly after final size.
-        initial_file_loaded = (
-            initial_file
-            and Path(initial_file).exists()
-            and self.viewer.LoadDesign(initial_file, fit_to_screen=False)
-        )
-        if initial_file_loaded:
-            total = self.viewer.stitches_np.shape[0]
-            self.SetTitle(
-                f"{APP_TITLE} - {Path(initial_file).name} - {total} sts"
-            )
+    def eventFilter(self, watched, event):
+        if self._is_reloading_from_disk:
+            return False
+        if self.current_file_path is None:
+            return False
+        event_type = event.type()
+        if event_type not in {
+            QEvent.KeyPress,
+            QEvent.MouseButtonPress,
+            QEvent.MouseButtonDblClick,
+            QEvent.Wheel,
+        }:
+            return False
+        watched_window = getattr(watched, "window", None)
+        if watched_window is None or watched_window() is not self:
+            return False
+        self._reload_if_source_changed()
+        return False
 
-        if batch:
+    def _capture_source_mtime(self, file_path):
+        try:
+            return Path(file_path).stat().st_mtime_ns
+        except OSError:
+            return None
+
+    def _show_reload_dialog(self):
+        dialog = QDialog(self)
+        dialog.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
+        dialog.setModal(True)
+        dialog.setWindowTitle("Reloading")
+        layout = QVBoxLayout(dialog)
+        layout.setContentsMargins(16, 12, 16, 12)
+        layout.addWidget(QLabel("File changed on disk. Reloading...", dialog))
+        dialog.adjustSize()
+        dialog.move(self.geometry().center() - dialog.rect().center())
+        dialog.show()
+        QApplication.processEvents()
+        return dialog
+
+    def _reload_if_source_changed(self):
+        now = time.monotonic()
+        if now - self._last_source_check < self._source_check_interval_s:
             return
-        if fullscreen:
+        self._last_source_check = now
+        if self.current_file_path is None:
+            return
+        current_mtime = self._capture_source_mtime(self.current_file_path)
+        if current_mtime is None:
+            return
+        if self._source_mtime_ns is None:
+            self._source_mtime_ns = current_mtime
+            return
+        if current_mtime == self._source_mtime_ns:
+            return
+        self._is_reloading_from_disk = True
+        dialog = self._show_reload_dialog()
+        try:
+            self.open_file(str(self.current_file_path))
+        finally:
+            dialog.close()
+            self._is_reloading_from_disk = False
+    def show_initial_window(self, autoplay=False, initial_directory=None):
+        """Show the fully initialized window after optional startup work."""
+        if self._startup_fullscreen:
             self.is_fullscreen = True
-            self.mode_status.Hide()
-            self.Freeze()
-            if not self.IsShown():
-                self.Show()
-            self.ShowFullScreen(True)
-            self.Layout()
-            self._main_panel.Layout()
-            self.viewer.Layout()
-            wx.CallAfter(self._finish_initial_display, autoplay)
-        elif should_maximize_default:
-            # Default MaxWindow - start maximized but without flicker.
-            # Size is already display size, so first Fit is already almost correct.
-            # Freeze to hide intermediate paint, then Maximize and fit again after GTK event.
-            self.Freeze()
-            if not self.IsShown():
-                self.Show()
-            # On GTK Maximize is async, so we need one more layout pass after it.
-            self.Maximize(True)
-            self.Layout()
-            self._main_panel.Layout()
-            self.viewer.Layout()
-            wx.CallAfter(self._finish_initial_display, autoplay)
+            self.mode_status.hide()
+            self.show()
+            self.showFullScreen()
+        elif self._should_maximize_default:
+            self.show()
+            self.showMaximized()
         else:
-            if not self.IsShown():
-                self.Show()
-            if initial_file_loaded:
-                wx.CallAfter(self._finish_initial_display, autoplay)
-
+            self.show()
+        QTimer.singleShot(0, lambda: self._finish_initial_display(autoplay))
         if initial_directory:
-            wx.CallAfter(self.OnOpen, None)
+            directory_path = Path(initial_directory)
+            if directory_path.is_dir():
+                self.last_directory = str(directory_path.resolve())
+            QTimer.singleShot(0, self.open_file_dialog)
+
+    def _action(self, menu, text, slot, shortcut=None, checkable=False):
+        action = QAction(text, self)
+        action.setCheckable(checkable)
+        if shortcut:
+            action.setShortcut(QKeySequence(shortcut))
+        action.triggered.connect(slot)
+        menu.addAction(action)
+        return action
+
+    def _build_menus(self):
+        file_menu = self.menuBar().addMenu("&File")
+        self._action(file_menu, "Open embroidery file", self.open_file_dialog, "Ctrl+O")
+        export_menu = file_menu.addMenu("Export")
+        self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png)
+        self._action(export_menu, "Preview PNG...", self.export_icon_png)
+        self._action(export_menu, "Simple PNG for print...", self.export_print_png)
+        self._action(file_menu, "Center design", self.viewer.center_design)
+        self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen)
+        self._action(file_menu, "Fullscreen", self.toggle_full_screen)
+        self.grid_action = self._action(file_menu, "Show 1cm grid", self.toggle_grid, "G", True)
+        self.grid_action.setChecked(True)
+        self.realistic_action = self._action(file_menu, "Realistic thread render", self.toggle_realistic, checkable=True)
+        self.viewer.grid_toggled.connect(self.grid_action.setChecked)
+        self.viewer.renderer_changed.connect(
+            lambda renderer: self.realistic_action.setChecked(
+                renderer in ("realistic", "shaded_volume_natural")
+            )
+        )
+        self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
+        self.viewer.status_message.connect(self.statusBar().showMessage)
+        self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer)
+        file_menu.addSeparator()
+        self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.rotate_design(-1))
+        self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))
+        file_menu.addSeparator()
+        self._action(file_menu, "Quit", self.request_quit, "Ctrl+Q")
+        playback = self.menuBar().addMenu("&Playback")
+        for step in (1, 10, 50, 100, 500):
+            action = self._action(playback, f"Step {step}", lambda checked=False, s=step: self.viewer.set_step_size(s))
+            action.setCheckable(True)
+            if step == 10:
+                action.setChecked(True)
+        playback.addSeparator()
+        self._action(
+            playback,
+            "Play/Pause",
+            lambda checked=False: self.viewer.toggle_auto_play(),
+            "Space",
+        )
+        self._action(playback, "Next color", lambda: (self.viewer.jump_to_color(1), self._refresh_after_color_jump()))
+        self._action(playback, "Prev color", lambda: (self.viewer.jump_to_color(-1), self._refresh_after_color_jump()))
+        help_menu = self.menuBar().addMenu("&Help")
+        self._action(help_menu, "Help", self.viewer.show_help)
+        self._action(help_menu, "Settings", self.viewer.show_settings)
+        self._action(help_menu, f"About {APP_TITLE}", lambda: show_about(self))
 
     def _finish_initial_display(self, autoplay):
-        """Finish the one-time startup layout before playback begins.
-
-        ``wx.CallAfter`` runs this after the frame and child panels have their
-        final sizes.  The fit is intentionally limited to startup; changing
-        fullscreen later with ``F11`` preserves the user's current viewport.
-        """
-        self.Layout()
-        self._main_panel.Layout()
-        self.viewer.Layout()
-        # Final fit using real client size, not temporary 1200x980
-        self.viewer.FitToScreen()
-        if self.IsFrozen():
-            self.Thaw()
-        self.viewer.need_redraw = True
-        self.viewer.Refresh()
-        self.progress.Refresh()
+        self.viewer.fit_to_screen()
+        self.viewer.invalidate_cache()
+        self.viewer.update()
+        self.progress.update()
         if autoplay:
-            self.viewer.visible_count = 0
-            self.viewer.need_redraw = True
-            self.viewer.Refresh()
-            self.progress.Refresh()
-            self.viewer.ToggleAutoPlay(forward=True)
+            self.viewer.seek_to(0)
+            self.viewer.toggle_auto_play(forward=True)
 
     def _refresh_after_color_jump(self):
-        """Refresh the viewer and timeline after a color-boundary jump."""
-        self.viewer.need_redraw = True
-        self.viewer.Refresh()
-        self.progress.Refresh()
+        self.viewer.invalidate_cache()
+        self.viewer.update()
+        self.progress.update()
 
-    def OnCharHook(self, e):
-        """Global keyboard shortcuts for menu.
+    def show_window(self, focus=True):
+        """Show the window and optionally request keyboard focus."""
+        if self.isMinimized():
+            self.showNormal()
+        else:
+            self.show()
+        if focus:
+            self.focus_window()
 
-        - Ctrl+Q -> Quit
-        - Alt+F / Alt+P are handled natively by menubar mnemonics (&File, &Playback)
-          so we just skip them here to let wxWidgets process them.
-        """
-        kc = e.GetKeyCode()
-        # Ctrl+Q
-        if e.ControlDown() and kc in (ord('Q'), ord('q')):
-            self.Close()
+    def focus_window(self):
+        """Raise and activate the main window through the window manager."""
+        self.show_window(focus=False)
+        self.raise_()
+        self.activateWindow()
+
+    def request_quit(self):
+        """Close the application instead of hiding a server window."""
+        self._allow_close = True
+        self.close()
+
+    def closeEvent(self, event):
+        if self.server_mode and not self._allow_close:
+            self.hide()
+            event.ignore()
             return
-        # For Alt+F and Alt+P, do not intercept with PopupMenu (causes
-        # !IsAttached() assertion on attached menus). Let the native
-        # menubar mnemonic handling do its job.
-        if e.AltDown() and kc in (ord('F'), ord('f'), ord('P'), ord('p')):
-            e.Skip()
-            return
-        if not e.ControlDown() and not e.AltDown():
-            if kc in (ord('H'), ord('h')):
-                self.viewer.ShowHelp()
-                return
-            if kc in (ord('I'), ord('i')):
-                self.viewer.ShowSettings()
-                return
-        e.Skip()
-
-    def OnClose(self, e):
-        """Stop playback before allowing the frame to close."""
         if self.viewer.is_playing:
-            self.viewer.play_timer.Stop()
+            self.viewer.play_timer.stop()
             self.viewer.is_playing = False
-        e.Skip()
+        interconnect = getattr(self, "interconnect", None)
+        if interconnect is not None:
+            interconnect.stop()
+        event.accept()
 
-    def OnToggleGrid(self, e):
-        """Apply the grid menu state to the viewer and redraw it."""
-        self.viewer.show_grid = e.IsChecked()
-        self.viewer.need_redraw = True
-        self.viewer.Refresh()
-        self.viewer.RefreshModeIndicators()
+    def toggle_grid(self, checked):
+        self.viewer.show_grid = checked
+        self.viewer.invalidate_cache()
+        self.viewer.update()
+        self.viewer.update_mode_indicators()
 
-    def OnToggleRealistic(self, e):
-        """Toggle the 2.5D realistic thread renderer."""
-        self.viewer.show_realistic = e.IsChecked()
-        self.viewer.need_redraw = True
-        self.viewer.Refresh()
-        self.viewer.RefreshModeIndicators()
+    def toggle_realistic(self, checked):
+        self.viewer.toggle_display_mode("Z")
 
-    def OnOpen(self, e):
-        """Prompt for an embroidery file and update the window metadata."""
-        dlg = EmbroideryOpenDialog(
-            self,
-            self.last_directory,
-            self.current_file_path,
-        )
-        if dlg.ShowModal() == wx.ID_OK:
-            self.OpenFile(dlg.GetPath())
-        dlg.Destroy()
+    def open_file_dialog(self):
+        dialog = EmbroideryOpenDialog(self, self.last_directory, self.current_file_path)
+        if dialog.exec() == QDialog.Accepted:
+            self.open_file(dialog.selected_path)
 
-    def _choose_export_path(self, title):
-        """Ask for a PNG destination and return it, or None if cancelled."""
-        dlg = wx.FileDialog(
+    def _default_export_name(self, suffix):
+        base_name = self.current_file_path.stem if self.current_file_path else "inksim"
+        return f"{base_name}{suffix}"
+
+    def _choose_export_path(self, title, default_name, file_filter, extension):
+        export_directory = Path(self.last_directory or Path.cwd())
+        if self.current_file_path is not None:
+            export_directory = self.current_file_path.parent
+        default_path = export_directory / default_name
+        path, _ = QFileDialog.getSaveFileName(
             self,
             title,
-            wildcard="PNG files (*.png)|*.png",
-            style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT,
+            str(default_path),
+            file_filter,
         )
-        try:
-            if dlg.ShowModal() != wx.ID_OK:
-                return None
-            path = Path(dlg.GetPath())
-        finally:
-            dlg.Destroy()
-        return path.with_suffix(".png")
+        if not path:
+            return None
+        selected_path = Path(path)
+        return selected_path.with_suffix(extension)
 
-    def ExportPng(self, path, icon=False, dpi=300, background="transparent",
-                  grid=False, shaded=False):
-        """Export clean embroidery geometry as a PNG file."""
+    def export_png(
+        self,
+        path,
+        icon=False,
+        dpi=300,
+        background="transparent",
+        grid=False,
+        renderer_key=None,
+    ):
         if self.viewer.stitches_np.shape[0] == 0:
             return False
         if icon:
@@ -356,71 +309,82 @@ class Frame(wx.Frame):
             min_x, min_y, max_x, max_y = self.viewer.bounds
             width = max(1, round((max_x - min_x) / 25.4 * dpi))
             height = max(1, round((max_y - min_y) / 25.4 * dpi))
-        render_scale = 3 if shaded else 1
-        image, metadata = render_export_image(
+        image = render_export_image(
             self.viewer.stitches_np,
             self.viewer.bounds,
-            width * render_scale,
-            height * render_scale,
+            width,
+            height,
             self.viewer.line_width,
+            renderer_key or self.viewer.active_renderer,
             dpi=dpi,
             background=background,
             grid=grid,
-            shaded=shaded,
             dark_factor=self.viewer.dark_factor,
             light_factor=self.viewer.light_factor,
         )
-        if render_scale > 1:
-            image = image.resize((width, height), Image.Resampling.LANCZOS)
-            image = image.filter(
-                ImageFilter.UnsharpMask(radius=0.55, percent=115, threshold=2)
-            )
-        image.save(path, "PNG", pnginfo=metadata, dpi=(dpi, dpi))
+        if not image.save(str(path), "PNG"):
+            return False
         return True
 
-    def ExportPrintPng(self, e):
-        """Export a flat 300 DPI PNG at the design's physical size."""
-        path = self._choose_export_path("Export PNG for print")
-        if path:
-            self.ExportPng(path, dpi=300)
+    def export_print_png(self):
+        path = self._choose_export_path(
+            "Export PNG for print",
+            self._default_export_name("-simple.png"),
+            "PNG files (*.png)",
+            ".png",
+        )
+        if path: self.export_png(path, dpi=300, renderer_key="simple")
 
-    def ExportShadedPng(self, e):
-        """Export a shaded 300 DPI PNG at the design's physical size."""
-        path = self._choose_export_path("Export shaded PNG for print")
-        if path:
-            self.ExportPng(path, dpi=300, shaded=True)
+    def export_shaded_png(self):
+        path = self._choose_export_path(
+            "Export shaded PNG for print",
+            self._default_export_name(".png"),
+            "PNG files (*.png)",
+            ".png",
+        )
+        if path: self.export_png(path, dpi=300)
 
-    def ExportIconPng(self, e):
-        """Export a 256 pixel transparent preview PNG."""
-        path = self._choose_export_path("Export preview PNG")
-        if path:
-            self.ExportPng(path, icon=True, dpi=96)
+    def export_icon_png(self):
+        path = self._choose_export_path(
+            "Export preview PNG",
+            self._default_export_name("_thumb.png"),
+            "PNG files (*.png)",
+            ".png",
+        )
+        if path: self.export_png(path, icon=True, dpi=96)
 
-    def OpenFile(self, path):
-        """Load a file and update window metadata after a successful load."""
+    def open_file(self, path, precompute_density=True):
         selected_path = Path(path).resolve()
-        if not self.viewer.LoadDesign(str(selected_path), fit_to_screen=True):
+        if not self.viewer.load_design(
+            str(selected_path),
+            fit_to_screen=True,
+            precompute_density=precompute_density,
+        ):
             return False
         self.current_file_path = selected_path
+        self._source_mtime_ns = self._capture_source_mtime(selected_path)
         self.last_directory = str(selected_path.parent)
-        self.config.Write("last_directory", self.last_directory)
-        self.config.Flush()
+        self.config.setValue("last_directory", self.last_directory)
         total = self.viewer.stitches_np.shape[0]
-        bw = self.viewer.bounds[2] - self.viewer.bounds[0]
-        bh = self.viewer.bounds[3] - self.viewer.bounds[1]
-        self.SetTitle(
-            f"{APP_TITLE} - {selected_path.name} - {total} sts - {bw:.1f}x{bh:.1f}mm"
-        )
-        self.progress.Refresh()
+        bounds = self.viewer.bounds
+        self.setWindowTitle(f"{APP_TITLE} - {selected_path.name} - {total} sts - "
+                            f"{bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm")
+        self.progress.update()
         return True
 
-    def ToggleFullScreen(self):
-        """Toggle undecorated fullscreen without changing the viewport."""
+    def toggle_full_screen(self):
         self.is_fullscreen = not self.is_fullscreen
-        if self.is_fullscreen:
-            self.mode_status.Hide()
+        self.mode_status.setVisible(not self.is_fullscreen)
+        self.showFullScreen() if self.is_fullscreen else self.showNormal()
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
         else:
-            self.mode_status.Show()
-        self.Layout()
-        self._main_panel.Layout()
-        self.ShowFullScreen(self.is_fullscreen)
+            event.ignore()
+
+    def dropEvent(self, event):
+        urls = event.mimeData().urls()
+        if urls:
+            self.open_file(urls[0].toLocalFile())
+            event.acceptProposedAction()

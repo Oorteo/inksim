@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-@numba.njit
+@numba.njit(cache=True)
 def render_fabric_numba(buf, zoom):
     """Render a lit plain-weave fabric surface at the current zoom."""
     height, width, _ = buf.shape

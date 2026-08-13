@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-@numba.njit
+@numba.njit(cache=True)
 def render_grid_numba(buf, zoom, pan_x, pan_y):
     # Draw 1 cm helper grid into the RGB buffer.
     # - every 10 mm: minor grid line

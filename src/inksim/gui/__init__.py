@@ -1,1 +1,1 @@
-"""wxPython user-interface modules for InkSim."""
+"""PySide6 user-interface modules for InkSim."""

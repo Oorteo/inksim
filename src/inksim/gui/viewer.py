@@ -1,23 +1,109 @@
-from pathlib import Path
+from collections import deque
+from threading import Lock
 import time
 
-import numba
 import numpy as np
 import pystitch as emb
-import wx
-import wx.html
-
-from ..constants import *
-from ..render import (
-    calculate_stitch_density_numba,
-    render_density_numba,
-    render_fabric_numba,
-    render_grid_numba,
-    render_realistic_numba,
-    render_shaded_numba,
+from PySide6.QtCore import (
+    QRunnable,
+    QThreadPool,
+    Qt,
+    QTimer,
+    Signal,
+)
+from PySide6.QtGui import (
+    QColor,
+    QFont,
+    QImage,
+    QKeySequence,
+    QPainter,
+    QPen,
+    QPixmap,
+    QShortcut,
+    QTextTable,
+)
+from PySide6.QtWidgets import (
+    QDialog,
+    QGridLayout,
+    QMessageBox,
+    QPushButton,
+    QTextBrowser,
+    QWidget,
 )
 
-class EmbroideryViewerPanel(wx.Panel):
+from ..constants import *
+from ..debug import is_enabled, logger
+from ..render import (
+    RENDERERS_BY_KEY,
+    VECTOR_RENDERERS,
+    calculate_stitch_density_numba,
+    render_density_numba,
+    render_viewport_raster,
+)
+from .help import show_help
+from .settings import show_settings
+
+
+_COMMAND_NAMES = {}
+for _name in dir(emb):
+    if not _name.isupper() or _name.endswith("_MASK"):
+        continue
+    _value = getattr(emb, _name)
+    if (isinstance(_value, int) and 0 <= _value <= emb.COMMAND_MASK
+            and _value not in _COMMAND_NAMES):
+        _COMMAND_NAMES[_value] = _name
+
+
+def density_debug(message):
+    logger.debug(message)
+
+
+density_results = deque()
+density_results_lock = Lock()
+
+
+class DensityWorker(QRunnable):
+    def __init__(self, owner_id, request_id, points, bounds):
+        super().__init__()
+        self.owner_id = owner_id
+        self.request_id = request_id
+        self.points = points
+        self.bounds = bounds
+
+    def run(self):
+        density_debug(f"worker start request={self.request_id}")
+        started_at = time.perf_counter()
+        min_x, min_y, max_x, max_y = self.bounds
+        try:
+            density = calculate_stitch_density_numba(
+                self.points,
+                min_x,
+                min_y,
+                max_x,
+                max_y,
+            )
+        except Exception as error:
+            density_debug(
+                f"worker failed request={self.request_id} "
+                f"elapsed={time.perf_counter() - started_at:.3f}s "
+                f"error={error!r}"
+            )
+            with density_results_lock:
+                density_results.append(
+                    ("failed", self.owner_id, self.request_id, error)
+                )
+        else:
+            density_debug(
+                f"worker finished request={self.request_id} "
+                f"elapsed={time.perf_counter() - started_at:.3f}s"
+            )
+            with density_results_lock:
+                density_results.append(
+                    ("finished", self.owner_id, self.request_id, density)
+                )
+
+
+class EmbroideryViewerWidget(QWidget):
     """Fast interactive embroidery preview with playback and viewport controls.
 
     Stitch data is kept in a NumPy array and rendered into a bitmap by the
@@ -26,24 +112,31 @@ class EmbroideryViewerPanel(wx.Panel):
     keyboard/mouse interaction.
     """
 
+    grid_toggled = Signal(bool)
+    renderer_changed = Signal(str)
+    fullscreen_requested = Signal()
+    status_message = Signal(str, int)
+
     def __init__(self, parent, progress_bar):
         """Create an empty viewer connected to the progress bar."""
-        super().__init__(parent, style=wx.WANTS_CHARS)
-        self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
-        self.SetDoubleBuffered(True)
+        super().__init__(parent)
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setAcceptDrops(True)
         self.zoom = 1.0
         self.pan_x, self.pan_y = 400, 300
         self.drag_start = None
         self.pan_start = (0, 0)
-        self.line_width = 0.4
-        self.dark_factor = 0.75
-        self.light_factor = 0.45
+        self.line_width = DEFAULT_LINE_WIDTH_MM
+        self.dark_factor = DEFAULT_DARK_FACTOR
+        self.light_factor = DEFAULT_LIGHT_FACTOR
         self.shading_step = 0.05
         self.visible_count = 0
         self.step_size = 10
         self.show_grid = True
         self.show_stitches = True
         self.show_realistic = False
+        self.active_renderer = "shaded_volume"
+        self._non_realistic_renderer = "shaded_volume"
         self.show_density = False
         self.show_jumps = False
         self.risky_jumps_only = False
@@ -59,64 +152,72 @@ class EmbroideryViewerPanel(wx.Panel):
         self.jump_segments = []
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
         self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
+        self.zero_length_np = np.zeros((0, ), dtype=np.bool_)
         self.density_ready = False
+        self._density_request_id = 0
+        self._density_worker = None
+        self._density_owner_id = id(self)
+        self._density_result_timer = QTimer(self)
+        self._density_result_timer.timeout.connect(self._poll_density_results)
+        self._density_result_timer.start(50)
+        self._paint_sequence = 0
+        self._render_buffer = None
+        self._render_buffer_size = None
         self.cached_bitmap = None
         self.cached_pan_x = self.pan_x
         self.cached_pan_y = self.pan_y
         self.cached_zoom = self.zoom
         self.zoom_render_timer = None
-        self.need_redraw = True
+        self._cache_valid = False
         self.progress_bar = progress_bar
         self.mode_panel = None
-        self._last_key_time = 0
-        self._key_throttle = 0.03
         self.help_dialog = None
         self.settings_dialog = None
         self._last_dir = 1
         self._pending_fit_to_screen = False
-        self.play_timer = wx.Timer(self)
+        self.play_timer = QTimer(self)
         self.play_speed = 20
         self.play_speed_levels = (1, 5, 10, 20, 40, 80)
         self.play_speed_index = 2
         self.play_step = self.play_speed_levels[self.play_speed_index]
         self.is_playing = False
-        self.Bind(wx.EVT_TIMER, self.OnPlayTimer, self.play_timer)
-        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_MOUSEWHEEL, self.OnWheel)
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
-        self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-        self.Bind(wx.EVT_MOTION, self.OnMotion)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.play_timer.timeout.connect(self.advance_playback)
 
-    def OnEraseBackground(self, e):
-        """Keep wxMSW from clearing the canvas before a buffered repaint."""
+    def invalidate_cache(self):
+        self._cache_valid = False
+        self.update()
 
-    def OnSize(self, e):
+    def _get_render_buffer(self, width, height):
+        size = (width, height)
+        if self._render_buffer_size != size:
+            self._render_buffer = np.empty((height, width, 3), dtype=np.uint8)
+            self._render_buffer_size = size
+        self._render_buffer.fill(255)
+        return self._render_buffer
+
+    def resizeEvent(self, event):
         """Invalidate the bitmap and retry deferred initial fitting."""
-        self.need_redraw = True
+        self.invalidate_cache()
         if self._pending_fit_to_screen and self.stitches_np.shape[0] > 0:
-            wx.CallAfter(self._try_fit_to_screen)
-        e.Skip()
+            QTimer.singleShot(0, self._try_fit_to_screen)
+        super().resizeEvent(event)
 
     def _try_fit_to_screen(self, retries=20):
-        """Fit the design once wx has assigned a usable panel size."""
+        """Fit the design once Qt has assigned a usable panel size."""
         if not self._pending_fit_to_screen:
             return
-        w, h = self.GetSize()
-        # On startup wx can briefly report tiny panel sizes.
+        w, h = self.width(), self.height()
+        # On startup Qt can briefly report tiny panel sizes.
         # If we fit at that moment, the design appears tiny in the top-left.
         # Retry shortly until layout stabilizes.
         if w < 120 or h < 120:
             if retries > 0:
-                wx.CallLater(30, self._try_fit_to_screen, retries - 1)
+                QTimer.singleShot(30, lambda: self._try_fit_to_screen(retries - 1))
             return
         self._pending_fit_to_screen = False
-        self.FitToScreen()
+        self.fit_to_screen()
 
-    def FitToScreen(self):
+    def fit_to_screen(self):
         """Center the loaded design and scale it to fit the viewport."""
         if self.stitches_np.shape[0] == 0:
             return
@@ -125,38 +226,48 @@ class EmbroideryViewerPanel(wx.Panel):
         bh = max_y - min_y
         bw = max(bw, 1)
         bh = max(bh, 1)
-        w, h = self.GetSize()
+        w, h = self.width(), self.height()
         if w < 10 or h < 10:
             w, h = 1200, 800
         zoom_x = (w * 0.8) / bw
         zoom_y = (h * 0.8) / bh
         self.zoom = min(zoom_x, zoom_y)
-        self.CenterDesign()
+        self.center_design()
 
-    def SetOneToOne(self):
+    def minimum_zoom(self):
+        """Return the zoom that keeps the design visible as a small marker."""
+        min_x, min_y, max_x, max_y = self.bounds
+        design_extent = max(max_x - min_x, max_y - min_y)
+        if design_extent <= 0:
+            return 0.05
+        return max(0.05, MIN_VISIBLE_DESIGN_PIXELS / design_extent)
+
+    def maximum_zoom(self):
+        """Return a viewport-sized maximum based on a 10 mm screen span."""
+        viewport_extent = max(self.width(), self.height(), 1)
+        return max(50.0, viewport_extent / MAX_ZOOM_DESIGN_MM)
+
+    def set_one_to_one(self):
         """Display the design at its physical size when display PPI is known."""
         if self.stitches_np.shape[0] == 0:
             return
         try:
-            display_index = wx.Display.GetFromWindow(self)
-            if display_index == wx.NOT_FOUND:
-                display_index = 0
-            ppi = wx.Display(display_index).GetPPI()
-            ppi_x = float(ppi.x)
-            ppi_y = float(ppi.y)
+            screen = self.screen()
+            ppi_x = float(screen.logicalDotsPerInchX())
+            ppi_y = float(screen.logicalDotsPerInchY())
             if ppi_x <= 0 or ppi_y <= 0:
                 raise ValueError("invalid display PPI")
             pixels_per_mm = (ppi_x + ppi_y) / (2.0 * 25.4)
-        except (AttributeError, TypeError, ValueError, wx.PyNoAppError):
+        except (AttributeError, TypeError, ValueError):
             pixels_per_mm = 96.0 / 25.4
         self.zoom = pixels_per_mm
-        self.CenterDesign()
+        self.center_design()
 
-    def CenterDesign(self):
+    def center_design(self):
         """Center the loaded design without changing its current zoom."""
         if self.stitches_np.shape[0] == 0:
             return
-        w, h = self.GetSize()
+        w, h = self.width(), self.height()
         if w < 10 or h < 10:
             w, h = 1200, 800
         min_x, min_y, max_x, max_y = self.bounds
@@ -164,43 +275,52 @@ class EmbroideryViewerPanel(wx.Panel):
         cy = (min_y + max_y) / 2
         self.pan_x = w / 2 - cx * self.zoom
         self.pan_y = h / 2 - cy * self.zoom
-        self.need_redraw = True
-        self.Refresh()
+        self.invalidate_cache()
+        self.update()
         if self.progress_bar:
-            self.progress_bar.Refresh()
+            self.progress_bar.update()
 
-    def OnPlayTimer(self, e):
+    def advance_playback(self):
         """Advance playback by one timer step in the current direction."""
         total = self.stitches_np.shape[0]
         if total == 0:
-            self.play_timer.Stop()
+            self.play_timer.stop()
             self.is_playing = False
             return
         self.visible_count += self.play_step * self._last_dir
         if self.visible_count >= total:
             self.visible_count = total
-            self.play_timer.Stop()
+            self.play_timer.stop()
             self.is_playing = False
         elif self.visible_count <= 0:
             self.visible_count = 0
-            self.play_timer.Stop()
+            self.play_timer.stop()
             self.is_playing = False
-        self.need_redraw = True
-        self.Refresh()
+        self.invalidate_cache()
+        self.update()
         if self.progress_bar:
-            self.progress_bar.Refresh()
+            self.progress_bar.update()
 
-    def ToggleAutoPlay(self, forward=True):
+    def seek_to(self, visible_count):
+        total = self.stitches_np.shape[0]
+        self.visible_count = max(0, min(total, visible_count))
+        self.invalidate_cache()
+        self.update()
+        if self.progress_bar:
+            self.progress_bar.update()
+
+    def toggle_auto_play(self, forward=None):
         """Start or stop playback, choosing its direction when starting."""
         if self.is_playing:
-            self.play_timer.Stop()
+            self.play_timer.stop()
             self.is_playing = False
         else:
-            self._last_dir = 1 if forward else -1
-            self.play_timer.Start(self.play_speed)
+            if forward is not None:
+                self._last_dir = 1 if forward else -1
+            self.play_timer.start(self.play_speed)
             self.is_playing = True
 
-    def AdjustPlaybackSpeed(self, direction):
+    def adjust_playback_speed(self, direction):
         """Increase or decrease playback speed while preserving its direction."""
         new_index = max(
             0,
@@ -214,12 +334,7 @@ class EmbroideryViewerPanel(wx.Panel):
         self.play_step = self.play_speed_levels[new_index]
         return True
 
-    def OnKeyUp(self, e):
-        """Reset key-repeat throttling after a key is released."""
-        self._last_key_time = 0
-        e.Skip()
-
-    def JumpToColor(self, direction):
+    def jump_to_color(self, direction):
         """Move to the next or previous recorded thread-color boundary."""
         if not self.color_boundaries:
             return
@@ -246,8 +361,8 @@ class EmbroideryViewerPanel(wx.Panel):
             else:
                 self.visible_count = prev
 
-    def JumpToCommand(self, direction):
-        """Move to the nearest recorded JUMP, TRIM, or color-change event."""
+    def jump_to_command(self, direction):
+        """Move to the nearest recorded command event."""
         positions = sorted(self.command_events)
         current = self.visible_count
         if direction > 0:
@@ -264,7 +379,7 @@ class EmbroideryViewerPanel(wx.Panel):
         self.visible_count = target
         return True
 
-    def RotateDesign(self, quarter_turns):
+    def rotate_design(self, quarter_turns):
         """Rotate the loaded design by quarter turns around its center."""
         if self.stitches_np.shape[0] == 0:
             return
@@ -309,186 +424,21 @@ class EmbroideryViewerPanel(wx.Panel):
             float(rotated_corners[:, 0].max()),
             float(rotated_corners[:, 1].max()),
         )
-        self.need_redraw = True
-        self.CenterDesign()
+        self.invalidate_cache()
+        self.center_design()
 
-    def OnKeyDown(self, e):
-        """Handle playback, navigation, display, and view shortcut keys."""
-        now = time.time()
-        key = e.GetKeyCode()
-        is_alt = e.AltDown()
-        is_ctrl = e.ControlDown()
-        # Let menu mnemonics and global shortcuts pass through
-        # Alt+F, Alt+P for menu, Ctrl+Q for Quit, Ctrl+O for Open etc.
-        if is_alt and key in (ord('F'), ord('f'), ord('P'), ord('p')):
-            e.Skip()
-            return
-        if is_ctrl and key in (ord('Q'), ord('q'), ord('O'), ord('o')):
-            e.Skip()
-            return
-        is_space_or_c = key in (
-            wx.WXK_SPACE,
-            ord("C"),
-            ord("c"),
-        )
-        if (not is_space_or_c
-                and now - self._last_key_time < self._key_throttle
-                and not is_alt and not is_ctrl):
-            return
-        self._last_key_time = now
-        total = self.stitches_np.shape[0]
-        is_shift = e.ShiftDown()
-        changed = False
-        highlight_needle = False
-        step = 1 if is_alt else self.step_size
-        if is_shift and not is_alt and not is_ctrl and key in (
-                wx.WXK_RIGHT,
-                wx.WXK_LEFT,
-        ):
-            changed = self.JumpToCommand(1 if key == wx.WXK_RIGHT else -1)
-            highlight_needle = changed
-            if changed and self.is_playing:
-                self.play_timer.Stop()
-                self.is_playing = False
-        elif self.is_playing and not is_alt and not is_ctrl and key in (
-                wx.WXK_RIGHT,
-                wx.WXK_LEFT,
-        ):
-            key_direction = 1 if key == wx.WXK_RIGHT else -1
-            changed = self.AdjustPlaybackSpeed(key_direction * self._last_dir)
-        elif is_ctrl and key in (wx.WXK_RIGHT, wx.WXK_LEFT):
-            if key == wx.WXK_RIGHT:
-                self.JumpToColor(1)
-                self._last_dir = 1
-            else:
-                self.JumpToColor(-1)
-                self._last_dir = -1
-            changed = True
-            highlight_needle = True
-        elif key == wx.WXK_RIGHT:
-            if self.visible_count < total:
-                self.visible_count = min(total, self.visible_count + step)
-                self._last_dir = 1
-                changed = True
-        elif key == wx.WXK_LEFT:
-            if self.visible_count > 0:
-                self.visible_count = max(0, self.visible_count - step)
-                self._last_dir = -1
-                changed = True
-        elif key == wx.WXK_UP:
-            self.visible_count = min(total, self.visible_count + step * 10)
-            self._last_dir = 1
-            changed = True
-        elif key == wx.WXK_DOWN:
-            self.visible_count = max(0, self.visible_count - step * 10)
-            self._last_dir = -1
-            changed = True
-        elif key == wx.WXK_HOME:
-            self.visible_count = 0
-            changed = True
-        elif key == wx.WXK_END:
-            self.visible_count = total
-            changed = True
-        elif key == wx.WXK_SPACE:
-            self.ToggleAutoPlay(forward=self._last_dir > 0)
-            return
-        elif key in (ord("+"), ord("="), wx.WXK_NUMPAD_ADD):
-            self.line_width = min(1.0, self.line_width + 0.1)
-            changed = True
-        elif key in (ord("-"), ord("_"), wx.WXK_NUMPAD_SUBTRACT):
-            self.line_width = max(0.1, self.line_width - 0.1)
-            changed = True
-        elif key in (ord("["), ord("{"), ord("]"), ord("}")):
-            shading_delta = self.shading_step
-            if key in (ord("["), ord("{")):
-                shading_delta = -shading_delta
-            if e.ShiftDown() or key in (ord("{"), ord("}")):
-                self.light_factor = max(
-                    0.0,
-                    min(1.0, self.light_factor + shading_delta),
-                )
-            else:
-                self.dark_factor = max(
-                    0.05,
-                    min(1.0, self.dark_factor + shading_delta),
-                )
-            changed = True
-        elif key in (ord("C"), ord("c")) and not is_alt and not is_ctrl:
-            self.CenterDesign()
-            return
-        elif key in (ord("F"), ord("f")) and not is_alt and not is_ctrl:
-            self.FitToScreen()
-            return
-        elif key == ord("1") and not is_alt and not is_ctrl:
-            self.SetOneToOne()
-            return
-        elif key == wx.WXK_F11:
-            frame = wx.GetTopLevelParent(self)
-            if hasattr(frame, "ToggleFullScreen"):
-                frame.ToggleFullScreen()
-                return
-        elif key in (ord("G"), ord("g")) and not is_alt and not is_ctrl:
-            self.show_grid = not self.show_grid
-            frame = wx.GetTopLevelParent(self)
-            if hasattr(frame, "gridItem"):
-                frame.gridItem.Check(self.show_grid)
-            changed = True
-        elif key in (ord("J"), ord("j")) and not is_alt and not is_ctrl:
-            self.ToggleDisplayMode("J")
-            changed = True
-        elif key in (ord("X"), ord("x")) and not is_alt and not is_ctrl:
-            self.ToggleDisplayMode("X")
-            changed = True
-        elif key in (ord("V"), ord("v")) and not is_alt and not is_ctrl:
-            self.ToggleDisplayMode("V")
-            changed = True
-        elif key in (ord("R"), ord("r")) and not is_alt and not is_ctrl:
-            self.ToggleDisplayMode("R")
-            changed = True
-        elif key in (ord("N"), ord("n")) and not is_alt and not is_ctrl:
-            self.show_needle = not self.show_needle
-            if self.show_needle:
-                self.HighlightNeedle()
-            else:
-                self.StopNeedleHighlight()
-            changed = True
-        elif key in (ord("H"), ord("h")) and not is_alt and not is_ctrl:
-            self.ShowHelp()
-            return
-        elif key in (ord("I"), ord("i")) and not is_alt and not is_ctrl:
-            self.ShowSettings()
-            return
-        elif key == wx.WXK_ESCAPE:
-            if self.is_playing:
-                self.play_timer.Stop()
-                self.is_playing = False
-                return
-        if changed:
-            if highlight_needle:
-                self.HighlightNeedle()
-            if (self.is_playing and key
-                    in (wx.WXK_UP, wx.WXK_DOWN, wx.WXK_HOME, wx.WXK_END)
-                    and not is_ctrl):
-                self.play_timer.Stop()
-                self.is_playing = False
-            self.need_redraw = True
-            self.Refresh()
-            if self.progress_bar:
-                self.progress_bar.Refresh()
-        else:
-            e.Skip()
-
-    def ToggleDisplayMode(self, mode):
+    def toggle_display_mode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
-        if mode == "R":
-            self.show_realistic = not self.show_realistic
-            frame = wx.GetTopLevelParent(self)
-            if hasattr(frame, "realisticItem"):
-                frame.realisticItem.Check(self.show_realistic)
+        if mode == "Z":
+            self.set_renderer(
+                self._non_realistic_renderer
+                if self.show_realistic
+                else "shaded_volume_natural"
+            )
         elif mode == "X":
             self.show_density = not self.show_density
             if self.show_density and not self.density_ready:
-                self.CalculateStitchDensity()
+                self.calculate_stitch_density()
         elif mode == "V":
             self.show_stitches = not self.show_stitches
         elif mode == "J":
@@ -500,212 +450,121 @@ class EmbroideryViewerPanel(wx.Panel):
             else:
                 self.show_jumps = False
                 self.risky_jumps_only = False
-        self.RefreshModeIndicators()
-        self.need_redraw = True
-        self.Refresh()
+        self.update_mode_indicators()
+        self.invalidate_cache()
+        self.update()
 
-    def RefreshModeIndicators(self):
+    def set_renderer(self, renderer_key):
+        """Select a registered stitch renderer and refresh the canvas."""
+        if renderer_key not in RENDERERS_BY_KEY:
+            raise ValueError(f"unknown stitch renderer: {renderer_key}")
+        if renderer_key not in ("realistic", "shaded_volume_natural"):
+            self._non_realistic_renderer = renderer_key
+        self.active_renderer = renderer_key
+        self.show_realistic = renderer_key in ("realistic", "shaded_volume_natural")
+        self.renderer_changed.emit(renderer_key)
+        self.invalidate_cache()
+        self.update()
+        self.update_mode_indicators()
+
+    def select_renderer(self):
+        """Open the renderer picker dialog."""
+        from .renderer_picker import RendererPickerDialog
+
+        dialog = RendererPickerDialog(self, self.active_renderer)
+        if dialog.exec():
+            self.set_renderer(dialog.selected_renderer)
+
+    def update_mode_indicators(self):
         if self.mode_panel is not None:
-            self.mode_panel.RefreshIndicators()
+            self.mode_panel.update_indicators()
 
-    def _show_html_dialog(self, key, title, html_content, width=1050, height=700):
-        """Helper to show HTML content in a resizable dialog with HtmlWindow."""
+    def reset_render_settings(self):
+        """Restore the default thread width and shading factors."""
+        self.line_width = DEFAULT_LINE_WIDTH_MM
+        self.dark_factor = DEFAULT_DARK_FACTOR
+        self.light_factor = DEFAULT_LIGHT_FACTOR
+        self.invalidate_cache()
+        self.update()
+        self.update_mode_indicators()
+
+    def _show_markdown_columns_dialog(
+        self, key, title, sections, columns=3, width=1050, height=700
+    ):
+        """Show Markdown sections side by side in a responsive Qt grid."""
         dialog = getattr(self, key)
         if dialog is not None:
-            dialog.Close()
+            dialog.close()
             return
-        dlg = wx.Dialog(self,
-                        title=title,
-                        size=(width, height),
-                        style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-                        | wx.MAXIMIZE_BOX)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        html_win = wx.html.HtmlWindow(dlg, style=wx.html.HW_SCROLLBAR_AUTO)
-        styled_html = f"""
-        <html><head></head><body>
-        {html_content}
-        </body></html>
-        """
-        html_win.SetPage(styled_html)
-        sizer.Add(html_win, 1, wx.EXPAND | wx.ALL, 6)
-        btn_sizer = wx.StdDialogButtonSizer()
-        ok_btn = wx.Button(dlg, wx.ID_OK)
-        ok_btn.SetDefault()
-        btn_sizer.AddButton(ok_btn)
-        btn_sizer.Realize()
-        ok_btn.Bind(wx.EVT_BUTTON, lambda event: dlg.Close())
-        sizer.Add(btn_sizer, 0, wx.ALIGN_RIGHT | wx.ALL, 6)
-        dlg.SetSizer(sizer)
-        dlg.Layout()
-        dlg.CentreOnParent()
+        dlg = QDialog(self)
+        dlg.setWindowTitle(title)
+        dlg.resize(width, height)
+        grid = QGridLayout(dlg)
+        grid.setSpacing(12)
+        for index, (heading, markdown) in enumerate(sections):
+            browser = QTextBrowser(dlg)
+            browser.document().setDefaultStyleSheet(
+                "table { border: none; margin-top: 8px; margin-bottom: 8px; }"
+                "th, td { border: none; padding: 6px 12px; }"
+                "th { font-weight: bold; color: #30343b; }"
+                "code { background-color: #f4f4f4; padding: 2px 4px; }"
+            )
+            browser.setMarkdown(f"# {heading}\n\n{markdown}")
+            for child_frame in browser.document().rootFrame().childFrames():
+                if isinstance(child_frame, QTextTable):
+                    table_format = child_frame.format()
+                    table_format.setBorder(0)
+                    table_format.setCellPadding(6)
+                    child_frame.setFormat(table_format)
+            browser.setFrameShape(QTextBrowser.NoFrame)
+            grid.addWidget(browser, index // columns, index % columns)
+        close_btn = QPushButton("Close", dlg)
+        close_btn.setDefault(True)
+        close_btn.clicked.connect(dlg.close)
+        close_btn.setFocus()
+        grid.addWidget(close_btn, (len(sections) + columns - 1) // columns, 0,
+                        1, columns, alignment=Qt.AlignRight)
+        for sequence in ("Esc", "Return", "Space"):
+            shortcut = QShortcut(QKeySequence(sequence), dlg)
+            shortcut.setContext(Qt.WindowShortcut)
+            shortcut.activated.connect(dlg.close)
+        dlg.setMinimumSize(width, height)
+        dlg.move(self.window().geometry().center() - dlg.rect().center())
         def on_close(event):
             setattr(self, key, None)
-            dlg.Destroy()
-
-        dlg.Bind(wx.EVT_CLOSE, on_close)
+            event.accept()
+        dlg.closeEvent = on_close
         def on_dialog_key(event):
-            key_code = event.GetKeyCode()
-            closes_dialog = (
-                (key == "help_dialog" and key_code in (ord("H"), ord("h")))
-                or (key == "settings_dialog" and key_code in (ord("I"), ord("i")))
-            )
-            if closes_dialog:
-                dlg.Close()
+            key_code = event.key()
+            shortcut = "H" if key == "help_dialog" else "I"
+            shortcut_key = Qt.Key_H if shortcut == "H" else Qt.Key_I
+            if key_code == shortcut_key:
+                dlg.close()
                 return
-            event.Skip()
-
-        dlg.Bind(wx.EVT_CHAR_HOOK, on_dialog_key)
+            event.ignore()
+        dlg.keyPressEvent = on_dialog_key
         setattr(self, key, dlg)
-        dlg.Show()
+        dlg.show()
 
-    def ShowHelp(self):
-        """Show keyboard and mouse controls in a compact 2-column HtmlWindow."""
-        # <!-- <div align="center"><font size="10"><b>{APP_TITLE} - Help</b></font></div> -->
+    def show_help(self):
+        show_help(self)
 
-        html = """
-        <table class="layout" valign="top"><tr valign="top">
-        <td class="col" valign="top">
-            <font size="5"><b>Mouse</b></font><br>
-            <table class="inner" valign="top">
-                <tr><td><b>Wheel</b></td><td>Zoom</td></tr>
-                <tr><td><b>Drag</b></td><td>Pan</td></tr>
-                <tr><td nowrap="nowrap"><b>Click bar</b></td><td nowrap="nowrap">Seek stitch</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Playback</b></font><br>
-            <table class="inner" valign="top">
-                <tr><td><b>Right/Left</b></td><td nowrap="nowrap">Speed up/down (playing)</td></tr>
-                <tr><td><b></b></td><td nowrap="nowrap">Next/prev N stitches</td></tr>
-                <tr><td><b>Alt+Right/Left</b></td><td>Next/prev 1 stitch</td></tr>
-                <tr><td><b>Shift+Right/Left</b></td><td>Next/prev command</td></tr>
-                <tr><td><b>Ctrl+Right/Left</b></td><td>Next/prev color</td></tr>
-                <tr><td><b>Up/Down</b></td><td>Fast seek 10x</td></tr>
-                <tr><td><b>Home/End</b></td><td>First/last stitch</td></tr>
-                <tr><td><b>Space</b></td><td>Play/pause</td></tr>
-                <tr><td><b>Esc</b></td><td>Stop</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>View</b></font><br>
-            <table class="inner" valign="top">
-                <tr><td><b>C</b></td><td>Center design</td></tr>
-                <tr><td><b>F</b></td><td>Fit to window</td></tr>
-                <tr><td><b>F11</b></td><td>Fullscreen</td></tr>
-                <tr><td><b>1</b></td><td>Physical 1:1 size</td></tr>
-                <tr><td><b>V</b></td><td>Toggle embroidery</td></tr>
-                <tr><td><b>G</b></td><td>Toggle grid</td></tr>
-                <tr><td><b>N</b></td><td>Toggle needle</td></tr>
-                <tr><td><b>J</b></td><td>Toggle jumps (off->all->risky)</td></tr>
-                <tr><td><b>X</b></td><td>Toggle density map</td></tr>
-                <tr><td><b>R</b></td><td>Toggle realistic 2.5D</td></tr>
-                <tr><td><b>H</b></td><td>Toggle help</td></tr>
-                <tr><td><b>I</b></td><td>Toggle settings</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Rendering</b></font><br>
-            <table class="inner" valign="top">
-                <tr><td><b>+/-</b></td><td nowrap="nowrap">Thread width</td></tr>
-                <tr><td><b>[/]</b></td><td nowrap="nowrap">Dark shading</td></tr>
-                <tr><td><b>Shift+[/]</b></td><td nowrap="nowrap">Light shading</td></tr>
-            </table>
-        </td>
-        </tr></table>
-        """
-        self._show_html_dialog("help_dialog", "Help - " + APP_TITLE,
-                               html,
-                               width=1050,
-                               height=580)
+    def show_settings(self):
+        show_settings(self)
 
-    def ShowSettings(self):
-        """Show viewer state in a compact 2-column HtmlWindow without scrolling."""
-        total = self.stitches_np.shape[0]
-        min_x, min_y, max_x, max_y = self.bounds
-        bw = max_x - min_x
-        bh = max_y - min_y
-        density_mode = "on" if self.show_density else "off"
-        jump_mode = "risky only" if self.risky_jumps_only else "all" if self.show_jumps else "off"
-
-        def badge(on):
-            cls = "badge-on" if on else "badge-off"
-            txt = "ON" if on else "OFF"
-            return f'<span class="badge {cls}">{txt}</span>'
-
-        def badge_text(txt, is_on):
-            cls = "badge-on" if is_on else "badge-off"
-            return f'<span class="badge {cls}">{txt}</span>'
-
-        # <font size="13"><b>{APP_TITLE} - Settings</b></font><br>
-        html = f"""
-        <table class="layout"><tr>
-        <td class="col" valign="top">
-            <font size="5"><b>Design</b></font><br>
-            <table class="inner">
-                <tr><td><b>Stitches</b></td><td>{self.visible_count} / {total}</td></tr>
-                <tr><td><b>Colors</b></td><td>{self.color_count}</td></tr>
-                <tr><td><b>Bounds</b></td><td nowrap="nowrap">{bw:.1f} x {bh:.1f} mm</td></tr>
-                <tr><td><b>Min</b></td><td nowrap="nowrap">{min_x:.1f}, {min_y:.1f}</td></tr>
-                <tr><td><b>Max</b></td><td nowrap="nowrap">{max_x:.1f}, {max_y:.1f}</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Viewport</b></font><br>
-            <table class="inner">
-                <tr><td><b>Zoom</b></td><td>{self.zoom:.3f}x</td></tr>
-                <tr><td><b>Pan</b></td><td nowrap="nowrap">{self.pan_x:.0f}, {self.pan_y:.0f} px</td></tr>
-                <tr><td><b>Grid</b></td><td>{badge(self.show_grid)}</td></tr>
-                <tr><td><b>Embroidery</b></td><td>{badge(self.show_stitches)}</td></tr>
-                <tr><td><b>Realistic</b></td><td>{badge(self.show_realistic)}</td></tr>
-                <tr><td><b>Jumps</b></td><td>{badge_text(jump_mode, self.show_jumps)}</td></tr>
-                <tr><td><b>Density</b></td><td>{badge_text(density_mode, self.show_density)}</td></tr>
-                <tr><td><b>Needle</b></td><td>{badge(self.show_needle)}</td></tr>
-                <tr><td><b>Gradient</b></td><td>{badge(self.zoom > 1.2)}</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Density</b></font><br>
-            <table class="inner">
-                <tr><td><b>Radius</b></td><td nowrap="nowrap">{DENSITY_RADIUS_MM:.1f} mm</td></tr>
-                <tr><td><b>Warning</b></td><td nowrap="nowrap">{DENSITY_WARNING_PER_MM2:.1f} /mm²</td></tr>
-                <tr><td><b>Critical</b></td><td nowrap="nowrap">{DENSITY_CRITICAL_PER_MM2:.1f} /mm²</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Rendering</b></font><br>
-            <table class="inner">
-                <tr><td nowrap="nowrap"><b>Line width</b></td><td nowrap="nowrap">{self.line_width:.2f} mm</td></tr>
-                <tr><td nowrap="nowrap"><b>Dark factor</b></td><td>{self.dark_factor:.2f}</td></tr>
-                <tr><td nowrap="nowrap"><b>Light factor</b></td><td>{self.light_factor:.2f}</td></tr>
-                <tr><td nowrap="nowrap"><b>Shading step</b></td><td>{self.shading_step:.2f}</td></tr>
-            </table>
-        </td>
-        <td class="col" valign="top">
-            <font size="5"><b>Playback</b></font><br>
-            <table class="inner">
-                <tr><td><b>Step size</b></td><td>{self.step_size}</td></tr>
-                <tr><td><b>Interval</b></td><td nowrap="nowrap">{self.play_speed} ms</td></tr>
-                <tr><td nowrap="nowrap"><b>Timer step</b></td><td>{self.play_step}</td></tr>
-                <tr><td><b>Direction</b></td><td>{'forward' if self._last_dir > 0 else 'backward'}</td></tr>
-                <tr><td><b>Playing</b></td><td>{badge(self.is_playing)}</td></tr>
-            </table>
-        </td>
-        </tr></table>
-        """
-        self._show_html_dialog("settings_dialog", "Settings - " + APP_TITLE,
-                               html,
-                               width=1050,
-                               height=620)
-
-    def SetStepSize(self, size):
+    def set_step_size(self, size):
         self.step_size = max(1, size)
 
-    def LoadDesign(self, path, fit_to_screen=True):
+    def load_design(self, path, fit_to_screen=True, precompute_density=True):
         """Load an embroidery file into renderable stitch segments."""
+        started_at = time.perf_counter()
+        density_debug(
+            f"load start path={path!r} precompute_density={precompute_density}"
+        )
         try:
             pattern = emb.read(path)
-        except Exception as ex:
-            wx.MessageBox(f"Failed to load embroidery file: {ex}", "Error")
+        except (OSError, RuntimeError, ValueError) as ex:
+            QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
             return False
         segs = []
         last_x = last_y = 0
@@ -721,8 +580,13 @@ class EmbroideryViewerPanel(wx.Panel):
         self.jump_segments = []
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
         self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
+        self.zero_length_np = np.zeros((0, ), dtype=np.bool_)
         self.density_ready = False
+        self._density_request_id += 1
+        self._density_worker = None
         jump_run_indices = []
+        color_change_in_group = False
+        has_stitch = False
         for st in pattern.stitches:
             x = st[0] / 10.0
             y = st[1] / 10.0
@@ -737,11 +601,16 @@ class EmbroideryViewerPanel(wx.Panel):
                 event_position = len(segs)
                 self.command_events.setdefault(event_position,
                                                []).append("JUMP")
-                self.jump_segments.append([last_x, last_y, x, y, 1, len(segs)])
+                is_risky = has_stitch and not color_change_in_group
+                self.jump_segments.append(
+                    [last_x, last_y, x, y, int(is_risky), len(segs)])
                 jump_run_indices.append(len(self.jump_segments) - 1)
                 last_x, last_y = x, y
                 continue
             if hasattr(emb, "END") and cmd == emb.END:
+                event_position = len(segs)
+                self.command_events.setdefault(event_position,
+                                               []).append("END")
                 break
             is_color_change = (hasattr(emb, "COLOR_CHANGE")
                                and cmd == emb.COLOR_CHANGE)
@@ -765,23 +634,14 @@ class EmbroideryViewerPanel(wx.Panel):
                 cur_color_idx += 1
                 if segs:
                     self.color_boundaries.append(len(segs))
+                color_change_in_group = True
                 last_x, last_y = x, y
                 continue
-            if hasattr(emb, "TRIM") and cmd == emb.TRIM:
+            command_name = _COMMAND_NAMES.get(cmd)
+            if command_name is not None and command_name != "STITCH":
                 event_position = len(segs)
                 self.command_events.setdefault(event_position,
-                                               []).append("TRIM")
-                continue
-            for command_name in ("STOP", "SLOW", "FAST"):
-                if hasattr(emb, command_name) and cmd == getattr(
-                        emb, command_name):
-                    event_position = len(segs)
-                    self.command_events.setdefault(event_position,
-                                                   []).append(command_name)
-                    break
-            else:
-                command_name = None
-            if command_name is not None:
+                                               []).append(command_name)
                 continue
             if has_thread_colors:
                 color_idx = min(cur_color_idx, len(palette) - 1)
@@ -800,158 +660,220 @@ class EmbroideryViewerPanel(wx.Panel):
             max_x = max(max_x, last_x, x)
             max_y = max(max_y, last_y, y)
             last_x, last_y = x, y
+            has_stitch = True
+            color_change_in_group = False
+            jump_run_indices = []
         if segs:
             self.stitches_np = np.array(segs, dtype=np.float32)
             self.stitch_points_np = self.stitches_np[:, 2:4].copy()
+            delta = self.stitches_np[:, 0:2] - self.stitches_np[:, 2:4]
+            self.zero_length_np = np.sum(delta * delta, axis=1) <= 0.0001
             self.bounds = (min_x, min_y, max_x, max_y)
             self.visible_count = self.stitches_np.shape[0]
             self.color_boundaries = sorted(
-                set(boundary for boundary in self.color_boundaries
-                    if boundary < len(segs)))
+                {boundary for boundary in self.color_boundaries
+                 if boundary < len(segs)})
             self.color_count = len(self.color_boundaries)
             if fit_to_screen:
                 self._pending_fit_to_screen = True
-                wx.CallAfter(self._try_fit_to_screen)
-        self.need_redraw = True
-        self.Refresh()
+                QTimer.singleShot(0, self._try_fit_to_screen)
+        self.invalidate_cache()
+        self.update()
         if self.progress_bar:
-            self.progress_bar.Refresh()
+            self.progress_bar.update()
+        if precompute_density and len(self.stitch_points_np) > 0:
+            self._start_density_calculation()
+        density_debug(
+            f"load finished path={path!r} stitches={len(self.stitches_np)} "
+            f"elapsed={time.perf_counter() - started_at:.3f}s"
+        )
         return True
 
-    def CalculateStitchDensity(self):
+    def calculate_stitch_density(self):
         """Calculate the density map once, on demand, using the Numba kernel."""
         if self.density_ready or len(self.stitch_points_np) == 0:
             return
-        frame = wx.GetTopLevelParent(self)
-        if hasattr(frame, "SetStatusText"):
-            frame.SetStatusText("Calculating stitch density...")
-        wx.BeginBusyCursor()
-        wx.SafeYield(frame, True)
-        min_x, min_y, max_x, max_y = self.bounds
-        try:
-            self.stitch_density_np = calculate_stitch_density_numba(
-                self.stitch_points_np,
-                min_x,
-                min_y,
-                max_x,
-                max_y,
-            )
-        finally:
-            wx.EndBusyCursor()
-        self.density_ready = True
-        if hasattr(frame, "SetStatusText"):
-            frame.SetStatusText("Density map ready")
-            wx.CallLater(1500, frame.SetStatusText, DEFAULT_STATUS_TEXT)
-        self.need_redraw = True
-        self.Refresh()
+        self._start_density_calculation(show_status=True)
 
-    def OnPaint(self, e):
-        """Render the current viewport, using the cached bitmap when possible."""
-        dc = wx.BufferedPaintDC(self)
-        dc.Clear()
-        if self._pending_fit_to_screen:
+    def _start_density_calculation(self, show_status=False):
+        if self.density_ready or self._density_worker is not None:
+            density_debug(
+                f"worker skipped request={self._density_request_id} "
+                f"ready={self.density_ready} active={self._density_worker is not None}"
+            )
             return
-        if not self.need_redraw and self.cached_bitmap:
+        if show_status:
+            self.status_message.emit("Calculating stitch density...", 0)
+        worker = DensityWorker(
+            self._density_owner_id,
+            self._density_request_id,
+            self.stitch_points_np.copy(),
+            self.bounds,
+        )
+        self._density_worker = worker
+        density_debug(
+            f"worker queued request={self._density_request_id} "
+            f"points={len(self.stitch_points_np)}"
+        )
+        QThreadPool.globalInstance().start(worker)
+
+    def _poll_density_results(self):
+        own_results = []
+        other_results = []
+        with density_results_lock:
+            while density_results:
+                result = density_results.popleft()
+                (own_results if result[1] == self._density_owner_id
+                 else other_results).append(result)
+            density_results.extend(other_results)
+        for result_type, _, request_id, result in own_results:
+            if result_type == "finished":
+                self._density_ready(request_id, result)
+            else:
+                self._density_failed(request_id, result)
+
+    def _density_ready(self, request_id, density):
+        density_debug(
+            f"result received request={request_id} "
+            f"current={self._density_request_id}"
+        )
+        if request_id != self._density_request_id:
+            return
+        self._density_worker = None
+        self.stitch_density_np = density
+        self.density_ready = True
+        self.status_message.emit("Density map ready", 1500)
+        self.invalidate_cache()
+
+    def _density_failed(self, request_id, error):
+        density_debug(
+            f"error received request={request_id} "
+            f"current={self._density_request_id} error={error!r}"
+        )
+        if request_id != self._density_request_id:
+            return
+        self._density_worker = None
+        self.status_message.emit(f"Density calculation failed: {error}", 5000)
+
+    def paintEvent(self, e):
+        """Render the current viewport, using the cached bitmap when possible."""
+        self._paint_sequence += 1
+        paint_sequence = self._paint_sequence
+        paint_started_at = time.perf_counter()
+        if is_enabled():
+            QTimer.singleShot(
+                0,
+                lambda: density_debug(
+                    f"paint finished sequence={paint_sequence} "
+                    f"elapsed={time.perf_counter() - paint_started_at:.3f}s"
+                ),
+            )
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.fillRect(self.rect(), QColor(255, 255, 255))
+        if self._pending_fit_to_screen:
+            painter.end()
+            return
+        if self._cache_valid and self.cached_bitmap:
             zoom_ratio = self.zoom / self.cached_zoom
             if abs(zoom_ratio - 1.0) < 0.001:
                 pan_delta_x = round(self.pan_x - self.cached_pan_x)
                 pan_delta_y = round(self.pan_y - self.cached_pan_y)
-                dc.DrawBitmap(self.cached_bitmap, pan_delta_x, pan_delta_y)
+                painter.drawPixmap(pan_delta_x, pan_delta_y, self.cached_bitmap)
             else:
-                bitmap_width = self.cached_bitmap.GetWidth()
-                bitmap_height = self.cached_bitmap.GetHeight()
+                bitmap_width = self.cached_bitmap.width()
+                bitmap_height = self.cached_bitmap.height()
                 preview_x = round(self.pan_x - zoom_ratio * self.cached_pan_x)
                 preview_y = round(self.pan_y - zoom_ratio * self.cached_pan_y)
-                source_dc = wx.MemoryDC()
-                source_dc.SelectObject(self.cached_bitmap)
-                try:
-                    dc.StretchBlit(
-                        preview_x,
-                        preview_y,
-                        round(bitmap_width * zoom_ratio),
-                        round(bitmap_height * zoom_ratio),
-                        source_dc,
-                        0,
-                        0,
-                        bitmap_width,
-                        bitmap_height,
-                    )
-                finally:
-                    source_dc.SelectObject(wx.NullBitmap)
-            self.DrawAnalysisOverlays(dc)
-            self.DrawNeedleOverlay(dc)
+                painter.drawPixmap(
+                    preview_x, preview_y,
+                    round(bitmap_width * zoom_ratio),
+                    round(bitmap_height * zoom_ratio),
+                    self.cached_bitmap,
+                )
+            self.draw_analysis_overlays(painter)
+            self.draw_needle_overlay(painter)
+            painter.end()
             return
-        w, h = self.GetSize()
+        w, h = self.width(), self.height()
         if self.stitches_np.shape[0] == 0:
-            dc.SetFont(
-                wx.Font(14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
-                        wx.FONTWEIGHT_NORMAL))
-            dc.DrawText(
+            painter.setFont(QFont(self.font().family(), 14))
+            painter.drawText(
+                20,
+                20,
                 "Open an embroidery file via File > Open or pass it as a command-line argument",
-                20,
-                20,
             )
-            dc.DrawText(
+            painter.drawText(
+                20,
+                45,
                 "H=help, Space=play/pause, Ctrl+Arrows=color, Alt+Arrows=1",
-                20, 45)
+            )
+            painter.end()
             return
-        use_shaded = self.zoom > 1.2
-        buf = np.full((h, w, 3), 255, dtype=np.uint8)
-        use_realistic = self.show_realistic and self.zoom > 1.2
-        if use_realistic:
-            render_fabric_numba(buf, self.zoom)
-        if self.show_grid:
-            render_grid_numba(buf, self.zoom, self.pan_x, self.pan_y)
-        if self.show_stitches and self.stitches_np.shape[
-                0] > 0 and self.visible_count > 0:
-            if use_realistic:
-                render_realistic_numba(
-                    buf,
-                    self.stitches_np,
-                    self.visible_count,
-                    self.zoom,
-                    self.pan_x,
-                    self.pan_y,
-                    self.line_width,
-                    self.dark_factor,
-                    self.light_factor,
-                )
-            else:
-                render_shaded_numba(
-                    buf,
-                    self.stitches_np,
-                    self.visible_count,
-                    self.zoom,
-                    self.pan_x,
-                    self.pan_y,
-                    use_shaded,
-                    self.line_width,
-                    self.dark_factor,
-                    self.light_factor,
-                )
-        if self.show_density and len(self.stitch_points_np) > 0:
-            render_density_numba(
-                buf,
-                self.stitch_points_np,
-                self.stitch_density_np,
+        buf = self._get_render_buffer(w, h)
+        render_viewport_raster(
+            buf,
+            self.active_renderer,
+            self.stitches_np,
+            self.visible_count,
+            self.stitch_points_np,
+            self.stitch_density_np,
+            self.zero_length_np,
+            self.zoom,
+            self.pan_x,
+            self.pan_y,
+            self.line_width,
+            self.dark_factor,
+            self.light_factor,
+            self.show_grid,
+            self.show_density and self.active_renderer not in VECTOR_RENDERERS,
+            self.show_stitches,
+        )
+        img = QImage(buf.data, w, h, 3 * w, QImage.Format_RGB888).copy()
+        if self.active_renderer in VECTOR_RENDERERS:
+            stitch_painter = QPainter(img)
+            stitch_painter.setRenderHint(QPainter.Antialiasing)
+            render_function = VECTOR_RENDERERS[self.active_renderer]
+            render_function(
+                stitch_painter,
+                self.stitches_np,
                 self.visible_count,
                 self.zoom,
                 self.pan_x,
                 self.pan_y,
+                self.line_width,
+                self.dark_factor,
+                self.light_factor,
+                self.show_stitches,
             )
-        img = wx.Image(w, h)
-        img.SetData(buf.tobytes())
-        bmp = wx.Bitmap(img)
+            stitch_painter.end()
+            if self.show_density and len(self.stitch_points_np) > 0:
+                row_stride = img.bytesPerLine()
+                image_bytes = np.frombuffer(img.bits(), dtype=np.uint8)
+                image_rows = image_bytes.reshape((h, row_stride))
+                image_buffer = image_rows[:, :3 * w].reshape((h, w, 3))
+                render_density_numba(
+                    image_buffer,
+                    self.stitch_points_np,
+                    self.stitch_density_np,
+                    self.zero_length_np,
+                    self.visible_count,
+                    self.zoom,
+                    self.pan_x,
+                    self.pan_y,
+                )
+        bmp = QPixmap.fromImage(img)
         self.cached_bitmap = bmp
         self.cached_pan_x = self.pan_x
         self.cached_pan_y = self.pan_y
         self.cached_zoom = self.zoom
-        self.need_redraw = False
-        dc.DrawBitmap(bmp, 0, 0)
-        self.DrawAnalysisOverlays(dc)
-        self.DrawNeedleOverlay(dc)
+        self._cache_valid = True
+        painter.drawPixmap(0, 0, bmp)
+        self.draw_analysis_overlays(painter)
+        self.draw_needle_overlay(painter)
+        painter.end()
 
-    def DrawAnalysisOverlays(self, dc):
+    def draw_analysis_overlays(self, painter):
         """Draw optional jump paths and local stitch-density diagnostics."""
         if self.show_jumps:
             for x1, y1, x2, y2, risky, stitch_index in self.jump_segments:
@@ -959,17 +881,16 @@ class EmbroideryViewerPanel(wx.Panel):
                     continue
                 if self.risky_jumps_only and not risky:
                     continue
-                color = wx.Colour(220, 45, 45) if risky else wx.Colour(
-                    100, 100, 100)
-                dc.SetPen(wx.Pen(color, 2, wx.PENSTYLE_SHORT_DASH))
-                dc.DrawLine(
+                color = QColor(220, 45, 45) if risky else QColor(100, 100, 100)
+                painter.setPen(QPen(color, 2, Qt.DashLine))
+                painter.drawLine(
                     int(x1 * self.zoom + self.pan_x),
                     int(y1 * self.zoom + self.pan_y),
                     int(x2 * self.zoom + self.pan_x),
                     int(y2 * self.zoom + self.pan_y),
                 )
 
-    def DrawNeedleOverlay(self, dc):
+    def draw_needle_overlay(self, painter):
         """Draw the current needle position above the cached stitch bitmap."""
         if not self.show_stitches or not self.show_needle or self.stitches_np.shape[
                 0] == 0:
@@ -988,106 +909,176 @@ class EmbroideryViewerPanel(wx.Panel):
             arm, radius, outer_radius = 48, 16, 28
         else:
             arm, radius, outer_radius = 14, 6, 0
-        dc.SetPen(wx.Pen(wx.Colour(10, 10, 10), 8 if outer_radius else 4))
-        dc.DrawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
-        dc.DrawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
+        painter.setPen(QPen(QColor(10, 10, 10), 8 if outer_radius else 4))
+        painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
+        painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
         if outer_radius:
-            dc.SetBrush(wx.TRANSPARENT_BRUSH)
-            dc.DrawCircle(needle_x, needle_y, outer_radius)
-        dc.SetPen(wx.Pen(wx.Colour(255, 255, 255), 3 if outer_radius else 2))
-        dc.SetBrush(wx.TRANSPARENT_BRUSH)
-        dc.DrawCircle(needle_x, needle_y, radius)
-        dc.DrawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
-        dc.DrawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
-        dc.SetBrush(wx.Brush(wx.Colour(255, 220, 40)))
-        dc.SetPen(wx.Pen(wx.Colour(10, 10, 10), 2))
-        dc.DrawCircle(needle_x, needle_y, 5 if outer_radius else 3)
+            painter.setBrush(Qt.NoBrush)
+            painter.drawEllipse(needle_x - outer_radius, needle_y - outer_radius,
+                           outer_radius * 2, outer_radius * 2)
+        painter.setPen(QPen(QColor(255, 255, 255), 3 if outer_radius else 2))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
+        painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
+        painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
+        painter.setBrush(QColor(255, 220, 40))
+        painter.setPen(QPen(QColor(10, 10, 10), 2))
+        marker_radius = 5 if outer_radius else 3
+        painter.drawEllipse(needle_x - marker_radius, needle_y - marker_radius,
+                       marker_radius * 2, marker_radius * 2)
 
-    def HighlightNeedle(self):
+    def highlight_needle(self):
         """Pulse a large needle marker after user navigation."""
         if not self.show_needle:
             return
         self.needle_highlighted = True
         self.needle_highlight_stage = 2
         if self._needle_highlight_timer is not None:
-            self._needle_highlight_timer.Stop()
-        self._needle_highlight_timer = wx.CallLater(
-            200,
-            self._SetNeedleHighlightStage,
-            1,
-        )
-        self.Refresh()
+            self._needle_highlight_timer.stop()
+        self._needle_highlight_timer = QTimer(self)
+        self._needle_highlight_timer.setSingleShot(True)
+        self._needle_highlight_timer.timeout.connect(
+            lambda: self._set_needle_highlight_stage(1))
+        self._needle_highlight_timer.start(200)
+        self.update()
 
-    def _SetNeedleHighlightStage(self, stage):
+    def _set_needle_highlight_stage(self, stage):
         """Advance the temporary needle marker through its visual pulse."""
         if not self.show_needle:
             return
         self.needle_highlight_stage = stage
-        self.Refresh()
+        self.update()
         if stage == 1:
-            self._needle_highlight_timer = wx.CallLater(
-                300,
-                self.StopNeedleHighlight,
-            )
+            self._needle_highlight_timer = QTimer(self)
+            self._needle_highlight_timer.setSingleShot(True)
+            self._needle_highlight_timer.timeout.connect(self.stop_needle_highlight)
+            self._needle_highlight_timer.start(300)
 
-    def StopNeedleHighlight(self):
+    def stop_needle_highlight(self):
         """Return the needle crosshair to its normal size."""
         self.needle_highlighted = False
         self.needle_highlight_stage = 0
         self._needle_highlight_timer = None
-        self.Refresh()
+        self.update()
 
-    def OnWheel(self, e):
-        """Zoom around the mouse position while preserving its world point."""
-        mx, my = e.GetPosition()
+    def wheelEvent(self, e):
+        """Zoom or step through stitches around the mouse position."""
+        is_step_modifier = bool(
+            e.modifiers() & (Qt.AltModifier | Qt.ControlModifier))
+        if is_step_modifier:
+            delta = e.angleDelta().y()
+            if delta == 0:
+                delta = e.angleDelta().x()
+            if delta == 0:
+                delta = e.pixelDelta().y()
+            if delta == 0:
+                delta = e.pixelDelta().x()
+            if delta != 0:
+                total = self.stitches_np.shape[0]
+                direction = 1 if delta > 0 else -1
+                self.visible_count = max(
+                    0, min(total, self.visible_count + direction))
+                self._last_dir = direction
+                self.invalidate_cache()
+                self.update()
+                if self.progress_bar:
+                    self.progress_bar.update()
+            e.accept()
+            return
+        position = e.position().toPoint()
+        mx, my = position.x(), position.y()
         old = self.zoom
-        self.zoom *= 1.15 if e.GetWheelRotation() > 0 else 1 / 1.15
-        self.zoom = max(0.05, min(50.0, self.zoom))
+        self.zoom *= 1.15 if e.angleDelta().y() > 0 else 1 / 1.15
+        self.zoom = max(self.minimum_zoom(), min(self.maximum_zoom(), self.zoom))
         scale = self.zoom / old
         self.pan_x = mx - scale * (mx - self.pan_x)
         self.pan_y = my - scale * (my - self.pan_y)
         if self.zoom_render_timer is not None:
-            self.zoom_render_timer.Stop()
+            self.zoom_render_timer.stop()
         if self.cached_bitmap:
-            self.need_redraw = False
-            self.zoom_render_timer = wx.CallLater(
-                140,
-                self._finish_zoom_render,
-            )
+            self._cache_valid = True
+            self.zoom_render_timer = QTimer(self)
+            self.zoom_render_timer.setSingleShot(True)
+            self.zoom_render_timer.timeout.connect(self._finish_zoom_render)
+            self.zoom_render_timer.start(140)
         else:
-            self.need_redraw = True
-        self.Refresh()
+            self.invalidate_cache()
+        self.update()
 
     def _finish_zoom_render(self):
         """Schedule a full-quality render after zooming settles."""
         self.zoom_render_timer = None
-        self.need_redraw = True
-        self.Refresh()
+        self.invalidate_cache()
+        self.update()
 
-    def OnLeftDown(self, e):
+    def seek_to_screen_stitch(self, position, tolerance=12.0):
+        """Seek to the nearest currently visible stitch under screen position."""
+        visible_count = min(self.visible_count, self.stitches_np.shape[0])
+        if visible_count == 0:
+            return False
+
+        stitches = self.stitches_np[:visible_count]
+        start = stitches[:, 0:2] * self.zoom
+        start += (self.pan_x, self.pan_y)
+        end = stitches[:, 2:4] * self.zoom
+        end += (self.pan_x, self.pan_y)
+        vectors = end - start
+        lengths_squared = np.sum(vectors * vectors, axis=1)
+        point = np.array([position.x(), position.y()], dtype=np.float32)
+        offsets = point - start
+        ratios = np.zeros(visible_count, dtype=np.float32)
+        nonzero = lengths_squared > 0
+        ratios[nonzero] = (
+            np.sum(offsets[nonzero] * vectors[nonzero], axis=1)
+            / lengths_squared[nonzero]
+        )
+        ratios = np.clip(ratios, 0.0, 1.0)
+        closest = start + vectors * ratios[:, None]
+        distances_squared = np.sum((closest - point) ** 2, axis=1)
+        stitch_index = int(np.argmin(distances_squared))
+        if distances_squared[stitch_index] > tolerance * tolerance:
+            return False
+
+        self.visible_count = stitch_index + 1
+        self.invalidate_cache()
+        self.update()
+        if self.progress_bar:
+            self.progress_bar.update()
+        return True
+
+    def mousePressEvent(self, e):
         """Start panning from the current mouse position."""
-        self.drag_start = e.GetPosition()
+        self.drag_start = e.position().toPoint()
         self.pan_start = (self.pan_x, self.pan_y)
-        self.SetFocus()
-        if not self.HasCapture():
-            self.CaptureMouse()
+        self.setFocus()
+        self.grabMouse()
 
-    def OnLeftUp(self, e):
+    def mouseReleaseEvent(self, e):
         """Stop panning and clean up any progress-bar mouse capture."""
-        if self.HasCapture():
-            self.ReleaseMouse()
+        self.releaseMouse()
         self.drag_start = None
-        self.need_redraw = True
-        self.Refresh()
+        self.invalidate_cache()
+        self.update()
         if self.progress_bar and self.progress_bar.dragging:
             self.progress_bar.dragging = False
-            if self.progress_bar.HasCapture(): self.progress_bar.ReleaseMouse()
+            self.progress_bar.releaseMouse()
 
-    def OnMotion(self, e):
+    def mouseDoubleClickEvent(self, e):
+        """Seek to a visible stitch when the canvas is double-clicked."""
+        if e.button() == Qt.LeftButton:
+            self.drag_start = None
+            self.releaseMouse()
+            self.seek_to_screen_stitch(e.position().toPoint())
+            e.accept()
+            return
+        super().mouseDoubleClickEvent(e)
+
+    def mouseMoveEvent(self, e):
         """Update the viewport offset while the user drags the canvas."""
-        if self.drag_start and e.Dragging() and e.LeftIsDown():
-            dx = e.GetPosition()[0] - self.drag_start[0]
-            dy = e.GetPosition()[1] - self.drag_start[1]
+        if self.drag_start and e.buttons() & Qt.LeftButton:
+            position = e.position().toPoint()
+            dx = position.x() - self.drag_start.x()
+            dy = position.y() - self.drag_start.y()
             self.pan_x = self.pan_start[0] + dx
             self.pan_y = self.pan_start[1] + dy
-            self.Refresh(eraseBackground=False)
+            self.update()

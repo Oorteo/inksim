@@ -1,6 +1,12 @@
 
-__pycache__
 
+log/
+*.log
+__pycache__
+.vscode/
+
+# Keep local when Python versions or dependency versions are intentionally
+# changing frequently. Track these files for reproducible CI and releases.
 .python-version
 uv.lock
 
