@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 from ..constants import *
 from ..render import render_export_image
 from .dialogs import EmbroideryOpenDialog
+from .about import show_about
 from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
@@ -107,8 +108,6 @@ class MainWindow(QMainWindow):
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
         self.viewer.status_message.connect(self.statusBar().showMessage)
         self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer)
-        self._action(file_menu, "Help", self.viewer.show_help)
-        self._action(file_menu, "Settings", self.viewer.show_settings)
         file_menu.addSeparator()
         self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.rotate_design(-1))
         self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))
@@ -129,6 +128,10 @@ class MainWindow(QMainWindow):
         )
         self._action(playback, "Next color", lambda: (self.viewer.jump_to_color(1), self._refresh_after_color_jump()))
         self._action(playback, "Prev color", lambda: (self.viewer.jump_to_color(-1), self._refresh_after_color_jump()))
+        help_menu = self.menuBar().addMenu("&Help")
+        self._action(help_menu, "Help", self.viewer.show_help)
+        self._action(help_menu, "Settings", self.viewer.show_settings)
+        self._action(help_menu, f"About {APP_TITLE}", lambda: show_about(self))
 
     def _finish_initial_display(self, autoplay):
         self.viewer.fit_to_screen()
