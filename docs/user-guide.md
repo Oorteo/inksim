@@ -5,6 +5,7 @@
 | Action                     | Function                  |
 | -------------------------- | ------------------------- |
 | Mouse wheel                | Zoom around the cursor    |
+| `Alt` + mouse wheel        | Move one stitch           |
 | Left-drag in viewer        | Pan the design            |
 | Click or drag the timeline | Seek to a stitch position |
 | Drop a file on the viewer  | Open the file             |

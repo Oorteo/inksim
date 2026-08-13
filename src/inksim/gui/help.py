@@ -6,6 +6,7 @@ HELP_SECTIONS = (
 | Action | Result |
 | --- | --- |
 | Wheel | Zoom |
+| Alt + Wheel | Move by one stitch |
 | Drag | Pan |
 | Click timeline | Seek stitch |
 """),
