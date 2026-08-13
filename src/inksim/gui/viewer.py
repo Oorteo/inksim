@@ -44,6 +44,16 @@ from .help import show_help
 from .settings import show_settings
 
 
+_COMMAND_NAMES = {}
+for _name in dir(emb):
+    if not _name.isupper() or _name.endswith("_MASK"):
+        continue
+    _value = getattr(emb, _name)
+    if (isinstance(_value, int) and 0 <= _value <= emb.COMMAND_MASK
+            and _value not in _COMMAND_NAMES):
+        _COMMAND_NAMES[_value] = _name
+
+
 def density_debug(message):
     logger.debug(message)
 
@@ -336,7 +346,7 @@ class EmbroideryViewerWidget(QWidget):
                 self.visible_count = prev
 
     def jump_to_command(self, direction):
-        """Move to the nearest recorded JUMP, TRIM, or color-change event."""
+        """Move to the nearest recorded command event."""
         positions = sorted(self.command_events)
         current = self.visible_count
         if direction > 0:
@@ -558,6 +568,8 @@ class EmbroideryViewerWidget(QWidget):
         self._density_request_id += 1
         self._density_worker = None
         jump_run_indices = []
+        color_change_in_group = False
+        has_stitch = False
         for st in pattern.stitches:
             x = st[0] / 10.0
             y = st[1] / 10.0
@@ -572,11 +584,16 @@ class EmbroideryViewerWidget(QWidget):
                 event_position = len(segs)
                 self.command_events.setdefault(event_position,
                                                []).append("JUMP")
-                self.jump_segments.append([last_x, last_y, x, y, 1, len(segs)])
+                is_risky = has_stitch and not color_change_in_group
+                self.jump_segments.append(
+                    [last_x, last_y, x, y, int(is_risky), len(segs)])
                 jump_run_indices.append(len(self.jump_segments) - 1)
                 last_x, last_y = x, y
                 continue
             if hasattr(emb, "END") and cmd == emb.END:
+                event_position = len(segs)
+                self.command_events.setdefault(event_position,
+                                               []).append("END")
                 break
             is_color_change = (hasattr(emb, "COLOR_CHANGE")
                                and cmd == emb.COLOR_CHANGE)
@@ -600,23 +617,14 @@ class EmbroideryViewerWidget(QWidget):
                 cur_color_idx += 1
                 if segs:
                     self.color_boundaries.append(len(segs))
+                color_change_in_group = True
                 last_x, last_y = x, y
                 continue
-            if hasattr(emb, "TRIM") and cmd == emb.TRIM:
+            command_name = _COMMAND_NAMES.get(cmd)
+            if command_name is not None and command_name != "STITCH":
                 event_position = len(segs)
                 self.command_events.setdefault(event_position,
-                                               []).append("TRIM")
-                continue
-            for command_name in ("STOP", "SLOW", "FAST"):
-                if hasattr(emb, command_name) and cmd == getattr(
-                        emb, command_name):
-                    event_position = len(segs)
-                    self.command_events.setdefault(event_position,
-                                                   []).append(command_name)
-                    break
-            else:
-                command_name = None
-            if command_name is not None:
+                                               []).append(command_name)
                 continue
             if has_thread_colors:
                 color_idx = min(cur_color_idx, len(palette) - 1)
@@ -635,6 +643,9 @@ class EmbroideryViewerWidget(QWidget):
             max_x = max(max_x, last_x, x)
             max_y = max(max_y, last_y, y)
             last_x, last_y = x, y
+            has_stitch = True
+            color_change_in_group = False
+            jump_run_indices = []
         if segs:
             self.stitches_np = np.array(segs, dtype=np.float32)
             self.stitch_points_np = self.stitches_np[:, 2:4].copy()
