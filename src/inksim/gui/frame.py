@@ -23,7 +23,13 @@ from .viewer import EmbroideryViewerWidget
 class MainWindow(QMainWindow):
     """Main InkSim window coordinating the viewer and playback controls."""
 
-    def __init__(self, fullscreen=False, window_size=None, window_position=None):
+    def __init__(
+        self,
+        fullscreen=False,
+        window_size=None,
+        window_position=None,
+        server_mode=False,
+    ):
         super().__init__()
         self.setWindowTitle(APP_TITLE)
         self.setWindowIcon(QIcon(str(
@@ -31,6 +37,8 @@ class MainWindow(QMainWindow):
         self.resize(*(window_size or (1200, 980)))
         self.setAcceptDrops(True)
         self.is_fullscreen = False
+        self.server_mode = server_mode
+        self._allow_close = False
         self._startup_fullscreen = fullscreen
         self._should_maximize_default = not window_size and not fullscreen
         self.config = QSettings(APP_ORGANIZATION, APP_TITLE)
@@ -112,7 +120,7 @@ class MainWindow(QMainWindow):
         self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.rotate_design(-1))
         self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))
         file_menu.addSeparator()
-        self._action(file_menu, "Quit", self.close, "Ctrl+Q")
+        self._action(file_menu, "Quit", self.request_quit, "Ctrl+Q")
         playback = self.menuBar().addMenu("&Playback")
         for step in (1, 10, 50, 100, 500):
             action = self._action(playback, f"Step {step}", lambda checked=False, s=step: self.viewer.set_step_size(s))
@@ -147,10 +155,37 @@ class MainWindow(QMainWindow):
         self.viewer.update()
         self.progress.update()
 
+    def show_window(self, focus=True):
+        """Show the window and optionally request keyboard focus."""
+        if self.isMinimized():
+            self.showNormal()
+        else:
+            self.show()
+        if focus:
+            self.focus_window()
+
+    def focus_window(self):
+        """Raise and activate the main window through the window manager."""
+        self.show_window(focus=False)
+        self.raise_()
+        self.activateWindow()
+
+    def request_quit(self):
+        """Close the application instead of hiding a server window."""
+        self._allow_close = True
+        self.close()
+
     def closeEvent(self, event):
+        if self.server_mode and not self._allow_close:
+            self.hide()
+            event.ignore()
+            return
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
+        interconnect = getattr(self, "interconnect", None)
+        if interconnect is not None:
+            interconnect.stop()
         event.accept()
 
     def toggle_grid(self, checked):

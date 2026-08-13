@@ -15,6 +15,7 @@ from .constants import APP_TITLE
 from .debug import configure_logging
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
+from .interconnect import InterconnectServer, send_command
 from .runtime import runtime_info_lines
 
 
@@ -68,6 +69,10 @@ def main():
     parser.add_argument(
         "-p", "--play", action="store_true",
         help="Start simulation playback immediately",
+    )
+    parser.add_argument(
+        "-s", "--server", action="store_true",
+        help="Keep the GUI available for local interconnect commands",
     )
     parser.add_argument(
         "--debug", "--dbg", action="store_true",
@@ -237,7 +242,27 @@ def main():
         fullscreen=args.fullscreen,
         window_size=window_size,
         window_position=window_position,
+        server_mode=args.server,
     )
+    interconnect = None
+    if args.server:
+        try:
+            interconnect = InterconnectServer(frame)
+            if not interconnect.start():
+                command = (
+                    {"command": "open", "path": str(first_input), "focus": True}
+                    if first_input is not None and first_input.is_file()
+                    else {"command": "show", "focus": True}
+                )
+                response = send_command(command)
+                frame.close()
+                if not response.get("ok"):
+                    parser.error(response.get("error", "server command failed"))
+                raise SystemExit(0)
+        except RuntimeError as ex:
+            frame.close()
+            parser.error(str(ex))
+        frame.interconnect = interconnect
     if export_requested:
         success = True
         total_inputs = len(input_paths)
