@@ -8,6 +8,7 @@ HELP_SECTIONS = (
 | Wheel | Zoom |
 | Alt + Wheel | Move by one stitch |
 | Drag | Pan |
+| W / A / S / D | Pan up / left / down / right |
 | Click timeline | Seek stitch |
 """),
     ("Playback", """

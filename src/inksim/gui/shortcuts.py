@@ -69,6 +69,19 @@ class ViewerShortcutFilter(QObject):
             viewer._last_dir = 1 if key == Qt.Key_Right else -1
             changed = True
             highlight_needle = True
+        elif not is_alt and not is_ctrl and key in (
+            Qt.Key_W, Qt.Key_A, Qt.Key_S, Qt.Key_D
+        ):
+            pan_step = 40
+            if key == Qt.Key_W:
+                viewer.pan_y -= pan_step
+            elif key == Qt.Key_A:
+                viewer.pan_x -= pan_step
+            elif key == Qt.Key_S:
+                viewer.pan_y += pan_step
+            else:
+                viewer.pan_x += pan_step
+            changed = True
         elif key == Qt.Key_Right:
             if viewer.visible_count < total:
                 viewer.visible_count = min(total, viewer.visible_count + step)

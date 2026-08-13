@@ -2,14 +2,15 @@
 
 ## Mouse and Window
 
-| Action                     | Function                  |
-| -------------------------- | ------------------------- |
-| Mouse wheel                | Zoom around the cursor    |
-| `Alt` + mouse wheel        | Move one stitch           |
-| Left-drag in viewer        | Pan the design            |
-| Click or drag the timeline | Seek to a stitch position |
-| Drop a file on the viewer  | Open the file             |
-| `F11`                      | Toggle fullscreen         |
+| Action                     | Function                     |
+| -------------------------- | ---------------------------- |
+| Mouse wheel                | Zoom around the cursor       |
+| `Alt` + mouse wheel        | Move one stitch              |
+| Left-drag in viewer        | Pan the design               |
+| `W` / `A` / `S` / `D`      | Pan up / left / down / right |
+| Click or drag the timeline | Seek to a stitch position    |
+| Drop a file on the viewer  | Open the file                |
+| `F11`                      | Toggle fullscreen            |
 
 ## Playback and Navigation
 
