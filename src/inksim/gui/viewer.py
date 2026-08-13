@@ -305,6 +305,8 @@ class EmbroideryViewerWidget(QWidget):
         self.visible_count = max(0, min(total, visible_count))
         self.invalidate_cache()
         self.update()
+        if self.progress_bar:
+            self.progress_bar.update()
 
     def toggle_auto_play(self, forward=None):
         """Start or stop playback, choosing its direction when starting."""
@@ -973,6 +975,8 @@ class EmbroideryViewerWidget(QWidget):
                 self._last_dir = direction
                 self.invalidate_cache()
                 self.update()
+                if self.progress_bar:
+                    self.progress_bar.update()
             e.accept()
             return
         position = e.position().toPoint()

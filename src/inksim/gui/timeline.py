@@ -153,7 +153,14 @@ class TimelineWidget(QWidget):
         painter.setBrush(QColor(40, 40, 40))
         painter.drawEllipse(knob_x - 3, self.bar_y + self.bar_h // 2 - 3, 6, 6)
         painter.setPen(QColor(30, 30, 30))
-        txt_left = f"{visible}/{total} stitches"
+        if visible > 0:
+            last_stitch = stitches[visible - 1]
+            dx = float(last_stitch[2] - last_stitch[0])
+            dy = float(last_stitch[3] - last_stitch[1])
+            last_step_mm = (dx * dx + dy * dy) ** 0.5
+            txt_left = f"{visible}/{total} [{last_step_mm:.1f} mm]"
+        else:
+            txt_left = f"{visible}/{total}"
         commands = self.viewer.command_events.get(visible, ())
         if commands:
             txt_left += f" | {' | '.join(commands)}"
