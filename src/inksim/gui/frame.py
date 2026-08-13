@@ -1,10 +1,13 @@
 from pathlib import Path
+import time
 
-from PySide6.QtCore import QSettings, QTimer
+from PySide6.QtCore import QEvent, QSettings, QTimer, Qt
 from PySide6.QtGui import QAction, QIcon, QKeySequence
 from PySide6.QtWidgets import (
+    QApplication,
     QDialog,
     QFileDialog,
+    QLabel,
     QMainWindow,
     QVBoxLayout,
     QWidget,
@@ -44,6 +47,10 @@ class MainWindow(QMainWindow):
         self.config = QSettings(APP_ORGANIZATION, APP_TITLE)
         self.last_directory = self.config.value("last_directory", "", str)
         self.current_file_path = None
+        self._source_mtime_ns = None
+        self._last_source_check = 0.0
+        self._source_check_interval_s = 0.4
+        self._is_reloading_from_disk = False
 
         main_panel = QWidget(self)
         layout = QVBoxLayout(main_panel)
@@ -61,11 +68,74 @@ class MainWindow(QMainWindow):
         self.shortcut_filter = ViewerShortcutFilter(self, self.viewer)
         self._build_menus()
         self.statusBar().showMessage(DEFAULT_STATUS_TEXT)
+        QApplication.instance().installEventFilter(self)
 
         if window_position:
             self.move(*window_position)
         elif not window_size and not fullscreen:
             self.move(self.screen().availableGeometry().center() - self.rect().center())
+
+    def eventFilter(self, watched, event):
+        if self._is_reloading_from_disk:
+            return False
+        if self.current_file_path is None:
+            return False
+        event_type = event.type()
+        if event_type not in {
+            QEvent.KeyPress,
+            QEvent.MouseButtonPress,
+            QEvent.MouseButtonDblClick,
+            QEvent.Wheel,
+        }:
+            return False
+        watched_window = getattr(watched, "window", None)
+        if watched_window is None or watched_window() is not self:
+            return False
+        self._reload_if_source_changed()
+        return False
+
+    def _capture_source_mtime(self, file_path):
+        try:
+            return Path(file_path).stat().st_mtime_ns
+        except OSError:
+            return None
+
+    def _show_reload_dialog(self):
+        dialog = QDialog(self)
+        dialog.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
+        dialog.setModal(True)
+        dialog.setWindowTitle("Reloading")
+        layout = QVBoxLayout(dialog)
+        layout.setContentsMargins(16, 12, 16, 12)
+        layout.addWidget(QLabel("File changed on disk. Reloading...", dialog))
+        dialog.adjustSize()
+        dialog.move(self.geometry().center() - dialog.rect().center())
+        dialog.show()
+        QApplication.processEvents()
+        return dialog
+
+    def _reload_if_source_changed(self):
+        now = time.monotonic()
+        if now - self._last_source_check < self._source_check_interval_s:
+            return
+        self._last_source_check = now
+        if self.current_file_path is None:
+            return
+        current_mtime = self._capture_source_mtime(self.current_file_path)
+        if current_mtime is None:
+            return
+        if self._source_mtime_ns is None:
+            self._source_mtime_ns = current_mtime
+            return
+        if current_mtime == self._source_mtime_ns:
+            return
+        self._is_reloading_from_disk = True
+        dialog = self._show_reload_dialog()
+        try:
+            self.open_file(str(self.current_file_path))
+        finally:
+            dialog.close()
+            self._is_reloading_from_disk = False
     def show_initial_window(self, autoplay=False, initial_directory=None):
         """Show the fully initialized window after optional startup work."""
         if self._startup_fullscreen:
@@ -292,6 +362,7 @@ class MainWindow(QMainWindow):
         ):
             return False
         self.current_file_path = selected_path
+        self._source_mtime_ns = self._capture_source_mtime(selected_path)
         self.last_directory = str(selected_path.parent)
         self.config.setValue("last_directory", self.last_directory)
         total = self.viewer.stitches_np.shape[0]

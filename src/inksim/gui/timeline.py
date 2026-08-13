@@ -158,7 +158,7 @@ class TimelineWidget(QWidget):
             dx = float(last_stitch[2] - last_stitch[0])
             dy = float(last_stitch[3] - last_stitch[1])
             last_step_mm = (dx * dx + dy * dy) ** 0.5
-            txt_left = f"{visible}/{total} [{last_step_mm:.1f} mm]"
+            txt_left = f"{visible}/{total} [{last_step_mm:.2f} mm]"
         else:
             txt_left = f"{visible}/{total}"
         commands = self.viewer.command_events.get(visible, ())
