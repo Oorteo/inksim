@@ -4,7 +4,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
+import importlib.metadata
 import os
+import platform
 import sys
 from pathlib import Path
 
@@ -15,6 +17,44 @@ from .constants import APP_TITLE
 from .debug import configure_logging
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
+
+
+def _runtime_info():
+    """Print the runtime versions and environment used by InkSim."""
+    package_path = Path(__file__).resolve().parent
+    project_root = package_path.parent.parent
+    is_development = (project_root / "pyproject.toml").is_file()
+    try:
+        package_version = importlib.metadata.version("inksim")
+    except importlib.metadata.PackageNotFoundError:
+        package_version = "unknown"
+
+    import numba
+    import numpy
+    import pystitch
+    from PySide6 import __version__ as pyside_version
+    from PySide6.QtCore import qVersion
+
+    virtual_env = os.environ.get("VIRTUAL_ENV")
+    environment = virtual_env or (
+        sys.prefix if sys.prefix != sys.base_prefix else "none"
+    )
+    print(f"{APP_TITLE} {package_version}")
+    print(f"mode: {'development/editable' if is_development else 'installed package'}")
+    print(f"package: {package_path}")
+    print(f"python: {platform.python_version()}")
+    print(f"executable: {Path(sys.executable).resolve()}")
+    print(f"environment: {environment}")
+    print(f"cwd: {Path.cwd()}")
+    print(f"PySide6: {pyside_version}")
+    print(f"Qt: {qVersion()}")
+    print(f"NumPy: {numpy.__version__}")
+    print(f"Numba: {numba.__version__}")
+    try:
+        pystitch_version = importlib.metadata.version("pystitch")
+    except importlib.metadata.PackageNotFoundError:
+        pystitch_version = "unknown"
+    print(f"pystitch: {pystitch_version}")
 
 
 def _parse_pair(value, name, separator):
@@ -51,6 +91,10 @@ def _default_log_path(input_paths):
 
 def main():
     parser = argparse.ArgumentParser(description=APP_TITLE)
+    parser.add_argument(
+        "-v", "--version", action="store_true",
+        help="Show InkSim and runtime dependency information and exit",
+    )
     parser.add_argument(
         "input_file",
         nargs="*",
@@ -133,6 +177,9 @@ def main():
         help="Overwrite existing batch export files without asking",
     )
     args = parser.parse_args()
+    if args.version:
+        _runtime_info()
+        return
 
     export_values = [
         value for value in (

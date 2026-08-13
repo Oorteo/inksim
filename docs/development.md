@@ -13,6 +13,20 @@ the `dev` dependency group and are not included in the application wheel.
 
 ## Tests
 
+## Runtime Diagnostics
+
+Show the installed InkSim version and the runtime used to start it:
+
+```bash
+uv run inksim -v
+```
+
+The diagnostic output includes the source or installed-package mode, package
+location, Python version and executable, active virtual environment, working
+directory, PySide6 and Qt versions, NumPy, Numba, and pystitch versions. The
+version comes from installed package metadata, so the same command works for
+an editable checkout and for a built wheel.
+
 Run the complete test suite from the project root:
 
 ```bash
