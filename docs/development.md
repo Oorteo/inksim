@@ -11,7 +11,41 @@ uv sync --dev
 The runtime dependencies are declared in `pyproject.toml`. Test tools are in
 the `dev` dependency group and are not included in the application wheel.
 
-## Tests
+## Rendering Architecture
+
+The current viewer intentionally uses a portable CPU rendering path:
+
+```text
+Numba/NumPy raster buffer -> QImage -> Qt QPainter/QPixmap
+```
+
+The raster renderers (`shaded`, `shaded_volume`, `realistic`, and related
+modes) calculate pixels in Numba on the CPU. The `simple` and `vintage`
+renderers draw with Qt's regular raster `QPainter`. The viewer does not use
+`QGraphicsView`, `QOpenGLWidget`, OpenGL, Vulkan, or Qt Quick.
+
+Do not add `QOpenGLWidget` merely as a viewport optimization. It would not
+accelerate the existing Numba/NumPy calculations and would add backend and
+driver failure modes, especially on older or headless systems. The current
+CPU path is the intentional fallback and the baseline for all platforms.
+
+The same renderer registry is used by the GUI and PNG export. `Simple PNG`
+explicitly uses the `simple` renderer; the regular GUI export uses the active
+renderer. Keep this behavior stable.
+
+The current realistic modes are useful approximations, not a complete
+physically based thread renderer. Revisit a GPU backend only after one of
+these conditions is met:
+
+1. A full realistic renderer needs effects that are naturally implemented as
+   GPU shaders.
+2. Profiling shows the CPU renderer is the actual bottleneck on representative
+   large designs.
+3. A separate GPU backend can be added with a tested CPU fallback.
+
+Until then, optimize measured CPU costs first: render-buffer reuse, cache
+invalidations, density recalculation, Numba kernels, and unnecessary image
+copies. Do not treat OpenGL availability as a prerequisite for InkSim.
 
 ## Runtime Diagnostics
 
