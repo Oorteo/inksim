@@ -9,7 +9,6 @@ requires-python = ">=3.12"
 dependencies = [
     "numba",
     "numpy",
-    "pillow",
     "pystitch",
     "pyside6-essentials",
 ]

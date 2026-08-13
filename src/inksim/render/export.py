@@ -1,14 +1,26 @@
-from PIL import Image, ImageDraw, ImageFilter, PngImagePlugin
 import numpy as np
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QImage, QPainter
 
-def render_export_image(stitches, bounds, width, height, line_width, dpi=None,
-                        background="transparent", grid=False, shaded=False,
-                        dark_factor=0.75, light_factor=0.45):
-    """Render clean embroidery geometry into a standalone RGBA PNG image."""
-    image = Image.new("RGBA", (width, height), (255, 255, 255, 0))
-    draw = ImageDraw.Draw(image)
-    if background == "white":
-        draw.rectangle((0, 0, width, height), fill=(255, 255, 255, 255))
+from .registry import RENDERERS_BY_KEY, VECTOR_RENDERERS
+from .viewport import render_viewport_raster
+
+def render_export_image(
+    stitches,
+    bounds,
+    width,
+    height,
+    line_width,
+    renderer_key,
+    dpi=None,
+    background="transparent",
+    grid=False,
+    dark_factor=0.75,
+    light_factor=0.45,
+):
+    """Render a PNG using the same renderer as the viewer."""
+    if renderer_key not in RENDERERS_BY_KEY:
+        raise ValueError(f"unknown renderer: {renderer_key}")
 
     min_x, min_y, max_x, max_y = bounds
     design_width = max(max_x - min_x, 1.0)
@@ -20,87 +32,60 @@ def render_export_image(stitches, bounds, width, height, line_width, dpi=None,
     )
     offset_x = (width - design_width * zoom) / 2 - min_x * zoom
     offset_y = (height - design_height * zoom) / 2 - min_y * zoom
-
-    if grid:
-        grid_color = (205, 205, 205, 150)
-        for grid_x in range(int(np.floor(min_x / 10)) * 10,
-                           int(np.ceil(max_x / 10)) * 10 + 1, 10):
-            x = int(grid_x * zoom + offset_x)
-            if 0 <= x < width:
-                draw.line((x, 0, x, height), fill=grid_color, width=1)
-        for grid_y in range(int(np.floor(min_y / 10)) * 10,
-                           int(np.ceil(max_y / 10)) * 10 + 1, 10):
-            y = int(grid_y * zoom + offset_y)
-            if 0 <= y < height:
-                draw.line((0, y, width, y), fill=grid_color, width=1)
-
-    stroke_width = max(2, round(max(line_width, 0.7) * zoom))
-    cap_radius = max(1, stroke_width // 2)
-    for x1, y1, x2, y2, red, green, blue in stitches:
-        start = (x1 * zoom + offset_x, y1 * zoom + offset_y)
-        end = (x2 * zoom + offset_x, y2 * zoom + offset_y)
-        if not shaded:
-            draw.line(
-                (round(start[0]), round(start[1]), round(end[0]), round(end[1])),
-                fill=(int(red), int(green), int(blue), 255),
-                width=stroke_width,
-            )
-            draw.ellipse(
-                (
-                    round(start[0]) - cap_radius,
-                    round(start[1]) - cap_radius,
-                    round(start[0]) + cap_radius,
-                    round(start[1]) + cap_radius,
-                ),
-                fill=(int(red), int(green), int(blue), 255),
-            )
-            draw.ellipse(
-                (
-                    round(end[0]) - cap_radius,
-                    round(end[1]) - cap_radius,
-                    round(end[0]) + cap_radius,
-                    round(end[1]) + cap_radius,
-                ),
-                fill=(int(red), int(green), int(blue), 255),
-            )
-            continue
-        dark = (
-            int(red * dark_factor),
-            int(green * dark_factor),
-            int(blue * dark_factor),
+    base_color = (255, 255, 255) if background == "white" else (1, 2, 3)
+    buffer = np.empty((height, width, 4), dtype=np.uint8)
+    buffer[:, :, :3] = base_color
+    buffer[:, :, 3] = 255 if background == "white" else 0
+    render_viewport_raster(
+        buffer,
+        renderer_key,
+        stitches,
+        len(stitches),
+        np.empty((0, 2), dtype=np.float32),
+        np.empty((0, ), dtype=np.float32),
+        zoom,
+        offset_x,
+        offset_y,
+        line_width,
+        dark_factor,
+        light_factor,
+        grid,
+        False,
+        True,
+    )
+    if renderer_key not in VECTOR_RENDERERS and background != "white":
+        changed = np.any(buffer[:, :, :3] != base_color, axis=2)
+        buffer[:, :, 3] = np.where(changed, 255, 0)
+    image = QImage(
+        buffer.data,
+        width,
+        height,
+        4 * width,
+        QImage.Format_RGBA8888,
+    ).copy()
+    if renderer_key in VECTOR_RENDERERS:
+        painter = QPainter(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        VECTOR_RENDERERS[renderer_key](
+            painter,
+            stitches,
+            len(stitches),
+            zoom,
+            offset_x,
+            offset_y,
+            line_width,
+            dark_factor,
+            light_factor,
+            True,
         )
-        light = (
-            int(red + (255 - red) * light_factor),
-            int(green + (255 - green) * light_factor),
-            int(blue + (255 - blue) * light_factor),
-        )
-        for sample in range(4):
-            start_ratio = sample / 4
-            end_ratio = (sample + 1) / 4
-            start_point = (
-                round(start[0] + (end[0] - start[0]) * start_ratio),
-                round(start[1] + (end[1] - start[1]) * start_ratio),
-            )
-            end_point = (
-                round(start[0] + (end[0] - start[0]) * end_ratio),
-                round(start[1] + (end[1] - start[1]) * end_ratio),
-            )
-            ratio = (start_ratio + end_ratio) / 2
-            color = tuple(
-                int(dark[channel] + (light[channel] - dark[channel]) * ratio)
-                for channel in range(3)
-            )
-            draw.line(
-                (*start_point, *end_point),
-                fill=(*color, 255),
-                width=stroke_width,
-            )
-
-    metadata = PngImagePlugin.PngInfo()
-    metadata.add_text("InkSim design size", f"{design_width:.2f} x {design_height:.2f} mm")
-    metadata.add_text("InkSim background", background)
-    metadata.add_text("InkSim layers", "embroidery only")
-    metadata.add_text("InkSim rendering", "shaded" if shaded else "flat")
+        painter.end()
+    image.setText("InkSim design size", f"{design_width:.2f} x {design_height:.2f} mm")
+    image.setText("InkSim background", background)
+    image.setText("InkSim layers", "embroidery only")
+    image.setText("InkSim rendering", renderer_key)
     if dpi:
-        metadata.add_text("InkSim DPI", str(dpi))
-    return image, metadata
+        image.setText("InkSim DPI", str(dpi))
+        dots_per_meter = round(dpi / 0.0254)
+        image.setDotsPerMeterX(dots_per_meter)
+        image.setDotsPerMeterY(dots_per_meter)
+    return image

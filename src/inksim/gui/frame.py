@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from PIL import Image, ImageFilter
 from PySide6.QtCore import QSettings, QTimer
 from PySide6.QtGui import QAction, QIcon, QKeySequence
 from PySide6.QtWidgets import (
@@ -185,7 +184,15 @@ class MainWindow(QMainWindow):
         selected_path = Path(path)
         return selected_path.with_suffix(extension)
 
-    def export_png(self, path, icon=False, dpi=300, background="transparent", grid=False, shaded=False):
+    def export_png(
+        self,
+        path,
+        icon=False,
+        dpi=300,
+        background="transparent",
+        grid=False,
+        renderer_key=None,
+    ):
         if self.viewer.stitches_np.shape[0] == 0:
             return False
         if icon:
@@ -194,15 +201,21 @@ class MainWindow(QMainWindow):
             min_x, min_y, max_x, max_y = self.viewer.bounds
             width = max(1, round((max_x - min_x) / 25.4 * dpi))
             height = max(1, round((max_y - min_y) / 25.4 * dpi))
-        scale = 3 if shaded else 1
-        image, metadata = render_export_image(self.viewer.stitches_np, self.viewer.bounds,
-            width * scale, height * scale, self.viewer.line_width, dpi=dpi,
-            background=background, grid=grid, shaded=shaded,
-            dark_factor=self.viewer.dark_factor, light_factor=self.viewer.light_factor)
-        if scale > 1:
-            image = image.resize((width, height), Image.Resampling.LANCZOS)
-            image = image.filter(ImageFilter.UnsharpMask(radius=0.55, percent=115, threshold=2))
-        image.save(path, "PNG", pnginfo=metadata, dpi=(dpi, dpi))
+        image = render_export_image(
+            self.viewer.stitches_np,
+            self.viewer.bounds,
+            width,
+            height,
+            self.viewer.line_width,
+            renderer_key or self.viewer.active_renderer,
+            dpi=dpi,
+            background=background,
+            grid=grid,
+            dark_factor=self.viewer.dark_factor,
+            light_factor=self.viewer.light_factor,
+        )
+        if not image.save(str(path), "PNG"):
+            return False
         return True
 
     def export_print_png(self):
@@ -212,7 +225,7 @@ class MainWindow(QMainWindow):
             "PNG files (*.png)",
             ".png",
         )
-        if path: self.export_png(path, dpi=300)
+        if path: self.export_png(path, dpi=300, renderer_key="simple")
 
     def export_shaded_png(self):
         path = self._choose_export_path(
@@ -221,7 +234,7 @@ class MainWindow(QMainWindow):
             "PNG files (*.png)",
             ".png",
         )
-        if path: self.export_png(path, dpi=300, shaded=True)
+        if path: self.export_png(path, dpi=300)
 
     def export_icon_png(self):
         path = self._choose_export_path(

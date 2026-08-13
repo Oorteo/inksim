@@ -13,6 +13,8 @@ def render_simple_qt(
     pan_x,
     pan_y,
     line_width,
+    dark_factor=0.0,
+    light_factor=0.0,
     show_stitches=True,
 ):
     """Draw flat-color stitches with Qt's antialiased vector painter."""
