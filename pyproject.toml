@@ -13,6 +13,12 @@ dependencies = [
     "pyside6-essentials",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-qt",
+]
+
 
 [project.urls]
 Homepage = "https://github.com/karnigen/inksim"

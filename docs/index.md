@@ -11,6 +11,7 @@ previews.
 
 - [Installation and running](installation.md)
 - [User guide](user-guide.md)
+- [Developer guide](development.md)
 
 InkSim is experimental software provided as-is for development and testing.
 See the repository [contribution guidelines](../CONTRIBUTING.md) before

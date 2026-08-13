@@ -1,0 +1,60 @@
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QKeyEvent
+from PySide6.QtWidgets import QWidget
+
+from inksim.gui.shortcuts import ViewerShortcutFilter
+
+
+def key_event(key, modifiers=Qt.NoModifier):
+    return QKeyEvent(QKeyEvent.KeyPress, key, modifiers)
+
+
+def test_arrow_alt_and_wasd_shortcuts(qtbot):
+    window = QWidget()
+    qtbot.addWidget(window)
+    viewer = type(
+        "ShortcutViewer",
+        (),
+        {
+            "stitches_np": __import__("numpy").zeros((100, 7)),
+            "visible_count": 10,
+            "step_size": 10,
+            "_last_dir": 1,
+            "is_playing": False,
+            "pan_x": 100,
+            "pan_y": 100,
+            "zoom": 1.0,
+            "shading_step": 0.05,
+            "progress_bar": None,
+            "invalidate_cache": lambda self: None,
+            "update": lambda self: None,
+            "update_mode_indicators": lambda self: None,
+        },
+    )()
+    viewer.window = lambda: window
+    viewer.center_design = lambda: None
+    viewer.fit_to_screen = lambda: None
+    viewer.set_one_to_one = lambda: None
+    viewer.toggle_display_mode = lambda mode: None
+    viewer.show_help = lambda: None
+    viewer.show_settings = lambda: None
+    viewer.select_renderer = lambda: None
+    viewer.toggle_auto_play = lambda: None
+    viewer.fullscreen_requested = type("Signal", (), {"emit": lambda self: None})()
+    viewer.show_needle = False
+    viewer.highlight_needle = lambda: None
+    viewer.stop_needle_highlight = lambda: None
+
+    shortcut_filter = ViewerShortcutFilter(window, viewer)
+    assert shortcut_filter.handle_key_event(key_event(Qt.Key_Right))
+    assert viewer.visible_count == 20
+    assert shortcut_filter.handle_key_event(
+        key_event(Qt.Key_Left, Qt.AltModifier))
+    assert viewer.visible_count == 19
+
+    original_pan = (viewer.pan_x, viewer.pan_y)
+    assert shortcut_filter.handle_key_event(key_event(Qt.Key_W))
+    assert shortcut_filter.handle_key_event(key_event(Qt.Key_A))
+    assert shortcut_filter.handle_key_event(key_event(Qt.Key_S))
+    assert shortcut_filter.handle_key_event(key_event(Qt.Key_D))
+    assert (viewer.pan_x, viewer.pan_y) == original_pan
