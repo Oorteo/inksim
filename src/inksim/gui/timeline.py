@@ -116,6 +116,17 @@ class TimelineWidget(QWidget):
             "TRIM": QColor(230, 140, 20), "STOP": QColor(180, 40, 40),
             "SLOW": QColor(70, 100, 180), "FAST": QColor(40, 150, 90),
         }
+        progress_width = int(visible / total * bar_width)
+        painter.setBrush(QColor(255, 255, 255, 150))
+        painter.setPen(Qt.NoPen)
+        if progress_width < bar_width:
+            painter.drawRect(bar_x + progress_width, self.bar_y,
+                             bar_width - progress_width, self.bar_h)
+        painter.restore()
+
+        painter.save()
+        painter.setClipRect(QRect(bar_x, 0, bar_width,
+                                  self.bar_y + self.bar_h))
         for stitch_index, commands in self.viewer.command_events.items():
             marker_x = bar_x + int(stitch_index / total * bar_width)
             for marker_index, command in enumerate(commands):
@@ -123,20 +134,16 @@ class TimelineWidget(QWidget):
                 if color is None and command.startswith("COLOR CHANGE"):
                     color = command_colors["COLOR CHANGE"]
                 color = color or QColor(80, 80, 80)
+                marker_y = self.bar_y - 5 + marker_index * 5
+                painter.setPen(QPen(QColor(30, 30, 30), 1))
+                painter.drawLine(marker_x, marker_y, marker_x,
+                                 self.bar_y + self.bar_h)
                 painter.setBrush(color)
-                painter.setPen(QPen(color))
-                marker_y = self.bar_y + marker_index * 5
                 painter.drawPolygon([
                     QPoint(marker_x, marker_y),
                     QPoint(marker_x - 4, marker_y + 5),
                     QPoint(marker_x + 4, marker_y + 5),
                 ])
-        progress_width = int(visible / total * bar_width)
-        painter.setBrush(QColor(255, 255, 255, 150))
-        painter.setPen(Qt.NoPen)
-        if progress_width < bar_width:
-            painter.drawRect(bar_x + progress_width, self.bar_y,
-                             bar_width - progress_width, self.bar_h)
         painter.restore()
 
         knob_x = bar_x + progress_width
