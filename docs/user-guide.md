@@ -6,6 +6,7 @@
 | -------------------------- | ---------------------------- |
 | Mouse wheel                | Zoom around the cursor       |
 | `Alt` + mouse wheel        | Move one stitch              |
+| `Ctrl` + mouse wheel       | Move one stitch              |
 | Left-drag in viewer        | Pan the design               |
 | `W` / `A` / `S` / `D`      | Pan up / left / down / right |
 | Click or drag the timeline | Seek to a stitch position    |

@@ -1,5 +1,6 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QPoint, Qt
 from PySide6.QtGui import QKeyEvent
+from PySide6.QtGui import QWheelEvent
 from PySide6.QtWidgets import QWidget
 
 from inksim.gui.shortcuts import ViewerShortcutFilter
@@ -58,3 +59,33 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
     assert shortcut_filter.handle_key_event(key_event(Qt.Key_S))
     assert shortcut_filter.handle_key_event(key_event(Qt.Key_D))
     assert (viewer.pan_x, viewer.pan_y) == original_pan
+
+
+def test_alt_wheel_steps_with_angle_and_pixel_delta(qtbot):
+    from inksim.gui.viewer import EmbroideryViewerWidget
+
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+    viewer.stitches_np = __import__("numpy").zeros((10, 7))
+    viewer.visible_count = 4
+
+    angle_event = QWheelEvent(
+        QPoint(10, 10), QPoint(10, 10), QPoint(0, 0), QPoint(0, 120),
+        Qt.NoButton, Qt.AltModifier, Qt.ScrollPhase.ScrollUpdate, False,
+    )
+    viewer.wheelEvent(angle_event)
+    assert viewer.visible_count == 5
+
+    pixel_event = QWheelEvent(
+        QPoint(10, 10), QPoint(10, 10), QPoint(0, 15), QPoint(0, 0),
+        Qt.NoButton, Qt.AltModifier, Qt.ScrollPhase.ScrollUpdate, False,
+    )
+    viewer.wheelEvent(pixel_event)
+    assert viewer.visible_count == 6
+
+    ctrl_event = QWheelEvent(
+        QPoint(10, 10), QPoint(10, 10), QPoint(0, 0), QPoint(0, -120),
+        Qt.NoButton, Qt.ControlModifier, Qt.ScrollPhase.ScrollUpdate, False,
+    )
+    viewer.wheelEvent(ctrl_event)
+    assert viewer.visible_count == 5

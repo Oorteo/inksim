@@ -942,10 +942,16 @@ class EmbroideryViewerWidget(QWidget):
 
     def wheelEvent(self, e):
         """Zoom or step through stitches around the mouse position."""
-        if e.modifiers() & Qt.AltModifier:
+        is_step_modifier = bool(
+            e.modifiers() & (Qt.AltModifier | Qt.ControlModifier))
+        if is_step_modifier:
             delta = e.angleDelta().y()
             if delta == 0:
                 delta = e.angleDelta().x()
+            if delta == 0:
+                delta = e.pixelDelta().y()
+            if delta == 0:
+                delta = e.pixelDelta().x()
             if delta != 0:
                 total = self.stitches_np.shape[0]
                 direction = 1 if delta > 0 else -1
