@@ -43,6 +43,7 @@ def render_export_image(
         len(stitches),
         np.empty((0, 2), dtype=np.float32),
         np.empty((0, ), dtype=np.float32),
+        np.empty((0, ), dtype=np.bool_),
         zoom,
         offset_x,
         offset_y,
