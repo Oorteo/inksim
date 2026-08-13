@@ -8,6 +8,7 @@ import os
 import sys
 from pathlib import Path
 
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
 from .constants import APP_TITLE
@@ -218,6 +219,11 @@ def main():
     window_size = args.size
     window_position = args.position
     app = QApplication.instance() or QApplication([])
+    app.setApplicationName(APP_TITLE)
+    app.setApplicationDisplayName(APP_TITLE)
+    app.setOrganizationName(APP_TITLE)
+    app.setWindowIcon(QIcon(str(
+        Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
     first_input = input_paths[0] if input_paths else None
     frame = MainWindow(
         fullscreen=args.fullscreen,

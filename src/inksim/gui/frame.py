@@ -2,7 +2,7 @@ from pathlib import Path
 
 from PIL import Image, ImageFilter
 from PySide6.QtCore import QSettings, QTimer
-from PySide6.QtGui import QAction, QKeySequence
+from PySide6.QtGui import QAction, QIcon, QKeySequence
 from PySide6.QtWidgets import (
     QDialog,
     QFileDialog,
@@ -26,6 +26,8 @@ class MainWindow(QMainWindow):
     def __init__(self, fullscreen=False, window_size=None, window_position=None):
         super().__init__()
         self.setWindowTitle(APP_TITLE)
+        self.setWindowIcon(QIcon(str(
+            Path(__file__).parent.parent / "assets" / "app_icons" / "inksim.svg")))
         self.resize(*(window_size or (1200, 980)))
         self.setAcceptDrops(True)
         self.is_fullscreen = False
