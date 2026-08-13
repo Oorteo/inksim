@@ -4,7 +4,7 @@ import numpy as np
 from ..constants import MAX_RENDER_LINE_WIDTH_PX, MAX_RENDER_STEPS
 
 
-@numba.njit
+@numba.njit(cache=True)
 def render_realistic_numba(
     buf,
     stitches,
@@ -161,7 +161,7 @@ def render_realistic_numba(
                 buf[py, px, 2] = int(buf[py, px, 2] * (1.0 - alpha) + bb * alpha)
 
 
-@numba.njit
+@numba.njit(cache=True)
 def render_shaded_volume_natural_numba(
     buf,
     stitches,
@@ -259,7 +259,7 @@ def render_shaded_volume_natural_numba(
                 buf[py, px, 2] = int(buf[py, px, 2] * (1.0 - alpha) + bb * alpha)
 
 
-@numba.njit
+@numba.njit(cache=True)
 def render_realistic_twist_numba(
     buf,
     stitches,
@@ -373,7 +373,7 @@ def render_realistic_twist_numba(
                 buf[py, px, 2] = int(buf[py, px, 2] * (1.0 - alpha) + bb * alpha)
 
 
-@numba.njit
+@numba.njit(cache=True)
 def render_shaded_numba(
     buf,
     stitches,
@@ -536,7 +536,7 @@ def render_shaded_numba(
                                 buf[yi, xi, 2] = (buf[yi, xi, 2] + b)//2
 
 
-@numba.njit
+@numba.njit(cache=True)
 def render_shaded_volume_numba(
     buf,
     stitches,

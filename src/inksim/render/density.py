@@ -2,7 +2,7 @@ from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_RADIUS_MM, DENSITY_WAR
 import numba
 import numpy as np
 
-@numba.njit
+@numba.njit(cache=True)
 def calculate_stitch_density_numba(points, min_x, min_y, max_x, max_y):
     """Calculate stitch endpoints per square millimeter in a 5 mm circle."""
     point_count = points.shape[0]
@@ -48,7 +48,7 @@ def calculate_stitch_density_numba(points, min_x, min_y, max_x, max_y):
     return density
 
 
-@numba.njit
+@numba.njit(cache=True)
 def render_density_numba(buf, points, density, visible_count, zoom, pan_x, pan_y):
     """Render the stitch-density map directly into the RGB buffer."""
     height, width, _ = buf.shape

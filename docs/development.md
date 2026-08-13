@@ -47,6 +47,20 @@ Until then, optimize measured CPU costs first: render-buffer reuse, cache
 invalidations, density recalculation, Numba kernels, and unnecessary image
 copies. Do not treat OpenGL availability as a prerequisite for InkSim.
 
+Numba functions use `@numba.njit(cache=True)`. Numba specializes them from
+the actual argument types, then stores compiled variants in local `.nbi` and
+`.nbc` files under `__pycache__`. This avoids recompiling the same variants on
+later runs of the same environment. These cache files are platform-, Python-,
+NumPy-, Numba-, and CPU-specific; they are generated after installation and
+must not be committed or bundled as universal distribution artifacts.
+
+Do not add explicit Numba signatures just to improve speed. Explicit
+signatures can eagerly compile at import time and can restrict valid NumPy
+dtypes or memory layouts. Consider them only after profiling proves that
+specialization overhead is a bottleneck and the supported input layouts are
+documented and stable. Do not enable `parallel=True` or `fastmath=True` on
+the stitch renderers without measuring both performance and visual changes.
+
 ## Runtime Diagnostics
 
 Show the installed InkSim version and the runtime used to start it:
