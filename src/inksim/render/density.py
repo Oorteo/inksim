@@ -77,33 +77,34 @@ def render_density_numba(
         if screen_y < -5 or screen_y >= height + 5:
             continue
         marker_radius = 3
+        outer_radius = marker_radius
         if zero_length[point_index]:
-            marker_radius = min(16, max(5, int(np.round(5.0 * zoom))))
-        for offset_y in range(-marker_radius, marker_radius + 1):
-            for offset_x in range(-marker_radius, marker_radius + 1):
+            outer_radius = min(8, max(5, 5 + int(np.floor(zoom / 10.0))))
+        for offset_y in range(-outer_radius, outer_radius + 1):
+            for offset_x in range(-outer_radius, outer_radius + 1):
                 distance_squared = offset_x * offset_x + offset_y * offset_y
-                if distance_squared > marker_radius * marker_radius:
+                if distance_squared > outer_radius * outer_radius:
                     continue
                 pixel_x = screen_x + offset_x
                 pixel_y = screen_y + offset_y
                 if 0 <= pixel_x < width and 0 <= pixel_y < height:
-                    inner_radius = marker_radius - 2
                     if zero_length[point_index] and (
-                        distance_squared >= inner_radius * inner_radius
-                        and distance_squared <= marker_radius * marker_radius
+                        distance_squared >= (outer_radius - 1) * (outer_radius - 1)
+                        and distance_squared <= outer_radius * outer_radius
                     ):
                         buf[pixel_y, pixel_x, 0] = 235
                         buf[pixel_y, pixel_x, 1] = 35
                         buf[pixel_y, pixel_x, 2] = 35
-                    elif zero_length[point_index] and distance_squared <= 1:
-                        buf[pixel_y, pixel_x, 0] = r
-                        buf[pixel_y, pixel_x, 1] = g
-                        buf[pixel_y, pixel_x, 2] = b
-                    elif distance_squared <= 1:
-                        buf[pixel_y, pixel_x, 0] = 10
-                        buf[pixel_y, pixel_x, 1] = 10
-                        buf[pixel_y, pixel_x, 2] = 10
-                    else:
-                        buf[pixel_y, pixel_x, 0] = r
-                        buf[pixel_y, pixel_x, 1] = g
-                        buf[pixel_y, pixel_x, 2] = b
+                    elif distance_squared <= marker_radius * marker_radius:
+                        if zero_length[point_index] and distance_squared <= 1:
+                            buf[pixel_y, pixel_x, 0] = r
+                            buf[pixel_y, pixel_x, 1] = g
+                            buf[pixel_y, pixel_x, 2] = b
+                        elif distance_squared <= 1:
+                            buf[pixel_y, pixel_x, 0] = 10
+                            buf[pixel_y, pixel_x, 1] = 10
+                            buf[pixel_y, pixel_x, 2] = 10
+                        else:
+                            buf[pixel_y, pixel_x, 0] = r
+                            buf[pixel_y, pixel_x, 1] = g
+                            buf[pixel_y, pixel_x, 2] = b

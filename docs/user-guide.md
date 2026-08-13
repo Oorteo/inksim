@@ -115,6 +115,22 @@ main viewer and cached until a new design is loaded. The open-dialog preview
 does not calculate density while moving between files, and command-line PNG
 exports skip the calculation.
 
+### Density Map
+
+Press `X` to show the stitch-density map. Each stitch endpoint is evaluated
+within a 2.5 mm radius:
+
+| Color  | Meaning                                   |
+| ------ | ----------------------------------------- |
+| Blue   | Normal density, below 3 stitches per mm2  |
+| Yellow | Warning density, from 3 stitches per mm2  |
+| Red    | Critical density, from 6 stitches per mm2 |
+
+Stitches with zero length are highlighted with a thin red circle. Their
+center keeps the density color, so they can be distinguished from high-density
+areas. The circles are shown only while the density map is enabled and remain
+nearly constant in size as the view is zoomed.
+
 ## Performance Diagnostics
 
 Density and preview timing diagnostics are disabled by default. Enable them
