@@ -5,6 +5,7 @@
 
 import argparse
 import os
+import signal
 import sys
 from pathlib import Path
 
@@ -249,6 +250,11 @@ def main():
         try:
             interconnect = InterconnectServer(frame)
             if not interconnect.start():
+                print(
+                    "InkSim server is already running; forwarding command "
+                    "to the existing server.",
+                    file=sys.stderr,
+                )
                 command = (
                     {"command": "open", "path": str(first_input), "focus": True}
                     if first_input is not None and first_input.is_file()
@@ -263,6 +269,7 @@ def main():
             frame.close()
             parser.error(str(ex))
         frame.interconnect = interconnect
+        app.aboutToQuit.connect(interconnect.stop)
     if export_requested:
         success = True
         total_inputs = len(input_paths)
@@ -324,6 +331,11 @@ def main():
 
     warmup.finished.connect(finish_startup)
     warmup.start()
+
+    def handle_sigint(signum, frame_info):
+        app.quit()
+
+    signal.signal(signal.SIGINT, handle_sigint)
     raise SystemExit(app.exec())
 
 
