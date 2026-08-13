@@ -941,7 +941,21 @@ class EmbroideryViewerWidget(QWidget):
         self.update()
 
     def wheelEvent(self, e):
-        """Zoom around the mouse position while preserving its world point."""
+        """Zoom or step through stitches around the mouse position."""
+        if e.modifiers() & Qt.AltModifier:
+            delta = e.angleDelta().y()
+            if delta == 0:
+                delta = e.angleDelta().x()
+            if delta != 0:
+                total = self.stitches_np.shape[0]
+                direction = 1 if delta > 0 else -1
+                self.visible_count = max(
+                    0, min(total, self.visible_count + direction))
+                self._last_dir = direction
+                self.invalidate_cache()
+                self.update()
+            e.accept()
+            return
         position = e.position().toPoint()
         mx, my = position.x(), position.y()
         old = self.zoom
