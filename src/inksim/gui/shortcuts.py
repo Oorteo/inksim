@@ -111,7 +111,7 @@ class ViewerShortcutFilter(QObject):
             return True
         elif key in (Qt.Key_Plus, Qt.Key_Equal):
             old_zoom = viewer.zoom
-            viewer.zoom = min(50.0, viewer.zoom * 1.15)
+            viewer.zoom = min(viewer.maximum_zoom(), viewer.zoom * 1.15)
             scale = viewer.zoom / old_zoom
             center_x = viewer.width() / 2
             center_y = viewer.height() / 2
@@ -120,7 +120,7 @@ class ViewerShortcutFilter(QObject):
             changed = True
         elif key in (Qt.Key_Minus, Qt.Key_Underscore):
             old_zoom = viewer.zoom
-            viewer.zoom = max(0.05, viewer.zoom / 1.15)
+            viewer.zoom = max(viewer.minimum_zoom(), viewer.zoom / 1.15)
             scale = viewer.zoom / old_zoom
             center_x = viewer.width() / 2
             center_y = viewer.height() / 2

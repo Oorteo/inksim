@@ -233,6 +233,19 @@ class EmbroideryViewerWidget(QWidget):
         self.zoom = min(zoom_x, zoom_y)
         self.center_design()
 
+    def minimum_zoom(self):
+        """Return the zoom that keeps the design visible as a small marker."""
+        min_x, min_y, max_x, max_y = self.bounds
+        design_extent = max(max_x - min_x, max_y - min_y)
+        if design_extent <= 0:
+            return 0.05
+        return max(0.05, MIN_VISIBLE_DESIGN_PIXELS / design_extent)
+
+    def maximum_zoom(self):
+        """Return a viewport-sized maximum based on a 10 mm screen span."""
+        viewport_extent = max(self.width(), self.height(), 1)
+        return max(50.0, viewport_extent / MAX_ZOOM_DESIGN_MM)
+
     def set_one_to_one(self):
         """Display the design at its physical size when display PPI is known."""
         if self.stitches_np.shape[0] == 0:
@@ -966,7 +979,7 @@ class EmbroideryViewerWidget(QWidget):
         mx, my = position.x(), position.y()
         old = self.zoom
         self.zoom *= 1.15 if e.angleDelta().y() > 0 else 1 / 1.15
-        self.zoom = max(0.05, min(50.0, self.zoom))
+        self.zoom = max(self.minimum_zoom(), min(self.maximum_zoom(), self.zoom))
         scale = self.zoom / old
         self.pan_x = mx - scale * (mx - self.pan_x)
         self.pan_y = my - scale * (my - self.pan_y)
