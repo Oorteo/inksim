@@ -8,6 +8,7 @@ HELP_SECTIONS = (
 | Wheel | Zoom |
 | Alt or Ctrl + Wheel | Move by one stitch |
 | Drag | Pan |
+| Double-click design | Seek to visible stitch |
 | W / A / S / D | Pan up / left / down / right |
 | Click timeline | Seek stitch |
 """),

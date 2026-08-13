@@ -8,6 +8,7 @@
 | `Alt` + mouse wheel        | Move one stitch              |
 | `Ctrl` + mouse wheel       | Move one stitch              |
 | Left-drag in viewer        | Pan the design               |
+| Double-click design        | Seek to visible stitch       |
 | `W` / `A` / `S` / `D`      | Pan up / left / down / right |
 | Click or drag the timeline | Seek to a stitch position    |
 | Drop a file on the viewer  | Open the file                |

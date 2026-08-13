@@ -89,3 +89,28 @@ def test_alt_wheel_steps_with_angle_and_pixel_delta(qtbot):
     )
     viewer.wheelEvent(ctrl_event)
     assert viewer.visible_count == 5
+
+
+def test_double_click_seek_selects_nearest_visible_stitch(qtbot):
+    import numpy as np
+    from inksim.gui.viewer import EmbroideryViewerWidget
+
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+    viewer.stitches_np = np.array(
+        [
+            [10, 10, 30, 10, 255, 0, 0],
+            [30, 10, 50, 10, 0, 255, 0],
+            [50, 10, 70, 10, 0, 0, 255],
+        ],
+        dtype=np.float32,
+    )
+    viewer.visible_count = 3
+    viewer.zoom = 1.0
+    viewer.pan_x = 100
+    viewer.pan_y = 50
+
+    assert viewer.seek_to_screen_stitch(QPoint(142, 60))
+    assert viewer.visible_count == 2
+    assert not viewer.seek_to_screen_stitch(QPoint(10, 10))
+    assert viewer.visible_count == 2

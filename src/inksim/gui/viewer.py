@@ -988,6 +988,41 @@ class EmbroideryViewerWidget(QWidget):
         self.invalidate_cache()
         self.update()
 
+    def seek_to_screen_stitch(self, position, tolerance=12.0):
+        """Seek to the nearest currently visible stitch under screen position."""
+        visible_count = min(self.visible_count, self.stitches_np.shape[0])
+        if visible_count == 0:
+            return False
+
+        stitches = self.stitches_np[:visible_count]
+        start = stitches[:, 0:2] * self.zoom
+        start += (self.pan_x, self.pan_y)
+        end = stitches[:, 2:4] * self.zoom
+        end += (self.pan_x, self.pan_y)
+        vectors = end - start
+        lengths_squared = np.sum(vectors * vectors, axis=1)
+        point = np.array([position.x(), position.y()], dtype=np.float32)
+        offsets = point - start
+        ratios = np.zeros(visible_count, dtype=np.float32)
+        nonzero = lengths_squared > 0
+        ratios[nonzero] = (
+            np.sum(offsets[nonzero] * vectors[nonzero], axis=1)
+            / lengths_squared[nonzero]
+        )
+        ratios = np.clip(ratios, 0.0, 1.0)
+        closest = start + vectors * ratios[:, None]
+        distances_squared = np.sum((closest - point) ** 2, axis=1)
+        stitch_index = int(np.argmin(distances_squared))
+        if distances_squared[stitch_index] > tolerance * tolerance:
+            return False
+
+        self.visible_count = stitch_index + 1
+        self.invalidate_cache()
+        self.update()
+        if self.progress_bar:
+            self.progress_bar.update()
+        return True
+
     def mousePressEvent(self, e):
         """Start panning from the current mouse position."""
         self.drag_start = e.position().toPoint()
@@ -1004,6 +1039,16 @@ class EmbroideryViewerWidget(QWidget):
         if self.progress_bar and self.progress_bar.dragging:
             self.progress_bar.dragging = False
             self.progress_bar.releaseMouse()
+
+    def mouseDoubleClickEvent(self, e):
+        """Seek to a visible stitch when the canvas is double-clicked."""
+        if e.button() == Qt.LeftButton:
+            self.drag_start = None
+            self.releaseMouse()
+            self.seek_to_screen_stitch(e.position().toPoint())
+            e.accept()
+            return
+        super().mouseDoubleClickEvent(e)
 
     def mouseMoveEvent(self, e):
         """Update the viewport offset while the user drags the canvas."""
