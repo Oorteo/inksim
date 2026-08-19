@@ -2,7 +2,7 @@ from pathlib import Path
 import time
 
 from PySide6.QtCore import QEvent, QSettings, QSignalBlocker, QTimer, Qt
-from PySide6.QtGui import QAction, QIcon, QKeySequence
+from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -244,6 +244,9 @@ class MainWindow(QMainWindow):
 
     def _build_command_dock(self):
         self.command_table = QTableWidget(0, 4, self)
+        command_font = self.command_table.font()
+        command_font.setPointSize(max(8, command_font.pointSize() - 1))
+        self.command_table.setFont(command_font)
         self.command_table.horizontalHeader().hide()
         self.command_table.verticalHeader().hide()
         self.command_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
@@ -265,6 +268,7 @@ class MainWindow(QMainWindow):
         self.command_dock = QDockWidget("Commands", self)
         self.command_dock.setObjectName("commandDock")
         self.command_dock.setWidget(self.command_table)
+        self.command_dock.setMinimumWidth(360)
         self.command_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.addDockWidget(Qt.RightDockWidgetArea, self.command_dock)
         self.command_dock.hide()
@@ -287,6 +291,7 @@ class MainWindow(QMainWindow):
                 self.viewer.command_timeline
             ):
                 position_text = str(position) if stitch_index >= 0 else f"after {position}"
+                color = self._command_panel_color(label)
                 values = (
                     label,
                     position_text,
@@ -300,9 +305,23 @@ class MainWindow(QMainWindow):
                         table.setItem(row, column, item)
                     item.setText(value)
                     item.setData(Qt.UserRole, row)
+                    item.setForeground(color)
         self._sync_command_panel_cursor()
 
+    def _command_panel_color(self, label):
+        if label == "STITCH":
+            return QColor(35, 35, 35)
+        if label == "JUMP":
+            return QColor(110, 110, 110)
+        if label.startswith("COLOR CHANGE"):
+            return QColor(190, 45, 45)
+        if label == "TRIM":
+            return QColor(210, 125, 20)
+        return QColor(55, 95, 160)
+
     def _sync_command_panel_cursor(self):
+        if self._updating_command_panel:
+            return
         if not self.command_dock.isVisible():
             return
         command_index = self.viewer.current_command_index()
@@ -315,12 +334,24 @@ class MainWindow(QMainWindow):
                 QAbstractItemView.PositionAtCenter,
             )
 
-    def _command_panel_current_cell_changed(self, current_row, _current_column,
+    def _command_panel_current_cell_changed(self, current_row, current_column,
                                             _previous_row, _previous_column):
         if current_row < 0:
             return
-        self.viewer._set_visible_count_from_command_index(current_row)
-        self.progress.update()
+        item = self.command_table.item(current_row, current_column)
+        if item is None:
+            item = self.command_table.item(current_row, 0)
+        if item is None:
+            return
+        command_index = item.data(Qt.UserRole)
+        if command_index is None:
+            return
+        self._updating_command_panel = True
+        try:
+            self.viewer._set_visible_count_from_command_index(int(command_index))
+            self.progress.update()
+        finally:
+            self._updating_command_panel = False
 
     def show_window(self, focus=True):
         """Show the window and optionally request keyboard focus."""

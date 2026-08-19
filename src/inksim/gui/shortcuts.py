@@ -162,7 +162,7 @@ class ViewerShortcutFilter(QObject):
                 )
             changed = True
         elif key == Qt.Key_C and not is_alt and not is_ctrl:
-            viewer.center_design()
+            viewer.center_needle()
             return True
         elif key == Qt.Key_F and not is_alt and not is_ctrl:
             viewer.fit_to_screen()

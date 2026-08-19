@@ -34,6 +34,7 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
     )()
     viewer.window = lambda: window
     viewer.center_design = lambda: None
+    viewer.center_needle = lambda: None
     viewer.fit_to_screen = lambda: None
     viewer.set_one_to_one = lambda: None
     viewer.toggle_display_mode = lambda mode: None
@@ -134,3 +135,23 @@ def test_maximum_zoom_is_based_on_ten_millimeter_viewport_span(qtbot):
     viewer.resize(1200, 800)
 
     assert viewer.maximum_zoom() == 120.0
+
+
+def test_c_shortcut_centers_current_needle(qtbot):
+    import numpy as np
+    from inksim.gui.viewer import EmbroideryViewerWidget
+
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+    viewer.resize(200, 100)
+    viewer.zoom = 2.0
+    viewer.stitches_np = np.array(
+        [[0, 0, 30, 10, 255, 0, 0]],
+        dtype=np.float32,
+    )
+    viewer.visible_count = 1
+
+    viewer.center_needle()
+
+    assert viewer.pan_x == 40
+    assert viewer.pan_y == 30

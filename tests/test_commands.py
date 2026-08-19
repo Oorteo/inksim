@@ -157,3 +157,29 @@ def test_command_dock_tracks_and_controls_embroidery_cursor(qtbot, monkeypatch):
     window.viewer.seek_to(5)
     assert table.currentRow() == 4
     window.close()
+
+
+def test_command_dock_selection_uses_command_index_after_events(qtbot, monkeypatch):
+    pattern = SimpleNamespace(
+        stitches=[
+            stitch(0, 0, emb.STITCH),
+            stitch(10, 0, emb.TRIM),
+            stitch(20, 0, emb.JUMP),
+            stitch(30, 0, emb.STITCH),
+        ],
+        threadlist=[],
+    )
+    monkeypatch.setattr("inksim.gui.viewer.emb.read", lambda path: pattern)
+    window = MainWindow(window_size=(640, 480))
+    qtbot.addWidget(window)
+    window.show()
+
+    assert window.open_file("sample_design", precompute_density=False)
+    window.show_command_panel()
+    table = window.command_table
+
+    assert table.item(3, 0).text() == "STITCH"
+    table.setCurrentCell(3, 0)
+    assert window.viewer.visible_count == 2
+    assert table.currentRow() == 3
+    window.close()

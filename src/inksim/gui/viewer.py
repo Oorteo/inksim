@@ -27,7 +27,6 @@ from PySide6.QtWidgets import (
     QDialog,
     QGridLayout,
     QHeaderView,
-    QMenu,
     QMessageBox,
     QPushButton,
     QTableWidget,
@@ -189,7 +188,6 @@ class EmbroideryViewerWidget(QWidget):
         self._cache_valid = False
         self.progress_bar = progress_bar
         self.mode_panel = None
-        self.viewer_context_menu = None
         self.command_dialog = None
         self.help_dialog = None
         self.settings_dialog = None
@@ -298,6 +296,27 @@ class EmbroideryViewerWidget(QWidget):
         cy = (min_y + max_y) / 2
         self.pan_x = w / 2 - cx * self.zoom
         self.pan_y = h / 2 - cy * self.zoom
+        self.invalidate_cache()
+        self.update()
+        if self.progress_bar:
+            self.progress_bar.update()
+
+    def center_needle(self):
+        """Center the current needle position without changing zoom."""
+        if self.stitches_np.shape[0] == 0:
+            return
+        w, h = self.width(), self.height()
+        if w < 10 or h < 10:
+            w, h = 1200, 800
+        if self.visible_count > 0:
+            stitch = self.stitches_np[min(self.visible_count - 1,
+                                          self.stitches_np.shape[0] - 1)]
+            world_x, world_y = stitch[2], stitch[3]
+        else:
+            stitch = self.stitches_np[0]
+            world_x, world_y = stitch[0], stitch[1]
+        self.pan_x = w / 2 - world_x * self.zoom
+        self.pan_y = h / 2 - world_y * self.zoom
         self.invalidate_cache()
         self.update()
         if self.progress_bar:
@@ -1274,33 +1293,6 @@ class EmbroideryViewerWidget(QWidget):
             table.scrollToItem(table.item(current_index, 1), QAbstractItemView.PositionAtCenter)
         dialog.move(global_position)
         dialog.show()
-
-    def show_viewer_context_menu(self, position):
-        """Show the viewer context menu at the requested widget position."""
-        if self.viewer_context_menu is not None:
-            self.viewer_context_menu.close()
-        menu = QMenu(self)
-        menu.setAttribute(Qt.WA_DeleteOnClose)
-        command_action = menu.addAction("Show commands around embroidery cursor")
-        command_action.setEnabled(bool(self.command_timeline))
-
-        def on_triggered(action):
-            if action == command_action:
-                window = self.window()
-                if hasattr(window, "show_command_panel"):
-                    window.show_command_panel()
-                else:
-                    self.show_command_context_dialog(self.mapToGlobal(position))
-
-        menu.triggered.connect(on_triggered)
-        menu.destroyed.connect(lambda: setattr(self, "viewer_context_menu", None))
-        self.viewer_context_menu = menu
-        menu.popup(self.mapToGlobal(position))
-
-    def contextMenuEvent(self, event):
-        """Open the viewer context menu without entering a blocking menu loop."""
-        self.show_viewer_context_menu(event.pos())
-        event.accept()
 
     def mousePressEvent(self, e):
         """Start panning from the current mouse position."""
