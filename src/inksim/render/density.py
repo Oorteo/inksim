@@ -1,6 +1,7 @@
-from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_RADIUS_MM, DENSITY_WARNING_PER_MM2
 import numba
 import numpy as np
+
+from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_RADIUS_MM, DENSITY_WARNING_PER_MM2
 
 @numba.njit(cache=True)
 def calculate_stitch_density_numba(points, min_x, min_y, max_x, max_y):
@@ -53,7 +54,7 @@ def render_density_numba(
     buf,
     points,
     density,
-    zero_length,
+    repeated_stitch,
     visible_count,
     zoom,
     pan_x,
@@ -78,7 +79,7 @@ def render_density_numba(
             continue
         marker_radius = 3
         outer_radius = marker_radius
-        if zero_length[point_index]:
+        if repeated_stitch[point_index]:
             outer_radius = min(8, max(5, 5 + int(np.floor(zoom / 10.0))))
         for offset_y in range(-outer_radius, outer_radius + 1):
             for offset_x in range(-outer_radius, outer_radius + 1):
@@ -88,7 +89,7 @@ def render_density_numba(
                 pixel_x = screen_x + offset_x
                 pixel_y = screen_y + offset_y
                 if 0 <= pixel_x < width and 0 <= pixel_y < height:
-                    if zero_length[point_index] and (
+                    if repeated_stitch[point_index] and (
                         distance_squared >= (outer_radius - 1) * (outer_radius - 1)
                         and distance_squared <= outer_radius * outer_radius
                     ):
@@ -96,7 +97,7 @@ def render_density_numba(
                         buf[pixel_y, pixel_x, 1] = 35
                         buf[pixel_y, pixel_x, 2] = 35
                     elif distance_squared <= marker_radius * marker_radius:
-                        if zero_length[point_index] and distance_squared <= 1:
+                        if repeated_stitch[point_index] and distance_squared <= 1:
                             buf[pixel_y, pixel_x, 0] = r
                             buf[pixel_y, pixel_x, 1] = g
                             buf[pixel_y, pixel_x, 2] = b
