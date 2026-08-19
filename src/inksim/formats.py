@@ -68,13 +68,24 @@ def get_supported_output_filter():
     filters = []
     for file_type in get_supported_output_formats():
         patterns = " ".join(f"*.{ext}" for ext in file_type["extensions"])
-        filters.append(f"{file_type['description']} ({patterns})")
+        filters.append(
+            f"{file_type['description']} - .{file_type['extension']} ({patterns})"
+        )
     filters.append("All files (*)")
     return ";;".join(filters)
 
 
 def extension_from_output_filter(selected_filter):
     """Return the primary extension encoded in a Qt output-format filter."""
+    suffix_marker = " - ."
+    suffix_start = selected_filter.find(suffix_marker)
+    if suffix_start >= 0:
+        suffix_start += len(suffix_marker)
+        suffix_end = selected_filter.find(" ", suffix_start)
+        if suffix_end < 0:
+            suffix_end = selected_filter.find("(", suffix_start)
+        if suffix_end > suffix_start:
+            return selected_filter[suffix_start:suffix_end].strip().lower()
     marker_start = selected_filter.find("(*.")
     if marker_start < 0:
         return ""

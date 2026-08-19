@@ -446,12 +446,27 @@ class MainWindow(QMainWindow):
         if self.current_file_path is not None:
             export_directory = self.current_file_path.parent
         default_path = export_directory / self._default_save_name()
-        path, selected_filter = QFileDialog.getSaveFileName(
-            self,
-            "Save embroidery as",
-            str(default_path),
-            output_filter,
-        )
+        dialog = QFileDialog(self, "Save embroidery as", str(default_path))
+        dialog.setAcceptMode(QFileDialog.AcceptSave)
+        dialog.setNameFilters(output_filter.split(";;"))
+        dialog.selectFile(str(default_path))
+
+        def on_filter_selected(selected_filter):
+            extension = extension_from_output_filter(selected_filter)
+            if not extension:
+                return
+            selected_files = dialog.selectedFiles()
+            selected_file = selected_files[0] if selected_files else str(default_path)
+            dialog.selectFile(self._path_with_output_extension(selected_file, extension))
+
+        dialog.filterSelected.connect(on_filter_selected)
+        if dialog.exec() != QDialog.Accepted:
+            return None
+        selected_files = dialog.selectedFiles()
+        if not selected_files:
+            return None
+        path = selected_files[0]
+        selected_filter = dialog.selectedNameFilter()
         if not path:
             return None
         selected_path = Path(path)
@@ -461,6 +476,9 @@ class MainWindow(QMainWindow):
         if not extension:
             extension = "dst"
         return selected_path.with_suffix(f".{extension}")
+
+    def _path_with_output_extension(self, path, extension):
+        return str(Path(path).with_suffix(f".{extension}"))
 
     def save_as_embroidery(self):
         path = self._choose_save_as_path()
