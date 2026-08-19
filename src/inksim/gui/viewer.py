@@ -119,7 +119,6 @@ class EmbroideryViewerWidget(QWidget):
 
     RENDER_CACHE_PADDING = 200
     PAN_IDLE_RENDER_DELAY_MS = 150
-    PAN_MAX_RENDER_INTERVAL_MS = 5000
 
     def __init__(self, parent, progress_bar):
         """Create an empty viewer connected to the progress bar."""
@@ -179,7 +178,6 @@ class EmbroideryViewerWidget(QWidget):
         self.pan_render_timer = QTimer(self)
         self.pan_render_timer.setSingleShot(True)
         self.pan_render_timer.timeout.connect(self._finish_pan_render)
-        self._last_pan_render_at = 0.0
         self._cache_valid = False
         self.progress_bar = progress_bar
         self.mode_panel = None
@@ -794,8 +792,11 @@ class EmbroideryViewerWidget(QWidget):
                 pan_delta_x = round(self.pan_x - self.cached_pan_x)
                 pan_delta_y = round(self.pan_y - self.cached_pan_y)
                 if (
-                    abs(pan_delta_x) <= self.cached_padding
-                    and abs(pan_delta_y) <= self.cached_padding
+                    self.drag_start is not None
+                    or (
+                        abs(pan_delta_x) <= self.cached_padding
+                        and abs(pan_delta_y) <= self.cached_padding
+                    )
                 ):
                     painter.drawPixmap(
                         pan_delta_x - self.cached_padding,
@@ -923,7 +924,6 @@ class EmbroideryViewerWidget(QWidget):
         self.cached_pan_y = self.pan_y
         self.cached_zoom = self.zoom
         self._cache_valid = True
-        self._last_pan_render_at = time.perf_counter()
         painter.drawPixmap(-padding, -padding, bmp)
         self.draw_analysis_overlays(painter)
         self.draw_needle_overlay(painter)
@@ -1068,11 +1068,8 @@ class EmbroideryViewerWidget(QWidget):
         self.update()
 
     def _schedule_pan_render(self):
-        """Refresh the panning cache after idle or a maximum drag interval."""
+        """Refresh the panning cache after the drag pauses."""
         self.pan_render_timer.start(self.PAN_IDLE_RENDER_DELAY_MS)
-        elapsed_ms = (time.perf_counter() - self._last_pan_render_at) * 1000.0
-        if elapsed_ms >= self.PAN_MAX_RENDER_INTERVAL_MS:
-            self._finish_pan_render()
 
     def _finish_pan_render(self):
         """Schedule a full render while panning is paused or long-running."""
