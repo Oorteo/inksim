@@ -23,11 +23,16 @@ from PySide6.QtGui import (
     QTextTable,
 )
 from PySide6.QtWidgets import (
+    QAbstractItemView,
     QDialog,
     QGridLayout,
+    QMenu,
     QMessageBox,
     QPushButton,
+    QTableWidget,
+    QTableWidgetItem,
     QTextBrowser,
+    QVBoxLayout,
     QWidget,
 )
 
@@ -152,6 +157,7 @@ class EmbroideryViewerWidget(QWidget):
         self.color_boundaries = []
         self.color_count = 0
         self.command_events = {}
+        self.command_timeline = []
         self.jump_segments = []
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
         self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
@@ -181,6 +187,8 @@ class EmbroideryViewerWidget(QWidget):
         self._cache_valid = False
         self.progress_bar = progress_bar
         self.mode_panel = None
+        self.viewer_context_menu = None
+        self.command_dialog = None
         self.help_dialog = None
         self.settings_dialog = None
         self._last_dir = 1
@@ -587,6 +595,7 @@ class EmbroideryViewerWidget(QWidget):
         self.color_boundaries = [0]
         self.color_count = 0
         self.command_events = {}
+        self.command_timeline = []
         self.jump_segments = []
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
         self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
@@ -615,6 +624,7 @@ class EmbroideryViewerWidget(QWidget):
                 event_position = len(segs)
                 self.command_events.setdefault(event_position,
                                                []).append("JUMP")
+                self.command_timeline.append(("JUMP", event_position, -1, x, y))
                 is_risky = has_stitch and not color_change_in_group
                 self.jump_segments.append(
                     [last_x, last_y, x, y, int(is_risky), len(segs)])
@@ -625,6 +635,7 @@ class EmbroideryViewerWidget(QWidget):
                 event_position = len(segs)
                 self.command_events.setdefault(event_position,
                                                []).append("END")
+                self.command_timeline.append(("END", event_position, -1, x, y))
                 break
             is_color_change = (hasattr(emb, "COLOR_CHANGE")
                                and cmd == emb.COLOR_CHANGE)
@@ -645,6 +656,7 @@ class EmbroideryViewerWidget(QWidget):
                     command_label += f" ({', '.join(details)})"
                 self.command_events.setdefault(event_position,
                                                []).append(command_label)
+                self.command_timeline.append((command_label, event_position, -1, x, y))
                 cur_color_idx += 1
                 if segs:
                     self.color_boundaries.append(len(segs))
@@ -656,6 +668,7 @@ class EmbroideryViewerWidget(QWidget):
                 event_position = len(segs)
                 self.command_events.setdefault(event_position,
                                                []).append(command_name)
+                self.command_timeline.append((command_name, event_position, -1, x, y))
                 continue
             if has_thread_colors:
                 color_idx = min(cur_color_idx, len(palette) - 1)
@@ -668,6 +681,8 @@ class EmbroideryViewerWidget(QWidget):
                 rgb = tuple(col[:3])
             else:
                 rgb = AUTO_THREAD_COLORS[color_idx % len(AUTO_THREAD_COLORS)]
+            stitch_index = len(segs)
+            self.command_timeline.append(("STITCH", stitch_index + 1, stitch_index, x, y))
             segs.append((last_x, last_y, x, y, rgb[0], rgb[1], rgb[2]))
             if has_previous_stitch:
                 dx = previous_stitch_x - x
@@ -1124,8 +1139,146 @@ class EmbroideryViewerWidget(QWidget):
             self.progress_bar.update()
         return True
 
+    def command_context_rows(self, radius=5):
+        """Return commands around the current embroidery cursor."""
+        if not self.command_timeline:
+            return []
+        if self.visible_count <= 0:
+            current_stitch_index = 0
+        else:
+            current_stitch_index = min(
+                self.visible_count - 1,
+                max(self.stitches_np.shape[0] - 1, 0),
+            )
+        current_index = 0
+        for index, (_, _, stitch_index, _, _) in enumerate(self.command_timeline):
+            if stitch_index == current_stitch_index:
+                current_index = index
+                break
+        else:
+            current_position = max(0, min(self.visible_count, self.stitches_np.shape[0]))
+            best_distance = len(self.command_timeline) + self.stitches_np.shape[0]
+            for index, (_, position, _, _, _) in enumerate(self.command_timeline):
+                distance = abs(position - current_position)
+                if distance < best_distance:
+                    best_distance = distance
+                    current_index = index
+
+        start = max(0, current_index - radius)
+        end = min(len(self.command_timeline), current_index + radius + 1)
+        rows = []
+        for index in range(start, end):
+            label, position, stitch_index, x, y = self.command_timeline[index]
+            rows.append((index, label, position, index == current_index, stitch_index, x, y))
+        return rows
+
+    def current_command_index(self):
+        """Return the command row nearest to the current embroidery cursor."""
+        rows = self.command_context_rows(radius=0)
+        if not rows:
+            return -1
+        return rows[0][0]
+
+    def _set_visible_count_from_command_index(self, command_index):
+        if not (0 <= command_index < len(self.command_timeline)):
+            return
+        _, position, stitch_index, _, _ = self.command_timeline[command_index]
+        if stitch_index >= 0:
+            self.visible_count = stitch_index + 1
+        else:
+            self.visible_count = max(0, min(position, self.stitches_np.shape[0]))
+        self.invalidate_cache()
+        self.update()
+        if self.progress_bar:
+            self.progress_bar.update()
+
+    def show_command_context_dialog(self, global_position):
+        """Show a movable command list around the current embroidery cursor."""
+        if self.command_dialog is not None:
+            table = self.command_dialog.findChild(QTableWidget)
+            current_index = self.current_command_index()
+            if table is not None and current_index >= 0:
+                table.setCurrentCell(current_index, 1)
+                table.scrollToItem(
+                    table.item(current_index, 1),
+                    QAbstractItemView.PositionAtCenter,
+                )
+            self.command_dialog.raise_()
+            self.command_dialog.activateWindow()
+            return
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Commands around embroidery cursor")
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.setWindowModality(Qt.WindowModal)
+        dialog.resize(560, 360)
+        layout = QVBoxLayout(dialog)
+        table = QTableWidget(len(self.command_timeline), 5, dialog)
+        table.setHorizontalHeaderLabels(("#", "Command", "Position", "X mm", "Y mm"))
+        table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        table.setSelectionMode(QAbstractItemView.SingleSelection)
+        table.setAlternatingRowColors(True)
+        for row, (label, position, stitch_index, x, y) in enumerate(self.command_timeline):
+            position_text = str(position) if stitch_index >= 0 else f"after {position}"
+            values = (
+                str(row + 1),
+                label,
+                position_text,
+                f"{x:.2f}",
+                f"{y:.2f}",
+            )
+            for column, value in enumerate(values):
+                item = QTableWidgetItem(value)
+                item.setData(Qt.UserRole, row)
+                table.setItem(row, column, item)
+        table.resizeColumnsToContents()
+
+        def on_current_cell_changed(current_row, _current_column, _previous_row,
+                                    _previous_column):
+            self._set_visible_count_from_command_index(current_row)
+
+        table.currentCellChanged.connect(on_current_cell_changed)
+        layout.addWidget(table)
+        shortcut = QShortcut(QKeySequence("Esc"), dialog)
+        shortcut.setContext(Qt.WidgetWithChildrenShortcut)
+        shortcut.activated.connect(dialog.close)
+        dialog.destroyed.connect(lambda: setattr(self, "command_dialog", None))
+        self.command_dialog = dialog
+        current_index = self.current_command_index()
+        if current_index >= 0:
+            table.setCurrentCell(current_index, 1)
+            table.scrollToItem(table.item(current_index, 1), QAbstractItemView.PositionAtCenter)
+        dialog.move(global_position)
+        dialog.show()
+
+    def show_viewer_context_menu(self, position):
+        """Show the viewer context menu at the requested widget position."""
+        if self.viewer_context_menu is not None:
+            self.viewer_context_menu.close()
+        menu = QMenu(self)
+        menu.setAttribute(Qt.WA_DeleteOnClose)
+        command_action = menu.addAction("Show commands around embroidery cursor")
+        command_action.setEnabled(bool(self.command_timeline))
+
+        def on_triggered(action):
+            if action == command_action:
+                self.show_command_context_dialog(self.mapToGlobal(position))
+
+        menu.triggered.connect(on_triggered)
+        menu.destroyed.connect(lambda: setattr(self, "viewer_context_menu", None))
+        self.viewer_context_menu = menu
+        menu.popup(self.mapToGlobal(position))
+
+    def contextMenuEvent(self, event):
+        """Open the viewer context menu without entering a blocking menu loop."""
+        self.show_viewer_context_menu(event.pos())
+        event.accept()
+
     def mousePressEvent(self, e):
         """Start panning from the current mouse position."""
+        if e.button() != Qt.LeftButton:
+            super().mousePressEvent(e)
+            return
         self.drag_start = e.position().toPoint()
         self.pan_start = (self.pan_x, self.pan_y)
         self.setFocus()
@@ -1133,6 +1286,9 @@ class EmbroideryViewerWidget(QWidget):
 
     def mouseReleaseEvent(self, e):
         """Stop panning and clean up any progress-bar mouse capture."""
+        if e.button() != Qt.LeftButton:
+            super().mouseReleaseEvent(e)
+            return
         self.releaseMouse()
         self.drag_start = None
         self.pan_render_timer.stop()
