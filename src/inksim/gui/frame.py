@@ -1,19 +1,30 @@
 from pathlib import Path
 import time
 
-from PySide6.QtCore import QEvent, QSettings, QTimer, Qt
-from PySide6.QtGui import QAction, QIcon, QKeySequence
+import pystitch as emb
+from PySide6.QtCore import QEvent, QSettings, QSignalBlocker, QTimer, Qt
+from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence
 from PySide6.QtWidgets import (
+    QAbstractItemView,
     QApplication,
     QDialog,
+    QDockWidget,
     QFileDialog,
+    QHeaderView,
     QLabel,
     QMainWindow,
+    QTableWidget,
+    QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
 
 from ..constants import *
+from ..formats import (
+    extension_from_output_filter,
+    get_supported_output_filter,
+    get_supported_output_formats,
+)
 from ..render import render_export_image
 from .dialogs import EmbroideryOpenDialog
 from .about import show_about
@@ -65,6 +76,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.progress)
         self.setCentralWidget(main_panel)
         self._main_panel = main_panel
+        self._updating_command_panel = False
+        self._build_command_dock()
+        self.viewer.cursor_changed.connect(self._sync_command_panel_cursor)
         self.shortcut_filter = ViewerShortcutFilter(self, self.viewer)
         self._build_menus()
         self.statusBar().showMessage(DEFAULT_STATUS_TEXT)
@@ -167,6 +181,7 @@ class MainWindow(QMainWindow):
     def _build_menus(self):
         file_menu = self.menuBar().addMenu("&File")
         self._action(file_menu, "Open embroidery file", self.open_file_dialog, "Ctrl+O")
+        self._action(file_menu, "Save as embroidery...", self.save_as_embroidery)
         export_menu = file_menu.addMenu("Export")
         self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png)
         self._action(export_menu, "Preview PNG...", self.export_icon_png)
@@ -174,7 +189,7 @@ class MainWindow(QMainWindow):
         self._action(file_menu, "Center design", self.viewer.center_design)
         self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen)
         self._action(file_menu, "Fullscreen", self.toggle_full_screen)
-        self.grid_action = self._action(file_menu, "Show 1cm grid", self.toggle_grid, "G", True)
+        self.grid_action = self._action(file_menu, "Show measurement grid", self.toggle_grid, "G", True)
         self.grid_action.setChecked(True)
         self.realistic_action = self._action(file_menu, "Realistic thread render", self.toggle_realistic, checkable=True)
         self.viewer.grid_toggled.connect(self.grid_action.setChecked)
@@ -191,6 +206,15 @@ class MainWindow(QMainWindow):
         self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))
         file_menu.addSeparator()
         self._action(file_menu, "Quit", self.request_quit, "Ctrl+Q")
+        view_menu = self.menuBar().addMenu("&View")
+        self.command_panel_action = self._action(
+            view_menu,
+            "Command list",
+            self.toggle_command_panel,
+            "Ctrl+L",
+            True,
+        )
+        self.command_panel_action.setChecked(False)
         playback = self.menuBar().addMenu("&Playback")
         for step in (1, 10, 50, 100, 500):
             action = self._action(playback, f"Step {step}", lambda checked=False, s=step: self.viewer.set_step_size(s))
@@ -224,6 +248,117 @@ class MainWindow(QMainWindow):
         self.viewer.invalidate_cache()
         self.viewer.update()
         self.progress.update()
+
+    def _build_command_dock(self):
+        self.command_table = QTableWidget(0, 4, self)
+        command_font = self.command_table.font()
+        command_font.setPointSize(max(8, command_font.pointSize() - 1))
+        self.command_table.setFont(command_font)
+        self.command_table.horizontalHeader().hide()
+        self.command_table.verticalHeader().hide()
+        self.command_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        for column in range(1, 4):
+            self.command_table.horizontalHeader().setSectionResizeMode(
+                column,
+                QHeaderView.ResizeToContents,
+            )
+        self.command_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.command_table.setWordWrap(False)
+        self.command_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.command_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.command_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.command_table.setAlternatingRowColors(True)
+        self.command_table.currentCellChanged.connect(
+            self._command_panel_current_cell_changed
+        )
+
+        self.command_dock = QDockWidget("Commands", self)
+        self.command_dock.setObjectName("commandDock")
+        self.command_dock.setWidget(self.command_table)
+        self.command_dock.setMinimumWidth(360)
+        self.command_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.command_dock)
+        self.command_dock.hide()
+        self.command_dock.visibilityChanged.connect(self._command_dock_visibility_changed)
+
+    def _command_dock_visibility_changed(self, visible):
+        if hasattr(self, "command_panel_action"):
+            self.command_panel_action.setChecked(visible)
+        if visible:
+            self.refresh_command_panel()
+
+    def toggle_command_panel(self, checked):
+        self.command_dock.setVisible(checked)
+
+    def refresh_command_panel(self):
+        table = self.command_table
+        with QSignalBlocker(table):
+            table.setRowCount(len(self.viewer.command_timeline))
+            for row, (label, position, stitch_index, x, y) in enumerate(
+                self.viewer.command_timeline
+            ):
+                position_text = str(position) if stitch_index >= 0 else f"after {position}"
+                color = self._command_panel_color(label)
+                values = (
+                    label,
+                    position_text,
+                    f"{x:.2f}",
+                    f"{y:.2f}",
+                )
+                for column, value in enumerate(values):
+                    item = table.item(row, column)
+                    if item is None:
+                        item = QTableWidgetItem()
+                        table.setItem(row, column, item)
+                    item.setText(value)
+                    item.setData(Qt.UserRole, row)
+                    item.setForeground(color)
+        self._sync_command_panel_cursor()
+
+    def _command_panel_color(self, label):
+        if label == "STITCH":
+            return QColor(35, 35, 35)
+        if label == "JUMP":
+            return QColor(110, 110, 110)
+        if label.startswith("COLOR CHANGE"):
+            return QColor(190, 45, 45)
+        if label == "TRIM":
+            return QColor(210, 125, 20)
+        return QColor(55, 95, 160)
+
+    def _sync_command_panel_cursor(self):
+        if self._updating_command_panel:
+            return
+        if not self.command_dock.isVisible():
+            return
+        command_index = self.viewer.current_command_index()
+        if command_index < 0:
+            return
+        with QSignalBlocker(self.command_table):
+            self.command_table.setCurrentCell(command_index, 0)
+            self.command_table.scrollToItem(
+                self.command_table.item(command_index, 0),
+                QAbstractItemView.PositionAtCenter,
+            )
+
+    def _command_panel_current_cell_changed(self, current_row, current_column,
+                                            _previous_row, _previous_column):
+        if current_row < 0:
+            return
+        item = self.command_table.item(current_row, current_column)
+        if item is None:
+            item = self.command_table.item(current_row, 0)
+        if item is None:
+            return
+        command_index = item.data(Qt.UserRole)
+        if command_index is None:
+            return
+        self._updating_command_panel = True
+        try:
+            self.viewer._set_visible_count_from_command_index(int(command_index))
+            self.progress.update()
+        finally:
+            self._updating_command_panel = False
 
     def show_window(self, focus=True):
         """Show the window and optionally request keyboard focus."""
@@ -291,6 +426,78 @@ class MainWindow(QMainWindow):
             return None
         selected_path = Path(path)
         return selected_path.with_suffix(extension)
+
+    def _default_save_name(self):
+        base_name = self.current_file_path.stem if self.current_file_path else "inksim"
+        current_extension = (
+            self.current_file_path.suffix.lstrip(".").lower()
+            if self.current_file_path else ""
+        )
+        writable_extensions = {
+            file_type["extension"] for file_type in get_supported_output_formats()
+        }
+        if current_extension not in writable_extensions:
+            current_extension = "dst"
+        return f"{base_name}.{current_extension or 'dst'}"
+
+    def _choose_save_as_path(self):
+        output_filter = get_supported_output_filter()
+        export_directory = Path(self.last_directory or Path.cwd())
+        if self.current_file_path is not None:
+            export_directory = self.current_file_path.parent
+        default_path = export_directory / self._default_save_name()
+        dialog = QFileDialog(self, "Save embroidery as", str(default_path))
+        dialog.setAcceptMode(QFileDialog.AcceptSave)
+        dialog.setNameFilters(output_filter.split(";;"))
+        dialog.selectFile(str(default_path))
+
+        def on_filter_selected(selected_filter):
+            extension = extension_from_output_filter(selected_filter)
+            if not extension:
+                return
+            selected_files = dialog.selectedFiles()
+            selected_file = selected_files[0] if selected_files else str(default_path)
+            dialog.selectFile(self._path_with_output_extension(selected_file, extension))
+
+        dialog.filterSelected.connect(on_filter_selected)
+        if dialog.exec() != QDialog.Accepted:
+            return None
+        selected_files = dialog.selectedFiles()
+        if not selected_files:
+            return None
+        path = selected_files[0]
+        selected_filter = dialog.selectedNameFilter()
+        if not path:
+            return None
+        selected_path = Path(path)
+        if selected_path.suffix:
+            return selected_path
+        extension = extension_from_output_filter(selected_filter)
+        if not extension:
+            extension = "dst"
+        return selected_path.with_suffix(f".{extension}")
+
+    def _path_with_output_extension(self, path, extension):
+        return str(Path(path).with_suffix(f".{extension}"))
+
+    def save_as_embroidery(self):
+        path = self._choose_save_as_path()
+        if path is None:
+            return False
+        return self.save_embroidery_to_path(path)
+
+    def save_embroidery_to_path(self, path):
+        pattern = self.viewer.pattern
+        if pattern is None:
+            QMessageBox.warning(self, "Save embroidery", "No embroidery file is loaded.")
+            return False
+        try:
+            emb.write(pattern, str(path))
+        except (OSError, RuntimeError, ValueError) as error:
+            QMessageBox.critical(self, "Save embroidery", f"Failed to save file: {error}")
+            return False
+        self.statusBar().showMessage(f"Saved {path}", 3000)
+        return True
 
     def export_png(
         self,
@@ -370,7 +577,13 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f"{APP_TITLE} - {selected_path.name} - {total} sts - "
                             f"{bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm")
         self.progress.update()
+        self.refresh_command_panel()
         return True
+
+    def show_command_panel(self):
+        self.command_dock.show()
+        self.command_dock.raise_()
+        self.refresh_command_panel()
 
     def toggle_full_screen(self):
         self.is_fullscreen = not self.is_fullscreen

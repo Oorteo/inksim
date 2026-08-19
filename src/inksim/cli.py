@@ -136,7 +136,7 @@ def main():
         "--grid",
         dest="export_grid",
         action="store_true",
-        help="Add a 10 mm grid to exported PNG",
+        help="Add a measurement grid to exported PNG",
     )
     parser.add_argument(
         "-y", "--yes",
