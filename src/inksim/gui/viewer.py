@@ -117,6 +117,10 @@ class EmbroideryViewerWidget(QWidget):
     fullscreen_requested = Signal()
     status_message = Signal(str, int)
 
+    RENDER_CACHE_PADDING = 200
+    PAN_IDLE_RENDER_DELAY_MS = 150
+    PAN_MAX_RENDER_INTERVAL_MS = 5000
+
     def __init__(self, parent, progress_bar):
         """Create an empty viewer connected to the progress bar."""
         super().__init__(parent)
@@ -164,10 +168,18 @@ class EmbroideryViewerWidget(QWidget):
         self._render_buffer = None
         self._render_buffer_size = None
         self.cached_bitmap = None
+        self.cached_bitmap_width = 0
+        self.cached_bitmap_height = 0
+        self.cached_dpr = 1.0
+        self.cached_padding = 0
         self.cached_pan_x = self.pan_x
         self.cached_pan_y = self.pan_y
         self.cached_zoom = self.zoom
         self.zoom_render_timer = None
+        self.pan_render_timer = QTimer(self)
+        self.pan_render_timer.setSingleShot(True)
+        self.pan_render_timer.timeout.connect(self._finish_pan_render)
+        self._last_pan_render_at = 0.0
         self._cache_valid = False
         self.progress_bar = progress_bar
         self.mode_panel = None
@@ -774,27 +786,48 @@ class EmbroideryViewerWidget(QWidget):
         if self._pending_fit_to_screen:
             painter.end()
             return
-        if self._cache_valid and self.cached_bitmap:
+        dpr = max(1.0, self.devicePixelRatioF())
+        if self._cache_valid and self.cached_bitmap and self.cached_dpr == dpr:
+            cache_drawn = False
             zoom_ratio = self.zoom / self.cached_zoom
             if abs(zoom_ratio - 1.0) < 0.001:
                 pan_delta_x = round(self.pan_x - self.cached_pan_x)
                 pan_delta_y = round(self.pan_y - self.cached_pan_y)
-                painter.drawPixmap(pan_delta_x, pan_delta_y, self.cached_bitmap)
+                if (
+                    abs(pan_delta_x) <= self.cached_padding
+                    and abs(pan_delta_y) <= self.cached_padding
+                ):
+                    painter.drawPixmap(
+                        pan_delta_x - self.cached_padding,
+                        pan_delta_y - self.cached_padding,
+                        self.cached_bitmap,
+                    )
+                    cache_drawn = True
+                else:
+                    self._cache_valid = False
             else:
-                bitmap_width = self.cached_bitmap.width()
-                bitmap_height = self.cached_bitmap.height()
-                preview_x = round(self.pan_x - zoom_ratio * self.cached_pan_x)
-                preview_y = round(self.pan_y - zoom_ratio * self.cached_pan_y)
+                bitmap_width = self.cached_bitmap_width
+                bitmap_height = self.cached_bitmap_height
+                preview_x = round(
+                    self.pan_x
+                    - zoom_ratio * (self.cached_pan_x + self.cached_padding)
+                )
+                preview_y = round(
+                    self.pan_y
+                    - zoom_ratio * (self.cached_pan_y + self.cached_padding)
+                )
                 painter.drawPixmap(
                     preview_x, preview_y,
                     round(bitmap_width * zoom_ratio),
                     round(bitmap_height * zoom_ratio),
                     self.cached_bitmap,
                 )
-            self.draw_analysis_overlays(painter)
-            self.draw_needle_overlay(painter)
-            painter.end()
-            return
+                cache_drawn = True
+            if cache_drawn:
+                self.draw_analysis_overlays(painter)
+                self.draw_needle_overlay(painter)
+                painter.end()
+                return
         w, h = self.width(), self.height()
         if self.stitches_np.shape[0] == 0:
             painter.setFont(QFont(self.font().family(), 14))
@@ -810,7 +843,15 @@ class EmbroideryViewerWidget(QWidget):
             )
             painter.end()
             return
-        buf = self._get_render_buffer(w, h)
+        padding = self.RENDER_CACHE_PADDING
+        cache_w = w + 2 * padding
+        cache_h = h + 2 * padding
+        render_w = max(1, round(cache_w * dpr))
+        render_h = max(1, round(cache_h * dpr))
+        render_zoom = self.zoom * dpr
+        render_pan_x = (self.pan_x + padding) * dpr
+        render_pan_y = (self.pan_y + padding) * dpr
+        buf = self._get_render_buffer(render_w, render_h)
         render_viewport_raster(
             buf,
             self.active_renderer,
@@ -819,9 +860,9 @@ class EmbroideryViewerWidget(QWidget):
             self.stitch_points_np,
             self.stitch_density_np,
             self.zero_length_np,
-            self.zoom,
-            self.pan_x,
-            self.pan_y,
+            render_zoom,
+            render_pan_x,
+            render_pan_y,
             self.line_width,
             self.dark_factor,
             self.light_factor,
@@ -829,7 +870,13 @@ class EmbroideryViewerWidget(QWidget):
             self.show_density and self.active_renderer not in VECTOR_RENDERERS,
             self.show_stitches,
         )
-        img = QImage(buf.data, w, h, 3 * w, QImage.Format_RGB888).copy()
+        img = QImage(
+            buf.data,
+            render_w,
+            render_h,
+            3 * render_w,
+            QImage.Format_RGB888,
+        ).copy()
         if self.active_renderer in VECTOR_RENDERERS:
             stitch_painter = QPainter(img)
             stitch_painter.setRenderHint(QPainter.Antialiasing)
@@ -838,9 +885,9 @@ class EmbroideryViewerWidget(QWidget):
                 stitch_painter,
                 self.stitches_np,
                 self.visible_count,
-                self.zoom,
-                self.pan_x,
-                self.pan_y,
+                render_zoom,
+                render_pan_x,
+                render_pan_y,
                 self.line_width,
                 self.dark_factor,
                 self.light_factor,
@@ -850,25 +897,34 @@ class EmbroideryViewerWidget(QWidget):
             if self.show_density and len(self.stitch_points_np) > 0:
                 row_stride = img.bytesPerLine()
                 image_bytes = np.frombuffer(img.bits(), dtype=np.uint8)
-                image_rows = image_bytes.reshape((h, row_stride))
-                image_buffer = image_rows[:, :3 * w].reshape((h, w, 3))
+                image_rows = image_bytes.reshape((render_h, row_stride))
+                image_buffer = image_rows[:, :3 * render_w].reshape(
+                    (render_h, render_w, 3)
+                )
                 render_density_numba(
                     image_buffer,
                     self.stitch_points_np,
                     self.stitch_density_np,
                     self.zero_length_np,
                     self.visible_count,
-                    self.zoom,
-                    self.pan_x,
-                    self.pan_y,
+                    render_zoom,
+                    render_pan_x,
+                    render_pan_y,
                 )
+        img.setDevicePixelRatio(dpr)
         bmp = QPixmap.fromImage(img)
+        bmp.setDevicePixelRatio(dpr)
         self.cached_bitmap = bmp
+        self.cached_bitmap_width = cache_w
+        self.cached_bitmap_height = cache_h
+        self.cached_dpr = dpr
+        self.cached_padding = padding
         self.cached_pan_x = self.pan_x
         self.cached_pan_y = self.pan_y
         self.cached_zoom = self.zoom
         self._cache_valid = True
-        painter.drawPixmap(0, 0, bmp)
+        self._last_pan_render_at = time.perf_counter()
+        painter.drawPixmap(-padding, -padding, bmp)
         self.draw_analysis_overlays(painter)
         self.draw_needle_overlay(painter)
         painter.end()
@@ -1011,6 +1067,19 @@ class EmbroideryViewerWidget(QWidget):
         self.invalidate_cache()
         self.update()
 
+    def _schedule_pan_render(self):
+        """Refresh the panning cache after idle or a maximum drag interval."""
+        self.pan_render_timer.start(self.PAN_IDLE_RENDER_DELAY_MS)
+        elapsed_ms = (time.perf_counter() - self._last_pan_render_at) * 1000.0
+        if elapsed_ms >= self.PAN_MAX_RENDER_INTERVAL_MS:
+            self._finish_pan_render()
+
+    def _finish_pan_render(self):
+        """Schedule a full render while panning is paused or long-running."""
+        self.pan_render_timer.stop()
+        if self._cache_valid:
+            self.invalidate_cache()
+
     def seek_to_screen_stitch(self, position, tolerance=12.0):
         """Seek to the nearest currently visible stitch under screen position."""
         visible_count = min(self.visible_count, self.stitches_np.shape[0])
@@ -1057,6 +1126,7 @@ class EmbroideryViewerWidget(QWidget):
         """Stop panning and clean up any progress-bar mouse capture."""
         self.releaseMouse()
         self.drag_start = None
+        self.pan_render_timer.stop()
         self.invalidate_cache()
         self.update()
         if self.progress_bar and self.progress_bar.dragging:
@@ -1081,4 +1151,5 @@ class EmbroideryViewerWidget(QWidget):
             dy = position.y() - self.drag_start.y()
             self.pan_x = self.pan_start[0] + dx
             self.pan_y = self.pan_start[1] + dy
+            self._schedule_pan_render()
             self.update()
