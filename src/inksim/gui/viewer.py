@@ -153,6 +153,7 @@ class EmbroideryViewerWidget(QWidget):
         self.needle_highlighted = False
         self.needle_highlight_stage = 0
         self._needle_highlight_timer = None
+        self.pattern = None
         self.stitches_np = np.zeros((0, 7), dtype=np.float32)
         self.bounds = (0, 0, 0, 0)
         self.color_boundaries = []
@@ -614,6 +615,7 @@ class EmbroideryViewerWidget(QWidget):
         except (OSError, RuntimeError, ValueError) as ex:
             QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
             return False
+        self.pattern = pattern
         segs = []
         last_x = last_y = 0
         cur_color_idx = 0

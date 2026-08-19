@@ -1,6 +1,11 @@
 import numpy as np
 from PySide6.QtWidgets import QApplication
 
+from inksim.formats import (
+    extension_from_output_filter,
+    get_supported_output_filter,
+    get_supported_output_formats,
+)
 from inksim.render.export import render_export_image
 from inksim.render.grid import render_grid_numba
 from inksim.render.registry import STITCH_RENDERERS
@@ -45,6 +50,18 @@ def test_grid_adds_one_millimeter_lines_only_at_high_zoom():
     assert np.array_equal(solid_zoom[5, 14], np.array([235, 235, 235], dtype=np.uint8))
 
 
+def test_supported_output_filter_lists_writable_pystitch_formats():
+    formats = get_supported_output_formats()
+    extensions = {file_type["extension"] for file_type in formats}
+    output_filter = get_supported_output_filter()
+
+    assert "dst" in extensions
+    assert "pes" in extensions
+    assert "Tajima Embroidery Format (*.dst)" in output_filter
+    assert extension_from_output_filter("Tajima Embroidery Format (*.dst) (*.dst)") == "dst"
+    assert extension_from_output_filter("Scalable Vector Graphics (*.svg *.svgz)") == "svg"
+
+
 def test_sample_design_can_load(sample_design, qtbot):
     from inksim.gui.frame import MainWindow
 
@@ -52,4 +69,18 @@ def test_sample_design_can_load(sample_design, qtbot):
     qtbot.addWidget(window)
     assert window.open_file(str(sample_design), precompute_density=False)
     assert window.viewer.stitches_np.shape[0] > 0
+    window.close()
+
+
+def test_save_as_embroidery_writes_pystitch_format(sample_design, qtbot, tmp_path):
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    assert window.open_file(str(sample_design), precompute_density=False)
+
+    output_path = tmp_path / "saved.dst"
+    assert window.save_embroidery_to_path(output_path)
+    assert output_path.is_file()
+    assert output_path.stat().st_size > 0
     window.close()

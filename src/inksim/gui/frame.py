@@ -1,6 +1,7 @@
 from pathlib import Path
 import time
 
+import pystitch as emb
 from PySide6.QtCore import QEvent, QSettings, QSignalBlocker, QTimer, Qt
 from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence
 from PySide6.QtWidgets import (
@@ -19,6 +20,11 @@ from PySide6.QtWidgets import (
 )
 
 from ..constants import *
+from ..formats import (
+    extension_from_output_filter,
+    get_supported_output_filter,
+    get_supported_output_formats,
+)
 from ..render import render_export_image
 from .dialogs import EmbroideryOpenDialog
 from .about import show_about
@@ -175,6 +181,7 @@ class MainWindow(QMainWindow):
     def _build_menus(self):
         file_menu = self.menuBar().addMenu("&File")
         self._action(file_menu, "Open embroidery file", self.open_file_dialog, "Ctrl+O")
+        self._action(file_menu, "Save as embroidery...", self.save_as_embroidery)
         export_menu = file_menu.addMenu("Export")
         self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png)
         self._action(export_menu, "Preview PNG...", self.export_icon_png)
@@ -419,6 +426,60 @@ class MainWindow(QMainWindow):
             return None
         selected_path = Path(path)
         return selected_path.with_suffix(extension)
+
+    def _default_save_name(self):
+        base_name = self.current_file_path.stem if self.current_file_path else "inksim"
+        current_extension = (
+            self.current_file_path.suffix.lstrip(".").lower()
+            if self.current_file_path else ""
+        )
+        writable_extensions = {
+            file_type["extension"] for file_type in get_supported_output_formats()
+        }
+        if current_extension not in writable_extensions:
+            current_extension = "dst"
+        return f"{base_name}.{current_extension or 'dst'}"
+
+    def _choose_save_as_path(self):
+        output_filter = get_supported_output_filter()
+        export_directory = Path(self.last_directory or Path.cwd())
+        if self.current_file_path is not None:
+            export_directory = self.current_file_path.parent
+        default_path = export_directory / self._default_save_name()
+        path, selected_filter = QFileDialog.getSaveFileName(
+            self,
+            "Save embroidery as",
+            str(default_path),
+            output_filter,
+        )
+        if not path:
+            return None
+        selected_path = Path(path)
+        if selected_path.suffix:
+            return selected_path
+        extension = extension_from_output_filter(selected_filter)
+        if not extension:
+            extension = "dst"
+        return selected_path.with_suffix(f".{extension}")
+
+    def save_as_embroidery(self):
+        path = self._choose_save_as_path()
+        if path is None:
+            return False
+        return self.save_embroidery_to_path(path)
+
+    def save_embroidery_to_path(self, path):
+        pattern = self.viewer.pattern
+        if pattern is None:
+            QMessageBox.warning(self, "Save embroidery", "No embroidery file is loaded.")
+            return False
+        try:
+            emb.write(pattern, str(path))
+        except (OSError, RuntimeError, ValueError) as error:
+            QMessageBox.critical(self, "Save embroidery", f"Failed to save file: {error}")
+            return False
+        self.statusBar().showMessage(f"Saved {path}", 3000)
+        return True
 
     def export_png(
         self,
