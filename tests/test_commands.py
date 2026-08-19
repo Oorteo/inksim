@@ -2,6 +2,8 @@ from types import SimpleNamespace
 
 import numpy as np
 import pystitch as emb
+from PySide6.QtCore import QPoint
+from PySide6.QtWidgets import QTableWidget
 
 from inksim.gui.viewer import EmbroideryViewerWidget
 
@@ -105,3 +107,27 @@ def test_command_context_uses_current_embroidery_cursor(qtbot, monkeypatch):
     assert viewer.current_command_index() == 6
     viewer._set_visible_count_from_command_index(9)
     assert viewer.visible_count == 10
+
+
+def test_command_dialog_table_uses_compact_columns(qtbot, monkeypatch):
+    pattern = SimpleNamespace(
+        stitches=[stitch(index * 10, 0, emb.STITCH) for index in range(3)],
+        threadlist=[],
+    )
+    monkeypatch.setattr("inksim.gui.viewer.emb.read", lambda path: pattern)
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+
+    assert viewer.load_design("sample_design", fit_to_screen=False,
+                              precompute_density=False)
+    viewer.show_command_context_dialog(QPoint(0, 0))
+    qtbot.addWidget(viewer.command_dialog)
+    table = viewer.command_dialog.findChild(QTableWidget)
+
+    assert table.columnCount() == 4
+    assert table.horizontalHeader().isHidden()
+    assert table.item(0, 0).text() == "STITCH"
+    assert table.item(0, 1).text() == "1"
+    assert table.item(0, 2).text() == "0.00"
+    assert table.item(0, 3).text() == "0.00"
+    viewer.command_dialog.close()

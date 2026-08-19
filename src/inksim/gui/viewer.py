@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (
     QAbstractItemView,
     QDialog,
     QGridLayout,
+    QHeaderView,
     QMenu,
     QMessageBox,
     QPushButton,
@@ -1208,12 +1209,20 @@ class EmbroideryViewerWidget(QWidget):
             return
         dialog = QDialog(self)
         dialog.setWindowTitle("Commands around embroidery cursor")
-        dialog.setAttribute(Qt.WA_DeleteOnClose)
         dialog.setWindowModality(Qt.WindowModal)
         dialog.resize(560, 360)
         layout = QVBoxLayout(dialog)
-        table = QTableWidget(len(self.command_timeline), 5, dialog)
-        table.setHorizontalHeaderLabels(("#", "Command", "Position", "X mm", "Y mm"))
+        table = QTableWidget(len(self.command_timeline), 4, dialog)
+        table.horizontalHeader().hide()
+        table.verticalHeader().hide()
+        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        for column in range(1, 4):
+            table.horizontalHeader().setSectionResizeMode(
+                column,
+                QHeaderView.ResizeToContents,
+            )
+        table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        table.setWordWrap(False)
         table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setSelectionMode(QAbstractItemView.SingleSelection)
@@ -1221,7 +1230,6 @@ class EmbroideryViewerWidget(QWidget):
         for row, (label, position, stitch_index, x, y) in enumerate(self.command_timeline):
             position_text = str(position) if stitch_index >= 0 else f"after {position}"
             values = (
-                str(row + 1),
                 label,
                 position_text,
                 f"{x:.2f}",
@@ -1231,7 +1239,6 @@ class EmbroideryViewerWidget(QWidget):
                 item = QTableWidgetItem(value)
                 item.setData(Qt.UserRole, row)
                 table.setItem(row, column, item)
-        table.resizeColumnsToContents()
 
         def on_current_cell_changed(current_row, _current_column, _previous_row,
                                     _previous_column):
@@ -1242,7 +1249,10 @@ class EmbroideryViewerWidget(QWidget):
         shortcut = QShortcut(QKeySequence("Esc"), dialog)
         shortcut.setContext(Qt.WidgetWithChildrenShortcut)
         shortcut.activated.connect(dialog.close)
-        dialog.destroyed.connect(lambda: setattr(self, "command_dialog", None))
+        def on_close(event):
+            setattr(self, "command_dialog", None)
+            event.accept()
+        dialog.closeEvent = on_close
         self.command_dialog = dialog
         current_index = self.current_command_index()
         if current_index >= 0:
