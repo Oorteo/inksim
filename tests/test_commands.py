@@ -1,5 +1,6 @@
 from types import SimpleNamespace
 
+import numpy as np
 import pystitch as emb
 
 from inksim.gui.viewer import EmbroideryViewerWidget
@@ -57,3 +58,26 @@ def test_all_supported_command_constants_are_recorded(qtbot, monkeypatch):
     assert commands == [
         "SEQUIN_MODE", "SEQUIN_EJECT", "FRAME_EJECT", "TIE_ON", "TIE_OFF"
     ]
+
+
+def test_repeated_stitches_only_compare_actual_stitch_points(qtbot, monkeypatch):
+    pattern = SimpleNamespace(
+        stitches=[
+            stitch(0, 0, emb.STITCH),
+            stitch(10, 0, emb.JUMP),
+            stitch(10, 0, emb.STITCH),
+            stitch(10, 0, emb.STITCH),
+            stitch(10, 0, emb.END),
+        ],
+        threadlist=[],
+    )
+    monkeypatch.setattr("inksim.gui.viewer.emb.read", lambda path: pattern)
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+
+    assert viewer.load_design("sample_design", fit_to_screen=False,
+                              precompute_density=False)
+    assert np.array_equal(
+        viewer.repeated_stitch_np,
+        np.array([False, False, True], dtype=np.bool_),
+    )

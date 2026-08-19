@@ -155,7 +155,7 @@ class EmbroideryViewerWidget(QWidget):
         self.jump_segments = []
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
         self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
-        self.zero_length_np = np.zeros((0, ), dtype=np.bool_)
+        self.repeated_stitch_np = np.zeros((0, ), dtype=np.bool_)
         self.density_ready = False
         self._density_request_id = 0
         self._density_worker = None
@@ -590,11 +590,15 @@ class EmbroideryViewerWidget(QWidget):
         self.jump_segments = []
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
         self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
-        self.zero_length_np = np.zeros((0, ), dtype=np.bool_)
+        self.repeated_stitch_np = np.zeros((0, ), dtype=np.bool_)
         self.density_ready = False
         self._density_request_id += 1
         self._density_worker = None
         jump_run_indices = []
+        repeated_stitches = []
+        previous_stitch_x = 0.0
+        previous_stitch_y = 0.0
+        has_previous_stitch = False
         color_change_in_group = False
         has_stitch = False
         for st in pattern.stitches:
@@ -665,6 +669,15 @@ class EmbroideryViewerWidget(QWidget):
             else:
                 rgb = AUTO_THREAD_COLORS[color_idx % len(AUTO_THREAD_COLORS)]
             segs.append((last_x, last_y, x, y, rgb[0], rgb[1], rgb[2]))
+            if has_previous_stitch:
+                dx = previous_stitch_x - x
+                dy = previous_stitch_y - y
+                repeated_stitches.append(dx * dx + dy * dy <= 0.0001)
+            else:
+                repeated_stitches.append(False)
+            previous_stitch_x = x
+            previous_stitch_y = y
+            has_previous_stitch = True
             min_x = min(min_x, last_x, x)
             min_y = min(min_y, last_y, y)
             max_x = max(max_x, last_x, x)
@@ -676,8 +689,7 @@ class EmbroideryViewerWidget(QWidget):
         if segs:
             self.stitches_np = np.array(segs, dtype=np.float32)
             self.stitch_points_np = self.stitches_np[:, 2:4].copy()
-            delta = self.stitches_np[:, 0:2] - self.stitches_np[:, 2:4]
-            self.zero_length_np = np.sum(delta * delta, axis=1) <= 0.0001
+            self.repeated_stitch_np = np.array(repeated_stitches, dtype=np.bool_)
             self.bounds = (min_x, min_y, max_x, max_y)
             self.visible_count = self.stitches_np.shape[0]
             self.color_boundaries = sorted(
@@ -860,7 +872,7 @@ class EmbroideryViewerWidget(QWidget):
             self.visible_count,
             self.stitch_points_np,
             self.stitch_density_np,
-            self.zero_length_np,
+            self.repeated_stitch_np,
             render_zoom,
             render_pan_x,
             render_pan_y,
@@ -906,7 +918,7 @@ class EmbroideryViewerWidget(QWidget):
                     image_buffer,
                     self.stitch_points_np,
                     self.stitch_density_np,
-                    self.zero_length_np,
+                    self.repeated_stitch_np,
                     self.visible_count,
                     render_zoom,
                     render_pan_x,
