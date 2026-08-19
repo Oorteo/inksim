@@ -1,14 +1,19 @@
 from pathlib import Path
 import time
 
-from PySide6.QtCore import QEvent, QSettings, QTimer, Qt
+from PySide6.QtCore import QEvent, QSettings, QSignalBlocker, QTimer, Qt
 from PySide6.QtGui import QAction, QIcon, QKeySequence
 from PySide6.QtWidgets import (
+    QAbstractItemView,
     QApplication,
     QDialog,
+    QDockWidget,
     QFileDialog,
+    QHeaderView,
     QLabel,
     QMainWindow,
+    QTableWidget,
+    QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
@@ -65,6 +70,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.progress)
         self.setCentralWidget(main_panel)
         self._main_panel = main_panel
+        self._updating_command_panel = False
+        self._build_command_dock()
+        self.viewer.cursor_changed.connect(self._sync_command_panel_cursor)
         self.shortcut_filter = ViewerShortcutFilter(self, self.viewer)
         self._build_menus()
         self.statusBar().showMessage(DEFAULT_STATUS_TEXT)
@@ -191,6 +199,15 @@ class MainWindow(QMainWindow):
         self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))
         file_menu.addSeparator()
         self._action(file_menu, "Quit", self.request_quit, "Ctrl+Q")
+        view_menu = self.menuBar().addMenu("&View")
+        self.command_panel_action = self._action(
+            view_menu,
+            "Command list",
+            self.toggle_command_panel,
+            "Ctrl+L",
+            True,
+        )
+        self.command_panel_action.setChecked(False)
         playback = self.menuBar().addMenu("&Playback")
         for step in (1, 10, 50, 100, 500):
             action = self._action(playback, f"Step {step}", lambda checked=False, s=step: self.viewer.set_step_size(s))
@@ -223,6 +240,86 @@ class MainWindow(QMainWindow):
     def _refresh_after_color_jump(self):
         self.viewer.invalidate_cache()
         self.viewer.update()
+        self.progress.update()
+
+    def _build_command_dock(self):
+        self.command_table = QTableWidget(0, 4, self)
+        self.command_table.horizontalHeader().hide()
+        self.command_table.verticalHeader().hide()
+        self.command_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        for column in range(1, 4):
+            self.command_table.horizontalHeader().setSectionResizeMode(
+                column,
+                QHeaderView.ResizeToContents,
+            )
+        self.command_table.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.command_table.setWordWrap(False)
+        self.command_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.command_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.command_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.command_table.setAlternatingRowColors(True)
+        self.command_table.currentCellChanged.connect(
+            self._command_panel_current_cell_changed
+        )
+
+        self.command_dock = QDockWidget("Commands", self)
+        self.command_dock.setObjectName("commandDock")
+        self.command_dock.setWidget(self.command_table)
+        self.command_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.command_dock)
+        self.command_dock.hide()
+        self.command_dock.visibilityChanged.connect(self._command_dock_visibility_changed)
+
+    def _command_dock_visibility_changed(self, visible):
+        if hasattr(self, "command_panel_action"):
+            self.command_panel_action.setChecked(visible)
+        if visible:
+            self.refresh_command_panel()
+
+    def toggle_command_panel(self, checked):
+        self.command_dock.setVisible(checked)
+
+    def refresh_command_panel(self):
+        table = self.command_table
+        with QSignalBlocker(table):
+            table.setRowCount(len(self.viewer.command_timeline))
+            for row, (label, position, stitch_index, x, y) in enumerate(
+                self.viewer.command_timeline
+            ):
+                position_text = str(position) if stitch_index >= 0 else f"after {position}"
+                values = (
+                    label,
+                    position_text,
+                    f"{x:.2f}",
+                    f"{y:.2f}",
+                )
+                for column, value in enumerate(values):
+                    item = table.item(row, column)
+                    if item is None:
+                        item = QTableWidgetItem()
+                        table.setItem(row, column, item)
+                    item.setText(value)
+                    item.setData(Qt.UserRole, row)
+        self._sync_command_panel_cursor()
+
+    def _sync_command_panel_cursor(self):
+        if not self.command_dock.isVisible():
+            return
+        command_index = self.viewer.current_command_index()
+        if command_index < 0:
+            return
+        with QSignalBlocker(self.command_table):
+            self.command_table.setCurrentCell(command_index, 0)
+            self.command_table.scrollToItem(
+                self.command_table.item(command_index, 0),
+                QAbstractItemView.PositionAtCenter,
+            )
+
+    def _command_panel_current_cell_changed(self, current_row, _current_column,
+                                            _previous_row, _previous_column):
+        if current_row < 0:
+            return
+        self.viewer._set_visible_count_from_command_index(current_row)
         self.progress.update()
 
     def show_window(self, focus=True):
@@ -370,7 +467,13 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f"{APP_TITLE} - {selected_path.name} - {total} sts - "
                             f"{bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm")
         self.progress.update()
+        self.refresh_command_panel()
         return True
+
+    def show_command_panel(self):
+        self.command_dock.show()
+        self.command_dock.raise_()
+        self.refresh_command_panel()
 
     def toggle_full_screen(self):
         self.is_fullscreen = not self.is_fullscreen

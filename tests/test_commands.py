@@ -5,6 +5,7 @@ import pystitch as emb
 from PySide6.QtCore import QPoint
 from PySide6.QtWidgets import QTableWidget
 
+from inksim.gui.frame import MainWindow
 from inksim.gui.viewer import EmbroideryViewerWidget
 
 
@@ -131,3 +132,28 @@ def test_command_dialog_table_uses_compact_columns(qtbot, monkeypatch):
     assert table.item(0, 2).text() == "0.00"
     assert table.item(0, 3).text() == "0.00"
     viewer.command_dialog.close()
+
+
+def test_command_dock_tracks_and_controls_embroidery_cursor(qtbot, monkeypatch):
+    pattern = SimpleNamespace(
+        stitches=[stitch(index * 10, 0, emb.STITCH) for index in range(5)],
+        threadlist=[],
+    )
+    monkeypatch.setattr("inksim.gui.viewer.emb.read", lambda path: pattern)
+    window = MainWindow(window_size=(640, 480))
+    qtbot.addWidget(window)
+    window.show()
+
+    assert window.open_file("sample_design", precompute_density=False)
+    window.show_command_panel()
+    table = window.command_table
+
+    assert window.command_dock.isVisible()
+    assert table.rowCount() == 5
+    assert table.item(2, 0).text() == "STITCH"
+    assert table.item(2, 1).text() == "3"
+    table.setCurrentCell(2, 0)
+    assert window.viewer.visible_count == 3
+    window.viewer.seek_to(5)
+    assert table.currentRow() == 4
+    window.close()

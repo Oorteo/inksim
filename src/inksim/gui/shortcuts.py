@@ -46,6 +46,7 @@ class ViewerShortcutFilter(QObject):
         total = viewer.stitches_np.shape[0]
         is_shift = bool(event.modifiers() & Qt.ShiftModifier)
         changed = False
+        cursor_changed = False
         highlight_needle = False
         step = 1 if is_alt else viewer.step_size
 
@@ -54,6 +55,7 @@ class ViewerShortcutFilter(QObject):
             Qt.Key_Left,
         ):
             changed = viewer.jump_to_command(1 if key == Qt.Key_Right else -1)
+            cursor_changed = changed
             highlight_needle = changed
             if changed and viewer.is_playing:
                 viewer.play_timer.stop()
@@ -68,6 +70,7 @@ class ViewerShortcutFilter(QObject):
             viewer.jump_to_color(1 if key == Qt.Key_Right else -1)
             viewer._last_dir = 1 if key == Qt.Key_Right else -1
             changed = True
+            cursor_changed = True
             highlight_needle = True
         elif not is_alt and not is_ctrl and key in (
             Qt.Key_W, Qt.Key_A, Qt.Key_S, Qt.Key_D
@@ -87,25 +90,31 @@ class ViewerShortcutFilter(QObject):
                 viewer.visible_count = min(total, viewer.visible_count + step)
                 viewer._last_dir = 1
                 changed = True
+                cursor_changed = True
         elif key == Qt.Key_Left:
             if viewer.visible_count > 0:
                 viewer.visible_count = max(0, viewer.visible_count - step)
                 viewer._last_dir = -1
                 changed = True
+                cursor_changed = True
         elif key == Qt.Key_Up:
             viewer.visible_count = min(total, viewer.visible_count + step * 10)
             viewer._last_dir = 1
             changed = True
+            cursor_changed = True
         elif key == Qt.Key_Down:
             viewer.visible_count = max(0, viewer.visible_count - step * 10)
             viewer._last_dir = -1
             changed = True
+            cursor_changed = True
         elif key == Qt.Key_Home:
             viewer.visible_count = 0
             changed = True
+            cursor_changed = True
         elif key == Qt.Key_End:
             viewer.visible_count = total
             changed = True
+            cursor_changed = True
         elif key == Qt.Key_Space:
             viewer.toggle_auto_play()
             return True
@@ -206,6 +215,8 @@ class ViewerShortcutFilter(QObject):
             return False
 
         if changed:
+            if cursor_changed and hasattr(viewer, "notify_cursor_changed"):
+                viewer.notify_cursor_changed()
             if highlight_needle:
                 viewer.highlight_needle()
             if (

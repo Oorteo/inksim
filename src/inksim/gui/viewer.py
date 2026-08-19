@@ -122,6 +122,7 @@ class EmbroideryViewerWidget(QWidget):
     renderer_changed = Signal(str)
     fullscreen_requested = Signal()
     status_message = Signal(str, int)
+    cursor_changed = Signal()
 
     RENDER_CACHE_PADDING = 200
     PAN_IDLE_RENDER_DELAY_MS = 150
@@ -205,6 +206,9 @@ class EmbroideryViewerWidget(QWidget):
     def invalidate_cache(self):
         self._cache_valid = False
         self.update()
+
+    def notify_cursor_changed(self):
+        self.cursor_changed.emit()
 
     def _get_render_buffer(self, width, height):
         size = (width, height)
@@ -315,6 +319,7 @@ class EmbroideryViewerWidget(QWidget):
             self.visible_count = 0
             self.play_timer.stop()
             self.is_playing = False
+        self.notify_cursor_changed()
         self.invalidate_cache()
         self.update()
         if self.progress_bar:
@@ -323,6 +328,7 @@ class EmbroideryViewerWidget(QWidget):
     def seek_to(self, visible_count):
         total = self.stitches_np.shape[0]
         self.visible_count = max(0, min(total, visible_count))
+        self.notify_cursor_changed()
         self.invalidate_cache()
         self.update()
         if self.progress_bar:
@@ -362,8 +368,10 @@ class EmbroideryViewerWidget(QWidget):
             for b in self.color_boundaries:
                 if b > cur:
                     self.visible_count = b
+                    self.notify_cursor_changed()
                     return
             self.visible_count = self.stitches_np.shape[0]
+            self.notify_cursor_changed()
         else:
             prev = 0
             for b in self.color_boundaries:
@@ -379,6 +387,7 @@ class EmbroideryViewerWidget(QWidget):
                     self.visible_count = 0
             else:
                 self.visible_count = prev
+            self.notify_cursor_changed()
 
     def jump_to_command(self, direction):
         """Move to the nearest recorded command event."""
@@ -396,6 +405,7 @@ class EmbroideryViewerWidget(QWidget):
             if target == current:
                 return False
         self.visible_count = target
+        self.notify_cursor_changed()
         return True
 
     def rotate_design(self, quarter_turns):
@@ -708,6 +718,7 @@ class EmbroideryViewerWidget(QWidget):
             self.repeated_stitch_np = np.array(repeated_stitches, dtype=np.bool_)
             self.bounds = (min_x, min_y, max_x, max_y)
             self.visible_count = self.stitches_np.shape[0]
+            self.notify_cursor_changed()
             self.color_boundaries = sorted(
                 {boundary for boundary in self.color_boundaries
                  if boundary < len(segs)})
@@ -1062,6 +1073,7 @@ class EmbroideryViewerWidget(QWidget):
                 direction = 1 if delta > 0 else -1
                 self.visible_count = max(
                     0, min(total, self.visible_count + direction))
+                self.notify_cursor_changed()
                 self._last_dir = direction
                 self.invalidate_cache()
                 self.update()
@@ -1134,6 +1146,7 @@ class EmbroideryViewerWidget(QWidget):
             return False
 
         self.visible_count = stitch_index + 1
+        self.notify_cursor_changed()
         self.invalidate_cache()
         self.update()
         if self.progress_bar:
@@ -1188,6 +1201,7 @@ class EmbroideryViewerWidget(QWidget):
             self.visible_count = stitch_index + 1
         else:
             self.visible_count = max(0, min(position, self.stitches_np.shape[0]))
+        self.notify_cursor_changed()
         self.invalidate_cache()
         self.update()
         if self.progress_bar:
@@ -1250,7 +1264,7 @@ class EmbroideryViewerWidget(QWidget):
         shortcut.setContext(Qt.WidgetWithChildrenShortcut)
         shortcut.activated.connect(dialog.close)
         def on_close(event):
-            setattr(self, "command_dialog", None)
+            self.command_dialog = None
             event.accept()
         dialog.closeEvent = on_close
         self.command_dialog = dialog
@@ -1272,7 +1286,11 @@ class EmbroideryViewerWidget(QWidget):
 
         def on_triggered(action):
             if action == command_action:
-                self.show_command_context_dialog(self.mapToGlobal(position))
+                window = self.window()
+                if hasattr(window, "show_command_panel"):
+                    window.show_command_panel()
+                else:
+                    self.show_command_context_dialog(self.mapToGlobal(position))
 
         menu.triggered.connect(on_triggered)
         menu.destroyed.connect(lambda: setattr(self, "viewer_context_menu", None))
