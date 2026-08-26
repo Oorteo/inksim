@@ -68,6 +68,9 @@ class MainWindow(QMainWindow):
         self._last_source_check = 0.0
         self._source_check_interval_s = 0.4
         self._is_reloading_from_disk = False
+        self._layout_state = "free"
+        self._snapped_geometry = None
+        self._last_geometry = self.geometry()
 
         main_panel = QWidget(self)
         layout = QVBoxLayout(main_panel)
@@ -382,6 +385,53 @@ class MainWindow(QMainWindow):
         self.show_window(focus=False)
         self.raise_()
         self.activateWindow()
+
+    def _default_snapped_geometry(self):
+        """Return a rectangle covering the right half of the primary screen."""
+        screen = self.screen() or QApplication.primaryScreen()
+        geo = screen.availableGeometry()
+        return geo.adjusted(geo.width() // 2, 0, 0, 0)
+
+    def _set_snapped_geometry(self):
+        """Apply the snapped layout, falling back to the right-half default."""
+        target = self._snapped_geometry or self._default_snapped_geometry()
+        self.setGeometry(target)
+
+    def toggle_window_layout(self):
+        """Toggle between the free layout and the snapped layout."""
+        if self.is_fullscreen or self.isMaximized():
+            return
+        if self._layout_state == "free":
+            self._snapped_geometry = self._snapped_geometry or self._default_snapped_geometry()
+            self._set_snapped_geometry()
+            self._layout_state = "snapped"
+        else:
+            self._layout_state = "free"
+        self._last_geometry = self.geometry()
+
+    def save_current_layout_as_snapped(self):
+        """Store the current window geometry as the snapped layout."""
+        if self.is_fullscreen or self.isMaximized():
+            return
+        self._snapped_geometry = self.geometry()
+        self._layout_state = "snapped"
+        self._last_geometry = self.geometry()
+
+    def moveEvent(self, event):
+        super().moveEvent(event)
+        self._detect_manual_geometry_change()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._detect_manual_geometry_change()
+
+    def _detect_manual_geometry_change(self):
+        if self.is_fullscreen or self.isMaximized() or self.isMinimized():
+            return
+        current = self.geometry()
+        if self._layout_state == "snapped" and current != self._last_geometry:
+            self._layout_state = "free"
+        self._last_geometry = current
 
     def request_quit(self):
         """Close the application instead of hiding a server window."""
