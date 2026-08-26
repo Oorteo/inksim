@@ -209,6 +209,15 @@ class ViewerShortcutFilter(QObject):
             if viewer.is_playing:
                 viewer.play_timer.stop()
                 viewer.is_playing = False
+                if viewer._last_dir >= 0:
+                    viewer.visible_count = viewer.stitches_np.shape[0]
+                else:
+                    viewer.visible_count = 0
+                viewer.notify_cursor_changed()
+                viewer.invalidate_cache()
+                viewer.update()
+                if viewer.progress_bar:
+                    viewer.progress_bar.update()
                 return True
             return False
         else:

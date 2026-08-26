@@ -23,7 +23,7 @@ HELP_SECTIONS = (
 | Up / Down | Fast seek, 10x |
 | Home / End | First or last stitch |
 | Space | Play or pause |
-| Esc | Stop playback |
+| Esc | Finish playback directionally (forward → full design, backward → hide all) |
 """),
     ("View", """
 
