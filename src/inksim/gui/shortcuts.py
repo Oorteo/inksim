@@ -22,6 +22,8 @@ class ViewerShortcutFilter(QObject):
             return False
         if watched.window() is not self.window:
             return False
+        if QApplication.activePopupWidget() is not None:
+            return False
         return self.handle_key_event(event)
 
     def handle_key_event(self, event):
@@ -205,10 +207,22 @@ class ViewerShortcutFilter(QObject):
         elif key == Qt.Key_I and not is_alt and not is_ctrl:
             viewer.show_settings()
             return True
+        elif key == Qt.Key_M and not is_alt and not is_ctrl:
+            viewer.window().toggle_window_layout()
+            return True
         elif key == Qt.Key_Escape:
             if viewer.is_playing:
                 viewer.play_timer.stop()
                 viewer.is_playing = False
+                if viewer._last_dir >= 0:
+                    viewer.visible_count = viewer.stitches_np.shape[0]
+                else:
+                    viewer.visible_count = 0
+                viewer.notify_cursor_changed()
+                viewer.invalidate_cache()
+                viewer.update()
+                if viewer.progress_bar:
+                    viewer.progress_bar.update()
                 return True
             return False
         else:

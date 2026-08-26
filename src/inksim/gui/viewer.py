@@ -604,16 +604,23 @@ class EmbroideryViewerWidget(QWidget):
     def set_step_size(self, size):
         self.step_size = max(1, size)
 
-    def load_design(self, path, fit_to_screen=True, precompute_density=True):
+    def load_design(self, path, fit_to_screen=True, precompute_density=True, autoplay=False):
         """Load an embroidery file into renderable stitch segments."""
         started_at = time.perf_counter()
         density_debug(
-            f"load start path={path!r} precompute_density={precompute_density}"
+            f"load start path={path!r} precompute_density={precompute_density} autoplay={autoplay}"
         )
         try:
             pattern = emb.read(path)
         except (OSError, RuntimeError, ValueError) as ex:
             QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
+            return False
+        if pattern is None:
+            QMessageBox.critical(
+                self,
+                "Error",
+                f"Unsupported or unrecognized embroidery file:\n{path}",
+            )
             return False
         self.pattern = pattern
         segs = []
@@ -738,7 +745,7 @@ class EmbroideryViewerWidget(QWidget):
             self.stitch_points_np = self.stitches_np[:, 2:4].copy()
             self.repeated_stitch_np = np.array(repeated_stitches, dtype=np.bool_)
             self.bounds = (min_x, min_y, max_x, max_y)
-            self.visible_count = self.stitches_np.shape[0]
+            self.visible_count = 0 if autoplay else self.stitches_np.shape[0]
             self.notify_cursor_changed()
             self.color_boundaries = sorted(
                 {boundary for boundary in self.color_boundaries

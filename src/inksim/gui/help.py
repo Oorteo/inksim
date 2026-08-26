@@ -23,7 +23,7 @@ HELP_SECTIONS = (
 | Up / Down | Fast seek, 10x |
 | Home / End | First or last stitch |
 | Space | Play or pause |
-| Esc | Stop playback |
+| Esc | Finish playback directionally (forward → full design, backward → hide all) |
 """),
     ("View", """
 
@@ -32,6 +32,7 @@ HELP_SECTIONS = (
 | C | Center design |
 | F | Fit design to window |
 | F11 | Fullscreen |
+| M | Toggle snap / normal view |
 | 1 | Physical 1:1 size |
 | V | Toggle embroidery |
 | G | Toggle grid |

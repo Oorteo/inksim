@@ -1,9 +1,29 @@
 
 """Application constants shared by the InkSim modules."""
 
+import getpass
+import os
+
+
+def _make_ipc_server_name():
+    """Return a per-user IPC endpoint name.
+
+    Multiple users on the same machine must each have their own server, so the
+    name includes the current user's id.  ``os.getuid`` is used on Unix-like
+    platforms; on Windows ``getpass.getuser`` is the fallback.
+    """
+    try:
+        user_id = os.getuid()
+    except AttributeError:
+        user_id = getpass.getuser()
+    return f"inksim-local-{user_id}"
+
+
 APP_TITLE = "InkSim"
 APP_ORGANIZATION = "InkSim"
-IPC_SERVER_NAME = "inksim-local"
+IPC_SERVER_NAME = _make_ipc_server_name()
+IPC_PROTOCOL_VERSION = 1
+TOKEN_FILENAME = "inksim-server.token"
 DEFAULT_STATUS_TEXT = (
 	"Space=play/pause | C=center | F=fit | F11=fullscreen | "
 	"Ctrl+Arrows=color | G=grid H=help"
