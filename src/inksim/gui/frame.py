@@ -420,8 +420,6 @@ class MainWindow(QMainWindow):
 
     def _choose_export_path(self, title, default_name, file_filter, extension):
         export_directory = Path(self.last_directory or Path.cwd())
-        if self.current_file_path is not None:
-            export_directory = self.current_file_path.parent
         default_path = export_directory / default_name
         path, _ = QFileDialog.getSaveFileName(
             self,
@@ -450,8 +448,6 @@ class MainWindow(QMainWindow):
     def _choose_save_as_path(self):
         output_filter = get_supported_output_filter()
         export_directory = Path(self.last_directory or Path.cwd())
-        if self.current_file_path is not None:
-            export_directory = self.current_file_path.parent
         default_path = export_directory / self._default_save_name()
         dialog = QFileDialog(self, "Save embroidery as", str(default_path))
         dialog.setAcceptMode(QFileDialog.AcceptSave)
