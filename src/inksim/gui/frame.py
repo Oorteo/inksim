@@ -50,7 +50,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(APP_TITLE)
         self.setWindowIcon(QIcon(str(
             Path(__file__).parent.parent / "assets" / "app_icons" / "inksim.svg")))
-        self.resize(*(window_size or (1200, 980)))
+        self._default_size = window_size or (1200, 980)
+        self.resize(*self._default_size)
         self.setAcceptDrops(True)
         self.is_fullscreen = False
         self.server_mode = server_mode
@@ -370,7 +371,7 @@ class MainWindow(QMainWindow):
     def show_window(self, focus=True):
         """Show the window and optionally request keyboard focus."""
         if self.isMinimized():
-            self.showNormal()
+            self.setWindowState(self.windowState() & ~Qt.WindowMinimized)
         else:
             self.show()
         if focus:
@@ -389,7 +390,7 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         if self.server_mode and not self._allow_close:
-            self.hide()
+            self.setWindowState(self.windowState() | Qt.WindowMinimized)
             event.ignore()
             return
         if self.viewer.is_playing:
