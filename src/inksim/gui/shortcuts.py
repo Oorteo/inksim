@@ -22,6 +22,8 @@ class ViewerShortcutFilter(QObject):
             return False
         if watched.window() is not self.window:
             return False
+        if QApplication.activePopupWidget() is not None:
+            return False
         return self.handle_key_event(event)
 
     def handle_key_event(self, event):
