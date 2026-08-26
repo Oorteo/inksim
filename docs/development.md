@@ -78,15 +78,15 @@ an editable checkout and for a built wheel.
 Run the complete test suite from the project root:
 
 ```bash
-./scripts/040_run_tests.sh
+./scripts/dev/040_run_tests.sh
 ```
 
 The script asks for confirmation before running. Use `-y` or `--yes` for an
 unattended run:
 
 ```bash
-./scripts/040_run_tests.sh --yes
-./scripts/040_run_tests.sh --yes -k export
+./scripts/dev/040_run_tests.sh --yes
+./scripts/dev/040_run_tests.sh --yes -k export
 ```
 
 The script can also be started from another directory. It runs tests with
@@ -143,7 +143,7 @@ test fixtures, or pytest dependencies.
 
 Before submitting a change:
 
-1. Run `./scripts/040_run_tests.sh`.
+1. Run `./scripts/dev/040_run_tests.sh`.
 2. Run `git diff --check`.
 3. Review the complete diff and confirm that unrelated files are unchanged.
 4. Keep runtime dependencies separate from the `dev` dependency group.

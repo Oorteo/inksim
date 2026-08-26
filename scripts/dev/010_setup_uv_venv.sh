@@ -23,7 +23,7 @@ done
 SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
 PYTHON_VERSION="${PYTHON_VERSION:-3.14}"
 
-cd "$SCRIPT_DIR/.."
+cd "$SCRIPT_DIR/../.."
 VENV_PATH="$PWD/.venv"
 UV_PATH="$(command -v uv || true)"
 [[ -n "$UV_PATH" ]] || {

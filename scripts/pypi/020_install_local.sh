@@ -1,5 +1,9 @@
-#!/usr/bin/bash
-# Upload the built distributions to PyPI using Twine.
+#!/usr/bin/env bash
+# Install the locally built wheel as an isolated uv tool; no PyPI upload occurs.
+# Runs on macOS, Linux, or Windows via Bash (Git Bash/WSL).
+
+# We want to execute: uv tool install ....
+
 set -euo pipefail
 
 assume_yes=false
@@ -33,32 +37,27 @@ done
     echo "Could not find pyproject.toml above $script_dir." >&2
     exit 1
 }
+python_version="${PYTHON_VERSION:-3.14}"
 
-cd "$project_root"
-pwd
-
-# install twine: uv tool install twine
-# upload to pypi  (check you have valid token, ~/.pypirc
 shopt -s nullglob
-artifacts=("$project_root"/dist/*)
-if ((${#artifacts[@]} == 0)); then
-    echo "No distributions found in $project_root/dist; run mypypi/010_build.sh first." >&2
+wheels=("$project_root"/dist/inksim-*.whl)
+if ((${#wheels[@]} != 1)); then
+    echo "Expected exactly one wheel in $project_root/dist; run scripts/pypi/010_build.sh first." >&2
     exit 1
 fi
 
-printf '\nUpload plan for: %s\n' "$project_root"
-printf '  Upload the following distribution(s) to PyPI:\n'
-for artifact in "${artifacts[@]}"; do
-    printf '    %s\n' "${artifact#"$project_root"/}"
-done
+install_options=(--force --reinstall --python "$python_version")
+
+printf 'Installing local wheel: %s\n' "${wheels[0]}"
+
 if [[ "$assume_yes" != true ]]; then
-    printf 'Continue with PyPI upload? [y/N] '
+    printf 'Continue with uv tool install? [y/N] '
     read -r answer
     [[ "$answer" =~ ^[Yy]$ ]] || {
-        printf 'Upload cancelled.\n'
+        printf 'Installation cancelled.\n'
         exit 0
     }
 fi
 
 set -x
-twine upload "${artifacts[@]}"
+exec uv tool install "${install_options[@]}" "${wheels[0]}"

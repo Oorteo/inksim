@@ -33,7 +33,7 @@ while [[ -L "$SOURCE" ]]; do
     [[ "$SOURCE" = /* ]] || SOURCE="$SCRIPT_DIR/$SOURCE"
 done
 SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." >/dev/null 2>&1 && pwd)"
 
 [[ -f "$PROJECT_ROOT/pyproject.toml" ]] || {
     printf 'Could not find pyproject.toml above script: %s\n' "$PROJECT_ROOT" >&2

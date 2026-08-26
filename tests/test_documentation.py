@@ -2,7 +2,7 @@ import re
 from pathlib import Path
 
 
-SCRIPT_REFERENCE = re.compile(r"(?<![\w/.])(?:\./)?(scripts/[\w.-]+)")
+SCRIPT_REFERENCE = re.compile(r"(?<![\w/.])(?:\./)?(scripts/[\w/.-]+)")
 
 
 def test_documentation_references_existing_scripts():
