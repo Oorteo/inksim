@@ -615,6 +615,13 @@ class EmbroideryViewerWidget(QWidget):
         except (OSError, RuntimeError, ValueError) as ex:
             QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
             return False
+        if pattern is None:
+            QMessageBox.critical(
+                self,
+                "Error",
+                f"Unsupported or unrecognized embroidery file:\n{path}",
+            )
+            return False
         self.pattern = pattern
         segs = []
         last_x = last_y = 0

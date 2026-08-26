@@ -358,9 +358,8 @@ def main():
                 delete_after_load=args.delete_input,
                 autoplay=args.play,
             ):
-                frame.close()
                 splash.close_after()
-                app.exit(1)
+                frame.open_file_dialog()
                 return
             if args.play:
                 frame.focus_window()
