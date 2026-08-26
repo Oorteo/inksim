@@ -1,5 +1,6 @@
-from pathlib import Path
+import os
 import time
+from pathlib import Path
 
 import pystitch as emb
 from PySide6.QtCore import QEvent, QRect, QSettings, QSignalBlocker, QTimer, Qt
@@ -13,6 +14,7 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QLabel,
     QMainWindow,
+    QMessageBox,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
@@ -462,8 +464,44 @@ class MainWindow(QMainWindow):
         self._allow_close = True
         self.close()
 
+    @staticmethod
+    def _inkscape_running():
+        """Return True when at least one Inkscape process is running.
+
+        Probing for a running process named ``inkscape`` is more reliable
+        than trusting the PID of the extension process, which exits as soon
+        as it has forwarded the design.
+        """
+        import subprocess
+        try:
+            if os.name == "nt":
+                result = subprocess.run(
+                    ["tasklist"], capture_output=True, text=True, check=False
+                )
+                lowered = result.stdout.lower()
+                return ("inkscape.exe" in lowered
+                        or "inkscape.com" in lowered)
+            result = subprocess.run(
+                ["pgrep", "-x", "inkscape"], capture_output=True, check=False
+            )
+            return result.returncode == 0
+        except OSError:
+            return False
+
     def closeEvent(self, event):
         if self.server_mode and not self._allow_close:
+            alive = self._inkscape_running()
+            if not alive:
+                answer = QMessageBox.question(
+                    self,
+                    "Close InkSim server",
+                    "The Inkscape instance that started this server is no "
+                    "longer running.\n\nDo you want to close InkSim?",
+                )
+                if answer == QMessageBox.Yes:
+                    self._allow_close = True
+                    event.accept()
+                    return
             self.setWindowState(self.windowState() | Qt.WindowMinimized)
             event.ignore()
             return
