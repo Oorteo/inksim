@@ -13,6 +13,7 @@ from inksim.interconnect import send_command
 def main():
     parser = argparse.ArgumentParser(description="Control a running InkSim server")
     subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers.add_parser("hello", help="Query server version and commands")
     open_parser = subparsers.add_parser("open", help="Open an embroidery file")
     open_parser.add_argument("path")
     open_del_parser = subparsers.add_parser(

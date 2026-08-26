@@ -1,11 +1,59 @@
 """Local JSON-line interconnect for controlling a running InkSim window."""
 
 import json
+import os
+import secrets
+from pathlib import Path
 
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtCore import QObject, QStandardPaths, Signal
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
-from .constants import IPC_SERVER_NAME
+from .constants import (
+    APP_ORGANIZATION,
+    APP_TITLE,
+    IPC_PROTOCOL_VERSION,
+    IPC_SERVER_NAME,
+    TOKEN_FILENAME,
+)
+
+
+def _token_path():
+    """Return the path where the active server's auth token is stored."""
+    config_dir = Path(QStandardPaths.writableLocation(
+        QStandardPaths.StandardLocation.ConfigLocation
+    ))
+    config_dir = config_dir / APP_ORGANIZATION / APP_TITLE
+    config_dir.mkdir(parents=True, exist_ok=True)
+    return config_dir / TOKEN_FILENAME
+
+
+def read_auth_token():
+    """Read the auth token of the currently running server, if any."""
+    token_file = _token_path()
+    try:
+        return token_file.read_text(encoding="utf-8").strip()
+    except OSError:
+        return None
+
+
+def write_auth_token(token):
+    """Write the auth token so that clients can authenticate."""
+    token_file = _token_path()
+    token_file.write_text(token, encoding="utf-8")
+    # Restrict read access to the owner on Unix-like systems.
+    try:
+        os.chmod(token_file, 0o600)
+    except OSError:
+        pass
+    return token_file
+
+
+def clear_auth_token():
+    """Remove the auth token when the server shuts down."""
+    try:
+        _token_path().unlink()
+    except OSError:
+        pass
 
 
 class InterconnectServer(QObject):
@@ -20,10 +68,25 @@ class InterconnectServer(QObject):
         self.server = QLocalServer(self)
         self.server.newConnection.connect(self._accept_connections)
         self._buffers = {}
+        self._auth_token = secrets.token_urlsafe(32)
+        self._supported_commands = {
+            "hello",
+            "open",
+            "open_and_delete",
+            "focus",
+            "show",
+            "hide",
+            "quit",
+        }
+
+    @property
+    def auth_token(self):
+        return self._auth_token
 
     def start(self):
         """Start listening, returning False when another server is active."""
         if self.server.listen(self.server_name):
+            write_auth_token(self._auth_token)
             return True
         probe = QLocalSocket(self)
         probe.connectToServer(self.server_name)
@@ -34,6 +97,7 @@ class InterconnectServer(QObject):
             return False
         QLocalServer.removeServer(self.server_name)
         if self.server.listen(self.server_name):
+            write_auth_token(self._auth_token)
             return True
         self.error.emit(self.server.errorString())
         return False
@@ -42,6 +106,7 @@ class InterconnectServer(QObject):
         """Stop listening and remove the local endpoint."""
         self.server.close()
         QLocalServer.removeServer(self.server_name)
+        clear_auth_token()
 
     def _accept_connections(self):
         while self.server.hasPendingConnections():
@@ -75,10 +140,33 @@ class InterconnectServer(QObject):
             socket.write((json.dumps(response) + "\n").encode("utf-8"))
             socket.flush()
 
+    def _check_auth(self, request):
+        """Validate protocol version and auth token."""
+        version = request.get("protocol_version")
+        if version is not None and version != IPC_PROTOCOL_VERSION:
+            raise ValueError(
+                f"unsupported protocol version {version}; "
+                f"expected {IPC_PROTOCOL_VERSION}"
+            )
+        token = request.get("auth_token")
+        if token != self._auth_token:
+            raise ValueError("invalid or missing auth token")
+
     def _dispatch(self, request):
         if not isinstance(request, dict):
             raise ValueError("command must be a JSON object")
         command = request.get("command")
+        if command == "hello":
+            return {
+                "ok": True,
+                "command": "hello",
+                "protocol_version": IPC_PROTOCOL_VERSION,
+                "server_version": "1.0.0",
+                "commands": sorted(self._supported_commands),
+            }
+        if command not in self._supported_commands:
+            raise ValueError(f"unknown command: {command!r}")
+        self._check_auth(request)
         if command in ("open", "open_and_delete"):
             path = request.get("path")
             if not isinstance(path, str) or not path:
@@ -107,6 +195,12 @@ class InterconnectServer(QObject):
 
 def send_command(command, server_name=IPC_SERVER_NAME, timeout=1000):
     """Send one command to a running InkSim server and return its response."""
+    token = read_auth_token()
+    if token is None:
+        raise RuntimeError("InkSim server has no auth token (not running?)")
+    command = dict(command)
+    command["auth_token"] = token
+    command["protocol_version"] = IPC_PROTOCOL_VERSION
     socket = QLocalSocket()
     socket.connectToServer(server_name)
     if not socket.waitForConnected(timeout):

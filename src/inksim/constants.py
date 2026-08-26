@@ -4,6 +4,8 @@
 APP_TITLE = "InkSim"
 APP_ORGANIZATION = "InkSim"
 IPC_SERVER_NAME = "inksim-local"
+IPC_PROTOCOL_VERSION = 1
+TOKEN_FILENAME = "inksim-server.token"
 DEFAULT_STATUS_TEXT = (
 	"Space=play/pause | C=center | F=fit | F11=fullscreen | "
 	"Ctrl+Arrows=color | G=grid H=help"
