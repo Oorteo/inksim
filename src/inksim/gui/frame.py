@@ -44,6 +44,7 @@ class MainWindow(QMainWindow):
         window_position=None,
         server_mode=False,
         delete_input=False,
+        document_path=None,
     ):
         super().__init__()
         self.setWindowTitle(APP_TITLE)
@@ -59,6 +60,8 @@ class MainWindow(QMainWindow):
         self._should_maximize_default = not window_size and not fullscreen
         self.config = QSettings(APP_ORGANIZATION, APP_TITLE)
         self.last_directory = self.config.value("last_directory", "", str)
+        if document_path is not None and document_path.is_file():
+            self.last_directory = str(document_path.parent)
         self.current_file_path = None
         self._source_mtime_ns = None
         self._last_source_check = 0.0
@@ -575,8 +578,9 @@ class MainWindow(QMainWindow):
             return False
         self.current_file_path = selected_path
         self._source_mtime_ns = self._capture_source_mtime(selected_path)
-        self.last_directory = str(selected_path.parent)
-        self.config.setValue("last_directory", self.last_directory)
+        if not delete_after_load:
+            self.last_directory = str(selected_path.parent)
+            self.config.setValue("last_directory", self.last_directory)
         total = self.viewer.stitches_np.shape[0]
         bounds = self.viewer.bounds
         self.setWindowTitle(f"{APP_TITLE} - {selected_path.name} - {total} sts - "

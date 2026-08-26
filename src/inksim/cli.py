@@ -97,6 +97,10 @@ def main():
         help="Delete the first input file after it has been loaded (server mode)",
     )
     parser.add_argument(
+        "--document-path", type=Path, metavar="FILE",
+        help="Original document path used as the default directory for open/save dialogs",
+    )
+    parser.add_argument(
         "--send-command",
         metavar="JSON",
         help="Send one JSON command to a running InkSim server and exit",
@@ -271,12 +275,16 @@ def main():
     app.setWindowIcon(QIcon(str(
         Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
     first_input = input_paths[0] if input_paths else None
+    document_path = args.document_path
+    if document_path is not None and not document_path.is_file():
+        parser.error(f"document path not found: {document_path}")
     frame = MainWindow(
         fullscreen=args.fullscreen,
         window_size=window_size,
         window_position=window_position,
         server_mode=args.server,
         delete_input=args.delete_input,
+        document_path=document_path,
     )
     interconnect = None
     if args.server:
