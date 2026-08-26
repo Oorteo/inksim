@@ -73,6 +73,7 @@ class InterconnectServer(QObject):
             "hello",
             "open",
             "open_and_delete",
+            "play",
             "focus",
             "show",
             "hide",
@@ -181,6 +182,9 @@ class InterconnectServer(QObject):
         if command == "focus":
             self.window.focus_window()
             return {"ok": True, "command": "focus"}
+        if command == "play":
+            self.window.play()
+            return {"ok": True, "command": "play"}
         if command == "show":
             self.window.show_window(focus=request.get("focus", True))
             return {"ok": True, "command": "show"}

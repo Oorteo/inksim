@@ -599,6 +599,14 @@ class MainWindow(QMainWindow):
         self.mode_status.setVisible(not self.is_fullscreen)
         self.showFullScreen() if self.is_fullscreen else self.showNormal()
 
+    def play(self):
+        """Start simulation playback from the beginning of the design."""
+        if self.viewer.is_playing:
+            self.viewer.play_timer.stop()
+        self.viewer.seek_to(0)
+        self.viewer.is_playing = False
+        self.viewer.toggle_auto_play(forward=True)
+
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
