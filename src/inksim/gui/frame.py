@@ -2,7 +2,7 @@ from pathlib import Path
 import time
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QSettings, QSignalBlocker, QTimer, Qt
+from PySide6.QtCore import QEvent, QRect, QSettings, QSignalBlocker, QTimer, Qt
 from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -69,8 +69,12 @@ class MainWindow(QMainWindow):
         self._source_check_interval_s = 0.4
         self._is_reloading_from_disk = False
         self._layout_state = "free"
+        self._layout_changing = False
+        self._free_geometry = None
+        self._free_maximized = False
         self._snapped_geometry = None
         self._last_geometry = self.geometry()
+        self._base_title = APP_TITLE
 
         main_panel = QWidget(self)
         layout = QVBoxLayout(main_panel)
@@ -399,23 +403,35 @@ class MainWindow(QMainWindow):
 
     def toggle_window_layout(self):
         """Toggle between the free layout and the snapped layout."""
-        if self.is_fullscreen or self.isMaximized():
+        if self.is_fullscreen or self._layout_changing:
             return
-        if self._layout_state == "free":
-            self._snapped_geometry = self._snapped_geometry or self._default_snapped_geometry()
-            self._set_snapped_geometry()
-            self._layout_state = "snapped"
-        else:
-            self._layout_state = "free"
-        self._last_geometry = self.geometry()
-
-    def save_current_layout_as_snapped(self):
-        """Store the current window geometry as the snapped layout."""
-        if self.is_fullscreen or self.isMaximized():
-            return
-        self._snapped_geometry = self.geometry()
-        self._layout_state = "snapped"
-        self._last_geometry = self.geometry()
+        self._layout_changing = True
+        try:
+            if self._layout_state == "free":
+                self._free_maximized = self.isMaximized()
+                if self._free_maximized:
+                    default_width, default_height = self._default_size
+                    screen = self.screen() or QApplication.primaryScreen()
+                    area = screen.availableGeometry()
+                    x = area.x() + max(0, (area.width() - default_width) // 2)
+                    y = area.y() + max(0, (area.height() - default_height) // 2)
+                    self._free_geometry = QRect(x, y, default_width, default_height)
+                    self.showNormal()
+                elif self._free_geometry is None:
+                    self._free_geometry = self.geometry()
+                self._snapped_geometry = self._snapped_geometry or self._default_snapped_geometry()
+                self._set_snapped_geometry()
+                self._layout_state = "snapped"
+            else:
+                if self._free_maximized:
+                    self.showMaximized()
+                elif self._free_geometry is not None:
+                    self.setGeometry(self._free_geometry)
+                self._layout_state = "free"
+            self._last_geometry = self.geometry()
+            self._update_window_title()
+        finally:
+            self._layout_changing = False
 
     def moveEvent(self, event):
         super().moveEvent(event)
@@ -426,12 +442,20 @@ class MainWindow(QMainWindow):
         self._detect_manual_geometry_change()
 
     def _detect_manual_geometry_change(self):
-        if self.is_fullscreen or self.isMaximized() or self.isMinimized():
+        if self._layout_changing or self.is_fullscreen or self.isMaximized() or self.isMinimized():
             return
         current = self.geometry()
-        if self._layout_state == "snapped" and current != self._last_geometry:
-            self._layout_state = "free"
+        if self._layout_state == "snapped":
+            if current != self._last_geometry:
+                self._snapped_geometry = current
+        else:
+            self._free_geometry = current
         self._last_geometry = current
+
+    def _update_window_title(self):
+        """Show layout state in the window title."""
+        snap_prefix = "[snap] " if self._layout_state == "snapped" else ""
+        self.setWindowTitle(f"{snap_prefix}{self._base_title}")
 
     def request_quit(self):
         """Close the application instead of hiding a server window."""
@@ -630,8 +654,11 @@ class MainWindow(QMainWindow):
             self.config.setValue("last_directory", self.last_directory)
         total = self.viewer.stitches_np.shape[0]
         bounds = self.viewer.bounds
-        self.setWindowTitle(f"{APP_TITLE} - {selected_path.name} - {total} sts - "
-                            f"{bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm")
+        self._base_title = (
+            f"{APP_TITLE} - {selected_path.name} - {total} sts - "
+            f"{bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm"
+        )
+        self._update_window_title()
         self.progress.update()
         self.refresh_command_panel()
         self.viewer.invalidate_cache()

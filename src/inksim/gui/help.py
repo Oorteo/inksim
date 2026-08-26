@@ -32,8 +32,7 @@ HELP_SECTIONS = (
 | C | Center design |
 | F | Fit design to window |
 | F11 | Fullscreen |
-| M | Snap to right half / restore free layout |
-| Shift + M | Save current layout as snap target |
+| M | Toggle snap / normal view |
 | 1 | Physical 1:1 size |
 | V | Toggle embroidery |
 | G | Toggle grid |

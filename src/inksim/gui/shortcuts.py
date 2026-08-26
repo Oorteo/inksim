@@ -208,10 +208,7 @@ class ViewerShortcutFilter(QObject):
             viewer.show_settings()
             return True
         elif key == Qt.Key_M and not is_alt and not is_ctrl:
-            if is_shift:
-                viewer.window.save_current_layout_as_snapped()
-            else:
-                viewer.window.toggle_window_layout()
+            viewer.window().toggle_window_layout()
             return True
         elif key == Qt.Key_Escape:
             if viewer.is_playing:
