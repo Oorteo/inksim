@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
+import json
 import os
 import signal
 import sys
@@ -34,6 +35,22 @@ def _parse_pair(value, name, separator):
     if name == "size" and (first <= 0 or second <= 0):
         raise argparse.ArgumentTypeError("size values must be greater than zero")
     return first, second
+
+
+def _send_command_and_exit(json_text):
+    """Send a JSON command to a running server and print the response."""
+    try:
+        command = json.loads(json_text)
+    except json.JSONDecodeError as ex:
+        raise SystemExit(f"invalid JSON command: {ex}")
+    app = QApplication.instance() or QApplication([])
+    try:
+        response = send_command(command)
+    except RuntimeError as ex:
+        print(str(ex), file=sys.stderr)
+        raise SystemExit(1)
+    print(json.dumps(response))
+    raise SystemExit(0 if response.get("ok") else 1)
 
 
 def _default_log_path(input_paths):
@@ -74,6 +91,19 @@ def main():
     parser.add_argument(
         "-s", "--server", action="store_true",
         help="Keep the GUI available for local interconnect commands",
+    )
+    parser.add_argument(
+        "--delete-input", action="store_true",
+        help="Delete the first input file after it has been loaded (server mode)",
+    )
+    parser.add_argument(
+        "--document-path", type=Path, metavar="FILE",
+        help="Original document path used as the default directory for open/save dialogs",
+    )
+    parser.add_argument(
+        "--send-command",
+        metavar="JSON",
+        help="Send one JSON command to a running InkSim server and exit",
     )
     parser.add_argument(
         "--debug", "--dbg", action="store_true",
@@ -147,6 +177,8 @@ def main():
     if args.version:
         print("\n".join(runtime_info_lines()))
         return
+    if args.send_command:
+        _send_command_and_exit(args.send_command)
 
     export_values = [
         value for value in (
@@ -166,6 +198,10 @@ def main():
             "an input embroidery file is required for export; "
             "use: inksim INPUT_FILE --simple-png OUTPUT.png"
         )
+    if args.delete_input and not args.server:
+        parser.error("--delete-input is only meaningful with --server")
+    if args.send_command and (args.server or args.input_file or export_requested):
+        parser.error("--send-command cannot be combined with server, export or input files")
     input_paths = [Path(value) for value in args.input_file]
     for input_path in input_paths:
         if not (input_path.is_file() or input_path.is_dir()):
@@ -239,11 +275,16 @@ def main():
     app.setWindowIcon(QIcon(str(
         Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
     first_input = input_paths[0] if input_paths else None
+    document_path = args.document_path
+    if document_path is not None and not document_path.is_file():
+        parser.error(f"document path not found: {document_path}")
     frame = MainWindow(
         fullscreen=args.fullscreen,
         window_size=window_size,
         window_position=window_position,
         server_mode=args.server,
+        delete_input=args.delete_input,
+        document_path=document_path,
     )
     interconnect = None
     if args.server:
@@ -255,8 +296,9 @@ def main():
                     "to the existing server.",
                     file=sys.stderr,
                 )
+                open_command = "open_and_delete" if args.delete_input else "open"
                 command = (
-                    {"command": "open", "path": str(first_input), "focus": True}
+                    {"command": open_command, "path": str(first_input), "focus": True}
                     if first_input is not None and first_input.is_file()
                     else {"command": "show", "focus": True}
                 )
@@ -319,12 +361,16 @@ def main():
         )
         if first_input is not None and first_input.is_file():
             splash.set_message(f"Loading {first_input.name}...")
-            if not frame.open_file(str(first_input)):
-                frame.close()
+            if not frame.open_file(
+                str(first_input),
+                delete_after_load=args.delete_input,
+                autoplay=args.play,
+            ):
                 splash.close_after()
-                app.exit(1)
+                frame.open_file_dialog()
                 return
             if args.play:
+                frame.focus_window()
                 frame.viewer.toggle_auto_play(forward=True)
         splash.set_message("Ready")
         splash.close_after()
