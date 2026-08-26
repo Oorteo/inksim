@@ -15,6 +15,11 @@ def main():
     subparsers = parser.add_subparsers(dest="command", required=True)
     open_parser = subparsers.add_parser("open", help="Open an embroidery file")
     open_parser.add_argument("path")
+    open_del_parser = subparsers.add_parser(
+        "open_and_delete",
+        help="Open an embroidery file and delete it after loading",
+    )
+    open_del_parser.add_argument("path")
     subparsers.add_parser("focus", help="Focus the InkSim window")
     subparsers.add_parser("show", help="Show and focus the InkSim window")
     subparsers.add_parser("hide", help="Hide the InkSim window")

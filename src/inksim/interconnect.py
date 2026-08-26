@@ -79,16 +79,17 @@ class InterconnectServer(QObject):
         if not isinstance(request, dict):
             raise ValueError("command must be a JSON object")
         command = request.get("command")
-        if command == "open":
+        if command in ("open", "open_and_delete"):
             path = request.get("path")
             if not isinstance(path, str) or not path:
                 raise ValueError("open requires a non-empty path")
-            opened = self.window.open_file(path)
+            delete_after_load = command == "open_and_delete"
+            opened = self.window.open_file(path, delete_after_load=delete_after_load)
             if not opened:
-                return {"ok": False, "command": "open", "path": path}
+                return {"ok": False, "command": command, "path": path}
             if request.get("focus", True):
                 self.window.focus_window()
-            return {"ok": True, "command": "open", "path": path}
+            return {"ok": True, "command": command, "path": path}
         if command == "focus":
             self.window.focus_window()
             return {"ok": True, "command": "focus"}

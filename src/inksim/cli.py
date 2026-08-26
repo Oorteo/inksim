@@ -76,6 +76,10 @@ def main():
         help="Keep the GUI available for local interconnect commands",
     )
     parser.add_argument(
+        "--delete-input", action="store_true",
+        help="Delete the first input file after it has been loaded (server mode)",
+    )
+    parser.add_argument(
         "--debug", "--dbg", action="store_true",
         help="Enable debug logging",
     )
@@ -166,6 +170,8 @@ def main():
             "an input embroidery file is required for export; "
             "use: inksim INPUT_FILE --simple-png OUTPUT.png"
         )
+    if args.delete_input and not args.server:
+        parser.error("--delete-input is only meaningful with --server")
     input_paths = [Path(value) for value in args.input_file]
     for input_path in input_paths:
         if not (input_path.is_file() or input_path.is_dir()):
@@ -244,6 +250,7 @@ def main():
         window_size=window_size,
         window_position=window_position,
         server_mode=args.server,
+        delete_input=args.delete_input,
     )
     interconnect = None
     if args.server:
@@ -255,8 +262,9 @@ def main():
                     "to the existing server.",
                     file=sys.stderr,
                 )
+                open_command = "open_and_delete" if args.delete_input else "open"
                 command = (
-                    {"command": "open", "path": str(first_input), "focus": True}
+                    {"command": open_command, "path": str(first_input), "focus": True}
                     if first_input is not None and first_input.is_file()
                     else {"command": "show", "focus": True}
                 )
@@ -319,7 +327,10 @@ def main():
         )
         if first_input is not None and first_input.is_file():
             splash.set_message(f"Loading {first_input.name}...")
-            if not frame.open_file(str(first_input)):
+            if not frame.open_file(
+                str(first_input),
+                delete_after_load=args.delete_input,
+            ):
                 frame.close()
                 splash.close_after()
                 app.exit(1)

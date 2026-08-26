@@ -43,6 +43,7 @@ class MainWindow(QMainWindow):
         window_size=None,
         window_position=None,
         server_mode=False,
+        delete_input=False,
     ):
         super().__init__()
         self.setWindowTitle(APP_TITLE)
@@ -52,6 +53,7 @@ class MainWindow(QMainWindow):
         self.setAcceptDrops(True)
         self.is_fullscreen = False
         self.server_mode = server_mode
+        self._delete_input = delete_input
         self._allow_close = False
         self._startup_fullscreen = fullscreen
         self._should_maximize_default = not window_size and not fullscreen
@@ -560,7 +562,7 @@ class MainWindow(QMainWindow):
         )
         if path: self.export_png(path, icon=True, dpi=96)
 
-    def open_file(self, path, precompute_density=True):
+    def open_file(self, path, precompute_density=True, delete_after_load=False):
         selected_path = Path(path).resolve()
         if not self.viewer.load_design(
             str(selected_path),
@@ -578,6 +580,13 @@ class MainWindow(QMainWindow):
                             f"{bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm")
         self.progress.update()
         self.refresh_command_panel()
+        if delete_after_load and self.server_mode:
+            try:
+                selected_path.unlink()
+            except OSError:
+                # Ignore deletion failures; the caller already has the data
+                # and the file may have been removed by other means.
+                pass
         return True
 
     def show_command_panel(self):
