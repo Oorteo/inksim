@@ -27,7 +27,7 @@ def main():
     args = parser.parse_args()
     QApplication.instance() or QApplication([])
     command = {"command": args.command}
-    if args.command == "open":
+    if args.command in ("open", "open_and_delete"):
         command["path"] = args.path
         command["focus"] = True
     try:

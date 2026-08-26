@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
+import json
 import os
 import signal
 import sys
@@ -34,6 +35,22 @@ def _parse_pair(value, name, separator):
     if name == "size" and (first <= 0 or second <= 0):
         raise argparse.ArgumentTypeError("size values must be greater than zero")
     return first, second
+
+
+def _send_command_and_exit(json_text):
+    """Send a JSON command to a running server and print the response."""
+    try:
+        command = json.loads(json_text)
+    except json.JSONDecodeError as ex:
+        raise SystemExit(f"invalid JSON command: {ex}")
+    app = QApplication.instance() or QApplication([])
+    try:
+        response = send_command(command)
+    except RuntimeError as ex:
+        print(str(ex), file=sys.stderr)
+        raise SystemExit(1)
+    print(json.dumps(response))
+    raise SystemExit(0 if response.get("ok") else 1)
 
 
 def _default_log_path(input_paths):
@@ -78,6 +95,11 @@ def main():
     parser.add_argument(
         "--delete-input", action="store_true",
         help="Delete the first input file after it has been loaded (server mode)",
+    )
+    parser.add_argument(
+        "--send-command",
+        metavar="JSON",
+        help="Send one JSON command to a running InkSim server and exit",
     )
     parser.add_argument(
         "--debug", "--dbg", action="store_true",
@@ -151,6 +173,8 @@ def main():
     if args.version:
         print("\n".join(runtime_info_lines()))
         return
+    if args.send_command:
+        _send_command_and_exit(args.send_command)
 
     export_values = [
         value for value in (
@@ -172,6 +196,8 @@ def main():
         )
     if args.delete_input and not args.server:
         parser.error("--delete-input is only meaningful with --server")
+    if args.send_command and (args.server or args.input_file or export_requested):
+        parser.error("--send-command cannot be combined with server, export or input files")
     input_paths = [Path(value) for value in args.input_file]
     for input_path in input_paths:
         if not (input_path.is_file() or input_path.is_dir()):
