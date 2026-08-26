@@ -173,10 +173,18 @@ class InterconnectServer(QObject):
             if not isinstance(path, str) or not path:
                 raise ValueError("open requires a non-empty path")
             delete_after_load = command == "open_and_delete"
-            opened = self.window.open_file(path, delete_after_load=delete_after_load)
+            autoplay = request.get("autoplay", False)
+            opened = self.window.open_file(
+                path,
+                delete_after_load=delete_after_load,
+                autoplay=autoplay,
+            )
             if not opened:
                 return {"ok": False, "command": command, "path": path}
-            if request.get("focus", True):
+            if autoplay:
+                self.window.focus_window()
+                self.window.viewer.toggle_auto_play(forward=True)
+            elif request.get("focus", True):
                 self.window.focus_window()
             return {"ok": True, "command": command, "path": path}
         if command == "focus":

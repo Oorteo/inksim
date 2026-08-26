@@ -356,12 +356,14 @@ def main():
             if not frame.open_file(
                 str(first_input),
                 delete_after_load=args.delete_input,
+                autoplay=args.play,
             ):
                 frame.close()
                 splash.close_after()
                 app.exit(1)
                 return
             if args.play:
+                frame.focus_window()
                 frame.viewer.toggle_auto_play(forward=True)
         splash.set_message("Ready")
         splash.close_after()

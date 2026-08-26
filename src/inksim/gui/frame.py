@@ -239,12 +239,14 @@ class MainWindow(QMainWindow):
 
     def _finish_initial_display(self, autoplay):
         self.viewer.fit_to_screen()
-        self.viewer.invalidate_cache()
-        self.viewer.update()
         self.progress.update()
         if autoplay:
+            self.focus_window()
             self.viewer.seek_to(0)
             self.viewer.toggle_auto_play(forward=True)
+        else:
+            self.viewer.invalidate_cache()
+            self.viewer.update()
 
     def _refresh_after_color_jump(self):
         self.viewer.invalidate_cache()
@@ -562,12 +564,13 @@ class MainWindow(QMainWindow):
         )
         if path: self.export_png(path, icon=True, dpi=96)
 
-    def open_file(self, path, precompute_density=True, delete_after_load=False):
+    def open_file(self, path, precompute_density=True, delete_after_load=False, autoplay=False):
         selected_path = Path(path).resolve()
         if not self.viewer.load_design(
             str(selected_path),
             fit_to_screen=True,
             precompute_density=precompute_density,
+            autoplay=autoplay,
         ):
             return False
         self.current_file_path = selected_path
@@ -580,6 +583,8 @@ class MainWindow(QMainWindow):
                             f"{bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm")
         self.progress.update()
         self.refresh_command_panel()
+        self.viewer.invalidate_cache()
+        self.viewer.update()
         if delete_after_load and self.server_mode:
             try:
                 selected_path.unlink()
@@ -603,6 +608,7 @@ class MainWindow(QMainWindow):
         """Start simulation playback from the beginning of the design."""
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
+        self.focus_window()
         self.viewer.seek_to(0)
         self.viewer.is_playing = False
         self.viewer.toggle_auto_play(forward=True)
