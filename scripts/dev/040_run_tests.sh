@@ -28,7 +28,7 @@ while [[ -L "$SOURCE" ]]; do
     [[ "$SOURCE" = /* ]] || SOURCE="$SCRIPT_DIR/$SOURCE"
 done
 SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." >/dev/null 2>&1 && pwd)"
 
 cd "$PROJECT_ROOT"
 if [[ "$ASSUME_YES" != true ]]; then

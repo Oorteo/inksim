@@ -69,7 +69,7 @@ The repository also contains a setup helper. It can recreate `.venv` on macOS,
 Linux, and Windows when run from Git Bash or WSL:
 
 ```bash
-./scripts/010_setup_uv_venv.sh
+./scripts/setup/010_setup_uv_venv.sh
 ```
 
 ## Running options

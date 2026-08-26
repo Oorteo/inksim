@@ -36,7 +36,7 @@ done
 cd "$project_root"
 pwd
 
-# build packages for pypi
+# Build packages for PyPI
 # clean dist
 rm -rf dist/
 rm -rf build/
