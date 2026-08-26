@@ -34,11 +34,11 @@ uv run inksim --server tests/data/square.pes
 The small Qt client is available for integration testing:
 
 ```bash
-uv run python scripts/050_inksim_client.py open tests/data/sample.pes
-uv run python scripts/050_inksim_client.py focus
-uv run python scripts/050_inksim_client.py show
-uv run python scripts/050_inksim_client.py hide
-uv run python scripts/050_inksim_client.py quit
+uv run python scripts/dev/050_inksim_client.py open tests/data/sample.pes
+uv run python scripts/dev/050_inksim_client.py focus
+uv run python scripts/dev/050_inksim_client.py show
+uv run python scripts/dev/050_inksim_client.py hide
+uv run python scripts/dev/050_inksim_client.py quit
 ```
 
 The client returns a non-zero exit code when no server is running or the

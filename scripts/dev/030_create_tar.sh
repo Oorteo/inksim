@@ -52,6 +52,8 @@ PROJECT_ROOT="$SCRIPT_DIR"
 while [[ ! -f "$PROJECT_ROOT/pyproject.toml" && "$PROJECT_ROOT" != "/" ]]; do
     PROJECT_ROOT="$(cd -- "$PROJECT_ROOT/.." && pwd)"
 done
+# Ensure we land on the project root even if the script was invoked through a symlink.
+PROJECT_ROOT="$(cd "$PROJECT_ROOT" && pwd)"
 [[ -f "$PROJECT_ROOT/pyproject.toml" ]] || {
     printf 'Could not find pyproject.toml above %s.\n' "$SCRIPT_DIR" >&2
     exit 1
