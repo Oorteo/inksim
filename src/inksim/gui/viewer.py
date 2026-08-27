@@ -45,6 +45,7 @@ from ..render import (
     render_density_numba,
     render_viewport_raster,
 )
+from .gl_viewer import GLStitchWidget
 from .help import show_help
 from .settings import show_settings
 
@@ -188,6 +189,12 @@ class EmbroideryViewerWidget(QWidget):
         self.pan_render_timer.timeout.connect(self._finish_pan_render)
         self._cache_valid = False
         self.progress_bar = progress_bar
+        self._gl_widget = GLStitchWidget(self)
+        self._gl_widget.setGeometry(self.rect())
+        self._gl_widget.hide()
+        self._gl_widget.setFocusPolicy(Qt.NoFocus)
+        self._gl_widget.pan_changed.connect(self._on_gl_pan_changed)
+        self._gl_widget.zoom_changed.connect(self._on_gl_zoom_changed)
         self.mode_panel = None
         self.command_dialog = None
         self.help_dialog = None
@@ -219,6 +226,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def resizeEvent(self, event):
         """Invalidate the bitmap and retry deferred initial fitting."""
+        self._gl_widget.setGeometry(self.rect())
         self.invalidate_cache()
         if self._pending_fit_to_screen and self.stitches_np.shape[0] > 0:
             QTimer.singleShot(0, self._try_fit_to_screen)
@@ -507,14 +515,38 @@ class EmbroideryViewerWidget(QWidget):
         """Select a registered stitch renderer and refresh the canvas."""
         if renderer_key not in RENDERERS_BY_KEY:
             raise ValueError(f"unknown stitch renderer: {renderer_key}")
-        if renderer_key not in ("realistic", "shaded_volume_natural", "realistic_gbuffer"):
+        if renderer_key not in ("realistic", "shaded_volume_natural", "realistic_gbuffer", "gpu_textured"):
             self._non_realistic_renderer = renderer_key
         self.active_renderer = renderer_key
         self.show_realistic = renderer_key in ("realistic", "shaded_volume_natural", "realistic_gbuffer")
         self.renderer_changed.emit(renderer_key)
+        self._update_gl_widget_visibility()
         self.invalidate_cache()
         self.update()
         self.update_mode_indicators()
+
+    def _update_gl_widget_visibility(self):
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.setGeometry(self.rect())
+            self._gl_widget.set_view(self.zoom, self.pan_x, self.pan_y)
+            self._gl_widget.set_stitches(
+                self.stitches_np, self.visible_count, self.line_width
+            )
+            self._gl_widget.set_light_factor(self.light_factor)
+            self._gl_widget.set_background(0, 0, 0)
+            self._gl_widget.show()
+            self._gl_widget.raise_()
+        else:
+            self._gl_widget.hide()
+
+    def _on_gl_pan_changed(self, pan_x, pan_y):
+        self.pan_x = pan_x
+        self.pan_y = pan_y
+        self.update()
+
+    def _on_gl_zoom_changed(self, zoom):
+        self.zoom = zoom
+        self.update()
 
     def select_renderer(self):
         """Open the renderer picker dialog."""
@@ -834,6 +866,13 @@ class EmbroideryViewerWidget(QWidget):
 
     def paintEvent(self, e):
         """Render the current viewport, using the cached bitmap when possible."""
+        if self.active_renderer == "gpu_textured":
+            # OpenGL widget renders on top; just clear the underlying widget.
+            painter = QPainter(self)
+            painter.fillRect(self.rect(), QColor(0, 0, 0))
+            painter.end()
+            return
+
         self._paint_sequence += 1
         paint_sequence = self._paint_sequence
         paint_started_at = time.perf_counter()
