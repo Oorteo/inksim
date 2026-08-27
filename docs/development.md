@@ -21,9 +21,9 @@ Numba/NumPy raster buffer -> QImage -> Qt QPainter/QPixmap
 
 The raster renderers (`shaded`, `shaded_volume`, `realistic`, and related
 modes) calculate pixels in Numba on the CPU. The `simple` and `vintage`
-renderers draw with Qt's regular raster `QPainter`. The `trueview` renderer
-rasterizes stitch surface attributes into per-pixel G-buffers and shades the
-merged surface in a second parallel pass. The viewer does not use
+renderers draw with Qt's regular raster `QPainter`. The `realistic_gbuffer`
+renderer rasterizes stitch surface attributes into per-pixel G-buffers and
+shades the merged surface in a second parallel pass. The viewer does not use
 `QGraphicsView`, `QOpenGLWidget`, OpenGL, Vulkan, or Qt Quick.
 
 Do not add `QOpenGLWidget` merely as a viewport optimization. It would not
@@ -56,15 +56,11 @@ later runs of the same environment. These cache files are platform-, Python-,
 NumPy-, Numba-, and CPU-specific; they are generated after installation and
 must not be committed or bundled as universal distribution artifacts.
 
-Do not add explicit Numba signatures just to improve speed. Explicit
-signatures can eagerly compile at import time and can restrict valid NumPy
-dtypes or memory layouts. Consider them only after profiling proves that
-specialization overhead is a bottleneck and the supported input layouts are
-documented and stable. Do not enable `parallel=True` or `fastmath=True` on
-the per-stitch renderers without measuring both performance and visual
-changes. The `trueview` deferred shading pass is the exception: it is a
-dense image-space kernel where `parallel=True` was measured to help and
-where per-pixel work is independent by design.
+Do not enable `parallel=True` or `fastmath=True` on the per-stitch renderers
+without measuring both performance and visual changes. The
+`realistic_gbuffer` deferred shading pass is the exception: it is a dense
+image-space kernel where `parallel=True` was measured to help and where
+per-pixel work is independent by design.
 
 ## Runtime Diagnostics
 

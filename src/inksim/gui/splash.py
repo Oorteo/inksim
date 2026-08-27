@@ -10,7 +10,7 @@ from ..render import (
     render_grid_numba,
     render_realistic_numba,
     render_shaded_numba,
-    render_trueview_numba,
+    render_realistic_gbuffer_numba,
 )
 
 
@@ -32,7 +32,7 @@ class RendererWarmupThread(QThread):
         render_realistic_numba(
             buffer, stitches, 1, 1.0, 8.0, 8.0, 0.4, 0.75, 0.45
         )
-        render_trueview_numba(
+        render_realistic_gbuffer_numba(
             buffer, stitches, 1, 1.0, 8.0, 8.0, 0.4, 0.75, 0.45
         )
         render_fabric_numba(buffer, 1.0)

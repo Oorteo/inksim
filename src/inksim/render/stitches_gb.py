@@ -13,8 +13,9 @@ deferred shading pipeline:
    using Kajiya-Kay anisotropic specular sheen, fibre-aligned
    micro-striations and curvature-based ambient occlusion.
 
-The result is the continuous glossy ribbon look of commercial embroidery
-previews while staying on the portable CPU path.
+The result is a continuous glossy ribbon look. It is intentionally an
+approximation of real embroidery thread, not a physically accurate model
+of twisted ply.
 """
 
 import numba
@@ -56,7 +57,7 @@ def _get_gbuffers(height, width):
     return _GB_NORMAL, _GB_TANGENT, _GB_COLOR, _GB_WEIGHT
 
 
-def render_trueview_numba(
+def render_realistic_gbuffer_numba(
     buf,
     stitches,
     visible_count,
@@ -72,6 +73,8 @@ def render_trueview_numba(
     ``buf`` is an RGB(A) uint8 image with the background (plain, fabric or
     grid) already composited. Stitches are ``[x1, y1, x2, y2, r, g, b]``
     rows in millimetres; ``zoom``/``pan`` map them to pixel coordinates.
+    The G-buffer merges neighbouring threads into a continuous satin ribbon.
+    It is an approximation, not a full physical thread model.
     """
     height, width = buf.shape[0], buf.shape[1]
     thread_radius = min(
