@@ -9,9 +9,10 @@ class FakeWindow(QObject):
     def __init__(self):
         super().__init__()
         self.calls = []
+        self.last_directory = None
 
-    def open_file(self, path):
-        self.calls.append(("open", path))
+    def open_file(self, path, delete_after_load=False, autoplay=False):
+        self.calls.append(("open", path, delete_after_load, autoplay))
         return True
 
     def focus_window(self):
@@ -32,13 +33,19 @@ def test_interconnect_dispatches_local_commands(qapp):
     server = InterconnectServer(window, f"inksim-test-{uuid4().hex}")
     assert server.start()
     try:
-        assert server._dispatch({"command": "open", "path": "sample_design"})["ok"]
-        assert server._dispatch({"command": "focus"})["ok"]
-        assert server._dispatch({"command": "show", "focus": False})["ok"]
-        assert server._dispatch({"command": "hide"})["ok"]
-        assert server._dispatch({"command": "quit"})["ok"]
+        token = server.auth_token
+
+        def dispatch(request):
+            request = {"auth_token": token, **request}
+            return server._dispatch(request)
+
+        assert dispatch({"command": "open", "path": "sample_design"})["ok"]
+        assert dispatch({"command": "focus"})["ok"]
+        assert dispatch({"command": "show", "focus": False})["ok"]
+        assert dispatch({"command": "hide"})["ok"]
+        assert dispatch({"command": "quit"})["ok"]
         assert window.calls == [
-            ("open", "sample_design"),
+            ("open", "sample_design", False, False),
             ("focus",),
             ("focus",),
             ("show", False),
