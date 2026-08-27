@@ -15,6 +15,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pillow",
     "pytest",
     "pytest-qt",
 ]

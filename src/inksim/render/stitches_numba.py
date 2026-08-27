@@ -718,7 +718,7 @@ def render_realistic_kajiya_numba(
         r_dark = r_base * dark_scale * ao
         g_dark = g_base * dark_scale * ao
         b_dark = b_base * dark_scale * ao
-        light_strength = 0.20 + 0.70 * light_factor
+        light_strength = 0.25 + 0.75 * light_factor
         r_light = r_base + (255 - r_base) * light_strength
         g_light = g_base + (255 - g_base) * light_strength
         b_light = b_base + (255 - b_base) * light_strength
@@ -759,20 +759,15 @@ def render_realistic_kajiya_numba(
                 normal_y /= normal_length
                 normal_z /= normal_length
 
-                # Kajiya-Kay: tangent with a helical twist along the thread.
+                # Helical twist: the glossy strip's position rotates along the
+                # thread length, producing the moving sheen of a twisted
+                # thread.
                 normalized_along = along_pos / length
                 twist = np.sin(
                     2.0 * np.pi * normalized_along
                     * max(1.0, length / twist_pitch)
                     + phase_offset
                 )
-                tangent_x = tx + nx * twist * 0.35
-                tangent_y = ty + ny * twist * 0.35
-                tangent_length = np.sqrt(
-                    tangent_x * tangent_x + tangent_y * tangent_y
-                )
-                tangent_x /= tangent_length
-                tangent_y /= tangent_length
 
                 # Cylindrical diffuse: the geometric normal varies across the
                 # thread (dark edges, bright crown), giving natural volume.
@@ -784,32 +779,31 @@ def render_realistic_kajiya_numba(
                 )
                 diffuse = ndotl
 
-                # Kajiya-Kay specular: a narrow anisotropic sheen along the
-                # thread. High exponent keeps it a thin highlight rather than
-                # washing out the whole crown.
-                cross_th_x = tangent_y * half_z
-                cross_th_y = -tangent_x * half_z
-                cross_th_z = tangent_x * half_y - tangent_y * half_x
-                sin_th = np.sqrt(
-                    cross_th_x * cross_th_x
-                    + cross_th_y * cross_th_y
-                    + cross_th_z * cross_th_z
-                )
-                specular = (sin_th ** 64.0) * 0.55 * cylinder
+                # Specular gloss: a strip offset toward the light, twisted
+                # along the thread. The thread cross-plane tilt is `across`
+                # (-1..1); the strip peaks where that tilt faces the light,
+                # so only a band of the thread looks glossy rather than the
+                # whole crown.
+                peak = half_x * nx + half_y * ny + twist * 0.3
+                specular = (1.0 - abs(across - peak)) ** 8.0
 
-                # Two independent shading channels so both sliders are clearly
-                # visible:
-                #   - dark_factor darkens the shadowed side (low diffuse).
-                #   - light_factor lifts the lit side toward the light tone.
-                shade = (1.0 - diffuse) * (0.40 + 0.60 * dark_factor)
-                light_lift = diffuse * (0.20 + 0.55 * light_factor)
-
-                rr = r_base * (1.0 - shade) + r_dark * shade
-                gg = g_base * (1.0 - shade) + g_dark * shade
-                bb = b_base * (1.0 - shade) + b_dark * shade
-                rr = rr + (r_light - r_base) * light_lift
-                gg = gg + (g_light - g_base) * light_lift
-                bb = bb + (b_light - b_base) * light_lift
+                # Volume: crown keeps the base thread colour, edges sink to
+                # the dark tone. A light diffuse lift models the surface.
+                edge = 1.0 - cylinder
+                rr = r_base + (r_dark - r_base) * edge
+                gg = g_base + (g_dark - g_base) * edge
+                bb = b_base + (b_dark - b_base) * edge
+                # Gentle diffuse shading so the thread keeps its hue.
+                rr = rr + (r_light - r_base) * diffuse * 0.12
+                gg = gg + (g_light - g_base) * diffuse * 0.12
+                bb = bb + (b_light - b_base) * diffuse * 0.12
+                # Dark factor sinks the shadowed side further.
+                shade_strength = (1.0 - cylinder) * (0.7 * dark_factor)
+                rr = rr - (rr - r_dark) * shade_strength
+                gg = gg - (gg - g_dark) * shade_strength
+                bb = bb - (bb - b_dark) * shade_strength
+                # Narrow glossy highlight: white, blended toward the lit tone.
+                gloss = specular * 0.9
 
                 # Fade the highlight near stitch ends (threads sink into fabric).
                 endpoint_span = min(0.5, 3.0 * thread_radius / length)
@@ -820,10 +814,10 @@ def render_realistic_kajiya_numba(
                 )
                 endpoint_fade = endpoint_position * endpoint_position
                 endpoint_fade = endpoint_fade * (3.0 - 2.0 * endpoint_position)
-                specular *= endpoint_fade
-                rr = rr + specular * (r_light - rr)
-                gg = gg + specular * (g_light - gg)
-                bb = bb + specular * (b_light - bb)
+                gloss *= endpoint_fade
+                rr = rr + gloss * (255.0 - rr)
+                gg = gg + gloss * (255.0 - gg)
+                bb = bb + gloss * (255.0 - bb)
 
                 alpha = min(1.0, max(0.0, thread_radius + 0.5 - distance))
                 buf[py, px, 0] = int(buf[py, px, 0] * (1.0 - alpha) + rr * alpha)
