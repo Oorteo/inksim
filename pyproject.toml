@@ -11,6 +11,8 @@ dependencies = [
     "numpy",
     "pystitch",
     "pyside6-essentials",
+    "pyside6-addons",
+    "pyopengl",
 ]
 
 [dependency-groups]
