@@ -18,6 +18,7 @@ from .stitches import (
 	render_shaded_volume_numba,
 	render_shaded_volume_natural_numba,
 )
+from .stitches_gb import render_trueview_numba
 from .stitches_qt import render_simple_qt
 from .viewport import render_viewport_raster
 from .vintage_qt import render_vintage_qt

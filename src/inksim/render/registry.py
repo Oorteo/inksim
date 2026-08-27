@@ -8,10 +8,11 @@ from .stitches import (
     render_realistic_numba,
     render_realistic_twist_numba,
     render_shaded_numba,
-    render_shaded_volume_numba,
     render_shaded_volume_natural_numba,
-    render_simple_qt,
+    render_shaded_volume_numba,
 )
+from .stitches_gb import render_trueview_numba
+from .stitches_qt import render_simple_qt
 from .vintage_qt import render_vintage_qt
 
 
@@ -34,6 +35,7 @@ STITCH_RENDERERS = (
     StitchRenderer("realistic", "Realistic", "raster", render_realistic_numba),
     StitchRenderer("realistic_twist", "Realistic Twist", "raster", render_realistic_twist_numba),
     StitchRenderer("realistic_kajiya", "Realistic Kajiya", "raster", render_realistic_kajiya_numba),
+    StitchRenderer("trueview", "TrueView (Wilcom-like)", "raster", render_trueview_numba),
 )
 
 RENDERERS_BY_KEY = {renderer.key: renderer for renderer in STITCH_RENDERERS}
@@ -68,6 +70,7 @@ def render_stitches(
         "realistic_kajiya",
         "shaded_volume",
         "shaded_volume_natural",
+        "trueview",
     ):
         renderer.render(
             buffer,

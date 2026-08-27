@@ -210,7 +210,7 @@ class MainWindow(QMainWindow):
         self.viewer.grid_toggled.connect(self.grid_action.setChecked)
         self.viewer.renderer_changed.connect(
             lambda renderer: self.realistic_action.setChecked(
-                renderer in ("realistic", "shaded_volume_natural")
+                renderer in ("realistic", "shaded_volume_natural", "trueview")
             )
         )
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
