@@ -12,6 +12,7 @@ from .stitches import (
     render_shaded_volume_numba,
 )
 from .stitches_gb import render_realistic_gbuffer_numba
+from .stitches_gl import render_gpu_textured
 from .stitches_qt import render_simple_qt
 from .vintage_qt import render_vintage_qt
 
@@ -36,6 +37,7 @@ STITCH_RENDERERS = (
     StitchRenderer("realistic_twist", "Realistic Twist", "raster", render_realistic_twist_numba),
     StitchRenderer("realistic_kajiya", "Realistic Kajiya", "raster", render_realistic_kajiya_numba),
     StitchRenderer("realistic_gbuffer", "Realistic (G-buffer)", "raster", render_realistic_gbuffer_numba),
+    StitchRenderer("gpu_textured", "GPU Textured", "raster", render_gpu_textured),
 )
 
 RENDERERS_BY_KEY = {renderer.key: renderer for renderer in STITCH_RENDERERS}
@@ -71,6 +73,7 @@ def render_stitches(
         "shaded_volume",
         "shaded_volume_natural",
         "realistic_gbuffer",
+        "gpu_textured",
     ):
         renderer.render(
             buffer,
