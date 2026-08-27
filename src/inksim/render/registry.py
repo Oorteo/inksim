@@ -4,6 +4,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from .stitches import (
+    render_realistic_kajiya_numba,
     render_realistic_numba,
     render_realistic_twist_numba,
     render_shaded_numba,
@@ -32,6 +33,7 @@ STITCH_RENDERERS = (
     StitchRenderer("shaded_volume_natural", "Shaded Volume Natural", "raster", render_shaded_volume_natural_numba),
     StitchRenderer("realistic", "Realistic", "raster", render_realistic_numba),
     StitchRenderer("realistic_twist", "Realistic Twist", "raster", render_realistic_twist_numba),
+    StitchRenderer("realistic_kajiya", "Realistic Kajiya", "raster", render_realistic_kajiya_numba),
 )
 
 RENDERERS_BY_KEY = {renderer.key: renderer for renderer in STITCH_RENDERERS}
@@ -63,6 +65,7 @@ def render_stitches(
     if renderer_key in (
         "realistic",
         "realistic_twist",
+        "realistic_kajiya",
         "shaded_volume",
         "shaded_volume_natural",
     ):
