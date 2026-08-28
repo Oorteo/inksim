@@ -136,7 +136,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._stitches = np.zeros((0, 7), dtype=np.float32)
         self._visible_count = 0
         self._line_width = 0.4
-        self._debug_mode = 2  # 0=shaded, 1=raw texture, 2=UV (for debugging visibility)
+        self._debug_mode = 0  # 0=shaded, 1=raw texture, 2=UV (for debugging visibility)
         self._needs_upload = True
         self._verts = np.zeros((0,), dtype=np.float32)
         self._idx = np.zeros((0,), dtype=np.uint32)
@@ -197,7 +197,9 @@ class GLStitchWidget(QOpenGLWidget):
 
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        glEnable(GL_DEPTH_TEST)
+        # All quads share z=0 -- stitch layering must follow draw order (later
+        # stitch on top), not the depth buffer, so depth testing stays off.
+        glDisable(GL_DEPTH_TEST)
 
     def _configure_vao(self):
         self._vao.bind()

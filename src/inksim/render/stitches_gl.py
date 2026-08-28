@@ -341,7 +341,9 @@ def _init_gl(width, height):
 
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-    glEnable(GL_DEPTH_TEST)
+    # All quads share z=0 -- stitch layering must follow draw order (later
+    # stitch on top), not the depth buffer, so depth testing stays off.
+    glDisable(GL_DEPTH_TEST)
 
     _SharedGLContext.initialized = True
 
