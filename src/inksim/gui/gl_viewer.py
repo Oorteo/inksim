@@ -229,12 +229,15 @@ class GLStitchWidget(QOpenGLWidget):
     def _upload_geometry(self):
         if not self._needs_upload or self._stitches.shape[0] == 0:
             return
+        # Build geometry once in model space (zoom=1, pan=0); zoom/pan are
+        # applied per-frame via u_transform so dragging/zooming never re-runs
+        # this (slow, pure-Python) quad builder.
         verts, idx = build_satin_quads(
             self._stitches,
             self._visible_count,
-            self._zoom,
-            self._pan[0],
-            self._pan[1],
+            1.0,
+            0.0,
+            0.0,
             self._line_width,
         )
         self._verts = verts
@@ -269,10 +272,13 @@ class GLStitchWidget(QOpenGLWidget):
 
         w = self.width()
         h = self.height()
+        # Vertices are in model space (see _upload_geometry). This matrix is the
+        # only place zoom/pan is applied: model -> pixel (y-down, matches the
+        # raster viewer convention) -> NDC.
         sx = self._zoom * 2.0 / w
-        sy = self._zoom * 2.0 / h
-        tx = self._pan[0] * 2.0 / w
-        ty = -self._pan[1] * 2.0 / h
+        sy = -self._zoom * 2.0 / h
+        tx = self._pan[0] * 2.0 / w - 1.0
+        ty = 1.0 - self._pan[1] * 2.0 / h
 
         transform = np.array([
             sx, 0.0, 0.0, 0.0,
@@ -319,7 +325,7 @@ class GLStitchWidget(QOpenGLWidget):
             delta = pos - self._last_mouse
             self._pan += delta
             self._last_mouse = pos
-            self._needs_upload = True
+            # Pan only changes u_transform, not the geometry -- no re-upload.
             self.pan_changed.emit(float(self._pan[0]), float(self._pan[1]))
             self.update()
 
@@ -331,6 +337,6 @@ class GLStitchWidget(QOpenGLWidget):
         delta = event.angleDelta().y()
         factor = 1.1 if delta > 0 else 0.9
         self._zoom *= factor
-        self._needs_upload = True
+        # Zoom only changes u_transform, not the geometry -- no re-upload.
         self.zoom_changed.emit(float(self._zoom))
         self.update()
