@@ -94,14 +94,16 @@ void main() {
 
 
 def _default_texture_path() -> Path:
+    # Only the packaged asset counts at runtime -- scripts/ is a dev-only
+    # texture-generator workspace and is not shipped with the installed app.
     here = Path(__file__).resolve().parent
-    candidate = here.parent / "assets" / "thread_textures" / "thread_3strands_normal.png"
+    candidate = here.parent / "assets" / "thread_textures" / "classic_3strand_normal_mask.png"
     if candidate.exists():
         return candidate
-    candidate = Path(__file__).resolve().parent.parent.parent.parent / "scripts" / "dev" / "gpu_prototype" / "texture" / "thread_textures_3" / "thread_3strands_normal.png"
-    if candidate.exists():
-        return candidate
-    raise FileNotFoundError("Thread normal texture not found. Run texture generator first.")
+    raise FileNotFoundError(
+        f"Thread normal/mask texture not found at {candidate}. "
+        "Run scripts/texture/generate_variants.sh to (re)generate it."
+    )
 
 
 _DEFAULT_TEXTURE_PATH = _default_texture_path()
@@ -120,11 +122,19 @@ def _build_satin_quads(
     pan_y,
     line_width,
     thread_texture_aspect=8.0,
-    stitch_height_scale=4.0,
+    stitch_height_scale=1.0,
 ):
-    """Convert stitch segments into textured quad vertex data."""
+    """Convert stitch segments into textured quad vertex data.
+
+    Returns ``(vertices, indices, index_counts)`` where ``index_counts[i]``
+    is the number of index-buffer entries after processing source stitch
+    ``i`` (zero-length stitches are skipped and simply repeat the previous
+    count). Callers can use this prefix array to draw a sub-range of the
+    built geometry (e.g. for timeline scrubbing) without rebuilding it.
+    """
     vertices = []
     indices = []
+    index_counts = []
     cur_index = 0
     thread_position = 0.0
 
@@ -141,6 +151,7 @@ def _build_satin_quads(
         dy = y2 - y1
         length = math.hypot(dx, dy)
         if length < 1e-6:
+            index_counts.append(len(indices))
             continue
         along = np.array([dx / length, dy / length], dtype=np.float32)
         across = np.array([-along[1], along[0]], dtype=np.float32)
@@ -170,14 +181,22 @@ def _build_satin_quads(
             nz = cn
             tangent = np.array([tx, ty, tz], dtype=np.float32)
             normal = np.array([nx, ny, nz], dtype=np.float32)
-            bitangent = np.cross(normal, tangent)
+            # cross(normal, tangent) points to the opposite side from where
+            # `across` actually offsets the upper/lower row -- swap operand
+            # order so the bitangent (v-axis) matches the real geometry side,
+            # otherwise the normal map ends up lit from the wrong side.
+            bitangent = np.cross(tangent, normal)
             return tangent, bitangent, normal
 
         start_t, start_b, start_n = make_tbn(60)
         mid_t, mid_b, mid_n = make_tbn(0)
         end_t, end_b, end_n = make_tbn(-60)
 
-        repeats = max(1.0, length / stitch_height / thread_texture_aspect)
+        # Number of texture periods along this stitch. No lower clamp: a
+        # short stitch must show only a fraction of a period so the twist
+        # density (turns per unit length) stays constant regardless of
+        # stitch length. Guard only against division by zero.
+        repeats = max(1e-6, length / stitch_height / thread_texture_aspect)
         texture_start = thread_position
         texture_mid = thread_position + repeats / 2.0
         texture_end = thread_position + repeats
@@ -209,8 +228,13 @@ def _build_satin_quads(
             cur_index + 2, cur_index + 4, cur_index + 5,
         ])
         cur_index += 6
+        index_counts.append(len(indices))
 
-    return np.array(vertices, dtype=np.float32), np.array(indices, dtype=np.uint32)
+    return (
+        np.array(vertices, dtype=np.float32),
+        np.array(indices, dtype=np.uint32),
+        np.array(index_counts, dtype=np.int64),
+    )
 
 
 class _SharedGLContext:
@@ -403,7 +427,7 @@ def render_gpu_textured(
 
     _SharedGLContext.context.makeCurrent(_SharedGLContext.surface)
 
-    verts, idx = _build_satin_quads(
+    verts, idx, _index_counts = _build_satin_quads(
         stitches,
         visible_count,
         zoom,

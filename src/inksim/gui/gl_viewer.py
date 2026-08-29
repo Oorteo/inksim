@@ -9,8 +9,8 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
-from PySide6.QtCore import QSize, Qt, Signal
-from PySide6.QtGui import QMouseEvent, QSurfaceFormat
+from PySide6.QtCore import QSize, Qt
+from PySide6.QtGui import QSurfaceFormat
 from PySide6.QtOpenGL import (
     QOpenGLBuffer,
     QOpenGLFramebufferObject,
@@ -117,11 +117,12 @@ class GLStitchWidget(QOpenGLWidget):
     can switch between raster and OpenGL rendering modes.
     """
 
-    pan_changed = Signal(float, float)
-    zoom_changed = Signal(float)
-
     def __init__(self, parent=None):
         super().__init__(parent)
+        # Mouse/keyboard input is handled entirely by the parent viewer (pan,
+        # zoom, stitch stepping, needle, timeline...); this widget is only a
+        # display surface, so let all mouse events pass through to it.
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
         self._program = None
         self._vao = None
         self._vbo = None
@@ -129,8 +130,6 @@ class GLStitchWidget(QOpenGLWidget):
         self._texture = None
         self._zoom = 1.0
         self._pan = np.array([0.0, 0.0], dtype=np.float32)
-        self._dragging = False
-        self._last_mouse = np.array([0.0, 0.0], dtype=np.float32)
         self._bg_color = (0.0, 0.0, 0.0)
         self._light_factor = 0.45
         self._stitches = np.zeros((0, 7), dtype=np.float32)
@@ -140,6 +139,8 @@ class GLStitchWidget(QOpenGLWidget):
         self._needs_upload = True
         self._verts = np.zeros((0,), dtype=np.float32)
         self._idx = np.zeros((0,), dtype=np.uint32)
+        self._index_counts = np.zeros((0,), dtype=np.int64)
+        self._draw_count = 0
 
     def set_view(self, zoom, pan_x, pan_y):
         self._zoom = zoom
@@ -154,11 +155,22 @@ class GLStitchWidget(QOpenGLWidget):
         self._light_factor = light_factor
         self.update()
 
-    def set_stitches(self, stitches, visible_count, line_width):
+    def set_stitches(self, stitches, line_width):
+        """Set the full stitch array; geometry is (re)built for all of it.
+
+        Use `set_visible_count` to change how many stitches are drawn --
+        that never requires rebuilding geometry, so playback/timeline/key
+        stepping stays cheap.
+        """
+        if stitches is self._stitches and line_width == self._line_width:
+            return
         self._stitches = stitches
-        self._visible_count = visible_count
         self._line_width = line_width
         self._needs_upload = True
+        self.update()
+
+    def set_visible_count(self, visible_count):
+        self._visible_count = visible_count
         self.update()
 
     def initializeGL(self):
@@ -231,12 +243,13 @@ class GLStitchWidget(QOpenGLWidget):
     def _upload_geometry(self):
         if not self._needs_upload or self._stitches.shape[0] == 0:
             return
-        # Build geometry once in model space (zoom=1, pan=0); zoom/pan are
-        # applied per-frame via u_transform so dragging/zooming never re-runs
-        # this (slow, pure-Python) quad builder.
-        verts, idx = build_satin_quads(
+        # Build geometry once in model space (zoom=1, pan=0) for ALL stitches;
+        # zoom/pan are applied per-frame via u_transform, and the visible
+        # sub-range is applied via index_counts, so neither ever re-runs this
+        # (slow, pure-Python) quad builder.
+        verts, idx, index_counts = build_satin_quads(
             self._stitches,
-            self._visible_count,
+            self._stitches.shape[0],
             1.0,
             0.0,
             0.0,
@@ -244,6 +257,7 @@ class GLStitchWidget(QOpenGLWidget):
         )
         self._verts = verts
         self._idx = idx
+        self._index_counts = index_counts
 
         self._vbo.bind()
         if verts.nbytes > self._vbo.size():
@@ -269,7 +283,9 @@ class GLStitchWidget(QOpenGLWidget):
         glClearColor(*self._bg_color, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        if self._idx.size == 0:
+        count = min(self._visible_count, self._index_counts.shape[0])
+        draw_count = int(self._index_counts[count - 1]) if count > 0 else 0
+        if draw_count == 0:
             return
 
         w = self.width()
@@ -305,40 +321,10 @@ class GLStitchWidget(QOpenGLWidget):
         glUniform1i(self._program.uniformLocation("u_texture"), 0)
 
         self._vao.bind()
-        glDrawElements(GL_TRIANGLES, self._idx.size, GL_UNSIGNED_INT, None)
+        glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
         self._vao.release()
         self._texture.release()
         self._program.release()
 
     def resizeGL(self, w, h):
         glViewport(0, 0, w, h)
-
-    def _mouse_pos(self, event: QMouseEvent):
-        return np.array([event.position().x(), event.position().y()], dtype=np.float32)
-
-    def mousePressEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self._dragging = True
-            self._last_mouse = self._mouse_pos(event)
-
-    def mouseMoveEvent(self, event: QMouseEvent):
-        if self._dragging:
-            pos = self._mouse_pos(event)
-            delta = pos - self._last_mouse
-            self._pan += delta
-            self._last_mouse = pos
-            # Pan only changes u_transform, not the geometry -- no re-upload.
-            self.pan_changed.emit(float(self._pan[0]), float(self._pan[1]))
-            self.update()
-
-    def mouseReleaseEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self._dragging = False
-
-    def wheelEvent(self, event):
-        delta = event.angleDelta().y()
-        factor = 1.1 if delta > 0 else 0.9
-        self._zoom *= factor
-        # Zoom only changes u_transform, not the geometry -- no re-upload.
-        self.zoom_changed.emit(float(self._zoom))
-        self.update()

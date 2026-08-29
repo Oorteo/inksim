@@ -193,8 +193,6 @@ class EmbroideryViewerWidget(QWidget):
         self._gl_widget.setGeometry(self.rect())
         self._gl_widget.hide()
         self._gl_widget.setFocusPolicy(Qt.NoFocus)
-        self._gl_widget.pan_changed.connect(self._on_gl_pan_changed)
-        self._gl_widget.zoom_changed.connect(self._on_gl_zoom_changed)
         self.mode_panel = None
         self.command_dialog = None
         self.help_dialog = None
@@ -528,25 +526,25 @@ class EmbroideryViewerWidget(QWidget):
     def _update_gl_widget_visibility(self):
         if self.active_renderer == "gpu_textured":
             self._gl_widget.setGeometry(self.rect())
-            self._gl_widget.set_view(self.zoom, self.pan_x, self.pan_y)
-            self._gl_widget.set_stitches(
-                self.stitches_np, self.visible_count, self.line_width
-            )
-            self._gl_widget.set_light_factor(self.light_factor)
+            self._gl_widget.set_stitches(self.stitches_np, self.line_width)
+            self._sync_gl_widget()
             self._gl_widget.set_background(0, 0, 0)
             self._gl_widget.show()
             self._gl_widget.raise_()
         else:
             self._gl_widget.hide()
 
-    def _on_gl_pan_changed(self, pan_x, pan_y):
-        self.pan_x = pan_x
-        self.pan_y = pan_y
-        self.update()
+    def _sync_gl_widget(self):
+        """Push current view/playback state into the GL widget.
 
-    def _on_gl_zoom_changed(self, zoom):
-        self.zoom = zoom
-        self.update()
+        Cheap: only updates uniforms and the drawn index range, never
+        rebuilds geometry, so it is safe to call on every paint (keyboard
+        stepping, timeline scrubbing, playback, pan/zoom all go through
+        here).
+        """
+        self._gl_widget.set_view(self.zoom, self.pan_x, self.pan_y)
+        self._gl_widget.set_visible_count(self.visible_count)
+        self._gl_widget.set_light_factor(self.light_factor)
 
     def select_renderer(self):
         """Open the renderer picker dialog."""
@@ -867,7 +865,9 @@ class EmbroideryViewerWidget(QWidget):
     def paintEvent(self, e):
         """Render the current viewport, using the cached bitmap when possible."""
         if self.active_renderer == "gpu_textured":
-            # OpenGL widget renders on top; just clear the underlying widget.
+            # OpenGL widget renders on top; keep it in sync with the current
+            # zoom/pan/stitch position, then just clear the underlying widget.
+            self._sync_gl_widget()
             painter = QPainter(self)
             painter.fillRect(self.rect(), QColor(0, 0, 0))
             painter.end()

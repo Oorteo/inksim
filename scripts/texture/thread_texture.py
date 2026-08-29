@@ -222,6 +222,15 @@ def generate_thread_textures(
     alpha_img.save(alpha_path)
     outputs["mask"] = alpha_path
 
+    # Combined normal (RGB) + real alpha mask (A) -- this is the map the GL
+    # renderer actually samples, so the surrounding background is transparent
+    # instead of opaque (a plain "_normal.png" has no alpha channel).
+    normal_mask = np.dstack([normal_map, alpha_mask])
+    normal_mask_img = Image.fromarray((normal_mask * 255.0).astype(np.uint8), "RGBA")
+    normal_mask_path = output_dir / f"{prefix}_normal_mask.png"
+    normal_mask_img.save(normal_mask_path)
+    outputs["normal_mask"] = normal_mask_path
+
     roughness_img = Image.fromarray((roughness * 255.0).astype(np.uint8), "L")
     roughness_path = output_dir / f"{prefix}_roughness.png"
     roughness_img.save(roughness_path)

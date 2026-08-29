@@ -1,4 +1,6 @@
 
+
+
 doc_inksim
 opengl-render
 
@@ -6,6 +8,10 @@ log/
 *.log
 __pycache__
 .vscode/
+
+# Regenerable texture-generator previews (see scripts/texture/generate_variants.sh).
+# The one packaged texture the app actually loads lives in src/inksim/assets/.
+scripts/texture/renders/
 
 # Keep local when Python versions or dependency versions are intentionally
 # changing frequently. Track these files for reproducible CI and releases.
