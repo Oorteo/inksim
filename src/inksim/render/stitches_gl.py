@@ -69,6 +69,8 @@ uniform float u_k_a;
 uniform float u_k_d;
 uniform float u_k_s;
 uniform float u_specular_exponent;
+uniform float u_normal_strength_tangent;
+uniform float u_normal_strength_bitangent;
 
 void main() {
     vec4 texel = texture(u_texture, v_uv);
@@ -77,7 +79,10 @@ void main() {
     }
 
     mat3 TBN = mat3(v_tangent, v_bitangent, v_normal);
-    vec3 normal = normalize(TBN * (texel.rgb - 0.5));
+    vec3 n = texel.rgb - 0.5;
+    n.x *= u_normal_strength_tangent;
+    n.y *= u_normal_strength_bitangent;
+    vec3 normal = normalize(TBN * n);
 
     vec3 L = normalize(u_light_dir);
     vec3 V = vec3(0.0, 0.0, 1.0);
@@ -121,6 +126,23 @@ def _lighting_coefficients(dark_factor, light_factor):
     k_d = 0.6 + 0.3 * light_factor
     k_s = 0.4 + 0.3 * light_factor
     return k_a, k_d, k_s
+
+
+def _normal_strengths(zoom):
+    """Return ``(tangent, bitangent)`` normal-map strengths by zoom.
+
+    The normal map's tangent (along-length) component produces the pleasant
+    edge-darkening and is kept at full strength. The bitangent (across-width)
+    component makes one half of the stitch lit and the other dark; it is
+    faded out as the view zooms out so distant stitches stay bright and flat
+    instead of disappearing into shadow.
+
+    ``zoom`` is pixels-per-mm; ~4 px/mm is physical (one-to-one) size.
+    """
+    z = float(np.clip(zoom / 4.0, 0.0, 1.0))
+    tangent = 1.0
+    bitangent = z
+    return tangent, bitangent
 
 
 def _load_texture(path: Path):
@@ -604,6 +626,9 @@ def render_gpu_textured(
     glUniform1f(program.uniformLocation("u_k_d"), k_d)
     glUniform1f(program.uniformLocation("u_k_s"), k_s)
     glUniform1f(program.uniformLocation("u_specular_exponent"), 12.0)
+    tangent_strength, bitangent_strength = _normal_strengths(zoom)
+    glUniform1f(program.uniformLocation("u_normal_strength_tangent"), tangent_strength)
+    glUniform1f(program.uniformLocation("u_normal_strength_bitangent"), bitangent_strength)
 
     texture = _SharedGLContext.texture
     texture.bind(0)

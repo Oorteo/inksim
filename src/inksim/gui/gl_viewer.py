@@ -28,6 +28,7 @@ from ..render.stitches_gl import (
     _default_texture_path,
     _lighting_coefficients,
     _load_texture,
+    _normal_strengths,
     texture_width_fraction,
 )
 
@@ -75,6 +76,8 @@ uniform float u_k_a;
 uniform float u_k_d;
 uniform float u_k_s;
 uniform float u_specular_exponent;
+uniform float u_normal_strength_tangent;
+uniform float u_normal_strength_bitangent;
 uniform int u_debug_mode; // 0 = shaded, 1 = raw texture, 2 = UV
 
 void main() {
@@ -93,7 +96,10 @@ void main() {
     }
 
     mat3 TBN = mat3(v_tangent, v_bitangent, v_normal);
-    vec3 normal = normalize(TBN * (texel.rgb - 0.5));
+    vec3 n = texel.rgb - 0.5;
+    n.x *= u_normal_strength_tangent;
+    n.y *= u_normal_strength_bitangent;
+    vec3 normal = normalize(TBN * n);
 
     vec3 L = normalize(u_light_dir);
     vec3 V = vec3(0.0, 0.0, 1.0);
@@ -365,6 +371,9 @@ class GLStitchWidget(QOpenGLWidget):
         glUniform1f(self._program.uniformLocation("u_k_d"), k_d)
         glUniform1f(self._program.uniformLocation("u_k_s"), k_s)
         glUniform1f(self._program.uniformLocation("u_specular_exponent"), 12.0)
+        tangent_strength, bitangent_strength = _normal_strengths(self._zoom)
+        glUniform1f(self._program.uniformLocation("u_normal_strength_tangent"), tangent_strength)
+        glUniform1f(self._program.uniformLocation("u_normal_strength_bitangent"), bitangent_strength)
         glUniform1i(self._program.uniformLocation("u_debug_mode"), self._debug_mode)
 
         self._texture.bind(0)
