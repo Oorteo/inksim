@@ -24,7 +24,12 @@ from PySide6.QtWidgets import QApplication
 from OpenGL.GL import *
 
 from ..render.stitches_gl import _build_satin_quads as build_satin_quads
-from ..render.stitches_gl import _default_texture_path, _load_texture, texture_width_fraction
+from ..render.stitches_gl import (
+    _default_texture_path,
+    _lighting_coefficients,
+    _load_texture,
+    texture_width_fraction,
+)
 
 VERTEX_SHADER = """
 #version 330 core
@@ -146,6 +151,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._zoom = 1.0
         self._pan = np.array([0.0, 0.0], dtype=np.float32)
         self._bg_color = (0.0, 0.0, 0.0)
+        self._dark_factor = 0.5
         self._light_factor = 0.45
         self._stitches = np.zeros((0, 7), dtype=np.float32)
         self._visible_count = 0
@@ -168,6 +174,10 @@ class GLStitchWidget(QOpenGLWidget):
 
     def set_light_factor(self, light_factor):
         self._light_factor = light_factor
+        self.update()
+
+    def set_dark_factor(self, dark_factor):
+        self._dark_factor = dark_factor
         self.update()
 
     def set_stitches(self, stitches, line_width):
@@ -350,9 +360,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._program.bind()
         glUniformMatrix4fv(self._program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
         glUniform3f(self._program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
-        k_a = 0.2 + 0.2 * self._light_factor
-        k_d = 0.6 + 0.3 * self._light_factor
-        k_s = 0.4 + 0.3 * self._light_factor
+        k_a, k_d, k_s = _lighting_coefficients(self._dark_factor, self._light_factor)
         glUniform1f(self._program.uniformLocation("u_k_a"), k_a)
         glUniform1f(self._program.uniformLocation("u_k_d"), k_d)
         glUniform1f(self._program.uniformLocation("u_k_s"), k_s)

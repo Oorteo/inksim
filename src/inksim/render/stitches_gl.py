@@ -109,6 +109,20 @@ def _default_texture_path() -> Path:
 _DEFAULT_TEXTURE_PATH = _default_texture_path()
 
 
+def _lighting_coefficients(dark_factor, light_factor):
+    """Compute Blinn-Phong coefficients from the shading factors.
+
+    ``light_factor`` lifts the lit surface and strengthens the sheen;
+    ``dark_factor`` deepens the shadowed valleys by lowering the ambient
+    term (matching the CPU renderers, where a higher dark factor darkens
+    the thread).
+    """
+    k_a = 0.2 + 0.2 * light_factor - 0.15 * dark_factor
+    k_d = 0.6 + 0.3 * light_factor
+    k_s = 0.4 + 0.3 * light_factor
+    return k_a, k_d, k_s
+
+
 def _load_texture(path: Path):
     """Load a PNG as an RGBA uint8 NumPy array using Qt (no PIL dependency)."""
     img = QImage(str(path))
@@ -585,9 +599,7 @@ def render_gpu_textured(
     glUniform3f(program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
 
     # Allow dark/light factors to influence ambient and diffuse lighting.
-    k_a = 0.2 + 0.2 * light_factor
-    k_d = 0.6 + 0.3 * light_factor
-    k_s = 0.4 + 0.3 * light_factor
+    k_a, k_d, k_s = _lighting_coefficients(dark_factor, light_factor)
     glUniform1f(program.uniformLocation("u_k_a"), k_a)
     glUniform1f(program.uniformLocation("u_k_d"), k_d)
     glUniform1f(program.uniformLocation("u_k_s"), k_s)
