@@ -43,7 +43,6 @@ class CalibrationDialog(QDialog):
         slider_row.addWidget(QLabel("Bar length:"))
         self._slider = QSlider(Qt.Horizontal)
         self._slider.setRange(100, 2000)
-        self._slider.setValue(500)
         self._slider.valueChanged.connect(self._bar.set_pixel_length)
         self._slider.valueChanged.connect(self._update_length_label)
         slider_row.addWidget(self._slider, 1)
@@ -66,6 +65,12 @@ class CalibrationDialog(QDialog):
         buttons.rejected.connect(self.reject)
         root.addWidget(buttons)
 
+        # Pre-load the stored calibration (if any) so the bar starts at the
+        # previously measured length instead of a fixed default.
+        if initial_px_per_mm and initial_px_per_mm > 0:
+            initial_px = int(round(initial_px_per_mm * self._mm_spin.value()))
+            initial_px = max(self._slider.minimum(), min(self._slider.maximum(), initial_px))
+            self._slider.setValue(initial_px)
         self._bar.set_pixel_length(self._slider.value())
         self._update_length_label()
 

@@ -26,6 +26,7 @@ from PySide6.QtGui import (
 )
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QApplication,
     QColorDialog,
     QDialog,
     QGridLayout,
@@ -289,7 +290,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def _display_key(self):
         """Return a stable key identifying the current display."""
-        screen = self.screen()
+        screen = self.screen() or QApplication.primaryScreen()
         if screen is None:
             return "default"
         return screen.name() or "default"
@@ -301,15 +302,22 @@ class EmbroideryViewerWidget(QWidget):
         correction) when no calibration has been stored yet.
         """
         settings = QSettings(APP_ORGANIZATION, APP_TITLE)
-        key = f"display_calibration/{self._display_key()}"
-        stored = settings.value(key, None)
-        if stored is not None:
-            try:
-                value = float(stored)
-                if value > 0:
-                    return value
-            except (TypeError, ValueError):
-                pass
+        # Try the specific display first, then any stored calibration (the
+        # display name can differ across sessions, so fall back to the first
+        # valid value we find).
+        specific = f"display_calibration/{self._display_key()}"
+        for key in [specific] + [
+            k for k in settings.allKeys()
+            if k.startswith("display_calibration/") and k != specific
+        ]:
+            stored = settings.value(key, None)
+            if stored is not None:
+                try:
+                    value = float(stored)
+                    if value > 0:
+                        return value
+                except (TypeError, ValueError):
+                    pass
         return self._estimated_pixels_per_mm()
 
     def _estimated_pixels_per_mm(self):
@@ -335,8 +343,14 @@ class EmbroideryViewerWidget(QWidget):
         dialog = CalibrationDialog(self, self._pixels_per_mm())
         if dialog.exec() and dialog.pixels_per_mm() is not None:
             settings = QSettings(APP_ORGANIZATION, APP_TITLE)
-            key = f"display_calibration/{self._display_key()}"
-            settings.setValue(key, dialog.pixels_per_mm())
+            # Store under the specific display AND a global fallback so the
+            # calibration survives restarts even if the display name changes.
+            settings.setValue(
+                f"display_calibration/{self._display_key()}",
+                dialog.pixels_per_mm(),
+            )
+            settings.setValue("display_calibration/default", dialog.pixels_per_mm())
+            settings.sync()
             self.set_one_to_one()
 
     def zoom_ratio(self):
