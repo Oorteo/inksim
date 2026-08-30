@@ -11,7 +11,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
-from PySide6.QtCore import QSize, Qt
+from PySide6.QtCore import QSize
 from PySide6.QtGui import QImage, QOffscreenSurface, QOpenGLContext, QSurfaceFormat
 from PySide6.QtOpenGL import (
     QOpenGLBuffer,
@@ -131,110 +131,182 @@ def _build_satin_quads(
     ``i`` (zero-length stitches are skipped and simply repeat the previous
     count). Callers can use this prefix array to draw a sub-range of the
     built geometry (e.g. for timeline scrubbing) without rebuilding it.
+
+    Fully vectorised with NumPy so rebuilding the geometry (e.g. when the
+    thread width changes via '[' / ']') stays fast even for large patterns.
     """
-    vertices = []
-    indices = []
-    index_counts = []
-    cur_index = 0
-    thread_position = 0.0
-
-    for i in range(visible_count):
-        x1 = float(stitches[i, 0]) * zoom + pan_x
-        y1 = float(stitches[i, 1]) * zoom + pan_y
-        x2 = float(stitches[i, 2]) * zoom + pan_x
-        y2 = float(stitches[i, 3]) * zoom + pan_y
-        r = float(stitches[i, 4]) / 255.0
-        g = float(stitches[i, 5]) / 255.0
-        b = float(stitches[i, 6]) / 255.0
-
-        dx = x2 - x1
-        dy = y2 - y1
-        length = math.hypot(dx, dy)
-        if length < 1e-6:
-            index_counts.append(len(indices))
-            continue
-        along = np.array([dx / length, dy / length], dtype=np.float32)
-        across = np.array([-along[1], along[0]], dtype=np.float32)
-
-        stitch_height = max(1.0, line_width * zoom * stitch_height_scale * 0.5)
-
-        us = np.array([x1, y1]) + across * (stitch_height / 2)
-        um = (np.array([x1, y1]) + np.array([x2, y2])) / 2.0 + across * (stitch_height / 2)
-        ue = np.array([x2, y2]) + across * (stitch_height / 2)
-        ls = np.array([x1, y1]) - across * (stitch_height / 2)
-        lm = (np.array([x1, y1]) + np.array([x2, y2])) / 2.0 - across * (stitch_height / 2)
-        le = np.array([x2, y2]) - across * (stitch_height / 2)
-
-        theta = -math.atan2(along[1], along[0])
-        ct = math.cos(theta)
-        st = math.sin(theta)
-
-        def make_tbn(tilt_deg):
-            rad = math.radians(tilt_deg)
-            sn = math.sin(rad)
-            cn = math.cos(rad)
-            tx = cn * ct
-            ty = cn * st
-            tz = sn
-            nx = -sn * ct
-            ny = -sn * st
-            nz = cn
-            tangent = np.array([tx, ty, tz], dtype=np.float32)
-            normal = np.array([nx, ny, nz], dtype=np.float32)
-            # cross(normal, tangent) points to the opposite side from where
-            # `across` actually offsets the upper/lower row -- swap operand
-            # order so the bitangent (v-axis) matches the real geometry side,
-            # otherwise the normal map ends up lit from the wrong side.
-            bitangent = np.cross(tangent, normal)
-            return tangent, bitangent, normal
-
-        start_t, start_b, start_n = make_tbn(60)
-        mid_t, mid_b, mid_n = make_tbn(0)
-        end_t, end_b, end_n = make_tbn(-60)
-
-        # Number of texture periods along this stitch. No lower clamp: a
-        # short stitch must show only a fraction of a period so the twist
-        # density (turns per unit length) stays constant regardless of
-        # stitch length. Guard only against division by zero.
-        repeats = max(1e-6, length / stitch_height / thread_texture_aspect)
-        texture_start = thread_position
-        texture_mid = thread_position + repeats / 2.0
-        texture_end = thread_position + repeats
-        thread_position = texture_end % 1.0
-
-        color = (float(r), float(g), float(b))
-
-        def add_vert(pos, u, v, t, b, n, col):
-            vertices.extend([
-                float(pos[0]), float(pos[1]),
-                float(u), float(v),
-                float(t[0]), float(t[1]), float(t[2]),
-                float(b[0]), float(b[1]), float(b[2]),
-                float(n[0]), float(n[1]), float(n[2]),
-                col[0], col[1], col[2],
-            ])
-
-        add_vert(us, texture_start, 0.0, start_t, start_b, start_n, color)
-        add_vert(um, texture_mid, 0.0, mid_t, mid_b, mid_n, color)
-        add_vert(ue, texture_end, 0.0, end_t, end_b, end_n, color)
-        add_vert(ls, texture_start, 1.0, start_t, start_b, start_n, color)
-        add_vert(lm, texture_mid, 1.0, mid_t, mid_b, mid_n, color)
-        add_vert(le, texture_end, 1.0, end_t, end_b, end_n, color)
-
-        indices.extend([
-            cur_index,     cur_index + 1, cur_index + 3,
-            cur_index + 1, cur_index + 3, cur_index + 4,
-            cur_index + 1, cur_index + 2, cur_index + 4,
-            cur_index + 2, cur_index + 4, cur_index + 5,
-        ])
-        cur_index += 6
-        index_counts.append(len(indices))
-
-    return (
-        np.array(vertices, dtype=np.float32),
-        np.array(indices, dtype=np.uint32),
-        np.array(index_counts, dtype=np.int64),
+    n = int(visible_count)
+    empty = (
+        np.zeros((0,), dtype=np.float32),
+        np.zeros((0,), dtype=np.uint32),
+        np.zeros((0,), dtype=np.int64),
     )
+    if n == 0:
+        return empty
+
+    s = stitches[:n]
+    x1 = s[:, 0].astype(np.float64) * zoom + pan_x
+    y1 = s[:, 1].astype(np.float64) * zoom + pan_y
+    x2 = s[:, 2].astype(np.float64) * zoom + pan_x
+    y2 = s[:, 3].astype(np.float64) * zoom + pan_y
+    r = s[:, 4] / 255.0
+    g = s[:, 5] / 255.0
+    b = s[:, 6] / 255.0
+
+    dx = x2 - x1
+    dy = y2 - y1
+    length = np.hypot(dx, dy)
+    valid = length >= 1e-6
+    if not valid.any():
+        return empty
+
+    inv_len = np.zeros(n, dtype=np.float64)
+    np.divide(1.0, length, out=inv_len, where=valid)
+    along_x = dx * inv_len
+    along_y = dy * inv_len
+    across_x = -along_y
+    across_y = along_x
+
+    # Full ribbon width in model units. No 1.0 floor: the width must scale
+    # with line_width so '[' / ']' actually changes the thread thickness.
+    stitch_height = max(1e-3, line_width * zoom * stitch_height_scale * 0.5)
+    h = stitch_height / 2.0
+
+    mx = (x1 + x2) / 2.0
+    my = (y1 + y2) / 2.0
+
+    us_x = x1 + across_x * h
+    us_y = y1 + across_y * h
+    um_x = mx + across_x * h
+    um_y = my + across_y * h
+    ue_x = x2 + across_x * h
+    ue_y = y2 + across_y * h
+    ls_x = x1 - across_x * h
+    ls_y = y1 - across_y * h
+    lm_x = mx - across_x * h
+    lm_y = my - across_y * h
+    le_x = x2 - across_x * h
+    le_y = y2 - across_y * h
+
+    # Texture repeats: constant twist density, no lower clamp (see above).
+    repeats = length / stitch_height / thread_texture_aspect
+    repeats = np.maximum(repeats, 1e-6)
+    repeats[~valid] = 0.0
+    cum = np.cumsum(repeats)
+    texture_start = np.empty(n, dtype=np.float64)
+    texture_start[0] = 0.0
+    texture_start[1:] = cum[:-1]
+    texture_start %= 1.0
+    texture_mid = texture_start + repeats / 2.0
+    texture_end = texture_start + repeats
+
+    # TBN basis. theta = -atan2(along_y, along_x) gives ct = along_x and
+    # st = -along_y, so tangent/normal reduce to simple products. The
+    # bitangent is tilt-independent: cross(tangent, normal) = (-along_y,
+    # -along_x, 0) for every tilt.
+    sin60 = math.sin(math.radians(60.0))
+    cos60 = math.cos(math.radians(60.0))
+
+    bit_x = -along_y
+    bit_y = -along_x
+    bit_z = np.zeros(n, dtype=np.float64)
+
+    # start (tilt +60)
+    st_tx = cos60 * along_x
+    st_ty = -cos60 * along_y
+    st_tz = np.full(n, sin60)
+    st_nx = -sin60 * along_x
+    st_ny = sin60 * along_y
+    st_nz = np.full(n, cos60)
+
+    # mid (tilt 0)
+    md_tx = along_x
+    md_ty = -along_y
+    md_tz = np.zeros(n, dtype=np.float64)
+    md_nx = np.zeros(n, dtype=np.float64)
+    md_ny = np.zeros(n, dtype=np.float64)
+    md_nz = np.ones(n, dtype=np.float64)
+
+    # end (tilt -60)
+    en_tx = cos60 * along_x
+    en_ty = -cos60 * along_y
+    en_tz = np.full(n, -sin60)
+    en_nx = sin60 * along_x
+    en_ny = -sin60 * along_y
+    en_nz = np.full(n, cos60)
+
+    # Vertex layout: pos(2), uv(2), tangent(3), bitangent(3), normal(3),
+    # color(3) = 16 floats. Six vertices per stitch: us, um, ue, ls, lm, le.
+    verts = np.empty((n, 6, 16), dtype=np.float32)
+
+    # positions
+    verts[:, 0, 0] = us_x; verts[:, 0, 1] = us_y
+    verts[:, 1, 0] = um_x; verts[:, 1, 1] = um_y
+    verts[:, 2, 0] = ue_x; verts[:, 2, 1] = ue_y
+    verts[:, 3, 0] = ls_x; verts[:, 3, 1] = ls_y
+    verts[:, 4, 0] = lm_x; verts[:, 4, 1] = lm_y
+    verts[:, 5, 0] = le_x; verts[:, 5, 1] = le_y
+
+    # uv
+    verts[:, 0, 2] = texture_start; verts[:, 0, 3] = 0.0
+    verts[:, 1, 2] = texture_mid;   verts[:, 1, 3] = 0.0
+    verts[:, 2, 2] = texture_end;   verts[:, 2, 3] = 0.0
+    verts[:, 3, 2] = texture_start; verts[:, 3, 3] = 1.0
+    verts[:, 4, 2] = texture_mid;   verts[:, 4, 3] = 1.0
+    verts[:, 5, 2] = texture_end;   verts[:, 5, 3] = 1.0
+
+    # tangent
+    verts[:, 0, 4] = st_tx; verts[:, 0, 5] = st_ty; verts[:, 0, 6] = st_tz
+    verts[:, 3, 4] = st_tx; verts[:, 3, 5] = st_ty; verts[:, 3, 6] = st_tz
+    verts[:, 1, 4] = md_tx; verts[:, 1, 5] = md_ty; verts[:, 1, 6] = md_tz
+    verts[:, 4, 4] = md_tx; verts[:, 4, 5] = md_ty; verts[:, 4, 6] = md_tz
+    verts[:, 2, 4] = en_tx; verts[:, 2, 5] = en_ty; verts[:, 2, 6] = en_tz
+    verts[:, 5, 4] = en_tx; verts[:, 5, 5] = en_ty; verts[:, 5, 6] = en_tz
+
+    # bitangent (tilt-independent)
+    for v in range(6):
+        verts[:, v, 7] = bit_x
+        verts[:, v, 8] = bit_y
+        verts[:, v, 9] = bit_z
+
+    # normal
+    verts[:, 0, 10] = st_nx; verts[:, 0, 11] = st_ny; verts[:, 0, 12] = st_nz
+    verts[:, 3, 10] = st_nx; verts[:, 3, 11] = st_ny; verts[:, 3, 12] = st_nz
+    verts[:, 1, 10] = md_nx; verts[:, 1, 11] = md_ny; verts[:, 1, 12] = md_nz
+    verts[:, 4, 10] = md_nx; verts[:, 4, 11] = md_ny; verts[:, 4, 12] = md_nz
+    verts[:, 2, 10] = en_nx; verts[:, 2, 11] = en_ny; verts[:, 2, 12] = en_nz
+    verts[:, 5, 10] = en_nx; verts[:, 5, 11] = en_ny; verts[:, 5, 12] = en_nz
+
+    # color
+    for v in range(6):
+        verts[:, v, 13] = r
+        verts[:, v, 14] = g
+        verts[:, v, 15] = b
+
+    verts = verts[valid].reshape(-1)
+
+    # indices: 12 per stitch (two triangles per half-quad, four total)
+    n_valid = int(valid.sum())
+    base = np.arange(n_valid, dtype=np.uint32) * 6
+    idx = np.empty((n_valid, 12), dtype=np.uint32)
+    idx[:, 0] = base
+    idx[:, 1] = base + 1
+    idx[:, 2] = base + 3
+    idx[:, 3] = base + 1
+    idx[:, 4] = base + 3
+    idx[:, 5] = base + 4
+    idx[:, 6] = base + 1
+    idx[:, 7] = base + 2
+    idx[:, 8] = base + 4
+    idx[:, 9] = base + 2
+    idx[:, 10] = base + 4
+    idx[:, 11] = base + 5
+    idx = idx.reshape(-1)
+
+    per_stitch = np.where(valid, 12, 0)
+    index_counts = np.cumsum(per_stitch).astype(np.int64)
+
+    return verts, idx, index_counts
 
 
 class _SharedGLContext:

@@ -545,6 +545,9 @@ class EmbroideryViewerWidget(QWidget):
         self._gl_widget.set_view(self.zoom, self.pan_x, self.pan_y)
         self._gl_widget.set_visible_count(self.visible_count)
         self._gl_widget.set_light_factor(self.light_factor)
+        # Thread width is adjustable via '[' / ']' (same as CPU renderers);
+        # push it here so the GL geometry is rebuilt when it changes.
+        self._gl_widget.set_stitches(self.stitches_np, self.line_width)
 
     def select_renderer(self):
         """Open the renderer picker dialog."""
