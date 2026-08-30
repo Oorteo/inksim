@@ -4,7 +4,6 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from .stitches import (
-    render_realistic_numba,
     render_realistic_twist_numba,
     render_shaded_numba,
     render_shaded_volume_natural_numba,
@@ -12,7 +11,6 @@ from .stitches import (
 )
 from .stitches_gl import render_gpu_textured
 from .stitches_qt import render_simple_qt
-from .vintage_qt import render_vintage_qt
 
 
 @dataclass(frozen=True)
@@ -27,11 +25,9 @@ class StitchRenderer:
 
 STITCH_RENDERERS = (
     StitchRenderer("simple", "Simple", "vector", None),
-    StitchRenderer("vintage", "Vintage", "vector", render_vintage_qt),
     StitchRenderer("shaded", "Shaded", "raster", render_shaded_numba),
     StitchRenderer("shaded_volume", "Shaded Volume", "raster", render_shaded_volume_numba),
     StitchRenderer("shaded_volume_natural", "Shaded Volume Natural", "raster", render_shaded_volume_natural_numba),
-    StitchRenderer("realistic", "Realistic", "raster", render_realistic_numba),
     StitchRenderer("realistic_twist", "Realistic Twist", "raster", render_realistic_twist_numba),
     StitchRenderer("gpu_textured", "GPU Textured", "raster", render_gpu_textured),
 )
@@ -39,7 +35,6 @@ STITCH_RENDERERS = (
 RENDERERS_BY_KEY = {renderer.key: renderer for renderer in STITCH_RENDERERS}
 VECTOR_RENDERERS = {
     "simple": render_simple_qt,
-    "vintage": render_vintage_qt,
 }
 
 
@@ -63,7 +58,6 @@ def render_stitches(
     if not show_stitches or visible_count == 0:
         return
     if renderer_key in (
-        "realistic",
         "realistic_twist",
         "shaded_volume",
         "shaded_volume_natural",

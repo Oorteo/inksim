@@ -588,10 +588,10 @@ class EmbroideryViewerWidget(QWidget):
         """Select a registered stitch renderer and refresh the canvas."""
         if renderer_key not in RENDERERS_BY_KEY:
             raise ValueError(f"unknown stitch renderer: {renderer_key}")
-        if renderer_key not in ("realistic", "shaded_volume_natural", "gpu_textured"):
+        if renderer_key not in ("shaded_volume_natural", "gpu_textured"):
             self._non_realistic_renderer = renderer_key
         self.active_renderer = renderer_key
-        self.show_realistic = renderer_key in ("realistic", "shaded_volume_natural")
+        self.show_realistic = renderer_key in ("shaded_volume_natural",)
         self.renderer_changed.emit(renderer_key)
         self._update_gl_widget_visibility()
         self.invalidate_cache()

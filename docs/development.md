@@ -19,10 +19,10 @@ The current viewer intentionally uses a portable CPU rendering path:
 Numba/NumPy raster buffer -> QImage -> Qt QPainter/QPixmap
 ```
 
-The raster renderers (`shaded`, `shaded_volume`, `realistic`, and related
-modes) calculate pixels in Numba on the CPU. The `simple` and `vintage`
-renderers draw with Qt's regular raster `QPainter`. The `gpu_textured`
-renderer rasterizes textured thread quads via OpenGL. The viewer does not use
+The raster renderers (`shaded`, `shaded_volume`, `realistic_twist`, and
+related modes) calculate pixels in Numba on the CPU. The `simple` renderer
+draws with Qt's regular raster `QPainter`. The `gpu_textured` renderer
+rasterizes textured thread quads via OpenGL. The viewer does not use
 `QGraphicsView`, Vulkan, or Qt Quick.
 
 Do not add `QOpenGLWidget` merely as a viewport optimization. It would not
