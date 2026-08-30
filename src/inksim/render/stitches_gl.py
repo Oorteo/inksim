@@ -11,7 +11,6 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QImage, QOffscreenSurface, QOpenGLContext, QSurfaceFormat
 from PySide6.QtOpenGL import (
@@ -111,8 +110,20 @@ _DEFAULT_TEXTURE_PATH = _default_texture_path()
 
 
 def _load_texture(path: Path):
-    img = Image.open(path).convert("RGBA")
-    return np.array(img, dtype=np.uint8), img.width, img.height
+    """Load a PNG as an RGBA uint8 NumPy array using Qt (no PIL dependency)."""
+    img = QImage(str(path))
+    if img.isNull():
+        raise FileNotFoundError(f"Cannot load texture image: {path}")
+    img = img.convertToFormat(QImage.Format_RGBA8888)
+    width = img.width()
+    height = img.height()
+    ptr = img.constBits()
+    if not isinstance(ptr, memoryview):
+        ptr = memoryview(ptr)
+    data = np.frombuffer(ptr, dtype=np.uint8).reshape(
+        (height, img.bytesPerLine() // 4, 4)
+    )[:, :width, :].copy()
+    return data, width, height
 
 
 def load_texture_manifest(path: Path) -> dict:

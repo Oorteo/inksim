@@ -8,7 +8,6 @@ import math
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtGui import QSurfaceFormat
 from PySide6.QtOpenGL import (
@@ -25,7 +24,7 @@ from PySide6.QtWidgets import QApplication
 from OpenGL.GL import *
 
 from ..render.stitches_gl import _build_satin_quads as build_satin_quads
-from ..render.stitches_gl import _default_texture_path, texture_width_fraction
+from ..render.stitches_gl import _default_texture_path, _load_texture, texture_width_fraction
 
 VERTEX_SHADER = """
 #version 330 core
@@ -103,11 +102,6 @@ void main() {
     fragColor = vec4(clamp(shaded, 0.0, 1.0), texel.a);
 }
 """
-
-
-def _load_texture(path: Path):
-    img = Image.open(path).convert("RGBA")
-    return np.array(img, dtype=np.uint8), img.width, img.height
 
 
 def list_thread_textures():
