@@ -254,28 +254,34 @@ def _build_satin_quads(
     stitch_height = max(1e-3, line_width * zoom * stitch_height_scale * 0.5)
     stitch_height /= max(1e-3, width_fraction)
     h = stitch_height / 2.0
-    # Cap radius: a semicircle of the thread half-width, clamped to half the
-    # stitch length so the two end caps never overlap on short stitches
-    # (overlapping caps double-blend into bright blobs ~2x the thread width).
-    # The end cross-sections taper to the same radius so the ribbon and its
-    # caps form one continuous outline (a stadium for long stitches).
+    # Round caps: the straight ribbon runs only between (x1 + cap_h) and
+    # (x2 - cap_h); a semicircle of radius cap_h closes each end so that the
+    # stitch spans EXACTLY needle point to needle point -- the cap tip sits
+    # on the piercing point, nothing bulges past it. Radius is clamped to
+    # half the stitch length so the two caps never overlap.
     cap_h = np.minimum(h, length * 0.5)
+    cap_h = np.where(valid, cap_h, 0.0)
 
     mx = (x1 + x2) / 2.0
     my = (y1 + y2) / 2.0
 
-    us_x = x1 + across_x * cap_h
-    us_y = y1 + across_y * cap_h
+    us_x = x1 + along_x * cap_h + across_x * cap_h
+    us_y = y1 + along_y * cap_h + across_y * cap_h
     um_x = mx + across_x * h
     um_y = my + across_y * h
-    ue_x = x2 + across_x * cap_h
-    ue_y = y2 + across_y * cap_h
-    ls_x = x1 - across_x * cap_h
-    ls_y = y1 - across_y * cap_h
+    ue_x = x2 - along_x * cap_h + across_x * cap_h
+    ue_y = y2 - along_y * cap_h + across_y * cap_h
+    ls_x = x1 + along_x * cap_h - across_x * cap_h
+    ls_y = y1 + along_y * cap_h - across_y * cap_h
     lm_x = mx - across_x * h
     lm_y = my - across_y * h
-    le_x = x2 - across_x * cap_h
-    le_y = y2 - across_y * cap_h
+    le_x = x2 - along_x * cap_h - across_x * cap_h
+    le_y = y2 - along_y * cap_h - across_y * cap_h
+    # Cap arc center: midpoint of the offset (straight) end edge.
+    cs_x = x1 + along_x * cap_h
+    cs_y = y1 + along_y * cap_h
+    ce_x = x2 - along_x * cap_h
+    ce_y = y2 - along_y * cap_h
 
     # Texture repeats: constant twist density, no lower clamp (see above).
     repeats = length / stitch_height / thread_texture_aspect
@@ -375,26 +381,26 @@ def _build_satin_quads(
         verts[:, v, 14] = g
         verts[:, v, 15] = b
 
-    # --- Semicircular caps at the needle entry/exit points. ---
-    # 5 arc vertices per cap, spanning the upper edge (V=0) through the tip
-    # to the lower edge (V=1). The start cap bulges backward (-along), the
-    # end cap forward (+along). U advances along the arc so the cap samples
-    # the twist pattern (a frozen U would light the whole cap with a single
-    # texture column). The start cap uses the start (tilt +60) TBN basis and
-    # the end cap the end (tilt -60) basis -- the same bases as the ribbon
-    # edges they meet, so the shading is continuous across the seam.
+    # --- Round caps centered on the offset end edge (mid-cap axis). ---
+    # The arc center is where the cap meets the straight ribbon. The arc is
+    # slightly elliptical along the stitch axis: its tip reaches a little
+    # PAST the needle point (tip_overshoot x cap_h), because the thread has
+    # volume and visually ends just beyond the piercing, not on it. 5 arc
+    # vertices span the upper rib (V=0) through the tip (V=0.5) to the
+    # lower rib (V=1). The start cap uses the start (tilt +60) TBN basis and
+    # the end cap the end (-60) basis -- the same as the ribbon edges they
+    # meet, so shading is continuous across the seam.
     cap_angles = np.linspace(0.0, np.pi, 5)
     cap_cos = np.cos(cap_angles)
     cap_sin = np.sin(cap_angles)
     cap_v = (1.0 - cap_cos) / 2.0
-    # U advance along the arc, in texture periods: arc length / repeat.
-    # Scaled small (a fraction of one twist period) so the twist continues
-    # smoothly past the ribbon end instead of freezing or streaking.
-    cap_u_scale = 0.25 / thread_texture_aspect / 8.0
+    tip_overshoot = 0.25  # tip extends this fraction of cap_h past the pierce
+    # Small U advance along the arc so the twist pattern carries through.
+    cap_u_scale = 0.5 * cap_h / max(1e-3, stitch_height * thread_texture_aspect)
 
-    # Start cap center (vertex 6) and end cap center (vertex 12).
-    verts[:, 6, 0] = x1; verts[:, 6, 1] = y1
-    verts[:, 12, 0] = x2; verts[:, 12, 1] = y2
+    # Start cap center (vertex 6) on the offset edge, end cap center (12).
+    verts[:, 6, 0] = cs_x; verts[:, 6, 1] = cs_y
+    verts[:, 12, 0] = ce_x; verts[:, 12, 1] = ce_y
     verts[:, 6, 2] = texture_start; verts[:, 6, 3] = 0.5
     verts[:, 12, 2] = texture_end; verts[:, 12, 3] = 0.5
 
@@ -402,15 +408,18 @@ def _build_satin_quads(
         c = cap_cos[j]
         s = cap_sin[j]
         v = cap_v[j]
-        u_off = cap_sin[j] * cap_u_scale
-        # Start cap arc (vertices 7..11): center (x1,y1), bulge -along.
-        verts[:, 7 + j, 0] = x1 + across_x * cap_h * c - along_x * cap_h * s
-        verts[:, 7 + j, 1] = y1 + across_y * cap_h * c - along_y * cap_h * s
+        u_off = s * cap_u_scale
+        along_bulge = cap_h * s * (1.0 + tip_overshoot)
+        # Start cap arc (vertices 7..11): sweeps from the upper rib around
+        # the tip (a little past the needle point x1,y1) to the lower rib.
+        verts[:, 7 + j, 0] = cs_x - along_x * along_bulge + across_x * cap_h * c
+        verts[:, 7 + j, 1] = cs_y - along_y * along_bulge + across_y * cap_h * c
         verts[:, 7 + j, 2] = texture_start - u_off
         verts[:, 7 + j, 3] = v
-        # End cap arc (vertices 13..17): center (x2,y2), bulge +along.
-        verts[:, 13 + j, 0] = x2 + across_x * cap_h * c + along_x * cap_h * s
-        verts[:, 13 + j, 1] = y2 + across_y * cap_h * c + along_y * cap_h * s
+        # End cap arc (vertices 13..17): mirrored around the offset edge on
+        # the x2,y2 side.
+        verts[:, 13 + j, 0] = ce_x + along_x * along_bulge + across_x * cap_h * c
+        verts[:, 13 + j, 1] = ce_y + along_y * along_bulge + across_y * cap_h * c
         verts[:, 13 + j, 2] = texture_end + u_off
         verts[:, 13 + j, 3] = v
 
