@@ -122,7 +122,7 @@ def _build_satin_quads(
     pan_y,
     line_width,
     thread_texture_aspect=8.0,
-    stitch_height_scale=1.0,
+    stitch_height_scale=2.5,
 ):
     """Convert stitch segments into textured quad vertex data.
 
