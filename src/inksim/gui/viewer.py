@@ -7,6 +7,7 @@ import numpy as np
 import pystitch as emb
 from PySide6.QtCore import (
     QRunnable,
+    QSettings,
     QThreadPool,
     Qt,
     QTimer,
@@ -280,20 +281,63 @@ class EmbroideryViewerWidget(QWidget):
         return max(50.0, viewport_extent / MAX_ZOOM_DESIGN_MM)
 
     def set_one_to_one(self):
-        """Display the design at its physical size when display PPI is known."""
+        """Display the design at its physical size using calibrated PPI."""
         if self.stitches_np.shape[0] == 0:
             return
+        self.zoom = self._pixels_per_mm()
+        self.center_design()
+
+    def _display_key(self):
+        """Return a stable key identifying the current display."""
+        screen = self.screen()
+        if screen is None:
+            return "default"
+        return screen.name() or "default"
+
+    def _pixels_per_mm(self):
+        """Return calibrated pixels-per-mm for the current display.
+
+        Falls back to the OS-reported physical DPI (with device-pixel-ratio
+        correction) when no calibration has been stored yet.
+        """
+        settings = QSettings(APP_ORGANIZATION, APP_TITLE)
+        key = f"display_calibration/{self._display_key()}"
+        stored = settings.value(key, None)
+        if stored is not None:
+            try:
+                value = float(stored)
+                if value > 0:
+                    return value
+            except (TypeError, ValueError):
+                pass
+        return self._estimated_pixels_per_mm()
+
+    def _estimated_pixels_per_mm(self):
+        """Estimate pixels-per-mm from the OS physical DPI and DPR."""
         try:
             screen = self.screen()
-            ppi_x = float(screen.logicalDotsPerInchX())
-            ppi_y = float(screen.logicalDotsPerInchY())
+            ppi_x = float(screen.physicalDotsPerInchX())
+            ppi_y = float(screen.physicalDotsPerInchY())
             if ppi_x <= 0 or ppi_y <= 0:
-                raise ValueError("invalid display PPI")
-            pixels_per_mm = (ppi_x + ppi_y) / (2.0 * 25.4)
+                raise ValueError("invalid physical DPI")
+            dpr = max(1.0, float(self.devicePixelRatioF()))
+            # physicalDotsPerInch is in device pixels; convert to logical
+            # pixels-per-mm (the unit self.zoom uses).
+            pixels_per_mm = (ppi_x + ppi_y) / (2.0 * 25.4) / dpr
         except (AttributeError, TypeError, ValueError):
             pixels_per_mm = 96.0 / 25.4
-        self.zoom = pixels_per_mm
-        self.center_design()
+        return pixels_per_mm
+
+    def calibrate_display(self):
+        """Open the calibration dialog and store the measured pixels-per-mm."""
+        from .dialogs import CalibrationDialog
+
+        dialog = CalibrationDialog(self, self._pixels_per_mm())
+        if dialog.exec() and dialog.pixels_per_mm() is not None:
+            settings = QSettings(APP_ORGANIZATION, APP_TITLE)
+            key = f"display_calibration/{self._display_key()}"
+            settings.setValue(key, dialog.pixels_per_mm())
+            self.set_one_to_one()
 
     def center_design(self):
         """Center the loaded design without changing its current zoom."""

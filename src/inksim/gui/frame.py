@@ -203,6 +203,8 @@ class MainWindow(QMainWindow):
         self._action(export_menu, "Simple PNG for print...", self.export_print_png)
         self._action(file_menu, "Center design", self.viewer.center_design, "C")
         self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen, "F")
+        self._action(file_menu, "Actual size (1:1)", self.viewer.set_one_to_one, "1")
+        self._action(file_menu, "Calibrate display size...", self.viewer.calibrate_display)
         self._action(file_menu, "Fullscreen", self.toggle_full_screen, "F11")
         self.grid_action = self._action(file_menu, "Show measurement grid", self.toggle_grid, "G", True)
         self.grid_action.setChecked(True)
