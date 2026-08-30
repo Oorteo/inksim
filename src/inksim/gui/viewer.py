@@ -6,11 +6,13 @@ import time
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import (
+    QEasingCurve,
     QRunnable,
     QSettings,
     QThreadPool,
     Qt,
     QTimer,
+    QVariantAnimation,
     Signal,
 )
 from PySide6.QtGui import (
@@ -142,7 +144,7 @@ class EmbroideryViewerWidget(QWidget):
         self.drag_start = None
         self.pan_start = (0, 0)
         self.line_width = DEFAULT_LINE_WIDTH_MM
-        self.background_color = (0, 0, 0)
+        self.background_color = DEFAULT_BACKGROUND_COLOR
         self.dark_factor = DEFAULT_DARK_FACTOR
         self.light_factor = DEFAULT_LIGHT_FACTOR
         self.shading_step = 0.05
@@ -158,8 +160,13 @@ class EmbroideryViewerWidget(QWidget):
         self.risky_jumps_only = False
         self.show_needle = True
         self.needle_highlighted = False
-        self.needle_highlight_stage = 0
-        self._needle_highlight_timer = None
+        self.needle_color = DEFAULT_NEEDLE_COLOR
+        self.needle_radius = DEFAULT_NEEDLE_RADIUS
+        self.needle_width = DEFAULT_NEEDLE_WIDTH
+        self.needle_fullscreen = False
+        self.needle_pulse = 0.0
+        self._needle_pulse_anim = None
+        self._load_view_settings()
         self.pattern = None
         self.stitches_np = np.zeros((0, 7), dtype=np.float32)
         self.bounds = (0, 0, 0, 0)
@@ -352,6 +359,47 @@ class EmbroideryViewerWidget(QWidget):
             settings.setValue("display_calibration/default", dialog.pixels_per_mm())
             settings.sync()
             self.set_one_to_one()
+
+    def _load_view_settings(self):
+        """Load persisted view settings (background/needle) from QSettings."""
+        settings = QSettings(APP_ORGANIZATION, APP_TITLE)
+        bg = settings.value("view/background_color", None)
+        if bg is not None:
+            try:
+                self.background_color = tuple(int(v) for v in bg)
+            except (TypeError, ValueError):
+                pass
+        nc = settings.value("view/needle_color", None)
+        if nc is not None:
+            try:
+                self.needle_color = tuple(int(v) for v in nc)
+            except (TypeError, ValueError):
+                pass
+        nt = settings.value("view/needle_radius", None)
+        if nt is not None:
+            try:
+                self.needle_radius = float(nt)
+            except (TypeError, ValueError):
+                pass
+        nw = settings.value("view/needle_width", None)
+        if nw is not None:
+            try:
+                self.needle_width = float(nw)
+            except (TypeError, ValueError):
+                pass
+        nf = settings.value("view/needle_fullscreen", None)
+        if nf is not None:
+            # QSettings stores bools as "true"/"false" strings; bool("false")
+            # would be True, so parse explicitly.
+            if isinstance(nf, bool):
+                self.needle_fullscreen = nf
+            else:
+                self.needle_fullscreen = str(nf).strip().lower() in ("true", "1", "yes", "on")
+
+    def _save_view_setting(self, key, value):
+        settings = QSettings(APP_ORGANIZATION, APP_TITLE)
+        settings.setValue(key, value)
+        settings.sync()
 
     def zoom_ratio(self):
         """Return the zoom as a relative factor (1.0 == physical 1:1 size).
@@ -624,6 +672,32 @@ class EmbroideryViewerWidget(QWidget):
         # Thread width is adjustable via '[' / ']' (same as CPU renderers);
         # push it here so the GL geometry is rebuilt when it changes.
         self._gl_widget.set_stitches(self.stitches_np, self.line_width)
+        self._gl_widget.set_show_stitches(self.show_stitches)
+        self._gl_widget.set_show_grid(self.show_grid)
+        # Analysis overlays (jumps, density, needle) mirror the CPU viewer.
+        self._gl_widget.set_jumps(
+            self.show_jumps, self.risky_jumps_only, self.jump_segments
+        )
+        self._gl_widget.set_density(
+            self.show_density,
+            self.stitch_points_np,
+            self.stitch_density_np,
+            self.repeated_stitch_np,
+        )
+        if self.show_needle and self.stitches_np.shape[0] > 0:
+            world_x, world_y = self._needle_world_pos()
+        else:
+            world_x, world_y = 0.0, 0.0
+        self._gl_widget.set_needle(
+            self.show_needle,
+            world_x,
+            world_y,
+            self.needle_color,
+            self.needle_radius,
+            self.needle_width,
+            self.needle_fullscreen,
+            self.needle_pulse,
+        )
 
     def select_renderer(self):
         """Open the renderer picker dialog."""
@@ -1131,75 +1205,95 @@ class EmbroideryViewerWidget(QWidget):
                     int(y2 * self.zoom + self.pan_y),
                 )
 
+    def _needle_world_pos(self):
+        """Return the current needle position in world (mm) coordinates."""
+        if self.visible_count > 0:
+            stitch = self.stitches_np[self.visible_count - 1]
+            return stitch[2], stitch[3]
+        stitch = self.stitches_np[0]
+        return stitch[0], stitch[1]
+
     def draw_needle_overlay(self, painter):
         """Draw the current needle position above the cached stitch bitmap."""
         if not self.show_stitches or not self.show_needle or self.stitches_np.shape[
                 0] == 0:
             return
-        if self.visible_count > 0:
-            stitch = self.stitches_np[self.visible_count - 1]
-            world_x, world_y = stitch[2], stitch[3]
-        else:
-            stitch = self.stitches_np[0]
-            world_x, world_y = stitch[0], stitch[1]
+        world_x, world_y = self._needle_world_pos()
         needle_x = int(world_x * self.zoom + self.pan_x)
         needle_y = int(world_y * self.zoom + self.pan_y)
-        if self.needle_highlight_stage == 2:
-            arm, radius, outer_radius = 80, 24, 42
-        elif self.needle_highlight_stage == 1:
-            arm, radius, outer_radius = 48, 16, 28
+
+        # Smooth pulse: needle_pulse goes 0 -> 1 -> 0 during a highlight.
+        pulse = self.needle_pulse
+        # Arms extend with the radius; the center ring stays a fixed size.
+        if self.needle_fullscreen:
+            arm = max(self.width(), self.height())
         else:
-            arm, radius, outer_radius = 14, 6, 0
-        painter.setPen(QPen(QColor(10, 10, 10), 8 if outer_radius else 4))
+            arm = self.needle_radius + 66 * pulse
+        radius = 6 + 18 * pulse
+        outer_radius = 42 * pulse
+
+        # Cross: dark outline + needle-color fill (inverse outline).
+        w = self.needle_width
+        color = QColor(*self.needle_color)
+        painter.setPen(QPen(QColor(10, 10, 10), (8 if outer_radius else 4) * w))
         painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
         painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
         if outer_radius:
             painter.setBrush(Qt.NoBrush)
             painter.drawEllipse(needle_x - outer_radius, needle_y - outer_radius,
-                           outer_radius * 2, outer_radius * 2)
-        painter.setPen(QPen(QColor(255, 255, 255), 3 if outer_radius else 2))
+                                outer_radius * 2, outer_radius * 2)
+        painter.setPen(QPen(color, (3 if outer_radius else 2) * w))
         painter.setBrush(Qt.NoBrush)
         painter.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
         painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
         painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
-        painter.setBrush(QColor(255, 220, 40))
-        painter.setPen(QPen(QColor(10, 10, 10), 2))
+        # Center dot: needle color with dark outline (fixed size).
+        painter.setBrush(color)
+        painter.setPen(QPen(QColor(10, 10, 10), 2 * w))
         marker_radius = 5 if outer_radius else 3
         painter.drawEllipse(needle_x - marker_radius, needle_y - marker_radius,
-                       marker_radius * 2, marker_radius * 2)
+                            marker_radius * 2, marker_radius * 2)
 
     def highlight_needle(self):
         """Pulse a large needle marker after user navigation."""
         if not self.show_needle:
             return
         self.needle_highlighted = True
-        self.needle_highlight_stage = 2
-        if self._needle_highlight_timer is not None:
-            self._needle_highlight_timer.stop()
-        self._needle_highlight_timer = QTimer(self)
-        self._needle_highlight_timer.setSingleShot(True)
-        self._needle_highlight_timer.timeout.connect(
-            lambda: self._set_needle_highlight_stage(1))
-        self._needle_highlight_timer.start(200)
+        self._start_needle_pulse()
+
+    def _start_needle_pulse(self):
+        """Animate needle_pulse 0 -> 1 -> 0 smoothly."""
+        if self._needle_pulse_anim is not None:
+            self._needle_pulse_anim.stop()
+        self._needle_pulse_anim = QVariantAnimation(self)
+        self._needle_pulse_anim.setStartValue(0.0)
+        self._needle_pulse_anim.setEndValue(1.0)
+        self._needle_pulse_anim.setDuration(220)
+        self._needle_pulse_anim.setEasingCurve(QEasingCurve.OutCubic)
+        self._needle_pulse_anim.valueChanged.connect(self._on_needle_pulse)
+        self._needle_pulse_anim.finished.connect(self._finish_needle_pulse)
+        self._needle_pulse_anim.start()
+
+    def _on_needle_pulse(self, value):
+        self.needle_pulse = float(value)
         self.update()
 
-    def _set_needle_highlight_stage(self, stage):
-        """Advance the temporary needle marker through its visual pulse."""
-        if not self.show_needle:
-            return
-        self.needle_highlight_stage = stage
-        self.update()
-        if stage == 1:
-            self._needle_highlight_timer = QTimer(self)
-            self._needle_highlight_timer.setSingleShot(True)
-            self._needle_highlight_timer.timeout.connect(self.stop_needle_highlight)
-            self._needle_highlight_timer.start(300)
+    def _finish_needle_pulse(self):
+        # Animate back down to 0.
+        self._needle_pulse_anim = QVariantAnimation(self)
+        self._needle_pulse_anim.setStartValue(self.needle_pulse)
+        self._needle_pulse_anim.setEndValue(0.0)
+        self._needle_pulse_anim.setDuration(320)
+        self._needle_pulse_anim.setEasingCurve(QEasingCurve.InOutCubic)
+        self._needle_pulse_anim.valueChanged.connect(self._on_needle_pulse)
+        self._needle_pulse_anim.finished.connect(self.stop_needle_highlight)
+        self._needle_pulse_anim.start()
 
     def stop_needle_highlight(self):
         """Return the needle crosshair to its normal size."""
         self.needle_highlighted = False
-        self.needle_highlight_stage = 0
-        self._needle_highlight_timer = None
+        self.needle_pulse = 0.0
+        self._needle_pulse_anim = None
         self.update()
 
     def wheelEvent(self, e):
@@ -1461,8 +1555,36 @@ class EmbroideryViewerWidget(QWidget):
         if not color.isValid():
             return
         self.background_color = (color.red(), color.green(), color.blue())
+        self._save_view_setting("view/background_color", list(self.background_color))
         self._gl_widget.set_background(*self.background_color)
         self.update()
+
+    def _choose_needle_color(self):
+        color = QColorDialog.getColor(
+            QColor(*self.needle_color), self, "Needle color"
+        )
+        if not color.isValid():
+            return
+        self.needle_color = (color.red(), color.green(), color.blue())
+        self._save_view_setting("view/needle_color", list(self.needle_color))
+        self.update()
+
+    def _choose_needle_radius(self):
+        from PySide6.QtWidgets import QInputDialog
+
+        value, ok = QInputDialog.getDouble(
+            self,
+            "Needle radius",
+            "Cross radius in pixels (1 - 2000):",
+            self.needle_radius,
+            1.0,
+            2000.0,
+            1,
+        )
+        if ok:
+            self.needle_radius = value
+            self._save_view_setting("view/needle_radius", value)
+            self.update()
 
     def mousePressEvent(self, e):
         """Start panning from the current mouse position."""

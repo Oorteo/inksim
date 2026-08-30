@@ -1,6 +1,7 @@
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
+    QCheckBox,
     QHBoxLayout,
     QLabel,
     QMenu,
@@ -10,6 +11,13 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QWidgetAction,
+)
+
+from ..constants import (
+    NEEDLE_RADIUS_MAX,
+    NEEDLE_RADIUS_MIN,
+    NEEDLE_WIDTH_MAX,
+    NEEDLE_WIDTH_MIN,
 )
 
 
@@ -83,6 +91,107 @@ class _SliderPopup(QMenu):
             label.setText(f"{getattr(self.viewer, attr):.2f}")
 
 
+class _NeedlePopup(QMenu):
+    """Popup with sliders for needle radius, width, color and fullscreen."""
+
+    def __init__(self, parent, viewer):
+        super().__init__(parent)
+        self.viewer = viewer
+        self._sliders = {}
+        self._labels = {}
+
+        container = QWidget(self)
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(8)
+
+        # Radius slider.
+        radius_row = QHBoxLayout()
+        radius_row.addWidget(QLabel("Radius"))
+        radius_slider = QSlider(Qt.Horizontal)
+        radius_slider.setRange(0, 1000)
+        radius_slider.setValue(self._to_slider(
+            viewer.needle_radius, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX))
+        radius_slider.valueChanged.connect(
+            lambda v: self._apply_radius(v))
+        radius_row.addWidget(radius_slider, 1)
+        self._radius_label = QLabel()
+        radius_row.addWidget(self._radius_label)
+        layout.addLayout(radius_row)
+
+        # Width slider.
+        width_row = QHBoxLayout()
+        width_row.addWidget(QLabel("Width"))
+        width_slider = QSlider(Qt.Horizontal)
+        width_slider.setRange(0, 1000)
+        width_slider.setValue(self._to_slider(
+            viewer.needle_width, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX))
+        width_slider.valueChanged.connect(
+            lambda v: self._apply_width(v))
+        width_row.addWidget(width_slider, 1)
+        self._width_label = QLabel()
+        width_row.addWidget(self._width_label)
+        layout.addLayout(width_row)
+
+        # Color button.
+        color_button = QPushButton("Color…")
+        color_button.clicked.connect(self._choose_color)
+        layout.addWidget(color_button)
+
+        # Fullscreen checkbox.
+        self._fullscreen_check = QCheckBox("Full screen")
+        self._fullscreen_check.setChecked(viewer.needle_fullscreen)
+        self._fullscreen_check.toggled.connect(self._toggle_fullscreen)
+        layout.addWidget(self._fullscreen_check)
+
+        self._refresh_labels()
+
+        action = QWidgetAction(self)
+        action.setDefaultWidget(container)
+        self.addAction(action)
+
+    @staticmethod
+    def _to_slider(value, lo, hi):
+        return int(round((value - lo) / (hi - lo) * 1000))
+
+    @staticmethod
+    def _from_slider(value, lo, hi):
+        return lo + (value / 1000.0) * (hi - lo)
+
+    def _apply_radius(self, value):
+        self.viewer.needle_radius = self._from_slider(
+            value, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX)
+        self.viewer._save_view_setting("view/needle_radius", self.viewer.needle_radius)
+        self._refresh_labels()
+        self.viewer.update()
+
+    def _apply_width(self, value):
+        self.viewer.needle_width = self._from_slider(
+            value, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX)
+        self.viewer._save_view_setting("view/needle_width", self.viewer.needle_width)
+        self._refresh_labels()
+        self.viewer.update()
+
+    def _choose_color(self):
+        from PySide6.QtWidgets import QColorDialog
+        color = QColorDialog.getColor(
+            QColor(*self.viewer.needle_color), self, "Needle color")
+        if color.isValid():
+            self.viewer.needle_color = (color.red(), color.green(), color.blue())
+            self.viewer._save_view_setting(
+                "view/needle_color", list(self.viewer.needle_color))
+            self.viewer.update()
+
+    def _toggle_fullscreen(self, checked):
+        self.viewer.needle_fullscreen = checked
+        self.viewer._save_view_setting("view/needle_fullscreen", checked)
+        self.viewer.update()
+
+    def _refresh_labels(self):
+        self._radius_label.setText(f"{self.viewer.needle_radius:.0f}")
+        self._width_label.setText(f"{self.viewer.needle_width:.1f}")
+
+
 class ModeBar(QWidget):
     """Clickable indicators for the main viewer display modes."""
 
@@ -107,13 +216,25 @@ class ModeBar(QWidget):
             button.clicked.connect(lambda checked=False, m=mode: self.toggle_mode(m))
             self.buttons[mode] = button
             sizer.addWidget(button)
+        sizer.addStretch()
+        # Needle settings button (cross symbol), on the right before DF/LF/LW.
+        self.needle_button = QPushButton("✛", self)
+        self.needle_button.setFixedSize(32, 32)
+        self.needle_button.setToolTip("Needle crosshair settings")
+        self.needle_button.clicked.connect(self._show_needle_popup)
+        sizer.addWidget(self.needle_button)
+        self.needle_reset_button = QPushButton(self)
+        self.needle_reset_button.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
+        self.needle_reset_button.setToolTip("Reset needle settings")
+        self.needle_reset_button.setFixedSize(32, 32)
+        self.needle_reset_button.clicked.connect(self._reset_needle)
+        sizer.addWidget(self.needle_reset_button)
         self.settings_button = QPushButton(self)
         self.settings_button.setMinimumWidth(180)
         self.settings_button.setToolTip(
             "Click to adjust dark factor, light factor and line width"
         )
         self.settings_button.clicked.connect(self._show_sliders)
-        sizer.addStretch()
         sizer.addWidget(self.settings_button)
         self.reset_button = QPushButton(self)
         self.reset_button.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
@@ -132,6 +253,28 @@ class ModeBar(QWidget):
         popup.exec(self.settings_button.mapToGlobal(
             self.settings_button.rect().bottomLeft()
         ))
+
+    def _show_needle_popup(self):
+        popup = _NeedlePopup(self, self.viewer)
+        popup.exec(self.needle_button.mapToGlobal(
+            self.needle_button.rect().bottomLeft()
+        ))
+
+    def _reset_needle(self):
+        from ..constants import (
+            DEFAULT_NEEDLE_COLOR,
+            DEFAULT_NEEDLE_RADIUS,
+            DEFAULT_NEEDLE_WIDTH,
+        )
+        self.viewer.needle_color = DEFAULT_NEEDLE_COLOR
+        self.viewer.needle_radius = DEFAULT_NEEDLE_RADIUS
+        self.viewer.needle_width = DEFAULT_NEEDLE_WIDTH
+        self.viewer.needle_fullscreen = False
+        self.viewer._save_view_setting("view/needle_color", list(DEFAULT_NEEDLE_COLOR))
+        self.viewer._save_view_setting("view/needle_radius", DEFAULT_NEEDLE_RADIUS)
+        self.viewer._save_view_setting("view/needle_width", DEFAULT_NEEDLE_WIDTH)
+        self.viewer._save_view_setting("view/needle_fullscreen", False)
+        self.viewer.update()
 
     def update_indicators(self):
         self.settings_button.setText(

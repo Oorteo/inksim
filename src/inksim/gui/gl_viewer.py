@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import QSurfaceFormat
+from PySide6.QtGui import QColor, QPainter, QPen, QSurfaceFormat
 from PySide6.QtOpenGL import (
     QOpenGLBuffer,
     QOpenGLFramebufferObject,
@@ -23,6 +23,7 @@ from PySide6.QtOpenGLWidgets import QOpenGLWidget
 from PySide6.QtWidgets import QApplication
 from OpenGL.GL import *
 
+from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_WARNING_PER_MM2
 from ..render.stitches_gl import _build_satin_quads as build_satin_quads
 from ..render.stitches_gl import (
     _default_texture_path,
@@ -114,6 +115,64 @@ void main() {
 }
 """
 
+# Full-screen triangle that reconstructs world (mm) coordinates per fragment,
+# used to draw the measurement grid in the background (under the stitches).
+GRID_VERTEX_SHADER = """
+#version 330 core
+uniform vec2 u_viewport;
+uniform vec2 u_pan;
+uniform float u_zoom;
+out vec2 v_world;
+void main() {
+    vec2 pos = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2));
+    // pos is in NDC [0,1] (Y up). Convert to pixel space (Y down) to match
+    // the pan convention used by the stitch renderer.
+    vec2 screen = vec2(pos.x * u_viewport.x, (1.0 - pos.y) * u_viewport.y);
+    v_world = (screen - u_pan) / u_zoom;
+    gl_Position = vec4(pos * 2.0 - 1.0, 0.0, 1.0);
+}
+"""
+
+GRID_FRAGMENT_SHADER = """
+#version 330 core
+in vec2 v_world;
+out vec4 fragColor;
+uniform vec3 u_bg_color;
+uniform float u_zoom;
+
+float gridLine(float coord, float spacing) {
+    float d = abs(fract(coord / spacing - 0.5) - 0.5) * spacing;
+    float w = fwidth(coord) * 1.5;
+    return 1.0 - smoothstep(0.0, w, d);
+}
+
+void main() {
+    vec3 color = u_bg_color;
+    float lum = dot(u_bg_color, vec3(0.299, 0.587, 0.114));
+
+    // 1 mm fine grid fades in at high zoom. u_zoom is pixels-per-mm, so
+    // ~4 px/mm (physical size) is where the fine grid starts to be useful.
+    float fine = max(gridLine(v_world.x, 1.0), gridLine(v_world.y, 1.0));
+    float fineFade = smoothstep(3.0, 6.0, u_zoom);
+
+    float minor = max(gridLine(v_world.x, 10.0), gridLine(v_world.y, 10.0));
+    float major = max(gridLine(v_world.x, 50.0), gridLine(v_world.y, 50.0));
+    float ax = 1.0 - smoothstep(0.0, fwidth(v_world.x) * 1.5, abs(v_world.x));
+    float ay = 1.0 - smoothstep(0.0, fwidth(v_world.y) * 1.5, abs(v_world.y));
+
+    vec3 lineColor = lum > 0.5 ? vec3(0.0) : vec3(1.0);
+    vec3 axisXColor = vec3(0.8, 0.4, 0.4);
+    vec3 axisYColor = vec3(0.4, 0.8, 0.4);
+
+    color = mix(color, lineColor, fine * 0.15 * fineFade);
+    color = mix(color, lineColor, minor * 0.18);
+    color = mix(color, lineColor, major * 0.30);
+    color = mix(color, axisXColor, ax * 0.5);
+    color = mix(color, axisYColor, ay * 0.5);
+
+    fragColor = vec4(color, 1.0);
+}
+"""
 
 def list_thread_textures():
     """Return ``[(label, path)]`` of available thread normal/mask textures.
@@ -168,6 +227,23 @@ class GLStitchWidget(QOpenGLWidget):
         self._idx = np.zeros((0,), dtype=np.uint32)
         self._index_counts = np.zeros((0,), dtype=np.int64)
         self._draw_count = 0
+        # Overlay state (mirrors the parent viewer's analysis overlays).
+        self._show_jumps = False
+        self._risky_jumps_only = False
+        self._jump_segments = []
+        self._show_density = False
+        self._density_points = np.zeros((0, 2), dtype=np.float32)
+        self._density_values = np.zeros((0,), dtype=np.float32)
+        self._density_repeated = np.zeros((0,), dtype=np.bool_)
+        self._show_needle = True
+        self._needle_pos = np.array([0.0, 0.0], dtype=np.float32)
+        self._needle_color = (255, 255, 255)
+        self._needle_radius = 30.0
+        self._needle_width = 1.0
+        self._needle_fullscreen = False
+        self._needle_pulse = 0.0
+        self._show_stitches = True
+        self._show_grid = True
 
     def set_view(self, zoom, pan_x, pan_y):
         self._zoom = zoom
@@ -204,6 +280,37 @@ class GLStitchWidget(QOpenGLWidget):
         self._visible_count = visible_count
         self.update()
 
+    def set_jumps(self, show_jumps, risky_only, jump_segments):
+        self._show_jumps = show_jumps
+        self._risky_jumps_only = risky_only
+        self._jump_segments = jump_segments
+        self.update()
+
+    def set_density(self, show_density, points, values, repeated):
+        self._show_density = show_density
+        self._density_points = points
+        self._density_values = values
+        self._density_repeated = repeated
+        self.update()
+
+    def set_needle(self, show_needle, world_x, world_y, color, radius, width, fullscreen, pulse):
+        self._show_needle = show_needle
+        self._needle_pos = np.array([world_x, world_y], dtype=np.float32)
+        self._needle_color = color
+        self._needle_radius = radius
+        self._needle_width = width
+        self._needle_fullscreen = fullscreen
+        self._needle_pulse = pulse
+        self.update()
+
+    def set_show_stitches(self, show_stitches):
+        self._show_stitches = show_stitches
+        self.update()
+
+    def set_show_grid(self, show_grid):
+        self._show_grid = show_grid
+        self.update()
+
     def initializeGL(self):
         fmt = self.context().format()
         print(f"[GLStitchWidget] OpenGL {fmt.majorVersion()}.{fmt.minorVersion()}")
@@ -226,6 +333,13 @@ class GLStitchWidget(QOpenGLWidget):
         self._configure_vao()
 
         self._load_texture(self._texture_path or _default_texture_path())
+
+        # Grid shader (full-screen triangle, drawn under the stitches).
+        self._grid_program = QOpenGLShaderProgram(self)
+        self._grid_program.addShaderFromSourceCode(QOpenGLShader.Vertex, GRID_VERTEX_SHADER)
+        self._grid_program.addShaderFromSourceCode(QOpenGLShader.Fragment, GRID_FRAGMENT_SHADER)
+        if not self._grid_program.link():
+            print("Grid shader link failed:", self._grid_program.log())
 
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -341,49 +455,176 @@ class GLStitchWidget(QOpenGLWidget):
         glClearColor(*self._bg_color, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        count = min(self._visible_count, self._index_counts.shape[0])
-        draw_count = int(self._index_counts[count - 1]) if count > 0 else 0
-        if draw_count == 0:
-            return
-
         w = self.width()
         h = self.height()
-        # Vertices are in model space (see _upload_geometry). This matrix is the
-        # only place zoom/pan is applied: model -> pixel (y-down, matches the
-        # raster viewer convention) -> NDC.
-        sx = self._zoom * 2.0 / w
-        sy = -self._zoom * 2.0 / h
-        tx = self._pan[0] * 2.0 / w - 1.0
-        ty = 1.0 - self._pan[1] * 2.0 / h
 
-        transform = np.array([
-            sx, 0.0, 0.0, 0.0,
-            0.0, sy, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            tx, ty, 0.0, 1.0,
-        ], dtype=np.float32)
+        # 1. Grid (GL, under everything).
+        if self._show_grid:
+            self._draw_grid_gl(w, h)
 
-        self._program.bind()
-        glUniformMatrix4fv(self._program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
-        glUniform3f(self._program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
-        k_a, k_d, k_s = _lighting_coefficients(self._dark_factor, self._light_factor)
-        glUniform1f(self._program.uniformLocation("u_k_a"), k_a)
-        glUniform1f(self._program.uniformLocation("u_k_d"), k_d)
-        glUniform1f(self._program.uniformLocation("u_k_s"), k_s)
-        glUniform1f(self._program.uniformLocation("u_specular_exponent"), 12.0)
-        tangent_strength, bitangent_strength = _normal_strengths(self._zoom)
-        glUniform1f(self._program.uniformLocation("u_normal_strength_tangent"), tangent_strength)
-        glUniform1f(self._program.uniformLocation("u_normal_strength_bitangent"), bitangent_strength)
-        glUniform1i(self._program.uniformLocation("u_debug_mode"), self._debug_mode)
+        # 2. Stitches (GL).
+        count = min(self._visible_count, self._index_counts.shape[0])
+        draw_count = int(self._index_counts[count - 1]) if count > 0 else 0
+        if draw_count > 0 and self._show_stitches:
+            # Vertices are in model space (see _upload_geometry). This matrix is
+            # the only place zoom/pan is applied: model -> pixel (y-down) -> NDC.
+            sx = self._zoom * 2.0 / w
+            sy = -self._zoom * 2.0 / h
+            tx = self._pan[0] * 2.0 / w - 1.0
+            ty = 1.0 - self._pan[1] * 2.0 / h
 
-        self._texture.bind(0)
-        glUniform1i(self._program.uniformLocation("u_texture"), 0)
+            transform = np.array([
+                sx, 0.0, 0.0, 0.0,
+                0.0, sy, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                tx, ty, 0.0, 1.0,
+            ], dtype=np.float32)
 
-        self._vao.bind()
-        glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
-        self._vao.release()
-        self._texture.release()
-        self._program.release()
+            self._program.bind()
+            glUniformMatrix4fv(self._program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
+            glUniform3f(self._program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
+            k_a, k_d, k_s = _lighting_coefficients(self._dark_factor, self._light_factor)
+            glUniform1f(self._program.uniformLocation("u_k_a"), k_a)
+            glUniform1f(self._program.uniformLocation("u_k_d"), k_d)
+            glUniform1f(self._program.uniformLocation("u_k_s"), k_s)
+            glUniform1f(self._program.uniformLocation("u_specular_exponent"), 12.0)
+            tangent_strength, bitangent_strength = _normal_strengths(self._zoom)
+            glUniform1f(self._program.uniformLocation("u_normal_strength_tangent"), tangent_strength)
+            glUniform1f(self._program.uniformLocation("u_normal_strength_bitangent"), bitangent_strength)
+            glUniform1i(self._program.uniformLocation("u_debug_mode"), self._debug_mode)
+
+            self._texture.bind(0)
+            glUniform1i(self._program.uniformLocation("u_texture"), 0)
+
+            self._vao.bind()
+            glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
+            self._vao.release()
+            self._texture.release()
+            self._program.release()
+
+        # 3. Needle crosshair (GL, on top of the stitches).
+        if self._show_needle:
+            self._draw_needle_gl(w, h)
+
+        # 4. Jumps + density (QPainter, on top of the stitches).
+        self._draw_analysis_overlays()
+
+    def _draw_grid_gl(self, w, h):
+        """Draw the measurement grid in the background using a full-screen pass."""
+        if self._grid_program is None or not self._grid_program.isLinked():
+            return
+        self._grid_program.bind()
+        glUniform2f(self._grid_program.uniformLocation("u_viewport"), float(w), float(h))
+        glUniform2f(self._grid_program.uniformLocation("u_pan"), self._pan[0], self._pan[1])
+        glUniform1f(self._grid_program.uniformLocation("u_zoom"), self._zoom)
+        glUniform3f(self._grid_program.uniformLocation("u_bg_color"), *self._bg_color)
+        glDrawArrays(GL_TRIANGLES, 0, 3)
+        self._grid_program.release()
+
+    def _draw_needle_gl(self, w, h):
+        """Draw the needle crosshair on top of the stitches (QPainter).
+
+        Matches the CPU viewer's needle: white cross with a dark outline,
+        a fixed-size center ring in the needle color, and arms that extend
+        with the radius (or full screen).
+        """
+        sx = self._needle_pos[0] * self._zoom + self._pan[0]
+        sy = self._needle_pos[1] * self._zoom + self._pan[1]
+        needle_x = int(sx)
+        needle_y = int(sy)
+        pulse = self._needle_pulse
+        if self._needle_fullscreen:
+            arm = max(w, h)
+        else:
+            arm = self._needle_radius + 66 * pulse
+        radius = 6 + 18 * pulse
+        outer_radius = 42 * pulse
+
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        w = self._needle_width
+        color = QColor(*self._needle_color)
+        # Cross: dark outline + needle-color fill.
+        painter.setPen(QPen(QColor(10, 10, 10), (8 if outer_radius else 4) * w))
+        painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
+        painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
+        if outer_radius:
+            painter.setBrush(Qt.NoBrush)
+            painter.drawEllipse(needle_x - outer_radius, needle_y - outer_radius,
+                                outer_radius * 2, outer_radius * 2)
+        painter.setPen(QPen(color, (3 if outer_radius else 2) * w))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
+        painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
+        painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
+        # Center dot: needle color with dark outline (fixed size).
+        painter.setBrush(color)
+        painter.setPen(QPen(QColor(10, 10, 10), 2 * w))
+        marker_radius = 5 if outer_radius else 3
+        painter.drawEllipse(needle_x - marker_radius, needle_y - marker_radius,
+                            marker_radius * 2, marker_radius * 2)
+        painter.end()
+
+    def _world_to_screen(self, x, y):
+        return x * self._zoom + self._pan[0], y * self._zoom + self._pan[1]
+
+    def _draw_analysis_overlays(self):
+        """Draw jump paths and density markers on top of the stitches."""
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        self._draw_jumps(painter)
+        self._draw_density(painter)
+        painter.end()
+
+    def _draw_jumps(self, painter):
+        if not self._show_jumps:
+            return
+        for x1, y1, x2, y2, risky, stitch_index in self._jump_segments:
+            if stitch_index > self._visible_count:
+                continue
+            if self._risky_jumps_only and not risky:
+                continue
+            color = QColor(220, 45, 45) if risky else QColor(100, 100, 100)
+            sx1, sy1 = self._world_to_screen(x1, y1)
+            sx2, sy2 = self._world_to_screen(x2, y2)
+            painter.setPen(QPen(color, 2, Qt.DashLine))
+            painter.drawLine(int(sx1), int(sy1), int(sx2), int(sy2))
+
+    def _draw_density(self, painter):
+        if not self._show_density or self._density_points.shape[0] == 0:
+            return
+        points = self._density_points
+        values = self._density_values
+        repeated = self._density_repeated
+        visible = min(self._visible_count, points.shape[0])
+        w = self.width()
+        h = self.height()
+        # Needle-puncture dots ~0.4 mm across (a stitch width), scaling with zoom.
+        marker_radius = max(0.5, 0.2 * self._zoom)
+        outer_radius = max(marker_radius, 0.35 * self._zoom)
+        for i in range(visible):
+            value = values[i]
+            if value >= DENSITY_CRITICAL_PER_MM2:
+                r, g, b = 220, 35, 35
+            elif value >= DENSITY_WARNING_PER_MM2:
+                r, g, b = 235, 175, 25
+            else:
+                r, g, b = 45, 110, 215
+            sx, sy = self._world_to_screen(points[i, 0], points[i, 1])
+            # Cull markers far outside the viewport.
+            if sx < -outer_radius or sx > w + outer_radius:
+                continue
+            if sy < -outer_radius or sy > h + outer_radius:
+                continue
+            radius = outer_radius if repeated[i] else marker_radius
+            painter.setPen(QPen(QColor(r, g, b), 1))
+            painter.setBrush(QColor(r, g, b))
+            painter.drawEllipse(int(sx) - radius, int(sy) - radius, radius * 2, radius * 2)
+            # Darker center, like a needle puncture.
+            inner = max(0.5, radius * 0.5)
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(QColor(10, 10, 10))
+            painter.drawEllipse(int(sx) - inner, int(sy) - inner, inner * 2, inner * 2)
 
     def resizeGL(self, w, h):
         glViewport(0, 0, w, h)
