@@ -25,7 +25,7 @@ from PySide6.QtWidgets import QApplication
 from OpenGL.GL import *
 
 from ..render.stitches_gl import _build_satin_quads as build_satin_quads
-from ..render.stitches_gl import _default_texture_path
+from ..render.stitches_gl import _default_texture_path, texture_width_fraction
 
 VERTEX_SHADER = """
 #version 330 core
@@ -148,6 +148,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._ibo = None
         self._texture = None
         self._texture_path = None
+        self._width_fraction = 1.0
         self._zoom = 1.0
         self._pan = np.array([0.0, 0.0], dtype=np.float32)
         self._bg_color = (0.0, 0.0, 0.0)
@@ -239,17 +240,25 @@ class GLStitchWidget(QOpenGLWidget):
         self._texture.setWrapMode(QOpenGLTexture.DirectionT, QOpenGLTexture.ClampToEdge)
         self._texture.generateMipMaps()
         self._texture_path = path
+        self._width_fraction = texture_width_fraction(path)
 
     def set_texture_path(self, path):
         """Swap the thread texture at runtime (e.g. from a context menu)."""
         if self._texture is None:
             # GL context not initialised yet; remember the path for later.
             self._texture_path = path
+            self._width_fraction = texture_width_fraction(path)
             return
         self.makeCurrent()
         self._load_texture(path)
         self.doneCurrent()
+        # Width normalisation changed -> rebuild geometry.
+        self._needs_upload = True
         self.update()
+
+    def texture_path(self):
+        """Return the currently active texture path (or None before init)."""
+        return self._texture_path
 
     def _configure_vao(self):
         self._vao.bind()
@@ -292,6 +301,7 @@ class GLStitchWidget(QOpenGLWidget):
             0.0,
             0.0,
             self._line_width,
+            width_fraction=self._width_fraction,
         )
         self._verts = verts
         self._idx = idx

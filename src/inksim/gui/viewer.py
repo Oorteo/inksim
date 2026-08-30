@@ -1,4 +1,5 @@
 from collections import deque
+from pathlib import Path
 from threading import Lock
 import time
 
@@ -1365,9 +1366,12 @@ class EmbroideryViewerWidget(QWidget):
 
         texture_menu = menu.addMenu("Thread texture")
         textures = list_thread_textures()
+        active_path = self._gl_widget.texture_path()
         if textures:
             for label, path in textures:
                 action = texture_menu.addAction(label)
+                action.setCheckable(True)
+                action.setChecked(active_path is not None and Path(path) == Path(active_path))
                 action.setData(str(path))
                 action.triggered.connect(
                     lambda checked=False, p=path: self._gl_widget.set_texture_path(p)

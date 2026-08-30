@@ -2,14 +2,16 @@
 # Generate all thread texture variants with clear, descriptive names.
 #
 # Each variant is rendered into ./renders/<variant>/ with files named
-# thread_<variant>_<map>.png (diffuse/normal/mask/normal_mask/roughness/height/rgba).
-# ./renders/ is regenerable output and is not committed to git.
+# <variant>_<map>.png (diffuse/normal/mask/normal_mask/roughness/height/rgba)
+# plus a <variant>_manifest.json describing its parameters and measured
+# width_fraction. ./renders/ is regenerable output and is not committed to git.
 #
-# The renderer only loads ONE packaged file at runtime:
-#   src/inksim/assets/thread_textures/<DEFAULT_VARIANT>_normal_mask.png
-# so after generating, the chosen default variant's normal_mask map is copied
-# there. Change DEFAULT_VARIANT below (and inksim/render/stitches_gl.py's
-# _default_texture_path) to ship a different look.
+# The renderer loads the packaged assets under
+#   src/inksim/assets/thread_textures/
+# so after generating, every variant's normal_mask map AND manifest are copied
+# there (the manifest carries the width_fraction used to normalise thickness).
+# Change DEFAULT_VARIANT below (and inksim/render/stitches_gl.py's
+# _default_texture_path) to ship a different default look.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -28,10 +30,21 @@ generate() {
     uvr python "$SCRIPT" --output-dir "$OUT_ROOT/$name" --prefix "$name" "$@"
 }
 
+# Variants are deliberately spread wide so the visual differences are obvious.
 generate classic_3strand --strands 3
 generate soft_2strand --strands 2 --strand-radius 28 --helix-radius 14 --blend-softness 3.5
 generate bold_4strand --strands 4 --strand-radius 20 --helix-radius 10 --blend-softness 2.0
+generate thin_2strand --strands 2 --strand-radius 16 --helix-radius 8 --blend-softness 2.0
+generate thick_6strand --strands 6 --strand-radius 18 --helix-radius 12 --blend-softness 1.5
+generate tight_twist --strands 3 --twist-periods 6
+generate loose_twist --strands 3 --twist-periods 1.5
+generate fuzzy_3strand --strands 3 --fiber-noise 0.14
 
 mkdir -p "$ASSETS_DIR"
-cp "$OUT_ROOT/$DEFAULT_VARIANT/${DEFAULT_VARIANT}_normal_mask.png" "$ASSETS_DIR/"
-echo "Copied ${DEFAULT_VARIANT}_normal_mask.png -> $ASSETS_DIR (packaged asset used by the renderer)"
+for variant_dir in "$OUT_ROOT"/*/; do
+    name="$(basename "$variant_dir")"
+    cp "$variant_dir/${name}_normal_mask.png" "$ASSETS_DIR/"
+    cp "$variant_dir/${name}_manifest.json" "$ASSETS_DIR/"
+    echo "Copied ${name}_normal_mask.png + manifest -> $ASSETS_DIR"
+done
+echo "Default variant: $DEFAULT_VARIANT"

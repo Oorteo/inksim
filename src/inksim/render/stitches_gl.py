@@ -5,6 +5,7 @@ using a normal-map thread texture and Blinn-Phong lighting.  It renders
 offscreen into an RGB buffer so it plugs into the existing viewport
 pipeline without changing the viewer widget.
 """
+import json
 import math
 import sys
 from pathlib import Path
@@ -114,6 +115,35 @@ def _load_texture(path: Path):
     return np.array(img, dtype=np.uint8), img.width, img.height
 
 
+def load_texture_manifest(path: Path) -> dict:
+    """Load the JSON manifest next to a thread texture, if present.
+
+    Returns the manifest dict, or ``{}`` if no manifest exists. The manifest
+    carries ``width_fraction`` (fraction of the texture canvas covered by the
+    thread) which the renderer uses to normalise ribbon thickness.
+    """
+    manifest_path = path.with_name(path.stem.replace("_normal_mask", "") + "_manifest.json")
+    if not manifest_path.exists():
+        # Fall back to a sibling manifest named after the variant directory.
+        manifest_path = path.with_name("manifest.json")
+    if not manifest_path.exists():
+        return {}
+    try:
+        return json.loads(manifest_path.read_text())
+    except (OSError, ValueError):
+        return {}
+
+
+def texture_width_fraction(path: Path) -> float:
+    """Return the measured thread width fraction for *path* (default 1.0)."""
+    manifest = load_texture_manifest(path)
+    value = manifest.get("width_fraction", 1.0)
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return 1.0
+
+
 def _build_satin_quads(
     stitches,
     visible_count,
@@ -123,6 +153,7 @@ def _build_satin_quads(
     line_width,
     thread_texture_aspect=8.0,
     stitch_height_scale=2.5,
+    width_fraction=1.0,
 ):
     """Convert stitch segments into textured quad vertex data.
 
@@ -169,7 +200,12 @@ def _build_satin_quads(
 
     # Full ribbon width in model units. No 1.0 floor: the width must scale
     # with line_width so '[' / ']' actually changes the thread thickness.
+    # width_fraction (from the texture manifest) is the fraction of the
+    # texture canvas actually covered by the thread; dividing by it makes
+    # every variant render at the same physical thickness regardless of how
+    # much of the canvas its strands fill.
     stitch_height = max(1e-3, line_width * zoom * stitch_height_scale * 0.5)
+    stitch_height /= max(1e-3, width_fraction)
     h = stitch_height / 2.0
 
     mx = (x1 + x2) / 2.0
@@ -506,6 +542,7 @@ def render_gpu_textured(
         pan_x,
         pan_y,
         line_width,
+        width_fraction=texture_width_fraction(_DEFAULT_TEXTURE_PATH),
     )
     if idx.size == 0:
         return

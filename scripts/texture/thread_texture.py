@@ -11,6 +11,7 @@ Outputs:
   - combined RGBA preview (diffuse + alpha)
 """
 import argparse
+import json
 import math
 from pathlib import Path
 
@@ -247,9 +248,33 @@ def generate_thread_textures(
     rgba_img.save(rgba_path)
     outputs["rgba"] = rgba_path
 
+    # Fraction of the texture height actually covered by the thread (alpha >
+    # 0.05). This lets the renderer normalise the ribbon width so different
+    # variants all render at the same physical thickness regardless of how
+    # much of the texture canvas their strands fill.
+    coverage = (alpha_mask > 0.05).sum(axis=0) / height
+    width_fraction = float(np.mean(coverage))
+
+    manifest = {
+        "name": prefix,
+        "width": width,
+        "height": height,
+        "twist_periods": twist_periods,
+        "strand_radius": strand_radius,
+        "helix_radius": helix_radius,
+        "num_strands": num_strands,
+        "blend_softness": blend_softness,
+        "fiber_noise": fiber_noise,
+        "width_fraction": width_fraction,
+    }
+    manifest_path = output_dir / f"{prefix}_manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2))
+    outputs["manifest"] = manifest_path
+
     print(f"Generated {len(outputs)} textures in {output_dir}:")
     for name, path in outputs.items():
         print(f"   - {name}: {path.name}")
+    print(f"   width_fraction = {width_fraction:.3f}")
 
     return outputs
 

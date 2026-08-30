@@ -1,0 +1,12 @@
+{
+  "name": "bold_4strand",
+  "width": 512,
+  "height": 128,
+  "twist_periods": 3.0,
+  "strand_radius": 20.0,
+  "helix_radius": 10.0,
+  "num_strands": 4,
+  "blend_softness": 2.0,
+  "fiber_noise": 0.06,
+  "width_fraction": 0.4524078369140625
+}
