@@ -110,6 +110,25 @@ def _load_texture(path: Path):
     return np.array(img, dtype=np.uint8), img.width, img.height
 
 
+def list_thread_textures():
+    """Return ``[(label, path)]`` of available thread normal/mask textures.
+
+    Includes the packaged asset(s) under ``assets/thread_textures/`` and, for
+    development, the regenerated previews under ``scripts/texture/renders/``.
+    """
+    results = []
+    here = Path(__file__).resolve().parent
+    assets_dir = here.parent / "assets" / "thread_textures"
+    if assets_dir.exists():
+        for p in sorted(assets_dir.glob("*_normal_mask.png")):
+            results.append((p.stem, p))
+    scripts_dir = here.parent.parent.parent / "scripts" / "texture" / "renders"
+    if scripts_dir.exists():
+        for p in sorted(scripts_dir.glob("*/*_normal_mask.png")):
+            results.append((f"{p.parent.name}/{p.stem}", p))
+    return results
+
+
 class GLStitchWidget(QOpenGLWidget):
     """OpenGL widget that renders textured stitch quads.
 
@@ -128,6 +147,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._vbo = None
         self._ibo = None
         self._texture = None
+        self._texture_path = None
         self._zoom = 1.0
         self._pan = np.array([0.0, 0.0], dtype=np.float32)
         self._bg_color = (0.0, 0.0, 0.0)
@@ -194,7 +214,19 @@ class GLStitchWidget(QOpenGLWidget):
 
         self._configure_vao()
 
-        tex_data, tex_w, tex_h = _load_texture(_default_texture_path())
+        self._load_texture(self._texture_path or _default_texture_path())
+
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        # All quads share z=0 -- stitch layering must follow draw order (later
+        # stitch on top), not the depth buffer, so depth testing stays off.
+        glDisable(GL_DEPTH_TEST)
+
+    def _load_texture(self, path):
+        """(Re)create the thread texture from *path* (a normal/mask PNG)."""
+        tex_data, tex_w, tex_h = _load_texture(path)
+        if self._texture is not None:
+            self._texture.destroy()
         self._texture = QOpenGLTexture(QOpenGLTexture.Target2D)
         self._texture.create()
         self._texture.setFormat(QOpenGLTexture.RGBAFormat)
@@ -206,12 +238,18 @@ class GLStitchWidget(QOpenGLWidget):
         self._texture.setWrapMode(QOpenGLTexture.DirectionS, QOpenGLTexture.Repeat)
         self._texture.setWrapMode(QOpenGLTexture.DirectionT, QOpenGLTexture.ClampToEdge)
         self._texture.generateMipMaps()
+        self._texture_path = path
 
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        # All quads share z=0 -- stitch layering must follow draw order (later
-        # stitch on top), not the depth buffer, so depth testing stays off.
-        glDisable(GL_DEPTH_TEST)
+    def set_texture_path(self, path):
+        """Swap the thread texture at runtime (e.g. from a context menu)."""
+        if self._texture is None:
+            # GL context not initialised yet; remember the path for later.
+            self._texture_path = path
+            return
+        self.makeCurrent()
+        self._load_texture(path)
+        self.doneCurrent()
+        self.update()
 
     def _configure_vao(self):
         self._vao.bind()

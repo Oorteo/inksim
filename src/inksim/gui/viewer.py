@@ -24,9 +24,11 @@ from PySide6.QtGui import (
 )
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QColorDialog,
     QDialog,
     QGridLayout,
     QHeaderView,
+    QMenu,
     QMessageBox,
     QPushButton,
     QTableWidget,
@@ -45,7 +47,7 @@ from ..render import (
     render_density_numba,
     render_viewport_raster,
 )
-from .gl_viewer import GLStitchWidget
+from .gl_viewer import GLStitchWidget, list_thread_textures
 from .help import show_help
 from .settings import show_settings
 
@@ -137,6 +139,7 @@ class EmbroideryViewerWidget(QWidget):
         self.drag_start = None
         self.pan_start = (0, 0)
         self.line_width = DEFAULT_LINE_WIDTH_MM
+        self.background_color = (0, 0, 0)
         self.dark_factor = DEFAULT_DARK_FACTOR
         self.light_factor = DEFAULT_LIGHT_FACTOR
         self.shading_step = 0.05
@@ -528,7 +531,7 @@ class EmbroideryViewerWidget(QWidget):
             self._gl_widget.setGeometry(self.rect())
             self._gl_widget.set_stitches(self.stitches_np, self.line_width)
             self._sync_gl_widget()
-            self._gl_widget.set_background(0, 0, 0)
+            self._gl_widget.set_background(*self.background_color)
             self._gl_widget.show()
             self._gl_widget.raise_()
         else:
@@ -872,7 +875,7 @@ class EmbroideryViewerWidget(QWidget):
             # zoom/pan/stitch position, then just clear the underlying widget.
             self._sync_gl_widget()
             painter = QPainter(self)
-            painter.fillRect(self.rect(), QColor(0, 0, 0))
+            painter.fillRect(self.rect(), QColor(*self.background_color))
             painter.end()
             return
 
@@ -1344,6 +1347,46 @@ class EmbroideryViewerWidget(QWidget):
             table.scrollToItem(table.item(current_index, 1), QAbstractItemView.PositionAtCenter)
         dialog.move(global_position)
         dialog.show()
+
+    def contextMenuEvent(self, e):
+        """Right-click menu: background color and thread texture selection.
+
+        Only meaningful for the GPU textured renderer; for other renderers
+        fall back to the default (empty) context menu.
+        """
+        if self.active_renderer != "gpu_textured":
+            e.ignore()
+            return
+
+        menu = QMenu(self)
+
+        bg_action = menu.addAction("Background color…")
+        bg_action.triggered.connect(self._choose_background_color)
+
+        texture_menu = menu.addMenu("Thread texture")
+        textures = list_thread_textures()
+        if textures:
+            for label, path in textures:
+                action = texture_menu.addAction(label)
+                action.setData(str(path))
+                action.triggered.connect(
+                    lambda checked=False, p=path: self._gl_widget.set_texture_path(p)
+                )
+        else:
+            no_tex = texture_menu.addAction("(none found)")
+            no_tex.setEnabled(False)
+
+        menu.exec(e.globalPos())
+
+    def _choose_background_color(self):
+        color = QColorDialog.getColor(
+            QColor(*self.background_color), self, "Background color"
+        )
+        if not color.isValid():
+            return
+        self.background_color = (color.red(), color.green(), color.blue())
+        self._gl_widget.set_background(*self.background_color)
+        self.update()
 
     def mousePressEvent(self, e):
         """Start panning from the current mouse position."""
