@@ -254,22 +254,28 @@ def _build_satin_quads(
     stitch_height = max(1e-3, line_width * zoom * stitch_height_scale * 0.5)
     stitch_height /= max(1e-3, width_fraction)
     h = stitch_height / 2.0
+    # Cap radius: a semicircle of the thread half-width, clamped to half the
+    # stitch length so the two end caps never overlap on short stitches
+    # (overlapping caps double-blend into bright blobs ~2x the thread width).
+    # The end cross-sections taper to the same radius so the ribbon and its
+    # caps form one continuous outline (a stadium for long stitches).
+    cap_h = np.minimum(h, length * 0.5)
 
     mx = (x1 + x2) / 2.0
     my = (y1 + y2) / 2.0
 
-    us_x = x1 + across_x * h
-    us_y = y1 + across_y * h
+    us_x = x1 + across_x * cap_h
+    us_y = y1 + across_y * cap_h
     um_x = mx + across_x * h
     um_y = my + across_y * h
-    ue_x = x2 + across_x * h
-    ue_y = y2 + across_y * h
-    ls_x = x1 - across_x * h
-    ls_y = y1 - across_y * h
+    ue_x = x2 + across_x * cap_h
+    ue_y = y2 + across_y * cap_h
+    ls_x = x1 - across_x * cap_h
+    ls_y = y1 - across_y * cap_h
     lm_x = mx - across_x * h
     lm_y = my - across_y * h
-    le_x = x2 - across_x * h
-    le_y = y2 - across_y * h
+    le_x = x2 - across_x * cap_h
+    le_y = y2 - across_y * cap_h
 
     # Texture repeats: constant twist density, no lower clamp (see above).
     repeats = length / stitch_height / thread_texture_aspect
@@ -319,10 +325,13 @@ def _build_satin_quads(
     en_nz = np.full(n, cos60)
 
     # Vertex layout: pos(2), uv(2), tangent(3), bitangent(3), normal(3),
-    # color(3) = 16 floats. Six vertices per stitch: us, um, ue, ls, lm, le.
-    verts = np.empty((n, 6, 16), dtype=np.float32)
+    # color(3) = 16 floats. 18 vertices per stitch:
+    #   0-5   ribbon (us, um, ue, ls, lm, le)
+    #   6-11  start cap (center + 5 arc vertices)
+    #   12-17 end cap (center + 5 arc vertices)
+    verts = np.empty((n, 18, 16), dtype=np.float32)
 
-    # positions
+    # positions (ribbon)
     verts[:, 0, 0] = us_x; verts[:, 0, 1] = us_y
     verts[:, 1, 0] = um_x; verts[:, 1, 1] = um_y
     verts[:, 2, 0] = ue_x; verts[:, 2, 1] = ue_y
@@ -330,7 +339,7 @@ def _build_satin_quads(
     verts[:, 4, 0] = lm_x; verts[:, 4, 1] = lm_y
     verts[:, 5, 0] = le_x; verts[:, 5, 1] = le_y
 
-    # uv
+    # uv (ribbon)
     verts[:, 0, 2] = texture_start; verts[:, 0, 3] = 0.0
     verts[:, 1, 2] = texture_mid;   verts[:, 1, 3] = 0.0
     verts[:, 2, 2] = texture_end;   verts[:, 2, 3] = 0.0
@@ -338,7 +347,7 @@ def _build_satin_quads(
     verts[:, 4, 2] = texture_mid;   verts[:, 4, 3] = 1.0
     verts[:, 5, 2] = texture_end;   verts[:, 5, 3] = 1.0
 
-    # tangent
+    # tangent (ribbon)
     verts[:, 0, 4] = st_tx; verts[:, 0, 5] = st_ty; verts[:, 0, 6] = st_tz
     verts[:, 3, 4] = st_tx; verts[:, 3, 5] = st_ty; verts[:, 3, 6] = st_tz
     verts[:, 1, 4] = md_tx; verts[:, 1, 5] = md_ty; verts[:, 1, 6] = md_tz
@@ -352,7 +361,7 @@ def _build_satin_quads(
         verts[:, v, 8] = bit_y
         verts[:, v, 9] = bit_z
 
-    # normal
+    # normal (ribbon)
     verts[:, 0, 10] = st_nx; verts[:, 0, 11] = st_ny; verts[:, 0, 12] = st_nz
     verts[:, 3, 10] = st_nx; verts[:, 3, 11] = st_ny; verts[:, 3, 12] = st_nz
     verts[:, 1, 10] = md_nx; verts[:, 1, 11] = md_ny; verts[:, 1, 12] = md_nz
@@ -360,18 +369,75 @@ def _build_satin_quads(
     verts[:, 2, 10] = en_nx; verts[:, 2, 11] = en_ny; verts[:, 2, 12] = en_nz
     verts[:, 5, 10] = en_nx; verts[:, 5, 11] = en_ny; verts[:, 5, 12] = en_nz
 
-    # color
+    # color (ribbon)
     for v in range(6):
+        verts[:, v, 13] = r
+        verts[:, v, 14] = g
+        verts[:, v, 15] = b
+
+    # --- Semicircular caps at the needle entry/exit points. ---
+    # 5 arc vertices per cap, spanning the upper edge (V=0) through the tip
+    # to the lower edge (V=1). The start cap bulges backward (-along), the
+    # end cap forward (+along). U advances along the arc so the cap samples
+    # the twist pattern (a frozen U would light the whole cap with a single
+    # texture column). The start cap uses the start (tilt +60) TBN basis and
+    # the end cap the end (tilt -60) basis -- the same bases as the ribbon
+    # edges they meet, so the shading is continuous across the seam.
+    cap_angles = np.linspace(0.0, np.pi, 5)
+    cap_cos = np.cos(cap_angles)
+    cap_sin = np.sin(cap_angles)
+    cap_v = (1.0 - cap_cos) / 2.0
+    # U advance along the arc, in texture periods: arc length / repeat.
+    # Scaled small (a fraction of one twist period) so the twist continues
+    # smoothly past the ribbon end instead of freezing or streaking.
+    cap_u_scale = 0.25 / thread_texture_aspect / 8.0
+
+    # Start cap center (vertex 6) and end cap center (vertex 12).
+    verts[:, 6, 0] = x1; verts[:, 6, 1] = y1
+    verts[:, 12, 0] = x2; verts[:, 12, 1] = y2
+    verts[:, 6, 2] = texture_start; verts[:, 6, 3] = 0.5
+    verts[:, 12, 2] = texture_end; verts[:, 12, 3] = 0.5
+
+    for j in range(5):
+        c = cap_cos[j]
+        s = cap_sin[j]
+        v = cap_v[j]
+        u_off = cap_sin[j] * cap_u_scale
+        # Start cap arc (vertices 7..11): center (x1,y1), bulge -along.
+        verts[:, 7 + j, 0] = x1 + across_x * cap_h * c - along_x * cap_h * s
+        verts[:, 7 + j, 1] = y1 + across_y * cap_h * c - along_y * cap_h * s
+        verts[:, 7 + j, 2] = texture_start - u_off
+        verts[:, 7 + j, 3] = v
+        # End cap arc (vertices 13..17): center (x2,y2), bulge +along.
+        verts[:, 13 + j, 0] = x2 + across_x * cap_h * c + along_x * cap_h * s
+        verts[:, 13 + j, 1] = y2 + across_y * cap_h * c + along_y * cap_h * s
+        verts[:, 13 + j, 2] = texture_end + u_off
+        verts[:, 13 + j, 3] = v
+
+    # Caps use the tilted TBN bases of the ribbon edges they meet (flat caps
+    # on tilted edges read as visibly brighter blobs).
+    for v in range(6, 12):
+        verts[:, v, 4] = st_tx; verts[:, v, 5] = st_ty; verts[:, v, 6] = st_tz
+        verts[:, v, 7] = bit_x; verts[:, v, 8] = bit_y; verts[:, v, 9] = bit_z
+        verts[:, v, 10] = st_nx; verts[:, v, 11] = st_ny; verts[:, v, 12] = st_nz
+        verts[:, v, 13] = r
+        verts[:, v, 14] = g
+        verts[:, v, 15] = b
+    for v in range(12, 18):
+        verts[:, v, 4] = en_tx; verts[:, v, 5] = en_ty; verts[:, v, 6] = en_tz
+        verts[:, v, 7] = bit_x; verts[:, v, 8] = bit_y; verts[:, v, 9] = bit_z
+        verts[:, v, 10] = en_nx; verts[:, v, 11] = en_ny; verts[:, v, 12] = en_nz
         verts[:, v, 13] = r
         verts[:, v, 14] = g
         verts[:, v, 15] = b
 
     verts = verts[valid].reshape(-1)
 
-    # indices: 12 per stitch (two triangles per half-quad, four total)
+    # indices: 36 per stitch (12 ribbon + 12 start cap + 12 end cap).
     n_valid = int(valid.sum())
-    base = np.arange(n_valid, dtype=np.uint32) * 6
-    idx = np.empty((n_valid, 12), dtype=np.uint32)
+    base = np.arange(n_valid, dtype=np.uint32) * 18
+    idx = np.empty((n_valid, 36), dtype=np.uint32)
+    # ribbon (vertices 0-5)
     idx[:, 0] = base
     idx[:, 1] = base + 1
     idx[:, 2] = base + 3
@@ -384,9 +450,35 @@ def _build_satin_quads(
     idx[:, 9] = base + 2
     idx[:, 10] = base + 4
     idx[:, 11] = base + 5
+    # start cap fan (center 6, arc 7-11)
+    idx[:, 12] = base + 6
+    idx[:, 13] = base + 7
+    idx[:, 14] = base + 8
+    idx[:, 15] = base + 6
+    idx[:, 16] = base + 8
+    idx[:, 17] = base + 9
+    idx[:, 18] = base + 6
+    idx[:, 19] = base + 9
+    idx[:, 20] = base + 10
+    idx[:, 21] = base + 6
+    idx[:, 22] = base + 10
+    idx[:, 23] = base + 11
+    # end cap fan (center 12, arc 13-17)
+    idx[:, 24] = base + 12
+    idx[:, 25] = base + 13
+    idx[:, 26] = base + 14
+    idx[:, 27] = base + 12
+    idx[:, 28] = base + 14
+    idx[:, 29] = base + 15
+    idx[:, 30] = base + 12
+    idx[:, 31] = base + 15
+    idx[:, 32] = base + 16
+    idx[:, 33] = base + 12
+    idx[:, 34] = base + 16
+    idx[:, 35] = base + 17
     idx = idx.reshape(-1)
 
-    per_stitch = np.where(valid, 12, 0)
+    per_stitch = np.where(valid, 36, 0)
     index_counts = np.cumsum(per_stitch).astype(np.int64)
 
     return verts, idx, index_counts
