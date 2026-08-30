@@ -105,33 +105,49 @@ class _NeedlePopup(QMenu):
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(8)
 
+        # Two vertical sliders side by side (radius + width).
+        sliders_row = QHBoxLayout()
+        sliders_row.setSpacing(12)
+
         # Radius slider.
-        radius_row = QHBoxLayout()
-        radius_row.addWidget(QLabel("Radius"))
-        radius_slider = QSlider(Qt.Horizontal)
+        radius_col = QVBoxLayout()
+        radius_col.setSpacing(4)
+        radius_title = QLabel("Radius")
+        radius_title.setAlignment(Qt.AlignCenter)
+        radius_col.addWidget(radius_title)
+        radius_slider = QSlider(Qt.Vertical)
         radius_slider.setRange(0, 1000)
+        radius_slider.setFixedHeight(140)
         radius_slider.setValue(self._to_slider(
             viewer.needle_radius, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX))
         radius_slider.valueChanged.connect(
             lambda v: self._apply_radius(v))
-        radius_row.addWidget(radius_slider, 1)
+        radius_col.addWidget(radius_slider, alignment=Qt.AlignCenter)
         self._radius_label = QLabel()
-        radius_row.addWidget(self._radius_label)
-        layout.addLayout(radius_row)
+        self._radius_label.setAlignment(Qt.AlignCenter)
+        radius_col.addWidget(self._radius_label)
+        sliders_row.addLayout(radius_col)
 
         # Width slider.
-        width_row = QHBoxLayout()
-        width_row.addWidget(QLabel("Width"))
-        width_slider = QSlider(Qt.Horizontal)
+        width_col = QVBoxLayout()
+        width_col.setSpacing(4)
+        width_title = QLabel("Width")
+        width_title.setAlignment(Qt.AlignCenter)
+        width_col.addWidget(width_title)
+        width_slider = QSlider(Qt.Vertical)
         width_slider.setRange(0, 1000)
+        width_slider.setFixedHeight(140)
         width_slider.setValue(self._to_slider(
             viewer.needle_width, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX))
         width_slider.valueChanged.connect(
             lambda v: self._apply_width(v))
-        width_row.addWidget(width_slider, 1)
+        width_col.addWidget(width_slider, alignment=Qt.AlignCenter)
         self._width_label = QLabel()
-        width_row.addWidget(self._width_label)
-        layout.addLayout(width_row)
+        self._width_label.setAlignment(Qt.AlignCenter)
+        width_col.addWidget(self._width_label)
+        sliders_row.addLayout(width_col)
+
+        layout.addLayout(sliders_row)
 
         # Color button.
         color_button = QPushButton("Color…")

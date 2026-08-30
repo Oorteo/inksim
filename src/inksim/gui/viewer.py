@@ -232,7 +232,7 @@ class EmbroideryViewerWidget(QWidget):
         if self._render_buffer_size != size:
             self._render_buffer = np.empty((height, width, 3), dtype=np.uint8)
             self._render_buffer_size = size
-        self._render_buffer.fill(255)
+        self._render_buffer[:] = self.background_color
         return self._render_buffer
 
     def resizeEvent(self, event):
@@ -665,7 +665,7 @@ class EmbroideryViewerWidget(QWidget):
         stepping, timeline scrubbing, playback, pan/zoom all go through
         here).
         """
-        self._gl_widget.set_view(self.zoom, self.pan_x, self.pan_y)
+        self._gl_widget.set_view(self.zoom, self.pan_x, self.pan_y, self.zoom_ratio())
         self._gl_widget.set_visible_count(self.visible_count)
         self._gl_widget.set_dark_factor(self.dark_factor)
         self._gl_widget.set_light_factor(self.light_factor)
@@ -1039,7 +1039,7 @@ class EmbroideryViewerWidget(QWidget):
             )
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        painter.fillRect(self.rect(), QColor(255, 255, 255))
+        painter.fillRect(self.rect(), QColor(*self.background_color))
         if self._pending_fit_to_screen:
             painter.end()
             return
@@ -1518,33 +1518,30 @@ class EmbroideryViewerWidget(QWidget):
     def contextMenuEvent(self, e):
         """Right-click menu: background color and thread texture selection.
 
-        Only meaningful for the GPU textured renderer; for other renderers
-        fall back to the default (empty) context menu.
+        Background color is available for every renderer; the thread texture
+        submenu only makes sense for the GPU textured renderer.
         """
-        if self.active_renderer != "gpu_textured":
-            e.ignore()
-            return
-
         menu = QMenu(self)
 
         bg_action = menu.addAction("Background color…")
         bg_action.triggered.connect(self._choose_background_color)
 
-        texture_menu = menu.addMenu("Thread texture")
-        textures = list_thread_textures()
-        active_path = self._gl_widget.texture_path()
-        if textures:
-            for label, path in textures:
-                action = texture_menu.addAction(label)
-                action.setCheckable(True)
-                action.setChecked(active_path is not None and Path(path) == Path(active_path))
-                action.setData(str(path))
-                action.triggered.connect(
-                    lambda checked=False, p=path: self._gl_widget.set_texture_path(p)
-                )
-        else:
-            no_tex = texture_menu.addAction("(none found)")
-            no_tex.setEnabled(False)
+        if self.active_renderer == "gpu_textured":
+            texture_menu = menu.addMenu("Thread texture")
+            textures = list_thread_textures()
+            active_path = self._gl_widget.texture_path()
+            if textures:
+                for label, path in textures:
+                    action = texture_menu.addAction(label)
+                    action.setCheckable(True)
+                    action.setChecked(active_path is not None and Path(path) == Path(active_path))
+                    action.setData(str(path))
+                    action.triggered.connect(
+                        lambda checked=False, p=path: self._gl_widget.set_texture_path(p)
+                    )
+            else:
+                no_tex = texture_menu.addAction("(none found)")
+                no_tex.setEnabled(False)
 
         menu.exec(e.globalPos())
 
@@ -1557,6 +1554,7 @@ class EmbroideryViewerWidget(QWidget):
         self.background_color = (color.red(), color.green(), color.blue())
         self._save_view_setting("view/background_color", list(self.background_color))
         self._gl_widget.set_background(*self.background_color)
+        self.invalidate_cache()
         self.update()
 
     def _choose_needle_color(self):

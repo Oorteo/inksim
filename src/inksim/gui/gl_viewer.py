@@ -139,6 +139,7 @@ in vec2 v_world;
 out vec4 fragColor;
 uniform vec3 u_bg_color;
 uniform float u_zoom;
+uniform float u_zoom_ratio;
 
 float gridLine(float coord, float spacing) {
     float d = abs(fract(coord / spacing - 0.5) - 0.5) * spacing;
@@ -150,10 +151,10 @@ void main() {
     vec3 color = u_bg_color;
     float lum = dot(u_bg_color, vec3(0.299, 0.587, 0.114));
 
-    // 1 mm fine grid fades in at high zoom. u_zoom is pixels-per-mm, so
-    // ~4 px/mm (physical size) is where the fine grid starts to be useful.
+    // 1 mm fine grid fades in from 1.5x real size (u_zoom_ratio is the
+    // relative zoom, 1.0 == physical 1:1).
     float fine = max(gridLine(v_world.x, 1.0), gridLine(v_world.y, 1.0));
-    float fineFade = smoothstep(3.0, 6.0, u_zoom);
+    float fineFade = smoothstep(1.5, 3.0, u_zoom_ratio);
 
     float minor = max(gridLine(v_world.x, 10.0), gridLine(v_world.y, 10.0));
     float major = max(gridLine(v_world.x, 50.0), gridLine(v_world.y, 50.0));
@@ -171,6 +172,52 @@ void main() {
     color = mix(color, axisYColor, ay * 0.5);
 
     fragColor = vec4(color, 1.0);
+}
+"""
+
+# Point shader for the density overlay (needle-puncture dots).
+DENSITY_VERTEX_SHADER = """
+#version 330 core
+layout(location = 0) in vec2 a_pos;      // world (mm) position
+layout(location = 1) in vec3 a_color;    // marker color
+layout(location = 2) in float a_radius;  // marker radius in world mm
+layout(location = 3) in float a_repeated; // 1.0 = zero-length stitch (ring)
+uniform mat4 u_transform;
+uniform float u_zoom;
+out vec3 v_color;
+out float v_repeated;
+void main() {
+    v_color = a_color;
+    v_repeated = a_repeated;
+    gl_Position = u_transform * vec4(a_pos, 0.0, 1.0);
+    gl_PointSize = max(1.0, a_radius * u_zoom * 2.0);
+}
+"""
+
+DENSITY_FRAGMENT_SHADER = """
+#version 330 core
+in vec3 v_color;
+in float v_repeated;
+out vec4 fragColor;
+void main() {
+    // gl_PointCoord is [0,1] across the point; center it.
+    vec2 p = gl_PointCoord - 0.5;
+    float r = length(p);
+    if (r > 0.5) {
+        discard;
+    }
+    if (v_repeated > 0.5) {
+        // Zero-length stitch: red ring (matches the CPU renderer).
+        float ring = smoothstep(0.30, 0.42, r) * (1.0 - smoothstep(0.42, 0.5, r));
+        if (ring < 0.01) {
+            discard;
+        }
+        fragColor = vec4(0.92, 0.14, 0.14, 1.0);
+        return;
+    }
+    // Darker center (needle puncture).
+    vec3 col = mix(vec3(0.04, 0.04, 0.04), v_color, smoothstep(0.0, 0.5, r));
+    fragColor = vec4(col, 1.0);
 }
 """
 
@@ -214,6 +261,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._texture_path = None
         self._width_fraction = 1.0
         self._zoom = 1.0
+        self._zoom_ratio = 1.0
         self._pan = np.array([0.0, 0.0], dtype=np.float32)
         self._bg_color = (0.0, 0.0, 0.0)
         self._dark_factor = 0.5
@@ -245,8 +293,9 @@ class GLStitchWidget(QOpenGLWidget):
         self._show_stitches = True
         self._show_grid = True
 
-    def set_view(self, zoom, pan_x, pan_y):
+    def set_view(self, zoom, pan_x, pan_y, zoom_ratio=1.0):
         self._zoom = zoom
+        self._zoom_ratio = zoom_ratio
         self._pan = np.array([pan_x, pan_y], dtype=np.float32)
         self.update()
 
@@ -341,8 +390,22 @@ class GLStitchWidget(QOpenGLWidget):
         if not self._grid_program.link():
             print("Grid shader link failed:", self._grid_program.log())
 
+        # Density point shader.
+        self._density_program = QOpenGLShaderProgram(self)
+        self._density_program.addShaderFromSourceCode(QOpenGLShader.Vertex, DENSITY_VERTEX_SHADER)
+        self._density_program.addShaderFromSourceCode(QOpenGLShader.Fragment, DENSITY_FRAGMENT_SHADER)
+        if not self._density_program.link():
+            print("Density shader link failed:", self._density_program.log())
+
+        self._density_vao = QOpenGLVertexArrayObject()
+        self._density_vao.create()
+        self._density_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        self._density_vbo.create()
+
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        # Allow gl_PointSize in the density shader.
+        glEnable(GL_PROGRAM_POINT_SIZE)
         # All quads share z=0 -- stitch layering must follow draw order (later
         # stitch on top), not the depth buffer, so depth testing stays off.
         glDisable(GL_DEPTH_TEST)
@@ -502,12 +565,16 @@ class GLStitchWidget(QOpenGLWidget):
             self._texture.release()
             self._program.release()
 
-        # 3. Needle crosshair (GL, on top of the stitches).
+        # 3. Density dots (GL points, on top of the stitches).
+        if self._show_density:
+            self._draw_density_gl(w, h)
+
+        # 4. Needle crosshair (QPainter, on top of everything).
         if self._show_needle:
             self._draw_needle_gl(w, h)
 
-        # 4. Jumps + density (QPainter, on top of the stitches).
-        self._draw_analysis_overlays()
+        # 5. Jumps (QPainter, on top of the stitches).
+        self._draw_jumps_overlay()
 
     def _draw_grid_gl(self, w, h):
         """Draw the measurement grid in the background using a full-screen pass."""
@@ -517,6 +584,7 @@ class GLStitchWidget(QOpenGLWidget):
         glUniform2f(self._grid_program.uniformLocation("u_viewport"), float(w), float(h))
         glUniform2f(self._grid_program.uniformLocation("u_pan"), self._pan[0], self._pan[1])
         glUniform1f(self._grid_program.uniformLocation("u_zoom"), self._zoom)
+        glUniform1f(self._grid_program.uniformLocation("u_zoom_ratio"), self._zoom_ratio)
         glUniform3f(self._grid_program.uniformLocation("u_bg_color"), *self._bg_color)
         glDrawArrays(GL_TRIANGLES, 0, 3)
         self._grid_program.release()
@@ -568,17 +636,80 @@ class GLStitchWidget(QOpenGLWidget):
     def _world_to_screen(self, x, y):
         return x * self._zoom + self._pan[0], y * self._zoom + self._pan[1]
 
-    def _draw_analysis_overlays(self):
-        """Draw jump paths and density markers on top of the stitches."""
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        self._draw_jumps(painter)
-        self._draw_density(painter)
-        painter.end()
+    def _draw_density_gl(self, w, h):
+        """Draw density markers as GL points (one draw call, no Python loop)."""
+        if self._density_program is None or not self._density_program.isLinked():
+            return
+        points = self._density_points
+        values = self._density_values
+        repeated = self._density_repeated
+        visible = min(self._visible_count, points.shape[0])
+        if visible == 0:
+            return
 
-    def _draw_jumps(self, painter):
+        # Build interleaved vertex data: pos(2), color(3), radius(1).
+        pts = points[:visible]
+        vals = values[:visible]
+        rep = repeated[:visible]
+
+        colors = np.empty((visible, 3), dtype=np.float32)
+        colors[:, :] = (45 / 255.0, 110 / 255.0, 215 / 255.0)  # default blue
+        crit = vals >= DENSITY_CRITICAL_PER_MM2
+        warn = (vals >= DENSITY_WARNING_PER_MM2) & ~crit
+        colors[crit] = (220 / 255.0, 35 / 255.0, 35 / 255.0)
+        colors[warn] = (235 / 255.0, 175 / 255.0, 25 / 255.0)
+
+        radius = np.where(rep, 0.35, 0.2).astype(np.float32)
+        repeated_flag = rep.astype(np.float32)
+
+        data = np.empty((visible, 7), dtype=np.float32)
+        data[:, 0:2] = pts
+        data[:, 2:5] = colors
+        data[:, 5] = radius
+        data[:, 6] = repeated_flag
+
+        sx = self._zoom * 2.0 / w
+        sy = -self._zoom * 2.0 / h
+        tx = self._pan[0] * 2.0 / w - 1.0
+        ty = 1.0 - self._pan[1] * 2.0 / h
+        transform = np.array([
+            sx, 0.0, 0.0, 0.0,
+            0.0, sy, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            tx, ty, 0.0, 1.0,
+        ], dtype=np.float32)
+
+        self._density_program.bind()
+        glUniformMatrix4fv(self._density_program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
+        glUniform1f(self._density_program.uniformLocation("u_zoom"), self._zoom)
+
+        self._density_vao.bind()
+        self._density_vbo.bind()
+        self._density_vbo.allocate(data.tobytes(), data.nbytes)
+        stride = 7 * np.dtype(np.float32).itemsize
+        self._density_program.enableAttributeArray(0)
+        self._density_program.setAttributeBuffer(0, GL_FLOAT, 0, 2, stride)
+        self._density_program.enableAttributeArray(1)
+        self._density_program.setAttributeBuffer(1, GL_FLOAT, 2 * np.dtype(np.float32).itemsize, 3, stride)
+        self._density_program.enableAttributeArray(2)
+        self._density_program.setAttributeBuffer(2, GL_FLOAT, 5 * np.dtype(np.float32).itemsize, 1, stride)
+        self._density_program.enableAttributeArray(3)
+        self._density_program.setAttributeBuffer(3, GL_FLOAT, 6 * np.dtype(np.float32).itemsize, 1, stride)
+        glDrawArrays(GL_POINTS, 0, visible)
+        self._density_program.disableAttributeArray(0)
+        self._density_program.disableAttributeArray(1)
+        self._density_program.disableAttributeArray(2)
+        self._density_program.disableAttributeArray(3)
+        self._density_vbo.release()
+        self._density_vao.release()
+        self._density_program.release()
+
+    def _draw_jumps_overlay(self):
+        """Draw jump paths on top of the stitches."""
         if not self._show_jumps:
             return
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
         for x1, y1, x2, y2, risky, stitch_index in self._jump_segments:
             if stitch_index > self._visible_count:
                 continue
@@ -589,42 +720,7 @@ class GLStitchWidget(QOpenGLWidget):
             sx2, sy2 = self._world_to_screen(x2, y2)
             painter.setPen(QPen(color, 2, Qt.DashLine))
             painter.drawLine(int(sx1), int(sy1), int(sx2), int(sy2))
-
-    def _draw_density(self, painter):
-        if not self._show_density or self._density_points.shape[0] == 0:
-            return
-        points = self._density_points
-        values = self._density_values
-        repeated = self._density_repeated
-        visible = min(self._visible_count, points.shape[0])
-        w = self.width()
-        h = self.height()
-        # Needle-puncture dots ~0.4 mm across (a stitch width), scaling with zoom.
-        marker_radius = max(0.5, 0.2 * self._zoom)
-        outer_radius = max(marker_radius, 0.35 * self._zoom)
-        for i in range(visible):
-            value = values[i]
-            if value >= DENSITY_CRITICAL_PER_MM2:
-                r, g, b = 220, 35, 35
-            elif value >= DENSITY_WARNING_PER_MM2:
-                r, g, b = 235, 175, 25
-            else:
-                r, g, b = 45, 110, 215
-            sx, sy = self._world_to_screen(points[i, 0], points[i, 1])
-            # Cull markers far outside the viewport.
-            if sx < -outer_radius or sx > w + outer_radius:
-                continue
-            if sy < -outer_radius or sy > h + outer_radius:
-                continue
-            radius = outer_radius if repeated[i] else marker_radius
-            painter.setPen(QPen(QColor(r, g, b), 1))
-            painter.setBrush(QColor(r, g, b))
-            painter.drawEllipse(int(sx) - radius, int(sy) - radius, radius * 2, radius * 2)
-            # Darker center, like a needle puncture.
-            inner = max(0.5, radius * 0.5)
-            painter.setPen(Qt.NoPen)
-            painter.setBrush(QColor(10, 10, 10))
-            painter.drawEllipse(int(sx) - inner, int(sy) - inner, inner * 2, inner * 2)
+        painter.end()
 
     def resizeGL(self, w, h):
         glViewport(0, 0, w, h)
