@@ -331,11 +331,15 @@ def _build_satin_quads(
     en_nz = np.full(n, cos60)
 
     # Vertex layout: pos(2), uv(2), tangent(3), bitangent(3), normal(3),
-    # color(3) = 16 floats. 18 vertices per stitch:
-    #   0-5   ribbon (us, um, ue, ls, lm, le)
-    #   6-11  start cap (center + 5 arc vertices)
-    #   12-17 end cap (center + 5 arc vertices)
-    verts = np.empty((n, 18, 16), dtype=np.float32)
+    # color(3) = 16 floats. Per stitch:
+    #   0-5              ribbon (us, um, ue, ls, lm, le)
+    #   6..6+CAP_SEGS    start cap (center + CAP_SEGS arc vertices)
+    #   center+CAP_SEGS+1.. end cap (center + CAP_SEGS arc vertices)
+    # 8 arc segments keep the cap smooth at high zoom.
+    CAP_SEGS = 8
+    cap_arc_count = CAP_SEGS + 1
+    total_verts = 6 + 2 * (1 + cap_arc_count)
+    verts = np.empty((n, total_verts, 16), dtype=np.float32)
 
     # positions (ribbon)
     verts[:, 0, 0] = us_x; verts[:, 0, 1] = us_y
@@ -385,12 +389,12 @@ def _build_satin_quads(
     # The arc center is where the cap meets the straight ribbon. The arc is
     # slightly elliptical along the stitch axis: its tip reaches a little
     # PAST the needle point (tip_overshoot x cap_h), because the thread has
-    # volume and visually ends just beyond the piercing, not on it. 5 arc
-    # vertices span the upper rib (V=0) through the tip (V=0.5) to the
-    # lower rib (V=1). The start cap uses the start (tilt +60) TBN basis and
-    # the end cap the end (-60) basis -- the same as the ribbon edges they
-    # meet, so shading is continuous across the seam.
-    cap_angles = np.linspace(0.0, np.pi, 5)
+    # volume and visually ends just beyond the piercing, not on it.
+    # cap_arc_count vertices span the upper rib (V=0) through the tip
+    # (V=0.5) to the lower rib (V=1). The start cap uses the start (tilt
+    # +60) TBN basis and the end cap the end (-60) basis -- the same as the
+    # ribbon edges they meet, so shading is continuous across the seam.
+    cap_angles = np.linspace(0.0, np.pi, cap_arc_count)
     cap_cos = np.cos(cap_angles)
     cap_sin = np.sin(cap_angles)
     cap_v = (1.0 - cap_cos) / 2.0
@@ -398,41 +402,44 @@ def _build_satin_quads(
     # Small U advance along the arc so the twist pattern carries through.
     cap_u_scale = 0.5 * cap_h / max(1e-3, stitch_height * thread_texture_aspect)
 
-    # Start cap center (vertex 6) on the offset edge, end cap center (12).
-    verts[:, 6, 0] = cs_x; verts[:, 6, 1] = cs_y
-    verts[:, 12, 0] = ce_x; verts[:, 12, 1] = ce_y
-    verts[:, 6, 2] = texture_start; verts[:, 6, 3] = 0.5
-    verts[:, 12, 2] = texture_end; verts[:, 12, 3] = 0.5
+    # Start cap center vertex on the offset edge, end cap center vertex.
+    sc_center = 6
+    ec_center = 6 + 1 + cap_arc_count
+    sc_arc0 = sc_center + 1
+    ec_arc0 = ec_center + 1
+    verts[:, sc_center, 0] = cs_x; verts[:, sc_center, 1] = cs_y
+    verts[:, ec_center, 0] = ce_x; verts[:, ec_center, 1] = ce_y
+    verts[:, sc_center, 2] = texture_start; verts[:, sc_center, 3] = 0.5
+    verts[:, ec_center, 2] = texture_end; verts[:, ec_center, 3] = 0.5
 
-    for j in range(5):
+    for j in range(cap_arc_count):
         c = cap_cos[j]
         s = cap_sin[j]
         v = cap_v[j]
         u_off = s * cap_u_scale
         along_bulge = cap_h * s * (1.0 + tip_overshoot)
-        # Start cap arc (vertices 7..11): sweeps from the upper rib around
-        # the tip (a little past the needle point x1,y1) to the lower rib.
-        verts[:, 7 + j, 0] = cs_x - along_x * along_bulge + across_x * cap_h * c
-        verts[:, 7 + j, 1] = cs_y - along_y * along_bulge + across_y * cap_h * c
-        verts[:, 7 + j, 2] = texture_start - u_off
-        verts[:, 7 + j, 3] = v
-        # End cap arc (vertices 13..17): mirrored around the offset edge on
-        # the x2,y2 side.
-        verts[:, 13 + j, 0] = ce_x + along_x * along_bulge + across_x * cap_h * c
-        verts[:, 13 + j, 1] = ce_y + along_y * along_bulge + across_y * cap_h * c
-        verts[:, 13 + j, 2] = texture_end + u_off
-        verts[:, 13 + j, 3] = v
+        # Start cap arc: sweeps from the upper rib around the tip (a little
+        # past the needle point) to the lower rib.
+        verts[:, sc_arc0 + j, 0] = cs_x - along_x * along_bulge + across_x * cap_h * c
+        verts[:, sc_arc0 + j, 1] = cs_y - along_y * along_bulge + across_y * cap_h * c
+        verts[:, sc_arc0 + j, 2] = texture_start - u_off
+        verts[:, sc_arc0 + j, 3] = v
+        # End cap arc: mirrored around the offset edge on the x2,y2 side.
+        verts[:, ec_arc0 + j, 0] = ce_x + along_x * along_bulge + across_x * cap_h * c
+        verts[:, ec_arc0 + j, 1] = ce_y + along_y * along_bulge + across_y * cap_h * c
+        verts[:, ec_arc0 + j, 2] = texture_end + u_off
+        verts[:, ec_arc0 + j, 3] = v
 
     # Caps use the tilted TBN bases of the ribbon edges they meet (flat caps
     # on tilted edges read as visibly brighter blobs).
-    for v in range(6, 12):
+    for v in range(sc_center, ec_center):
         verts[:, v, 4] = st_tx; verts[:, v, 5] = st_ty; verts[:, v, 6] = st_tz
         verts[:, v, 7] = bit_x; verts[:, v, 8] = bit_y; verts[:, v, 9] = bit_z
         verts[:, v, 10] = st_nx; verts[:, v, 11] = st_ny; verts[:, v, 12] = st_nz
         verts[:, v, 13] = r
         verts[:, v, 14] = g
         verts[:, v, 15] = b
-    for v in range(12, 18):
+    for v in range(ec_center, total_verts):
         verts[:, v, 4] = en_tx; verts[:, v, 5] = en_ty; verts[:, v, 6] = en_tz
         verts[:, v, 7] = bit_x; verts[:, v, 8] = bit_y; verts[:, v, 9] = bit_z
         verts[:, v, 10] = en_nx; verts[:, v, 11] = en_ny; verts[:, v, 12] = en_nz
@@ -442,10 +449,12 @@ def _build_satin_quads(
 
     verts = verts[valid].reshape(-1)
 
-    # indices: 36 per stitch (12 ribbon + 12 start cap + 12 end cap).
+    # indices: 12 ribbon + 2 * 3 * CAP_SEGS fan triangles per stitch.
     n_valid = int(valid.sum())
-    base = np.arange(n_valid, dtype=np.uint32) * 18
-    idx = np.empty((n_valid, 36), dtype=np.uint32)
+    base = np.arange(n_valid, dtype=np.uint32) * total_verts
+    cap_fan_count = 3 * CAP_SEGS
+    per_stitch_idx = 12 + 2 * cap_fan_count
+    idx = np.empty((n_valid, per_stitch_idx), dtype=np.uint32)
     # ribbon (vertices 0-5)
     idx[:, 0] = base
     idx[:, 1] = base + 1
@@ -459,35 +468,23 @@ def _build_satin_quads(
     idx[:, 9] = base + 2
     idx[:, 10] = base + 4
     idx[:, 11] = base + 5
-    # start cap fan (center 6, arc 7-11)
-    idx[:, 12] = base + 6
-    idx[:, 13] = base + 7
-    idx[:, 14] = base + 8
-    idx[:, 15] = base + 6
-    idx[:, 16] = base + 8
-    idx[:, 17] = base + 9
-    idx[:, 18] = base + 6
-    idx[:, 19] = base + 9
-    idx[:, 20] = base + 10
-    idx[:, 21] = base + 6
-    idx[:, 22] = base + 10
-    idx[:, 23] = base + 11
-    # end cap fan (center 12, arc 13-17)
-    idx[:, 24] = base + 12
-    idx[:, 25] = base + 13
-    idx[:, 26] = base + 14
-    idx[:, 27] = base + 12
-    idx[:, 28] = base + 14
-    idx[:, 29] = base + 15
-    idx[:, 30] = base + 12
-    idx[:, 31] = base + 15
-    idx[:, 32] = base + 16
-    idx[:, 33] = base + 12
-    idx[:, 34] = base + 16
-    idx[:, 35] = base + 17
+
+    # Cap fans: center + consecutive arc pairs.
+    arc_offsets = np.arange(cap_arc_count - 1, dtype=np.uint32)
+    # Start cap fan.
+    sc_tri = idx[:, 12:12 + cap_fan_count].reshape(n_valid, CAP_SEGS, 3)
+    sc_tri[:, :, 0] = (base + sc_center)[:, None]
+    sc_tri[:, :, 1] = (base + sc_arc0)[:, None] + arc_offsets[None, :]
+    sc_tri[:, :, 2] = (base + sc_arc0)[:, None] + arc_offsets[None, :] + 1
+    # End cap fan.
+    ec_tri = idx[:, 12 + cap_fan_count:].reshape(n_valid, CAP_SEGS, 3)
+    ec_tri[:, :, 0] = (base + ec_center)[:, None]
+    ec_tri[:, :, 1] = (base + ec_arc0)[:, None] + arc_offsets[None, :]
+    ec_tri[:, :, 2] = (base + ec_arc0)[:, None] + arc_offsets[None, :] + 1
+
     idx = idx.reshape(-1)
 
-    per_stitch = np.where(valid, 36, 0)
+    per_stitch = np.where(valid, per_stitch_idx, 0)
     index_counts = np.cumsum(per_stitch).astype(np.int64)
 
     return verts, idx, index_counts
