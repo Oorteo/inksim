@@ -208,11 +208,11 @@ class MainWindow(QMainWindow):
         self._action(file_menu, "Fullscreen", self.toggle_full_screen, "F11")
         self.grid_action = self._action(file_menu, "Show measurement grid", self.toggle_grid, "G", True)
         self.grid_action.setChecked(True)
-        self.realistic_action = self._action(file_menu, "Realistic thread render", self.toggle_realistic, checkable=True)
+        self.realistic_action = self._action(file_menu, "GPU textured render", self.toggle_realistic, checkable=True)
         self.viewer.grid_toggled.connect(self.grid_action.setChecked)
         self.viewer.renderer_changed.connect(
             lambda renderer: self.realistic_action.setChecked(
-                renderer in ("realistic", "shaded_volume_natural", "realistic_gbuffer")
+                renderer == "gpu_textured"
             )
         )
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)

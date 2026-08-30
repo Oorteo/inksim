@@ -95,7 +95,7 @@ class ModeBar(QWidget):
         sizer.setContentsMargins(4, 3, 4, 3)
         self.buttons = {}
         tooltips = {
-            "Z": "Toggle realistic thread rendering",
+            "Z": "Toggle GPU textured rendering",
             "X": "Toggle stitch density overlay",
             "J": "Cycle jump display: off, all, risky only",
             "V": "Toggle stitch visibility",
@@ -140,7 +140,7 @@ class ModeBar(QWidget):
             f"LW: {self.viewer.line_width:.2f}"
         )
         states = {
-            "Z": self.viewer.show_realistic,
+            "Z": self.viewer.active_renderer == "gpu_textured",
             "X": self.viewer.show_density,
             "V": self.viewer.show_stitches,
         }

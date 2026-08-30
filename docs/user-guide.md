@@ -111,13 +111,9 @@ The realistic renderer adds a procedural fabric background, cylindrical thread
 shading, highlights, shadows, and anti-aliased edges. It is intentionally
 approximate and can exaggerate sewing direction or dark gaps in satin areas.
 
-The Realistic (G-buffer) renderer is a deferred raster mode: all stitches
-are rasterized into shared per-pixel surface buffers first and shaded
-afterwards, so neighbouring threads merge into one continuous glossy satin
-surface with a Kajiya-Kay sheen streak, fibre micro-texture and
-curvature-based shading. It is an approximation of realistic embroidery
-thread and is intended for previews and PNG export; it is not a physically
-accurate model of twisted ply thread.
+The GPU Textured renderer rasterizes stitches as continuous textured ribbon
+quads using a normal-map thread texture and Blinn-Phong lighting, giving a
+twisted-thread look with selectable thread textures.
 The density map is prepared in the background after a design is loaded in the
 main viewer and cached until a new design is loaded. The open-dialog preview
 does not calculate density while moving between files, and command-line PNG

@@ -4,14 +4,12 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from .stitches import (
-    render_realistic_kajiya_numba,
     render_realistic_numba,
     render_realistic_twist_numba,
     render_shaded_numba,
     render_shaded_volume_natural_numba,
     render_shaded_volume_numba,
 )
-from .stitches_gb import render_realistic_gbuffer_numba
 from .stitches_gl import render_gpu_textured
 from .stitches_qt import render_simple_qt
 from .vintage_qt import render_vintage_qt
@@ -35,8 +33,6 @@ STITCH_RENDERERS = (
     StitchRenderer("shaded_volume_natural", "Shaded Volume Natural", "raster", render_shaded_volume_natural_numba),
     StitchRenderer("realistic", "Realistic", "raster", render_realistic_numba),
     StitchRenderer("realistic_twist", "Realistic Twist", "raster", render_realistic_twist_numba),
-    StitchRenderer("realistic_kajiya", "Realistic Kajiya", "raster", render_realistic_kajiya_numba),
-    StitchRenderer("realistic_gbuffer", "Realistic (G-buffer)", "raster", render_realistic_gbuffer_numba),
     StitchRenderer("gpu_textured", "GPU Textured", "raster", render_gpu_textured),
 )
 
@@ -69,10 +65,8 @@ def render_stitches(
     if renderer_key in (
         "realistic",
         "realistic_twist",
-        "realistic_kajiya",
         "shaded_volume",
         "shaded_volume_natural",
-        "realistic_gbuffer",
         "gpu_textured",
     ):
         renderer.render(

@@ -559,10 +559,11 @@ class EmbroideryViewerWidget(QWidget):
     def toggle_display_mode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
         if mode == "Z":
+            # Z toggles the GPU textured renderer on/off.
             self.set_renderer(
                 self._non_realistic_renderer
-                if self.show_realistic
-                else "shaded_volume_natural"
+                if self.active_renderer == "gpu_textured"
+                else "gpu_textured"
             )
         elif mode == "X":
             self.show_density = not self.show_density
@@ -587,10 +588,10 @@ class EmbroideryViewerWidget(QWidget):
         """Select a registered stitch renderer and refresh the canvas."""
         if renderer_key not in RENDERERS_BY_KEY:
             raise ValueError(f"unknown stitch renderer: {renderer_key}")
-        if renderer_key not in ("realistic", "shaded_volume_natural", "realistic_gbuffer", "gpu_textured"):
+        if renderer_key not in ("realistic", "shaded_volume_natural", "gpu_textured"):
             self._non_realistic_renderer = renderer_key
         self.active_renderer = renderer_key
-        self.show_realistic = renderer_key in ("realistic", "shaded_volume_natural", "realistic_gbuffer")
+        self.show_realistic = renderer_key in ("realistic", "shaded_volume_natural")
         self.renderer_changed.emit(renderer_key)
         self._update_gl_widget_visibility()
         self.invalidate_cache()
