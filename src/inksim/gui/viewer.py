@@ -339,6 +339,18 @@ class EmbroideryViewerWidget(QWidget):
             settings.setValue(key, dialog.pixels_per_mm())
             self.set_one_to_one()
 
+    def zoom_ratio(self):
+        """Return the zoom as a relative factor (1.0 == physical 1:1 size).
+
+        ``self.zoom`` is stored in pixels-per-mm; this converts it to a
+        human-friendly multiplier where 1.0 means the design is shown at its
+        real physical size on the current display.
+        """
+        ppm = self._pixels_per_mm()
+        if ppm <= 0:
+            return 1.0
+        return self.zoom / ppm
+
     def center_design(self):
         """Center the loaded design without changing its current zoom."""
         if self.stitches_np.shape[0] == 0:

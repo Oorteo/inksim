@@ -38,7 +38,8 @@ def settings_sections(viewer):
 
 | Property | Value |
 | --- | --- |
-| Zoom | {viewer.zoom:.3f}x |
+| Zoom | {viewer.zoom_ratio():.3f}x |
+| Zoom (px/mm) | {viewer.zoom:.3f} |
 | Pan | {viewer.pan_x:.0f}, {viewer.pan_y:.0f} px |
 | Grid | {_state(viewer.show_grid)} |
 | Embroidery | {_state(viewer.show_stitches)} |
