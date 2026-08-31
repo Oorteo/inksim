@@ -42,12 +42,14 @@ layout(location = 2) in vec3 a_tangent;
 layout(location = 3) in vec3 a_bitangent;
 layout(location = 4) in vec3 a_normal;
 layout(location = 5) in vec3 a_color;
+layout(location = 6) in vec2 a_mask;
 
 out vec2 v_uv;
 out vec3 v_tangent;
 out vec3 v_bitangent;
 out vec3 v_normal;
 out vec3 v_color;
+out vec2 v_mask;
 
 uniform mat4 u_transform;
 
@@ -57,6 +59,7 @@ void main() {
     v_bitangent = a_bitangent;
     v_normal = a_normal;
     v_color = a_color;
+    v_mask = a_mask;
     gl_Position = u_transform * vec4(a_pos, 0.0, 1.0);
 }
 """
@@ -69,10 +72,12 @@ in vec3 v_tangent;
 in vec3 v_bitangent;
 in vec3 v_normal;
 in vec3 v_color;
+in vec2 v_mask;
 
 out vec4 fragColor;
 
 uniform sampler2D u_texture;
+uniform sampler2D u_cap_mask;
 uniform vec3 u_light_dir;
 uniform float u_k_a;
 uniform float u_k_d;
@@ -84,7 +89,13 @@ uniform int u_debug_mode; // 0 = shaded, 1 = raw texture, 2 = UV
 
 void main() {
     vec4 texel = texture(u_texture, v_uv);
-    if (texel.a < 0.01) {
+    // Semicircular end-cap mask: white = keep, black = trim. It only bites
+    // in the tip overshoot zones (mu < 1 there); over the ribbon body
+    // mu = 1 samples the mask's flat side, which stays white across every
+    // row where the thread has alpha, so the body alpha is untouched.
+    float cap = texture(u_cap_mask, v_mask).r;
+    float alpha = texel.a * cap;
+    if (alpha < 0.01) {
         discard;
     }
 
@@ -102,8 +113,6 @@ void main() {
     n.x *= u_normal_strength_tangent;
     n.y *= u_normal_strength_bitangent;
     vec3 normal = normalize(TBN * n);
-
-    float alpha = texel.a;
 
     vec3 L = normalize(u_light_dir);
     vec3 V = vec3(0.0, 0.0, 1.0);
@@ -261,6 +270,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._vbo = None
         self._ibo = None
         self._texture = None
+        self._cap_texture = None
         self._texture_path = None
         self._width_fraction = 1.0
         self._cap_fraction = 0.0
@@ -434,6 +444,39 @@ class GLStitchWidget(QOpenGLWidget):
         self._width_fraction = texture_width_fraction(path)
         self._cap_fraction = texture_cap_radius_fraction(path)
 
+        # Semicircular end-cap mask (grayscale, R channel) matching the new
+        # texture. White = keep, black = trim; sampled only in the tip
+        # zones. The texture holds TWO copies of the generated semicircle
+        # side by side -- [as-generated | U-flipped] -- so the middle seam
+        # joins the two FLAT white sides (a fully white column, sampled by
+        # the ribbon body) while both arc apexes point outward:
+        #   start tip: mu 0.0 (outermost) -> 0.5 (needle)  -- LEFT half,
+        #   body:      mu 0.5,
+        #   end tip:   mu 0.5 (needle) -> 1.0 (outermost)  -- RIGHT half.
+        # A missing mask file falls back to an all-white 1x1 texture, which
+        # keeps the ribbon straight-cut.
+        if self._cap_texture is not None:
+            self._cap_texture.destroy()
+        cap_path = path.with_name(path.name.replace("_normal_mask", "_cap_mask"))
+        if cap_path.exists():
+            cap_src, cap_w, cap_h = _load_texture(cap_path)
+            cap_data = np.concatenate([cap_src, cap_src[:, ::-1, :]], axis=1)
+            cap_w = cap_data.shape[1]
+        else:
+            cap_data = np.full((1, 1, 4), 255, dtype=np.uint8)
+            cap_w = cap_h = 1
+        cap_texture = QOpenGLTexture(QOpenGLTexture.Target2D)
+        cap_texture.create()
+        cap_texture.setFormat(QOpenGLTexture.RGBAFormat)
+        cap_texture.setSize(cap_w, cap_h)
+        cap_texture.allocateStorage()
+        cap_texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, cap_data.tobytes())
+        cap_texture.setMinificationFilter(QOpenGLTexture.Linear)
+        cap_texture.setMagnificationFilter(QOpenGLTexture.Linear)
+        cap_texture.setWrapMode(QOpenGLTexture.DirectionS, QOpenGLTexture.ClampToEdge)
+        cap_texture.setWrapMode(QOpenGLTexture.DirectionT, QOpenGLTexture.ClampToEdge)
+        self._cap_texture = cap_texture
+
     def set_texture_path(self, path):
         """Swap the thread texture at runtime (e.g. from a context menu)."""
         if self._texture is None:
@@ -457,7 +500,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._vao.bind()
         self._vbo.bind()
         self._ibo.bind()
-        stride = 16 * np.dtype(np.float32).itemsize
+        stride = 18 * np.dtype(np.float32).itemsize
         offset = 0
         self._program.enableAttributeArray(0)
         self._program.setAttributeBuffer(0, GL_FLOAT, offset, 2, stride)
@@ -476,6 +519,9 @@ class GLStitchWidget(QOpenGLWidget):
         offset += 3 * np.dtype(np.float32).itemsize
         self._program.enableAttributeArray(5)
         self._program.setAttributeBuffer(5, GL_FLOAT, offset, 3, stride)
+        offset += 3 * np.dtype(np.float32).itemsize
+        self._program.enableAttributeArray(6)
+        self._program.setAttributeBuffer(6, GL_FLOAT, offset, 2, stride)
         self._vao.release()
         self._ibo.release()
         self._vbo.release()
@@ -566,9 +612,15 @@ class GLStitchWidget(QOpenGLWidget):
             self._texture.bind(0)
             glUniform1i(self._program.uniformLocation("u_texture"), 0)
 
+            if self._cap_texture is not None:
+                self._cap_texture.bind(1)
+                glUniform1i(self._program.uniformLocation("u_cap_mask"), 1)
+
             self._vao.bind()
             glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
             self._vao.release()
+            if self._cap_texture is not None:
+                self._cap_texture.release()
             self._texture.release()
             self._program.release()
 
