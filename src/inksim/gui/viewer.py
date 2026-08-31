@@ -214,8 +214,8 @@ class EmbroideryViewerWidget(QWidget):
         self._pending_fit_to_screen = False
         self.play_timer = QTimer(self)
         self.play_speed = 20
-        self.play_speed_levels = (1, 5, 10, 20, 40, 80)
-        self.play_speed_index = 2
+        self.play_speed_levels = (1, 2, 3, 5, 7, 10, 15, 22, 32, 47, 68, 98)
+        self.play_speed_index = 5
         self.play_step = self.play_speed_levels[self.play_speed_index]
         self.is_playing = False
         self.play_timer.timeout.connect(self.advance_playback)
