@@ -1,14 +1,15 @@
 {
   "name": "loose_twist",
-  "width": 512,
+  "width": 528,
   "height": 128,
-  "twist_periods": 1.5,
+  "twist_periods": 2.0,
   "strand_radius": 24.0,
   "helix_radius": 11.0,
   "num_strands": 3,
+  "strand_spacing": 0.0,
   "blend_softness": 2.5,
   "fiber_noise": 0.06,
-  "width_fraction": 0.516937255859375,
-  "cap_radius_px": 38.0,
-  "cap_radius_fraction": 0.296875
+  "width_fraction": 0.5171638257575758,
+  "cap_radius_px": 39.0,
+  "cap_radius_fraction": 0.3046875
 }

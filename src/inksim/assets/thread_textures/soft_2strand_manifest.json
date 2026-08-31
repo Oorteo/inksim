@@ -1,14 +1,15 @@
 {
   "name": "soft_2strand",
-  "width": 512,
+  "width": 528,
   "height": 128,
   "twist_periods": 3.0,
   "strand_radius": 28.0,
   "helix_radius": 14.0,
   "num_strands": 2,
+  "strand_spacing": 0.0,
   "blend_softness": 3.5,
   "fiber_noise": 0.06,
-  "width_fraction": 0.576324462890625,
-  "cap_radius_px": 45.0,
-  "cap_radius_fraction": 0.3515625
+  "width_fraction": 0.5763494318181818,
+  "cap_radius_px": 46.0,
+  "cap_radius_fraction": 0.359375
 }

@@ -26,6 +26,7 @@ def generate_thread_textures(
     strand_radius: float = 24.0,
     helix_radius: float = 11.0,
     num_strands: int = 3,
+    strand_spacing: float = 0.0,
     twist_offset: float = 0.0,
     amp: float = 2.0,
     fiber_noise: float = 0.06,
@@ -43,7 +44,35 @@ def generate_thread_textures(
 
     # Period in pixels: choose a value that tiles exactly across the texture width.
     # This guarantees the helix phase matches at the left and right edges.
+    # For non-integer twists we round; this is what all variants currently use.
     period = max(1, int(round(width / twist_periods)))
+
+    # Warn loudly when twist_periods does not divide width evenly, because the
+    # rendered tile will not wrap phase-correctly at the seam.  This is why
+    # loose_twist (width=512, twist_periods=1.5) tiles badly while the others
+    # tile cleanly.
+    expected_period = width / twist_periods
+    if abs(period - expected_period) > 1e-9:
+        exact_twists = width / period
+        # Suggest a width close to the requested one where width / twist_periods
+        # is an integer. Prefer multiples of 16 for GPU-friendly texture sizes.
+        raw_best = round(twist_periods * round(expected_period))
+        candidate_widths = [w for w in range(max(16, raw_best - 96), raw_best + 97)
+                            if w > 0 and abs(w / twist_periods - round(w / twist_periods)) < 1e-9]
+        if candidate_widths:
+            def _score(w: int) -> tuple[float, int]:
+                dist = abs(w - width)
+                align = 0 if w % 16 == 0 else 1
+                return (align, dist)
+            best_width = min(candidate_widths, key=_score)
+            suggestion = f" Try --width {best_width}."
+        else:
+            suggestion = ""
+        print(
+            f"WARNING: twist_periods={twist_periods} does not divide width={width} "
+            f"evenly. Rounded period {period}px gives {exact_twists:.3f} twists, "
+            f"so left/right edge phases differ. Tile seam will be visible.{suggestion}"
+        )
 
     # Convert colours to float arrays.
     c_top = np.array(color_top, dtype=float)
@@ -91,11 +120,15 @@ def generate_thread_textures(
         cy = height / 2.0 + amp * math.sin(t)
 
         # Compute strand centre positions in the cross-section.
+        # strand_spacing offsets each strand radially from the helix centre so
+        # the strands do not overlap (0 = classic touching bundle, >0 = gaps).
         strands = []
         for i in range(num_strands):
             angle = t + 2.0 * math.pi * i / num_strands + twist_offset
-            y_pos = cy + helix_radius * math.sin(angle)
-            z_pos = helix_radius * math.cos(angle)
+            # Effective radius includes optional spacing between strand centres.
+            effective_radius = helix_radius + strand_spacing
+            y_pos = cy + effective_radius * math.sin(angle)
+            z_pos = effective_radius * math.cos(angle)
             strands.append({"y": y_pos, "z": z_pos, "angle": angle})
 
         for yi in ys:
@@ -325,6 +358,7 @@ def generate_thread_textures(
         "strand_radius": strand_radius,
         "helix_radius": helix_radius,
         "num_strands": num_strands,
+        "strand_spacing": strand_spacing,
         "blend_softness": blend_softness,
         "fiber_noise": fiber_noise,
         "width_fraction": width_fraction,
@@ -344,6 +378,40 @@ def generate_thread_textures(
     print(f"   width_fraction = {width_fraction:.3f}")
 
     return outputs
+
+
+def generate_tile_preview(
+    map_path: str | Path,
+    output_path: str | Path | None = None,
+    repeats: int = 2,
+) -> Path:
+    """Concatenate a texture map horizontally to expose tiling seams.
+
+    Draws vertical red guide lines on every seam so the join is easy to see.
+    """
+    map_path = Path(map_path)
+    img = Image.open(map_path)
+    width, height = img.size
+    out_width = width * repeats
+    out = Image.new(img.mode, (out_width, height))
+    for i in range(repeats):
+        out.paste(img, (i * width, 0))
+
+    # Draw short red seam markers at the top of each tile boundary so the
+    # join remains fully visible below the marker.
+    red = (255, 0, 0) if img.mode == "RGB" else (255, 0, 0, 255)
+    seam_xs = [i * width for i in range(1, repeats)]
+    marker_height = min(8, height // 8)
+    for x in seam_xs:
+        for y in range(0, marker_height, 2):
+            out.putpixel((x, y), red)
+
+    if output_path is None:
+        output_path = map_path.parent / f"{map_path.stem}_tile_preview{map_path.suffix}"
+    else:
+        output_path = Path(output_path)
+    out.save(output_path)
+    return output_path
 
 
 def _parse_color(value: str) -> tuple[int, int, int]:
@@ -368,6 +436,8 @@ def main() -> None:
                         help="Strand radius in pixels")
     parser.add_argument("--helix-radius", type=float, default=11.0,
                         help="Helix radius in pixels")
+    parser.add_argument("--strand-spacing", type=float, default=0.0,
+                        help="Extra radial spacing between strand centres (0 = touching, >0 = gaps)")
     parser.add_argument("--blend-softness", type=float, default=2.5,
                         help="Strand blending softness (1-4)")
     parser.add_argument("--fiber-noise", type=float, default=0.06,
@@ -376,6 +446,9 @@ def main() -> None:
                         help="Output directory")
     parser.add_argument("--prefix", type=str, default="thread",
                         help="Output filename prefix")
+    parser.add_argument("--tile-preview", action="store_true",
+                        help="Also write *_tile_preview.png for normal_mask "
+                             "and diffuse so tiling seams are visible immediately")
 
     parser.add_argument("--color-top", type=str, default="180,220,255",
                         help="Top (lit) colour as R,G,B")
@@ -390,13 +463,14 @@ def main() -> None:
     color_mid = _parse_color(args.color_mid)
     color_bottom = _parse_color(args.color_bottom)
 
-    generate_thread_textures(
+    outputs = generate_thread_textures(
         width=args.width,
         height=args.height,
         twist_periods=args.twist_periods,
         strand_radius=args.strand_radius,
         helix_radius=args.helix_radius,
         num_strands=args.strands,
+        strand_spacing=args.strand_spacing,
         blend_softness=args.blend_softness,
         fiber_noise=args.fiber_noise,
         color_top=color_top,
@@ -405,6 +479,12 @@ def main() -> None:
         output_dir=args.output_dir,
         prefix=args.prefix,
     )
+
+    if args.tile_preview:
+        for name in ("normal_mask", "diffuse", "rgba"):
+            if name in outputs:
+                preview_path = generate_tile_preview(outputs[name], repeats=2)
+                print(f"   - tile_preview ({name}): {preview_path.name}")
 
 
 if __name__ == "__main__":

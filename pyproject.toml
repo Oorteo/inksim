@@ -1,6 +1,6 @@
 [project]
 name = "inksim"
-version = "0.2.5"
+version = "0.2.6"
 description = "Interactive embroidery simulator"
 authors = [{ name = "Tony Karnigen" }]
 readme = "README.md"
