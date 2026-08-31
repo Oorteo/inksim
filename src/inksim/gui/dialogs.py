@@ -3,10 +3,10 @@ from pathlib import Path
 
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QColor, QPainter, QPen
-from PySide6.QtWidgets import (QComboBox, QDialog, QDialogButtonBox,
-                               QDoubleSpinBox, QFileDialog, QHBoxLayout,
-                               QLabel, QListWidget, QPushButton, QSlider,
-                               QSplitter, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QComboBox, QDialog, QDoubleSpinBox,
+                               QFileDialog, QHBoxLayout, QLabel, QListWidget,
+                               QPushButton, QSlider, QSplitter, QVBoxLayout,
+                               QWidget)
 
 from ..formats import get_supported_input_extensions
 from .viewer import EmbroideryViewerWidget, density_debug
@@ -149,17 +149,39 @@ class EmbroideryOpenDialog(QDialog):
         splitter.addWidget(preview_container)
         splitter.setStretchFactor(1, 1)
         root_layout.addWidget(splitter, 1)
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
-        root_layout.addWidget(buttons)
+        button_layout = QHBoxLayout()
+        self._real_preview_button = QPushButton("Real preview", self)
+        self._real_preview_button.setCheckable(True)
+        self._real_preview_button.setChecked(self.preview.active_renderer == "gpu_textured")
+        self._real_preview_button.clicked.connect(self._toggle_real_preview)
+        self.preview.renderer_changed.connect(self._sync_real_preview_button)
+        button_layout.addWidget(self._real_preview_button)
+        button_layout.addStretch()
+        ok_button = QPushButton("OK", self)
+        ok_button.setDefault(True)
+        ok_button.clicked.connect(self.open_selected)
+        cancel_button = QPushButton("Cancel", self)
+        cancel_button.clicked.connect(self.reject)
+        button_layout.addWidget(cancel_button)
+        button_layout.addWidget(ok_button)
+        root_layout.addLayout(button_layout)
         self.file_list.currentRowChanged.connect(self._on_row_changed)
         self.file_list.itemDoubleClicked.connect(self.open_selected)
         self.directory_text.lineEdit().returnPressed.connect(self.change_directory)
         up_button.clicked.connect(self.go_to_parent_directory)
         browse_button.clicked.connect(self.browse_directory)
-        buttons.accepted.connect(self.open_selected)
-        buttons.rejected.connect(self.cancel_dialog)
         self.refresh_files()
         QTimer.singleShot(0, self.file_list.setFocus)
+
+    def _toggle_real_preview(self):
+        self.preview.toggle_display_mode("Z")
+
+    def _sync_real_preview_button(self, renderer_key):
+        is_real = renderer_key == "gpu_textured"
+        self._real_preview_button.setChecked(is_real)
+        self._real_preview_button.setText(
+            "Normal preview" if is_real else "Real preview"
+        )
 
     def refresh_files(self):
         if not self.current_directory.is_dir():
