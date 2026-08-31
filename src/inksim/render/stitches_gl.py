@@ -271,24 +271,24 @@ def _build_satin_quads(
     le_x = x2 - across_x * h
     le_y = y2 - across_y * h
 
-    # Whole tiles per stitch: a stitch always covers an integer number of
-    # complete twist periods, so every stitch both starts and ends exactly on
-    # a tile boundary in U. Consecutive stitches therefore join at the END of
-    # the previous tile (U integer == tile start), never mid-tile -- joining
-    # mid-tile would cut the twist at an arbitrary torsion angle. Rounding to
-    # the nearest tile keeps the twist density (tiles per mm) constant up to
-    # the rounding error; the minimum of 1 tile keeps tiny stitches from
-    # collapsing the twist to nothing.
-    tiles = np.rint(length / stitch_height / thread_texture_aspect)
-    tiles = np.maximum(tiles, 1.0)
-    tiles[~valid] = 0.0
-    cum = np.cumsum(tiles)
+    # ONE global scale for every stitch: U advances at a constant twist
+    # density (tiles per mm), so a short and a long stitch both sample the
+    # texture at the same rate and look identical. Tiles are laid end to end
+    # -- each tile starts exactly where the previous tile ended -- and the
+    # LAST tile of a stitch is almost never whole: it is simply cut short at
+    # the stitch end (a fragment of the tile covers the remaining length).
+    # The next stitch resumes at exactly the U phase where the previous one
+    # stopped, so the twist flows continuously across stitch joints.
+    repeats = length / stitch_height / thread_texture_aspect
+    repeats = np.maximum(repeats, 1e-6)
+    repeats[~valid] = 0.0
+    cum = np.cumsum(repeats)
     texture_start = np.empty(n, dtype=np.float64)
     texture_start[0] = 0.0
     texture_start[1:] = cum[:-1]
     texture_start %= 1.0
-    texture_mid = texture_start + tiles / 2.0
-    texture_end = texture_start + tiles
+    texture_mid = texture_start + repeats / 2.0
+    texture_end = texture_start + repeats
 
     # TBN basis. theta = -atan2(along_y, along_x) gives ct = along_x and
     # st = -along_y, so tangent/normal reduce to simple products. The
