@@ -102,6 +102,8 @@ void main() {
     n.y *= u_normal_strength_bitangent;
     vec3 normal = normalize(TBN * n);
 
+    float alpha = texel.a;
+
     vec3 L = normalize(u_light_dir);
     vec3 V = vec3(0.0, 0.0, 1.0);
     vec3 H = normalize(L + V);
@@ -111,7 +113,7 @@ void main() {
     float specular = u_k_s * pow(max(dot(normal, H), 0.0), u_specular_exponent);
 
     vec3 shaded = (u_k_a + diffuse) * v_color + vec3(specular);
-    fragColor = vec4(clamp(shaded, 0.0, 1.0), texel.a);
+    fragColor = vec4(clamp(shaded, 0.0, 1.0), alpha);
 }
 """
 
