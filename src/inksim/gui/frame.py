@@ -65,6 +65,7 @@ class MainWindow(QMainWindow):
         self.last_directory = self.config.value("last_directory", "", str)
         if document_path is not None and document_path.is_file():
             self.last_directory = str(document_path.parent)
+        self.recent_directories = self._load_recent_directories()
         self.current_file_path = None
         self._source_mtime_ns = None
         self._last_source_check = 0.0
@@ -165,6 +166,36 @@ class MainWindow(QMainWindow):
         finally:
             dialog.close()
             self._is_reloading_from_disk = False
+
+    def _load_recent_directories(self):
+        """Load the last opened embroidery directories from QSettings."""
+        values = self.config.value("recent_directories", [], list)
+        seen = set()
+        result = []
+        for value in values:
+            path = Path(str(value)).resolve()
+            if path.is_dir() and path not in seen:
+                seen.add(path)
+                result.append(str(path))
+                if len(result) >= 10:
+                    break
+        return result
+
+    def _save_recent_directories(self):
+        """Persist the recent-directory list back to QSettings."""
+        self.config.setValue("recent_directories", self.recent_directories)
+
+    def _add_recent_directory(self, directory):
+        """Move *directory* to the front of the recent list, cap at 10."""
+        path = Path(str(directory)).resolve()
+        if not path.is_dir():
+            return
+        text = str(path)
+        self.recent_directories = [text] + [
+            d for d in self.recent_directories if d != text
+        ][:9]
+        self._save_recent_directories()
+
     def show_initial_window(self, autoplay=False, initial_directory=None):
         """Show the fully initialized window after optional startup work."""
         if self._startup_fullscreen:
@@ -202,7 +233,6 @@ class MainWindow(QMainWindow):
         self._action(export_menu, "Preview PNG...", self.export_icon_png)
         self._action(export_menu, "Simple PNG for print...", self.export_print_png)
         self._action(file_menu, "Center needle", self.viewer.center_needle, "C")
-        self._action(file_menu, "Center design", self.viewer.center_design)
         self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen, "F")
         self._action(file_menu, "Actual size (1:1)", self.viewer.set_one_to_one, "1")
         self._action(file_menu, "Calibrate display size...", self.viewer.calibrate_display)
@@ -526,7 +556,9 @@ class MainWindow(QMainWindow):
         self.viewer.toggle_display_mode("Z")
 
     def open_file_dialog(self):
-        dialog = EmbroideryOpenDialog(self, self.last_directory, self.current_file_path)
+        dialog = EmbroideryOpenDialog(
+            self, self.last_directory, self.current_file_path, self.recent_directories
+        )
         if dialog.exec() == QDialog.Accepted:
             self.open_file(dialog.selected_path)
 
@@ -693,6 +725,7 @@ class MainWindow(QMainWindow):
         if not delete_after_load:
             self.last_directory = str(selected_path.parent)
             self.config.setValue("last_directory", self.last_directory)
+            self._add_recent_directory(selected_path.parent)
         total = self.viewer.stitches_np.shape[0]
         bounds = self.viewer.bounds
         self._base_title = (

@@ -119,7 +119,7 @@ class _RulerBar(QWidget):
 class EmbroideryOpenDialog(QDialog):
     """Browse embroidery files with an in-app design preview."""
 
-    def __init__(self, parent, initial_directory, selected_file=None):
+    def __init__(self, parent, initial_directory, selected_file=None, recent_directories=None):
         super().__init__(parent)
         self.setWindowTitle("Open embroidery file")
         self.resize(1100, 720)
@@ -137,6 +137,15 @@ class EmbroideryOpenDialog(QDialog):
         directory_layout.addWidget(up_button)
         directory_layout.addWidget(browse_button)
         root_layout.addLayout(directory_layout)
+        recent_layout = QHBoxLayout()
+        recent_layout.addWidget(QLabel("Recent:", self))
+        self.recent_combo = QComboBox(self)
+        self.recent_combo.addItem("— choose directory —")
+        for directory in (recent_directories or []):
+            self.recent_combo.addItem(directory)
+        self.recent_combo.setEnabled(self.recent_combo.count() > 1)
+        recent_layout.addWidget(self.recent_combo, 1)
+        root_layout.addLayout(recent_layout)
         self.file_list = QListWidget(self)
         preview_container = QWidget(self)
         preview_container.setLayout(QVBoxLayout())
@@ -168,10 +177,18 @@ class EmbroideryOpenDialog(QDialog):
         self.file_list.currentRowChanged.connect(self._on_row_changed)
         self.file_list.itemDoubleClicked.connect(self.open_selected)
         self.directory_text.lineEdit().returnPressed.connect(self.change_directory)
+        self.recent_combo.currentIndexChanged.connect(self._on_recent_selected)
         up_button.clicked.connect(self.go_to_parent_directory)
         browse_button.clicked.connect(self.browse_directory)
         self.refresh_files()
         QTimer.singleShot(0, self.file_list.setFocus)
+
+    def _on_recent_selected(self, index):
+        if index <= 0:
+            return
+        directory = self.recent_combo.itemText(index)
+        self.recent_combo.setCurrentIndex(0)
+        self.set_directory(directory)
 
     def _toggle_real_preview(self):
         self.preview.toggle_display_mode("Z")
