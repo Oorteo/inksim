@@ -17,6 +17,9 @@ def render_shaded_volume_natural_numba(
     light_factor,
 ):
     """Render volume-shaded stitches with subtle per-stitch shade variation."""
+    # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
+    # like the previous 0.05. The GPU renderer keeps its own mapping.
+    light_factor = light_factor * 0.1
     height, width, _ = buf.shape
     effective_width = min(
         MAX_RENDER_LINE_WIDTH_PX,
@@ -115,6 +118,9 @@ def render_realistic_twist_numba(
     light_factor,
 ):
     """Render stable cylindrical threads with a subtle symmetric helical sheen."""
+    # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
+    # like the previous 0.05. The GPU renderer keeps its own mapping.
+    light_factor = light_factor * 0.1
     height, width, _ = buf.shape
     thread_radius = max(0.75, line_width * zoom * 0.5)
     margin = int(np.ceil(thread_radius + 1.5))
@@ -230,8 +236,9 @@ def render_shaded_numba(
     light_factor,
     use_realistic=False,
 ):
-    # Draw visible stitch segments into the RGB buffer.
-    # Each segment is [x1, y1, x2, y2, r, g, b] in mm + base thread color.
+    # Draw visible stitch segments into the RGB buffer.    # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
+    # like the previous 0.05. The GPU renderer keeps its own mapping.
+    light_factor = light_factor * 0.1    # Each segment is [x1, y1, x2, y2, r, g, b] in mm + base thread color.
     # We project mm -> screen pixels using zoom/pan and then rasterize.
     h, w, _ = buf.shape
     # The configured width is in mm; convert it to screen pixels with the
@@ -392,6 +399,9 @@ def render_shaded_volume_numba(
     light_factor,
 ):
     """Render shaded stitches with a dark-light-dark axial thread profile."""
+    # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
+    # like the previous 0.05. The GPU renderer keeps its own mapping.
+    light_factor = light_factor * 0.1
     height, width, _ = buf.shape
     effective_width = min(
         MAX_RENDER_LINE_WIDTH_PX,
