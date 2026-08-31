@@ -32,10 +32,18 @@ def render_export_image(
     )
     offset_x = (width - design_width * zoom) / 2 - min_x * zoom
     offset_y = (height - design_height * zoom) / 2 - min_y * zoom
-    base_color = (255, 255, 255) if background == "white" else (1, 2, 3)
+    if isinstance(background, (tuple, list)) and len(background) == 3:
+        base_color = tuple(int(c) for c in background)
+        opaque = True
+    elif background == "white":
+        base_color = (255, 255, 255)
+        opaque = True
+    else:
+        base_color = (1, 2, 3)
+        opaque = False
     buffer = np.empty((height, width, 4), dtype=np.uint8)
     buffer[:, :, :3] = base_color
-    buffer[:, :, 3] = 255 if background == "white" else 0
+    buffer[:, :, 3] = 255 if opaque else 0
     render_viewport_raster(
         buffer,
         renderer_key,
@@ -54,7 +62,7 @@ def render_export_image(
         False,
         True,
     )
-    if renderer_key not in VECTOR_RENDERERS and background != "white":
+    if renderer_key not in VECTOR_RENDERERS and not opaque:
         changed = np.any(buffer[:, :, :3] != base_color, axis=2)
         buffer[:, :, 3] = np.where(changed, 255, 0)
     image = QImage(
@@ -81,7 +89,7 @@ def render_export_image(
         )
         painter.end()
     image.setText("InkSim design size", f"{design_width:.2f} x {design_height:.2f} mm")
-    image.setText("InkSim background", background)
+    image.setText("InkSim background", str(background))
     image.setText("InkSim layers", "embroidery only")
     image.setText("InkSim rendering", renderer_key)
     if dpi:

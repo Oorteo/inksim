@@ -66,6 +66,9 @@ class MainWindow(QMainWindow):
         self._should_maximize_default = not window_size and not fullscreen
         self.config = Config()
         self.last_directory = self.config.get("last_directory", "")
+        self.export_transparent_background = self.config.get(
+            "export_transparent_background", False
+        )
         if document_path is not None and document_path.is_file():
             self.last_directory = str(document_path.parent)
         self.recent_directories = self._load_recent_directories()
@@ -719,15 +722,32 @@ class MainWindow(QMainWindow):
             return image.save(str(path), "PNG")
         return image
 
-    def _show_export_preview(self, title, image, default_name):
+    def _show_export_preview(self, title, image, default_name, renderer_key=None, icon=False, dpi=300):
         default_path = str(Path(self.last_directory or Path.cwd()) / default_name)
+
+        def _render_callback(transparent=False):
+            background = "transparent" if transparent else self.viewer.background_color
+            return self.export_png(
+                icon=icon,
+                dpi=dpi,
+                background=background,
+                renderer_key=renderer_key,
+            )
+
+        def _on_transparent_changed(checked):
+            self.export_transparent_background = checked
+            self.config.set("export_transparent_background", checked)
+
         dialog = ExportPreviewDialog(
             title,
             image,
             default_path,
             "PNG files (*.png)",
             ".png",
-            self,
+            render_callback=_render_callback,
+            transparent_default=self.export_transparent_background,
+            on_transparent_changed=_on_transparent_changed,
+            parent=self,
         )
         dialog.exec()
         selected_path = dialog.selected_path()
@@ -738,37 +758,42 @@ class MainWindow(QMainWindow):
     def export_print_png(self):
         if not self._can_export_image():
             return
-        image = self.export_png(dpi=300, renderer_key="simple")
+        image = self.export_png(dpi=300, background=self.viewer.background_color, renderer_key="simple")
         if image is None:
             return
         self._show_export_preview(
             "Export PNG for print",
             image,
             self._default_export_name("-simple.png"),
+            renderer_key="simple",
+            dpi=300,
         )
 
     def export_shaded_png(self):
         if not self._can_export_image():
             return
-        image = self.export_png(dpi=300)
+        image = self.export_png(dpi=300, background=self.viewer.background_color)
         if image is None:
             return
         self._show_export_preview(
             "Export shaded PNG for print",
             image,
             self._default_export_name(".png"),
+            dpi=300,
         )
 
     def export_icon_png(self):
         if not self._can_export_image():
             return
-        image = self.export_png(icon=True, dpi=96)
+        image = self.export_png(icon=True, dpi=96, background=self.viewer.background_color)
         if image is None:
             return
         self._show_export_preview(
             "Export preview PNG",
             image,
             self._default_export_name("_thumb.png"),
+            icon=True,
+            dpi=96,
         )
 
     def open_file(self, path, precompute_density=True, delete_after_load=False, autoplay=False):

@@ -1,54 +1,100 @@
 from pathlib import Path
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPainter, QPixmap
 from PySide6.QtWidgets import (
+    QApplication,
+    QCheckBox,
     QDialog,
     QFileDialog,
     QHBoxLayout,
     QLabel,
     QMessageBox,
     QPushButton,
-    QScrollArea,
     QSizePolicy,
     QVBoxLayout,
+    QWidget,
 )
+
+
+class _PreviewWidget(QWidget):
+    """Widget that paints the preview image scaled to its current size."""
+
+    def __init__(self, image, parent=None):
+        super().__init__(parent)
+        self._image = image
+        self.setMinimumSize(40, 40)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+    def set_image(self, image):
+        self._image = image
+        self.update()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        rect = self.rect()
+        pixmap = QPixmap.fromImage(self._image)
+        scaled = pixmap.scaled(
+            rect.width(),
+            rect.height(),
+            Qt.KeepAspectRatio,
+            Qt.SmoothTransformation,
+        )
+        x = (rect.width() - scaled.width()) // 2
+        y = (rect.height() - scaled.height()) // 2
+        painter.drawPixmap(x, y, scaled)
+        painter.end()
 
 
 class ExportPreviewDialog(QDialog):
     """Modal dialog showing an exported image with copy-to-clipboard or save options."""
 
-    def __init__(self, title, image, default_name, file_filter, extension, parent=None):
+    def __init__(
+        self,
+        title,
+        image,
+        default_name,
+        file_filter,
+        extension,
+        render_callback=None,
+        transparent_default=False,
+        on_transparent_changed=None,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setWindowTitle(title)
-        self.setMinimumSize(420, 340)
-        self.resize(720, 520)
+        self.setMinimumSize(640, 480)
+        self.resize(1100, 760)
         self._image = image
         self._default_name = default_name
         self._file_filter = file_filter
         self._extension = extension
+        self._render_callback = render_callback
+        self._transparent_changed_callback = on_transparent_changed
         self._selected_path = None
 
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
         layout.setContentsMargins(12, 12, 12, 12)
 
-        info = QLabel(f"{image.width()} x {image.height()} pixels")
-        info.setAlignment(Qt.AlignCenter)
-        layout.addWidget(info)
+        self._info_label = QLabel(f"{image.width()} x {image.height()} pixels")
+        self._info_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self._info_label)
 
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setAlignment(Qt.AlignCenter)
-        scroll.setFrameShape(QScrollArea.NoFrame)
-        scroll.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self._preview = _PreviewWidget(image)
+        layout.addWidget(self._preview, 1)
 
-        self._label = QLabel()
-        self._label.setAlignment(Qt.AlignCenter)
-        self._label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self._update_pixmap()
-        scroll.setWidget(self._label)
-        layout.addWidget(scroll, 1)
+        options_layout = QHBoxLayout()
+        options_layout.addStretch()
+        self._transparent_check = QCheckBox("Transparent background")
+        self._transparent_check.setChecked(transparent_default)
+        self._transparent_check.toggled.connect(self._on_transparent_changed)
+        if render_callback is None:
+            self._transparent_check.setEnabled(False)
+        options_layout.addWidget(self._transparent_check)
+        options_layout.addStretch()
+        layout.addLayout(options_layout)
 
         button_layout = QHBoxLayout()
         button_layout.addStretch()
@@ -71,25 +117,16 @@ class ExportPreviewDialog(QDialog):
         button_layout.addStretch()
         layout.addLayout(button_layout)
 
-    def _update_pixmap(self):
-        pixmap = QPixmap.fromImage(self._image)
-        # Scale to fit the dialog while keeping aspect ratio; keep the source
-        # image at full resolution for clipboard / save operations.
-        available = self._label.size()
-        if available.width() > 0 and available.height() > 0:
-            scaled = pixmap.scaled(
-                available.width(),
-                available.height(),
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
-            )
-        else:
-            scaled = pixmap
-        self._label.setPixmap(scaled)
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self._update_pixmap()
+    def _on_transparent_changed(self, checked):
+        if self._transparent_changed_callback is not None:
+            self._transparent_changed_callback(checked)
+        if self._render_callback is None:
+            return
+        new_image = self._render_callback(transparent=checked)
+        if new_image is not None:
+            self._image = new_image
+            self._preview.set_image(self._image)
+            self._info_label.setText(f"{self._image.width()} x {self._image.height()} pixels")
 
     def _copy_to_clipboard(self):
         clipboard = QApplication.clipboard()
