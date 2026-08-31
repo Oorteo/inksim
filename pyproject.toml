@@ -13,6 +13,7 @@ dependencies = [
     "pyside6-essentials",
     # "pyside6-addons",
     "pyopengl",
+    "tomli-w",
 ]
 
 [dependency-groups]
