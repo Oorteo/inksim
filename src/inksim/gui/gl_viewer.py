@@ -243,8 +243,10 @@ void main() {
 def list_thread_textures():
     """Return ``[(label, path)]`` of available thread normal/mask textures.
 
-    Includes the packaged asset(s) under ``assets/thread_textures/`` and, for
-    development, the regenerated previews under ``scripts/texture/renders/``.
+    Only the packaged assets under ``assets/thread_textures/`` are listed;
+    these are the textures actually shipped in the wheel and loaded at runtime.
+    The dev-only previews under ``scripts/texture/renders/`` are intentionally
+    omitted from the menu.
     """
     results = []
     here = Path(__file__).resolve().parent
@@ -252,10 +254,6 @@ def list_thread_textures():
     if assets_dir.exists():
         for p in sorted(assets_dir.glob("*_normal_mask.png")):
             results.append((p.stem, p))
-    scripts_dir = here.parent.parent.parent / "scripts" / "texture" / "renders"
-    if scripts_dir.exists():
-        for p in sorted(scripts_dir.glob("*/*_normal_mask.png")):
-            results.append((f"{p.parent.name}/{p.stem}", p))
     return results
 
 
