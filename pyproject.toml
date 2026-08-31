@@ -14,6 +14,7 @@ dependencies = [
     # "pyside6-addons",
     "pyopengl",
     "tomli-w",
+    "filelock",
 ]
 
 [dependency-groups]

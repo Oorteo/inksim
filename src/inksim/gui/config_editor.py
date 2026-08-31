@@ -1,6 +1,4 @@
-"""Raw configuration-file editor for InkSim's QSettings storage."""
-
-from pathlib import Path
+"""Raw configuration-file editor for InkSim's TOML-backed storage."""
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
@@ -8,21 +6,24 @@ from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QLabel,
+    QMessageBox,
     QPlainTextEdit,
     QVBoxLayout,
 )
 
+from ..config import Config
+
 
 def show_config_editor(parent, config):
-    """Open a modal editor for the QSettings backing file."""
+    """Open a modal editor for the TOML config file."""
     dialog = ConfigEditorDialog(parent, config)
     dialog.exec()
 
 
 class ConfigEditorDialog(QDialog):
-    """Show and edit the QSettings INI file path and contents."""
+    """Show and edit the TOML configuration path and contents."""
 
-    def __init__(self, parent, config):
+    def __init__(self, parent, config: Config):
         super().__init__(parent)
         self.config = config
         self.setWindowTitle("Configuration file")
@@ -31,15 +32,14 @@ class ConfigEditorDialog(QDialog):
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
 
-        self._path = Path(config.fileName()).resolve()
-        path_label = QLabel(f"<b>{self._path}</b>", self)
+        path_label = QLabel(f"<b>{config.path}</b>", self)
         path_label.setWordWrap(True)
         path_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         layout.addWidget(path_label)
 
         hint = QLabel(
-            "Edit the INI file directly. Save writes it back; changes that affect "
-            "this session may need an application restart.",
+            "Edit the TOML file directly. Save writes it back atomically; "
+            "changes that affect this session may need an application restart.",
             self,
         )
         hint.setWordWrap(True)
@@ -56,25 +56,23 @@ class ConfigEditorDialog(QDialog):
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
 
-        if self._path.is_file():
-            try:
-                self._editor.setPlainText(
-                    self._path.read_text(encoding="utf-8")
-                )
-            except OSError as ex:
-                self._editor.setPlainText(f"# Could not read file: {ex}")
-        else:
-            self._editor.setPlainText("# Configuration file does not exist yet.\n")
+        self._reload()
+
+    def _reload(self):
+        """Display the current TOML contents."""
+        try:
+            self._editor.setPlainText(self.config.as_text())
+        except Exception as ex:  # noqa: BLE001
+            self._editor.setPlainText(f"# Could not read config: {ex}\n")
 
     def _save(self):
         text = self._editor.toPlainText()
         try:
-            self._path.parent.mkdir(parents=True, exist_ok=True)
-            self._path.write_text(text, encoding="utf-8")
-            self.config.sync()
-        except OSError as ex:
-            from PySide6.QtWidgets import QMessageBox
-
+            self.config.load_text(text)
+        except ValueError as ex:
+            QMessageBox.critical(self, "Invalid TOML", str(ex))
+            return
+        except Exception as ex:  # noqa: BLE001
             QMessageBox.critical(self, "Error", f"Failed to save config: {ex}")
             return
         self.accept()

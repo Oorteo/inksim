@@ -3,7 +3,7 @@ import time
 from pathlib import Path
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QRect, QSettings, QSignalBlocker, QTimer, Qt
+from PySide6.QtCore import QEvent, QRect, QSignalBlocker, QTimer, Qt
 from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..config import Config
 from ..constants import *
 from ..formats import (
     extension_from_output_filter,
@@ -62,8 +63,8 @@ class MainWindow(QMainWindow):
         self._allow_close = False
         self._startup_fullscreen = fullscreen
         self._should_maximize_default = not window_size and not fullscreen
-        self.config = QSettings(APP_ORGANIZATION, APP_TITLE)
-        self.last_directory = self.config.value("last_directory", "", str)
+        self.config = Config()
+        self.last_directory = self.config.get("last_directory", "")
         if document_path is not None and document_path.is_file():
             self.last_directory = str(document_path.parent)
         self.recent_directories = self._load_recent_directories()
@@ -169,8 +170,10 @@ class MainWindow(QMainWindow):
             self._is_reloading_from_disk = False
 
     def _load_recent_directories(self):
-        """Load the last opened embroidery directories from QSettings."""
-        values = self.config.value("recent_directories", [], list)
+        """Load the last opened embroidery directories from TOML config."""
+        values = self.config.get("recent_directories", [])
+        if not isinstance(values, list):
+            values = []
         seen = set()
         result = []
         for value in values:
@@ -183,8 +186,8 @@ class MainWindow(QMainWindow):
         return result
 
     def _save_recent_directories(self):
-        """Persist the recent-directory list back to QSettings."""
-        self.config.setValue("recent_directories", self.recent_directories)
+        """Persist the recent-directory list back to TOML config."""
+        self.config.set("recent_directories", self.recent_directories)
 
     def _add_recent_directory(self, directory):
         """Move *directory* to the front of the recent list, cap at 10."""
@@ -726,7 +729,7 @@ class MainWindow(QMainWindow):
         self._source_mtime_ns = self._capture_source_mtime(selected_path)
         if not delete_after_load:
             self.last_directory = str(selected_path.parent)
-            self.config.setValue("last_directory", self.last_directory)
+            self.config.set("last_directory", self.last_directory)
             self._add_recent_directory(selected_path.parent)
         total = self.viewer.stitches_np.shape[0]
         bounds = self.viewer.bounds

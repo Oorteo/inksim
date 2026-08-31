@@ -8,7 +8,6 @@ import pystitch as emb
 from PySide6.QtCore import (
     QEasingCurve,
     QRunnable,
-    QSettings,
     QThreadPool,
     Qt,
     QTimer,
@@ -43,6 +42,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..config import Config
 from ..constants import *
 from ..debug import is_enabled, logger
 from ..render import (
@@ -166,6 +166,7 @@ class EmbroideryViewerWidget(QWidget):
         self.needle_fullscreen = False
         self.needle_pulse = 0.0
         self._needle_pulse_anim = None
+        self.config = Config()
         self._load_view_settings()
         self.pattern = None
         self.stitches_np = np.zeros((0, 7), dtype=np.float32)
@@ -308,16 +309,19 @@ class EmbroideryViewerWidget(QWidget):
         Falls back to the OS-reported physical DPI (with device-pixel-ratio
         correction) when no calibration has been stored yet.
         """
-        settings = QSettings(APP_ORGANIZATION, APP_TITLE)
+        calibration = self.config.get("display_calibration", {})
+        if not isinstance(calibration, dict):
+            calibration = {}
         # Try the specific display first, then any stored calibration (the
         # display name can differ across sessions, so fall back to the first
         # valid value we find).
-        specific = f"display_calibration/{self._display_key()}"
-        for key in [specific] + [
-            k for k in settings.allKeys()
-            if k.startswith("display_calibration/") and k != specific
-        ]:
-            stored = settings.value(key, None)
+        specific = self._display_key()
+        keys = [specific] + [
+            k for k in calibration.keys()
+            if k != specific
+        ]
+        for key in keys:
+            stored = calibration.get(key)
             if stored is not None:
                 try:
                     value = float(stored)
@@ -349,57 +353,56 @@ class EmbroideryViewerWidget(QWidget):
 
         dialog = CalibrationDialog(self, self._pixels_per_mm())
         if dialog.exec() and dialog.pixels_per_mm() is not None:
-            settings = QSettings(APP_ORGANIZATION, APP_TITLE)
-            # Store under the specific display AND a global fallback so the
-            # calibration survives restarts even if the display name changes.
-            settings.setValue(
-                f"display_calibration/{self._display_key()}",
-                dialog.pixels_per_mm(),
-            )
-            settings.setValue("display_calibration/default", dialog.pixels_per_mm())
-            settings.sync()
+            self.config.merge_data({
+                "display_calibration": {
+                    self._display_key(): dialog.pixels_per_mm(),
+                    "default": dialog.pixels_per_mm(),
+                }
+            })
             self.set_one_to_one()
 
     def _load_view_settings(self):
-        """Load persisted view settings (background/needle) from QSettings."""
-        settings = QSettings(APP_ORGANIZATION, APP_TITLE)
-        bg = settings.value("view/background_color", None)
+        """Load persisted view settings (background/needle) from TOML config."""
+        view = self.config.get("view", {})
+        if not isinstance(view, dict):
+            view = {}
+        bg = view.get("background_color")
         if bg is not None:
             try:
                 self.background_color = tuple(int(v) for v in bg)
             except (TypeError, ValueError):
                 pass
-        nc = settings.value("view/needle_color", None)
+        nc = view.get("needle_color")
         if nc is not None:
             try:
                 self.needle_color = tuple(int(v) for v in nc)
             except (TypeError, ValueError):
                 pass
-        nt = settings.value("view/needle_radius", None)
+        nt = view.get("needle_radius")
         if nt is not None:
             try:
                 self.needle_radius = float(nt)
             except (TypeError, ValueError):
                 pass
-        nw = settings.value("view/needle_width", None)
+        nw = view.get("needle_width")
         if nw is not None:
             try:
                 self.needle_width = float(nw)
             except (TypeError, ValueError):
                 pass
-        nf = settings.value("view/needle_fullscreen", None)
+        nf = view.get("needle_fullscreen")
         if nf is not None:
-            # QSettings stores bools as "true"/"false" strings; bool("false")
-            # would be True, so parse explicitly.
             if isinstance(nf, bool):
                 self.needle_fullscreen = nf
             else:
                 self.needle_fullscreen = str(nf).strip().lower() in ("true", "1", "yes", "on")
 
     def _save_view_setting(self, key, value):
-        settings = QSettings(APP_ORGANIZATION, APP_TITLE)
-        settings.setValue(key, value)
-        settings.sync()
+        view = self.config.get("view", {})
+        if not isinstance(view, dict):
+            view = {}
+        view[key] = value
+        self.config.set("view", view)
 
     def zoom_ratio(self):
         """Return the zoom as a relative factor (1.0 == physical 1:1 size).
