@@ -46,8 +46,9 @@ def test_grid_adds_one_millimeter_lines_only_at_high_zoom():
     render_grid_numba(solid_zoom, 14.0, 0.0, 0.0)
 
     assert np.array_equal(low_zoom[4, 4], np.array([255, 255, 255], dtype=np.uint8))
-    assert np.array_equal(high_zoom[4, 10], np.array([242, 242, 242], dtype=np.uint8))
-    assert np.array_equal(solid_zoom[5, 14], np.array([235, 235, 235], dtype=np.uint8))
+    # Fine grid is now blended with the background at ~15% strength.
+    assert np.array_equal(high_zoom[4, 10], np.array([216, 216, 216], dtype=np.uint8))
+    assert np.array_equal(solid_zoom[5, 14], np.array([216, 216, 216], dtype=np.uint8))
 
 
 def test_supported_output_filter_lists_writable_pystitch_formats():
