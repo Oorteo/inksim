@@ -293,7 +293,7 @@ class EmbroideryViewerWidget(QWidget):
         if self.stitches_np.shape[0] == 0:
             return
         self.zoom = self._pixels_per_mm()
-        self.center_design()
+        self.center_needle()
 
     def _display_key(self):
         """Return a stable key identifying the current display."""
@@ -602,7 +602,7 @@ class EmbroideryViewerWidget(QWidget):
             float(rotated_corners[:, 1].max()),
         )
         self.invalidate_cache()
-        self.center_design()
+        self.center_needle()
 
     def toggle_display_mode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
