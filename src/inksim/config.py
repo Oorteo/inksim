@@ -64,6 +64,10 @@ class Config:
         except Exception:  # noqa: BLE001 - corrupt config is not fatal
             self._data = {}
 
+    def reload(self) -> None:
+        """Reload the on-disk TOML file into this instance."""
+        self._load()
+
     def _save_locked(self) -> None:
         """Write the in-memory data atomically to ``self.path``."""
         self.path.parent.mkdir(parents=True, exist_ok=True)

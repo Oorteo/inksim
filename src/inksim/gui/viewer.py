@@ -134,8 +134,13 @@ class EmbroideryViewerWidget(QWidget):
     RENDER_CACHE_PADDING = 200
     PAN_IDLE_RENDER_DELAY_MS = 150
 
-    def __init__(self, parent, progress_bar):
-        """Create an empty viewer connected to the progress bar."""
+    def __init__(self, parent, progress_bar, config=None):
+        """Create an empty viewer connected to the progress bar.
+
+        Args:
+            config: Optional shared :class:`Config` instance. When omitted, a
+                fresh instance is created (useful for tests or standalone use).
+        """
         super().__init__(parent)
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
@@ -166,7 +171,7 @@ class EmbroideryViewerWidget(QWidget):
         self.needle_fullscreen = False
         self.needle_pulse = 0.0
         self._needle_pulse_anim = None
-        self.config = Config()
+        self.config = config if config is not None else Config()
         self._load_view_settings()
         self.pattern = None
         self.stitches_np = np.zeros((0, 7), dtype=np.float32)

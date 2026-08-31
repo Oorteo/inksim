@@ -83,7 +83,7 @@ class MainWindow(QMainWindow):
 
         main_panel = QWidget(self)
         layout = QVBoxLayout(main_panel)
-        self.viewer = EmbroideryViewerWidget(main_panel, None)
+        self.viewer = EmbroideryViewerWidget(main_panel, None, self.config)
         self.progress = TimelineWidget(main_panel, self.viewer)
         self.mode_status = ModeBar(main_panel, self.viewer)
         self.progress.seek_requested.connect(self.viewer.seek_to)

@@ -59,8 +59,14 @@ class ConfigEditorDialog(QDialog):
         self._reload()
 
     def _reload(self):
-        """Display the current TOML contents."""
+        """Display the current TOML contents, reading from disk first.
+
+        Other parts of the application (e.g. the viewer) keep their own
+        :class:`Config` instance, so the editor must reload the on-disk
+        file to avoid showing a stale in-memory snapshot.
+        """
         try:
+            self.config.reload()
             self._editor.setPlainText(self.config.as_text())
         except Exception as ex:  # noqa: BLE001
             self._editor.setPlainText(f"# Could not read config: {ex}\n")
