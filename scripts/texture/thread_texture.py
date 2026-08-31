@@ -296,7 +296,10 @@ def generate_thread_textures(
     height_img.save(height_path)
     outputs["height"] = height_path
 
-    rgba = np.dstack([diffuse, alpha_mask])
+    # RGBA preview is stored premultiplied so that image viewers and the
+    # GL pipeline agree: edge pixels with low alpha also carry low colour,
+    # eliminating the white fringe that makes the thread look dilated.
+    rgba = np.dstack([diffuse * alpha_mask[:, :, None], alpha_mask])
     rgba_img = Image.fromarray((rgba * 255.0).astype(np.uint8), "RGBA")
     rgba_path = output_dir / f"{prefix}_rgba.png"
     rgba_img.save(rgba_path)

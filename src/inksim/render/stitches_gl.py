@@ -104,7 +104,10 @@ void main() {
     float specular = u_k_s * pow(max(dot(normal, H), 0.0), u_specular_exponent);
 
     vec3 shaded = (u_k_a + diffuse) * v_color + vec3(specular);
-    fragColor = vec4(clamp(shaded, 0.0, 1.0), alpha);
+    // Premultiplied alpha: partially-transparent edge/cap pixels must not
+    // emit full lighting, otherwise the straight-alpha fringe makes the
+    // thread look dilated at its edges and caps.
+    fragColor = vec4(clamp(shaded, 0.0, 1.0) * alpha, alpha);
 }
 """
 
@@ -644,7 +647,10 @@ def _init_gl(width, height):
     _SharedGLContext.fbo = fbo
 
     glEnable(GL_BLEND)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    # Premultiplied-alpha blending. The fragment shader writes colour
+    # already scaled by alpha, so we add it directly and subtract the
+    # covered fraction of the background.
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
     # All quads share z=0 -- stitch layering must follow draw order (later
     # stitch on top), not the depth buffer, so depth testing stays off.
     glDisable(GL_DEPTH_TEST)
@@ -784,15 +790,17 @@ def render_gpu_textured(
 
     alpha = rgba[:, :, 3] / 255.0
     if buf.shape[2] == 4:
-        # Blend RGB over existing RGBA buffer and mark covered pixels opaque.
+        # FBO output is premultiplied RGBA; composite it over the existing
+        # RGBA buffer. RGB is already scaled by src alpha, and the resulting
+        # alpha follows the standard porter-duff over operator.
         buf[:, :, :3] = (
-            rgba[:, :, :3] * alpha[:, :, None]
+            rgba[:, :, :3]
             + buf[:, :, :3] * (1.0 - alpha[:, :, None])
         ).astype(np.uint8)
         buf[:, :, 3] = np.maximum(buf[:, :, 3], rgba[:, :, 3])
     elif buf.shape[2] == 3:
         buf[:] = (
-            rgba[:, :, :3] * alpha[:, :, None]
+            rgba[:, :, :3]
             + buf * (1.0 - alpha[:, :, None])
         ).astype(np.uint8)
     else:

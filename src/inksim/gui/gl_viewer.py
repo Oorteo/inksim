@@ -123,7 +123,9 @@ void main() {
     float specular = u_k_s * pow(max(dot(normal, H), 0.0), u_specular_exponent);
 
     vec3 shaded = (u_k_a + diffuse) * v_color + vec3(specular);
-    fragColor = vec4(clamp(shaded, 0.0, 1.0), alpha);
+    // Premultiplied alpha: edge/cap pixels must not emit full lighting,
+    // otherwise the thread looks dilated by a bright fringe.
+    fragColor = vec4(clamp(shaded, 0.0, 1.0) * alpha, alpha);
 }
 """
 
@@ -417,7 +419,10 @@ class GLStitchWidget(QOpenGLWidget):
         self._density_vbo.create()
 
         glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        # Premultiplied-alpha blending: the fragment shader writes colour
+        # already scaled by alpha, so we add it directly and attenuate the
+        # background by (1 - alpha).
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
         # Allow gl_PointSize in the density shader.
         glEnable(GL_PROGRAM_POINT_SIZE)
         # All quads share z=0 -- stitch layering must follow draw order (later
