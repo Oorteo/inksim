@@ -224,7 +224,12 @@ class MainWindow(QMainWindow):
         action.setCheckable(checkable)
         if shortcut:
             action.setShortcut(QKeySequence(shortcut))
-        action.triggered.connect(slot)
+
+        def _traced_slot(*args, **kwargs):
+            self.viewer._trace_event(shortcut)
+            slot(*args, **kwargs)
+
+        action.triggered.connect(_traced_slot if shortcut else slot)
         menu.addAction(action)
         return action
 
@@ -286,6 +291,13 @@ class MainWindow(QMainWindow):
         self._action(help_menu, "Help", self.viewer.show_help)
         self._action(help_menu, "Status", self.viewer.show_settings)
         self._action(help_menu, "Config", lambda: show_config_editor(self, self.config))
+        self.trace_action = self._action(
+            help_menu,
+            "Trace events",
+            lambda checked=False: self.viewer.set_trace_events(self.trace_action.isChecked()),
+            "Ctrl+T",
+            checkable=True,
+        )
         self._action(help_menu, f"About {APP_TITLE}", lambda: show_about(self))
 
     def _finish_initial_display(self, autoplay):

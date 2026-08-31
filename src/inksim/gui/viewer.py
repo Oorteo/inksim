@@ -226,9 +226,59 @@ class EmbroideryViewerWidget(QWidget):
         self.is_playing = False
         self.play_timer.timeout.connect(self.advance_playback)
 
+        # Event trace overlay for demos/tutorials: shows the last few
+        # keyboard/mouse interactions in a small corner panel.
+        self.trace_events_enabled = False
+        self._trace_buffer: list[tuple[float, str]] = []
+        self._trace_max_lines = 3
+
     def invalidate_cache(self):
         self._cache_valid = False
         self.update()
+
+    def set_trace_events(self, enabled: bool) -> None:
+        """Enable or disable the on-screen event trace overlay."""
+        self.trace_events_enabled = enabled
+        self._trace_buffer.clear()
+        self.update()
+
+    def _trace_event(self, text: str) -> None:
+        """Record one keyboard/mouse interaction for the trace overlay."""
+        if not self.trace_events_enabled:
+            return
+        self._trace_buffer.append((time.time(), text))
+        # Keep only the most recent entries so the panel stays readable.
+        self._trace_buffer[:] = self._trace_buffer[-self._trace_max_lines:]
+        self.update()
+
+    def _draw_trace_overlay(self, painter: QPainter) -> None:
+        """Draw the last few interactions in the top-right corner."""
+        if not self.trace_events_enabled or not self._trace_buffer:
+            return
+        margin = 8
+        line_height = 16
+        # Prefer a sans-serif font: the generic "monospace" family can map to
+        # a font with incomplete glyph coverage on some setups, producing
+        # placeholder boxes for ASCII letters.
+        font = QFont("sans-serif")
+        font.setStyleHint(QFont.SansSerif)
+        font.setPointSize(9)
+        painter.setFont(font)
+        # Use a small semi-transparent dark background so text is readable.
+        lines = [label for _, label in self._trace_buffer]
+        max_w = max(
+            painter.fontMetrics().horizontalAdvance(line) for line in lines
+        )
+        panel_w = max_w + margin * 2
+        panel_h = len(lines) * line_height + margin * 2
+        x = self.width() - panel_w - margin
+        y = margin
+        painter.fillRect(x, y, panel_w, panel_h, QColor(0, 0, 0, 160))
+        painter.setPen(QColor(255, 255, 255))
+        for i, line in enumerate(lines):
+            painter.drawText(
+                x + margin, y + margin + (i + 1) * line_height - 3, line
+            )
 
     def notify_cursor_changed(self):
         self.cursor_changed.emit()
@@ -1049,11 +1099,10 @@ class EmbroideryViewerWidget(QWidget):
         """Render the current viewport, using the cached bitmap when possible."""
         if self.active_renderer == "gpu_textured":
             # OpenGL widget renders on top; keep it in sync with the current
-            # zoom/pan/stitch position, then just clear the underlying widget.
+            # zoom/pan/stitch position and let it paint itself.
+            # Do NOT create a QPainter on the parent here: overlapping software
+            # paint on a QOpenGLWidget parent can blank the GL output.
             self._sync_gl_widget()
-            painter = QPainter(self)
-            painter.fillRect(self.rect(), QColor(*self.background_color))
-            painter.end()
             return
 
         self._paint_sequence += 1
@@ -1071,6 +1120,7 @@ class EmbroideryViewerWidget(QWidget):
         painter.setRenderHint(QPainter.Antialiasing)
         painter.fillRect(self.rect(), QColor(*self.background_color))
         if self._pending_fit_to_screen:
+            self._draw_trace_overlay(painter)
             painter.end()
             return
         dpr = max(1.0, self.devicePixelRatioF())
@@ -1116,6 +1166,7 @@ class EmbroideryViewerWidget(QWidget):
             if cache_drawn:
                 self.draw_analysis_overlays(painter)
                 self.draw_needle_overlay(painter)
+                self._draw_trace_overlay(painter)
                 painter.end()
                 return
         w, h = self.width(), self.height()
@@ -1131,6 +1182,7 @@ class EmbroideryViewerWidget(QWidget):
                 45,
                 "H=help, Space=play/pause, Ctrl+Arrows=color, Alt+Arrows=1",
             )
+            self._draw_trace_overlay(painter)
             painter.end()
             return
         padding = self.RENDER_CACHE_PADDING
@@ -1216,6 +1268,7 @@ class EmbroideryViewerWidget(QWidget):
         painter.drawPixmap(-padding, -padding, bmp)
         self.draw_analysis_overlays(painter)
         self.draw_needle_overlay(painter)
+        self._draw_trace_overlay(painter)
         painter.end()
 
     def draw_analysis_overlays(self, painter):
@@ -1331,6 +1384,7 @@ class EmbroideryViewerWidget(QWidget):
         is_step_modifier = bool(
             e.modifiers() & (Qt.AltModifier | Qt.ControlModifier))
         if is_step_modifier:
+            self._trace_event("wheel+modifier step")
             delta = e.angleDelta().y()
             if delta == 0:
                 delta = e.angleDelta().x()
@@ -1355,6 +1409,7 @@ class EmbroideryViewerWidget(QWidget):
         mx, my = position.x(), position.y()
         old = self.zoom
         self.zoom *= 1.15 if e.angleDelta().y() > 0 else 1 / 1.15
+        self._trace_event("wheel zoom" if e.angleDelta().y() > 0 else "wheel zoom out")
         self.zoom = max(self.minimum_zoom(), min(self.maximum_zoom(), self.zoom))
         scale = self.zoom / old
         self.pan_x = mx - scale * (mx - self.pan_x)
@@ -1551,6 +1606,7 @@ class EmbroideryViewerWidget(QWidget):
         Background color is available for every renderer; the thread texture
         submenu only makes sense for the GPU textured renderer.
         """
+        self._trace_event("RMB")
         menu = QMenu(self)
 
         bg_action = menu.addAction("Background color…")
@@ -1661,6 +1717,8 @@ class EmbroideryViewerWidget(QWidget):
 
     def mousePressEvent(self, e):
         """Start panning from the current mouse position."""
+        if e.button() == Qt.LeftButton:
+            self._trace_event("LMB press")
         if e.button() != Qt.LeftButton:
             super().mousePressEvent(e)
             return
@@ -1671,6 +1729,8 @@ class EmbroideryViewerWidget(QWidget):
 
     def mouseReleaseEvent(self, e):
         """Stop panning and clean up any progress-bar mouse capture."""
+        if e.button() == Qt.LeftButton:
+            self._trace_event("LMB release")
         if e.button() != Qt.LeftButton:
             super().mouseReleaseEvent(e)
             return
@@ -1686,6 +1746,7 @@ class EmbroideryViewerWidget(QWidget):
     def mouseDoubleClickEvent(self, e):
         """Seek to a visible stitch when the canvas is double-clicked."""
         if e.button() == Qt.LeftButton:
+            self._trace_event("LMB double-click")
             self.drag_start = None
             self.releaseMouse()
             self.seek_to_screen_stitch(e.position().toPoint())

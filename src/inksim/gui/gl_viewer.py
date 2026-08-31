@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import QColor, QPainter, QPen, QSurfaceFormat
+from PySide6.QtGui import QColor, QFont, QPainter, QPen, QSurfaceFormat
 from PySide6.QtOpenGL import (
     QOpenGLBuffer,
     QOpenGLFramebufferObject,
@@ -271,6 +271,7 @@ class GLStitchWidget(QOpenGLWidget):
         # zoom, stitch stepping, needle, timeline...); this widget is only a
         # display surface, so let all mouse events pass through to it.
         self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._viewer = parent
         self._program = None
         self._vao = None
         self._vbo = None
@@ -686,6 +687,48 @@ class GLStitchWidget(QOpenGLWidget):
 
         # 5. Jumps (QPainter, on top of the stitches).
         self._draw_jumps_overlay()
+
+        # 6. Event trace overlay (QPainter, top-most).
+        self._draw_trace_overlay()
+
+        # Restore the OpenGL state that Qt's OpenGL paint engine may have
+        # altered while drawing the QPainter overlays. Without this, the next
+        # paintGL frame can appear washed out / blended into the background.
+        glDisable(GL_DEPTH_TEST)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_PROGRAM_POINT_SIZE)
+
+    def _draw_trace_overlay(self):
+        """Draw the viewer's event trace panel on top of the GL output."""
+        viewer = self._viewer
+        if (
+            viewer is None
+            or not getattr(viewer, "trace_events_enabled", False)
+            or not getattr(viewer, "_trace_buffer", None)
+        ):
+            return
+        margin = 8
+        line_height = 16
+        font = QFont("sans-serif")
+        font.setStyleHint(QFont.SansSerif)
+        font.setPointSize(9)
+        painter = QPainter(self)
+        painter.setFont(font)
+        lines = [label for _, label in viewer._trace_buffer]
+        max_w = max(painter.fontMetrics().horizontalAdvance(line) for line in lines)
+        panel_w = max_w + margin * 2
+        panel_h = len(lines) * line_height + margin * 2
+        x = self.width() - panel_w - margin
+        y = margin
+        # Keep the panel fully opaque: writing translucent pixels to the GL
+        # widget's FBO reduces the widget alpha and makes the whole embroidery
+        # preview look blended/foggy when Qt composites it over the parent.
+        painter.fillRect(x, y, panel_w, panel_h, QColor(32, 32, 32))
+        painter.setPen(QColor(255, 255, 255))
+        for i, line in enumerate(lines):
+            painter.drawText(x + margin, y + margin + (i + 1) * line_height - 3, line)
+        painter.end()
 
     def _draw_grid_gl(self, w, h):
         """Draw the measurement grid in the background using a full-screen pass."""
