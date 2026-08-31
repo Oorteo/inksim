@@ -280,7 +280,7 @@ class MainWindow(QMainWindow):
         self._action(playback, "Prev color", lambda: (self.viewer.jump_to_color(-1), self._refresh_after_color_jump()))
         help_menu = self.menuBar().addMenu("&Help")
         self._action(help_menu, "Help", self.viewer.show_help)
-        self._action(help_menu, "Settings", self.viewer.show_settings)
+        self._action(help_menu, "Status", self.viewer.show_settings)
         self._action(help_menu, f"About {APP_TITLE}", lambda: show_about(self))
 
     def _finish_initial_display(self, autoplay):
