@@ -3,10 +3,10 @@ from pathlib import Path
 
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QColor, QPainter, QPen
-from PySide6.QtWidgets import (QComboBox, QDialog, QDoubleSpinBox,
-                               QFileDialog, QHBoxLayout, QLabel, QListWidget,
-                               QPushButton, QSlider, QSplitter, QVBoxLayout,
-                               QWidget)
+from PySide6.QtWidgets import (QComboBox, QDialog, QDialogButtonBox,
+                               QDoubleSpinBox, QFileDialog, QHBoxLayout, QLabel,
+                               QListWidget, QPushButton, QSlider, QSplitter,
+                               QVBoxLayout, QWidget)
 
 from ..formats import get_supported_input_extensions
 from .viewer import EmbroideryViewerWidget, density_debug
