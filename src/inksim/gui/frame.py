@@ -32,6 +32,7 @@ from ..render import render_export_image
 from .dialogs import EmbroideryOpenDialog
 from .about import show_about
 from .config_editor import show_config_editor
+from .export_dialog import ExportPreviewDialog
 from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
@@ -676,9 +677,17 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(f"Saved {path}", 3000)
         return True
 
+    def _can_export_image(self):
+        if self.viewer.stitches_np.shape[0] == 0:
+            QMessageBox.information(
+                self, "Export", "No embroidery file is loaded to export."
+            )
+            return False
+        return True
+
     def export_png(
         self,
-        path,
+        path=None,
         icon=False,
         dpi=300,
         background="transparent",
@@ -686,7 +695,7 @@ class MainWindow(QMainWindow):
         renderer_key=None,
     ):
         if self.viewer.stitches_np.shape[0] == 0:
-            return False
+            return None
         if icon:
             width = height = 256
         else:
@@ -706,36 +715,61 @@ class MainWindow(QMainWindow):
             dark_factor=self.viewer.dark_factor,
             light_factor=self.viewer.light_factor,
         )
-        if not image.save(str(path), "PNG"):
-            return False
-        return True
+        if path is not None:
+            return image.save(str(path), "PNG")
+        return image
+
+    def _show_export_preview(self, title, image, default_name):
+        default_path = str(Path(self.last_directory or Path.cwd()) / default_name)
+        dialog = ExportPreviewDialog(
+            title,
+            image,
+            default_path,
+            "PNG files (*.png)",
+            ".png",
+            self,
+        )
+        dialog.exec()
+        selected_path = dialog.selected_path()
+        if selected_path is not None:
+            self.last_directory = str(selected_path.parent)
+            self.statusBar().showMessage(f"Exported {selected_path}", 3000)
 
     def export_print_png(self):
-        path = self._choose_export_path(
+        if not self._can_export_image():
+            return
+        image = self.export_png(dpi=300, renderer_key="simple")
+        if image is None:
+            return
+        self._show_export_preview(
             "Export PNG for print",
+            image,
             self._default_export_name("-simple.png"),
-            "PNG files (*.png)",
-            ".png",
         )
-        if path: self.export_png(path, dpi=300, renderer_key="simple")
 
     def export_shaded_png(self):
-        path = self._choose_export_path(
+        if not self._can_export_image():
+            return
+        image = self.export_png(dpi=300)
+        if image is None:
+            return
+        self._show_export_preview(
             "Export shaded PNG for print",
+            image,
             self._default_export_name(".png"),
-            "PNG files (*.png)",
-            ".png",
         )
-        if path: self.export_png(path, dpi=300)
 
     def export_icon_png(self):
-        path = self._choose_export_path(
+        if not self._can_export_image():
+            return
+        image = self.export_png(icon=True, dpi=96)
+        if image is None:
+            return
+        self._show_export_preview(
             "Export preview PNG",
+            image,
             self._default_export_name("_thumb.png"),
-            "PNG files (*.png)",
-            ".png",
         )
-        if path: self.export_png(path, icon=True, dpi=96)
 
     def open_file(self, path, precompute_density=True, delete_after_load=False, autoplay=False):
         selected_path = Path(path).resolve()
