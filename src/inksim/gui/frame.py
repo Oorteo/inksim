@@ -245,9 +245,11 @@ class MainWindow(QMainWindow):
         self._action(file_menu, "Open embroidery file", self.open_file_dialog, "Ctrl+O")
         self._action(file_menu, "Save as embroidery...", self.save_as_embroidery, "Ctrl+S")
         export_menu = file_menu.addMenu("Export")
-        self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png)
+        self._action(export_menu, "Simple PNG for print...", self.export_print_png, "Ctrl+E")
         self._action(export_menu, "Preview PNG...", self.export_icon_png)
-        self._action(export_menu, "Simple PNG for print...", self.export_print_png)
+        # Shaded PNG export is available via the command-line; kept out of the
+        # default menu to reduce clutter.
+        # self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png)
         self._action(file_menu, "Center needle", self.viewer.center_needle, "C")
         self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen, "F")
         self._action(file_menu, "Actual size (1:1)", self.viewer.set_one_to_one, "1")
@@ -758,7 +760,11 @@ class MainWindow(QMainWindow):
     def export_print_png(self):
         if not self._can_export_image():
             return
-        image = self.export_png(dpi=300, background=self.viewer.background_color, renderer_key="simple")
+        if self.export_transparent_background:
+            background = "transparent"
+        else:
+            background = self.viewer.background_color
+        image = self.export_png(dpi=300, background=background, renderer_key="simple")
         if image is None:
             return
         self._show_export_preview(
@@ -785,7 +791,11 @@ class MainWindow(QMainWindow):
     def export_icon_png(self):
         if not self._can_export_image():
             return
-        image = self.export_png(icon=True, dpi=96, background=self.viewer.background_color)
+        if self.export_transparent_background:
+            background = "transparent"
+        else:
+            background = self.viewer.background_color
+        image = self.export_png(icon=True, dpi=96, background=background)
         if image is None:
             return
         self._show_export_preview(
