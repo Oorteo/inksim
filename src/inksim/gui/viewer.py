@@ -401,7 +401,10 @@ class EmbroideryViewerWidget(QWidget):
         view = self.config.get("view", {})
         if not isinstance(view, dict):
             view = {}
-        view[key] = value
+        # Strip the legacy "view/" prefix so TOML stores e.g. background_color
+        # under [view], not "view/background_color".
+        short_key = key.split("/")[-1]
+        view[short_key] = value
         self.config.set("view", view)
 
     def zoom_ratio(self):
