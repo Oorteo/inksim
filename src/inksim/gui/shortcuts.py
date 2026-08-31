@@ -80,6 +80,26 @@ class ViewerShortcutFilter(QObject):
             changed = True
             cursor_changed = True
             highlight_needle = True
+        elif is_ctrl and key == Qt.Key_A:
+            # Toggle between "show all stitches" and "show none". This makes
+            # Ctrl+A a quick way to prepare for playback from either end.
+            total = viewer.stitches_np.shape[0]
+            if viewer.visible_count < total:
+                viewer.visible_count = total
+                viewer._last_dir = 1
+            else:
+                viewer.visible_count = 0
+                viewer._last_dir = -1
+            viewer.notify_cursor_changed()
+            viewer.invalidate_cache()
+            viewer.update()
+            viewer.update_mode_indicators()
+            if viewer.progress_bar:
+                viewer.progress_bar.update()
+            if viewer.is_playing:
+                viewer.play_timer.stop()
+                viewer.is_playing = False
+            return True
         elif not is_alt and not is_ctrl and key in (
             Qt.Key_W, Qt.Key_A, Qt.Key_S, Qt.Key_D
         ):

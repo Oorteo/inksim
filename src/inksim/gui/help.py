@@ -31,6 +31,7 @@ HELP_SECTIONS = (
 | --- | --- |
 | C | Center design |
 | F | Fit design to window |
+| Ctrl + A | Toggle show all / show no stitches |
 | F11 | Fullscreen |
 | M | Toggle snap / normal view |
 | 1 | Physical 1:1 size |
