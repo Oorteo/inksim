@@ -327,7 +327,12 @@ class GLStitchWidget(QOpenGLWidget):
         context, otherwise Qt prints warnings about textures not being
         destroyed. Call this before the widget is hidden/destroyed.
         """
+        if getattr(self, "_cleaned_up", False):
+            return
+        self._cleaned_up = True
         if not self.context():
+            return
+        if not self.context().isValid():
             return
         self.makeCurrent()
         if self._texture is not None:
@@ -388,6 +393,15 @@ class GLStitchWidget(QOpenGLWidget):
         self._needs_upload = True
         self.update()
 
+    def invalidate_geometry(self):
+        """Force a rebuild of the stitch quad geometry on the next paint.
+
+        Call this after the parent viewer mutates stitch coordinates in
+        place (e.g. rotate) so the GPU renderer uploads fresh vertices.
+        """
+        self._needs_upload = True
+        self.update()
+
     def set_visible_count(self, visible_count):
         self._visible_count = visible_count
         self.update()
@@ -424,6 +438,8 @@ class GLStitchWidget(QOpenGLWidget):
         self.update()
 
     def initializeGL(self):
+        # Re-arm cleanup so a recreated GL context can be released again.
+        self._cleaned_up = False
         fmt = self.context().format()
         if is_enabled():
             print(f"[GLStitchWidget] OpenGL {fmt.majorVersion()}.{fmt.minorVersion()}")

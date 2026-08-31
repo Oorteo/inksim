@@ -225,9 +225,12 @@ class MainWindow(QMainWindow):
         if shortcut:
             action.setShortcut(QKeySequence(shortcut))
 
-        def _traced_slot(*args, **kwargs):
+        def _traced_slot(checked=False):
             self.viewer._trace_event(shortcut)
-            slot(*args, **kwargs)
+            try:
+                slot(checked)
+            except TypeError:
+                slot()
 
         action.triggered.connect(_traced_slot if shortcut else slot)
         menu.addAction(action)

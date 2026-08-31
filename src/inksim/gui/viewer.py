@@ -638,6 +638,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def rotate_design(self, quarter_turns):
         """Rotate the loaded design by quarter turns around its center."""
+        self._trace_event("Rotate left" if quarter_turns < 0 else "Rotate right")
         if self.stitches_np.shape[0] == 0:
             return
 
@@ -682,6 +683,8 @@ class EmbroideryViewerWidget(QWidget):
             float(rotated_corners[:, 1].max()),
         )
         self.invalidate_cache()
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.invalidate_geometry()
         self.center_needle()
 
     def toggle_display_mode(self, mode):
@@ -735,6 +738,10 @@ class EmbroideryViewerWidget(QWidget):
             self._gl_widget.show()
             self._gl_widget.raise_()
         else:
+            # Release GPU resources while the GL context is still current.
+            # If we only hide the widget, Qt's texture destructor may run
+            # later without a current context and print warnings.
+            self._gl_widget.cleanup()
             self._gl_widget.hide()
 
     def _sync_gl_widget(self):
@@ -1171,16 +1178,29 @@ class EmbroideryViewerWidget(QWidget):
                 return
         w, h = self.width(), self.height()
         if self.stitches_np.shape[0] == 0:
+            # Compute a contrasting shadow/background so the hint stays readable
+            # regardless of the user's background colour.
+            bg = QColor(*self.background_color)
+            brightness = (bg.redF() * 0.299 + bg.greenF() * 0.587 + bg.blueF() * 0.114)
+            hint_color = QColor(255, 255, 255) if brightness < 0.5 else QColor(0, 0, 0)
+            shadow_color = QColor(0, 0, 0, 160) if brightness >= 0.5 else QColor(255, 255, 255, 160)
             painter.setFont(QFont(self.font().family(), 14))
+            metrics = painter.fontMetrics()
+            first_line = "Open an embroidery file via File > Open or pass it as a command-line argument"
+            second_line = "H = Help"
+            first_rect = metrics.boundingRect(first_line)
+            second_rect = metrics.boundingRect(second_line)
+            panel_w = max(first_rect.width(), second_rect.width()) + 24
+            panel_h = first_rect.height() + second_rect.height() + 28
+            panel_x = 10
+            panel_y = 10
+            painter.fillRect(panel_x, panel_y, panel_w, panel_h, shadow_color)
+            painter.setPen(hint_color)
+            painter.drawText(panel_x + 12, panel_y + 12 + metrics.ascent(), first_line)
             painter.drawText(
-                20,
-                20,
-                "Open an embroidery file via File > Open or pass it as a command-line argument",
-            )
-            painter.drawText(
-                20,
-                45,
-                "H=help, Space=play/pause, Ctrl+Arrows=color, Alt+Arrows=1",
+                panel_x + 12,
+                panel_y + 12 + first_rect.height() + 8 + metrics.ascent(),
+                second_line,
             )
             self._draw_trace_overlay(painter)
             painter.end()
