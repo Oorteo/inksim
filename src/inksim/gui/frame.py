@@ -546,6 +546,12 @@ class MainWindow(QMainWindow):
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
+        # Release OpenGL resources while the context is still valid so Qt does
+        # not warn about textures/buffers not being destroyed.
+        try:
+            self.viewer._gl_widget.cleanup()
+        except Exception:
+            pass
         interconnect = getattr(self, "interconnect", None)
         if interconnect is not None:
             interconnect.stop()

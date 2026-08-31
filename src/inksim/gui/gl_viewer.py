@@ -24,6 +24,7 @@ from PySide6.QtWidgets import QApplication
 from OpenGL.GL import *
 
 from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_WARNING_PER_MM2
+from ..debug import is_enabled
 from ..render.stitches_gl import _build_satin_quads as build_satin_quads
 from ..render.stitches_gl import (
     _default_texture_path,
@@ -318,6 +319,48 @@ class GLStitchWidget(QOpenGLWidget):
         self._pan = np.array([pan_x, pan_y], dtype=np.float32)
         self.update()
 
+    def cleanup(self):
+        """Release OpenGL resources while the context is still current.
+
+        QOpenGLTexture/QOpenGLBuffer objects must be destroyed with a current
+        context, otherwise Qt prints warnings about textures not being
+        destroyed. Call this before the widget is hidden/destroyed.
+        """
+        if not self.context():
+            return
+        self.makeCurrent()
+        if self._texture is not None:
+            self._texture.destroy()
+            self._texture = None
+        if self._cap_texture is not None:
+            self._cap_texture.destroy()
+            self._cap_texture = None
+        if self._ibo is not None:
+            self._ibo.destroy()
+            self._ibo = None
+        if self._vbo is not None:
+            self._vbo.destroy()
+            self._vbo = None
+        if self._vao is not None:
+            self._vao.destroy()
+            self._vao = None
+        if self._program is not None:
+            self._program.removeAllShaders()
+            self._program = None
+        if self._density_vbo is not None:
+            self._density_vbo.destroy()
+            self._density_vbo = None
+        if self._density_vao is not None:
+            self._density_vao.destroy()
+            self._density_vao = None
+        if self._density_program is not None:
+            self._density_program.removeAllShaders()
+            self._density_program = None
+        if self._grid_program is not None:
+            self._grid_program.removeAllShaders()
+            self._grid_program = None
+        self.doneCurrent()
+
     def set_background(self, r, g, b):
         self._bg_color = (r / 255.0, g / 255.0, b / 255.0)
         self.update()
@@ -381,7 +424,8 @@ class GLStitchWidget(QOpenGLWidget):
 
     def initializeGL(self):
         fmt = self.context().format()
-        print(f"[GLStitchWidget] OpenGL {fmt.majorVersion()}.{fmt.minorVersion()}")
+        if is_enabled():
+            print(f"[GLStitchWidget] OpenGL {fmt.majorVersion()}.{fmt.minorVersion()}")
 
         self._program = QOpenGLShaderProgram(self)
         self._program.addShaderFromSourceCode(QOpenGLShader.Vertex, VERTEX_SHADER)
