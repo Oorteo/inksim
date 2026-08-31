@@ -1178,12 +1178,10 @@ class EmbroideryViewerWidget(QWidget):
                 return
         w, h = self.width(), self.height()
         if self.stitches_np.shape[0] == 0:
-            # Compute a contrasting shadow/background so the hint stays readable
-            # regardless of the user's background colour.
-            bg = QColor(*self.background_color)
-            brightness = (bg.redF() * 0.299 + bg.greenF() * 0.587 + bg.blueF() * 0.114)
-            hint_color = QColor(255, 255, 255) if brightness < 0.5 else QColor(0, 0, 0)
-            shadow_color = QColor(0, 0, 0, 160) if brightness >= 0.5 else QColor(255, 255, 255, 160)
+            # Dark panel so white text is always readable regardless of the
+            # user's background colour.
+            hint_color = QColor(255, 255, 255)
+            shadow_color = QColor(0, 0, 0, 160)
             painter.setFont(QFont(self.font().family(), 14))
             metrics = painter.fontMetrics()
             first_line = "Open an embroidery file via File > Open or pass it as a command-line argument"
