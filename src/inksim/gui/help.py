@@ -16,11 +16,11 @@ HELP_SECTIONS = (
 
 | Key | Result |
 | --- | --- |
-| Right / Left | Move by the selected step, or adjust playback speed |
+| Right / Left | Seek by step, or switch playback direction while playing |
 | Alt + Right / Left | Move by one stitch |
 | Shift + Right / Left | Next or previous command |
 | Ctrl + Right / Left | Next or previous color |
-| Up / Down | Fast seek, 10x |
+| Up / Down | Adjust playback speed while playing |
 | Home / End | First or last stitch |
 | Space | Play or pause |
 | Esc | Finish playback directionally (forward → full design, backward → hide all) |
@@ -64,6 +64,6 @@ def show_help(viewer):
         "Help - InkSim",
         HELP_SECTIONS,
         columns=4,
-        width=1100,
-        height=500,
+        width=1400,
+        height=650,
     )
