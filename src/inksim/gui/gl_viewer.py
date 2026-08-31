@@ -31,6 +31,7 @@ from ..render.stitches_gl import (
     _load_texture,
     _normal_strengths,
     texture_width_fraction,
+    texture_cap_radius_fraction,
 )
 
 VERTEX_SHADER = """
@@ -262,6 +263,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._texture = None
         self._texture_path = None
         self._width_fraction = 1.0
+        self._cap_fraction = 0.0
         self._zoom = 1.0
         self._zoom_ratio = 1.0
         self._pan = np.array([0.0, 0.0], dtype=np.float32)
@@ -430,6 +432,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._texture.generateMipMaps()
         self._texture_path = path
         self._width_fraction = texture_width_fraction(path)
+        self._cap_fraction = texture_cap_radius_fraction(path)
 
     def set_texture_path(self, path):
         """Swap the thread texture at runtime (e.g. from a context menu)."""
@@ -437,6 +440,7 @@ class GLStitchWidget(QOpenGLWidget):
             # GL context not initialised yet; remember the path for later.
             self._texture_path = path
             self._width_fraction = texture_width_fraction(path)
+            self._cap_fraction = texture_cap_radius_fraction(path)
             return
         self.makeCurrent()
         self._load_texture(path)
@@ -491,6 +495,7 @@ class GLStitchWidget(QOpenGLWidget):
             0.0,
             self._line_width,
             width_fraction=self._width_fraction,
+            cap_fraction=self._cap_fraction,
         )
         self._verts = verts
         self._idx = idx

@@ -191,6 +191,21 @@ def texture_width_fraction(path: Path) -> float:
         return 1.0
 
 
+def texture_cap_radius_fraction(path: Path) -> float:
+    """Return the cap overshoot fraction for *path* (default 0.0).
+
+    The fraction (of the ribbon height) by which the renderer extends each
+    stitch beyond its needle points before the semicircular cap mask is
+    applied -- matching the radius measured when the texture was generated.
+    """
+    manifest = load_texture_manifest(path)
+    value = manifest.get("cap_radius_fraction", 0.0)
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return 0.0
+
+
 def _build_satin_quads(
     stitches,
     visible_count,
@@ -201,6 +216,7 @@ def _build_satin_quads(
     thread_texture_aspect=8.0,
     stitch_height_scale=1.875,
     width_fraction=1.0,
+    cap_fraction=0.0,
 ):
     """Convert stitch segments into textured quad vertex data.
 
@@ -255,21 +271,36 @@ def _build_satin_quads(
     stitch_height /= max(1e-3, width_fraction)
     h = stitch_height / 2.0
 
+    # Ribbon extension beyond the needle points ("tips"). A real thread
+    # continues through the needle hole, so the ribbon is lengthened by
+    # cap_fraction * ribbon height on both ends; the semicircular cap mask
+    # (step 2) will later trim the tip to a rounded arc. The twist phase (U)
+    # runs along the EXTENDED length, so the twist flows continuously through
+    # the needle points instead of restarting at the old hard cut.
+    overshoot = max(0.0, float(cap_fraction)) * stitch_height
+
     mx = (x1 + x2) / 2.0
     my = (y1 + y2) / 2.0
 
-    us_x = x1 + across_x * h
-    us_y = y1 + across_y * h
+    # Ribbon end points sit beyond the needle points (symmetric extension,
+    # so the extended segment's midpoint is still the original midpoint).
+    rs_x = x1 - along_x * overshoot
+    rs_y = y1 - along_y * overshoot
+    re_x = x2 + along_x * overshoot
+    re_y = y2 + along_y * overshoot
+
+    us_x = rs_x + across_x * h
+    us_y = rs_y + across_y * h
     um_x = mx + across_x * h
     um_y = my + across_y * h
-    ue_x = x2 + across_x * h
-    ue_y = y2 + across_y * h
-    ls_x = x1 - across_x * h
-    ls_y = y1 - across_y * h
+    ue_x = re_x + across_x * h
+    ue_y = re_y + across_y * h
+    ls_x = rs_x - across_x * h
+    ls_y = rs_y - across_y * h
     lm_x = mx - across_x * h
     lm_y = my - across_y * h
-    le_x = x2 - across_x * h
-    le_y = y2 - across_y * h
+    le_x = re_x - across_x * h
+    le_y = re_y - across_y * h
 
     # ONE global scale for every stitch: U advances at a constant twist
     # density (tiles per mm), so a short and a long stitch both sample the
@@ -279,7 +310,9 @@ def _build_satin_quads(
     # the stitch end (a fragment of the tile covers the remaining length).
     # The next stitch resumes at exactly the U phase where the previous one
     # stopped, so the twist flows continuously across stitch joints.
-    repeats = length / stitch_height / thread_texture_aspect
+    # The twist phase advances along the extended ribbon (needle-to-needle
+    # length plus both tip overshoots) at the one global twist density.
+    repeats = (length + 2.0 * overshoot) / stitch_height / thread_texture_aspect
     repeats = np.maximum(repeats, 1e-6)
     repeats[~valid] = 0.0
     cum = np.cumsum(repeats)
@@ -602,6 +635,7 @@ def render_gpu_textured(
         pan_y,
         line_width,
         width_fraction=texture_width_fraction(_DEFAULT_TEXTURE_PATH),
+        cap_fraction=texture_cap_radius_fraction(_DEFAULT_TEXTURE_PATH),
     )
     if idx.size == 0:
         return
