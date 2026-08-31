@@ -127,14 +127,14 @@ def test_minimum_zoom_keeps_small_design_visible(qtbot):
     assert viewer.minimum_zoom() == 50.0
 
 
-def test_maximum_zoom_is_based_on_ten_millimeter_viewport_span(qtbot):
+def test_maximum_zoom_is_based_on_five_millimeter_viewport_span(qtbot):
     from inksim.gui.viewer import EmbroideryViewerWidget
 
     viewer = EmbroideryViewerWidget(None, None)
     qtbot.addWidget(viewer)
     viewer.resize(1200, 800)
 
-    assert viewer.maximum_zoom() == 120.0
+    assert viewer.maximum_zoom() == 240.0
 
 
 def test_c_shortcut_centers_current_needle(qtbot):

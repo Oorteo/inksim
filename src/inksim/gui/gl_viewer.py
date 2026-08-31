@@ -170,6 +170,10 @@ void main() {
     float fine = max(gridLine(v_world.x, 1.0), gridLine(v_world.y, 1.0));
     float fineFade = smoothstep(1.5, 3.0, u_zoom_ratio);
 
+    // 0.1 mm micro grid for fine thread-width tuning at high zoom.
+    float micro = max(gridLine(v_world.x, 0.1), gridLine(v_world.y, 0.1));
+    float microFade = smoothstep(1.0, 2.0, u_zoom_ratio);
+
     float minor = max(gridLine(v_world.x, 10.0), gridLine(v_world.y, 10.0));
     float major = max(gridLine(v_world.x, 50.0), gridLine(v_world.y, 50.0));
     float ax = 1.0 - smoothstep(0.0, fwidth(v_world.x) * 1.5, abs(v_world.x));
@@ -179,6 +183,7 @@ void main() {
     vec3 axisXColor = vec3(0.8, 0.4, 0.4);
     vec3 axisYColor = vec3(0.4, 0.8, 0.4);
 
+    color = mix(color, lineColor, micro * 0.10 * microFade);
     color = mix(color, lineColor, fine * 0.15 * fineFade);
     color = mix(color, lineColor, minor * 0.18);
     color = mix(color, lineColor, major * 0.30);
