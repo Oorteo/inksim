@@ -1568,24 +1568,69 @@ class EmbroideryViewerWidget(QWidget):
         menu.exec(e.globalPos())
 
     def _choose_background_color(self):
-        color = QColorDialog.getColor(
-            QColor(*self.background_color), self, "Background color"
-        )
-        if not color.isValid():
+        original_color = self.background_color
+        dialog = QColorDialog(QColor(*original_color), self)
+        dialog.setWindowTitle("Background color")
+
+        def _on_preview(color):
+            if not color.isValid():
+                return
+            preview_rgb = (color.red(), color.green(), color.blue())
+            if self.active_renderer == "gpu_textured":
+                self._gl_widget.set_background(*preview_rgb)
+            else:
+                self.background_color = preview_rgb
+                self._render_buffer[:] = preview_rgb
+            self.invalidate_cache()
+            self.update()
+
+        dialog.currentColorChanged.connect(_on_preview)
+
+        if not dialog.exec():
+            # Cancelled: restore the original color.
+            if self.active_renderer == "gpu_textured":
+                self._gl_widget.set_background(*original_color)
+            else:
+                self.background_color = original_color
+                self._render_buffer[:] = original_color
+            self.invalidate_cache()
+            self.update()
             return
-        self.background_color = (color.red(), color.green(), color.blue())
+
+        chosen = dialog.selectedColor()
+        if not chosen.isValid():
+            return
+        self.background_color = (chosen.red(), chosen.green(), chosen.blue())
         self._save_view_setting("view/background_color", list(self.background_color))
-        self._gl_widget.set_background(*self.background_color)
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.set_background(*self.background_color)
+        else:
+            self._render_buffer[:] = self.background_color
         self.invalidate_cache()
         self.update()
 
     def _choose_needle_color(self):
-        color = QColorDialog.getColor(
-            QColor(*self.needle_color), self, "Needle color"
-        )
-        if not color.isValid():
+        original_color = self.needle_color
+        dialog = QColorDialog(QColor(*original_color), self)
+        dialog.setWindowTitle("Needle color")
+
+        def _on_preview(color):
+            if color.isValid():
+                self.needle_color = (color.red(), color.green(), color.blue())
+                self.update()
+
+        dialog.currentColorChanged.connect(_on_preview)
+
+        if not dialog.exec():
+            # Cancelled: restore the original color.
+            self.needle_color = original_color
+            self.update()
             return
-        self.needle_color = (color.red(), color.green(), color.blue())
+
+        chosen = dialog.selectedColor()
+        if not chosen.isValid():
+            return
+        self.needle_color = (chosen.red(), chosen.green(), chosen.blue())
         self._save_view_setting("view/needle_color", list(self.needle_color))
         self.update()
 
