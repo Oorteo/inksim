@@ -66,8 +66,14 @@ class ViewerShortcutFilter(QObject):
             Qt.Key_Right,
             Qt.Key_Left,
         ):
-            key_direction = 1 if key == Qt.Key_Right else -1
-            changed = viewer.adjust_playback_speed(key_direction * viewer._last_dir)
+            viewer.set_playback_direction(key == Qt.Key_Right)
+            return True
+        elif viewer.is_playing and not is_alt and not is_ctrl and key == Qt.Key_Up:
+            viewer.adjust_playback_speed(1)
+            return True
+        elif viewer.is_playing and not is_alt and not is_ctrl and key == Qt.Key_Down:
+            viewer.adjust_playback_speed(-1)
+            return True
         elif is_ctrl and key in (Qt.Key_Right, Qt.Key_Left):
             viewer.jump_to_color(1 if key == Qt.Key_Right else -1)
             viewer._last_dir = 1 if key == Qt.Key_Right else -1
@@ -232,7 +238,7 @@ class ViewerShortcutFilter(QObject):
                 viewer.highlight_needle()
             if (
                 viewer.is_playing
-                and key in (Qt.Key_Up, Qt.Key_Down, Qt.Key_Home, Qt.Key_End)
+                and key in (Qt.Key_Home, Qt.Key_End)
                 and not is_ctrl
             ):
                 viewer.play_timer.stop()

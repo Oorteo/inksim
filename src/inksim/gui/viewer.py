@@ -507,6 +507,17 @@ class EmbroideryViewerWidget(QWidget):
         self.play_step = self.play_speed_levels[new_index]
         return True
 
+    def set_playback_direction(self, forward):
+        """Switch playback direction without stopping, if already playing."""
+        new_dir = 1 if forward else -1
+        if self._last_dir == new_dir:
+            return False
+        self._last_dir = new_dir
+        if self.is_playing:
+            self.play_timer.stop()
+            self.play_timer.start(self.play_speed)
+        return True
+
     def jump_to_color(self, direction):
         """Move to the next or previous recorded thread-color boundary."""
         if not self.color_boundaries:
