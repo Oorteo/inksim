@@ -30,6 +30,7 @@ from ..formats import (
 from ..render import render_export_image
 from .dialogs import EmbroideryOpenDialog
 from .about import show_about
+from .config_editor import show_config_editor
 from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
@@ -281,6 +282,7 @@ class MainWindow(QMainWindow):
         help_menu = self.menuBar().addMenu("&Help")
         self._action(help_menu, "Help", self.viewer.show_help)
         self._action(help_menu, "Status", self.viewer.show_settings)
+        self._action(help_menu, "Config", lambda: show_config_editor(self, self.config))
         self._action(help_menu, f"About {APP_TITLE}", lambda: show_about(self))
 
     def _finish_initial_display(self, autoplay):
