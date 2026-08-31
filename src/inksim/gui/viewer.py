@@ -1664,9 +1664,10 @@ class EmbroideryViewerWidget(QWidget):
                 self._gl_widget.set_background(*preview_rgb)
             else:
                 self.background_color = preview_rgb
-                self._render_buffer[:] = preview_rgb
+                if self._render_buffer is not None:
+                    self._render_buffer[:] = preview_rgb
             self.invalidate_cache()
-            self.update()
+            self.repaint()
 
         dialog.currentColorChanged.connect(_on_preview)
 
@@ -1676,9 +1677,10 @@ class EmbroideryViewerWidget(QWidget):
                 self._gl_widget.set_background(*original_color)
             else:
                 self.background_color = original_color
-                self._render_buffer[:] = original_color
+                if self._render_buffer is not None:
+                    self._render_buffer[:] = original_color
             self.invalidate_cache()
-            self.update()
+            self.repaint()
             return
 
         chosen = dialog.selectedColor()
@@ -1689,9 +1691,10 @@ class EmbroideryViewerWidget(QWidget):
         if self.active_renderer == "gpu_textured":
             self._gl_widget.set_background(*self.background_color)
         else:
-            self._render_buffer[:] = self.background_color
+            if self._render_buffer is not None:
+                self._render_buffer[:] = self.background_color
         self.invalidate_cache()
-        self.update()
+        self.repaint()
 
     def _choose_needle_color(self):
         original_color = self.needle_color
