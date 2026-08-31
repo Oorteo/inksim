@@ -190,13 +190,30 @@ class _NeedlePopup(QMenu):
 
     def _choose_color(self):
         from PySide6.QtWidgets import QColorDialog
-        color = QColorDialog.getColor(
-            QColor(*self.viewer.needle_color), self, "Needle color")
-        if color.isValid():
-            self.viewer.needle_color = (color.red(), color.green(), color.blue())
-            self.viewer._save_view_setting(
-                "view/needle_color", list(self.viewer.needle_color))
+        original_color = self.viewer.needle_color
+        dialog = QColorDialog(QColor(*original_color), self)
+        dialog.setWindowTitle("Needle color")
+
+        def _on_preview(color):
+            if color.isValid():
+                self.viewer.needle_color = (color.red(), color.green(), color.blue())
+                self.viewer.update()
+
+        dialog.currentColorChanged.connect(_on_preview)
+
+        if not dialog.exec():
+            # Cancelled: restore the original color.
+            self.viewer.needle_color = original_color
             self.viewer.update()
+            return
+
+        chosen = dialog.selectedColor()
+        if not chosen.isValid():
+            return
+        self.viewer.needle_color = (chosen.red(), chosen.green(), chosen.blue())
+        self.viewer._save_view_setting(
+            "view/needle_color", list(self.viewer.needle_color))
+        self.viewer.update()
 
     def _toggle_fullscreen(self, checked):
         self.viewer.needle_fullscreen = checked
