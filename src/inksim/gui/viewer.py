@@ -498,11 +498,19 @@ class EmbroideryViewerWidget(QWidget):
         if self.is_playing:
             self.play_timer.stop()
             self.is_playing = False
-        else:
-            if forward is not None:
-                self._last_dir = 1 if forward else -1
-            self.play_timer.start(self.play_speed)
-            self.is_playing = True
+            return
+
+        total = self.stitches_np.shape[0]
+        if forward is not None:
+            self._last_dir = 1 if forward else -1
+        # At the start/end boundaries, automatically reverse so play always
+        # moves into the design instead of stopping immediately.
+        if self.visible_count <= 0 and self._last_dir < 0:
+            self._last_dir = 1
+        elif total > 0 and self.visible_count >= total and self._last_dir > 0:
+            self._last_dir = -1
+        self.play_timer.start(self.play_speed)
+        self.is_playing = True
 
     def adjust_playback_speed(self, direction):
         """Increase or decrease playback speed while preserving its direction."""
