@@ -1,5 +1,7 @@
 
 
+tests/data/*.png
+
 
 doc_inksim
 opengl-render
