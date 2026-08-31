@@ -711,6 +711,8 @@ def render_gpu_textured(
     _init_gl(width, height)
     _resize_fbo(width, height)
 
+    prev_context = QOpenGLContext.currentContext()
+    prev_surface = prev_context.surface() if prev_context else None
     _SharedGLContext.context.makeCurrent(_SharedGLContext.surface)
 
     verts, idx, _index_counts = _build_satin_quads(
@@ -779,7 +781,9 @@ def render_gpu_textured(
     program.release()
     fbo.release()
 
-    rgba_image = fbo.toImage(False)
+    # Read the FBO with Qt orientation (row 0 = top). The default flipped=true
+    # converts OpenGL's bottom-up buffer to QImage top-down semantics.
+    rgba_image = fbo.toImage(True)
     rgba_image = rgba_image.convertToFormat(QImage.Format_RGBA8888)
     rgba_ptr = rgba_image.bits()
     if not isinstance(rgba_ptr, memoryview):
@@ -787,6 +791,11 @@ def render_gpu_textured(
     rgba = np.frombuffer(rgba_ptr, dtype=np.uint8).reshape(
         (height, rgba_image.bytesPerLine() // 4, 4)
     )[:, :width, :].copy()
+
+    if prev_context:
+        prev_context.makeCurrent(prev_surface)
+    else:
+        _SharedGLContext.context.doneCurrent()
 
     alpha = rgba[:, :, 3] / 255.0
     if buf.shape[2] == 4:
