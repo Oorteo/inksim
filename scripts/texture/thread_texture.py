@@ -73,9 +73,16 @@ def generate_thread_textures(
             from scipy.ndimage import gaussian_filter
             noise = gaussian_filter(noise, sigma=0.6)
         except ImportError:
-            # Simple fallback smoothing.
+            # Simple fallback smoothing. Must preserve the array shape: the
+            # column loop below indexes noise[yi_int, x] for x up to
+            # width - 1, so a naive [:-1] slice (which drops a column) would
+            # crash with an out-of-bounds index.
             for _ in range(2):
-                noise = (noise[:, :-1] + noise[:, 1:]) / 2.0
+                noise = (
+                    np.roll(noise, 1, axis=1)
+                    + noise
+                    + np.roll(noise, -1, axis=1)
+                ) / 3.0
     else:
         noise = np.zeros((height, width), dtype=np.float32)
 
@@ -205,6 +212,53 @@ def generate_thread_textures(
             roughness[yi_int, x] = np.clip(roughness_val, 0.05, 0.8)
             height_map[yi_int, x] = np.clip(final_height + 0.5, 0.0, 1.0)
 
+    # --- Stitch end-cap (semicircle) mask ---------------------------------
+    # Stitches must not end in a straight vertical cut: the thread end is
+    # trimmed to a rounded arc. The renderer will extend every stitch beyond
+    # its needle points and then cut it with this mask, so the mask has to
+    # match THIS variant's actual thread silhouette -- every variant has a
+    # different bundle width (helix swing + strand thickness + centre wiggle).
+    # The radius is therefore measured from the generated alpha mask instead
+    # of being hard-coded: it is the farthest covered pixel row from the
+    # canvas centre, plus a 1.5 px safety margin for the anti-aliased edge.
+    # White = keep the stitch (inside the arc), black = discard. One image is
+    # enough: it is applied as-is at one stitch end and rotated 180 degrees at
+    # the other.
+    covered_rows = np.where((alpha_mask > 0.05).any(axis=1))[0]
+    # Centre on the true middle of the pixel grid, (height-1)/2 -- NOT
+    # height/2. The 180-degree rotation used at the opposite stitch end
+    # mirrors rows around (height-1)/2, so only a mask centred there is
+    # exactly self-symmetric and the cap + rotated-cap seam matches
+    # pixel-perfectly (a height/2 centre leaves a half-pixel band of 4
+    # mismatched rows at the join).
+    cap_center_y = (height - 1) / 2.0
+    if covered_rows.size:
+        cap_radius_px = max(
+            cap_center_y - covered_rows[0], covered_rows[-1] - cap_center_y
+        ) + 1.5
+    else:
+        cap_radius_px = height / 2.0
+    # The thread always fits inside the canvas, so the arc half-width cannot
+    # exceed half the canvas height (where it would no longer be an arc).
+    cap_radius_px = min(height / 2.0, cap_radius_px)
+
+    # Mask canvas: cap_w x height pixels. The flat side of the semicircle sits
+    # on the RIGHT edge column (= the needle point, where the ribbon is cut
+    # today); the arc bulges to the left, beyond the needle point. Pixel
+    # scale is identical to the main texture canvas (square pixels), so
+    # sampling the cap mask with V spanning the full ribbon width renders a
+    # truly circular arc. cap_radius_px / height = the overshoot, in
+    # ribbon-height units, that the stitch must be extended by on each side
+    # before masking. One extra fully-black column sits beyond the arc tip so
+    # the mask's left edge clamps to exactly 0.
+    cap_width = int(math.ceil(cap_radius_px)) + 1
+    cap_xs = np.arange(cap_width, dtype=np.float32)[None, :]
+    cap_ys = np.arange(height, dtype=np.float32)[:, None]
+    cap_dist = np.sqrt(
+        (cap_xs - (cap_width - 1.0)) ** 2 + (cap_ys - cap_center_y) ** 2
+    )
+    cap_mask = np.clip(cap_radius_px - cap_dist, 0.0, 1.0)
+
     # Save textures.
     outputs: dict[str, Path] = {}
 
@@ -248,6 +302,11 @@ def generate_thread_textures(
     rgba_img.save(rgba_path)
     outputs["rgba"] = rgba_path
 
+    cap_img = Image.fromarray((cap_mask * 255.0).astype(np.uint8), "L")
+    cap_path = output_dir / f"{prefix}_cap_mask.png"
+    cap_img.save(cap_path)
+    outputs["cap_mask"] = cap_path
+
     # Fraction of the texture height actually covered by the thread (alpha >
     # 0.05). This lets the renderer normalise the ribbon width so different
     # variants all render at the same physical thickness regardless of how
@@ -266,6 +325,11 @@ def generate_thread_textures(
         "blend_softness": blend_softness,
         "fiber_noise": fiber_noise,
         "width_fraction": width_fraction,
+        "cap_radius_px": cap_radius_px,
+        # The stitch has to be extended by this many ribbon-heights on each
+        # side so the semicircular cap mask fully covers the rounded end
+        # (overshoot_model_units = cap_radius_fraction * ribbon_height).
+        "cap_radius_fraction": cap_radius_px / height,
     }
     manifest_path = output_dir / f"{prefix}_manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2))

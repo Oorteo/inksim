@@ -45,6 +45,7 @@ for variant_dir in "$OUT_ROOT"/*/; do
     name="$(basename "$variant_dir")"
     cp "$variant_dir/${name}_normal_mask.png" "$ASSETS_DIR/"
     cp "$variant_dir/${name}_manifest.json" "$ASSETS_DIR/"
-    echo "Copied ${name}_normal_mask.png + manifest -> $ASSETS_DIR"
+    cp "$variant_dir/${name}_cap_mask.png" "$ASSETS_DIR/"
+    echo "Copied ${name}_normal_mask.png + cap_mask + manifest -> $ASSETS_DIR"
 done
 echo "Default variant: $DEFAULT_VARIANT"

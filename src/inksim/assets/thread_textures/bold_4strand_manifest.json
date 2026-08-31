@@ -8,5 +8,7 @@
   "num_strands": 4,
   "blend_softness": 2.0,
   "fiber_noise": 0.06,
-  "width_fraction": 0.4524078369140625
+  "width_fraction": 0.4524078369140625,
+  "cap_radius_px": 33.0,
+  "cap_radius_fraction": 0.2578125
 }
