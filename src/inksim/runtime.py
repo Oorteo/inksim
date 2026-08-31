@@ -22,8 +22,10 @@ def runtime_info_lines():
     import numba
     import numpy
     import pystitch
-    from PySide6 import __version__ as pyside_version
+    import PySide6
     from PySide6.QtCore import qVersion
+
+    pyside_version = getattr(PySide6, "__version__", "unknown")
 
     virtual_env = os.environ.get("VIRTUAL_ENV")
     environment = virtual_env or (
