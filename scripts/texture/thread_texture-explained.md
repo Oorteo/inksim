@@ -19,8 +19,9 @@ far too slow. Instead we **fake the 3-D look with a texture**:
 ```mermaid
 flowchart LR
     A[thread_texture.py] -->|"_normal_mask.png (RGBA)"| B[stitches_gl.py]
-    B --> C["each stitch = 1 ribbon quad<br/>UV-mapped, textured, lit"]
-    C --> D["screen: flat quads that<br/>look like twisted thread"]
+    A -->|"_cap_mask.png + manifest"| B
+    B --> C["each stitch = 1 five-column ribbon<br/>UV-mapped, textured, lit,<br/>cap-masked at both ends"]
+    C --> D["screen: flat quads that<br/>look like twisted thread<br/>with rounded ends"]
 ```
 
 The texture is a _tile_: a small picture of a piece of thread seen from the
@@ -218,23 +219,24 @@ Thread is fuzzier than a perfect cylinder, so deterministic noise (fixed seed
 
 ## 4. Output files
 
-| File                       | Contents                               | Consumer                     |
-| -------------------------- | -------------------------------------- | ---------------------------- |
-| `<prefix>_diffuse.png`     | RGB, baked colour (for eyeballing)     | humans only                  |
-| `<prefix>_normal.png`      | RGB normal map, no alpha               | humans / future use          |
-| `<prefix>_mask.png`        | 8-bit alpha mask                       | humans / future use          |
-| `<prefix>_normal_mask.png` | RGBA = normal RGB + mask alpha         | **the app (packaged asset)** |
-| `<prefix>_roughness.png`   | roughness values 0.05–0.8              | future PBR                   |
-| `<prefix>_height.png`      | relative bulge height                  | future displacement          |
-| `<prefix>_rgba.png`        | baked colour preview on transparency   | humans                       |
-| `<prefix>_manifest.json`   | parameters + measured `width_fraction` | the renderer                 |
+| File                       | Contents                             | Consumer                     |
+| -------------------------- | ------------------------------------ | ---------------------------- |
+| `<prefix>_diffuse.png`     | RGB, baked colour (for eyeballing)   | humans only                  |
+| `<prefix>_normal.png`      | RGB normal map, no alpha             | humans / future use          |
+| `<prefix>_mask.png`        | 8-bit alpha mask                     | humans / future use          |
+| `<prefix>_normal_mask.png` | RGBA = normal RGB + mask alpha       | **the app (packaged asset)** |
+| `<prefix>_cap_mask.png`    | 8-bit semicircle end-cap mask        | **the app (packaged asset)** |
+| `<prefix>_roughness.png`   | roughness values 0.05–0.8            | future PBR                   |
+| `<prefix>_height.png`      | relative bulge height                | future displacement          |
+| `<prefix>_rgba.png`        | baked colour preview on transparency | humans                       |
+| `<prefix>_manifest.json`   | parameters + measured fractions      | the renderer                 |
 
 The normal map is stored in OpenGL convention `(n · 0.5 + 0.5)`. The runtime
 shader _decodes_ it by subtracting 0.5 — the two must match exactly.
 
 `scripts/texture/generate_variants.sh` runs the generator for all named styles
-and copies every `<variant>_normal_mask.png` + manifest into
-`src/inksim/assets/thread_textures/`.
+and copies every `<variant>_normal_mask.png`, `<variant>_cap_mask.png` and
+manifest into `src/inksim/assets/thread_textures/`.
 
 ---
 
@@ -292,6 +294,34 @@ its ribbon width by `width_fraction` so the _thread pixels_ (not the whole
 canvas incl. empty gaps) come out at the intended size. This is why switching
 texture variants does not change the thread's on-screen thickness.
 
+### `cap_mask` and `cap_radius_fraction` — the rounded stitch ends
+
+A real thread does not end in a straight vertical cut: it is trimmed to a
+rounded arc. Trimming with geometry (half-disc caps) was tried and rejected;
+the working approach is **mask-based trimming**:
+
+1. The generator measures its **own silhouette**: the farthest covered pixel
+   row above/below the canvas centre `(height−1)/2` (measured from the alpha
+   mask, plus a 1.5 px anti-alias margin) becomes `cap_radius_px`. Every
+   variant therefore gets an arc that hugs its own silhouette (helix swing +
+   strand thickness + centre wiggle influence it).
+2. It paints a **semicircle mask** (`<prefix>_cap_mask.png`, greyscale):
+   white = keep, black = trim. The canvas is `ceil(radius)+1` px wide ×
+   `height` tall; the **flat side sits on the right edge** (that is where the
+   needle point will land) and the arc bulges left, beyond it. One extra fully
+   black column sits beyond the arc apex so texture clamping stays clean.
+   The mask is centred on `(height−1)/2` — the true pixel-grid middle — so
+   the mask is exactly self-symmetric under 180° rotation.
+3. The manifest records `cap_radius_px` and `cap_radius_fraction =
+cap_radius_px / height` (0.297 for `classic_3strand`) — **how many ribbon
+   heights the renderer must extend the stitch past each needle point** so
+   the arc can trim the tip.
+
+How the renderer uses it (see §8): each stitch is extended by
+`cap_radius_fraction × ribbon_height` beyond both needle points, and the
+fragment shader multiplies the thread alpha by the cap mask in those tip
+zones, trimming the extension to the rounded arc.
+
 ---
 
 ## 6. Step-by-step summary of one run
@@ -307,8 +337,8 @@ flowchart TD
     G --> H[add fibre noise]
     H --> I[write diffuse / normal / alpha / roughness / height]
     I --> C
-    C --> J[pack _normal_mask RGBA, previews]
-    J --> K[measure width_fraction, write manifest]
+    C --> J[pack _normal_mask RGBA, build cap mask, previews]
+    J --> K[measure width_fraction + cap radius, write manifest]
 ```
 
 Performance note: this is a plain per-pixel Python loop (`512 × 128 × strands`
@@ -347,20 +377,76 @@ together.
 
 ---
 
+---
+
 ## 8. How the runtime renderer consumes all this
 
-1. `stitches_gl.py` builds one ribbon quad per stitch whose **V = 0…1 spans the
-   full canvas height** and whose **U advances** by `repeat = length /
-(ribbon_height · aspect)` per stitch, continuing the U phase across
-   consecutive stitches so the twist does not jump between stitches.
-2. The fragment shader samples `_normal_mask`:
-    - `texel.a < 0.01` → discard (the mask's gaps),
-    - `n = texel.rgb − 0.5`, with the along-thread (R) and across-thread (G)
-      components scaled by `u_normal_strength_tangent/_bitangent` (the
-      across component fades out when zoomed out so distant stitches stay
-      bright),
-    - Blinn–Phong with runtime light + dark/light factors tints it with the
-      stitch's own colour.
-3. The stitch ends are currently plain cuts of the ribbon (the old cap geometry
-   was removed); extending the ribbon slightly past the needle points via the
-   same UV mapping is the next planned step.
+### 8.1 Ribbon geometry — five columns
+
+`stitches_gl.py` builds each stitch as a **five-column ribbon** (10 vertices,
+18 floats per vertex: pos 2, uv 2, tangent 3, bitangent 3, normal 3, color 3,
+mask 2, drawn as 24 indices / 8 triangles):
+
+| Column   | Position                                         | Mask mu |
+| -------- | ------------------------------------------------ | ------- |
+| tip-S    | `start − overshoot` (beyond the needle)          | 0.0     |
+| needle-S | the first needle point                           | 0.5     |
+| mid      | the stitch midpoint                              | 0.5     |
+| needle-E | the second needle point                          | 0.5     |
+| tip-E    | `end + overshoot` (beyond the last needle point) | 1.0     |
+
+The ribbon is extended by `cap_radius_fraction × ribbon_height` past both
+needle points ("tips"); a real thread continues through the fabric hole, and
+the extension is what the cap mask later trims.
+
+### 8.2 U phase — one global twist scale
+
+U advances at **one constant twist density** (tiles per mm) along the FULL
+extended length (`needle length + 2 × overshoot`). Tiles chain across
+stitches: each stitch starts its U exactly where the previous one ended (the
+two tip zones at a shared needle point even sample the same phase window,
+like the overlapping physical threads), so short and long stitches look
+identical and the twist flows continuously through the needle points. Never
+round U spans to whole tiles per stitch — that would give every stitch its
+own scale (short stitches would look over-twisted).
+
+### 8.3 The end-cap mask — [as-generated | U-flipped]
+
+The uploaded cap texture is **two copies of the generated semicircle side by
+side**:
+
+```
+[ original (arc bulges left) | U-flipped (arc bulges right) ]
+  start cap, mu 0..0.5         end cap,  mu 0.5..1
+```
+
+The seam in the middle joins the two **flat white sides** — a fully white
+column that the ribbon body (mu = 0.5) samples, so the body alpha is
+untouched. Both tips map `mu = 0.5` (needle) → `0` / `1` (outermost tip),
+always with `mv = V` (upper 0, lower 1).
+
+> **Why the flip lives in the texture and not in the vertex data:** mirroring
+> `mv` in the end-tip vertices couples `mv` to the along-direction during
+> quad interpolation, so the mask gets sampled along a diagonal — the cut
+> comes out skewed. Flipping the texture instead keeps each tip's `(mu, mv)`
+> interpolation axis-aligned.
+
+The fragment shader then simply does `alpha = texel.a · cap_mask` and
+discards below 0.01 — the arc only bites inside the two tip zones. A missing
+`_cap_mask.png` falls back to an all-white 1×1 texture (straight-cut ends).
+
+### 8.4 Lighting and colour
+
+- `n = texel.rgb − 0.5` with the along-thread (R) and across-thread (G)
+  components scaled by `u_normal_strength_tangent/_bitangent` (the across
+  component fades out when zoomed out so distant stitches stay bright),
+- Blinn–Phong with runtime light + dark/light factors, tinted with the
+  stitch's own colour (the vertex `color` attribute — the texture carries no
+  colour).
+- Debug modes (live widget): raw texture and raw UV views.
+
+Live view (`gl_viewer.py`) and offscreen rendering (`stitches_gl.py`) build
+the same geometry through the shared `_build_satin_quads` and run **mirror-
+image shaders + VAO layouts** — the vertex format (18 floats), attribute
+layout, `u_cap_mask` binding and double-mask upload must stay in sync in both
+files.
