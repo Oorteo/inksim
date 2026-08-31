@@ -591,6 +591,16 @@ class MainWindow(QMainWindow):
         )
         if dialog.exec() == QDialog.Accepted:
             self.open_file(dialog.selected_path)
+            chosen_background = dialog.background_color
+            if chosen_background != self.viewer.background_color:
+                self.viewer.background_color = chosen_background
+                self.viewer._save_view_setting(
+                    "view/background_color", list(chosen_background)
+                )
+                if self.viewer.active_renderer == "gpu_textured":
+                    self.viewer._gl_widget.set_background(*chosen_background)
+                self.viewer.invalidate_cache()
+                self.viewer.repaint()
 
     def _default_export_name(self, suffix):
         base_name = self.current_file_path.stem if self.current_file_path else "inksim"

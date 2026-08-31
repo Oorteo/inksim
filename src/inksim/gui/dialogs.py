@@ -253,6 +253,11 @@ class EmbroideryOpenDialog(QDialog):
     def cancel_dialog(self):
         self.reject()
 
+    @property
+    def background_color(self):
+        """Return the preview viewer's background colour chosen by the user."""
+        return self.preview.background_color
+
     def change_directory(self):
         self.set_directory(self.directory_text.currentText())
 
