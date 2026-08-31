@@ -221,7 +221,8 @@ class EmbroideryViewerWidget(QWidget):
         self.play_timer = QTimer(self)
         self.play_speed = 20
         self.play_speed_levels = (1, 2, 3, 5, 7, 10, 15, 22, 32, 47, 68, 98)
-        self.play_speed_index = 5
+        # Start at the slowest playback speed so the first impression is clear.
+        self.play_speed_index = 0
         self.play_step = self.play_speed_levels[self.play_speed_index]
         self.is_playing = False
         self.play_timer.timeout.connect(self.advance_playback)
@@ -574,6 +575,8 @@ class EmbroideryViewerWidget(QWidget):
             return False
         self.play_speed_index = new_index
         self.play_step = self.play_speed_levels[new_index]
+        if self.progress_bar is not None:
+            self.progress_bar.update()
         return True
 
     def set_playback_direction(self, forward):
