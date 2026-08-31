@@ -17,14 +17,17 @@ def render_export_image(
     grid=False,
     dark_factor=0.75,
     light_factor=0.45,
+    scale_factor=1.0,
 ):
-    """Render a PNG using the same renderer as the viewer."""
+    """Render a PNG/WebP/JPEG using the same renderer as the viewer."""
     if renderer_key not in RENDERERS_BY_KEY:
         raise ValueError(f"unknown renderer: {renderer_key}")
 
     min_x, min_y, max_x, max_y = bounds
     design_width = max(max_x - min_x, 1.0)
     design_height = max(max_y - min_y, 1.0)
+    width = max(1, round(width * scale_factor))
+    height = max(1, round(height * scale_factor))
     margin = max(12, min(width, height) * 0.06)
     zoom = min(
         (width - 2 * margin) / design_width,

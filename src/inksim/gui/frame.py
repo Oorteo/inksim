@@ -706,6 +706,8 @@ class MainWindow(QMainWindow):
         background="transparent",
         grid=False,
         renderer_key=None,
+        scale_factor=1.0,
+        format="PNG",
     ):
         if self.viewer.stitches_np.shape[0] == 0:
             return None
@@ -715,6 +717,8 @@ class MainWindow(QMainWindow):
             min_x, min_y, max_x, max_y = self.viewer.bounds
             width = max(1, round((max_x - min_x) / 25.4 * dpi))
             height = max(1, round((max_y - min_y) / 25.4 * dpi))
+        if format in ("JPEG", "WebP") and background == "transparent":
+            background = "white"
         image = render_export_image(
             self.viewer.stitches_np,
             self.viewer.bounds,
@@ -727,22 +731,32 @@ class MainWindow(QMainWindow):
             grid=grid,
             dark_factor=self.viewer.dark_factor,
             light_factor=self.viewer.light_factor,
+            scale_factor=scale_factor,
         )
         if path is not None:
-            return image.save(str(path), "PNG")
+            quality = -1
+            if format in ("JPEG", "WebP"):
+                quality = 95
+            return image.save(str(path), format, quality)
         return image
 
     def _show_export_preview(self, title, image, default_name, renderer_key=None, icon=False, dpi=300):
         default_path = str(Path(self.last_directory or Path.cwd()) / default_name)
+        bounds = self.viewer.bounds
+        design_width_mm = bounds[2] - bounds[0]
+        design_height_mm = bounds[3] - bounds[1]
 
-        def _render_callback(transparent=False):
+        def _render_callback(transparent=False, scale_factor=1.0, format="PNG", quality=95):
             background = "transparent" if transparent else self.viewer.background_color
-            return self.export_png(
+            image = self.export_png(
                 icon=icon,
                 dpi=dpi,
                 background=background,
                 renderer_key=renderer_key,
+                scale_factor=scale_factor,
+                format=format,
             )
+            return image
 
         def _on_transparent_changed(checked):
             self.export_transparent_background = checked
@@ -752,12 +766,15 @@ class MainWindow(QMainWindow):
             title,
             image,
             default_path,
-            "PNG files (*.png)",
+            "Image files (*.png *.webp *.jpg *.jpeg)",
             ".png",
             render_callback=_render_callback,
             transparent_default=self.export_transparent_background,
             on_transparent_changed=_on_transparent_changed,
             parent=self,
+            base_dpi=dpi,
+            design_width_mm=design_width_mm,
+            design_height_mm=design_height_mm,
         )
         dialog.exec()
         selected_path = dialog.selected_path()

@@ -708,12 +708,12 @@ def render_gpu_textured(
     if visible_count <= 0 or stitches.shape[0] == 0:
         return
 
-    _init_gl(width, height)
-    _resize_fbo(width, height)
-
     prev_context = QOpenGLContext.currentContext()
     prev_surface = prev_context.surface() if prev_context else None
+
+    _init_gl(width, height)
     _SharedGLContext.context.makeCurrent(_SharedGLContext.surface)
+    _resize_fbo(width, height)
 
     verts, idx, _index_counts = _build_satin_quads(
         stitches,
