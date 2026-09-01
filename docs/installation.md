@@ -103,3 +103,15 @@ inksim .
 ```
 
 All the same options work with `inksim-cli` when run from a terminal.
+
+## GPU textured renderer and OpenGL
+
+The _GPU Textured_ stitch renderer (`Z` shortcut or **GPU textured render**
+in the File menu) requires **OpenGL 3.3** with a Core Profile context. It is
+used automatically only when OpenGL 3.3 is available.
+
+On systems with only OpenGL 3.0 or older — common in virtual machines such as
+VirtualBox — InkSim falls back to the CPU-based _Shaded Volume_ raster
+renderer. The fallback happens automatically on startup and when the GPU
+renderer is selected, so the application remains usable; only the GPU
+renderer is unavailable.

@@ -12,6 +12,51 @@ from pathlib import Path
 from .constants import APP_TITLE
 
 
+def is_opengl33_available():
+    """Return True if an OpenGL 3.3 Core Profile context can be created.
+
+    This is used to decide whether the GPU textured stitch renderer can be
+    enabled. VirtualBox and older graphics drivers often only expose OpenGL
+    3.0 or lower, in which case the raster-based CPU renderers are used as a
+    fallback.
+    """
+    from PySide6.QtGui import QOffscreenSurface, QOpenGLContext, QSurfaceFormat
+    from PySide6.QtWidgets import QApplication
+
+    if QApplication.instance() is None:
+        # A QApplication is required for OpenGL context creation. When the
+        # function is called before the GUI is up, report unavailable.
+        return False
+
+    fmt = QSurfaceFormat()
+    fmt.setVersion(3, 3)
+    fmt.setProfile(QSurfaceFormat.CoreProfile)
+
+    ctx = QOpenGLContext()
+    ctx.setFormat(fmt)
+    if not ctx.create():
+        return False
+
+    surface = QOffscreenSurface()
+    surface.setFormat(fmt)
+    surface.create()
+    if not surface.isValid():
+        return False
+
+    if not ctx.makeCurrent(surface):
+        return False
+
+    try:
+        version = ctx.format()
+        available = version.majorVersion() > 3 or (
+            version.majorVersion() == 3 and version.minorVersion() >= 3
+        )
+    finally:
+        ctx.doneCurrent()
+
+    return available
+
+
 def runtime_info_lines():
     """Return human-readable package and dependency runtime information."""
     package_path = Path(__file__).resolve().parent

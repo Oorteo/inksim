@@ -55,6 +55,7 @@ from ..render import (
     render_density_numba,
     render_viewport_raster,
 )
+from ..runtime import is_opengl33_available
 from .gl_viewer import GLStitchWidget, list_thread_textures
 from .help import show_help
 from .settings import show_settings
@@ -166,6 +167,10 @@ class EmbroideryViewerWidget(QWidget):
         self.show_density = False
         self.show_jumps = False
         self.risky_jumps_only = False
+        # OpenGL 3.3 is required for the GPU textured renderer. VirtualBox
+        # and old drivers often only support OpenGL 3.0, so cache the
+        # availability once and fall back to CPU raster renderers below.
+        self._opengl33_available = is_opengl33_available()
         self.show_needle = True
         self.needle_highlighted = False
         self.needle_color = DEFAULT_NEEDLE_COLOR
@@ -697,11 +702,16 @@ class EmbroideryViewerWidget(QWidget):
         """Toggle a mode or advance the three-state JUMP mode."""
         if mode == "Z":
             # Z toggles the GPU textured renderer on/off.
-            self.set_renderer(
-                self._non_realistic_renderer
-                if self.active_renderer == "gpu_textured"
-                else "gpu_textured"
-            )
+            if self.active_renderer == "gpu_textured":
+                self.set_renderer(self._non_realistic_renderer)
+            elif self._opengl33_available:
+                self.set_renderer("gpu_textured")
+            else:
+                self.status_message.emit(
+                    "GPU textured renderer requires OpenGL 3.3 (not available); "
+                    "using CPU raster renderer",
+                    5000,
+                )
         elif mode == "X":
             self.show_density = not self.show_density
             if self.show_density and not self.density_ready:

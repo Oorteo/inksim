@@ -586,6 +586,14 @@ class MainWindow(QMainWindow):
         self.viewer.update_mode_indicators()
 
     def toggle_realistic(self, checked):
+        if not self.viewer._opengl33_available and self.viewer.active_renderer != "gpu_textured":
+            self.statusBar().showMessage(
+                "GPU textured renderer requires OpenGL 3.3 (not available); "
+                "using CPU raster renderer",
+                5000,
+            )
+            self.realistic_action.setChecked(False)
+            return
         self.viewer.toggle_display_mode("Z")
 
     def open_file_dialog(self):
