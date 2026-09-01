@@ -32,8 +32,11 @@ Repository = "https://github.com/oorteo/inksim.git"
 Issues = "https://github.com/oorteo/inksim/issues"
 
 
-[project.scripts]
+[project.gui-scripts]
 inksim = "inksim.cli:main"
+
+[project.scripts]
+inksim-cli = "inksim.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.2,<0.13.0"]

@@ -72,6 +72,20 @@ Linux, and Windows when run from Git Bash or WSL:
 ./scripts/dev/010_setup_uv_venv.sh
 ```
 
+## Command-line and GUI modes
+
+InkSim can be used in two ways:
+
+- As a **GUI application** — the `inksim` command opens the graphical window
+  and does not create a terminal window on Windows.
+- From an **already open terminal** — the `inksim-cli` command runs with the
+  console attached, so output, log messages, and errors are visible in that
+  terminal. Behavior is otherwise identical to `inksim`.
+
+On Windows only `inksim-cli` keeps a console window open; `inksim` itself is a
+GUI entry point that does not spawn a terminal when started from a shortcut,
+file association, or `Win+R`.
+
 ## Running options
 
 Start playback, fullscreen mode, or an explicitly sized window with:
@@ -87,3 +101,5 @@ Pass a directory, including `.`, to open the file dialog in that directory:
 ```bash
 inksim .
 ```
+
+All the same options work with `inksim-cli` when run from a terminal.
