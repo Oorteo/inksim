@@ -8,6 +8,8 @@ import time
 from PySide6.QtCore import QEvent, QObject, Qt
 from PySide6.QtWidgets import QApplication
 
+from ..debug import logger
+
 
 class ViewerShortcutFilter(QObject):
     """Route main-window key presses to the viewer from one place."""
@@ -160,6 +162,10 @@ class ViewerShortcutFilter(QObject):
             else:
                 viewer.visible_count = 0
                 viewer._last_dir = -1
+            logger.debug(
+                "Ctrl+A toggled visible_count to %s/%s (renderer=%s)",
+                viewer.visible_count, total, viewer.active_renderer,
+            )
             viewer.notify_cursor_changed()
             viewer.invalidate_cache()
             viewer.update()

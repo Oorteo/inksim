@@ -8,6 +8,7 @@ screen using the same GPU pipeline as the offscreen export renderer.
 It is used when the active stitch renderer is "gpu_textured".
 """
 import math
+import time
 from pathlib import Path
 
 import numpy as np
@@ -37,6 +38,23 @@ from ..render.stitches_gl import (
     texture_width_fraction,
     texture_cap_radius_fraction,
 )
+
+
+def _check_gl_error(label):
+    """Log any pending OpenGL error under the given label."""
+    err = glGetError()
+    if err == GL_NO_ERROR:
+        return
+    names = {
+        GL_INVALID_ENUM: "INVALID_ENUM",
+        GL_INVALID_VALUE: "INVALID_VALUE",
+        GL_INVALID_OPERATION: "INVALID_OPERATION",
+        GL_STACK_OVERFLOW: "STACK_OVERFLOW",
+        GL_STACK_UNDERFLOW: "STACK_UNDERFLOW",
+        GL_OUT_OF_MEMORY: "OUT_OF_MEMORY",
+        GL_INVALID_FRAMEBUFFER_OPERATION: "INVALID_FRAMEBUFFER_OPERATION",
+    }
+    logger.error("OpenGL error after %s: %s (0x%x)", label, names.get(err, "UNKNOWN"), err)
 
 VERTEX_SHADER = """
 #version 330 core
@@ -605,6 +623,7 @@ class GLStitchWidget(QOpenGLWidget):
         # zoom/pan are applied per-frame via u_transform, and the visible
         # sub-range is applied via index_counts, so neither ever re-runs this
         # (slow, pure-Python) quad builder.
+        upload_started_at = time.perf_counter()
         verts, idx, index_counts = build_satin_quads(
             self._stitches,
             self._stitches.shape[0],
@@ -633,15 +652,24 @@ class GLStitchWidget(QOpenGLWidget):
             self._ibo.write(0, idx.tobytes(), idx.nbytes)
         self._ibo.release()
         self._needs_upload = False
+        elapsed = time.perf_counter() - upload_started_at
+        if elapsed > 0.1:
+            logger.warning(
+                "GLStitchWidget._upload_geometry slow: %.3fs (stitches=%s, verts=%s, idx=%s)",
+                elapsed, self._stitches.shape[0], verts.shape[0], idx.shape[0])
 
     def paintGL(self):
         if self._program is None or not self._program.isLinked():
             return
 
+        paint_started_at = time.perf_counter()
+
         self._upload_geometry()
+        _check_gl_error("upload geometry")
 
         glClearColor(*self._bg_color, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        _check_gl_error("clear")
 
         w = self.width()
         h = self.height()
@@ -649,6 +677,7 @@ class GLStitchWidget(QOpenGLWidget):
         # 1. Grid (GL, under everything).
         if self._show_grid:
             self._draw_grid_gl(w, h)
+            _check_gl_error("grid")
 
         # 2. Stitches (GL).
         count = min(self._visible_count, self._index_counts.shape[0])
@@ -695,10 +724,12 @@ class GLStitchWidget(QOpenGLWidget):
                 self._cap_texture.release()
             self._texture.release()
             self._program.release()
+            _check_gl_error("stitches")
 
         # 3. Density dots (GL points, on top of the stitches).
         if self._show_density:
             self._draw_density_gl(w, h)
+            _check_gl_error("density")
 
         # 4. Needle crosshair (QPainter, on top of everything).
         if self._show_needle:
@@ -717,6 +748,11 @@ class GLStitchWidget(QOpenGLWidget):
         glEnable(GL_BLEND)
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
         glEnable(GL_PROGRAM_POINT_SIZE)
+
+        elapsed = time.perf_counter() - paint_started_at
+        if elapsed > 0.1:
+            logger.warning("GLStitchWidget.paintGL slow: %.3fs (visible=%s/%s, draw_count=%s)",
+                           elapsed, count, self._stitches.shape[0], draw_count)
 
     def _draw_trace_overlay(self):
         """Draw the viewer's event trace panel on top of the GL output."""
