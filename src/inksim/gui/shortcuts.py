@@ -102,6 +102,16 @@ class ViewerShortcutFilter(QObject):
         key = event.key()
         is_alt = bool(event.modifiers() & Qt.AltModifier)
         is_ctrl = bool(event.modifiers() & Qt.ControlModifier)
+        if event.isAutoRepeat():
+            # Ignore auto-repeat for one-shot toggles and mode switches.
+            # Navigation/playback keys (arrows, space) are still allowed to
+            # repeat so users can hold them for rapid stepping.
+            if key in (
+                Qt.Key_Z, Qt.Key_X, Qt.Key_V, Qt.Key_J, Qt.Key_N,
+                Qt.Key_G, Qt.Key_R, Qt.Key_F, Qt.Key_M, Qt.Key_H,
+                Qt.Key_I, Qt.Key_1, Qt.Key_F11,
+            ):
+                return True
         if is_alt and key in (Qt.Key_F, Qt.Key_P):
             return False
         if is_ctrl and key in (Qt.Key_Q, Qt.Key_O):
