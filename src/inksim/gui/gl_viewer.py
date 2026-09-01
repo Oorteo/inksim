@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """OpenGL-based stitch viewer widget for InkSim.
 
 This widget renders stitches as textured thread quads directly to the

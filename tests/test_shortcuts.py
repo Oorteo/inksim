@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from PySide6.QtCore import QPoint, Qt
 from PySide6.QtGui import QKeyEvent
 from PySide6.QtGui import QWheelEvent

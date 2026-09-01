@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """OpenGL textured-quad stitch renderer for InkSim.
 
 This renderer rasterises stitches as continuous textured ribbon quads

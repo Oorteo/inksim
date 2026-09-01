@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Runtime information shared by the CLI and the About dialog."""
 
 import importlib.metadata

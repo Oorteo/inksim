@@ -53,7 +53,7 @@ The activation command differs on Windows:
 Clone the repository and synchronize its development environment:
 
 ```bash
-git clone https://github.com/karnigen/inksim.git
+git clone https://github.com/oorteo/inksim.git
 cd inksim
 uv sync
 ```

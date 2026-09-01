@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Raster composition for the embroidery viewport."""
 
 from .density import render_density_numba

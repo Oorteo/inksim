@@ -1,4 +1,7 @@
 #!/usr/bin/env uvr
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 Professional PBR texture generator for embroidery thread.
 
@@ -48,9 +51,7 @@ def generate_thread_textures(
     period = max(1, int(round(width / twist_periods)))
 
     # Warn loudly when twist_periods does not divide width evenly, because the
-    # rendered tile will not wrap phase-correctly at the seam.  This is why
-    # loose_twist (width=512, twist_periods=1.5) tiles badly while the others
-    # tile cleanly.
+    # rendered tile will not wrap phase-correctly at the seam.
     expected_period = width / twist_periods
     if abs(period - expected_period) > 1e-9:
         exact_twists = width / period

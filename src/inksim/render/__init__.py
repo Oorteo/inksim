@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Rendering helpers used by the InkSim user interface."""
 
 from .density import calculate_stitch_density_numba, render_density_numba

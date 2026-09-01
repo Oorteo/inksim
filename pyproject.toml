@@ -2,7 +2,7 @@
 name = "inksim"
 version = "0.2.6"
 description = "Interactive embroidery simulator"
-authors = [{ name = "Tony Karnigen" }]
+authors = [{ name = "InkSim contributors" }]
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.12"
@@ -27,9 +27,9 @@ dev = [
 
 
 [project.urls]
-Homepage = "https://github.com/karnigen/inksim"
-Repository = "https://github.com/karnigen/inksim.git"
-Issues = "https://github.com/karnigen/inksim/issues"
+Homepage = "https://github.com/oorteo/inksim"
+Repository = "https://github.com/oorteo/inksim.git"
+Issues = "https://github.com/oorteo/inksim/issues"
 
 
 [project.scripts]

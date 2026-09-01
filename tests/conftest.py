@@ -1,5 +1,7 @@
-from pathlib import Path
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
+from pathlib import Path
 import PySide6
 import pytest
 

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Registered stitch renderers used by the viewer and renderer picker."""
 
 from collections.abc import Callable

@@ -1,4 +1,7 @@
 
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Application constants shared by the InkSim modules."""
 
 import getpass

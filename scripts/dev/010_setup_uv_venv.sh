@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
 # Set up the project's uv environment on macOS, Linux,
 # or Windows via Bash (Git Bash/WSL).
 set -euo pipefail

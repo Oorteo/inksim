@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Raw configuration-file editor for InkSim's TOML-backed storage."""
 
 from PySide6.QtCore import Qt
