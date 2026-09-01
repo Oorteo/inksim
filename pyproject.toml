@@ -1,6 +1,6 @@
 [project]
 name = "inksim"
-version = "0.2.7"
+version = "0.2.8"
 description = "Interactive embroidery simulator"
 authors = [{ name = "InkSim contributors" }]
 readme = "README.md"
@@ -32,8 +32,11 @@ Repository = "https://github.com/oorteo/inksim.git"
 Issues = "https://github.com/oorteo/inksim/issues"
 
 
-[project.gui-scripts]
+[project.scripts]
 inksim = "inksim.cli:main"
+
+[project.gui-scripts]
+inksim-gui = "inksim.cli:main"
 
 
 [build-system]

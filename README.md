@@ -25,6 +25,9 @@ Then run it directly from your shell:
 inksim design.pes
 ```
 
+Use `inksim-gui design.pes` to launch without a console window. The command
+names behave consistently on Windows, macOS, and Linux.
+
 See [installation and running](docs/installation.md) for `pip`/virtual-environment
 installation and developer setup.
 

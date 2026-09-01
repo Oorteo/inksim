@@ -5,21 +5,16 @@ import os
 import subprocess
 import sys
 
-import pytest
+def test_package_defines_standard_console_and_gui_commands():
+    from pathlib import Path
+    import tomllib
 
+    project = tomllib.loads(
+        (Path(__file__).parents[1] / "pyproject.toml").read_text(encoding="utf-8")
+    )["project"]
 
-def test_cli_attaches_console_before_help_exits(monkeypatch):
-    from inksim import cli
-
-    calls = []
-    monkeypatch.setattr(cli, "_attach_windows_console", lambda: calls.append("attach"))
-    monkeypatch.setattr(sys, "argv", ["inksim", "--cli", "-h"])
-
-    with pytest.raises(SystemExit) as exit_info:
-        cli.main()
-
-    assert exit_info.value.code == 0
-    assert calls == ["attach"]
+    assert project["scripts"]["inksim"] == "inksim.cli:main"
+    assert project["gui-scripts"]["inksim-gui"] == "inksim.cli:main"
 
 
 def test_cli_exports_sample_with_simple_and_default_renderers(

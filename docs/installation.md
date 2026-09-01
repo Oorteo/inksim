@@ -12,10 +12,11 @@ Install the command-line application into uv's tool environment:
 uv tool install inksim
 ```
 
-The command is then available as `inksim`:
+The console and GUI commands are then available as `inksim` and `inksim-gui`:
 
 ```bash
 inksim design.pes
+inksim-gui design.pes
 ```
 
 If the command is not found, let `uv` add its tool directory to the shell
@@ -76,15 +77,14 @@ Linux, and Windows when run from Git Bash or WSL:
 
 InkSim can be used in two ways:
 
-- As a **GUI application** — the `inksim` command opens the graphical window
-  and does not create a terminal window on Windows.
-- From an **already open terminal** — the `inksim-cli` command runs with the
-  console attached, so output, log messages, and errors are visible in that
-  terminal. Behavior is otherwise identical to `inksim`.
+- From an **already open terminal** — the `inksim` command keeps output and
+  errors in that terminal. With no export option it opens the graphical window.
+- As a **GUI application** — the `inksim-gui` command opens the same graphical
+  application without a console window.
 
-On Windows only `inksim-cli` keeps a console window open; `inksim` itself is a
-GUI entry point that does not spawn a terminal when started from a shortcut,
-file association, or `Win+R`.
+These command names and roles are the same on Windows, macOS, and Linux. On
+Windows, use `inksim-gui` for shortcuts, file associations, and `Win+R` so no
+console window is created.
 
 ## Running options
 
@@ -102,7 +102,8 @@ Pass a directory, including `.`, to open the file dialog in that directory:
 inksim .
 ```
 
-All the same options work with `inksim-cli` when run from a terminal.
+The same GUI options work with `inksim-gui`; terminal output is intentionally
+available through `inksim`.
 
 ## GPU textured renderer and OpenGL
 
