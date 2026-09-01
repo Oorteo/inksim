@@ -93,7 +93,7 @@ def show_command_line_help(parent):
     text_edit = QTextEdit(dialog)
     text_edit.setReadOnly(True)
     text_edit.setPlainText(help_text)
-    text_edit.setLineWrapMode(QTextEdit.NoLineWrap)
+    text_edit.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
     layout.addWidget(text_edit)
 
     buttons = QDialogButtonBox(QDialogButtonBox.Ok)
