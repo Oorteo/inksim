@@ -206,10 +206,13 @@ def build_argument_parser():
 
 
 def main():
+    # argparse exits while handling --help or invalid arguments, so attach the
+    # Windows console before parsing. Otherwise a gui_scripts launcher discards
+    # exactly the output for which --cli is intended.
+    if "--cli" in sys.argv[1:]:
+        _attach_windows_console()
     parser = build_argument_parser()
     args = parser.parse_args()
-    if args.cli:
-        _attach_windows_console()
     if args.version:
         print("\n".join(runtime_info_lines()))
         return
