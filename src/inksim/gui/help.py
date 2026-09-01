@@ -4,8 +4,12 @@
 """Markdown help content for the InkSim viewer."""
 
 import io
+import re
 
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QTextEdit, QVBoxLayout
+
+
+_ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*m")
 
 HELP_SECTIONS = (
     ("Mouse", """
@@ -83,17 +87,17 @@ def show_command_line_help(parent):
     parser = build_argument_parser()
     help_stream = io.StringIO()
     parser.print_help(help_stream)
-    help_text = help_stream.getvalue()
+    help_text = _ANSI_ESCAPE.sub("", help_stream.getvalue())
 
     dialog = QDialog(parent)
     dialog.setWindowTitle("Command line options - InkSim")
-    dialog.resize(900, 700)
+    dialog.resize(1200, 800)
 
     layout = QVBoxLayout(dialog)
     text_edit = QTextEdit(dialog)
     text_edit.setReadOnly(True)
     text_edit.setPlainText(help_text)
-    text_edit.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
+    text_edit.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
     layout.addWidget(text_edit)
 
     buttons = QDialogButtonBox(QDialogButtonBox.Ok)
