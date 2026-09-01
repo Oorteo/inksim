@@ -12,6 +12,7 @@ from inksim.formats import (
 from inksim.render.export import render_export_image
 from inksim.render.grid import render_grid_numba
 from inksim.render.registry import STITCH_RENDERERS
+from inksim.gui.viewer import EmbroideryViewerWidget
 
 
 def test_all_registered_renderers_export_without_crashing(qapp, tmp_path):
@@ -76,6 +77,31 @@ def test_sample_design_can_load(sample_design, qtbot):
     assert window.open_file(str(sample_design), precompute_density=False)
     assert window.viewer.stitches_np.shape[0] > 0
     window.close()
+
+
+def test_switching_from_gpu_hides_widget_without_destroying_gl_resources():
+    class FakeGLWidget:
+        def __init__(self):
+            self.hidden = False
+            self.cleanup_calls = 0
+
+        def hide(self):
+            self.hidden = True
+
+        def cleanup(self):
+            self.cleanup_calls += 1
+
+    gl_widget = FakeGLWidget()
+    viewer = type(
+        "ViewerState",
+        (),
+        {"active_renderer": "cpu_raster", "_gl_widget": gl_widget},
+    )()
+
+    EmbroideryViewerWidget._update_gl_widget_visibility(viewer)
+
+    assert gl_widget.hidden
+    assert gl_widget.cleanup_calls == 0
 
 
 def test_save_as_embroidery_writes_pystitch_format(sample_design, qtbot, tmp_path):

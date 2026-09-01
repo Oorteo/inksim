@@ -336,11 +336,10 @@ class GLStitchWidget(QOpenGLWidget):
         self._show_grid = True
         self._updates_blocked = False
         self._pending_update = False
-        self._in_paint = False
 
     def _maybe_update(self):
-        """Schedule a repaint unless updates are temporarily blocked or painting."""
-        if self._updates_blocked or self._in_paint:
+        """Schedule a repaint unless updates are temporarily blocked."""
+        if self._updates_blocked:
             self._pending_update = True
         else:
             self.update()
@@ -681,105 +680,97 @@ class GLStitchWidget(QOpenGLWidget):
         if self._program is None or not self._program.isLinked():
             return
 
-        self._in_paint = True
-        self._pending_update = False
         paint_started_at = time.perf_counter()
 
-        try:
-            self._upload_geometry()
-            _check_gl_error("upload geometry")
+        self._upload_geometry()
+        _check_gl_error("upload geometry")
 
-            glClearColor(*self._bg_color, 1.0)
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-            _check_gl_error("clear")
+        glClearColor(*self._bg_color, 1.0)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        _check_gl_error("clear")
 
-            w = self.width()
-            h = self.height()
+        w = self.width()
+        h = self.height()
 
-            # 1. Grid (GL, under everything).
-            if self._show_grid:
-                self._draw_grid_gl(w, h)
-                _check_gl_error("grid")
+        # 1. Grid (GL, under everything).
+        if self._show_grid:
+            self._draw_grid_gl(w, h)
+            _check_gl_error("grid")
 
-            # 2. Stitches (GL).
-            count = min(self._visible_count, self._index_counts.shape[0])
-            draw_count = int(self._index_counts[count - 1]) if count > 0 else 0
-            if draw_count > 0 and self._show_stitches:
-                # Vertices are in model space (see _upload_geometry). This matrix is
-                # the only place zoom/pan is applied: model -> pixel (y-down) -> NDC.
-                sx = self._zoom * 2.0 / w
-                sy = -self._zoom * 2.0 / h
-                tx = self._pan[0] * 2.0 / w - 1.0
-                ty = 1.0 - self._pan[1] * 2.0 / h
+        # 2. Stitches (GL).
+        count = min(self._visible_count, self._index_counts.shape[0])
+        draw_count = int(self._index_counts[count - 1]) if count > 0 else 0
+        if draw_count > 0 and self._show_stitches:
+            # Vertices are in model space (see _upload_geometry). This matrix is
+            # the only place zoom/pan is applied: model -> pixel (y-down) -> NDC.
+            sx = self._zoom * 2.0 / w
+            sy = -self._zoom * 2.0 / h
+            tx = self._pan[0] * 2.0 / w - 1.0
+            ty = 1.0 - self._pan[1] * 2.0 / h
 
-                transform = np.array([
-                    sx, 0.0, 0.0, 0.0,
-                    0.0, sy, 0.0, 0.0,
-                    0.0, 0.0, 1.0, 0.0,
-                    tx, ty, 0.0, 1.0,
-                ], dtype=np.float32)
+            transform = np.array([
+                sx, 0.0, 0.0, 0.0,
+                0.0, sy, 0.0, 0.0,
+                0.0, 0.0, 1.0, 0.0,
+                tx, ty, 0.0, 1.0,
+            ], dtype=np.float32)
 
-                self._program.bind()
-                glUniformMatrix4fv(self._program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
-                glUniform3f(self._program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
-                k_a, k_d, k_s = _lighting_coefficients(self._dark_factor, self._light_factor)
-                glUniform1f(self._program.uniformLocation("u_k_a"), k_a)
-                glUniform1f(self._program.uniformLocation("u_k_d"), k_d)
-                glUniform1f(self._program.uniformLocation("u_k_s"), k_s)
-                glUniform1f(self._program.uniformLocation("u_specular_exponent"), 12.0)
-                tangent_strength, bitangent_strength = _normal_strengths(self._zoom)
-                glUniform1f(self._program.uniformLocation("u_normal_strength_tangent"), tangent_strength)
-                glUniform1f(self._program.uniformLocation("u_normal_strength_bitangent"), bitangent_strength)
-                glUniform1i(self._program.uniformLocation("u_debug_mode"), self._debug_mode)
+            self._program.bind()
+            glUniformMatrix4fv(self._program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
+            glUniform3f(self._program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
+            k_a, k_d, k_s = _lighting_coefficients(self._dark_factor, self._light_factor)
+            glUniform1f(self._program.uniformLocation("u_k_a"), k_a)
+            glUniform1f(self._program.uniformLocation("u_k_d"), k_d)
+            glUniform1f(self._program.uniformLocation("u_k_s"), k_s)
+            glUniform1f(self._program.uniformLocation("u_specular_exponent"), 12.0)
+            tangent_strength, bitangent_strength = _normal_strengths(self._zoom)
+            glUniform1f(self._program.uniformLocation("u_normal_strength_tangent"), tangent_strength)
+            glUniform1f(self._program.uniformLocation("u_normal_strength_bitangent"), bitangent_strength)
+            glUniform1i(self._program.uniformLocation("u_debug_mode"), self._debug_mode)
 
-                self._texture.bind(0)
-                glUniform1i(self._program.uniformLocation("u_texture"), 0)
+            self._texture.bind(0)
+            glUniform1i(self._program.uniformLocation("u_texture"), 0)
 
-                if self._cap_texture is not None:
-                    self._cap_texture.bind(1)
-                    glUniform1i(self._program.uniformLocation("u_cap_mask"), 1)
+            if self._cap_texture is not None:
+                self._cap_texture.bind(1)
+                glUniform1i(self._program.uniformLocation("u_cap_mask"), 1)
 
-                self._vao.bind()
-                glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
-                self._vao.release()
-                if self._cap_texture is not None:
-                    self._cap_texture.release()
-                self._texture.release()
-                self._program.release()
-                _check_gl_error("stitches")
+            self._vao.bind()
+            glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
+            self._vao.release()
+            if self._cap_texture is not None:
+                self._cap_texture.release()
+            self._texture.release()
+            self._program.release()
+            _check_gl_error("stitches")
 
-            # 3. Density dots (GL points, on top of the stitches).
-            if self._show_density:
-                self._draw_density_gl(w, h)
-                _check_gl_error("density")
+        # 3. Density dots (GL points, on top of the stitches).
+        if self._show_density:
+            self._draw_density_gl(w, h)
+            _check_gl_error("density")
 
-            # 4. Needle crosshair (QPainter, on top of everything).
-            if self._show_needle:
-                self._draw_needle_gl(w, h)
+        # 4. Needle crosshair (QPainter, on top of everything).
+        if self._show_needle:
+            self._draw_needle_gl(w, h)
 
-            # 5. Jumps (QPainter, on top of the stitches).
-            self._draw_jumps_overlay()
+        # 5. Jumps (QPainter, on top of the stitches).
+        self._draw_jumps_overlay()
 
-            # 6. Event trace overlay (QPainter, top-most).
-            self._draw_trace_overlay()
+        # 6. Event trace overlay (QPainter, top-most).
+        self._draw_trace_overlay()
 
-            # Restore the OpenGL state that Qt's OpenGL paint engine may have
-            # altered while drawing the QPainter overlays. Without this, the next
-            # paintGL frame can appear washed out / blended into the background.
-            glDisable(GL_DEPTH_TEST)
-            glEnable(GL_BLEND)
-            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
-            glEnable(GL_PROGRAM_POINT_SIZE)
+        # Restore the OpenGL state that Qt's OpenGL paint engine may have
+        # altered while drawing the QPainter overlays. Without this, the next
+        # paintGL frame can appear washed out / blended into the background.
+        glDisable(GL_DEPTH_TEST)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_PROGRAM_POINT_SIZE)
 
-            elapsed = time.perf_counter() - paint_started_at
-            if elapsed > 0.1:
-                logger.warning("GLStitchWidget.paintGL slow: %.3fs (visible=%s/%s, draw_count=%s)",
-                               elapsed, count, self._stitches.shape[0], draw_count)
-        finally:
-            self._in_paint = False
-            if self._pending_update:
-                self._pending_update = False
-                self.update()
+        elapsed = time.perf_counter() - paint_started_at
+        if elapsed > 0.1:
+            logger.warning("GLStitchWidget.paintGL slow: %.3fs (visible=%s/%s, draw_count=%s)",
+                           elapsed, count, self._stitches.shape[0], draw_count)
 
     def _draw_trace_overlay(self):
         """Draw the viewer's event trace panel on top of the GL output."""

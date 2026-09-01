@@ -305,23 +305,6 @@ class EmbroideryViewerWidget(QWidget):
         widget.setFocusPolicy(Qt.NoFocus)
         return widget
 
-    def _recreate_gl_widget(self):
-        """Replace the GL widget to recover from a stuck/broken GPU context."""
-        logger.debug("Recreating GL stitch widget")
-        old = self._gl_widget
-        if old is not None:
-            old.cleanup()
-            old.hide()
-            old.setParent(None)
-            old.deleteLater()
-        self._gl_widget = self._create_gl_widget()
-        self._gl_widget.setGeometry(self.rect())
-
-    def _gl_widget_healthy(self):
-        """Return True when the current GL widget is safe to reuse."""
-        ctx = self._gl_widget.context()
-        return ctx is not None and ctx.isValid()
-
     def resizeEvent(self, event):
         """Invalidate the bitmap and retry deferred initial fitting."""
         self._gl_widget.setGeometry(self.rect())
@@ -769,26 +752,16 @@ class EmbroideryViewerWidget(QWidget):
 
     def _update_gl_widget_visibility(self):
         if self.active_renderer == "gpu_textured":
-            # If the GL widget was previously hidden/cleaned up or its context
-            # became invalid, recreate it so the GPU renderer starts fresh.
-            if not self._gl_widget_healthy():
-                self._recreate_gl_widget()
             self._gl_widget.setGeometry(self.rect())
-            self._gl_widget.block_updates()
-            try:
-                self._gl_widget.set_stitches(self.stitches_np, self.line_width)
-                self._sync_gl_widget()
-                self._gl_widget.set_background(*self.background_color)
-            finally:
-                self._gl_widget.unblock_updates()
+            self._gl_widget.set_stitches(self.stitches_np, self.line_width)
+            self._sync_gl_widget()
+            self._gl_widget.set_background(*self.background_color)
             self._gl_widget.show()
             self._gl_widget.raise_()
             self._gl_widget.update()
         else:
-            # Release GPU resources while the GL context is still current.
-            # If we only hide the widget, Qt's texture destructor may run
-            # later without a current context and print warnings.
-            self._gl_widget.cleanup()
+            # Keep the initialized context and resources alive across renderer
+            # switches. MainWindow.closeEvent performs the final cleanup.
             self._gl_widget.hide()
 
     def _sync_gl_widget(self):
@@ -1161,10 +1134,7 @@ class EmbroideryViewerWidget(QWidget):
             # zoom/pan/stitch position and let it paint itself.
             # Do NOT create a QPainter on the parent here: overlapping software
             # paint on a QOpenGLWidget parent can blank the GL output.
-            # Guard against painting before the GL widget is actually visible
-            # and initialised (e.g. during a synchronous show() triggered by
-            # set_renderer) to avoid re-entrant updates on a half-ready context.
-            if self._gl_widget.isVisible() and self._gl_widget_healthy():
+            if self._gl_widget.isVisible():
                 self._sync_gl_widget()
             return
 
