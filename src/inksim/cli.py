@@ -8,11 +8,12 @@ import signal
 import sys
 from pathlib import Path
 
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
 from .constants import APP_ORGANIZATION, APP_TITLE
-from .debug import configure_logging
+from .debug import configure_logging, logger
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
 from .interconnect import InterconnectServer, send_command
@@ -41,11 +42,13 @@ def _send_command_and_exit(json_text):
         command = json.loads(json_text)
     except json.JSONDecodeError as ex:
         raise SystemExit(f"invalid JSON command: {ex}")
-    app = QApplication.instance()
+    logger.debug("IPC probe creating QCoreApplication")
+    app = QCoreApplication.instance()
     if app is None:
-        app = QApplication([])
+        app = QCoreApplication([])
         app.setApplicationName(APP_TITLE)
         app.setOrganizationName(APP_ORGANIZATION)
+    logger.debug("IPC probe QCoreApplication ready")
     try:
         response = send_command(command)
     except RuntimeError as ex:

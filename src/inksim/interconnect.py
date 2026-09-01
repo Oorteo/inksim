@@ -26,7 +26,6 @@ def _token_path():
     config_dir = Path(QStandardPaths.writableLocation(
         QStandardPaths.StandardLocation.ConfigLocation
     ))
-    config_dir = config_dir / APP_ORGANIZATION / APP_TITLE
     config_dir.mkdir(parents=True, exist_ok=True)
     token_path = config_dir / TOKEN_FILENAME
     logger.debug("IPC token path: %s", token_path)
