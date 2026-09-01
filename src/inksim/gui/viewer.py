@@ -774,11 +774,16 @@ class EmbroideryViewerWidget(QWidget):
             if not self._gl_widget_healthy():
                 self._recreate_gl_widget()
             self._gl_widget.setGeometry(self.rect())
-            self._gl_widget.set_stitches(self.stitches_np, self.line_width)
-            self._sync_gl_widget()
-            self._gl_widget.set_background(*self.background_color)
+            self._gl_widget.block_updates()
+            try:
+                self._gl_widget.set_stitches(self.stitches_np, self.line_width)
+                self._sync_gl_widget()
+                self._gl_widget.set_background(*self.background_color)
+            finally:
+                self._gl_widget.unblock_updates()
             self._gl_widget.show()
             self._gl_widget.raise_()
+            self._gl_widget.update()
         else:
             # Release GPU resources while the GL context is still current.
             # If we only hide the widget, Qt's texture destructor may run
@@ -1156,7 +1161,11 @@ class EmbroideryViewerWidget(QWidget):
             # zoom/pan/stitch position and let it paint itself.
             # Do NOT create a QPainter on the parent here: overlapping software
             # paint on a QOpenGLWidget parent can blank the GL output.
-            self._sync_gl_widget()
+            # Guard against painting before the GL widget is actually visible
+            # and initialised (e.g. during a synchronous show() triggered by
+            # set_renderer) to avoid re-entrant updates on a half-ready context.
+            if self._gl_widget.isVisible() and self._gl_widget_healthy():
+                self._sync_gl_widget()
             return
 
         self._paint_sequence += 1
