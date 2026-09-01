@@ -11,7 +11,7 @@ from pathlib import Path
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
-from .constants import APP_TITLE
+from .constants import APP_ORGANIZATION, APP_TITLE
 from .debug import configure_logging
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
@@ -41,7 +41,11 @@ def _send_command_and_exit(json_text):
         command = json.loads(json_text)
     except json.JSONDecodeError as ex:
         raise SystemExit(f"invalid JSON command: {ex}")
-    app = QApplication.instance() or QApplication([])
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication([])
+        app.setApplicationName(APP_TITLE)
+        app.setOrganizationName(APP_ORGANIZATION)
     try:
         response = send_command(command)
     except RuntimeError as ex:
