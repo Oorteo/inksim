@@ -815,22 +815,23 @@ class EmbroideryViewerWidget(QWidget):
                 self.stitch_density_np,
                 self.repeated_stitch_np,
             )
+            if self.show_needle and self.stitches_np.shape[0] > 0:
+                world_x, world_y = self._needle_world_pos()
+            else:
+                world_x, world_y = 0.0, 0.0
+            self._gl_widget.set_needle(
+                self.show_needle,
+                world_x,
+                world_y,
+                self.needle_color,
+                self.needle_radius,
+                self.needle_width,
+                self.needle_fullscreen,
+                self.needle_pulse,
+            )
         finally:
             self._gl_widget.unblock_updates()
-        if self.show_needle and self.stitches_np.shape[0] > 0:
-            world_x, world_y = self._needle_world_pos()
-        else:
-            world_x, world_y = 0.0, 0.0
-        self._gl_widget.set_needle(
-            self.show_needle,
-            world_x,
-            world_y,
-            self.needle_color,
-            self.needle_radius,
-            self.needle_width,
-            self.needle_fullscreen,
-            self.needle_pulse,
-        )
+            self._gl_widget.update()
 
     def select_renderer(self):
         """Open the renderer picker dialog."""
