@@ -18,6 +18,10 @@ class FakeWindow(QObject):
         self.calls.append(("open", path, delete_after_load, autoplay))
         return True
 
+    def set_document_path(self, path):
+        self.calls.append(("document", path))
+        self.last_directory = str(path.parent)
+
     def focus_window(self):
         self.calls.append(("focus",))
 
@@ -57,3 +61,23 @@ def test_interconnect_dispatches_local_commands(qapp):
         ]
     finally:
         server.stop()
+
+
+def test_open_and_delete_preserves_document_path_for_save_as(qapp, tmp_path):
+    document_path = tmp_path / "KL.svg"
+    window = FakeWindow()
+    server = InterconnectServer(window, f"inksim-test-{uuid4().hex}")
+
+    response = server._dispatch({
+        "auth_token": server.auth_token,
+        "command": "open_and_delete",
+        "path": "/tmp/transient.csv",
+        "document_path": str(document_path),
+    })
+
+    assert response["ok"]
+    assert window.calls == [
+        ("document", document_path),
+        ("open", "/tmp/transient.csv", True, False),
+        ("focus",),
+    ]

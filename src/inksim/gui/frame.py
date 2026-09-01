@@ -73,8 +73,9 @@ class MainWindow(QMainWindow):
         self.export_transparent_background = self.config.get(
             "export_transparent_background", False
         )
-        if document_path is not None and document_path.is_file():
-            self.last_directory = str(document_path.parent)
+        self.document_path = None
+        if document_path is not None:
+            self.set_document_path(document_path)
         self.recent_directories = self._load_recent_directories()
         self.current_file_path = None
         self._source_mtime_ns = None
@@ -619,8 +620,19 @@ class MainWindow(QMainWindow):
                 self.viewer.invalidate_cache()
                 self.viewer.repaint()
 
+    def set_document_path(self, document_path):
+        """Set the source document used for Save As defaults."""
+        path = Path(document_path).resolve()
+        self.document_path = path
+        self.last_directory = str(path.parent)
+
+    def _preferred_source_path(self):
+        """Return the authoritative source path for output defaults."""
+        return self.document_path or self.current_file_path
+
     def _default_export_name(self, suffix):
-        base_name = self.current_file_path.stem if self.current_file_path else "inksim"
+        source_path = self._preferred_source_path()
+        base_name = source_path.stem if source_path else "inksim"
         return f"{base_name}{suffix}"
 
     def _choose_export_path(self, title, default_name, file_filter, extension):
@@ -638,7 +650,11 @@ class MainWindow(QMainWindow):
         return selected_path.with_suffix(extension)
 
     def _default_save_name(self):
-        base_name = self.current_file_path.stem if self.current_file_path else "inksim"
+        return self._default_save_path().name
+
+    def _default_save_path(self):
+        source_path = self._preferred_source_path()
+        base_name = source_path.stem if source_path else "inksim"
         current_extension = (
             self.current_file_path.suffix.lstrip(".").lower()
             if self.current_file_path else ""
@@ -648,16 +664,19 @@ class MainWindow(QMainWindow):
         }
         if current_extension not in writable_extensions:
             current_extension = "dst"
-        return f"{base_name}.{current_extension or 'dst'}"
+        filename = f"{base_name}.{current_extension or 'dst'}"
+        if self.document_path is not None:
+            return self.document_path.with_name(filename)
+        return Path(self.last_directory or Path.cwd()) / filename
 
     def _choose_save_as_path(self):
         output_filter = get_supported_output_filter()
-        export_directory = Path(self.last_directory or Path.cwd())
-        default_path = export_directory / self._default_save_name()
+        default_path = self._default_save_path()
         dialog = QFileDialog(self, "Save embroidery as", str(default_path))
         dialog.setAcceptMode(QFileDialog.AcceptSave)
         dialog.setNameFilters(output_filter.split(";;"))
-        dialog.selectFile(str(default_path))
+        dialog.setDirectory(str(default_path.parent))
+        dialog.selectFile(default_path.name)
 
         def on_filter_selected(selected_filter):
             extension = extension_from_output_filter(selected_filter)

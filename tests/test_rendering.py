@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from pathlib import Path
+
 import numpy as np
 from PySide6.QtWidgets import QApplication
 
@@ -126,4 +128,21 @@ def test_save_as_extension_helper_replaces_current_suffix(qtbot):
 
     assert window._path_with_output_extension("design.dst", "pes") == "design.pes"
     assert window._path_with_output_extension("design", "pes") == "design.pes"
+    window.close()
+
+
+def test_document_path_controls_save_as_default(qtbot, tmp_path):
+    from inksim.gui.frame import MainWindow
+
+    document_path = tmp_path / "KL.svg"
+    document_path.write_text("<svg/>", encoding="utf-8")
+    window = MainWindow(window_size=(320, 240), document_path=document_path)
+    qtbot.addWidget(window)
+    window.current_file_path = Path("/tmp/transient.csv")
+
+    assert window._default_save_name() == "KL.csv"
+    assert window._default_save_path() == tmp_path.resolve() / "KL.csv"
+    assert window._default_export_name(".png") == "KL.png"
+    assert window.document_path == document_path.resolve()
+    assert window.last_directory == str(tmp_path.resolve())
     window.close()

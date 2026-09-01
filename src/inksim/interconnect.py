@@ -177,9 +177,7 @@ class InterconnectServer(QObject):
                 raise ValueError("open requires a non-empty path")
             document_path = request.get("document_path")
             if isinstance(document_path, str) and document_path:
-                doc_path = Path(document_path)
-                if doc_path.is_file():
-                    self.window.last_directory = str(doc_path.parent)
+                self.window.set_document_path(Path(document_path))
             delete_after_load = command == "open_and_delete"
             autoplay = request.get("autoplay", False)
             opened = self.window.open_file(

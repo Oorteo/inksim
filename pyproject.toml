@@ -38,6 +38,9 @@ inksim = "inksim.cli:main"
 [project.gui-scripts]
 inksim-gui = "inksim.cli:main"
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
 
 [build-system]
 requires = ["uv_build>=0.12.2,<0.13.0"]

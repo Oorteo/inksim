@@ -280,8 +280,6 @@ def main():
         Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
     first_input = input_paths[0] if input_paths else None
     document_path = args.document_path
-    if document_path is not None and not document_path.is_file():
-        parser.error(f"document path not found: {document_path}")
     frame = MainWindow(
         fullscreen=args.fullscreen,
         window_size=window_size,
@@ -306,6 +304,8 @@ def main():
                     if first_input is not None and first_input.is_file()
                     else {"command": "show", "focus": True}
                 )
+                if document_path is not None and command["command"] == open_command:
+                    command["document_path"] = str(document_path)
                 response = send_command(command)
                 frame.close()
                 if not response.get("ok"):
