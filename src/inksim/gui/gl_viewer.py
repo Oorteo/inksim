@@ -27,7 +27,7 @@ from PySide6.QtWidgets import QApplication
 from OpenGL.GL import *
 
 from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_WARNING_PER_MM2
-from ..debug import is_enabled
+from ..debug import is_enabled, logger
 from ..render.stitches_gl import _build_satin_quads as build_satin_quads
 from ..render.stitches_gl import (
     _default_texture_path,
@@ -445,13 +445,13 @@ class GLStitchWidget(QOpenGLWidget):
         self._cleaned_up = False
         fmt = self.context().format()
         if is_enabled():
-            print(f"[GLStitchWidget] OpenGL {fmt.majorVersion()}.{fmt.minorVersion()}")
+            logger.debug(f"[GLStitchWidget] OpenGL {fmt.majorVersion()}.{fmt.minorVersion()}")
 
         self._program = QOpenGLShaderProgram(self)
         self._program.addShaderFromSourceCode(QOpenGLShader.Vertex, VERTEX_SHADER)
         self._program.addShaderFromSourceCode(QOpenGLShader.Fragment, FRAGMENT_SHADER)
         if not self._program.link():
-            print("Shader link failed:", self._program.log())
+            logger.error("Shader link failed: %s", self._program.log())
             return
 
         self._vao = QOpenGLVertexArrayObject()
@@ -471,14 +471,14 @@ class GLStitchWidget(QOpenGLWidget):
         self._grid_program.addShaderFromSourceCode(QOpenGLShader.Vertex, GRID_VERTEX_SHADER)
         self._grid_program.addShaderFromSourceCode(QOpenGLShader.Fragment, GRID_FRAGMENT_SHADER)
         if not self._grid_program.link():
-            print("Grid shader link failed:", self._grid_program.log())
+            logger.error("Grid shader link failed: %s", self._grid_program.log())
 
         # Density point shader.
         self._density_program = QOpenGLShaderProgram(self)
         self._density_program.addShaderFromSourceCode(QOpenGLShader.Vertex, DENSITY_VERTEX_SHADER)
         self._density_program.addShaderFromSourceCode(QOpenGLShader.Fragment, DENSITY_FRAGMENT_SHADER)
         if not self._density_program.link():
-            print("Density shader link failed:", self._density_program.log())
+            logger.error("Density shader link failed: %s", self._density_program.log())
 
         self._density_vao = QOpenGLVertexArrayObject()
         self._density_vao.create()

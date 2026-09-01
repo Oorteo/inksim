@@ -216,10 +216,7 @@ class EmbroideryViewerWidget(QWidget):
         self.pan_render_timer.timeout.connect(self._finish_pan_render)
         self._cache_valid = False
         self.progress_bar = progress_bar
-        self._gl_widget = GLStitchWidget(self)
-        self._gl_widget.setGeometry(self.rect())
-        self._gl_widget.hide()
-        self._gl_widget.setFocusPolicy(Qt.NoFocus)
+        self._gl_widget = self._create_gl_widget()
         self.mode_panel = None
         self.command_dialog = None
         self.help_dialog = None
@@ -299,6 +296,31 @@ class EmbroideryViewerWidget(QWidget):
             self._render_buffer_size = size
         self._render_buffer[:] = self.background_color
         return self._render_buffer
+
+    def _create_gl_widget(self):
+        """Create a fresh OpenGL stitch widget child."""
+        widget = GLStitchWidget(self)
+        widget.setGeometry(self.rect())
+        widget.hide()
+        widget.setFocusPolicy(Qt.NoFocus)
+        return widget
+
+    def _recreate_gl_widget(self):
+        """Replace the GL widget to recover from a stuck/broken GPU context."""
+        logger.debug("Recreating GL stitch widget")
+        old = self._gl_widget
+        if old is not None:
+            old.cleanup()
+            old.hide()
+            old.setParent(None)
+            old.deleteLater()
+        self._gl_widget = self._create_gl_widget()
+        self._gl_widget.setGeometry(self.rect())
+
+    def _gl_widget_healthy(self):
+        """Return True when the current GL widget is safe to reuse."""
+        ctx = self._gl_widget.context()
+        return ctx is not None and ctx.isValid()
 
     def resizeEvent(self, event):
         """Invalidate the bitmap and retry deferred initial fitting."""
@@ -747,6 +769,10 @@ class EmbroideryViewerWidget(QWidget):
 
     def _update_gl_widget_visibility(self):
         if self.active_renderer == "gpu_textured":
+            # If the GL widget was previously hidden/cleaned up or its context
+            # became invalid, recreate it so the GPU renderer starts fresh.
+            if not self._gl_widget_healthy():
+                self._recreate_gl_widget()
             self._gl_widget.setGeometry(self.rect())
             self._gl_widget.set_stitches(self.stitches_np, self.line_width)
             self._sync_gl_widget()

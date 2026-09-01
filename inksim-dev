@@ -15,4 +15,4 @@ SCRIPT_PATH="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)/$(basename "
 PROJECT_DIR="$(dirname "$SCRIPT_PATH")"
 
 cd "$PROJECT_DIR"
-uvr -m inksim "$@"
+uvr -m inksim --dbg "$@"
