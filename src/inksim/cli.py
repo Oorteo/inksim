@@ -186,6 +186,20 @@ def main():
         print("\n".join(runtime_info_lines()))
         return
     if args.send_command:
+        debug_enabled = args.debug or args.log is not None or bool(
+            os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG")
+        )
+        log_path = (
+            args.log
+            or (Path(os.environ["INKSIM_LOG"])
+                if os.environ.get("INKSIM_LOG") else None)
+            or _default_log_path([])
+        )
+        if debug_enabled:
+            try:
+                configure_logging(True, log_path)
+            except OSError as ex:
+                parser.error(f"cannot create debug log {log_path}: {ex}")
         _send_command_and_exit(args.send_command)
 
     export_values = [

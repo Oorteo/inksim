@@ -11,6 +11,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, QStandardPaths, Signal
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
+from .debug import logger
 from .constants import (
     APP_ORGANIZATION,
     APP_TITLE,
@@ -27,16 +28,21 @@ def _token_path():
     ))
     config_dir = config_dir / APP_ORGANIZATION / APP_TITLE
     config_dir.mkdir(parents=True, exist_ok=True)
-    return config_dir / TOKEN_FILENAME
+    token_path = config_dir / TOKEN_FILENAME
+    logger.debug("IPC token path: %s", token_path)
+    return token_path
 
 
 def read_auth_token():
     """Read the auth token of the currently running server, if any."""
     token_file = _token_path()
     try:
-        return token_file.read_text(encoding="utf-8").strip()
+        token = token_file.read_text(encoding="utf-8").strip()
     except OSError:
+        logger.debug("IPC token is unavailable")
         return None
+    logger.debug("IPC token is available")
+    return token
 
 
 def write_auth_token(token):
@@ -48,6 +54,7 @@ def write_auth_token(token):
         os.chmod(token_file, 0o600)
     except OSError:
         pass
+    logger.debug("IPC token written to %s", token_file)
     return token_file
 
 
@@ -89,20 +96,27 @@ class InterconnectServer(QObject):
 
     def start(self):
         """Start listening, returning False when another server is active."""
+        logger.debug("IPC server starting: %s", self.server_name)
         if self.server.listen(self.server_name):
             write_auth_token(self._auth_token)
+            logger.debug("IPC server listening: %s", self.server_name)
             return True
+        logger.debug("IPC server listen failed: %s", self.server.errorString())
         probe = QLocalSocket(self)
         probe.connectToServer(self.server_name)
         active = probe.waitForConnected(150)
         probe.abort()
         probe.deleteLater()
         if active:
+            logger.debug("IPC endpoint is owned by another server")
             return False
+        logger.debug("IPC endpoint recovery: %s", self.server_name)
         QLocalServer.removeServer(self.server_name)
         if self.server.listen(self.server_name):
             write_auth_token(self._auth_token)
+            logger.debug("IPC server listening after recovery: %s", self.server_name)
             return True
+        logger.debug("IPC server recovery failed: %s", self.server.errorString())
         self.error.emit(self.server.errorString())
         return False
 
@@ -115,6 +129,7 @@ class InterconnectServer(QObject):
     def _accept_connections(self):
         while self.server.hasPendingConnections():
             socket = self.server.nextPendingConnection()
+            logger.debug("IPC server accepted a connection")
             self._buffers[socket] = bytearray()
             socket.readyRead.connect(
                 lambda socket=socket: self._read_socket(socket)
@@ -138,11 +153,14 @@ class InterconnectServer(QObject):
             self._buffers[socket] = bytearray(remainder)
             try:
                 request = json.loads(raw.decode("utf-8"))
+                logger.debug("IPC server received command: %s", request.get("command"))
                 response = self._dispatch(request)
             except (UnicodeDecodeError, json.JSONDecodeError, TypeError, ValueError) as ex:
+                logger.debug("IPC server rejected command: %s", ex)
                 response = {"ok": False, "error": str(ex)}
             socket.write((json.dumps(response) + "\n").encode("utf-8"))
             socket.flush()
+            logger.debug("IPC server sent response: ok=%s", response.get("ok"))
 
     def _check_auth(self, request):
         """Validate protocol version and auth token."""
@@ -213,6 +231,7 @@ class InterconnectServer(QObject):
 
 def send_command(command, server_name=IPC_SERVER_NAME, timeout=1000):
     """Send one command to a running InkSim server and return its response."""
+    logger.debug("IPC client sending command to %s: %s", server_name, command.get("command"))
     token = read_auth_token()
     if token is None:
         raise RuntimeError("InkSim server has no auth token (not running?)")
@@ -222,10 +241,14 @@ def send_command(command, server_name=IPC_SERVER_NAME, timeout=1000):
     socket = QLocalSocket()
     socket.connectToServer(server_name)
     if not socket.waitForConnected(timeout):
+        logger.debug("IPC client connection failed: %s", socket.errorString())
         raise RuntimeError(f"cannot connect to InkSim server: {socket.errorString()}")
+    logger.debug("IPC client connected")
     socket.write((json.dumps(command) + "\n").encode("utf-8"))
     if not socket.waitForBytesWritten(timeout) or not socket.waitForReadyRead(timeout):
+        logger.debug("IPC client response wait failed: %s", socket.errorString())
         raise RuntimeError("InkSim server did not respond")
     response = bytes(socket.readLine()).decode("utf-8").strip()
     socket.disconnectFromServer()
+    logger.debug("IPC client received response")
     return json.loads(response)
