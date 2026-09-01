@@ -96,19 +96,22 @@ class InterconnectServer(QObject):
     def start(self):
         """Start listening, returning False when another server is active."""
         logger.debug("IPC server starting: %s", self.server_name)
-        if self.server.listen(self.server_name):
-            write_auth_token(self._auth_token)
-            logger.debug("IPC server listening: %s", self.server_name)
-            return True
-        logger.debug("IPC server listen failed: %s", self.server.errorString())
+        # Windows permits multiple named-pipe server instances with the same
+        # name, unlike Unix domain sockets. Probe first so an existing InkSim
+        # server is detected before this process can create another instance.
         probe = QLocalSocket(self)
         probe.connectToServer(self.server_name)
-        active = probe.waitForConnected(150)
+        active = probe.waitForConnected(500)
         probe.abort()
         probe.deleteLater()
         if active:
             logger.debug("IPC endpoint is owned by another server")
             return False
+        if self.server.listen(self.server_name):
+            write_auth_token(self._auth_token)
+            logger.debug("IPC server listening: %s", self.server_name)
+            return True
+        logger.debug("IPC server listen failed: %s", self.server.errorString())
         logger.debug("IPC endpoint recovery: %s", self.server_name)
         QLocalServer.removeServer(self.server_name)
         if self.server.listen(self.server_name):

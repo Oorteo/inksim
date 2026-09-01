@@ -63,6 +63,18 @@ def test_interconnect_dispatches_local_commands(qapp):
         server.stop()
 
 
+def test_interconnect_does_not_start_a_second_server(qapp):
+    server_name = f"inksim-test-{uuid4().hex}"
+    first_server = InterconnectServer(FakeWindow(), server_name)
+    second_server = InterconnectServer(FakeWindow(), server_name)
+
+    assert first_server.start()
+    try:
+        assert not second_server.start()
+    finally:
+        first_server.stop()
+
+
 def test_open_and_delete_preserves_document_path_for_save_as(qapp, tmp_path):
     document_path = tmp_path / "KL.svg"
     window = FakeWindow()
