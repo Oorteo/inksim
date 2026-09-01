@@ -334,12 +334,33 @@ class GLStitchWidget(QOpenGLWidget):
         self._needle_pulse = 0.0
         self._show_stitches = True
         self._show_grid = True
+        self._updates_blocked = False
+        self._pending_update = False
+
+    def _maybe_update(self):
+        """Schedule a repaint unless updates are temporarily blocked."""
+        if self._updates_blocked:
+            self._pending_update = True
+        else:
+            self.update()
+
+    def block_updates(self):
+        """Stop individual setters from scheduling repaints."""
+        self._updates_blocked = True
+        self._pending_update = False
+
+    def unblock_updates(self):
+        """Re-enable repaints; schedule one if any setter requested it."""
+        self._updates_blocked = False
+        if self._pending_update:
+            self._pending_update = False
+            self.update()
 
     def set_view(self, zoom, pan_x, pan_y, zoom_ratio=1.0):
         self._zoom = zoom
         self._zoom_ratio = zoom_ratio
         self._pan = np.array([pan_x, pan_y], dtype=np.float32)
-        self.update()
+        self._maybe_update()
 
     def cleanup(self):
         """Release OpenGL resources while the context is still current.
@@ -390,15 +411,15 @@ class GLStitchWidget(QOpenGLWidget):
 
     def set_background(self, r, g, b):
         self._bg_color = (r / 255.0, g / 255.0, b / 255.0)
-        self.update()
+        self._maybe_update()
 
     def set_light_factor(self, light_factor):
         self._light_factor = light_factor
-        self.update()
+        self._maybe_update()
 
     def set_dark_factor(self, dark_factor):
         self._dark_factor = dark_factor
-        self.update()
+        self._maybe_update()
 
     def set_stitches(self, stitches, line_width):
         """Set the full stitch array; geometry is (re)built for all of it.
@@ -412,7 +433,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._stitches = stitches
         self._line_width = line_width
         self._needs_upload = True
-        self.update()
+        self._maybe_update()
 
     def invalidate_geometry(self):
         """Force a rebuild of the stitch quad geometry on the next paint.
@@ -421,24 +442,24 @@ class GLStitchWidget(QOpenGLWidget):
         place (e.g. rotate) so the GPU renderer uploads fresh vertices.
         """
         self._needs_upload = True
-        self.update()
+        self._maybe_update()
 
     def set_visible_count(self, visible_count):
         self._visible_count = visible_count
-        self.update()
+        self._maybe_update()
 
     def set_jumps(self, show_jumps, risky_only, jump_segments):
         self._show_jumps = show_jumps
         self._risky_jumps_only = risky_only
         self._jump_segments = jump_segments
-        self.update()
+        self._maybe_update()
 
     def set_density(self, show_density, points, values, repeated):
         self._show_density = show_density
         self._density_points = points
         self._density_values = values
         self._density_repeated = repeated
-        self.update()
+        self._maybe_update()
 
     def set_needle(self, show_needle, world_x, world_y, color, radius, width, fullscreen, pulse):
         self._show_needle = show_needle
@@ -448,15 +469,15 @@ class GLStitchWidget(QOpenGLWidget):
         self._needle_width = width
         self._needle_fullscreen = fullscreen
         self._needle_pulse = pulse
-        self.update()
+        self._maybe_update()
 
     def set_show_stitches(self, show_stitches):
         self._show_stitches = show_stitches
-        self.update()
+        self._maybe_update()
 
     def set_show_grid(self, show_grid):
         self._show_grid = show_grid
-        self.update()
+        self._maybe_update()
 
     def initializeGL(self):
         # Re-arm cleanup so a recreated GL context can be released again.

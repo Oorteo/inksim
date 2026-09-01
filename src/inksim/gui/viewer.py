@@ -794,25 +794,29 @@ class EmbroideryViewerWidget(QWidget):
         stepping, timeline scrubbing, playback, pan/zoom all go through
         here).
         """
-        self._gl_widget.set_view(self.zoom, self.pan_x, self.pan_y, self.zoom_ratio())
-        self._gl_widget.set_visible_count(self.visible_count)
-        self._gl_widget.set_dark_factor(self.dark_factor)
-        self._gl_widget.set_light_factor(self.light_factor)
-        # Thread width is adjustable via '[' / ']' (same as CPU renderers);
-        # push it here so the GL geometry is rebuilt when it changes.
-        self._gl_widget.set_stitches(self.stitches_np, self.line_width)
-        self._gl_widget.set_show_stitches(self.show_stitches)
-        self._gl_widget.set_show_grid(self.show_grid)
-        # Analysis overlays (jumps, density, needle) mirror the CPU viewer.
-        self._gl_widget.set_jumps(
-            self.show_jumps, self.risky_jumps_only, self.jump_segments
-        )
-        self._gl_widget.set_density(
-            self.show_density,
-            self.stitch_points_np,
-            self.stitch_density_np,
-            self.repeated_stitch_np,
-        )
+        self._gl_widget.block_updates()
+        try:
+            self._gl_widget.set_view(self.zoom, self.pan_x, self.pan_y, self.zoom_ratio())
+            self._gl_widget.set_visible_count(self.visible_count)
+            self._gl_widget.set_dark_factor(self.dark_factor)
+            self._gl_widget.set_light_factor(self.light_factor)
+            # Thread width is adjustable via '[' / ']' (same as CPU renderers);
+            # push it here so the GL geometry is rebuilt when it changes.
+            self._gl_widget.set_stitches(self.stitches_np, self.line_width)
+            self._gl_widget.set_show_stitches(self.show_stitches)
+            self._gl_widget.set_show_grid(self.show_grid)
+            # Analysis overlays (jumps, density, needle) mirror the CPU viewer.
+            self._gl_widget.set_jumps(
+                self.show_jumps, self.risky_jumps_only, self.jump_segments
+            )
+            self._gl_widget.set_density(
+                self.show_density,
+                self.stitch_points_np,
+                self.stitch_density_np,
+                self.repeated_stitch_np,
+            )
+        finally:
+            self._gl_widget.unblock_updates()
         if self.show_needle and self.stitches_np.shape[0] > 0:
             world_x, world_y = self._needle_world_pos()
         else:
