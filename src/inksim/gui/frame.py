@@ -36,6 +36,7 @@ from .dialogs import EmbroideryOpenDialog
 from .about import show_about
 from .config_editor import show_config_editor
 from .export_dialog import ExportPreviewDialog
+from .help import show_command_line_help
 from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
@@ -301,6 +302,11 @@ class MainWindow(QMainWindow):
         self._action(help_menu, "Help", self.viewer.show_help)
         self._action(help_menu, "Status", self.viewer.show_settings)
         self._action(help_menu, "Config", lambda: show_config_editor(self, self.config))
+        self._action(
+            help_menu,
+            "Command line options...",
+            lambda: show_command_line_help(self),
+        )
         self.trace_action = self._action(
             help_menu,
             "Trace events",

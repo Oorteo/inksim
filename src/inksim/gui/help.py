@@ -3,6 +3,10 @@
 
 """Markdown help content for the InkSim viewer."""
 
+import io
+
+from PySide6.QtWidgets import QDialog, QDialogButtonBox, QTextEdit, QVBoxLayout
+
 HELP_SECTIONS = (
     ("Mouse", """
 
@@ -70,3 +74,30 @@ def show_help(viewer):
         width=1400,
         height=650,
     )
+
+
+def show_command_line_help(parent):
+    """Show a read-only dialog with the inksim command-line help text."""
+    from ..cli import build_argument_parser
+
+    parser = build_argument_parser()
+    help_stream = io.StringIO()
+    parser.print_help(help_stream)
+    help_text = help_stream.getvalue()
+
+    dialog = QDialog(parent)
+    dialog.setWindowTitle("Command line options - InkSim")
+    dialog.resize(900, 700)
+
+    layout = QVBoxLayout(dialog)
+    text_edit = QTextEdit(dialog)
+    text_edit.setReadOnly(True)
+    text_edit.setPlainText(help_text)
+    text_edit.setLineWrapMode(QTextEdit.NoLineWrap)
+    layout.addWidget(text_edit)
+
+    buttons = QDialogButtonBox(QDialogButtonBox.Ok)
+    buttons.accepted.connect(dialog.accept)
+    layout.addWidget(buttons)
+
+    dialog.exec()

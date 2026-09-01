@@ -93,7 +93,8 @@ def _default_log_path(input_paths):
     return Path("inksim.log")
 
 
-def main():
+def build_argument_parser():
+    """Return the ArgumentParser used by the inksim command line."""
     parser = argparse.ArgumentParser(description=APP_TITLE)
     parser.add_argument(
         "-v", "--version", action="store_true",
@@ -201,6 +202,11 @@ def main():
         action="store_true",
         help="Overwrite existing batch export files without asking",
     )
+    return parser
+
+
+def main():
+    parser = build_argument_parser()
     args = parser.parse_args()
     if args.cli:
         _attach_windows_console()
