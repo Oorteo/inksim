@@ -24,7 +24,7 @@ def configure_logging(enabled, log_path):
         return None
     path = Path(log_path).expanduser()
     path.parent.mkdir(parents=True, exist_ok=True)
-    handler = logging.FileHandler(path, encoding="utf-8")
+    handler = logging.FileHandler(path, mode="w", encoding="utf-8")
     handler.setFormatter(
         logging.Formatter("%(created).6f thread=%(thread)d %(message)s")
     )
