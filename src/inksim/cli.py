@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
+import ctypes
 import json
 import os
 import signal
@@ -17,6 +18,31 @@ from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
 from .interconnect import InterconnectServer, send_command
 from .runtime import runtime_info_lines
+
+
+def _attach_windows_console():
+    """Attach (or allocate) a console for a Windows GUI process.
+
+    When the application is launched from a ``gui_scripts`` entry point on
+    Windows it does not inherit a console.  Calling this reattaches standard
+    streams so that output and input work as expected in a terminal.
+    """
+    if sys.platform != "win32":
+        return
+    if sys.stdout is not None and sys.stdout.isatty():
+        return
+
+    kernel32 = ctypes.windll.kernel32
+    ATTACH_PARENT_PROCESS = -1
+    if not kernel32.AttachConsole(ATTACH_PARENT_PROCESS):
+        kernel32.AllocConsole()
+
+    try:
+        sys.stdout = open("CONOUT$", "w", encoding="utf-8")
+        sys.stderr = open("CONOUT$", "w", encoding="utf-8")
+        sys.stdin = open("CONIN$", "r", encoding="utf-8")
+    except OSError:
+        pass
 
 
 def _parse_pair(value, name, separator):
@@ -72,6 +98,10 @@ def main():
     parser.add_argument(
         "-v", "--version", action="store_true",
         help="Show InkSim and runtime dependency information and exit",
+    )
+    parser.add_argument(
+        "--cli", action="store_true",
+        help="Attach to the parent terminal on Windows (gui_scripts entry point)",
     )
     parser.add_argument(
         "input_file",
@@ -172,6 +202,8 @@ def main():
         help="Overwrite existing batch export files without asking",
     )
     args = parser.parse_args()
+    if args.cli:
+        _attach_windows_console()
     if args.version:
         print("\n".join(runtime_info_lines()))
         return
