@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from pathlib import Path
 from time import monotonic
 
@@ -8,7 +11,6 @@ from PySide6.QtWidgets import QApplication, QLabel, QSplashScreen, QVBoxLayout, 
 from ..render import (
     render_fabric_numba,
     render_grid_numba,
-    render_realistic_numba,
     render_shaded_numba,
 )
 
@@ -27,9 +29,6 @@ class RendererWarmupThread(QThread):
         render_grid_numba(buffer, 1.0, 8.0, 8.0)
         render_shaded_numba(
             buffer, stitches, 1, 1.0, 8.0, 8.0, True, 0.4, 0.75, 0.45
-        )
-        render_realistic_numba(
-            buffer, stitches, 1, 1.0, 8.0, 8.0, 0.4, 0.75, 0.45
         )
         render_fabric_numba(buffer, 1.0)
 

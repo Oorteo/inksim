@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Rendering helpers used by the InkSim user interface."""
 
 from .density import calculate_stitch_density_numba, render_density_numba
@@ -12,12 +15,11 @@ from .registry import (
 	render_stitches,
 )
 from .stitches import (
-	render_realistic_numba,
 	render_realistic_twist_numba,
 	render_shaded_numba,
 	render_shaded_volume_numba,
 	render_shaded_volume_natural_numba,
 )
+from .stitches_gl import render_gpu_textured
 from .stitches_qt import render_simple_qt
 from .viewport import render_viewport_raster
-from .vintage_qt import render_vintage_qt

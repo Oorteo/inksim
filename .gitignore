@@ -1,9 +1,20 @@
 
+CHAT*.md
+
+tests/data/*.png
+
+
+doc_inksim
+opengl-render
 
 log/
 *.log
 __pycache__
 .vscode/
+
+# see scripts/texture/generate_variants.sh
+# - live load from src/inksim/assets/
+scripts/texture/renders/
 
 # Keep local when Python versions or dependency versions are intentionally
 # changing frequently. Track these files for reproducible CI and releases.

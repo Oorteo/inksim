@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Raster composition for the embroidery viewport."""
 
 from .density import render_density_numba
@@ -25,7 +28,7 @@ def render_viewport_raster(
     show_stitches=True,
 ):
     """Compose the non-Qt viewport layers into an RGB buffer."""
-    if active_renderer == "realistic" and zoom > 1.2:
+    if active_renderer in ("realistic_twist",) and zoom > 1.2:
         render_fabric_numba(buffer, zoom)
     if show_grid:
         render_grid_numba(buffer, zoom, pan_x, pan_y)

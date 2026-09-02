@@ -1,6 +1,4 @@
-# InkSim - interactive embroidery simulator and preview renderer.
-# Author: Tony Karnigen (initial version)
-# Copyright (c) 2026 Tony Karnigen
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import argparse
@@ -10,11 +8,12 @@ import signal
 import sys
 from pathlib import Path
 
+from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
-from .constants import APP_TITLE
-from .debug import configure_logging
+from .constants import APP_ORGANIZATION, APP_TITLE
+from .debug import configure_logging, logger
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
 from .interconnect import InterconnectServer, send_command
@@ -43,7 +42,13 @@ def _send_command_and_exit(json_text):
         command = json.loads(json_text)
     except json.JSONDecodeError as ex:
         raise SystemExit(f"invalid JSON command: {ex}")
-    app = QApplication.instance() or QApplication([])
+    logger.debug("IPC probe creating QCoreApplication")
+    app = QCoreApplication.instance()
+    if app is None:
+        app = QCoreApplication([])
+        app.setApplicationName(APP_TITLE)
+        app.setOrganizationName(APP_ORGANIZATION)
+    logger.debug("IPC probe QCoreApplication ready")
     try:
         response = send_command(command)
     except RuntimeError as ex:
@@ -69,7 +74,8 @@ def _default_log_path(input_paths):
     return Path("inksim.log")
 
 
-def main():
+def build_argument_parser():
+    """Return the ArgumentParser used by the inksim command line."""
     parser = argparse.ArgumentParser(description=APP_TITLE)
     parser.add_argument(
         "-v", "--version", action="store_true",
@@ -173,11 +179,30 @@ def main():
         action="store_true",
         help="Overwrite existing batch export files without asking",
     )
+    return parser
+
+
+def main():
+    parser = build_argument_parser()
     args = parser.parse_args()
     if args.version:
         print("\n".join(runtime_info_lines()))
         return
     if args.send_command:
+        debug_enabled = args.debug or args.log is not None or bool(
+            os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG")
+        )
+        log_path = (
+            args.log
+            or (Path(os.environ["INKSIM_LOG"])
+                if os.environ.get("INKSIM_LOG") else None)
+            or _default_log_path([])
+        )
+        if debug_enabled:
+            try:
+                configure_logging(True, log_path)
+            except OSError as ex:
+                parser.error(f"cannot create debug log {log_path}: {ex}")
         _send_command_and_exit(args.send_command)
 
     export_values = [
@@ -276,8 +301,6 @@ def main():
         Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
     first_input = input_paths[0] if input_paths else None
     document_path = args.document_path
-    if document_path is not None and not document_path.is_file():
-        parser.error(f"document path not found: {document_path}")
     frame = MainWindow(
         fullscreen=args.fullscreen,
         window_size=window_size,
@@ -302,6 +325,8 @@ def main():
                     if first_input is not None and first_input.is_file()
                     else {"command": "show", "focus": True}
                 )
+                if document_path is not None and command["command"] == open_command:
+                    command["document_path"] = str(document_path)
                 response = send_command(command)
                 frame.close()
                 if not response.get("ok"):

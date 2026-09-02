@@ -1,8 +1,11 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from types import SimpleNamespace
 
 import numpy as np
 import pystitch as emb
-from PySide6.QtCore import QPoint
+from PySide6.QtCore import QPoint, Qt
 from PySide6.QtWidgets import QTableWidget
 
 from inksim.gui.frame import MainWindow
@@ -110,6 +113,49 @@ def test_command_context_uses_current_embroidery_cursor(qtbot, monkeypatch):
     assert viewer.visible_count == 10
 
 
+def test_background_cycle_restores_configured_color(qtbot):
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+    viewer.background_color = (12, 34, 56)
+
+    viewer.toggle_display_mode("B")
+    assert viewer.background_color == (0, 0, 0)
+    assert viewer.background_cycle == 1
+
+    viewer.toggle_display_mode("B")
+    assert viewer.background_color == (255, 255, 255)
+    assert viewer.background_cycle == 2
+
+    viewer.toggle_display_mode("B")
+    assert viewer.background_color == (12, 34, 56)
+    assert viewer.background_cycle == 0
+
+
+def test_reverse_stitch_drawing_order_toggle(qtbot):
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+
+    viewer.toggle_display_mode("E")
+    assert viewer.reverse_stitch_order
+
+    viewer.toggle_display_mode("E")
+    assert not viewer.reverse_stitch_order
+
+
+def test_cancel_background_cycle_restores_configured_color(qtbot):
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+    viewer.background_color = (12, 34, 56)
+
+    viewer.toggle_display_mode("B")
+    viewer.toggle_display_mode("B")
+    viewer._cancel_background_cycle()
+
+    assert viewer.background_color == (12, 34, 56)
+    assert viewer.background_cycle == 0
+    assert viewer._background_before_cycle is None
+
+
 def test_command_dialog_table_uses_compact_columns(qtbot, monkeypatch):
     pattern = SimpleNamespace(
         stitches=[stitch(index * 10, 0, emb.STITCH) for index in range(3)],
@@ -131,6 +177,7 @@ def test_command_dialog_table_uses_compact_columns(qtbot, monkeypatch):
     assert table.item(0, 1).text() == "1"
     assert table.item(0, 2).text() == "0.00"
     assert table.item(0, 3).text() == "0.00"
+    assert table.alternatingRowColors()
     viewer.command_dialog.close()
 
 
@@ -156,6 +203,8 @@ def test_command_dock_tracks_and_controls_embroidery_cursor(qtbot, monkeypatch):
     assert window.viewer.visible_count == 3
     window.viewer.seek_to(5)
     assert table.currentRow() == 4
+    assert table.item(4, 0).text() == "> STITCH"
+    assert table.item(2, 0).text() == "STITCH"
     window.close()
 
 
@@ -178,7 +227,7 @@ def test_command_dock_selection_uses_command_index_after_events(qtbot, monkeypat
     window.show_command_panel()
     table = window.command_table
 
-    assert table.item(3, 0).text() == "STITCH"
+    assert table.item(3, 0).text() == "> STITCH"
     table.setCurrentCell(3, 0)
     assert window.viewer.visible_count == 2
     assert table.currentRow() == 3

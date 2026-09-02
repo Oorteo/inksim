@@ -1,14 +1,20 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from collections import deque
+from pathlib import Path
 from threading import Lock
 import time
 
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import (
+    QEasingCurve,
     QRunnable,
     QThreadPool,
     Qt,
     QTimer,
+    QVariantAnimation,
     Signal,
 )
 from PySide6.QtGui import (
@@ -24,9 +30,12 @@ from PySide6.QtGui import (
 )
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QApplication,
+    QColorDialog,
     QDialog,
     QGridLayout,
     QHeaderView,
+    QMenu,
     QMessageBox,
     QPushButton,
     QTableWidget,
@@ -36,6 +45,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..config import Config
 from ..constants import *
 from ..debug import is_enabled, logger
 from ..render import (
@@ -45,6 +55,8 @@ from ..render import (
     render_density_numba,
     render_viewport_raster,
 )
+from ..runtime import is_opengl33_available
+from .gl_viewer import GLStitchWidget, list_thread_textures
 from .help import show_help
 from .settings import show_settings
 
@@ -126,8 +138,13 @@ class EmbroideryViewerWidget(QWidget):
     RENDER_CACHE_PADDING = 200
     PAN_IDLE_RENDER_DELAY_MS = 150
 
-    def __init__(self, parent, progress_bar):
-        """Create an empty viewer connected to the progress bar."""
+    def __init__(self, parent, progress_bar, config=None):
+        """Create an empty viewer connected to the progress bar.
+
+        Args:
+            config: Optional shared :class:`Config` instance. When omitted, a
+                fresh instance is created (useful for tests or standalone use).
+        """
         super().__init__(parent)
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
@@ -136,6 +153,9 @@ class EmbroideryViewerWidget(QWidget):
         self.drag_start = None
         self.pan_start = (0, 0)
         self.line_width = DEFAULT_LINE_WIDTH_MM
+        self.background_color = DEFAULT_BACKGROUND_COLOR
+        self.background_cycle = 0
+        self._background_before_cycle = None
         self.dark_factor = DEFAULT_DARK_FACTOR
         self.light_factor = DEFAULT_LIGHT_FACTOR
         self.shading_step = 0.05
@@ -149,10 +169,21 @@ class EmbroideryViewerWidget(QWidget):
         self.show_density = False
         self.show_jumps = False
         self.risky_jumps_only = False
+        self.reverse_stitch_order = False
+        # OpenGL 3.3 is required for the GPU textured renderer. VirtualBox
+        # and old drivers often only support OpenGL 3.0, so cache the
+        # availability once and fall back to CPU raster renderers below.
+        self._opengl33_available = is_opengl33_available()
         self.show_needle = True
         self.needle_highlighted = False
-        self.needle_highlight_stage = 0
-        self._needle_highlight_timer = None
+        self.needle_color = DEFAULT_NEEDLE_COLOR
+        self.needle_radius = DEFAULT_NEEDLE_RADIUS
+        self.needle_width = DEFAULT_NEEDLE_WIDTH
+        self.needle_fullscreen = False
+        self.needle_pulse = 0.0
+        self._needle_pulse_anim = None
+        self.config = config if config is not None else Config()
+        self._load_view_settings()
         self.pattern = None
         self.stitches_np = np.zeros((0, 7), dtype=np.float32)
         self.bounds = (0, 0, 0, 0)
@@ -188,6 +219,7 @@ class EmbroideryViewerWidget(QWidget):
         self.pan_render_timer.timeout.connect(self._finish_pan_render)
         self._cache_valid = False
         self.progress_bar = progress_bar
+        self._gl_widget = self._create_gl_widget()
         self.mode_panel = None
         self.command_dialog = None
         self.help_dialog = None
@@ -196,15 +228,66 @@ class EmbroideryViewerWidget(QWidget):
         self._pending_fit_to_screen = False
         self.play_timer = QTimer(self)
         self.play_speed = 20
-        self.play_speed_levels = (1, 5, 10, 20, 40, 80)
-        self.play_speed_index = 2
+        self.play_speed_levels = (1, 2, 3, 5, 7, 10, 15, 22, 32, 47, 68, 98)
+        # Start at the slowest playback speed so the first impression is clear.
+        self.play_speed_index = 0
         self.play_step = self.play_speed_levels[self.play_speed_index]
         self.is_playing = False
         self.play_timer.timeout.connect(self.advance_playback)
 
+        # Event trace overlay for demos/tutorials: shows the last few
+        # keyboard/mouse interactions in a small corner panel.
+        self.trace_events_enabled = False
+        self._trace_buffer: list[tuple[float, str]] = []
+        self._trace_max_lines = 3
+
     def invalidate_cache(self):
         self._cache_valid = False
         self.update()
+
+    def set_trace_events(self, enabled: bool) -> None:
+        """Enable or disable the on-screen event trace overlay."""
+        self.trace_events_enabled = enabled
+        self._trace_buffer.clear()
+        self.update()
+
+    def _trace_event(self, text: str) -> None:
+        """Record one keyboard/mouse interaction for the trace overlay."""
+        if not self.trace_events_enabled:
+            return
+        self._trace_buffer.append((time.time(), text))
+        # Keep only the most recent entries so the panel stays readable.
+        self._trace_buffer[:] = self._trace_buffer[-self._trace_max_lines:]
+        self.update()
+
+    def _draw_trace_overlay(self, painter: QPainter) -> None:
+        """Draw the last few interactions in the top-right corner."""
+        if not self.trace_events_enabled or not self._trace_buffer:
+            return
+        margin = 8
+        line_height = 16
+        # Prefer a sans-serif font: the generic "monospace" family can map to
+        # a font with incomplete glyph coverage on some setups, producing
+        # placeholder boxes for ASCII letters.
+        font = QFont("sans-serif")
+        font.setStyleHint(QFont.SansSerif)
+        font.setPointSize(9)
+        painter.setFont(font)
+        # Use a small semi-transparent dark background so text is readable.
+        lines = [label for _, label in self._trace_buffer]
+        max_w = max(
+            painter.fontMetrics().horizontalAdvance(line) for line in lines
+        )
+        panel_w = max_w + margin * 2
+        panel_h = len(lines) * line_height + margin * 2
+        x = self.width() - panel_w - margin
+        y = margin
+        painter.fillRect(x, y, panel_w, panel_h, QColor(0, 0, 0, 160))
+        painter.setPen(QColor(255, 255, 255))
+        for i, line in enumerate(lines):
+            painter.drawText(
+                x + margin, y + margin + (i + 1) * line_height - 3, line
+            )
 
     def notify_cursor_changed(self):
         self.cursor_changed.emit()
@@ -214,11 +297,20 @@ class EmbroideryViewerWidget(QWidget):
         if self._render_buffer_size != size:
             self._render_buffer = np.empty((height, width, 3), dtype=np.uint8)
             self._render_buffer_size = size
-        self._render_buffer.fill(255)
+        self._render_buffer[:] = self.background_color
         return self._render_buffer
+
+    def _create_gl_widget(self):
+        """Create a fresh OpenGL stitch widget child."""
+        widget = GLStitchWidget(self)
+        widget.setGeometry(self.rect())
+        widget.hide()
+        widget.setFocusPolicy(Qt.NoFocus)
+        return widget
 
     def resizeEvent(self, event):
         """Invalidate the bitmap and retry deferred initial fitting."""
+        self._gl_widget.setGeometry(self.rect())
         self.invalidate_cache()
         if self._pending_fit_to_screen and self.stitches_np.shape[0] > 0:
             QTimer.singleShot(0, self._try_fit_to_screen)
@@ -270,20 +362,134 @@ class EmbroideryViewerWidget(QWidget):
         return max(50.0, viewport_extent / MAX_ZOOM_DESIGN_MM)
 
     def set_one_to_one(self):
-        """Display the design at its physical size when display PPI is known."""
+        """Display the design at its physical size using calibrated PPI."""
         if self.stitches_np.shape[0] == 0:
             return
+        self.zoom = self._pixels_per_mm()
+        self.center_needle()
+
+    def _display_key(self):
+        """Return a stable key identifying the current display."""
+        screen = self.screen() or QApplication.primaryScreen()
+        if screen is None:
+            return "default"
+        return screen.name() or "default"
+
+    def _pixels_per_mm(self):
+        """Return calibrated pixels-per-mm for the current display.
+
+        Falls back to the OS-reported physical DPI (with device-pixel-ratio
+        correction) when no calibration has been stored yet.
+        """
+        calibration = self.config.get("display_calibration", {})
+        if not isinstance(calibration, dict):
+            calibration = {}
+        # Try the specific display first, then any stored calibration (the
+        # display name can differ across sessions, so fall back to the first
+        # valid value we find).
+        specific = self._display_key()
+        keys = [specific] + [
+            k for k in calibration.keys()
+            if k != specific
+        ]
+        for key in keys:
+            stored = calibration.get(key)
+            if stored is not None:
+                try:
+                    value = float(stored)
+                    if value > 0:
+                        return value
+                except (TypeError, ValueError):
+                    pass
+        return self._estimated_pixels_per_mm()
+
+    def _estimated_pixels_per_mm(self):
+        """Estimate pixels-per-mm from the OS physical DPI and DPR."""
         try:
             screen = self.screen()
-            ppi_x = float(screen.logicalDotsPerInchX())
-            ppi_y = float(screen.logicalDotsPerInchY())
+            ppi_x = float(screen.physicalDotsPerInchX())
+            ppi_y = float(screen.physicalDotsPerInchY())
             if ppi_x <= 0 or ppi_y <= 0:
-                raise ValueError("invalid display PPI")
-            pixels_per_mm = (ppi_x + ppi_y) / (2.0 * 25.4)
+                raise ValueError("invalid physical DPI")
+            dpr = max(1.0, float(self.devicePixelRatioF()))
+            # physicalDotsPerInch is in device pixels; convert to logical
+            # pixels-per-mm (the unit self.zoom uses).
+            pixels_per_mm = (ppi_x + ppi_y) / (2.0 * 25.4) / dpr
         except (AttributeError, TypeError, ValueError):
             pixels_per_mm = 96.0 / 25.4
-        self.zoom = pixels_per_mm
-        self.center_design()
+        return pixels_per_mm
+
+    def calibrate_display(self):
+        """Open the calibration dialog and store the measured pixels-per-mm."""
+        from .dialogs import CalibrationDialog
+
+        dialog = CalibrationDialog(self, self._pixels_per_mm())
+        if dialog.exec() and dialog.pixels_per_mm() is not None:
+            self.config.merge_data({
+                "display_calibration": {
+                    self._display_key(): dialog.pixels_per_mm(),
+                    "default": dialog.pixels_per_mm(),
+                }
+            })
+            self.set_one_to_one()
+
+    def _load_view_settings(self):
+        """Load persisted view settings (background/needle) from TOML config."""
+        view = self.config.get("view", {})
+        if not isinstance(view, dict):
+            view = {}
+        bg = view.get("background_color")
+        if bg is not None:
+            try:
+                self.background_color = tuple(int(v) for v in bg)
+            except (TypeError, ValueError):
+                pass
+        nc = view.get("needle_color")
+        if nc is not None:
+            try:
+                self.needle_color = tuple(int(v) for v in nc)
+            except (TypeError, ValueError):
+                pass
+        nt = view.get("needle_radius")
+        if nt is not None:
+            try:
+                self.needle_radius = float(nt)
+            except (TypeError, ValueError):
+                pass
+        nw = view.get("needle_width")
+        if nw is not None:
+            try:
+                self.needle_width = float(nw)
+            except (TypeError, ValueError):
+                pass
+        nf = view.get("needle_fullscreen")
+        if nf is not None:
+            if isinstance(nf, bool):
+                self.needle_fullscreen = nf
+            else:
+                self.needle_fullscreen = str(nf).strip().lower() in ("true", "1", "yes", "on")
+
+    def _save_view_setting(self, key, value):
+        view = self.config.get("view", {})
+        if not isinstance(view, dict):
+            view = {}
+        # Strip the legacy "view/" prefix so TOML stores e.g. background_color
+        # under [view], not "view/background_color".
+        short_key = key.split("/")[-1]
+        view[short_key] = value
+        self.config.set("view", view)
+
+    def zoom_ratio(self):
+        """Return the zoom as a relative factor (1.0 == physical 1:1 size).
+
+        ``self.zoom`` is stored in pixels-per-mm; this converts it to a
+        human-friendly multiplier where 1.0 means the design is shown at its
+        real physical size on the current display.
+        """
+        ppm = self._pixels_per_mm()
+        if ppm <= 0:
+            return 1.0
+        return self.zoom / ppm
 
     def center_design(self):
         """Center the loaded design without changing its current zoom."""
@@ -359,11 +565,19 @@ class EmbroideryViewerWidget(QWidget):
         if self.is_playing:
             self.play_timer.stop()
             self.is_playing = False
-        else:
-            if forward is not None:
-                self._last_dir = 1 if forward else -1
-            self.play_timer.start(self.play_speed)
-            self.is_playing = True
+            return
+
+        total = self.stitches_np.shape[0]
+        if forward is not None:
+            self._last_dir = 1 if forward else -1
+        # At the start/end boundaries, automatically reverse so play always
+        # moves into the design instead of stopping immediately.
+        if self.visible_count <= 0 and self._last_dir < 0:
+            self._last_dir = 1
+        elif total > 0 and self.visible_count >= total and self._last_dir > 0:
+            self._last_dir = -1
+        self.play_timer.start(self.play_speed)
+        self.is_playing = True
 
     def adjust_playback_speed(self, direction):
         """Increase or decrease playback speed while preserving its direction."""
@@ -377,6 +591,19 @@ class EmbroideryViewerWidget(QWidget):
             return False
         self.play_speed_index = new_index
         self.play_step = self.play_speed_levels[new_index]
+        if self.progress_bar is not None:
+            self.progress_bar.update()
+        return True
+
+    def set_playback_direction(self, forward):
+        """Switch playback direction without stopping, if already playing."""
+        new_dir = 1 if forward else -1
+        if self._last_dir == new_dir:
+            return False
+        self._last_dir = new_dir
+        if self.is_playing:
+            self.play_timer.stop()
+            self.play_timer.start(self.play_speed)
         return True
 
     def jump_to_color(self, direction):
@@ -430,6 +657,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def rotate_design(self, quarter_turns):
         """Rotate the loaded design by quarter turns around its center."""
+        self._trace_event("Rotate left" if quarter_turns < 0 else "Rotate right")
         if self.stitches_np.shape[0] == 0:
             return
 
@@ -474,16 +702,40 @@ class EmbroideryViewerWidget(QWidget):
             float(rotated_corners[:, 1].max()),
         )
         self.invalidate_cache()
-        self.center_design()
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.invalidate_geometry()
+        self.center_needle()
 
     def toggle_display_mode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
-        if mode == "Z":
-            self.set_renderer(
-                self._non_realistic_renderer
-                if self.show_realistic
-                else "shaded_volume_natural"
-            )
+        if mode == "B":
+            if self.background_cycle == 0:
+                self._background_before_cycle = self.background_color
+                self.background_color = (0, 0, 0)
+                self.background_cycle = 1
+            elif self.background_cycle == 1:
+                self.background_color = (255, 255, 255)
+                self.background_cycle = 2
+            else:
+                self.background_color = self._background_before_cycle
+                self._background_before_cycle = None
+                self.background_cycle = 0
+            if self.active_renderer == "gpu_textured":
+                self._gl_widget.set_background(*self.background_color)
+        elif mode == "E":
+            self.reverse_stitch_order = not self.reverse_stitch_order
+        elif mode == "Z":
+            # Z toggles the GPU textured renderer on/off.
+            if self.active_renderer == "gpu_textured":
+                self.set_renderer(self._non_realistic_renderer)
+            elif self._opengl33_available:
+                self.set_renderer("gpu_textured")
+            else:
+                self.status_message.emit(
+                    "GPU textured renderer requires OpenGL 3.3 (not available); "
+                    "using CPU raster renderer",
+                    5000,
+                )
         elif mode == "X":
             self.show_density = not self.show_density
             if self.show_density and not self.density_ready:
@@ -503,18 +755,96 @@ class EmbroideryViewerWidget(QWidget):
         self.invalidate_cache()
         self.update()
 
+    def _cancel_background_cycle(self):
+        """Restore the configured background after a temporary B override."""
+        if self.background_cycle == 0:
+            return
+        self.background_color = self._background_before_cycle
+        self._background_before_cycle = None
+        self.background_cycle = 0
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.set_background(*self.background_color)
+        elif self._render_buffer is not None:
+            self._render_buffer[:] = self.background_color
+        self.invalidate_cache()
+        self.update()
+        self.update_mode_indicators()
+
     def set_renderer(self, renderer_key):
         """Select a registered stitch renderer and refresh the canvas."""
         if renderer_key not in RENDERERS_BY_KEY:
             raise ValueError(f"unknown stitch renderer: {renderer_key}")
-        if renderer_key not in ("realistic", "shaded_volume_natural"):
+        if renderer_key not in ("shaded_volume_natural", "gpu_textured"):
             self._non_realistic_renderer = renderer_key
         self.active_renderer = renderer_key
-        self.show_realistic = renderer_key in ("realistic", "shaded_volume_natural")
+        self.show_realistic = renderer_key in ("shaded_volume_natural",)
         self.renderer_changed.emit(renderer_key)
+        self._update_gl_widget_visibility()
         self.invalidate_cache()
         self.update()
         self.update_mode_indicators()
+
+    def _update_gl_widget_visibility(self):
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.setGeometry(self.rect())
+            self._gl_widget.set_stitches(self.stitches_np, self.line_width)
+            self._sync_gl_widget()
+            self._gl_widget.set_background(*self.background_color)
+            self._gl_widget.show()
+            self._gl_widget.raise_()
+            self._gl_widget.update()
+        else:
+            # Keep the initialized context and resources alive across renderer
+            # switches. MainWindow.closeEvent performs the final cleanup.
+            self._gl_widget.hide()
+
+    def _sync_gl_widget(self):
+        """Push current view/playback state into the GL widget.
+
+        Cheap: only updates uniforms and the drawn index range, never
+        rebuilds geometry, so it is safe to call on every paint (keyboard
+        stepping, timeline scrubbing, playback, pan/zoom all go through
+        here).
+        """
+        self._gl_widget.block_updates()
+        try:
+            self._gl_widget.set_view(self.zoom, self.pan_x, self.pan_y, self.zoom_ratio())
+            self._gl_widget.set_visible_count(self.visible_count)
+            self._gl_widget.set_dark_factor(self.dark_factor)
+            self._gl_widget.set_light_factor(self.light_factor)
+            # Thread width is adjustable via '[' / ']' (same as CPU renderers);
+            # push it here so the GL geometry is rebuilt when it changes.
+            self._gl_widget.set_stitches(self.stitches_np, self.line_width)
+            self._gl_widget.set_show_stitches(self.show_stitches)
+            self._gl_widget.set_reverse_draw_order(self.reverse_stitch_order)
+            self._gl_widget.set_show_grid(self.show_grid)
+            # Analysis overlays (jumps, density, needle) mirror the CPU viewer.
+            self._gl_widget.set_jumps(
+                self.show_jumps, self.risky_jumps_only, self.jump_segments
+            )
+            self._gl_widget.set_density(
+                self.show_density,
+                self.stitch_points_np,
+                self.stitch_density_np,
+                self.repeated_stitch_np,
+            )
+            if self.show_needle and self.stitches_np.shape[0] > 0:
+                world_x, world_y = self._needle_world_pos()
+            else:
+                world_x, world_y = 0.0, 0.0
+            self._gl_widget.set_needle(
+                self.show_needle,
+                world_x,
+                world_y,
+                self.needle_color,
+                self.needle_radius,
+                self.needle_width,
+                self.needle_fullscreen,
+                self.needle_pulse,
+            )
+        finally:
+            self._gl_widget.unblock_updates()
+            self._gl_widget.update()
 
     def select_renderer(self):
         """Open the renderer picker dialog."""
@@ -622,6 +952,8 @@ class EmbroideryViewerWidget(QWidget):
                 f"Unsupported or unrecognized embroidery file:\n{path}",
             )
             return False
+        self.play_timer.stop()
+        self.is_playing = False
         self.pattern = pattern
         segs = []
         last_x = last_y = 0
@@ -834,6 +1166,15 @@ class EmbroideryViewerWidget(QWidget):
 
     def paintEvent(self, e):
         """Render the current viewport, using the cached bitmap when possible."""
+        if self.active_renderer == "gpu_textured":
+            # OpenGL widget renders on top; keep it in sync with the current
+            # zoom/pan/stitch position and let it paint itself.
+            # Do NOT create a QPainter on the parent here: overlapping software
+            # paint on a QOpenGLWidget parent can blank the GL output.
+            if self._gl_widget.isVisible():
+                self._sync_gl_widget()
+            return
+
         self._paint_sequence += 1
         paint_sequence = self._paint_sequence
         paint_started_at = time.perf_counter()
@@ -847,8 +1188,9 @@ class EmbroideryViewerWidget(QWidget):
             )
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        painter.fillRect(self.rect(), QColor(255, 255, 255))
+        painter.fillRect(self.rect(), QColor(*self.background_color))
         if self._pending_fit_to_screen:
+            self._draw_trace_overlay(painter)
             painter.end()
             return
         dpr = max(1.0, self.devicePixelRatioF())
@@ -894,21 +1236,34 @@ class EmbroideryViewerWidget(QWidget):
             if cache_drawn:
                 self.draw_analysis_overlays(painter)
                 self.draw_needle_overlay(painter)
+                self._draw_trace_overlay(painter)
                 painter.end()
                 return
         w, h = self.width(), self.height()
         if self.stitches_np.shape[0] == 0:
+            # Dark panel so white text is always readable regardless of the
+            # user's background colour.
+            hint_color = QColor(255, 255, 255)
+            shadow_color = QColor(0, 0, 0, 160)
             painter.setFont(QFont(self.font().family(), 14))
+            metrics = painter.fontMetrics()
+            first_line = "Open an embroidery file via File > Open or pass it as a command-line argument"
+            second_line = "H = Help"
+            first_rect = metrics.boundingRect(first_line)
+            second_rect = metrics.boundingRect(second_line)
+            panel_w = max(first_rect.width(), second_rect.width()) + 24
+            panel_h = first_rect.height() + second_rect.height() + 28
+            panel_x = 10
+            panel_y = 10
+            painter.fillRect(panel_x, panel_y, panel_w, panel_h, shadow_color)
+            painter.setPen(hint_color)
+            painter.drawText(panel_x + 12, panel_y + 12 + metrics.ascent(), first_line)
             painter.drawText(
-                20,
-                20,
-                "Open an embroidery file via File > Open or pass it as a command-line argument",
+                panel_x + 12,
+                panel_y + 12 + first_rect.height() + 8 + metrics.ascent(),
+                second_line,
             )
-            painter.drawText(
-                20,
-                45,
-                "H=help, Space=play/pause, Ctrl+Arrows=color, Alt+Arrows=1",
-            )
+            self._draw_trace_overlay(painter)
             painter.end()
             return
         padding = self.RENDER_CACHE_PADDING
@@ -919,12 +1274,17 @@ class EmbroideryViewerWidget(QWidget):
         render_zoom = self.zoom * dpr
         render_pan_x = (self.pan_x + padding) * dpr
         render_pan_y = (self.pan_y + padding) * dpr
+        render_stitches = self.stitches_np
+        render_visible_count = self.visible_count
+        if self.reverse_stitch_order:
+            render_stitches = self.stitches_np[:self.visible_count][::-1].copy()
+            render_visible_count = render_stitches.shape[0]
         buf = self._get_render_buffer(render_w, render_h)
         render_viewport_raster(
             buf,
             self.active_renderer,
-            self.stitches_np,
-            self.visible_count,
+            render_stitches,
+            render_visible_count,
             self.stitch_points_np,
             self.stitch_density_np,
             self.repeated_stitch_np,
@@ -951,8 +1311,8 @@ class EmbroideryViewerWidget(QWidget):
             render_function = VECTOR_RENDERERS[self.active_renderer]
             render_function(
                 stitch_painter,
-                self.stitches_np,
-                self.visible_count,
+                render_stitches,
+                render_visible_count,
                 render_zoom,
                 render_pan_x,
                 render_pan_y,
@@ -994,6 +1354,7 @@ class EmbroideryViewerWidget(QWidget):
         painter.drawPixmap(-padding, -padding, bmp)
         self.draw_analysis_overlays(painter)
         self.draw_needle_overlay(painter)
+        self._draw_trace_overlay(painter)
         painter.end()
 
     def draw_analysis_overlays(self, painter):
@@ -1013,75 +1374,95 @@ class EmbroideryViewerWidget(QWidget):
                     int(y2 * self.zoom + self.pan_y),
                 )
 
+    def _needle_world_pos(self):
+        """Return the current needle position in world (mm) coordinates."""
+        if self.visible_count > 0:
+            stitch = self.stitches_np[self.visible_count - 1]
+            return stitch[2], stitch[3]
+        stitch = self.stitches_np[0]
+        return stitch[0], stitch[1]
+
     def draw_needle_overlay(self, painter):
         """Draw the current needle position above the cached stitch bitmap."""
         if not self.show_stitches or not self.show_needle or self.stitches_np.shape[
                 0] == 0:
             return
-        if self.visible_count > 0:
-            stitch = self.stitches_np[self.visible_count - 1]
-            world_x, world_y = stitch[2], stitch[3]
-        else:
-            stitch = self.stitches_np[0]
-            world_x, world_y = stitch[0], stitch[1]
+        world_x, world_y = self._needle_world_pos()
         needle_x = int(world_x * self.zoom + self.pan_x)
         needle_y = int(world_y * self.zoom + self.pan_y)
-        if self.needle_highlight_stage == 2:
-            arm, radius, outer_radius = 80, 24, 42
-        elif self.needle_highlight_stage == 1:
-            arm, radius, outer_radius = 48, 16, 28
+
+        # Smooth pulse: needle_pulse goes 0 -> 1 -> 0 during a highlight.
+        pulse = self.needle_pulse
+        # Arms extend with the radius; the center ring stays a fixed size.
+        if self.needle_fullscreen:
+            arm = max(self.width(), self.height())
         else:
-            arm, radius, outer_radius = 14, 6, 0
-        painter.setPen(QPen(QColor(10, 10, 10), 8 if outer_radius else 4))
+            arm = self.needle_radius + 66 * pulse
+        radius = 6 + 18 * pulse
+        outer_radius = 42 * pulse
+
+        # Cross: dark outline + needle-color fill (inverse outline).
+        w = self.needle_width
+        color = QColor(*self.needle_color)
+        painter.setPen(QPen(QColor(10, 10, 10), (8 if outer_radius else 4) * w))
         painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
         painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
         if outer_radius:
             painter.setBrush(Qt.NoBrush)
             painter.drawEllipse(needle_x - outer_radius, needle_y - outer_radius,
-                           outer_radius * 2, outer_radius * 2)
-        painter.setPen(QPen(QColor(255, 255, 255), 3 if outer_radius else 2))
+                                outer_radius * 2, outer_radius * 2)
+        painter.setPen(QPen(color, (3 if outer_radius else 2) * w))
         painter.setBrush(Qt.NoBrush)
         painter.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
         painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
         painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
-        painter.setBrush(QColor(255, 220, 40))
-        painter.setPen(QPen(QColor(10, 10, 10), 2))
+        # Center dot: needle color with dark outline (fixed size).
+        painter.setBrush(color)
+        painter.setPen(QPen(QColor(10, 10, 10), 2 * w))
         marker_radius = 5 if outer_radius else 3
         painter.drawEllipse(needle_x - marker_radius, needle_y - marker_radius,
-                       marker_radius * 2, marker_radius * 2)
+                            marker_radius * 2, marker_radius * 2)
 
     def highlight_needle(self):
         """Pulse a large needle marker after user navigation."""
         if not self.show_needle:
             return
         self.needle_highlighted = True
-        self.needle_highlight_stage = 2
-        if self._needle_highlight_timer is not None:
-            self._needle_highlight_timer.stop()
-        self._needle_highlight_timer = QTimer(self)
-        self._needle_highlight_timer.setSingleShot(True)
-        self._needle_highlight_timer.timeout.connect(
-            lambda: self._set_needle_highlight_stage(1))
-        self._needle_highlight_timer.start(200)
+        self._start_needle_pulse()
+
+    def _start_needle_pulse(self):
+        """Animate needle_pulse 0 -> 1 -> 0 smoothly."""
+        if self._needle_pulse_anim is not None:
+            self._needle_pulse_anim.stop()
+        self._needle_pulse_anim = QVariantAnimation(self)
+        self._needle_pulse_anim.setStartValue(0.0)
+        self._needle_pulse_anim.setEndValue(1.0)
+        self._needle_pulse_anim.setDuration(220)
+        self._needle_pulse_anim.setEasingCurve(QEasingCurve.OutCubic)
+        self._needle_pulse_anim.valueChanged.connect(self._on_needle_pulse)
+        self._needle_pulse_anim.finished.connect(self._finish_needle_pulse)
+        self._needle_pulse_anim.start()
+
+    def _on_needle_pulse(self, value):
+        self.needle_pulse = float(value)
         self.update()
 
-    def _set_needle_highlight_stage(self, stage):
-        """Advance the temporary needle marker through its visual pulse."""
-        if not self.show_needle:
-            return
-        self.needle_highlight_stage = stage
-        self.update()
-        if stage == 1:
-            self._needle_highlight_timer = QTimer(self)
-            self._needle_highlight_timer.setSingleShot(True)
-            self._needle_highlight_timer.timeout.connect(self.stop_needle_highlight)
-            self._needle_highlight_timer.start(300)
+    def _finish_needle_pulse(self):
+        # Animate back down to 0.
+        self._needle_pulse_anim = QVariantAnimation(self)
+        self._needle_pulse_anim.setStartValue(self.needle_pulse)
+        self._needle_pulse_anim.setEndValue(0.0)
+        self._needle_pulse_anim.setDuration(320)
+        self._needle_pulse_anim.setEasingCurve(QEasingCurve.InOutCubic)
+        self._needle_pulse_anim.valueChanged.connect(self._on_needle_pulse)
+        self._needle_pulse_anim.finished.connect(self.stop_needle_highlight)
+        self._needle_pulse_anim.start()
 
     def stop_needle_highlight(self):
         """Return the needle crosshair to its normal size."""
         self.needle_highlighted = False
-        self.needle_highlight_stage = 0
-        self._needle_highlight_timer = None
+        self.needle_pulse = 0.0
+        self._needle_pulse_anim = None
         self.update()
 
     def wheelEvent(self, e):
@@ -1089,6 +1470,7 @@ class EmbroideryViewerWidget(QWidget):
         is_step_modifier = bool(
             e.modifiers() & (Qt.AltModifier | Qt.ControlModifier))
         if is_step_modifier:
+            self._trace_event("wheel+modifier step")
             delta = e.angleDelta().y()
             if delta == 0:
                 delta = e.angleDelta().x()
@@ -1113,6 +1495,7 @@ class EmbroideryViewerWidget(QWidget):
         mx, my = position.x(), position.y()
         old = self.zoom
         self.zoom *= 1.15 if e.angleDelta().y() > 0 else 1 / 1.15
+        self._trace_event("wheel zoom" if e.angleDelta().y() > 0 else "wheel zoom out")
         self.zoom = max(self.minimum_zoom(), min(self.maximum_zoom(), self.zoom))
         scale = self.zoom / old
         self.pan_x = mx - scale * (mx - self.pan_x)
@@ -1299,12 +1682,135 @@ class EmbroideryViewerWidget(QWidget):
         current_index = self.current_command_index()
         if current_index >= 0:
             table.setCurrentCell(current_index, 1)
-            table.scrollToItem(table.item(current_index, 1), QAbstractItemView.PositionAtCenter)
+            table.scrollToItem(
+                table.item(current_index, 1), QAbstractItemView.PositionAtCenter
+            )
         dialog.move(global_position)
         dialog.show()
 
+    def contextMenuEvent(self, e):
+        """Right-click menu: background color and thread texture selection.
+
+        Background color is available for every renderer; the thread texture
+        submenu only makes sense for the GPU textured renderer.
+        """
+        self._trace_event("RMB")
+        menu = QMenu(self)
+
+        bg_action = menu.addAction("Background color…")
+        bg_action.triggered.connect(self._choose_background_color)
+
+        if self.active_renderer == "gpu_textured":
+            texture_menu = menu.addMenu("Thread texture")
+            textures = list_thread_textures()
+            active_path = self._gl_widget.texture_path()
+            if textures:
+                for label, path in textures:
+                    action = texture_menu.addAction(label)
+                    action.setCheckable(True)
+                    action.setChecked(active_path is not None and Path(path) == Path(active_path))
+                    action.setData(str(path))
+                    action.triggered.connect(
+                        lambda checked=False, p=path: self._gl_widget.set_texture_path(p)
+                    )
+            else:
+                no_tex = texture_menu.addAction("(none found)")
+                no_tex.setEnabled(False)
+
+        menu.exec(e.globalPos())
+
+    def _choose_background_color(self):
+        self._cancel_background_cycle()
+        original_color = self.background_color
+        dialog = QColorDialog(QColor(*original_color), self)
+        dialog.setWindowTitle("Background color")
+
+        def _on_preview(color):
+            if not color.isValid():
+                return
+            preview_rgb = (color.red(), color.green(), color.blue())
+            if self.active_renderer == "gpu_textured":
+                self._gl_widget.set_background(*preview_rgb)
+            else:
+                self.background_color = preview_rgb
+                if self._render_buffer is not None:
+                    self._render_buffer[:] = preview_rgb
+            self.invalidate_cache()
+            self.repaint()
+
+        dialog.currentColorChanged.connect(_on_preview)
+
+        if not dialog.exec():
+            # Cancelled: restore the original color.
+            if self.active_renderer == "gpu_textured":
+                self._gl_widget.set_background(*original_color)
+            else:
+                self.background_color = original_color
+                if self._render_buffer is not None:
+                    self._render_buffer[:] = original_color
+            self.invalidate_cache()
+            self.repaint()
+            return
+
+        chosen = dialog.selectedColor()
+        if not chosen.isValid():
+            return
+        self.background_color = (chosen.red(), chosen.green(), chosen.blue())
+        self._save_view_setting("view/background_color", list(self.background_color))
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.set_background(*self.background_color)
+        else:
+            if self._render_buffer is not None:
+                self._render_buffer[:] = self.background_color
+        self.invalidate_cache()
+        self.repaint()
+
+    def _choose_needle_color(self):
+        original_color = self.needle_color
+        dialog = QColorDialog(QColor(*original_color), self)
+        dialog.setWindowTitle("Needle color")
+
+        def _on_preview(color):
+            if color.isValid():
+                self.needle_color = (color.red(), color.green(), color.blue())
+                self.update()
+
+        dialog.currentColorChanged.connect(_on_preview)
+
+        if not dialog.exec():
+            # Cancelled: restore the original color.
+            self.needle_color = original_color
+            self.update()
+            return
+
+        chosen = dialog.selectedColor()
+        if not chosen.isValid():
+            return
+        self.needle_color = (chosen.red(), chosen.green(), chosen.blue())
+        self._save_view_setting("view/needle_color", list(self.needle_color))
+        self.update()
+
+    def _choose_needle_radius(self):
+        from PySide6.QtWidgets import QInputDialog
+
+        value, ok = QInputDialog.getDouble(
+            self,
+            "Needle radius",
+            "Cross radius in pixels (1 - 2000):",
+            self.needle_radius,
+            1.0,
+            2000.0,
+            1,
+        )
+        if ok:
+            self.needle_radius = value
+            self._save_view_setting("view/needle_radius", value)
+            self.update()
+
     def mousePressEvent(self, e):
         """Start panning from the current mouse position."""
+        if e.button() == Qt.LeftButton:
+            self._trace_event("LMB press")
         if e.button() != Qt.LeftButton:
             super().mousePressEvent(e)
             return
@@ -1315,6 +1821,8 @@ class EmbroideryViewerWidget(QWidget):
 
     def mouseReleaseEvent(self, e):
         """Stop panning and clean up any progress-bar mouse capture."""
+        if e.button() == Qt.LeftButton:
+            self._trace_event("LMB release")
         if e.button() != Qt.LeftButton:
             super().mouseReleaseEvent(e)
             return
@@ -1330,6 +1838,7 @@ class EmbroideryViewerWidget(QWidget):
     def mouseDoubleClickEvent(self, e):
         """Seek to a visible stitch when the canvas is double-clicked."""
         if e.button() == Qt.LeftButton:
+            self._trace_event("LMB double-click")
             self.drag_start = None
             self.releaseMouse()
             self.seek_to_screen_stitch(e.position().toPoint())
