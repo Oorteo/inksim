@@ -470,8 +470,21 @@ class MainWindow(QMainWindow):
     def _default_snapped_geometry(self):
         """Return a rectangle covering the right half of the primary screen."""
         screen = self.screen() or QApplication.primaryScreen()
-        geo = screen.availableGeometry()
-        return geo.adjusted(geo.width() // 2, 0, 0, 0)
+        area = screen.availableGeometry()
+        frame = self.frameGeometry()
+        client = self.geometry()
+        left = client.x() - frame.x()
+        top = client.y() - frame.y()
+        right = frame.right() - client.right()
+        bottom = frame.bottom() - client.bottom()
+        outer_x = area.x() + area.width() // 2
+        outer_width = area.right() - outer_x + 1
+        return QRect(
+            outer_x + left,
+            area.y() + top,
+            outer_width - left - right,
+            area.height() - top - bottom,
+        )
 
     def _set_snapped_geometry(self):
         """Apply the snapped layout, falling back to the right-half default."""
