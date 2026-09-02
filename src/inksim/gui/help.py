@@ -51,6 +51,8 @@ HELP_SECTIONS = (
 | N | Toggle needle |
 | J | Cycle jumps: off, all, risky only |
 | X | Toggle density map |
+| B | Cycle background: configured → black → white → configured |
+| E | Reverse visible stitch order |
 | Z | Toggle realistic rendering |
 | R | Choose stitch renderer |
 | H | Toggle help |

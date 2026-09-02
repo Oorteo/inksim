@@ -44,7 +44,13 @@ inksim design.pes --play
 - [Project overview](docs/index.md)
 - [Installation and running](docs/installation.md)
 - [User guide](docs/user-guide.md)
+- [Application interconnect](docs/interconnect.md)
 - [Contributing](CONTRIBUTING.md)
+
+Recent additions include `B` (background cycle), `E` (reverse stitch order),
+snap layout (`M`), the `>` command-row marker, and fullscreen restore of the
+previous maximized state. See the [user guide](docs/user-guide.md) for
+shortcut details.
 
 ## Background
 

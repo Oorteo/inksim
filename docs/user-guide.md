@@ -35,6 +35,7 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 | --------------------- | ---------------------------------------------------------- |
 | `C`                   | Center the design                                          |
 | `F`                   | Fit the design to the viewer                               |
+| `M`                   | Toggle snap layout / normal view                           |
 | `1`                   | Display at physical 1:1 size when display PPI is available |
 | `G`                   | Toggle the 1 cm helper grid                                |
 | `V`                   | Toggle embroidery visibility                               |
@@ -42,6 +43,8 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 | `R`                   | Choose a stitch renderer                                   |
 | `J`                   | Cycle jumps: off, all jumps, risky jumps only              |
 | `X`                   | Toggle the stitch-density map                              |
+| `B`                   | Cycle background: configured → black → white → configured  |
+| `E`                   | Reverse visible stitch order                               |
 | `N`                   | Toggle the needle marker                                   |
 | `H`                   | Show help                                                  |
 | `I`                   | Show current viewer settings                               |
