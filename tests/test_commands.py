@@ -5,7 +5,8 @@ from types import SimpleNamespace
 
 import numpy as np
 import pystitch as emb
-from PySide6.QtCore import QPoint
+from PySide6.QtCore import QPoint, Qt
+from PySide6.QtGui import QPalette
 from PySide6.QtWidgets import QTableWidget
 
 from inksim.gui.frame import MainWindow
@@ -134,6 +135,9 @@ def test_command_dialog_table_uses_compact_columns(qtbot, monkeypatch):
     assert table.item(0, 1).text() == "1"
     assert table.item(0, 2).text() == "0.00"
     assert table.item(0, 3).text() == "0.00"
+    assert table.selectionModel().selectedRows()
+    assert table.palette().color(QPalette.Inactive, QPalette.Highlight).name() == "#0f6cbd"
+    assert table.palette().color(QPalette.Inactive, QPalette.HighlightedText) == Qt.white
     viewer.command_dialog.close()
 
 

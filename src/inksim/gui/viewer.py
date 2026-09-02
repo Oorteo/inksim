@@ -24,6 +24,7 @@ from PySide6.QtGui import (
     QImage,
     QKeySequence,
     QPainter,
+    QPalette,
     QPen,
     QPixmap,
     QShortcut,
@@ -1623,11 +1624,10 @@ class EmbroideryViewerWidget(QWidget):
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setSelectionMode(QAbstractItemView.SingleSelection)
         table.setAlternatingRowColors(True)
-        table.setStyleSheet(
-            "QTableWidget::item:selected, "
-            "QTableWidget::item:selected:!active {"
-            "background-color: #0f6cbd; color: white; }"
-        )
+        palette = table.palette()
+        palette.setColor(QPalette.Inactive, QPalette.Highlight, QColor("#0f6cbd"))
+        palette.setColor(QPalette.Inactive, QPalette.HighlightedText, Qt.white)
+        table.setPalette(palette)
         for row, (label, position, stitch_index, x, y) in enumerate(self.command_timeline):
             position_text = str(position) if stitch_index >= 0 else f"after {position}"
             values = (
