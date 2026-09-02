@@ -13,6 +13,16 @@ while [[ -L "$SOURCE" ]]; do
 done
 SCRIPT_PATH="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)/$(basename "$SOURCE")"
 PROJECT_DIR="$(dirname "$SCRIPT_PATH")"
+CALLER_DIR="$PWD"
+
+ARGS=()
+for arg in "$@"; do
+    if [[ "$arg" != -* && -e "$CALLER_DIR/$arg" ]]; then
+        ARGS+=("$CALLER_DIR/$arg")
+    else
+        ARGS+=("$arg")
+    fi
+done
 
 cd "$PROJECT_DIR"
-uvr -m inksim --dbg "$@"
+uvr -m inksim --dbg "${ARGS[@]}"
