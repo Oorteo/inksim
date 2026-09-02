@@ -43,7 +43,8 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
     viewer.center_needle = lambda: None
     viewer.fit_to_screen = lambda: None
     viewer.set_one_to_one = lambda: None
-    viewer.toggle_display_mode = lambda mode: None
+    display_modes = []
+    viewer.toggle_display_mode = display_modes.append
     viewer.show_help = lambda: None
     viewer.show_settings = lambda: None
     viewer.select_renderer = lambda: None
@@ -59,6 +60,9 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
     assert shortcut_filter.handle_key_event(
         key_event(Qt.Key_Left, Qt.AltModifier))
     assert viewer.visible_count == 19
+    shortcut_filter._last_key_time = 0
+    assert shortcut_filter.handle_key_event(key_event(Qt.Key_E))
+    assert display_modes == ["E"]
 
     original_pan = (viewer.pan_x, viewer.pan_y)
     assert shortcut_filter.handle_key_event(key_event(Qt.Key_W))

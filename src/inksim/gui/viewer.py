@@ -169,6 +169,7 @@ class EmbroideryViewerWidget(QWidget):
         self.show_density = False
         self.show_jumps = False
         self.risky_jumps_only = False
+        self.reverse_stitch_order = False
         # OpenGL 3.3 is required for the GPU textured renderer. VirtualBox
         # and old drivers often only support OpenGL 3.0, so cache the
         # availability once and fall back to CPU raster renderers below.
@@ -721,6 +722,8 @@ class EmbroideryViewerWidget(QWidget):
                 self.background_cycle = 0
             if self.active_renderer == "gpu_textured":
                 self._gl_widget.set_background(*self.background_color)
+        elif mode == "E":
+            self.reverse_stitch_order = not self.reverse_stitch_order
         elif mode == "Z":
             # Z toggles the GPU textured renderer on/off.
             if self.active_renderer == "gpu_textured":
@@ -813,6 +816,7 @@ class EmbroideryViewerWidget(QWidget):
             # push it here so the GL geometry is rebuilt when it changes.
             self._gl_widget.set_stitches(self.stitches_np, self.line_width)
             self._gl_widget.set_show_stitches(self.show_stitches)
+            self._gl_widget.set_reverse_draw_order(self.reverse_stitch_order)
             self._gl_widget.set_show_grid(self.show_grid)
             # Analysis overlays (jumps, density, needle) mirror the CPU viewer.
             self._gl_widget.set_jumps(
@@ -1270,12 +1274,17 @@ class EmbroideryViewerWidget(QWidget):
         render_zoom = self.zoom * dpr
         render_pan_x = (self.pan_x + padding) * dpr
         render_pan_y = (self.pan_y + padding) * dpr
+        render_stitches = self.stitches_np
+        render_visible_count = self.visible_count
+        if self.reverse_stitch_order:
+            render_stitches = self.stitches_np[:self.visible_count][::-1].copy()
+            render_visible_count = render_stitches.shape[0]
         buf = self._get_render_buffer(render_w, render_h)
         render_viewport_raster(
             buf,
             self.active_renderer,
-            self.stitches_np,
-            self.visible_count,
+            render_stitches,
+            render_visible_count,
             self.stitch_points_np,
             self.stitch_density_np,
             self.repeated_stitch_np,
@@ -1302,8 +1311,8 @@ class EmbroideryViewerWidget(QWidget):
             render_function = VECTOR_RENDERERS[self.active_renderer]
             render_function(
                 stitch_painter,
-                self.stitches_np,
-                self.visible_count,
+                render_stitches,
+                render_visible_count,
                 render_zoom,
                 render_pan_x,
                 render_pan_y,

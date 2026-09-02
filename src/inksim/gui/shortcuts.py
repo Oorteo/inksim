@@ -107,7 +107,8 @@ class ViewerShortcutFilter(QObject):
             # Navigation/playback keys (arrows, space) are still allowed to
             # repeat so users can hold them for rapid stepping.
             if key in (
-                Qt.Key_Z, Qt.Key_X, Qt.Key_V, Qt.Key_J, Qt.Key_B, Qt.Key_N,
+                Qt.Key_Z, Qt.Key_X, Qt.Key_V, Qt.Key_J, Qt.Key_B, Qt.Key_E,
+                Qt.Key_N,
                 Qt.Key_G, Qt.Key_R, Qt.Key_F, Qt.Key_M, Qt.Key_H,
                 Qt.Key_I, Qt.Key_1, Qt.Key_F11,
             ):
@@ -287,10 +288,10 @@ class ViewerShortcutFilter(QObject):
             viewer.grid_toggled.emit(viewer.show_grid)
             changed = True
             handled = True
-        elif key in (Qt.Key_B, Qt.Key_J, Qt.Key_X, Qt.Key_V, Qt.Key_Z) and not is_alt and not is_ctrl:
+        elif key in (Qt.Key_B, Qt.Key_E, Qt.Key_J, Qt.Key_X, Qt.Key_V, Qt.Key_Z) and not is_alt and not is_ctrl:
             viewer.toggle_display_mode(
                 {
-                    Qt.Key_B: "B", Qt.Key_J: "J", Qt.Key_X: "X",
+                    Qt.Key_B: "B", Qt.Key_E: "E", Qt.Key_J: "J", Qt.Key_X: "X",
                     Qt.Key_V: "V", Qt.Key_Z: "Z",
                 }[key]
             )

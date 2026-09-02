@@ -131,6 +131,17 @@ def test_background_cycle_restores_configured_color(qtbot):
     assert viewer.background_cycle == 0
 
 
+def test_reverse_stitch_drawing_order_toggle(qtbot):
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+
+    viewer.toggle_display_mode("E")
+    assert viewer.reverse_stitch_order
+
+    viewer.toggle_display_mode("E")
+    assert not viewer.reverse_stitch_order
+
+
 def test_cancel_background_cycle_restores_configured_color(qtbot):
     viewer = EmbroideryViewerWidget(None, None)
     qtbot.addWidget(viewer)

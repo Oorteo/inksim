@@ -242,11 +242,12 @@ class ModeBar(QWidget):
         tooltips = {
             "Z": "Toggle GPU textured rendering",
             "X": "Toggle stitch density overlay",
+            "E": "Reverse stitch drawing order",
             "J": "Cycle jump display: off, all, risky only",
             "V": "Toggle stitch visibility",
             "B": "Cycle background: black, white, configured",
         }
-        for mode in ("Z", "X", "J", "V", "B"):
+        for mode in ("Z", "X", "E", "J", "V", "B"):
             button = QPushButton(mode, self)
             button.setFixedSize(32, 32)
             button.setToolTip(tooltips[mode])
@@ -322,6 +323,7 @@ class ModeBar(QWidget):
         states = {
             "Z": self.viewer.active_renderer == "gpu_textured",
             "X": self.viewer.show_density,
+            "E": self.viewer.reverse_stitch_order,
             "V": self.viewer.show_stitches,
         }
         jump_state = 0
@@ -335,6 +337,8 @@ class ModeBar(QWidget):
             )
             if mode == "J" and state == 2:
                 color = QColor(210, 145, 45)
+            elif mode == "E" and state:
+                color = QColor(190, 55, 45)
             elif mode == "B" and state == 1:
                 color = QColor(45, 45, 45)
             elif mode == "B" and state == 2:

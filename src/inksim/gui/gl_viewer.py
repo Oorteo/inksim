@@ -7,6 +7,7 @@ This widget renders stitches as textured thread quads directly to the
 screen using the same GPU pipeline as the offscreen export renderer.
 It is used when the active stitch renderer is "gpu_textured".
 """
+import ctypes
 import math
 import time
 from pathlib import Path
@@ -310,6 +311,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._light_factor = 0.45
         self._stitches = np.zeros((0, 7), dtype=np.float32)
         self._visible_count = 0
+        self._reverse_draw_order = False
         self._line_width = 0.4
         self._debug_mode = 0  # 0=shaded, 1=raw texture, 2=UV (for debugging visibility)
         self._needs_upload = True
@@ -443,6 +445,13 @@ class GLStitchWidget(QOpenGLWidget):
 
     def set_visible_count(self, visible_count):
         self._visible_count = visible_count
+        self._maybe_update()
+
+    def set_reverse_draw_order(self, enabled):
+        """Draw visible stitch index ranges in reverse Z-order when enabled."""
+        if enabled == self._reverse_draw_order:
+            return
+        self._reverse_draw_order = enabled
         self._maybe_update()
 
     def set_jumps(self, show_jumps, risky_only, jump_segments):
@@ -736,7 +745,22 @@ class GLStitchWidget(QOpenGLWidget):
                 glUniform1i(self._program.uniformLocation("u_cap_mask"), 1)
 
             self._vao.bind()
-            glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
+            if self._reverse_draw_order:
+                for stitch_index in range(count - 1, -1, -1):
+                    index_count = int(self._index_counts[stitch_index])
+                    previous_count = (
+                        int(self._index_counts[stitch_index - 1])
+                        if stitch_index > 0 else 0
+                    )
+                    if index_count > previous_count:
+                        glDrawElements(
+                            GL_TRIANGLES,
+                            index_count - previous_count,
+                            GL_UNSIGNED_INT,
+                            ctypes.c_void_p(previous_count * 4),
+                        )
+            else:
+                glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
             self._vao.release()
             if self._cap_texture is not None:
                 self._cap_texture.release()
