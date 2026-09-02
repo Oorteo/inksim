@@ -294,7 +294,6 @@ def main():
     window_size = args.size
     window_position = args.position
     app = QApplication.instance() or QApplication([])
-    app.setStyle("Fusion")
     app.setApplicationName(APP_TITLE)
     app.setApplicationDisplayName(APP_TITLE)
     app.setOrganizationName(APP_TITLE)
