@@ -63,6 +63,7 @@ class MainWindow(QMainWindow):
         self.resize(*self._default_size)
         self.setAcceptDrops(True)
         self.is_fullscreen = False
+        self._fullscreen_was_maximized = False
         self.server_mode = server_mode
         self._delete_input = delete_input
         self._allow_close = False
@@ -933,9 +934,18 @@ class MainWindow(QMainWindow):
         self.refresh_command_panel()
 
     def toggle_full_screen(self):
-        self.is_fullscreen = not self.is_fullscreen
-        self.mode_status.setVisible(not self.is_fullscreen)
-        self.showFullScreen() if self.is_fullscreen else self.showNormal()
+        if not self.is_fullscreen:
+            self._fullscreen_was_maximized = self.isMaximized()
+            self.is_fullscreen = True
+            self.mode_status.hide()
+            self.showFullScreen()
+            return
+        self.is_fullscreen = False
+        self.mode_status.show()
+        if self._fullscreen_was_maximized:
+            self.showMaximized()
+        else:
+            self.showNormal()
 
     def play(self):
         """Start simulation playback from the beginning of the design."""
