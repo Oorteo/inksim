@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Renderer selection dialog with a live representative preview."""
 
 from PySide6.QtCore import Qt

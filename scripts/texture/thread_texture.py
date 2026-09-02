@@ -1,0 +1,492 @@
+#!/usr/bin/env uvr
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+"""
+Professional PBR texture generator for embroidery thread.
+
+Outputs:
+  - diffuse / albedo map (colour)
+  - normal map (for dynamic lighting)
+  - alpha / mask map (transparency)
+  - roughness map (for PBR)
+  - height map (for displacement)
+  - combined RGBA preview (diffuse + alpha)
+"""
+import argparse
+import json
+import math
+from pathlib import Path
+
+import numpy as np
+from PIL import Image
+
+
+def generate_thread_textures(
+    width: int = 512,
+    height: int = 128,
+    twist_periods: float = 3.0,
+    strand_radius: float = 24.0,
+    helix_radius: float = 11.0,
+    num_strands: int = 3,
+    strand_spacing: float = 0.0,
+    twist_offset: float = 0.0,
+    amp: float = 2.0,
+    fiber_noise: float = 0.06,
+    blend_softness: float = 2.5,
+    color_top: tuple[int, int, int] = (180, 220, 255),
+    color_mid: tuple[int, int, int] = (100, 140, 255),
+    color_bottom: tuple[int, int, int] = (50, 60, 200),
+    highlight: tuple[int, int, int] = (220, 240, 255),
+    output_dir: str | Path = "./thread_textures",
+    prefix: str = "thread",
+) -> dict[str, Path]:
+    """Generate a complete PBR texture set for one embroidered thread style."""
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Period in pixels: choose a value that tiles exactly across the texture width.
+    # This guarantees the helix phase matches at the left and right edges.
+    # For non-integer twists we round; this is what all variants currently use.
+    period = max(1, int(round(width / twist_periods)))
+
+    # Warn loudly when twist_periods does not divide width evenly, because the
+    # rendered tile will not wrap phase-correctly at the seam.
+    expected_period = width / twist_periods
+    if abs(period - expected_period) > 1e-9:
+        exact_twists = width / period
+        # Suggest a width close to the requested one where width / twist_periods
+        # is an integer. Prefer multiples of 16 for GPU-friendly texture sizes.
+        raw_best = round(twist_periods * round(expected_period))
+        candidate_widths = [w for w in range(max(16, raw_best - 96), raw_best + 97)
+                            if w > 0 and abs(w / twist_periods - round(w / twist_periods)) < 1e-9]
+        if candidate_widths:
+            def _score(w: int) -> tuple[float, int]:
+                dist = abs(w - width)
+                align = 0 if w % 16 == 0 else 1
+                return (align, dist)
+            best_width = min(candidate_widths, key=_score)
+            suggestion = f" Try --width {best_width}."
+        else:
+            suggestion = ""
+        print(
+            f"WARNING: twist_periods={twist_periods} does not divide width={width} "
+            f"evenly. Rounded period {period}px gives {exact_twists:.3f} twists, "
+            f"so left/right edge phases differ. Tile seam will be visible.{suggestion}"
+        )
+
+    # Convert colours to float arrays.
+    c_top = np.array(color_top, dtype=float)
+    c_mid = np.array(color_mid, dtype=float)
+    c_bot = np.array(color_bottom, dtype=float)
+    c_hl = np.array(highlight, dtype=float)
+
+    # Fixed light and view directions used to bake the diffuse/specular maps.
+    light = np.array([0.3, -0.6, 0.7])
+    light = light / np.linalg.norm(light)
+    view = np.array([0.0, 0.0, 1.0])
+
+    # Initialise output channels.
+    diffuse = np.zeros((height, width, 3), dtype=np.float32)
+    normal_map = np.zeros((height, width, 3), dtype=np.float32)
+    alpha_mask = np.zeros((height, width), dtype=np.float32)
+    roughness = np.zeros((height, width), dtype=np.float32)
+    height_map = np.zeros((height, width), dtype=np.float32)
+
+    ys = np.arange(height, dtype=np.float32)
+
+    # Fibre noise for thread micro-detail.
+    if fiber_noise > 0.0:
+        np.random.seed(42)
+        noise = np.random.randn(height, width) * fiber_noise * 25.0
+        try:
+            from scipy.ndimage import gaussian_filter
+            noise = gaussian_filter(noise, sigma=0.6)
+        except ImportError:
+            # Simple fallback smoothing. Must preserve the array shape: the
+            # column loop below indexes noise[yi_int, x] for x up to
+            # width - 1, so a naive [:-1] slice (which drops a column) would
+            # crash with an out-of-bounds index.
+            for _ in range(2):
+                noise = (
+                    np.roll(noise, 1, axis=1)
+                    + noise
+                    + np.roll(noise, -1, axis=1)
+                ) / 3.0
+    else:
+        noise = np.zeros((height, width), dtype=np.float32)
+
+    for x in range(width):
+        t = 2.0 * math.pi * x / period
+        cy = height / 2.0 + amp * math.sin(t)
+
+        # Compute strand centre positions in the cross-section.
+        # strand_spacing offsets each strand radially from the helix centre so
+        # the strands do not overlap (0 = classic touching bundle, >0 = gaps).
+        strands = []
+        for i in range(num_strands):
+            angle = t + 2.0 * math.pi * i / num_strands + twist_offset
+            # Effective radius includes optional spacing between strand centres.
+            effective_radius = helix_radius + strand_spacing
+            y_pos = cy + effective_radius * math.sin(angle)
+            z_pos = effective_radius * math.cos(angle)
+            strands.append({"y": y_pos, "z": z_pos, "angle": angle})
+
+        for yi in ys:
+            yi_int = int(yi)
+
+            # Find all strands covering this pixel.
+            candidates = []
+            for s in strands:
+                dy = yi - s["y"]
+                if abs(dy) > strand_radius:
+                    continue
+
+                dz = math.sqrt(max(0.0, strand_radius * strand_radius - dy * dy))
+                z_surface = s["z"] + dz
+
+                # Surface normal of the strand cylinder.
+                ny = dy / strand_radius
+                nz = dz / strand_radius
+                normal = np.array([0.0, ny, nz], dtype=np.float32)
+
+                # Add helical twist to the normal.
+                twist_factor = helix_radius / (strand_radius * 2.0)
+                nx_correction = -math.sin(s["angle"]) * twist_factor * 0.3
+                ny_correction = math.cos(s["angle"]) * twist_factor * 0.3
+                normal = normal + np.array([nx_correction, ny_correction, 0.0], dtype=np.float32)
+                normal = normal / (np.linalg.norm(normal) + 1e-8)
+
+                # Diffuse lighting.
+                diffuse_val = 0.4 + 0.6 * np.clip(np.dot(normal, light), 0.1, 1.0)
+
+                # Specular highlight.
+                half_vec = (light + view) / (np.linalg.norm(light + view) + 1e-8)
+                spec = max(0.0, np.dot(normal, half_vec)) ** 40 * 0.8
+
+                # Surface colour based on the normal's Y component.
+                v = ny
+                if v > 0:
+                    tt = v
+                    base_color = c_mid * (1.0 - tt ** 0.8) + c_top * (tt ** 0.8)
+                else:
+                    tt = -v
+                    base_color = c_mid * (1.0 - tt) + c_bot * tt
+
+                col = base_color * diffuse_val + spec * c_hl * 0.6
+
+                # Edge anti-aliasing.
+                edge = 1.0
+                if abs(dy) > strand_radius - 1.5:
+                    edge = np.clip(strand_radius + 1.5 - abs(dy), 0.0, 1.0)
+
+                # Height value for the displacement map.
+                height_val = (dz / strand_radius) * 0.5
+
+                candidates.append(
+                    {
+                        "z": z_surface,
+                        "color": col,
+                        "normal": normal,
+                        "edge": edge,
+                        "height": height_val,
+                    }
+                )
+
+            if not candidates:
+                continue
+
+            # Soft blending between overlapping strands.
+            candidates.sort(key=lambda c: c["z"], reverse=True)
+
+            total_weight = 0.0
+            final_color = np.zeros(3, dtype=np.float32)
+            final_normal = np.zeros(3, dtype=np.float32)
+            final_edge = 0.0
+            final_height = 0.0
+
+            front = candidates[0]["z"]
+            for c in candidates:
+                z_dist = front - c["z"]
+                weight = math.exp(-z_dist / blend_softness)
+                weight *= c["edge"] ** 0.7
+
+                total_weight += weight
+                final_color += c["color"] * weight
+                final_normal += c["normal"] * weight
+                final_height += c["height"] * weight
+                final_edge = max(final_edge, c["edge"])
+
+            if total_weight > 0.0:
+                final_color /= total_weight
+                final_normal /= total_weight + 1e-8
+                final_height /= total_weight
+            else:
+                final_color = candidates[0]["color"]
+                final_normal = candidates[0]["normal"]
+                final_edge = candidates[0]["edge"]
+                final_height = candidates[0]["height"]
+
+            final_normal = final_normal / (np.linalg.norm(final_normal) + 1e-8)
+
+            # Add fibre micro-detail noise.
+            if fiber_noise > 0.0:
+                noise_val = noise[yi_int, x] * 0.5
+                final_color += noise_val
+                final_normal += np.array([noise_val * 0.01, noise_val * 0.01, 0.0], dtype=np.float32)
+                final_normal = final_normal / (np.linalg.norm(final_normal) + 1e-8)
+
+            final_color = np.clip(final_color, 0.0, 255.0)
+
+            # Write the output channels.
+            diffuse[yi_int, x, :] = final_color / 255.0
+            normal_map[yi_int, x, :] = np.clip(final_normal * 0.5 + 0.5, 0.0, 1.0)
+            alpha_mask[yi_int, x] = final_edge
+            roughness_val = 0.3 + 0.3 * (1.0 - final_edge) + fiber_noise * 0.5
+            roughness[yi_int, x] = np.clip(roughness_val, 0.05, 0.8)
+            height_map[yi_int, x] = np.clip(final_height + 0.5, 0.0, 1.0)
+
+    # --- Stitch end-cap (semicircle) mask ---------------------------------
+    # Stitches must not end in a straight vertical cut: the thread end is
+    # trimmed to a rounded arc. The renderer will extend every stitch beyond
+    # its needle points and then cut it with this mask, so the mask has to
+    # match THIS variant's actual thread silhouette -- every variant has a
+    # different bundle width (helix swing + strand thickness + centre wiggle).
+    # The radius is therefore measured from the generated alpha mask instead
+    # of being hard-coded: it is the farthest covered pixel row from the
+    # canvas centre, plus a 1.5 px safety margin for the anti-aliased edge.
+    # White = keep the stitch (inside the arc), black = discard. One image is
+    # enough: it is applied as-is at one stitch end and rotated 180 degrees at
+    # the other.
+    covered_rows = np.where((alpha_mask > 0.05).any(axis=1))[0]
+    # Centre on the true middle of the pixel grid, (height-1)/2 -- NOT
+    # height/2. The 180-degree rotation used at the opposite stitch end
+    # mirrors rows around (height-1)/2, so only a mask centred there is
+    # exactly self-symmetric and the cap + rotated-cap seam matches
+    # pixel-perfectly (a height/2 centre leaves a half-pixel band of 4
+    # mismatched rows at the join).
+    cap_center_y = (height - 1) / 2.0
+    if covered_rows.size:
+        cap_radius_px = max(
+            cap_center_y - covered_rows[0], covered_rows[-1] - cap_center_y
+        ) + 1.5
+    else:
+        cap_radius_px = height / 2.0
+    # The thread always fits inside the canvas, so the arc half-width cannot
+    # exceed half the canvas height (where it would no longer be an arc).
+    cap_radius_px = min(height / 2.0, cap_radius_px)
+
+    # Mask canvas: cap_w x height pixels. The flat side of the semicircle sits
+    # on the RIGHT edge column (= the needle point, where the ribbon is cut
+    # today); the arc bulges to the left, beyond the needle point. Pixel
+    # scale is identical to the main texture canvas (square pixels), so
+    # sampling the cap mask with V spanning the full ribbon width renders a
+    # truly circular arc. cap_radius_px / height = the overshoot, in
+    # ribbon-height units, that the stitch must be extended by on each side
+    # before masking. One extra fully-black column sits beyond the arc tip so
+    # the mask's left edge clamps to exactly 0.
+    cap_width = int(math.ceil(cap_radius_px)) + 1
+    cap_xs = np.arange(cap_width, dtype=np.float32)[None, :]
+    cap_ys = np.arange(height, dtype=np.float32)[:, None]
+    cap_dist = np.sqrt(
+        (cap_xs - (cap_width - 1.0)) ** 2 + (cap_ys - cap_center_y) ** 2
+    )
+    cap_mask = np.clip(cap_radius_px - cap_dist, 0.0, 1.0)
+
+    # Save textures.
+    outputs: dict[str, Path] = {}
+
+    diffuse_img = Image.fromarray((diffuse * 255.0).astype(np.uint8), "RGB")
+    diffuse_path = output_dir / f"{prefix}_diffuse.png"
+    diffuse_img.save(diffuse_path)
+    outputs["diffuse"] = diffuse_path
+
+    normal_img = Image.fromarray((normal_map * 255.0).astype(np.uint8), "RGB")
+    normal_path = output_dir / f"{prefix}_normal.png"
+    normal_img.save(normal_path)
+    outputs["normal"] = normal_path
+
+    alpha_img = Image.fromarray((alpha_mask * 255.0).astype(np.uint8), "L")
+    alpha_path = output_dir / f"{prefix}_mask.png"
+    alpha_img.save(alpha_path)
+    outputs["mask"] = alpha_path
+
+    # Combined normal (RGB) + real alpha mask (A) -- this is the map the GL
+    # renderer actually samples, so the surrounding background is transparent
+    # instead of opaque (a plain "_normal.png" has no alpha channel).
+    normal_mask = np.dstack([normal_map, alpha_mask])
+    normal_mask_img = Image.fromarray((normal_mask * 255.0).astype(np.uint8), "RGBA")
+    normal_mask_path = output_dir / f"{prefix}_normal_mask.png"
+    normal_mask_img.save(normal_mask_path)
+    outputs["normal_mask"] = normal_mask_path
+
+    roughness_img = Image.fromarray((roughness * 255.0).astype(np.uint8), "L")
+    roughness_path = output_dir / f"{prefix}_roughness.png"
+    roughness_img.save(roughness_path)
+    outputs["roughness"] = roughness_path
+
+    height_img = Image.fromarray((height_map * 255.0).astype(np.uint8), "L")
+    height_path = output_dir / f"{prefix}_height.png"
+    height_img.save(height_path)
+    outputs["height"] = height_path
+
+    # RGBA preview is stored premultiplied so that image viewers and the
+    # GL pipeline agree: edge pixels with low alpha also carry low colour,
+    # eliminating the white fringe that makes the thread look dilated.
+    rgba = np.dstack([diffuse * alpha_mask[:, :, None], alpha_mask])
+    rgba_img = Image.fromarray((rgba * 255.0).astype(np.uint8), "RGBA")
+    rgba_path = output_dir / f"{prefix}_rgba.png"
+    rgba_img.save(rgba_path)
+    outputs["rgba"] = rgba_path
+
+    cap_img = Image.fromarray((cap_mask * 255.0).astype(np.uint8), "L")
+    cap_path = output_dir / f"{prefix}_cap_mask.png"
+    cap_img.save(cap_path)
+    outputs["cap_mask"] = cap_path
+
+    # Fraction of the texture height actually covered by the thread (alpha >
+    # 0.05). This lets the renderer normalise the ribbon width so different
+    # variants all render at the same physical thickness regardless of how
+    # much of the texture canvas their strands fill.
+    coverage = (alpha_mask > 0.05).sum(axis=0) / height
+    width_fraction = float(np.mean(coverage))
+
+    manifest = {
+        "name": prefix,
+        "width": width,
+        "height": height,
+        "twist_periods": twist_periods,
+        "strand_radius": strand_radius,
+        "helix_radius": helix_radius,
+        "num_strands": num_strands,
+        "strand_spacing": strand_spacing,
+        "blend_softness": blend_softness,
+        "fiber_noise": fiber_noise,
+        "width_fraction": width_fraction,
+        "cap_radius_px": cap_radius_px,
+        # The stitch has to be extended by this many ribbon-heights on each
+        # side so the semicircular cap mask fully covers the rounded end
+        # (overshoot_model_units = cap_radius_fraction * ribbon_height).
+        "cap_radius_fraction": cap_radius_px / height,
+    }
+    manifest_path = output_dir / f"{prefix}_manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2))
+    outputs["manifest"] = manifest_path
+
+    print(f"Generated {len(outputs)} textures in {output_dir}:")
+    for name, path in outputs.items():
+        print(f"   - {name}: {path.name}")
+    print(f"   width_fraction = {width_fraction:.3f}")
+
+    return outputs
+
+
+def generate_tile_preview(
+    map_path: str | Path,
+    output_path: str | Path | None = None,
+    repeats: int = 2,
+) -> Path:
+    """Concatenate a texture map horizontally to expose tiling seams.
+
+    Draws vertical red guide lines on every seam so the join is easy to see.
+    """
+    map_path = Path(map_path)
+    img = Image.open(map_path)
+    width, height = img.size
+    out_width = width * repeats
+    out = Image.new(img.mode, (out_width, height))
+    for i in range(repeats):
+        out.paste(img, (i * width, 0))
+
+    # Draw short red seam markers at the top of each tile boundary so the
+    # join remains fully visible below the marker.
+    red = (255, 0, 0) if img.mode == "RGB" else (255, 0, 0, 255)
+    seam_xs = [i * width for i in range(1, repeats)]
+    marker_height = min(8, height // 8)
+    for x in seam_xs:
+        for y in range(0, marker_height, 2):
+            out.putpixel((x, y), red)
+
+    if output_path is None:
+        output_path = map_path.parent / f"{map_path.stem}_tile_preview{map_path.suffix}"
+    else:
+        output_path = Path(output_path)
+    out.save(output_path)
+    return output_path
+
+
+def _parse_color(value: str) -> tuple[int, int, int]:
+    """Parse an R,G,B colour string."""
+    return tuple(int(v.strip()) for v in value.split(","))
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Generate PBR textures for embroidered thread"
+    )
+    parser.add_argument("--width", type=int, default=512,
+                        help="Texture width in pixels (along the stitch direction)")
+    parser.add_argument("--height", type=int, default=128,
+                        help="Texture height in pixels (across the thread width)")
+    parser.add_argument("--twist-periods", "--twist-period", type=float, default=3.0,
+                        dest="twist_periods",
+                        help="Number of full twist periods across the texture width (tiling-safe)")
+    parser.add_argument("--strands", type=int, default=3,
+                        help="Number of twisted strands (2 or 3)")
+    parser.add_argument("--strand-radius", type=float, default=24.0,
+                        help="Strand radius in pixels")
+    parser.add_argument("--helix-radius", type=float, default=11.0,
+                        help="Helix radius in pixels")
+    parser.add_argument("--strand-spacing", type=float, default=0.0,
+                        help="Extra radial spacing between strand centres (0 = touching, >0 = gaps)")
+    parser.add_argument("--blend-softness", type=float, default=2.5,
+                        help="Strand blending softness (1-4)")
+    parser.add_argument("--fiber-noise", type=float, default=0.06,
+                        help="Fibre texture intensity (0-0.15)")
+    parser.add_argument("--output-dir", type=Path, default="./thread_textures",
+                        help="Output directory")
+    parser.add_argument("--prefix", type=str, default="thread",
+                        help="Output filename prefix")
+    parser.add_argument("--tile-preview", action="store_true",
+                        help="Also write *_tile_preview.png for normal_mask "
+                             "and diffuse so tiling seams are visible immediately")
+
+    parser.add_argument("--color-top", type=str, default="180,220,255",
+                        help="Top (lit) colour as R,G,B")
+    parser.add_argument("--color-mid", type=str, default="100,140,255",
+                        help="Mid colour as R,G,B")
+    parser.add_argument("--color-bottom", type=str, default="50,60,200",
+                        help="Bottom (shadow) colour as R,G,B")
+
+    args = parser.parse_args()
+
+    color_top = _parse_color(args.color_top)
+    color_mid = _parse_color(args.color_mid)
+    color_bottom = _parse_color(args.color_bottom)
+
+    outputs = generate_thread_textures(
+        width=args.width,
+        height=args.height,
+        twist_periods=args.twist_periods,
+        strand_radius=args.strand_radius,
+        helix_radius=args.helix_radius,
+        num_strands=args.strands,
+        strand_spacing=args.strand_spacing,
+        blend_softness=args.blend_softness,
+        fiber_noise=args.fiber_noise,
+        color_top=color_top,
+        color_mid=color_mid,
+        color_bottom=color_bottom,
+        output_dir=args.output_dir,
+        prefix=args.prefix,
+    )
+
+    if args.tile_preview:
+        for name in ("normal_mask", "diffuse", "rgba"):
+            if name in outputs:
+                preview_path = generate_tile_preview(outputs[name], repeats=2)
+                print(f"   - tile_preview ({name}): {preview_path.name}")
+
+
+if __name__ == "__main__":
+    main()

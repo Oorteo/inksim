@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from PySide6.QtCore import QPoint, Qt
 from PySide6.QtGui import QKeyEvent
 from PySide6.QtGui import QWheelEvent
@@ -27,6 +30,9 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
             "zoom": 1.0,
             "shading_step": 0.05,
             "progress_bar": None,
+            "trace_events_enabled": False,
+            "_trace_buffer": [],
+            "_trace_event": lambda self, text: None,
             "invalidate_cache": lambda self: None,
             "update": lambda self: None,
             "update_mode_indicators": lambda self: None,
@@ -37,7 +43,8 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
     viewer.center_needle = lambda: None
     viewer.fit_to_screen = lambda: None
     viewer.set_one_to_one = lambda: None
-    viewer.toggle_display_mode = lambda mode: None
+    display_modes = []
+    viewer.toggle_display_mode = display_modes.append
     viewer.show_help = lambda: None
     viewer.show_settings = lambda: None
     viewer.select_renderer = lambda: None
@@ -53,6 +60,9 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
     assert shortcut_filter.handle_key_event(
         key_event(Qt.Key_Left, Qt.AltModifier))
     assert viewer.visible_count == 19
+    shortcut_filter._last_key_time = 0
+    assert shortcut_filter.handle_key_event(key_event(Qt.Key_E))
+    assert display_modes == ["E"]
 
     original_pan = (viewer.pan_x, viewer.pan_y)
     assert shortcut_filter.handle_key_event(key_event(Qt.Key_W))
@@ -127,14 +137,14 @@ def test_minimum_zoom_keeps_small_design_visible(qtbot):
     assert viewer.minimum_zoom() == 50.0
 
 
-def test_maximum_zoom_is_based_on_ten_millimeter_viewport_span(qtbot):
+def test_maximum_zoom_is_based_on_five_millimeter_viewport_span(qtbot):
     from inksim.gui.viewer import EmbroideryViewerWidget
 
     viewer = EmbroideryViewerWidget(None, None)
     qtbot.addWidget(viewer)
     viewer.resize(1200, 800)
 
-    assert viewer.maximum_zoom() == 120.0
+    assert viewer.maximum_zoom() == 240.0
 
 
 def test_c_shortcut_centers_current_needle(qtbot):

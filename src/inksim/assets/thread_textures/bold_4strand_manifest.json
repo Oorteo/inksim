@@ -1,0 +1,15 @@
+{
+  "name": "bold_4strand",
+  "width": 528,
+  "height": 128,
+  "twist_periods": 3.0,
+  "strand_radius": 20.0,
+  "helix_radius": 10.0,
+  "num_strands": 4,
+  "strand_spacing": 0.0,
+  "blend_softness": 2.0,
+  "fiber_noise": 0.06,
+  "width_fraction": 0.453125,
+  "cap_radius_px": 34.0,
+  "cap_radius_fraction": 0.265625
+}

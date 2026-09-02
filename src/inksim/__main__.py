@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Package entry point for ``python -m inksim``.
 
 Running ``cli.py`` directly does not give it a package context, so its

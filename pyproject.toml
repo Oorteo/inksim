@@ -1,8 +1,8 @@
 [project]
 name = "inksim"
-version = "0.2.5"
+version = "0.3.1"
 description = "Interactive embroidery simulator"
-authors = [{ name = "Tony Karnigen" }]
+authors = [{ name = "InkSim contributors" }]
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.12"
@@ -11,23 +11,36 @@ dependencies = [
     "numpy",
     "pystitch",
     "pyside6-essentials",
+    # "pyside6-addons",
+    "pyopengl",
+    "tomli-w",
+    "filelock",
 ]
 
 [dependency-groups]
 dev = [
+    "pillow",
     "pytest",
     "pytest-qt",
+    "scipy",
 ]
 
 
 [project.urls]
-Homepage = "https://github.com/karnigen/inksim"
-Repository = "https://github.com/karnigen/inksim.git"
-Issues = "https://github.com/karnigen/inksim/issues"
+Homepage = "https://github.com/oorteo/inksim"
+Repository = "https://github.com/oorteo/inksim.git"
+Issues = "https://github.com/oorteo/inksim/issues"
 
 
 [project.scripts]
 inksim = "inksim.cli:main"
+
+[project.gui-scripts]
+inksim-gui = "inksim.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
 
 [build-system]
 requires = ["uv_build>=0.12.2,<0.13.0"]

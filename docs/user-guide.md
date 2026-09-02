@@ -35,6 +35,7 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 | --------------------- | ---------------------------------------------------------- |
 | `C`                   | Center the design                                          |
 | `F`                   | Fit the design to the viewer                               |
+| `M`                   | Toggle snap layout / normal view                           |
 | `1`                   | Display at physical 1:1 size when display PPI is available |
 | `G`                   | Toggle the 1 cm helper grid                                |
 | `V`                   | Toggle embroidery visibility                               |
@@ -42,6 +43,8 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 | `R`                   | Choose a stitch renderer                                   |
 | `J`                   | Cycle jumps: off, all jumps, risky jumps only              |
 | `X`                   | Toggle the stitch-density map                              |
+| `B`                   | Cycle background: configured → black → white → configured  |
+| `E`                   | Reverse visible stitch order                               |
 | `N`                   | Toggle the needle marker                                   |
 | `H`                   | Show help                                                  |
 | `I`                   | Show current viewer settings                               |
@@ -110,6 +113,10 @@ RGB buffer used by the PySide6 viewer.
 The realistic renderer adds a procedural fabric background, cylindrical thread
 shading, highlights, shadows, and anti-aliased edges. It is intentionally
 approximate and can exaggerate sewing direction or dark gaps in satin areas.
+
+The GPU Textured renderer rasterizes stitches as continuous textured ribbon
+quads using a normal-map thread texture and Blinn-Phong lighting, giving a
+twisted-thread look with selectable thread textures.
 The density map is prepared in the background after a design is loaded in the
 main viewer and cached until a new design is loaded. The open-dialog preview
 does not calculate density while moving between files, and command-line PNG

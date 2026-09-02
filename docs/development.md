@@ -19,10 +19,11 @@ The current viewer intentionally uses a portable CPU rendering path:
 Numba/NumPy raster buffer -> QImage -> Qt QPainter/QPixmap
 ```
 
-The raster renderers (`shaded`, `shaded_volume`, `realistic`, and related
-modes) calculate pixels in Numba on the CPU. The `simple` and `vintage`
-renderers draw with Qt's regular raster `QPainter`. The viewer does not use
-`QGraphicsView`, `QOpenGLWidget`, OpenGL, Vulkan, or Qt Quick.
+The raster renderers (`shaded`, `shaded_volume`, `realistic_twist`, and
+related modes) calculate pixels in Numba on the CPU. The `simple` renderer
+draws with Qt's regular raster `QPainter`. The `gpu_textured` renderer
+rasterizes textured thread quads via OpenGL. The viewer does not use
+`QGraphicsView`, Vulkan, or Qt Quick.
 
 Do not add `QOpenGLWidget` merely as a viewport optimization. It would not
 accelerate the existing Numba/NumPy calculations and would add backend and
@@ -54,12 +55,8 @@ later runs of the same environment. These cache files are platform-, Python-,
 NumPy-, Numba-, and CPU-specific; they are generated after installation and
 must not be committed or bundled as universal distribution artifacts.
 
-Do not add explicit Numba signatures just to improve speed. Explicit
-signatures can eagerly compile at import time and can restrict valid NumPy
-dtypes or memory layouts. Consider them only after profiling proves that
-specialization overhead is a bottleneck and the supported input layouts are
-documented and stable. Do not enable `parallel=True` or `fastmath=True` on
-the stitch renderers without measuring both performance and visual changes.
+Do not enable `parallel=True` or `fastmath=True` on the per-stitch renderers
+without measuring both performance and visual changes.
 
 ## Runtime Diagnostics
 

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
 # Create tar.gz archives from the last commit or tracked workspace files.
 set -euo pipefail
 

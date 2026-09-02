@@ -12,10 +12,11 @@ Install the command-line application into uv's tool environment:
 uv tool install inksim
 ```
 
-The command is then available as `inksim`:
+The console and GUI commands are then available as `inksim` and `inksim-gui`:
 
 ```bash
 inksim design.pes
+inksim-gui design.pes
 ```
 
 If the command is not found, let `uv` add its tool directory to the shell
@@ -53,7 +54,7 @@ The activation command differs on Windows:
 Clone the repository and synchronize its development environment:
 
 ```bash
-git clone https://github.com/karnigen/inksim.git
+git clone https://github.com/oorteo/inksim.git
 cd inksim
 uv sync
 ```
@@ -72,6 +73,19 @@ Linux, and Windows when run from Git Bash or WSL:
 ./scripts/dev/010_setup_uv_venv.sh
 ```
 
+## Command-line and GUI modes
+
+InkSim can be used in two ways:
+
+- From an **already open terminal** — the `inksim` command keeps output and
+  errors in that terminal. With no export option it opens the graphical window.
+- As a **GUI application** — the `inksim-gui` command opens the same graphical
+  application without a console window.
+
+These command names and roles are the same on Windows, macOS, and Linux. On
+Windows, use `inksim-gui` for shortcuts, file associations, and `Win+R` so no
+console window is created.
+
 ## Running options
 
 Start playback, fullscreen mode, or an explicitly sized window with:
@@ -87,3 +101,18 @@ Pass a directory, including `.`, to open the file dialog in that directory:
 ```bash
 inksim .
 ```
+
+The same GUI options work with `inksim-gui`; terminal output is intentionally
+available through `inksim`.
+
+## GPU textured renderer and OpenGL
+
+The _GPU Textured_ stitch renderer (`Z` shortcut or **GPU textured render**
+in the File menu) requires **OpenGL 3.3** with a Core Profile context. It is
+used automatically only when OpenGL 3.3 is available.
+
+On systems with only OpenGL 3.0 or older — common in virtual machines such as
+VirtualBox — InkSim falls back to the CPU-based _Shaded Volume_ raster
+renderer. The fallback happens automatically on startup and when the GPU
+renderer is selected, so the application remains usable; only the GPU
+renderer is unavailable.

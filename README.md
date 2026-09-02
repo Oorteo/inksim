@@ -2,8 +2,13 @@
 
 InkSim is a standalone interactive embroidery simulator and preview renderer.
 It opens embroidery files, displays their stitch sequence, and lets the user
-inspect or replay the design before production. It is implemented as a small
-Python/PySide6/Numba application with its own standalone user interface.
+inspect or replay the design before production.
+
+The viewer now includes an **OpenGL textured renderer** that draws stitches as
+realistic ribbon quads with normal-mapped thread and Blinn-Phong lighting. Press
+`Z` in the viewer to toggle between the CPU and GPU renderers. The GPU renderer
+requires **OpenGL 3.3**; older systems and virtual machines fall back to the
+CPU raster renderer automatically.
 
 <p align="center">
   <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview" width="350">
@@ -25,6 +30,9 @@ Then run it directly from your shell:
 inksim design.pes
 ```
 
+Use `inksim-gui design.pes` to launch without a console window. The command
+names behave consistently on Windows, macOS, and Linux.
+
 See [installation and running](docs/installation.md) for `pip`/virtual-environment
 installation and developer setup.
 
@@ -38,9 +46,9 @@ inksim design.pes --play
 
 ## Documentation
 
-- [Project overview](docs/index.md)
 - [Installation and running](docs/installation.md)
 - [User guide](docs/user-guide.md)
+- [Application interconnect](docs/interconnect.md)
 - [Contributing](CONTRIBUTING.md)
 
 ## Background

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
 # Install the locally built wheel as an isolated uv tool; no PyPI upload occurs.
 # Runs on macOS, Linux, or Windows via Bash (Git Bash/WSL).
 

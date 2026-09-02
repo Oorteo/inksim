@@ -1,6 +1,13 @@
-from pathlib import Path
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
+from pathlib import Path
+import PySide6
 import pytest
+
+# Some PySide6 builds omit __version__, which breaks pytest-qt's report header.
+if not hasattr(PySide6, "__version__"):
+    PySide6.__version__ = "unknown"
 
 
 @pytest.fixture

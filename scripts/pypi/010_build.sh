@@ -1,4 +1,7 @@
 #!/usr/bin/bash
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
 # Prepare the README for PyPI and build the project package.
 set -euo pipefail
 
@@ -78,8 +81,8 @@ from urllib.parse import quote
 readme_path = Path(sys.argv[1])
 docs_ref = quote(sys.argv[2], safe="/")
 text = readme_path.read_text()
-github_root = f"https://github.com/karnigen/inksim/blob/{docs_ref}/"
-raw_root = f"https://raw.githubusercontent.com/karnigen/inksim/{docs_ref}/"
+github_root = f"https://github.com/oorteo/inksim/blob/{docs_ref}/"
+raw_root = f"https://raw.githubusercontent.com/oorteo/inksim/{docs_ref}/"
 scheme_pattern = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 image_suffixes = (".gif", ".jpeg", ".jpg", ".png", ".svg", ".webp")
 

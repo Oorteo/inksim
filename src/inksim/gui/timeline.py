@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from PySide6.QtCore import QPoint, QRect, Qt, Signal
 from PySide6.QtGui import QColor, QPainter, QPen
 from PySide6.QtWidgets import QWidget
@@ -158,9 +161,14 @@ class TimelineWidget(QWidget):
             dx = float(last_stitch[2] - last_stitch[0])
             dy = float(last_stitch[3] - last_stitch[1])
             last_step_mm = (dx * dx + dy * dy) ** 0.5
-            txt_left = f"{visible}/{total} [{last_step_mm:.2f} mm]"
+        stitches_per_minute = int(round(
+            self.viewer.play_step / self.viewer.play_speed * 60000
+        )) if self.viewer.play_speed > 0 else 0
+        if visible > 0:
+            txt_left = (f"{visible}/{total} | {stitches_per_minute} stitches/min "
+                        f"| [{last_step_mm:.2f} mm]")
         else:
-            txt_left = f"{visible}/{total}"
+            txt_left = f"{visible}/{total} | {stitches_per_minute} stitches/min"
         commands = self.viewer.command_events.get(visible, ())
         if commands:
             txt_left += f" | {' | '.join(commands)}"
