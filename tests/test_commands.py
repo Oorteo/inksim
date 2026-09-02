@@ -6,6 +6,7 @@ from types import SimpleNamespace
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import QPoint, Qt
+from PySide6.QtGui import QPalette
 from PySide6.QtWidgets import QTableWidget
 
 from inksim.gui.frame import MainWindow
@@ -136,6 +137,10 @@ def test_command_dialog_table_uses_compact_columns(qtbot, monkeypatch):
     assert table.item(0, 3).text() == "0.00"
     assert table.selectionModel().selectedRows()
     assert not table.alternatingRowColors()
+    for group in (QPalette.Active, QPalette.Inactive):
+        assert table.palette().color(group, QPalette.Highlight).name() == "#0f6cbd"
+        assert table.palette().color(group, QPalette.HighlightedText) == Qt.white
+    assert "QTableWidget::item:selected" in table.styleSheet()
     viewer.command_dialog.close()
 
 
