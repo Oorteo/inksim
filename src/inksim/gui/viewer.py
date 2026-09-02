@@ -11,6 +11,7 @@ import pystitch as emb
 from PySide6.QtCore import (
     QEasingCurve,
     QRunnable,
+    QSignalBlocker,
     QThreadPool,
     Qt,
     QTimer,
@@ -288,6 +289,23 @@ class EmbroideryViewerWidget(QWidget):
 
     def notify_cursor_changed(self):
         self.cursor_changed.emit()
+        self._sync_command_dialog_cursor()
+
+    def _sync_command_dialog_cursor(self):
+        """Select the command-dialog row matching the embroidery cursor."""
+        if self.command_dialog is None:
+            return
+        table = self.command_dialog.findChild(QTableWidget)
+        current_index = self.current_command_index()
+        if table is None or current_index < 0:
+            return
+        with QSignalBlocker(table):
+            table.setCurrentCell(current_index, 1)
+            table.selectRow(current_index)
+            table.scrollToItem(
+                table.item(current_index, 1),
+                QAbstractItemView.PositionAtCenter,
+            )
 
     def _get_render_buffer(self, width, height):
         size = (width, height)
@@ -1581,14 +1599,7 @@ class EmbroideryViewerWidget(QWidget):
     def show_command_context_dialog(self, global_position):
         """Show a movable command list around the current embroidery cursor."""
         if self.command_dialog is not None:
-            table = self.command_dialog.findChild(QTableWidget)
-            current_index = self.current_command_index()
-            if table is not None and current_index >= 0:
-                table.setCurrentCell(current_index, 1)
-                table.scrollToItem(
-                    table.item(current_index, 1),
-                    QAbstractItemView.PositionAtCenter,
-                )
+            self._sync_command_dialog_cursor()
             self.command_dialog.raise_()
             self.command_dialog.activateWindow()
             return
@@ -1644,10 +1655,7 @@ class EmbroideryViewerWidget(QWidget):
             event.accept()
         dialog.closeEvent = on_close
         self.command_dialog = dialog
-        current_index = self.current_command_index()
-        if current_index >= 0:
-            table.setCurrentCell(current_index, 1)
-            table.scrollToItem(table.item(current_index, 1), QAbstractItemView.PositionAtCenter)
+        self._sync_command_dialog_cursor()
         dialog.move(global_position)
         dialog.show()
 
