@@ -24,7 +24,6 @@ from PySide6.QtGui import (
     QImage,
     QKeySequence,
     QPainter,
-    QPalette,
     QPen,
     QPixmap,
     QShortcut,
@@ -1623,11 +1622,7 @@ class EmbroideryViewerWidget(QWidget):
         table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setSelectionMode(QAbstractItemView.SingleSelection)
-        table.setAlternatingRowColors(True)
-        palette = table.palette()
-        palette.setColor(QPalette.Inactive, QPalette.Highlight, QColor("#0f6cbd"))
-        palette.setColor(QPalette.Inactive, QPalette.HighlightedText, Qt.white)
-        table.setPalette(palette)
+        table.setAlternatingRowColors(False)
         for row, (label, position, stitch_index, x, y) in enumerate(self.command_timeline):
             position_text = str(position) if stitch_index >= 0 else f"after {position}"
             values = (
@@ -1658,6 +1653,9 @@ class EmbroideryViewerWidget(QWidget):
         self._sync_command_dialog_cursor()
         dialog.move(global_position)
         dialog.show()
+        dialog.raise_()
+        dialog.activateWindow()
+        QTimer.singleShot(0, table.setFocus)
 
     def contextMenuEvent(self, e):
         """Right-click menu: background color and thread texture selection.
