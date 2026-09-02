@@ -113,6 +113,38 @@ def test_command_context_uses_current_embroidery_cursor(qtbot, monkeypatch):
     assert viewer.visible_count == 10
 
 
+def test_background_cycle_restores_configured_color(qtbot):
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+    viewer.background_color = (12, 34, 56)
+
+    viewer.toggle_display_mode("B")
+    assert viewer.background_color == (0, 0, 0)
+    assert viewer.background_cycle == 1
+
+    viewer.toggle_display_mode("B")
+    assert viewer.background_color == (255, 255, 255)
+    assert viewer.background_cycle == 2
+
+    viewer.toggle_display_mode("B")
+    assert viewer.background_color == (12, 34, 56)
+    assert viewer.background_cycle == 0
+
+
+def test_cancel_background_cycle_restores_configured_color(qtbot):
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+    viewer.background_color = (12, 34, 56)
+
+    viewer.toggle_display_mode("B")
+    viewer.toggle_display_mode("B")
+    viewer._cancel_background_cycle()
+
+    assert viewer.background_color == (12, 34, 56)
+    assert viewer.background_cycle == 0
+    assert viewer._background_before_cycle is None
+
+
 def test_command_dialog_table_uses_compact_columns(qtbot, monkeypatch):
     pattern = SimpleNamespace(
         stitches=[stitch(index * 10, 0, emb.STITCH) for index in range(3)],

@@ -244,8 +244,9 @@ class ModeBar(QWidget):
             "X": "Toggle stitch density overlay",
             "J": "Cycle jump display: off, all, risky only",
             "V": "Toggle stitch visibility",
+            "B": "Cycle background: black, white, configured",
         }
-        for mode in ("Z", "X", "J", "V"):
+        for mode in ("Z", "X", "J", "V", "B"):
             button = QPushButton(mode, self)
             button.setFixedSize(32, 32)
             button.setToolTip(tooltips[mode])
@@ -327,14 +328,25 @@ class ModeBar(QWidget):
         if self.viewer.show_jumps:
             jump_state = 2 if self.viewer.risky_jumps_only else 1
         for mode, button in self.buttons.items():
-            state = jump_state if mode == "J" else int(states[mode])
+            state = (
+                jump_state if mode == "J"
+                else self.viewer.background_cycle if mode == "B"
+                else int(states[mode])
+            )
             if mode == "J" and state == 2:
                 color = QColor(210, 145, 45)
+            elif mode == "B" and state == 1:
+                color = QColor(45, 45, 45)
+            elif mode == "B" and state == 2:
+                color = QColor(245, 245, 245)
             elif state:
                 color = QColor(75, 140, 90)
             else:
                 color = QColor(225, 225, 225)
-            foreground = "white" if state else "rgb(45, 45, 45)"
+            foreground = (
+                "white" if (mode == "B" and state == 1) or (state and mode != "B")
+                else "rgb(45, 45, 45)"
+            )
             button.setStyleSheet(
                 f"background: {color.name()}; color: {foreground};"
             )

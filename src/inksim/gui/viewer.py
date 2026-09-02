@@ -154,6 +154,8 @@ class EmbroideryViewerWidget(QWidget):
         self.pan_start = (0, 0)
         self.line_width = DEFAULT_LINE_WIDTH_MM
         self.background_color = DEFAULT_BACKGROUND_COLOR
+        self.background_cycle = 0
+        self._background_before_cycle = None
         self.dark_factor = DEFAULT_DARK_FACTOR
         self.light_factor = DEFAULT_LIGHT_FACTOR
         self.shading_step = 0.05
@@ -705,7 +707,21 @@ class EmbroideryViewerWidget(QWidget):
 
     def toggle_display_mode(self, mode):
         """Toggle a mode or advance the three-state JUMP mode."""
-        if mode == "Z":
+        if mode == "B":
+            if self.background_cycle == 0:
+                self._background_before_cycle = self.background_color
+                self.background_color = (0, 0, 0)
+                self.background_cycle = 1
+            elif self.background_cycle == 1:
+                self.background_color = (255, 255, 255)
+                self.background_cycle = 2
+            else:
+                self.background_color = self._background_before_cycle
+                self._background_before_cycle = None
+                self.background_cycle = 0
+            if self.active_renderer == "gpu_textured":
+                self._gl_widget.set_background(*self.background_color)
+        elif mode == "Z":
             # Z toggles the GPU textured renderer on/off.
             if self.active_renderer == "gpu_textured":
                 self.set_renderer(self._non_realistic_renderer)
@@ -735,6 +751,21 @@ class EmbroideryViewerWidget(QWidget):
         self.update_mode_indicators()
         self.invalidate_cache()
         self.update()
+
+    def _cancel_background_cycle(self):
+        """Restore the configured background after a temporary B override."""
+        if self.background_cycle == 0:
+            return
+        self.background_color = self._background_before_cycle
+        self._background_before_cycle = None
+        self.background_cycle = 0
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.set_background(*self.background_color)
+        elif self._render_buffer is not None:
+            self._render_buffer[:] = self.background_color
+        self.invalidate_cache()
+        self.update()
+        self.update_mode_indicators()
 
     def set_renderer(self, renderer_key):
         """Select a registered stitch renderer and refresh the canvas."""
@@ -1680,6 +1711,7 @@ class EmbroideryViewerWidget(QWidget):
         menu.exec(e.globalPos())
 
     def _choose_background_color(self):
+        self._cancel_background_cycle()
         original_color = self.background_color
         dialog = QColorDialog(QColor(*original_color), self)
         dialog.setWindowTitle("Background color")
