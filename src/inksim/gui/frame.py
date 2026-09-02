@@ -396,6 +396,8 @@ class MainWindow(QMainWindow):
                         table.setItem(row, column, item)
                     item.setText(value)
                     item.setData(Qt.UserRole, row)
+                    if column == 0:
+                        item.setData(Qt.UserRole + 1, label)
                     item.setForeground(color)
         self._sync_command_panel_cursor()
 
@@ -419,6 +421,12 @@ class MainWindow(QMainWindow):
         if command_index < 0:
             return
         with QSignalBlocker(self.command_table):
+            for row in range(self.command_table.rowCount()):
+                item = self.command_table.item(row, 0)
+                if item is None:
+                    continue
+                label = item.data(Qt.UserRole + 1)
+                item.setText(f"> {label}" if row == command_index else label)
             self.command_table.setCurrentCell(command_index, 0)
             self.command_table.scrollToItem(
                 self.command_table.item(command_index, 0),

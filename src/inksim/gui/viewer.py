@@ -11,7 +11,6 @@ import pystitch as emb
 from PySide6.QtCore import (
     QEasingCurve,
     QRunnable,
-    QSignalBlocker,
     QThreadPool,
     Qt,
     QTimer,
@@ -24,7 +23,6 @@ from PySide6.QtGui import (
     QImage,
     QKeySequence,
     QPainter,
-    QPalette,
     QPen,
     QPixmap,
     QShortcut,
@@ -290,23 +288,6 @@ class EmbroideryViewerWidget(QWidget):
 
     def notify_cursor_changed(self):
         self.cursor_changed.emit()
-        self._sync_command_dialog_cursor()
-
-    def _sync_command_dialog_cursor(self):
-        """Select the command-dialog row matching the embroidery cursor."""
-        if self.command_dialog is None:
-            return
-        table = self.command_dialog.findChild(QTableWidget)
-        current_index = self.current_command_index()
-        if table is None or current_index < 0:
-            return
-        with QSignalBlocker(table):
-            table.setCurrentCell(current_index, 1)
-            table.selectRow(current_index)
-            table.scrollToItem(
-                table.item(current_index, 1),
-                QAbstractItemView.PositionAtCenter,
-            )
 
     def _get_render_buffer(self, width, height):
         size = (width, height)
@@ -1600,7 +1581,14 @@ class EmbroideryViewerWidget(QWidget):
     def show_command_context_dialog(self, global_position):
         """Show a movable command list around the current embroidery cursor."""
         if self.command_dialog is not None:
-            self._sync_command_dialog_cursor()
+            table = self.command_dialog.findChild(QTableWidget)
+            current_index = self.current_command_index()
+            if table is not None and current_index >= 0:
+                table.setCurrentCell(current_index, 1)
+                table.scrollToItem(
+                    table.item(current_index, 1),
+                    QAbstractItemView.PositionAtCenter,
+                )
             self.command_dialog.raise_()
             self.command_dialog.activateWindow()
             return
@@ -1623,16 +1611,7 @@ class EmbroideryViewerWidget(QWidget):
         table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setSelectionMode(QAbstractItemView.SingleSelection)
-        table.setAlternatingRowColors(False)
-        palette = table.palette()
-        for group in (QPalette.Active, QPalette.Inactive):
-            palette.setColor(group, QPalette.Highlight, QColor("#0f6cbd"))
-            palette.setColor(group, QPalette.HighlightedText, Qt.white)
-        table.setPalette(palette)
-        table.setStyleSheet(
-            "QTableWidget::item:selected {"
-            "background-color: #0f6cbd; color: #ffffff; }"
-        )
+        table.setAlternatingRowColors(True)
         for row, (label, position, stitch_index, x, y) in enumerate(self.command_timeline):
             position_text = str(position) if stitch_index >= 0 else f"after {position}"
             values = (
@@ -1660,12 +1639,14 @@ class EmbroideryViewerWidget(QWidget):
             event.accept()
         dialog.closeEvent = on_close
         self.command_dialog = dialog
-        self._sync_command_dialog_cursor()
+        current_index = self.current_command_index()
+        if current_index >= 0:
+            table.setCurrentCell(current_index, 1)
+            table.scrollToItem(
+                table.item(current_index, 1), QAbstractItemView.PositionAtCenter
+            )
         dialog.move(global_position)
         dialog.show()
-        dialog.raise_()
-        dialog.activateWindow()
-        QTimer.singleShot(0, table.setFocus)
 
     def contextMenuEvent(self, e):
         """Right-click menu: background color and thread texture selection.

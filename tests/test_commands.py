@@ -6,7 +6,6 @@ from types import SimpleNamespace
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import QPoint, Qt
-from PySide6.QtGui import QPalette
 from PySide6.QtWidgets import QTableWidget
 
 from inksim.gui.frame import MainWindow
@@ -135,12 +134,7 @@ def test_command_dialog_table_uses_compact_columns(qtbot, monkeypatch):
     assert table.item(0, 1).text() == "1"
     assert table.item(0, 2).text() == "0.00"
     assert table.item(0, 3).text() == "0.00"
-    assert table.selectionModel().selectedRows()
-    assert not table.alternatingRowColors()
-    for group in (QPalette.Active, QPalette.Inactive):
-        assert table.palette().color(group, QPalette.Highlight).name() == "#0f6cbd"
-        assert table.palette().color(group, QPalette.HighlightedText) == Qt.white
-    assert "QTableWidget::item:selected" in table.styleSheet()
+    assert table.alternatingRowColors()
     viewer.command_dialog.close()
 
 
@@ -166,6 +160,8 @@ def test_command_dock_tracks_and_controls_embroidery_cursor(qtbot, monkeypatch):
     assert window.viewer.visible_count == 3
     window.viewer.seek_to(5)
     assert table.currentRow() == 4
+    assert table.item(4, 0).text() == "> STITCH"
+    assert table.item(2, 0).text() == "STITCH"
     window.close()
 
 
@@ -188,7 +184,7 @@ def test_command_dock_selection_uses_command_index_after_events(qtbot, monkeypat
     window.show_command_panel()
     table = window.command_table
 
-    assert table.item(3, 0).text() == "STITCH"
+    assert table.item(3, 0).text() == "> STITCH"
     table.setCurrentCell(3, 0)
     assert window.viewer.visible_count == 2
     assert table.currentRow() == 3
