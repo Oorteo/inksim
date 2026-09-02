@@ -1610,6 +1610,11 @@ class EmbroideryViewerWidget(QWidget):
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setSelectionMode(QAbstractItemView.SingleSelection)
         table.setAlternatingRowColors(True)
+        table.setStyleSheet(
+            "QTableWidget::item:selected, "
+            "QTableWidget::item:selected:!active {"
+            "background-color: #0f6cbd; color: white; }"
+        )
         for row, (label, position, stitch_index, x, y) in enumerate(self.command_timeline):
             position_text = str(position) if stitch_index >= 0 else f"after {position}"
             values = (
