@@ -917,6 +917,8 @@ class EmbroideryViewerWidget(QWidget):
                 f"Unsupported or unrecognized embroidery file:\n{path}",
             )
             return False
+        self.play_timer.stop()
+        self.is_playing = False
         self.pattern = pattern
         segs = []
         last_x = last_y = 0
