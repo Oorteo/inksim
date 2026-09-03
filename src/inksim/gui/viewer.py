@@ -130,6 +130,7 @@ class EmbroideryViewerWidget(QWidget):
     """
 
     grid_toggled = Signal(bool)
+    show_needle_toggled = Signal(bool)
     renderer_changed = Signal(str)
     fullscreen_requested = Signal()
     status_message = Signal(str, int)

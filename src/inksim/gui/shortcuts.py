@@ -303,6 +303,7 @@ class ViewerShortcutFilter(QObject):
             handled = True
         elif key == Qt.Key_N and not is_alt and not is_ctrl:
             viewer.show_needle = not viewer.show_needle
+            viewer.show_needle_toggled.emit(viewer.show_needle)
             if viewer.show_needle:
                 viewer.highlight_needle()
             else:

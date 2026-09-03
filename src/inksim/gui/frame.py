@@ -258,9 +258,7 @@ class MainWindow(QMainWindow):
         self._action(export_menu, "Simple PNG ...", self.export_print_png)
         self._action(file_menu, "Center needle", self.viewer.center_needle, "C")
         self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen, "F")
-        self._action(file_menu, "Actual size (1:1)", self.viewer.set_one_to_one, "1")
         self._action(file_menu, "Calibrate display size...", self.viewer.calibrate_display)
-        self._action(file_menu, "Fullscreen", self.toggle_full_screen, "F11")
         self.grid_action = self._action(file_menu, "Show measurement grid", self.toggle_grid, "G", True)
         self.grid_action.setChecked(True)
         self.realistic_action = self._action(file_menu, "GPU textured render", self.toggle_realistic, "Z", True)
@@ -279,6 +277,9 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
         self._action(file_menu, "Quit", self.request_quit, "Ctrl+Q")
         view_menu = self.menuBar().addMenu("&View")
+        self._action(view_menu, "Actual size (1:1)", self.viewer.set_one_to_one, "1")
+        self._action(view_menu, "Fullscreen", self.toggle_full_screen, "F11")
+        view_menu.addSeparator()
         self.command_panel_action = self._action(
             view_menu,
             "Command list",
@@ -292,6 +293,21 @@ class MainWindow(QMainWindow):
             "Show/hide all",
             self.toggle_show_all,
             "Ctrl+A",
+        )
+        self.needle_action = self._action(
+            view_menu,
+            "Show needle",
+            self.toggle_needle,
+            "N",
+            True,
+        )
+        self.needle_action.setChecked(True)
+        self.viewer.show_needle_toggled.connect(self.needle_action.setChecked)
+        self.layout_action = self._action(
+            view_menu,
+            "Snap window layout",
+            self.toggle_window_layout,
+            "M",
         )
         playback = self.menuBar().addMenu("&Playback")
         self._action(
@@ -672,6 +688,14 @@ class MainWindow(QMainWindow):
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
+
+    def toggle_needle(self, checked):
+        self.viewer.show_needle = checked
+        if checked:
+            self.viewer.highlight_needle()
+        else:
+            self.viewer.stop_needle_highlight()
+        self.viewer.update()
 
     def open_file_dialog(self):
         dialog = EmbroideryOpenDialog(
