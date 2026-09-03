@@ -309,6 +309,12 @@ class MainWindow(QMainWindow):
             self.toggle_window_layout,
             "M",
         )
+        self._action(
+            view_menu,
+            "Cycle background",
+            lambda checked=False: self.viewer.toggle_display_mode("B"),
+            "B",
+        )
         playback = self.menuBar().addMenu("&Playback")
         self._action(
             playback,
