@@ -261,7 +261,7 @@ class MainWindow(QMainWindow):
         self._action(file_menu, "Fullscreen", self.toggle_full_screen, "F11")
         self.grid_action = self._action(file_menu, "Show measurement grid", self.toggle_grid, "G", True)
         self.grid_action.setChecked(True)
-        self.realistic_action = self._action(file_menu, "GPU textured render", self.toggle_realistic, checkable=True)
+        self.realistic_action = self._action(file_menu, "GPU textured render", self.toggle_realistic, "Z", True)
         self.viewer.grid_toggled.connect(self.grid_action.setChecked)
         self.viewer.renderer_changed.connect(
             lambda renderer: self.realistic_action.setChecked(
@@ -270,7 +270,7 @@ class MainWindow(QMainWindow):
         )
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
         self.viewer.status_message.connect(self.statusBar().showMessage)
-        self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer)
+        self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer, "R")
         file_menu.addSeparator()
         self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.rotate_design(-1))
         self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))
@@ -292,11 +292,35 @@ class MainWindow(QMainWindow):
             lambda checked=False: self.viewer.toggle_auto_play(),
             "Space",
         )
-        self._action(playback, "Next color", lambda: (self.viewer.jump_to_color(1), self._refresh_after_color_jump()))
-        self._action(playback, "Prev color", lambda: (self.viewer.jump_to_color(-1), self._refresh_after_color_jump()))
+        playback.addSeparator()
+        self._action(
+            playback,
+            "Prev color",
+            lambda: (self.viewer.jump_to_color(-1), self._refresh_after_color_jump()),
+            "Ctrl+Left",
+        )
+        self._action(
+            playback,
+            "Next color",
+            lambda: (self.viewer.jump_to_color(1), self._refresh_after_color_jump()),
+            "Ctrl+Right",
+        )
+        playback.addSeparator()
+        self._action(
+            playback,
+            "Prev command",
+            lambda: (self.viewer.jump_to_command(-1), self._refresh_after_color_jump()),
+            "Shift+Left",
+        )
+        self._action(
+            playback,
+            "Next command",
+            lambda: (self.viewer.jump_to_command(1), self._refresh_after_color_jump()),
+            "Shift+Right",
+        )
         help_menu = self.menuBar().addMenu("&Help")
-        self._action(help_menu, "Help", self.viewer.show_help)
-        self._action(help_menu, "Status", self.viewer.show_settings)
+        self._action(help_menu, "Help", self.viewer.show_help, "H")
+        self._action(help_menu, "Status", self.viewer.show_settings, "I")
         self._action(help_menu, "Config", lambda: show_config_editor(self, self.config))
         self._action(
             help_menu,
