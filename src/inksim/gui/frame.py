@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (
 
 from ..config import Config
 from ..constants import *
+from ..debug import logger
 from ..formats import (
     extension_from_output_filter,
     get_supported_output_filter,
@@ -285,6 +286,12 @@ class MainWindow(QMainWindow):
             True,
         )
         self.command_panel_action.setChecked(False)
+        self._action(
+            view_menu,
+            "Show/hide all",
+            self.toggle_show_all,
+            "Ctrl+A",
+        )
         playback = self.menuBar().addMenu("&Playback")
         self._action(
             playback,
@@ -642,6 +649,28 @@ class MainWindow(QMainWindow):
             self.realistic_action.setChecked(False)
             return
         self.viewer.toggle_display_mode("Z")
+
+    def toggle_show_all(self, checked=False):
+        total = self.viewer.stitches_np.shape[0]
+        if self.viewer.visible_count < total:
+            self.viewer.visible_count = total
+            self.viewer._last_dir = 1
+        else:
+            self.viewer.visible_count = 0
+            self.viewer._last_dir = -1
+        logger.debug(
+            "Show/hide all toggled visible_count to %s/%s",
+            self.viewer.visible_count, total,
+        )
+        self.viewer.notify_cursor_changed()
+        self.viewer.invalidate_cache()
+        self.viewer.update()
+        self.viewer.update_mode_indicators()
+        if self.viewer.progress_bar:
+            self.viewer.progress_bar.update()
+        if self.viewer.is_playing:
+            self.viewer.play_timer.stop()
+            self.viewer.is_playing = False
 
     def open_file_dialog(self):
         dialog = EmbroideryOpenDialog(
