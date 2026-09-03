@@ -33,6 +33,7 @@ from ..formats import (
     get_supported_output_formats,
 )
 from ..render import render_export_image
+from ..runtime import _sanitize_path
 from .dialogs import EmbroideryOpenDialog
 from .about import show_about
 from .config_editor import show_config_editor
@@ -885,7 +886,7 @@ class MainWindow(QMainWindow):
         selected_path = dialog.selected_path()
         if selected_path is not None:
             self.last_directory = str(selected_path.parent)
-            self.statusBar().showMessage(f"Exported {selected_path}", 3000)
+            self.statusBar().showMessage(f"Exported {_sanitize_path(selected_path)}", 3000)
 
     def export_print_png(self):
         if not self._can_export_image():
