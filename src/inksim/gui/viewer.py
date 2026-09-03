@@ -160,7 +160,6 @@ class EmbroideryViewerWidget(QWidget):
         self.light_factor = DEFAULT_LIGHT_FACTOR
         self.shading_step = 0.05
         self.visible_count = 0
-        self.step_size = 10
         self.show_grid = True
         self.show_stitches = True
         self.show_realistic = False
@@ -930,9 +929,6 @@ class EmbroideryViewerWidget(QWidget):
 
     def show_settings(self):
         show_settings(self)
-
-    def set_step_size(self, size):
-        self.step_size = max(1, size)
 
     def load_design(self, path, fit_to_screen=True, precompute_density=True, autoplay=False):
         """Load an embroidery file into renderable stitch segments."""

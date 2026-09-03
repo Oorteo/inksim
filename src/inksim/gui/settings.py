@@ -73,7 +73,7 @@ def settings_sections(viewer):
 
 | Property | Value |
 | --- | --- |
-| Step size | {viewer.step_size} |
+| Step size | 10 / 100 |
 | Interval | {viewer.play_speed} ms |
 | Timer step | {viewer.play_step} |
 | Direction | {"forward" if viewer._last_dir > 0 else "backward"} |

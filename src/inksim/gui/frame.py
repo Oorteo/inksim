@@ -286,12 +286,6 @@ class MainWindow(QMainWindow):
         )
         self.command_panel_action.setChecked(False)
         playback = self.menuBar().addMenu("&Playback")
-        for step in (1, 10, 50, 100, 500):
-            action = self._action(playback, f"Step {step}", lambda checked=False, s=step: self.viewer.set_step_size(s))
-            action.setCheckable(True)
-            if step == 10:
-                action.setChecked(True)
-        playback.addSeparator()
         self._action(
             playback,
             "Play/Pause",

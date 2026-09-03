@@ -132,7 +132,7 @@ class ViewerShortcutFilter(QObject):
         changed = False
         cursor_changed = False
         highlight_needle = False
-        step = 1 if is_alt else viewer.step_size
+        step = 1 if is_alt else 10
 
         if is_shift and not is_alt and not is_ctrl and key in (
             Qt.Key_Right,
