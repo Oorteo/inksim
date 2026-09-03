@@ -12,6 +12,17 @@ from pathlib import Path
 from .constants import APP_TITLE
 
 
+def _sanitize_path(path):
+    """Return a path string with the user's home directory replaced by '~'."""
+    path = Path(path).resolve()
+    home = Path.home()
+    try:
+        relative = path.relative_to(home)
+        return f"~/{relative.as_posix()}"
+    except ValueError:
+        return str(path)
+
+
 def is_opengl33_available():
     """Return True if an OpenGL 3.3 Core Profile context can be created.
 
@@ -87,11 +98,11 @@ def runtime_info_lines():
     return (
         f"{APP_TITLE} {package_version}",
         f"mode: {'development/editable' if is_development else 'installed package'}",
-        f"package: {package_path}",
+        f"package: {_sanitize_path(package_path)}",
         f"python: {platform.python_version()}",
-        f"executable: {Path(sys.executable).resolve()}",
-        f"environment: {environment}",
-        f"cwd: {Path.cwd()}",
+        f"executable: {_sanitize_path(Path(sys.executable).resolve())}",
+        f"environment: {_sanitize_path(environment) if environment != 'none' else environment}",
+        f"cwd: {_sanitize_path(Path.cwd())}",
         f"PySide6: {pyside_version}",
         f"Qt: {qVersion()}",
         f"NumPy: {numpy.__version__}",
