@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import QColor, QFont, QPainter, QPen, QSurfaceFormat
+from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QSurfaceFormat
 from PySide6.QtOpenGL import (
     QOpenGLBuffer,
     QOpenGLFramebufferObject,
@@ -805,8 +805,11 @@ class GLStitchWidget(QOpenGLWidget):
             or not getattr(viewer, "_trace_buffer", None)
         ):
             return
-        margin = 8
+        margin = 10
+        padding = 10
         line_height = 16
+        min_width = 160
+        corner_radius = 8
         font = QFont("sans-serif")
         font.setStyleHint(QFont.SansSerif)
         font.setPointSize(9)
@@ -814,17 +817,19 @@ class GLStitchWidget(QOpenGLWidget):
         painter.setFont(font)
         lines = [label for _, label in viewer._trace_buffer]
         max_w = max(painter.fontMetrics().horizontalAdvance(line) for line in lines)
-        panel_w = max_w + margin * 2
-        panel_h = len(lines) * line_height + margin * 2
+        panel_w = max(min_width, max_w + padding * 2)
+        panel_h = getattr(viewer, "_trace_max_lines", 3) * line_height + padding * 2
         x = self.width() - panel_w - margin
         y = margin
         # Keep the panel fully opaque: writing translucent pixels to the GL
         # widget's FBO reduces the widget alpha and makes the whole embroidery
         # preview look blended/foggy when Qt composites it over the parent.
-        painter.fillRect(x, y, panel_w, panel_h, QColor(32, 32, 32))
-        painter.setPen(QColor(255, 255, 255))
+        path = QPainterPath()
+        path.addRoundedRect(x, y, panel_w, panel_h, corner_radius, corner_radius)
+        painter.fillPath(path, QColor(48, 48, 48))
+        painter.setPen(QColor(255, 255, 255, 230))
         for i, line in enumerate(lines):
-            painter.drawText(x + margin, y + margin + (i + 1) * line_height - 3, line)
+            painter.drawText(x + padding, y + padding + (i + 1) * line_height - 3, line)
         painter.end()
 
     def _draw_grid_gl(self, w, h):
