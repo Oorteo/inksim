@@ -204,6 +204,11 @@ class EmbroideryOpenDialog(QDialog):
             "Normal preview" if is_real else "Real preview"
         )
 
+    def done(self, result):
+        """Release the preview's GL objects before the dialog is hidden."""
+        self.preview._gl_widget.cleanup()
+        super().done(result)
+
     def refresh_files(self):
         if not self.current_directory.is_dir():
             return

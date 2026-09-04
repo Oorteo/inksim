@@ -332,7 +332,9 @@ class EmbroideryViewerWidget(QWidget):
         # Retry shortly until layout stabilizes.
         if w < 120 or h < 120:
             if retries > 0:
-                QTimer.singleShot(30, lambda: self._try_fit_to_screen(retries - 1))
+                QTimer.singleShot(
+                    30, self, lambda: self._try_fit_to_screen(retries - 1)
+                )
             return
         self._pending_fit_to_screen = False
         self.fit_to_screen()

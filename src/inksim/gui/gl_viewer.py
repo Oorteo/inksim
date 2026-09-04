@@ -14,7 +14,15 @@ from pathlib import Path
 
 import numpy as np
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPen, QSurfaceFormat
+from PySide6.QtGui import (
+    QColor,
+    QFont,
+    QOpenGLContext,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QSurfaceFormat,
+)
 from PySide6.QtOpenGL import (
     QOpenGLBuffer,
     QOpenGLFramebufferObject,
@@ -375,38 +383,44 @@ class GLStitchWidget(QOpenGLWidget):
             return
         if not self.context().isValid():
             return
+        context = self.context()
         self.makeCurrent()
-        if self._texture is not None:
-            self._texture.destroy()
-            self._texture = None
-        if self._cap_texture is not None:
-            self._cap_texture.destroy()
-            self._cap_texture = None
-        if self._ibo is not None:
-            self._ibo.destroy()
-            self._ibo = None
-        if self._vbo is not None:
-            self._vbo.destroy()
-            self._vbo = None
-        if self._vao is not None:
-            self._vao.destroy()
-            self._vao = None
-        if self._program is not None:
-            self._program.removeAllShaders()
-            self._program = None
-        if self._density_vbo is not None:
-            self._density_vbo.destroy()
-            self._density_vbo = None
-        if self._density_vao is not None:
-            self._density_vao.destroy()
-            self._density_vao = None
-        if self._density_program is not None:
-            self._density_program.removeAllShaders()
-            self._density_program = None
-        if self._grid_program is not None:
-            self._grid_program.removeAllShaders()
-            self._grid_program = None
-        self.doneCurrent()
+        if QOpenGLContext.currentContext() != context:
+            self._cleaned_up = False
+            return
+        try:
+            if self._texture is not None:
+                self._texture.destroy()
+                self._texture = None
+            if self._cap_texture is not None:
+                self._cap_texture.destroy()
+                self._cap_texture = None
+            if self._ibo is not None:
+                self._ibo.destroy()
+                self._ibo = None
+            if self._vbo is not None:
+                self._vbo.destroy()
+                self._vbo = None
+            if self._vao is not None:
+                self._vao.destroy()
+                self._vao = None
+            if self._program is not None:
+                self._program.removeAllShaders()
+                self._program = None
+            if self._density_vbo is not None:
+                self._density_vbo.destroy()
+                self._density_vbo = None
+            if self._density_vao is not None:
+                self._density_vao.destroy()
+                self._density_vao = None
+            if self._density_program is not None:
+                self._density_program.removeAllShaders()
+                self._density_program = None
+            if self._grid_program is not None:
+                self._grid_program.removeAllShaders()
+                self._grid_program = None
+        finally:
+            self.doneCurrent()
 
     def set_background(self, r, g, b):
         self._bg_color = (r / 255.0, g / 255.0, b / 255.0)
@@ -488,6 +502,7 @@ class GLStitchWidget(QOpenGLWidget):
     def initializeGL(self):
         # Re-arm cleanup so a recreated GL context can be released again.
         self._cleaned_up = False
+        self.context().aboutToBeDestroyed.connect(self.cleanup)
         fmt = self.context().format()
         if is_enabled():
             logger.debug(f"[GLStitchWidget] OpenGL {fmt.majorVersion()}.{fmt.minorVersion()}")
