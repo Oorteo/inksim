@@ -56,6 +56,7 @@ class MainWindow(QMainWindow):
         server_mode=False,
         delete_input=False,
         document_path=None,
+        snap_layout_key=None,
     ):
         super().__init__()
         self.setWindowTitle(APP_TITLE)
@@ -72,6 +73,7 @@ class MainWindow(QMainWindow):
         self._startup_fullscreen = fullscreen
         self._should_maximize_default = not window_size and not fullscreen
         self.config = Config()
+        self._snap_layout_key = snap_layout_key
         self.last_directory = self.config.get("last_directory", "")
         self.export_transparent_background = self.config.get(
             "export_transparent_background", False
@@ -117,7 +119,77 @@ class MainWindow(QMainWindow):
         if window_position:
             self.move(*window_position)
         elif not window_size and not fullscreen:
+            self._restore_window_layout()
+
+    def set_snap_layout_key(self, key):
+        """Switch the snap-layout profile used for save/restore."""
+        if not key:
+            return
+        self._snap_layout_key = key
+        if self._layout_state == "snapped":
+            self._restore_snap_layout()
+
+    def _layout_config_key(self, key=None):
+        """Return the config section name for the active layout profile."""
+        key = key or self._snap_layout_key
+        if key:
+            return f"window_layout_snap/{key}"
+        return "window_layout"
+
+    def _restore_window_layout(self):
+        """Restore the last saved window geometry, falling back to centred."""
+        layout = self.config.get(self._layout_config_key(), {})
+        if not isinstance(layout, dict):
+            layout = {}
+        x = layout.get("x")
+        y = layout.get("y")
+        width = layout.get("width")
+        height = layout.get("height")
+        if isinstance(width, int) and isinstance(height, int) and width > 0 and height > 0:
+            self.resize(width, height)
+        if isinstance(x, int) and isinstance(y, int):
+            self.move(x, y)
+        else:
             self.move(self.screen().availableGeometry().center() - self.rect().center())
+        if layout.get("maximized"):
+            self.showMaximized()
+
+    def _has_snap_layout(self):
+        """Return True when a saved snap layout exists for the active profile."""
+        layout = self.config.get(self._layout_config_key(), {})
+        return isinstance(layout, dict) and layout.get("x") is not None
+
+    def _restore_snap_layout(self):
+        """Restore the snapped geometry for the active profile."""
+        layout = self.config.get(self._layout_config_key(), {})
+        if isinstance(layout, dict) and layout.get("x") is not None:
+            self.setGeometry(QRect(layout["x"], layout["y"], layout["width"], layout["height"]))
+        else:
+            self.setGeometry(self._default_snapped_geometry())
+
+    def _save_window_layout(self):
+        """Persist the current window geometry to the active profile."""
+        if self.is_fullscreen or self.isMinimized():
+            return
+        geo = self.geometry()
+        layout = {
+            "x": geo.x(),
+            "y": geo.y(),
+            "width": geo.width(),
+            "height": geo.height(),
+            "maximized": self.isMaximized(),
+        }
+        self.config.set(self._layout_config_key(), layout)
+
+    def _save_snap_layout(self):
+        """Persist the current snapped geometry if it is valid."""
+        if self._snapped_geometry is None:
+            return
+        geo = self._snapped_geometry
+        self.config.set(
+            self._layout_config_key(),
+            {"x": geo.x(), "y": geo.y(), "width": geo.width(), "height": geo.height()},
+        )
 
     def eventFilter(self, watched, event):
         if self._is_reloading_from_disk:
@@ -219,6 +291,11 @@ class MainWindow(QMainWindow):
             self.mode_status.hide()
             self.show()
             self.showFullScreen()
+        elif self._snap_layout_key and self._has_snap_layout():
+            self.show()
+            self._restore_snap_layout()
+            self._layout_state = "snapped"
+            self._update_window_title()
         elif self._should_maximize_default:
             self.show()
             self.showMaximized()
@@ -536,8 +613,12 @@ class MainWindow(QMainWindow):
         )
 
     def _set_snapped_geometry(self):
-        """Apply the snapped layout, falling back to the right-half default."""
-        target = self._snapped_geometry or self._default_snapped_geometry()
+        """Apply the snapped layout, restoring the active profile if known."""
+        layout = self.config.get(self._layout_config_key(), {})
+        if isinstance(layout, dict) and layout.get("x") is not None:
+            target = QRect(layout["x"], layout["y"], layout["width"], layout["height"])
+        else:
+            target = self._snapped_geometry or self._default_snapped_geometry()
         self.setGeometry(target)
 
     def toggle_window_layout(self):
@@ -625,6 +706,15 @@ class MainWindow(QMainWindow):
         except OSError:
             return False
 
+    def _save_current_layout(self):
+        """Persist whatever layout is currently active."""
+        if self.is_fullscreen or self.isMinimized():
+            return
+        if self._layout_state == "snapped":
+            self._save_snap_layout()
+        else:
+            self._save_window_layout()
+
     def closeEvent(self, event):
         if self.server_mode and not self._allow_close:
             alive = self._inkscape_running()
@@ -639,9 +729,11 @@ class MainWindow(QMainWindow):
                     self._allow_close = True
                     event.accept()
                     return
+            self._save_current_layout()
             self.setWindowState(self.windowState() | Qt.WindowMinimized)
             event.ignore()
             return
+        self._save_current_layout()
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
