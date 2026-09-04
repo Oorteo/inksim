@@ -115,6 +115,11 @@ class Config:
         self._data[key] = value
         self.save()
 
+    def delete(self, key: str) -> None:
+        """Remove *key* from the config and persist the file."""
+        self._data.pop(key, None)
+        self.save()
+
     def set_values(self, values: dict[str, Any]) -> None:
         """Update several top-level keys at once and persist once."""
         self._data.update(values)

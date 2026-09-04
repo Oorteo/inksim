@@ -191,6 +191,27 @@ class MainWindow(QMainWindow):
             {"x": geo.x(), "y": geo.y(), "width": geo.width(), "height": geo.height()},
         )
 
+    def _save_current_snap_position(self, checked=False):
+        """Save the current snapped geometry under the active profile."""
+        if self._layout_state != "snapped":
+            self.statusBar().showMessage(
+                "Switch to snap layout first (press M).", 3000
+            )
+            return
+        self._save_snap_layout()
+        key_text = f" ({self._snap_layout_key})" if self._snap_layout_key else ""
+        self.statusBar().showMessage(
+            f"Snap position saved{key_text}.", 3000
+        )
+
+    def _clear_saved_snap_position(self, checked=False):
+        """Remove the saved snap geometry for the active profile."""
+        self.config.delete(self._layout_config_key())
+        key_text = f" ({self._snap_layout_key})" if self._snap_layout_key else ""
+        self.statusBar().showMessage(
+            f"Saved snap position cleared{key_text}.", 3000
+        )
+
     def eventFilter(self, watched, event):
         if self._is_reloading_from_disk:
             return False
@@ -296,6 +317,7 @@ class MainWindow(QMainWindow):
             self._restore_snap_layout()
             self._layout_state = "snapped"
             self._update_window_title()
+            QTimer.singleShot(0, self._update_snap_menu_state)
         elif self._should_maximize_default:
             self.show()
             self.showMaximized()
@@ -386,6 +408,20 @@ class MainWindow(QMainWindow):
             self.toggle_window_layout,
             "M",
         )
+        self.layout_action.triggered.connect(self._update_snap_menu_state)
+        view_menu.addSeparator()
+        self.save_snap_action = self._action(
+            view_menu,
+            "Save current snap position",
+            self._save_current_snap_position,
+        )
+        self.clear_snap_action = self._action(
+            view_menu,
+            "Clear saved snap position",
+            self._clear_saved_snap_position,
+        )
+        self._update_snap_menu_state()
+        view_menu.addSeparator()
         self._action(
             view_menu,
             "Cycle background",
@@ -650,6 +686,7 @@ class MainWindow(QMainWindow):
                 self._layout_state = "free"
             self._last_geometry = self.geometry()
             self._update_window_title()
+            self._update_snap_menu_state()
         finally:
             self._layout_changing = False
 
@@ -676,6 +713,14 @@ class MainWindow(QMainWindow):
         """Show layout state in the window title."""
         snap_prefix = "[snap] " if self._layout_state == "snapped" else ""
         self.setWindowTitle(f"{snap_prefix}{self._base_title}")
+
+    def _update_snap_menu_state(self):
+        """Enable snap save/clear only when the snap layout is active."""
+        enabled = self._layout_state == "snapped"
+        if getattr(self, "save_snap_action", None):
+            self.save_snap_action.setEnabled(enabled)
+        if getattr(self, "clear_snap_action", None):
+            self.clear_snap_action.setEnabled(enabled)
 
     def request_quit(self):
         """Close the application instead of hiding a server window."""
@@ -733,7 +778,6 @@ class MainWindow(QMainWindow):
             self.setWindowState(self.windowState() | Qt.WindowMinimized)
             event.ignore()
             return
-        self._save_current_layout()
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
