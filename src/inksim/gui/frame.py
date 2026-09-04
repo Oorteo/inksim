@@ -163,9 +163,11 @@ class MainWindow(QMainWindow):
         """Restore the snapped geometry for the active profile."""
         layout = self.config.get(self._layout_config_key(), {})
         if isinstance(layout, dict) and layout.get("x") is not None:
-            self.setGeometry(QRect(layout["x"], layout["y"], layout["width"], layout["height"]))
+            self._snapped_geometry = QRect(layout["x"], layout["y"], layout["width"], layout["height"])
         else:
-            self.setGeometry(self._default_snapped_geometry())
+            self._snapped_geometry = self._default_snapped_geometry()
+        self.setGeometry(self._snapped_geometry)
+        self._last_geometry = self._snapped_geometry
 
     def _save_window_layout(self):
         """Persist the current window geometry to the active profile."""
@@ -316,6 +318,7 @@ class MainWindow(QMainWindow):
             self.show()
             self._restore_snap_layout()
             self._layout_state = "snapped"
+            self._free_maximized = True
             self._update_window_title()
             QTimer.singleShot(0, self._update_snap_menu_state)
         elif self._should_maximize_default:
