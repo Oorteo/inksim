@@ -23,6 +23,13 @@ def _sanitize_path(path):
         return str(path)
 
 
+def _unsanitize_path(path_str):
+    """Expand a '~' prefix back to the user's home directory."""
+    if path_str.startswith("~/"):
+        return str(Path.home() / path_str[2:])
+    return path_str
+
+
 def is_opengl33_available():
     """Return True if an OpenGL 3.3 Core Profile context can be created.
 

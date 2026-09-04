@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..config import Config
+from ..runtime import _sanitize_path
 
 
 def show_config_editor(parent, config):
@@ -35,7 +36,7 @@ class ConfigEditorDialog(QDialog):
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
 
-        path_label = QLabel(f"<b>{config.path}</b>", self)
+        path_label = QLabel(f"<b>{_sanitize_path(config.path)}</b>", self)
         path_label.setWordWrap(True)
         path_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         layout.addWidget(path_label)

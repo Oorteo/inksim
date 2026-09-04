@@ -33,7 +33,7 @@ from ..formats import (
     get_supported_output_formats,
 )
 from ..render import render_export_image
-from ..runtime import _sanitize_path
+from ..runtime import _sanitize_path, _unsanitize_path
 from .dialogs import EmbroideryOpenDialog
 from .about import show_about
 from .config_editor import show_config_editor
@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         self._should_maximize_default = not window_size and not fullscreen
         self.config = Config()
         self._snap_layout_key = snap_layout_key
-        self.last_directory = self.config.get("last_directory", "")
+        self.last_directory = _unsanitize_path(self.config.get("last_directory", ""))
         self.export_transparent_background = self.config.get(
             "export_transparent_background", False
         )
@@ -284,7 +284,7 @@ class MainWindow(QMainWindow):
         seen = set()
         result = []
         for value in values:
-            path = Path(str(value)).resolve()
+            path = Path(_unsanitize_path(str(value))).resolve()
             if path.is_dir() and path not in seen:
                 seen.add(path)
                 result.append(str(path))
@@ -294,7 +294,8 @@ class MainWindow(QMainWindow):
 
     def _save_recent_directories(self):
         """Persist the recent-directory list back to TOML config."""
-        self.config.set("recent_directories", self.recent_directories)
+        compact = [_sanitize_path(d) for d in self.recent_directories]
+        self.config.set("recent_directories", compact)
 
     def _add_recent_directory(self, directory):
         """Move *directory* to the front of the recent list, cap at 10."""
@@ -1123,7 +1124,7 @@ class MainWindow(QMainWindow):
         self._source_mtime_ns = self._capture_source_mtime(selected_path)
         if not delete_after_load:
             self.last_directory = str(selected_path.parent)
-            self.config.set("last_directory", self.last_directory)
+            self.config.set("last_directory", _sanitize_path(self.last_directory))
             self._add_recent_directory(selected_path.parent)
         total = self.viewer.stitches_np.shape[0]
         bounds = self.viewer.bounds
