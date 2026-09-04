@@ -4,7 +4,7 @@
 from pathlib import Path
 
 import numpy as np
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QDialog
 
 from inksim.formats import (
     extension_from_output_filter,
@@ -104,6 +104,21 @@ def test_switching_from_gpu_hides_widget_without_destroying_gl_resources():
 
     assert gl_widget.hidden
     assert gl_widget.cleanup_calls == 0
+
+
+def test_open_dialog_cleans_preview_gl_resources_before_rejecting(qtbot, tmp_path):
+    from inksim.gui.dialogs import EmbroideryOpenDialog
+
+    dialog = EmbroideryOpenDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    cleanup_calls = []
+    dialog.preview._gl_widget.cleanup = lambda: cleanup_calls.append(True)
+
+    dialog.show()
+    qtbot.wait(50)
+    dialog.reject()
+
+    assert cleanup_calls == [True]
 
 
 def test_save_as_embroidery_writes_pystitch_format(sample_design, qtbot, tmp_path):

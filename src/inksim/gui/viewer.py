@@ -23,6 +23,7 @@ from PySide6.QtGui import (
     QImage,
     QKeySequence,
     QPainter,
+    QPainterPath,
     QPen,
     QPixmap,
     QShortcut,
@@ -130,6 +131,7 @@ class EmbroideryViewerWidget(QWidget):
     """
 
     grid_toggled = Signal(bool)
+    show_needle_toggled = Signal(bool)
     renderer_changed = Signal(str)
     fullscreen_requested = Signal()
     status_message = Signal(str, int)
@@ -160,7 +162,6 @@ class EmbroideryViewerWidget(QWidget):
         self.light_factor = DEFAULT_LIGHT_FACTOR
         self.shading_step = 0.05
         self.visible_count = 0
-        self.step_size = 10
         self.show_grid = True
         self.show_stitches = True
         self.show_realistic = False
@@ -261,11 +262,14 @@ class EmbroideryViewerWidget(QWidget):
         self.update()
 
     def _draw_trace_overlay(self, painter: QPainter) -> None:
-        """Draw the last few interactions in the top-right corner."""
+        """Draw the last few interactions in a polished top-right panel."""
         if not self.trace_events_enabled or not self._trace_buffer:
             return
-        margin = 8
+        margin = 10
+        padding = 10
         line_height = 16
+        min_width = 160
+        corner_radius = 8
         # Prefer a sans-serif font: the generic "monospace" family can map to
         # a font with incomplete glyph coverage on some setups, producing
         # placeholder boxes for ASCII letters.
@@ -278,15 +282,17 @@ class EmbroideryViewerWidget(QWidget):
         max_w = max(
             painter.fontMetrics().horizontalAdvance(line) for line in lines
         )
-        panel_w = max_w + margin * 2
-        panel_h = len(lines) * line_height + margin * 2
+        panel_w = max(min_width, max_w + padding * 2)
+        panel_h = self._trace_max_lines * line_height + padding * 2
         x = self.width() - panel_w - margin
         y = margin
-        painter.fillRect(x, y, panel_w, panel_h, QColor(0, 0, 0, 160))
-        painter.setPen(QColor(255, 255, 255))
+        path = QPainterPath()
+        path.addRoundedRect(x, y, panel_w, panel_h, corner_radius, corner_radius)
+        painter.fillPath(path, QColor(0, 0, 0, 140))
+        painter.setPen(QColor(255, 255, 255, 230))
         for i, line in enumerate(lines):
             painter.drawText(
-                x + margin, y + margin + (i + 1) * line_height - 3, line
+                x + padding, y + padding + (i + 1) * line_height - 3, line
             )
 
     def notify_cursor_changed(self):
@@ -326,7 +332,9 @@ class EmbroideryViewerWidget(QWidget):
         # Retry shortly until layout stabilizes.
         if w < 120 or h < 120:
             if retries > 0:
-                QTimer.singleShot(30, lambda: self._try_fit_to_screen(retries - 1))
+                QTimer.singleShot(
+                    30, self, lambda: self._try_fit_to_screen(retries - 1)
+                )
             return
         self._pending_fit_to_screen = False
         self.fit_to_screen()
@@ -930,9 +938,6 @@ class EmbroideryViewerWidget(QWidget):
 
     def show_settings(self):
         show_settings(self)
-
-    def set_step_size(self, size):
-        self.step_size = max(1, size)
 
     def load_design(self, path, fit_to_screen=True, precompute_density=True, autoplay=False):
         """Load an embroidery file into renderable stitch segments."""

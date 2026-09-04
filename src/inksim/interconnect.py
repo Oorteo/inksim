@@ -198,6 +198,9 @@ class InterconnectServer(QObject):
             document_path = request.get("document_path")
             if isinstance(document_path, str) and document_path:
                 self.window.set_document_path(Path(document_path))
+            snap_layout_key = request.get("snap")
+            if isinstance(snap_layout_key, str) and snap_layout_key:
+                self.window.set_snap_layout_key(snap_layout_key)
             delete_after_load = command == "open_and_delete"
             autoplay = request.get("autoplay", False)
             opened = self.window.open_file(
