@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (QComboBox, QDialog, QDialogButtonBox,
                                QVBoxLayout, QWidget)
 
 from ..formats import get_supported_input_extensions
+from ..runtime import _sanitize_path
 from .viewer import EmbroideryViewerWidget, density_debug
 
 
@@ -203,6 +204,11 @@ class EmbroideryOpenDialog(QDialog):
             "Normal preview" if is_real else "Real preview"
         )
 
+    def done(self, result):
+        """Release the preview's GL objects before the dialog is hidden."""
+        self.preview._gl_widget.cleanup()
+        super().done(result)
+
     def refresh_files(self):
         if not self.current_directory.is_dir():
             return
@@ -210,9 +216,9 @@ class EmbroideryOpenDialog(QDialog):
                               if path.is_dir()), key=lambda path: path.name.lower())
         self.directory_text.blockSignals(True)
         self.directory_text.clear()
-        self.directory_text.addItems([str(self.current_directory),
-                                      *(str(path) for path in directories)])
-        self.directory_text.setCurrentText(str(self.current_directory))
+        self.directory_text.addItems([_sanitize_path(self.current_directory),
+                                      *(_sanitize_path(path) for path in directories)])
+        self.directory_text.setCurrentText(_sanitize_path(self.current_directory))
         self.directory_text.blockSignals(False)
         files = sorted((path for path in self.current_directory.iterdir()
                         if path.is_file() and path.suffix.lower().lstrip(".")

@@ -120,6 +120,11 @@ def build_argument_parser():
         help="Write debug logging to FILE (implies --debug)",
     )
     parser.add_argument(
+        "--snap",
+        metavar="NAME",
+        help="Window-layout profile name to save/restore (e.g. inkstitch)",
+    )
+    parser.add_argument(
         "--size",
         metavar="WIDTHxHEIGHT",
         type=lambda value: _parse_pair(value, "size", "x"),
@@ -293,6 +298,7 @@ def main():
 
     window_size = args.size
     window_position = args.position
+    snap_layout_key = args.snap
     app = QApplication.instance() or QApplication([])
     app.setApplicationName(APP_TITLE)
     app.setApplicationDisplayName(APP_TITLE)
@@ -308,6 +314,7 @@ def main():
         server_mode=args.server,
         delete_input=args.delete_input,
         document_path=document_path,
+        snap_layout_key=snap_layout_key,
     )
     interconnect = None
     if args.server:
@@ -325,6 +332,8 @@ def main():
                     if first_input is not None and first_input.is_file()
                     else {"command": "show", "focus": True}
                 )
+                if snap_layout_key:
+                    command["snap"] = snap_layout_key
                 if document_path is not None and command["command"] == open_command:
                     command["document_path"] = str(document_path)
                 response = send_command(command)
