@@ -32,6 +32,7 @@ HELP_SECTIONS = (
 | Shift + Right / Left | Next or previous command |
 | Ctrl + Right / Left | Next or previous color |
 | Up / Down | Adjust playback speed while playing |
+| Ctrl + Up / Down | Adjust playback speed anytime |
 | Home / End | First or last stitch |
 | Space | Play or pause |
 | Esc | Finish playback directionally (forward → full design, backward → hide all) |
@@ -52,7 +53,7 @@ HELP_SECTIONS = (
 | J | Cycle jumps: off, all, risky only |
 | X | Toggle density map |
 | B | Cycle background: configured → black → white → configured |
-| E | Reverse visible stitch order |
+| E | Bottom view (draw later stitches under earlier ones) |
 | Z | Toggle realistic rendering |
 | R | Choose stitch renderer |
 | H | Toggle help |

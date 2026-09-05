@@ -1,11 +1,11 @@
 [project]
 name = "inksim"
-version = "0.3.2"
+version = "0.3.6"
 description = "Interactive embroidery simulator"
 authors = [{ name = "InkSim contributors" }]
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "numba",
     "numpy",
