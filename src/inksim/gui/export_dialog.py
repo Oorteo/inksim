@@ -230,7 +230,17 @@ class ExportPreviewDialog(QDialog):
         if self._current_format() == "WebP":
             self._regenerate_preview()
 
+    def _reset_action_buttons(self):
+        """Re-enable Copy/Save after the preview changes."""
+        if self._copy_button.text() != "Copy to clipboard":
+            self._copy_button.setText("Copy to clipboard")
+            self._copy_button.setEnabled(True)
+        if self._save_button.text() != "Save...":
+            self._save_button.setText("Save...")
+            self._save_button.setEnabled(True)
+
     def _regenerate_preview(self):
+        self._reset_action_buttons()
         if self._render_callback is None:
             self._info_label.setText(self._format_info(self._current_scale()))
             return
