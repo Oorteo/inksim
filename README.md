@@ -4,6 +4,10 @@ InkSim is a standalone interactive embroidery simulator and preview renderer.
 It opens embroidery files, displays their stitch sequence, and lets the user
 inspect or replay the design before production.
 
+<p align="center">
+  <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview" width="250">
+</p>
+
 The viewer now includes an **OpenGL textured renderer** that draws stitches as
 realistic ribbon quads with normal-mapped thread and Blinn-Phong lighting. Press
 `Z` in the viewer to toggle between the CPU and GPU renderers. The GPU renderer
@@ -11,30 +15,31 @@ requires **OpenGL 3.3**; older systems and virtual machines fall back to the
 CPU raster renderer automatically.
 
 <p align="center">
-  <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview" width="350">
+  <img src="docs/assets/images/thread_texture.webp" alt="Thread texture detail" width="450">
+  <br>
+  <em>Detail of the normal-mapped thread texture used by the OpenGL renderer.</em>
 </p>
 
 InkSim is experimental software provided for development and testing.
 
-## Installation
+## Running
 
-Install the published PyPI package with `uv`:
-
-```bash
-uv tool install inksim
-```
-
-Then run it directly from your shell:
+Run InkSim from your terminal or command prompt:
 
 ```bash
 inksim design.pes
 ```
 
-Use `inksim-gui design.pes` to launch without a console window. The command
-names behave consistently on Windows, macOS, and Linux.
+On Windows you can also use `inksim-gui design.pes` to launch without a console
+window. Both command names work the same on Windows, macOS, and Linux.
 
-See [installation and running](docs/installation.md) for `pip`/virtual-environment
-installation and developer setup.
+## Installation
+
+InkSim requires Python 3.11 or newer. The recommended way to install it is with
+`uv`, but it also works with `pip`. See the
+[installation guide](docs/installation.md) for step-by-step instructions,
+including how to add InkSim to your `PATH` and how to install a development
+copy from source.
 
 ## Quick start
 
