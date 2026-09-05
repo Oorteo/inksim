@@ -35,11 +35,11 @@ window. Both command names work the same on Windows, macOS, and Linux.
 
 ## Installation
 
-InkSim requires Python 3.11 or newer. The recommended way to install it is with
-`uv`, but it also works with `pip`. See the
-[installation guide](docs/installation.md) for step-by-step instructions,
-including how to add InkSim to your `PATH` and how to install a development
-copy from source.
+InkSim requires Python 3.11 or newer. Install it with your preferred Python
+package manager (`uv`, `pip`, `pipx`, or another). See the
+[installation guide](docs/installation.md) for step-by-step instructions for
+the most common tools, including how to add InkSim to your `PATH` and how to
+install a development copy from source.
 
 ## Quick start
 
