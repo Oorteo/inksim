@@ -29,7 +29,7 @@ IPC_PROTOCOL_VERSION = 1
 TOKEN_FILENAME = "inksim-server.token"
 DEFAULT_STATUS_TEXT = (
 	"Space=play/pause | C=center | F=fit | F11=fullscreen | "
-	"Ctrl+Arrows=color | G=grid H=help"
+	"Ctrl+Up/Dn=speed | Ctrl+Arrows=color | G=grid H=help"
 )
 DENSITY_RADIUS_MM = 2.5
 DENSITY_WARNING_PER_MM2 = 3.0

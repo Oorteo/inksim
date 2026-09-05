@@ -32,6 +32,7 @@ HELP_SECTIONS = (
 | Shift + Right / Left | Next or previous command |
 | Ctrl + Right / Left | Next or previous color |
 | Up / Down | Adjust playback speed while playing |
+| Ctrl + Up / Down | Adjust playback speed anytime |
 | Home / End | First or last stitch |
 | Space | Play or pause |
 | Esc | Finish playback directionally (forward → full design, backward → hide all) |
