@@ -42,6 +42,32 @@ def test_all_registered_renderers_export_without_crashing(qapp, tmp_path):
         assert output.stat().st_size > 0
 
 
+def test_export_image_matches_design_size_exactly():
+    """The exported image has no margin, so its physical tags make it import
+    at the real-world design size."""
+    stitches = np.array(
+        [[0, 0, 50, 30, 220, 30, 40]], dtype=np.float32
+    )
+    bounds = (0, 0, 50, 30)
+    width_px = 500
+    height_px = 300
+    image = render_export_image(
+        stitches,
+        bounds,
+        width_px,
+        height_px,
+        0.4,
+        "shaded_volume",
+    )
+
+    assert image.width() == width_px
+    assert image.height() == height_px
+    # 500 px / 50 mm = 10 px/mm = 10000 dots per meter.
+    expected_dpm = round(width_px / 50.0 * 1000)
+    assert image.dotsPerMeterX() == expected_dpm
+    assert image.dotsPerMeterY() == expected_dpm
+
+
 def test_export_image_includes_physical_size_metadata():
     """Exported images carry mm dimensions and resolution so Inkscape can
     import them at the correct physical size."""
@@ -67,8 +93,8 @@ def test_export_image_includes_physical_size_metadata():
     assert "renderer=shaded_volume" in ink_meta
     # The standard physical-size tags (PNG pHYs / JPEG EXIF resolution) must
     # match the derived DPI so Inkscape imports the image at real-world size.
-    expected_dpi = min(200, 100) / max(design_width_mm, design_height_mm) * 25.4
-    expected_dpm = round(expected_dpi / 0.0254)
+    # 200 px / 20 mm = 10 px/mm = 10000 dots per meter.
+    expected_dpm = round(200 / design_width_mm * 1000)
     assert image.dotsPerMeterX() == expected_dpm
     assert image.dotsPerMeterY() == expected_dpm
 
