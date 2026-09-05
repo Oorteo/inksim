@@ -44,7 +44,7 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 | `J`                   | Cycle jumps: off, all jumps, risky jumps only              |
 | `X`                   | Toggle the stitch-density map                              |
 | `B`                   | Cycle background: configured → black → white → configured  |
-| `E`                   | Reverse visible stitch order                               |
+| `E`                   | Bottom view (draw later stitches under earlier ones)       |
 | `N`                   | Toggle the needle marker                                   |
 | `H`                   | Show help                                                  |
 | `I`                   | Show current viewer settings                               |

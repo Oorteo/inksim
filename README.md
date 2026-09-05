@@ -60,6 +60,7 @@ inksim design.pes --play
 - [Installation and running](docs/installation.md)
 - [User guide](docs/user-guide.md)
 - [Rendering modes and overlays](docs/rendering.md)
+- [Inkscape / Ink/Stitch workflow](docs/inkscape-workflow.md)
 - [Application interconnect](docs/interconnect.md)
 - [Contributing](CONTRIBUTING.md)
 

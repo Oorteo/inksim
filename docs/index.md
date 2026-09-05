@@ -12,6 +12,7 @@ previews.
 - [Installation and running](installation.md)
 - [User guide](user-guide.md)
 - [Rendering modes and overlays](rendering.md)
+- [Inkscape / Ink/Stitch workflow](inkscape-workflow.md)
 - [Developer guide](development.md)
 - [Application interconnect](interconnect.md)
 
