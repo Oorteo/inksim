@@ -33,6 +33,12 @@ inksim design.pes
 On Windows you can also use `inksim-gui design.pes` to launch without a console
 window. Both command names work the same on Windows, macOS, and Linux.
 
+<p align="center">
+  <img src="docs/assets/basic_usage/010_basic_windows.webp" alt="InkSim main window" width="600">
+  <br>
+  <em>The InkSim window after opening a design.</em>
+</p>
+
 ## Installation
 
 InkSim requires Python 3.11 or newer. Install it with your preferred Python
