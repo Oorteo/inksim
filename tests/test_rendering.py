@@ -42,9 +42,10 @@ def test_all_registered_renderers_export_without_crashing(qapp, tmp_path):
         assert output.stat().st_size > 0
 
 
-def test_export_image_matches_design_size_exactly():
-    """The exported image has no margin, so its physical tags make it import
-    at the real-world design size."""
+def test_export_image_keeps_margin_and_design_dpi():
+    """The exported image keeps a small margin so stitches extending past the
+    strict bounds are not clipped. The physical tags still encode the design's
+    real-world size via the rendering zoom."""
     stitches = np.array(
         [[0, 0, 50, 30, 220, 30, 40]], dtype=np.float32
     )
@@ -62,8 +63,14 @@ def test_export_image_matches_design_size_exactly():
 
     assert image.width() == width_px
     assert image.height() == height_px
-    # 500 px / 50 mm = 10 px/mm = 10000 dots per meter.
-    expected_dpm = round(width_px / 50.0 * 1000)
+    # The stored DPM is based on the zoom used for the design area, not on the
+    # full image width, so the design imports at the correct size in editors.
+    margin = max(12, min(width_px, height_px) * 0.06)
+    zoom = min(
+        (width_px - 2 * margin) / 50.0,
+        (height_px - 2 * margin) / 30.0,
+    )
+    expected_dpm = round(zoom * 1000)
     assert image.dotsPerMeterX() == expected_dpm
     assert image.dotsPerMeterY() == expected_dpm
 
@@ -93,8 +100,13 @@ def test_export_image_includes_physical_size_metadata():
     assert "renderer=shaded_volume" in ink_meta
     # The standard physical-size tags (PNG pHYs / JPEG EXIF resolution) must
     # match the derived DPI so Inkscape imports the image at real-world size.
-    # 200 px / 20 mm = 10 px/mm = 10000 dots per meter.
-    expected_dpm = round(200 / design_width_mm * 1000)
+    # The DPM is based on the zoom used for the design area inside the margin.
+    margin = max(12, min(200, 100) * 0.06)
+    zoom = min(
+        (200 - 2 * margin) / design_width_mm,
+        (100 - 2 * margin) / design_height_mm,
+    )
+    expected_dpm = round(zoom * 1000)
     assert image.dotsPerMeterX() == expected_dpm
     assert image.dotsPerMeterY() == expected_dpm
 

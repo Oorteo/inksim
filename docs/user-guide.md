@@ -81,12 +81,13 @@ uv run inksim *.pes --png exports/ -y
 | `--grid`                  | Add a 10 mm grid to the exported image               |
 | `-y`, `--yes`             | Overwrite existing batch output without asking       |
 
-Exported PNG/WebP/JPEG images are cropped exactly to the design bounding box
-with no decorative margin. They always set the standard physical-resolution tags
-(pixels per meter, i.e. PNG `pHYs` or JPEG EXIF resolution), so Inkscape,
-GIMP and other tools import the image at the exact real-world design size. A
-single human-readable `InkSim` text comment is also stored with the design
-dimensions, DPI and renderer for quick reference.
+Exported PNG/WebP/JPEG images keep a small margin around the design so stitches
+that extend past the strict bounding box are not clipped. They always set the
+standard physical-resolution tags (pixels per meter, i.e. PNG `pHYs` or JPEG
+EXIF resolution) using the design's rendering zoom, so Inkscape, GIMP and
+other tools import the design at the correct real-world size. A single
+human-readable `InkSim` text comment is also stored with the design dimensions,
+DPI and renderer for quick reference.
 
 When several input files are supplied, omitting the output path creates one
 PNG next to each input. An explicit output path must be an existing directory

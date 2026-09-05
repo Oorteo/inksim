@@ -22,11 +22,13 @@ def render_export_image(
     light_factor=0.45,
     scale_factor=1.0,
 ):
-    """Render a PNG/WebP/JPEG sized exactly to the design bounding box.
+    """Render a PNG/WebP/JPEG using the same renderer as the viewer.
 
-    The output has no decorative margin, so the standard physical-resolution
-    tags (PNG pHYs / JPEG EXIF) make the image import at the real-world design
-    size in tools like Inkscape.
+    A small margin is left around the design bounding box so stitches that
+    extend past the strict bounds (thread thickness, shading, etc.) are not
+    clipped. The embedded physical-resolution tags are computed from the
+    rendering zoom so the design itself imports at the correct real-world size
+    in Inkscape; the margin makes the total canvas slightly larger.
     """
     if renderer_key not in RENDERERS_BY_KEY:
         raise ValueError(f"unknown renderer: {renderer_key}")
@@ -36,9 +38,13 @@ def render_export_image(
     design_height = max(max_y - min_y, 1.0)
     width = max(1, round(width * scale_factor))
     height = max(1, round(height * scale_factor))
-    zoom = min(width / design_width, height / design_height)
-    offset_x = -min_x * zoom
-    offset_y = -min_y * zoom
+    margin = max(12, min(width, height) * 0.06)
+    zoom = min(
+        (width - 2 * margin) / design_width,
+        (height - 2 * margin) / design_height,
+    )
+    offset_x = (width - design_width * zoom) / 2 - min_x * zoom
+    offset_y = (height - design_height * zoom) / 2 - min_y * zoom
     if isinstance(background, (tuple, list)) and len(background) == 3:
         base_color = tuple(int(c) for c in background)
         opaque = True
@@ -97,8 +103,9 @@ def render_export_image(
         painter.end()
     # Always set the standard physical-resolution tags (PNG pHYs / JPEG EXIF
     # resolution) so every image viewer/editor can recover the real-world size
-    # from pixels-per-meter. Because the image has no margin, `zoom` is exactly
-    # the pixel-to-mm ratio and yields the correct DPI automatically.
+    # from pixels-per-meter. `zoom` is the exact pixel-to-mm scale used for the
+    # design, so even with a margin the design itself imports at the correct
+    # physical size in Inkscape.
     if dpi is None or dpi <= 0:
         dpi = max(1.0, zoom * 25.4)
     dots_per_meter = round(dpi / 0.0254)
