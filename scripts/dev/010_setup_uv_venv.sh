@@ -7,14 +7,27 @@
 set -euo pipefail
 #set -x
 
-case "${1:-}" in
-"") CLEAN_VENV=false ;;
--y | --yes) CLEAN_VENV=true ;;
-*)
-    echo "Usage: $0 [-y|--yes]" >&2
-    exit 1
-    ;;
-esac
+CLEAN_VENV=false
+PYTHON_VERSION_ARG=""
+
+for arg in "$@"; do
+    case "$arg" in
+    -y | --yes)
+        CLEAN_VENV=true
+        ;;
+    --python=*)
+        PYTHON_VERSION_ARG="${arg#*=}"
+        ;;
+    *)
+        echo "Usage: $0 [-y|--yes] [--python=VERSION]" >&2
+        echo "  -y, --yes       recreate the virtual environment without asking" >&2
+        echo "  --python=VER    use the given Python version (default: env PYTHON_VERSION or 3.14)" >&2
+        exit 1
+        ;;
+    esac
+done
+
+PYTHON_VERSION="${PYTHON_VERSION_ARG:-${PYTHON_VERSION:-3.14}}"
 
 SOURCE="${BASH_SOURCE[0]}"
 # Resolve symlinks portably; this is the Bash equivalent of readlink -f.

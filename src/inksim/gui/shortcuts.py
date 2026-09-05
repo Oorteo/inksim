@@ -151,9 +151,9 @@ class ViewerShortcutFilter(QObject):
         ):
             viewer.set_playback_direction(key == Qt.Key_Right)
             handled = True
-        elif viewer.is_playing and not is_alt and not is_ctrl and key in (
+        elif (viewer.is_playing and not is_alt and not is_ctrl and key in (
             Qt.Key_Up, Qt.Key_Down
-        ):
+        )) or (is_ctrl and not is_alt and key in (Qt.Key_Up, Qt.Key_Down)):
             viewer.adjust_playback_speed(1 if key == Qt.Key_Up else -1)
             handled = True
         elif is_ctrl and key in (Qt.Key_Right, Qt.Key_Left):

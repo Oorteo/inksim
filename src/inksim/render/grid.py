@@ -97,9 +97,15 @@ def render_grid_numba(buf, zoom, pan_x, pan_y):
         elif is_major:
             r, g, b = line, line, line
             strength = 30
-        else:
+        elif solid_centimeter_grid:
             r, g, b = line, line, line
             strength = 18
+        else:
+            # At low zoom the lines are only a few pixels apart; drawing them
+            # as dotted (every 3rd pixel) creates moiré patterns with the
+            # screen pixel grid. Draw a continuous but fainter line instead.
+            r, g, b = line, line, line
+            strength = 9
 
         # Keep crowded grids subtle, but make centimeter lines continuous
         # once there is enough room between them.
@@ -123,9 +129,15 @@ def render_grid_numba(buf, zoom, pan_x, pan_y):
         elif is_major:
             r, g, b = line, line, line
             strength = 30
-        else:
+        elif solid_centimeter_grid:
             r, g, b = line, line, line
             strength = 18
+        else:
+            # At low zoom the lines are only a few pixels apart; drawing them
+            # as dotted (every 3rd pixel) creates moiré patterns with the
+            # screen pixel grid. Draw a continuous but fainter line instead.
+            r, g, b = line, line, line
+            strength = 9
 
         for x in range(w):
             if not (is_axis or solid_centimeter_grid) and x % 3 != 0:

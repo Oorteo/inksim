@@ -44,7 +44,7 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 | `J`                   | Cycle jumps: off, all jumps, risky jumps only              |
 | `X`                   | Toggle the stitch-density map                              |
 | `B`                   | Cycle background: configured → black → white → configured  |
-| `E`                   | Reverse visible stitch order                               |
+| `E`                   | Bottom view (draw later stitches under earlier ones)       |
 | `N`                   | Toggle the needle marker                                   |
 | `H`                   | Show help                                                  |
 | `I`                   | Show current viewer settings                               |
@@ -80,6 +80,14 @@ uv run inksim *.pes --png exports/ -y
 | `--bg transparent\|white` | Select the export background                         |
 | `--grid`                  | Add a 10 mm grid to the exported image               |
 | `-y`, `--yes`             | Overwrite existing batch output without asking       |
+
+Exported PNG/WebP/JPEG images keep a small margin around the design so stitches
+that extend past the strict bounding box are not clipped. They always set the
+standard physical-resolution tags (pixels per meter, i.e. PNG `pHYs` or JPEG
+EXIF resolution) using the design's rendering zoom, so Inkscape, GIMP and
+other tools import the design at the correct real-world size. A single
+human-readable `InkSim` text comment is also stored with the design dimensions,
+DPI and renderer for quick reference.
 
 When several input files are supplied, omitting the output path creates one
 PNG next to each input. An explicit output path must be an existing directory

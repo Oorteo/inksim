@@ -242,7 +242,7 @@ class ModeBar(QWidget):
         tooltips = {
             "Z": "Toggle GPU textured rendering",
             "X": "Toggle stitch density overlay",
-            "E": "Reverse stitch drawing order",
+            "E": "Bottom view (draw later stitches under earlier ones)",
             "J": "Cycle jump display: off, all, risky only",
             "V": "Toggle stitch visibility",
             "B": "Cycle background: black, white, configured",

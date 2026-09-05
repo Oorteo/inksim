@@ -33,7 +33,7 @@ distribution-specific GUI wheel index is required.
 
 ## Alternative: pip and venv
 
-`uv` is not required. Create a virtual environment with Python 3.12 or newer
+`uv` is not required. Create a virtual environment with Python 3.11 or newer
 and install the package with `pip`:
 
 ```bash
@@ -48,6 +48,47 @@ The activation command differs on Windows:
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
+
+## With pipx
+
+If you already use [pipx](https://pypa.github.io/pipx/) for command-line
+Python tools, install InkSim globally into its isolated environment:
+
+```bash
+pipx install inksim
+inksim design.pes
+```
+
+## With Poetry
+
+If your project is managed with [Poetry](https://python-poetry.org/), add
+InkSim as a dependency:
+
+```bash
+poetry add inksim
+poetry run inksim design.pes
+```
+
+To install into the current Poetry environment only:
+
+```bash
+poetry add --group dev inksim
+```
+
+## With Conda
+
+If you use [Conda](https://conda.io/) or [Miniforge](https://conda-for.org/miniforge/),
+create an environment with Python 3.11 or newer and install from PyPI:
+
+```bash
+conda create -n inksim python=3.11
+conda activate inksim
+pip install inksim
+inksim design.pes
+```
+
+InkSim is not yet packaged on `conda-forge`, so the last step uses `pip`
+inside the Conda environment.
 
 ## Developer installation
 
@@ -111,8 +152,9 @@ The _GPU Textured_ stitch renderer (`Z` shortcut or **GPU textured render**
 in the File menu) requires **OpenGL 3.3** with a Core Profile context. It is
 used automatically only when OpenGL 3.3 is available.
 
-On systems with only OpenGL 3.0 or older — common in virtual machines such as
-VirtualBox — InkSim falls back to the CPU-based _Shaded Volume_ raster
-renderer. The fallback happens automatically on startup and when the GPU
-renderer is selected, so the application remains usable; only the GPU
-renderer is unavailable.
+On systems with only OpenGL 3.0 or older — common in virtual machines that do
+not expose 3D acceleration, such as a default VirtualBox configuration —
+InkSim falls back to the CPU-based _Shaded Volume_ raster renderer. The
+fallback happens automatically on startup and when the GPU renderer is
+selected, so the application remains usable; only the GPU renderer is
+unavailable.
