@@ -94,13 +94,23 @@ def render_export_image(
             True,
         )
         painter.end()
-    image.setText("InkSim design size", f"{design_width:.2f} x {design_height:.2f} mm")
-    image.setText("InkSim background", str(background))
-    image.setText("InkSim layers", "embroidery only")
-    image.setText("InkSim rendering", renderer_key)
-    if dpi:
-        image.setText("InkSim DPI", str(dpi))
-        dots_per_meter = round(dpi / 0.0254)
-        image.setDotsPerMeterX(dots_per_meter)
-        image.setDotsPerMeterY(dots_per_meter)
+    # Always set the standard physical-resolution tags (PNG pHYs / JPEG EXIF
+    # resolution) so every image viewer/editor can recover the real-world size
+    # from pixels-per-meter. When no explicit DPI is supplied, derive one from
+    # the pixel size and the design dimensions.
+    if dpi is None or dpi <= 0:
+        dpi = max(1.0, min(width, height) / max(design_width, design_height) * 25.4)
+    dots_per_meter = round(dpi / 0.0254)
+    image.setDotsPerMeterX(dots_per_meter)
+    image.setDotsPerMeterY(dots_per_meter)
+
+    # One human-readable comment with the key facts. InkSim-specific tags are
+    # secondary to the standard resolution tags above.
+    image.setText("InkSim", (
+        f"created_by=InkSim; "
+        f"design_size_mm={design_width:.3f}x{design_height:.3f}; "
+        f"dpi={dpi:.2f}; "
+        f"renderer={renderer_key}; "
+        f"background={background}"
+    ))
     return image

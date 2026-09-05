@@ -42,6 +42,37 @@ def test_all_registered_renderers_export_without_crashing(qapp, tmp_path):
         assert output.stat().st_size > 0
 
 
+def test_export_image_includes_physical_size_metadata():
+    """Exported images carry mm dimensions and resolution so Inkscape can
+    import them at the correct physical size."""
+    stitches = np.array(
+        [[0, 0, 20, 10, 220, 30, 40]], dtype=np.float32
+    )
+    bounds = (0, 0, 20, 10)
+    design_width_mm = 20.0
+    design_height_mm = 10.0
+
+    image = render_export_image(
+        stitches,
+        bounds,
+        200,
+        100,
+        0.4,
+        "shaded_volume",
+    )
+
+    ink_meta = image.text("InkSim")
+    assert "created_by=InkSim" in ink_meta
+    assert f"design_size_mm={design_width_mm:.3f}x{design_height_mm:.3f}" in ink_meta
+    assert "renderer=shaded_volume" in ink_meta
+    # The standard physical-size tags (PNG pHYs / JPEG EXIF resolution) must
+    # match the derived DPI so Inkscape imports the image at real-world size.
+    expected_dpi = min(200, 100) / max(design_width_mm, design_height_mm) * 25.4
+    expected_dpm = round(expected_dpi / 0.0254)
+    assert image.dotsPerMeterX() == expected_dpm
+    assert image.dotsPerMeterY() == expected_dpm
+
+
 def test_grid_adds_one_millimeter_lines_only_at_high_zoom():
     low_zoom = np.full((32, 32, 3), 255, dtype=np.uint8)
     high_zoom = np.full((32, 32, 3), 255, dtype=np.uint8)
