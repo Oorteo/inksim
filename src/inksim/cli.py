@@ -361,6 +361,8 @@ def main():
                     command["snap"] = snap_layout_key
                 if document_path is not None and command["command"] == open_command:
                     command["document_path"] = str(document_path)
+                if args.play and command["command"] == open_command:
+                    command["autoplay"] = True
                 response = send_command(command)
                 frame.close()
                 if not response.get("ok"):
