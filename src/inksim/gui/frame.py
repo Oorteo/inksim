@@ -742,8 +742,21 @@ class MainWindow(QMainWindow):
         import subprocess
         try:
             if os.name == "nt":
+                # Suppress the console window that ``tasklist`` would
+                # otherwise flash on Windows.
+                creationflags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+                startupinfo = None
+                if hasattr(subprocess, "STARTUPINFO"):
+                    startupinfo = subprocess.STARTUPINFO()
+                    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                    startupinfo.wShowWindow = subprocess.SW_HIDE
                 result = subprocess.run(
-                    ["tasklist"], capture_output=True, text=True, check=False
+                    ["tasklist"],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                    creationflags=creationflags,
+                    startupinfo=startupinfo,
                 )
                 lowered = result.stdout.lower()
                 return ("inkscape.exe" in lowered
