@@ -1,8 +1,15 @@
 # InkSim
 
-InkSim is a standalone interactive embroidery simulator and preview renderer.
-It opens embroidery files, displays their stitch sequence, and lets the user
-inspect or replay the design before production.
+InkSim is a **standalone** interactive embroidery simulator and preview renderer.
+It is a normal Python desktop application that opens embroidery files, displays
+their stitch sequence, and lets the user inspect or replay the design before
+production. It is **not an Inkscape extension** and is installed from PyPI,
+not from the Inkscape extension manager.
+
+A future [Ink/Stitch](https://inkstitch.org/) release may be able to launch
+InkSim directly from inside Inkscape, but that integration is currently in
+development / under review and is not part of the current official Ink/Stitch
+release.
 
 <p align="center">
   <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview" width="250">

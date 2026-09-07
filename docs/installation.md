@@ -1,8 +1,57 @@
 # Installation and Running
 
-The recommended end-user installation uses the published `inksim` package
-from PyPI. Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
-first.
+> **Important:** InkSim is a **standalone GUI application**, not an Inkscape
+> plugin or extension. You do **not** copy any files into Inkscape's
+> `extensions` folder.
+
+## Quick start (recommended)
+
+1. **Install `uv`** — a fast Python package installer and manager.
+   For detailed instructions see the
+   [official `uv` installation guide](https://docs.astral.sh/uv/getting-started/installation/).
+    - **macOS / Linux:**
+
+        ```bash
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        ```
+
+    - **Windows (PowerShell):**
+
+        ```powershell
+        powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+        ```
+
+    Restart your terminal after installation so `uv` is available on `PATH`.
+
+2. **Install InkSim** from PyPI into an isolated tool environment:
+
+    ```bash
+    uv tool install inksim
+    ```
+
+3. **Run InkSim:**
+
+    ```bash
+    inksim
+    inksim design.pes
+    ```
+
+On Windows you can also use `inksim-gui` to start without a console window:
+
+```powershell
+inksim-gui design.pes
+```
+
+## Active development
+
+InkSim is under active development and new releases appear frequently.
+Update regularly before reporting issues or testing new features:
+
+```bash
+uv tool upgrade inksim
+```
+
+The rest of this page shows alternative install methods and runtime options.
 
 ## Windows and macOS
 
@@ -25,6 +74,10 @@ If the command is not found, let `uv` add its tool directory to the shell
 ```bash
 uv tool update-shell
 ```
+
+> **What is `uv`?** `uv` is a fast Python package and tool installer. It is
+> used here only to download and install the InkSim application; it does not
+> add anything to Inkscape itself.
 
 ## Linux
 
