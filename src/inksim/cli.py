@@ -326,7 +326,6 @@ def main():
     snap_layout_key = args.snap
     app = QApplication.instance() or QApplication([])
     app.setApplicationName(APP_TITLE)
-    app.setApplicationDisplayName(APP_TITLE)
     app.setOrganizationName(APP_TITLE)
     app.setWindowIcon(QIcon(str(
         Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
