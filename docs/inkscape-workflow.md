@@ -1,12 +1,14 @@
 # Inkscape / Ink/Stitch / InkSim workflow
 
-InkSim works as an external preview for the [Ink/Stitch](https://inkstitch.org/) extension. Design and edit the embroidery inside Inkscape, then send it to InkSim with one click or shortcut.
+InkSim can work as an external preview for the [Ink/Stitch](https://inkstitch.org/) extension, but this integration is **not available in the current official Ink/Stitch release**. It is currently being developed and reviewed as a pull request.
 
-> **Preliminary integration.** The Ink/Stitch extension menu shown below is not part of the official Ink/Stitch release yet. It currently exists as a proposal / branch implementation and would need to go through a PR before becoming available to all users.
+Until it is merged, start InkSim separately from a terminal as described in the [installation guide](installation.md), then paste your exported stitch files into InkSim manually.
 
-## Calling InkSim from Inkscape
+> **Preliminary integration.** The menu path shown below does not exist in the official Ink/Stitch release yet. It is implemented on a development branch and will appear only after the corresponding PR is merged and released.
 
-Select the objects you want to preview and choose:
+## Calling InkSim from Inkscape (after the PR is released)
+
+Once the integration is available, select the objects you want to preview and choose:
 
 **Extensions → Ink/Stitch → Visualize and Export → InkSim**
 
