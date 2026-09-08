@@ -1,14 +1,14 @@
 # Installation and Running
 
-> **Important:** InkSim is a **standalone GUI application**, not an Inkscape
-> plugin or extension. You do **not** copy any files into Inkscape's
-> `extensions` folder.
+InkSim is a **standalone GUI application**, not an Inkscape extension. You do
+not copy files into Inkscape's `extensions` folder.
 
-## Quick start (recommended)
+> **Ink/Stitch integration** is still in PR review. Until it is merged, export
+> the embroidery as CSV from Ink/Stitch and open that file in InkSim.
 
-1. **Install `uv`** — a fast Python package installer and manager.
-   For detailed instructions see the
-   [official `uv` installation guide](https://docs.astral.sh/uv/getting-started/installation/).
+## Quick start
+
+1. Install [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
     - **macOS / Linux:**
 
         ```bash
@@ -21,193 +21,82 @@
         powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
         ```
 
-    Restart your terminal after installation so `uv` is available on `PATH`.
+    Restart the terminal so `uv` is on `PATH`.
 
-2. **Install InkSim** from PyPI into an isolated tool environment:
+2. Install InkSim:
 
     ```bash
     uv tool install inksim
     ```
 
-3. **Run InkSim:**
+3. Run it:
 
     ```bash
     inksim
     inksim design.pes
     ```
 
-On Windows you can also use `inksim-gui` to start without a console window:
+On Windows, `inksim-gui design.pes` starts without a console window.
 
-```powershell
-inksim-gui design.pes
-```
-
-## Active development
-
-InkSim is under active development and new releases appear frequently.
-Update regularly before reporting issues or testing new features:
+## Update
 
 ```bash
 uv tool upgrade inksim
 ```
 
-The rest of this page shows alternative install methods and runtime options.
+## Alternative installers
 
-## Windows and macOS
-
-Install the command-line application into uv's tool environment:
+`uv` is not required. Any of these work:
 
 ```bash
-uv tool install inksim
-```
-
-The console and GUI commands are then available as `inksim` and `inksim-gui`:
-
-```bash
-inksim design.pes
-inksim-gui design.pes
-```
-
-If the command is not found, let `uv` add its tool directory to the shell
-`PATH` and restart the shell:
-
-```bash
-uv tool update-shell
-```
-
-> **What is `uv`?** `uv` is a fast Python package and tool installer. It is
-> used here only to download and install the InkSim application; it does not
-> add anything to Inkscape itself.
-
-## Linux
-
-PySide6-Essentials is installed from PyPI together with InkSim, so no
-distribution-specific GUI wheel index is required.
-
-## Alternative: pip and venv
-
-`uv` is not required. Create a virtual environment with Python 3.11 or newer
-and install the package with `pip`:
-
-```bash
+# pip + venv
 python -m venv .venv
-. .venv/bin/activate
+. .venv/bin/activate            # Windows: .venv\Scripts\Activate.ps1
 python -m pip install inksim
-inksim design.pes
-```
 
-The activation command differs on Windows:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-## With pipx
-
-If you already use [pipx](https://pypa.github.io/pipx/) for command-line
-Python tools, install InkSim globally into its isolated environment:
-
-```bash
+# pipx
 pipx install inksim
-inksim design.pes
-```
 
-## With Poetry
-
-If your project is managed with [Poetry](https://python-poetry.org/), add
-InkSim as a dependency:
-
-```bash
+# Poetry
 poetry add inksim
-poetry run inksim design.pes
-```
 
-To install into the current Poetry environment only:
-
-```bash
-poetry add --group dev inksim
-```
-
-## With Conda
-
-If you use [Conda](https://conda.io/) or [Miniforge](https://conda-for.org/miniforge/),
-create an environment with Python 3.11 or newer and install from PyPI:
-
-```bash
+# Conda
 conda create -n inksim python=3.11
 conda activate inksim
 pip install inksim
-inksim design.pes
 ```
 
-InkSim is not yet packaged on `conda-forge`, so the last step uses `pip`
-inside the Conda environment.
-
-## Developer installation
-
-Clone the repository and synchronize its development environment:
+## Developer install
 
 ```bash
 git clone https://github.com/oorteo/inksim.git
 cd inksim
 uv sync
-```
-
-Run the checked-out version with:
-
-```bash
-uv run inksim
 uv run inksim design.pes
-```
-
-The repository also contains a setup helper. It can recreate `.venv` on macOS,
-Linux, and Windows when run from Git Bash or WSL:
-
-```bash
-./scripts/dev/010_setup_uv_venv.sh
 ```
 
 ## Command-line and GUI modes
 
-InkSim can be used in two ways:
+- `inksim` — console launcher; keeps output in the terminal.
+- `inksim-gui` — GUI launcher.
 
-- From an **already open terminal** — the `inksim` command keeps output and
-  errors in that terminal. With no export option it opens the graphical window.
-- As a **GUI application** — the `inksim-gui` command opens the same graphical
-  application without a console window.
-
-These command names and roles are the same on Windows, macOS, and Linux. On
-Windows, use `inksim-gui` for shortcuts, file associations, and `Win+R` so no
-console window is created.
+Both commands exist on Windows, macOS, and Linux. On Linux and macOS they are
+identical. Only on Windows do they differ: `inksim-gui` is a GUI-subsystem
+executable (a legacy of Windows' DOS heritage) that starts without a console
+window, while `inksim` opens one. Use `inksim-gui` on Windows for shortcuts,
+file associations, and `Win+R`.
 
 ## Running options
-
-Start playback, fullscreen mode, or an explicitly sized window with:
 
 ```bash
 inksim design.pes --play
 inksim design.pes --fullscreen
 inksim design.pes --size 1600x1000 --position 100,50
+inksim .                        # open the file dialog in this directory
 ```
 
-Pass a directory, including `.`, to open the file dialog in that directory:
+## GPU textured renderer
 
-```bash
-inksim .
-```
-
-The same GUI options work with `inksim-gui`; terminal output is intentionally
-available through `inksim`.
-
-## GPU textured renderer and OpenGL
-
-The _GPU Textured_ stitch renderer (`Z` shortcut or **GPU textured render**
-in the File menu) requires **OpenGL 3.3** with a Core Profile context. It is
-used automatically only when OpenGL 3.3 is available.
-
-On systems with only OpenGL 3.0 or older — common in virtual machines that do
-not expose 3D acceleration, such as a default VirtualBox configuration —
-InkSim falls back to the CPU-based _Shaded Volume_ raster renderer. The
-fallback happens automatically on startup and when the GPU renderer is
-selected, so the application remains usable; only the GPU renderer is
-unavailable.
+The GPU renderer (`Z`) requires **OpenGL 3.3**. On systems without OpenGL 3.3 —
+including virtual machines without 3D acceleration — InkSim falls back to the
+CPU renderer automatically.

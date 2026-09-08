@@ -1,66 +1,38 @@
 # InkSim
 
-InkSim is a **standalone** interactive embroidery simulator and preview renderer.
-It is a normal Python desktop application that opens embroidery files, displays
-their stitch sequence, and lets the user inspect or replay the design before
-production. It is **not an Inkscape extension** and is installed from PyPI,
-not from the Inkscape extension manager.
+InkSim is a standalone embroidery simulator and preview renderer. It opens
+embroidery files, shows the stitch sequence, and lets you inspect or replay a
+design before production.
 
-A future [Ink/Stitch](https://inkstitch.org/) release may be able to launch
-InkSim directly from inside Inkscape, but that integration is currently in
-development / under review and is not part of the current official Ink/Stitch
-release.
+It is a normal Python desktop application installed from PyPI — **not** an
+Inkscape extension.
 
 <p align="center">
   <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview" width="250">
 </p>
 
-The viewer now includes an **OpenGL textured renderer** that draws stitches as
-realistic ribbon quads with normal-mapped thread and Blinn-Phong lighting. Press
-`Z` in the viewer to toggle between the CPU and GPU renderers. The GPU renderer
-requires **OpenGL 3.3**; older systems and virtual machines fall back to the
-CPU raster renderer automatically.
-
-<p align="center">
-  <img src="docs/assets/images/thread_texture.webp" alt="Thread texture detail" width="450">
-  <br>
-  <em>Detail of the normal-mapped thread texture used by the OpenGL renderer.</em>
-</p>
-
-InkSim is experimental software provided for development and testing.
-
-## Running
-
-Run InkSim from your terminal or command prompt:
+## Install
 
 ```bash
-inksim design.pes
+uv tool install inksim
 ```
 
-On Windows you can also use `inksim-gui design.pes` to launch without a console
-window. Both command names work the same on Windows, macOS, and Linux.
+Requires Python 3.11+. See the [installation guide](docs/installation.md) for
+`uv` setup and alternative installers.
 
-<p align="center">
-  <img src="docs/assets/basic_usage/010_basic_windows.webp" alt="InkSim main window" width="600">
-  <br>
-  <em>The InkSim window after opening a design.</em>
-</p>
-
-## Installation
-
-InkSim requires Python 3.11 or newer. Install it with your preferred Python
-package manager (`uv`, `pip`, `pipx`, or another). See the
-[installation guide](docs/installation.md) for step-by-step instructions for
-the most common tools, including how to add InkSim to your `PATH` and how to
-install a development copy from source.
-
-## Quick start
+## Run
 
 ```bash
 inksim
 inksim design.pes
 inksim design.pes --play
 ```
+
+On Windows, `inksim-gui design.pes` starts without a console window.
+
+<p align="center">
+  <img src="docs/assets/basic_usage/010_basic_windows.webp" alt="InkSim main window" width="600">
+</p>
 
 ## Documentation
 
