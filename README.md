@@ -11,6 +11,18 @@ Inkscape extension.
   <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview" width="250">
 </p>
 
+The viewer includes an **OpenGL textured renderer** that draws stitches as
+realistic ribbon quads with normal-mapped thread and Blinn-Phong lighting. Press
+`Z` in the viewer to toggle between the CPU and GPU renderers. The GPU renderer
+requires **OpenGL 3.3**; older systems fall back to the
+CPU raster renderer automatically.
+
+<p align="center">
+  <img src="docs/assets/images/thread_texture.webp" alt="Thread texture detail" width="450">
+  <br>
+  <em>Detail of the normal-mapped thread texture used by the OpenGL renderer.</em>
+</p>
+
 ## Install
 
 ```bash
