@@ -36,8 +36,21 @@ def _parse_pair(value, name, separator):
     return first, second
 
 
-def _send_command_and_exit(json_text):
-    """Send a JSON command to a running server and print the response."""
+def _write_response_file(output_path, response):
+    """Write a JSON response to ``output_path`` for a GUI-subsystem caller."""
+    try:
+        output_path.write_text(json.dumps(response), encoding="utf-8")
+    except OSError as ex:
+        raise SystemExit(f"cannot write response to {output_path}: {ex}")
+
+
+def _send_command_and_exit(json_text, output_path=None):
+    """Send a JSON command to a running server and print the response.
+
+    When ``output_path`` is given the JSON response is written to that file
+    instead of stdout.  This lets a GUI-subsystem launcher (``inksim-gui`` on
+    Windows) report its result without needing an attached console.
+    """
     try:
         command = json.loads(json_text)
     except json.JSONDecodeError as ex:
@@ -52,9 +65,15 @@ def _send_command_and_exit(json_text):
     try:
         response = send_command(command)
     except RuntimeError as ex:
-        print(str(ex), file=sys.stderr)
+        if output_path is not None:
+            _write_response_file(output_path, {"ok": False, "error": str(ex)})
+        else:
+            print(str(ex), file=sys.stderr)
         raise SystemExit(1)
-    print(json.dumps(response))
+    if output_path is not None:
+        _write_response_file(output_path, response)
+    else:
+        print(json.dumps(response))
     raise SystemExit(0 if response.get("ok") else 1)
 
 
@@ -110,6 +129,10 @@ def build_argument_parser():
         "--send-command",
         metavar="JSON",
         help="Send one JSON command to a running InkSim server and exit",
+    )
+    parser.add_argument(
+        "--output", type=Path, metavar="FILE",
+        help="Write the --send-command JSON response to FILE instead of stdout",
     )
     parser.add_argument(
         "--debug", "--dbg", action="store_true",
@@ -193,6 +216,8 @@ def main():
     if args.version:
         print("\n".join(runtime_info_lines()))
         return
+    if args.output is not None and not args.send_command:
+        parser.error("--output is only meaningful with --send-command")
     if args.send_command:
         debug_enabled = args.debug or args.log is not None or bool(
             os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG")
@@ -208,7 +233,7 @@ def main():
                 configure_logging(True, log_path)
             except OSError as ex:
                 parser.error(f"cannot create debug log {log_path}: {ex}")
-        _send_command_and_exit(args.send_command)
+        _send_command_and_exit(args.send_command, args.output)
 
     export_values = [
         value for value in (
@@ -301,7 +326,6 @@ def main():
     snap_layout_key = args.snap
     app = QApplication.instance() or QApplication([])
     app.setApplicationName(APP_TITLE)
-    app.setApplicationDisplayName(APP_TITLE)
     app.setOrganizationName(APP_TITLE)
     app.setWindowIcon(QIcon(str(
         Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
@@ -336,6 +360,8 @@ def main():
                     command["snap"] = snap_layout_key
                 if document_path is not None and command["command"] == open_command:
                     command["document_path"] = str(document_path)
+                if args.play and command["command"] == open_command:
+                    command["autoplay"] = True
                 response = send_command(command)
                 frame.close()
                 if not response.get("ok"):

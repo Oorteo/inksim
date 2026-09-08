@@ -57,18 +57,18 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 InkSim supports three non-interactive export modes:
 
 ```bash
-uv run inksim design.pes --simple-png
-uv run inksim design.pes --png
-uv run inksim design.pes --icon
+inksim design.pes --simple-png
+inksim design.pes --png
+inksim design.pes --icon
 
 # Or provide an explicit output path
-uv run inksim design.pes --simple-png output.png
-uv run inksim design.pes --png shaded-output.png
-uv run inksim design.pes --icon preview.png
+inksim design.pes --simple-png output.png
+inksim design.pes --png shaded-output.png
+inksim design.pes --icon preview.png
 
 # Batch export; each input gets its own basename-derived PNG
-uv run inksim *.pes --png
-uv run inksim *.pes --png exports/ -y
+inksim *.pes --png
+inksim *.pes --png exports/ -y
 ```
 
 | Option                    | Description                                          |
@@ -156,9 +156,9 @@ first input file, using its basename with a `.log` suffix; without an input
 file it is `inksim.log` in the current directory:
 
 ```bash
-uv run inksim --debug design.pes
-uv run inksim --dbg design.pes
-uv run inksim design.pes --log diagnostics/run.log
+inksim --debug design.pes
+inksim --dbg design.pes
+inksim design.pes --log diagnostics/run.log
 ```
 
 `--debug` and `--dbg` are aliases. `--log FILE` implies debug logging and

@@ -145,6 +145,9 @@ class Config:
     def load_text(self, text: str) -> None:
         """Replace the in-memory data with *text* and persist it.
 
+        This is a full replacement: keys removed from *text* are deleted from
+        the file, unlike :meth:`save` which merges with the on-disk content.
+
         Raises:
             ValueError: If *text* is not valid TOML.
         """
@@ -154,7 +157,8 @@ class Config:
             self._data = tomllib.loads(text)
         except Exception as exc:
             raise ValueError(f"Invalid TOML: {exc}") from exc
-        self.save()
+        with self._lock.acquire(timeout=5.0):
+            self._save_locked()
 
     def merge_data(self, data: dict[str, Any]) -> None:
         """Merge *data* into the current in-memory dictionary and persist.

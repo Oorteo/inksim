@@ -34,6 +34,15 @@ from ..formats import (
 )
 from ..render import render_export_image
 from ..runtime import _sanitize_path, _unsanitize_path
+from ..update_check import (
+    UpdateCheckThread,
+    current_version,
+    is_newer,
+    last_result,
+    record_check,
+    record_result,
+    should_check,
+)
 from .dialogs import EmbroideryOpenDialog
 from .about import show_about
 from .config_editor import show_config_editor
@@ -94,6 +103,9 @@ class MainWindow(QMainWindow):
         self._snapped_geometry = None
         self._last_geometry = self.geometry()
         self._base_title = APP_TITLE
+        self._update_thread = None
+        self._update_suffix = self._resolve_update_suffix(last_result(self.config))
+        self._update_window_title()
 
         main_panel = QWidget(self)
         layout = QVBoxLayout(main_panel)
@@ -328,6 +340,7 @@ class MainWindow(QMainWindow):
         else:
             self.show()
         QTimer.singleShot(0, lambda: self._finish_initial_display(autoplay))
+        QTimer.singleShot(1500, self._maybe_auto_check_updates)
         if initial_directory:
             directory_path = Path(initial_directory)
             if directory_path.is_dir():
@@ -482,6 +495,8 @@ class MainWindow(QMainWindow):
             checkable=True,
         )
         self._action(help_menu, f"About {APP_TITLE}", lambda: show_about(self))
+        help_menu.addSeparator()
+        self._action(help_menu, "Check for updates", self._check_for_updates)
 
     def _finish_initial_display(self, autoplay):
         self.viewer.fit_to_screen()
@@ -498,6 +513,82 @@ class MainWindow(QMainWindow):
         self.viewer.invalidate_cache()
         self.viewer.update()
         self.progress.update()
+
+    def _maybe_auto_check_updates(self):
+        """Run an update check once per configured interval, if enabled."""
+        if not should_check(self.config):
+            return
+        self._check_for_updates(automatic=True)
+
+    def _check_for_updates(self, automatic=False):
+        """Query PyPI for a newer version and notify the user."""
+        if self._update_thread is not None and self._update_thread.isRunning():
+            return
+        self.statusBar().showMessage("Checking for updates...", 3000)
+        thread = UpdateCheckThread(self)
+        thread.result_ready.connect(
+            lambda latest: self._on_update_result(latest, automatic)
+        )
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(lambda: self._clear_update_thread(thread))
+        self._update_thread = thread
+        thread.start()
+
+    def _clear_update_thread(self, thread):
+        if self._update_thread is thread:
+            self._update_thread = None
+
+    def _on_update_result(self, latest, automatic=False):
+        record_check(self.config)
+        if not latest:
+            if automatic:
+                return
+            QMessageBox.information(
+                self,
+                "Check for updates",
+                "Could not reach PyPI to check for updates.\n"
+                "Check your internet connection and try again.",
+            )
+            return
+        installed = current_version()
+        if is_newer(latest, installed):
+            title = "Update available"
+            suffix = f" [available version {latest}]"
+            stored = latest
+            message = (
+                f"A newer InkSim version is available.\n\n"
+                f"Installed: {installed}\n"
+                f"Latest:    {latest}\n\n"
+                f"Run `pip install --upgrade inksim` to update."
+            )
+        elif is_newer(installed, latest):
+            title = "Development version"
+            suffix = f" [development version {installed}]"
+            stored = installed
+            message = (
+                f"Your local InkSim is newer than the published release.\n\n"
+                f"Installed: {installed}\n"
+                f"Published: {latest}\n\n"
+                f"This is expected while developing locally."
+            )
+        else:
+            title = "Up to date"
+            suffix = ""
+            stored = ""
+            message = (
+                f"InkSim is up to date.\n\n"
+                f"Installed: {installed}\n"
+                f"Latest:    {latest}"
+            )
+        if automatic:
+            # Automatic checks surface the result permanently in the window
+            # title instead of popping up another dialog.  Store only the raw
+            # version so we can suppress stale suffixes on the next start.
+            self._update_suffix = suffix
+            record_result(self.config, stored)
+            self._update_window_title()
+            return
+        QMessageBox.information(self, title, message)
 
     def _build_command_dock(self):
         self.command_table = QTableWidget(0, 4, self)
@@ -714,9 +805,33 @@ class MainWindow(QMainWindow):
         self._last_geometry = current
 
     def _update_window_title(self):
-        """Show layout state in the window title."""
+        """Show layout state and update status in the window title."""
         snap_prefix = "[snap] " if self._layout_state == "snapped" else ""
-        self.setWindowTitle(f"{snap_prefix}{self._base_title}")
+        base = self._base_title
+        suffix = self._update_suffix
+        # The suffix must never repeat the application name.
+        if suffix and APP_TITLE in suffix:
+            suffix = ""
+        self.setWindowTitle(f"{snap_prefix}{base}{suffix}")
+
+    def _resolve_update_suffix(self, stored: str) -> str:
+        """Return a clean title suffix from the stored version, if any."""
+        if not stored or not isinstance(stored, str):
+            return ""
+        stored = stored.strip()
+        installed = current_version()
+        # A stored plain version equal to the installed one means we are up to
+        # date, so suppress the suffix.
+        if stored == installed:
+            return ""
+        # Legacy verbose values are dropped.
+        if "InkSim" in stored or "update:" in stored or "dev:" in stored or "  —  " in stored:
+            return ""
+        if is_newer(stored, installed):
+            return f" [available version {stored}]"
+        if is_newer(installed, stored):
+            return f" [development version {installed}]"
+        return ""
 
     def _update_snap_menu_state(self):
         """Enable snap save/clear only when the snap layout is active."""
@@ -742,8 +857,15 @@ class MainWindow(QMainWindow):
         import subprocess
         try:
             if os.name == "nt":
+                # Suppress the console window that ``tasklist`` would
+                # otherwise flash on Windows.
+                creationflags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
                 result = subprocess.run(
-                    ["tasklist"], capture_output=True, text=True, check=False
+                    ["tasklist"],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                    creationflags=creationflags,
                 )
                 lowered = result.stdout.lower()
                 return ("inkscape.exe" in lowered

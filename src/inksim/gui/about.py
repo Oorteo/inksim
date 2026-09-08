@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
 
 from ..constants import APP_TITLE
 from ..runtime import runtime_info_lines
+from ..update_check import last_check_text
 
 
 def show_about(parent):
@@ -69,6 +70,13 @@ def show_about(parent):
     runtime.setFont(QFont("Monospace", 9))
     runtime.setMaximumHeight(210)
     layout.addWidget(runtime)
+
+    last_check = QLabel(
+        f"Last update check: {last_check_text(parent.config)}", dialog
+    )
+    last_check.setObjectName("body")
+    last_check.setAlignment(Qt.AlignCenter)
+    layout.addWidget(last_check)
 
     buttons = QDialogButtonBox(QDialogButtonBox.Close, parent=dialog)
     buttons.rejected.connect(dialog.reject)

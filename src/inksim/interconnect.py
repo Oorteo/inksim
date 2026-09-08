@@ -234,8 +234,13 @@ class InterconnectServer(QObject):
         raise ValueError(f"unknown command: {command!r}")
 
 
-def send_command(command, server_name=IPC_SERVER_NAME, timeout=1000):
-    """Send one command to a running InkSim server and return its response."""
+def send_command(command, server_name=IPC_SERVER_NAME, timeout=10000):
+    """Send one command to a running InkSim server and return its response.
+
+    The timeout is generous because ``open``/``open_and_delete`` load the
+    design synchronously on the server before replying, which can take a few
+    seconds on Windows.
+    """
     logger.debug("IPC client sending command to %s: %s", server_name, command.get("command"))
     token = read_auth_token()
     if token is None:
