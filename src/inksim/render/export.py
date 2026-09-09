@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+"""Export rendering helpers for PNG/WebP/JPEG output."""
+
+from __future__ import annotations
+
 import numpy as np
 from PySide6.QtGui import QImage, QPainter
 
@@ -9,19 +13,19 @@ from .viewport import render_viewport_raster
 
 
 def render_export_image(
-    stitches,
-    bounds,
-    width,
-    height,
-    line_width,
-    renderer_key,
-    dpi=None,
-    background="transparent",
-    grid=False,
-    dark_factor=0.75,
-    light_factor=0.45,
-    scale_factor=1.0,
-):
+    stitches: np.ndarray,
+    bounds: tuple[float, float, float, float],
+    width: int,
+    height: int,
+    line_width: float,
+    renderer_key: str,
+    dpi: float | None = None,
+    background: tuple[int, int, int] | str = "transparent",
+    grid: bool = False,
+    dark_factor: float = 0.75,
+    light_factor: float = 0.45,
+    scale_factor: float = 1.0,
+) -> QImage:
     """Render a PNG/WebP/JPEG using the same renderer as the viewer.
 
     A small margin is left around the design bounding box so stitches that
