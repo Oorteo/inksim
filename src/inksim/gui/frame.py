@@ -10,7 +10,18 @@ from pathlib import Path
 
 import pystitch as emb
 from PySide6.QtCore import QEvent, QObject, QRect, QSignalBlocker, Qt, QTimer
-from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence, QMoveEvent, QResizeEvent
+from PySide6.QtGui import (
+    QAction,
+    QCloseEvent,
+    QColor,
+    QDragEnterEvent,
+    QDropEvent,
+    QIcon,
+    QImage,
+    QKeySequence,
+    QMoveEvent,
+    QResizeEvent,
+)
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -887,7 +898,7 @@ class MainWindow(QMainWindow):
             return f" [development version {installed}]"
         return ""
 
-    def _update_snap_menu_state(self):
+    def _update_snap_menu_state(self) -> None:
         """Enable snap save/clear only when the snap layout is active."""
         enabled = self._layout_state == "snapped"
         if getattr(self, "save_snap_action", None):
@@ -895,13 +906,13 @@ class MainWindow(QMainWindow):
         if getattr(self, "clear_snap_action", None):
             self.clear_snap_action.setEnabled(enabled)
 
-    def request_quit(self):
+    def request_quit(self) -> None:
         """Close the application instead of hiding a server window."""
         self._allow_close = True
         self.close()
 
     @staticmethod
-    def _inkscape_running():
+    def _inkscape_running() -> bool:
         """Return True when at least one Inkscape process is running.
 
         Probing for a running process named ``inkscape`` is more reliable
@@ -924,12 +935,14 @@ class MainWindow(QMainWindow):
                 )
                 lowered = result.stdout.lower()
                 return "inkscape.exe" in lowered or "inkscape.com" in lowered
-            result = subprocess.run(["pgrep", "-x", "inkscape"], capture_output=True, check=False)
+            result = subprocess.run(
+                ["pgrep", "-x", "inkscape"], capture_output=True, check=False, text=True
+            )
             return result.returncode == 0
         except OSError:
             return False
 
-    def _save_current_layout(self):
+    def _save_current_layout(self) -> None:
         """Persist whatever layout is currently active."""
         if self.is_fullscreen or self.isMinimized():
             return
@@ -938,7 +951,7 @@ class MainWindow(QMainWindow):
         else:
             self._save_window_layout()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: QCloseEvent) -> None:
         if self.server_mode and not self._allow_close:
             alive = self._inkscape_running()
             if not alive:
@@ -972,13 +985,13 @@ class MainWindow(QMainWindow):
             interconnect.stop()
         event.accept()
 
-    def toggle_grid(self, checked):
+    def toggle_grid(self, checked: bool) -> None:
         self.viewer.show_grid = checked
         self.viewer.invalidate_cache()
         self.viewer.update()
         self.viewer.update_mode_indicators()
 
-    def toggle_realistic(self, checked):
+    def toggle_realistic(self, checked: bool) -> None:
         if not self.viewer._opengl33_available and self.viewer.active_renderer != "gpu_textured":
             self.statusBar().showMessage(
                 "GPU textured renderer requires OpenGL 3.3 (not available); using CPU raster renderer",
@@ -988,7 +1001,7 @@ class MainWindow(QMainWindow):
             return
         self.viewer.toggle_display_mode("Z")
 
-    def toggle_show_all(self, checked=False):
+    def toggle_show_all(self, checked: bool = False) -> None:
         total = self.viewer.stitches_np.shape[0]
         if self.viewer.visible_count < total:
             self.viewer.visible_count = total
@@ -1011,7 +1024,7 @@ class MainWindow(QMainWindow):
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
 
-    def toggle_needle(self, checked):
+    def toggle_needle(self, checked: bool) -> None:
         self.viewer.show_needle = checked
         if checked:
             self.viewer.highlight_needle()
@@ -1019,12 +1032,14 @@ class MainWindow(QMainWindow):
             self.viewer.stop_needle_highlight()
         self.viewer.update()
 
-    def open_file_dialog(self):
+    def open_file_dialog(self) -> None:
         dialog = EmbroideryOpenDialog(
             self, self.last_directory, self.current_file_path, self.recent_directories
         )
         if dialog.exec() == QDialog.Accepted:
-            self.open_file(dialog.selected_path)
+            selected = dialog.selected_path
+            if selected is not None:
+                self.open_file(selected)
             chosen_background = dialog.background_color
             if chosen_background != self.viewer.background_color:
                 self.viewer.background_color = chosen_background
@@ -1034,22 +1049,28 @@ class MainWindow(QMainWindow):
                 self.viewer.invalidate_cache()
                 self.viewer.repaint()
 
-    def set_document_path(self, document_path):
+    def set_document_path(self, document_path: str | Path) -> None:
         """Set the source document used for Save As defaults."""
         path = Path(document_path).resolve()
         self.document_path = path
         self.last_directory = str(path.parent)
 
-    def _preferred_source_path(self):
+    def _preferred_source_path(self) -> Path | None:
         """Return the authoritative source path for output defaults."""
         return self.document_path or self.current_file_path
 
-    def _default_export_name(self, suffix):
+    def _default_export_name(self, suffix: str) -> str:
         source_path = self._preferred_source_path()
         base_name = source_path.stem if source_path else "inksim"
         return f"{base_name}{suffix}"
 
-    def _choose_export_path(self, title, default_name, file_filter, extension):
+    def _choose_export_path(
+        self,
+        title: str,
+        default_name: str,
+        file_filter: str,
+        extension: str,
+    ) -> Path | None:
         export_directory = Path(self.last_directory or Path.cwd())
         default_path = export_directory / default_name
         path, _ = QFileDialog.getSaveFileName(
@@ -1063,10 +1084,10 @@ class MainWindow(QMainWindow):
         selected_path = Path(path)
         return selected_path.with_suffix(extension)
 
-    def _default_save_name(self):
+    def _default_save_name(self) -> str:
         return self._default_save_path().name
 
-    def _default_save_path(self):
+    def _default_save_path(self) -> Path:
         source_path = self._preferred_source_path()
         base_name = source_path.stem if source_path else "inksim"
         current_extension = (
@@ -1082,7 +1103,7 @@ class MainWindow(QMainWindow):
             return self.document_path.with_name(filename)
         return Path(self.last_directory or Path.cwd()) / filename
 
-    def _choose_save_as_path(self):
+    def _choose_save_as_path(self) -> Path | None:
         output_filter = get_supported_output_filter()
         default_path = self._default_save_path()
         dialog = QFileDialog(self, "Save embroidery as", str(default_path))
@@ -1091,7 +1112,7 @@ class MainWindow(QMainWindow):
         dialog.setDirectory(str(default_path.parent))
         dialog.selectFile(default_path.name)
 
-        def on_filter_selected(selected_filter):
+        def on_filter_selected(selected_filter: str) -> None:
             extension = extension_from_output_filter(selected_filter)
             if not extension:
                 return
@@ -1120,16 +1141,16 @@ class MainWindow(QMainWindow):
     def _save_as_embroidery_slot(self, checked: bool = False) -> None:
         self.save_as_embroidery()
 
-    def _path_with_output_extension(self, path, extension):
+    def _path_with_output_extension(self, path: str | Path, extension: str) -> str:
         return str(Path(path).with_suffix(f".{extension}"))
 
-    def save_as_embroidery(self):
+    def save_as_embroidery(self) -> bool:
         path = self._choose_save_as_path()
         if path is None:
             return False
         return self.save_embroidery_to_path(path)
 
-    def save_embroidery_to_path(self, path):
+    def save_embroidery_to_path(self, path: str | Path) -> bool:
         pattern = self.viewer.pattern
         if pattern is None:
             QMessageBox.warning(self, "Save embroidery", "No embroidery file is loaded.")
@@ -1142,7 +1163,7 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(f"Saved {path}", 3000)
         return True
 
-    def _can_export_image(self):
+    def _can_export_image(self) -> bool:
         if self.viewer.stitches_np.shape[0] == 0:
             QMessageBox.information(self, "Export", "No embroidery file is loaded to export.")
             return False
@@ -1150,15 +1171,15 @@ class MainWindow(QMainWindow):
 
     def export_png(
         self,
-        path=None,
-        icon=False,
-        dpi=300,
-        background="transparent",
-        grid=False,
-        renderer_key=None,
-        scale_factor=1.0,
-        format="PNG",
-    ):
+        path: str | Path | None = None,
+        icon: bool = False,
+        dpi: int = 300,
+        background: tuple[int, int, int] | str = "transparent",
+        grid: bool = False,
+        renderer_key: str | None = None,
+        scale_factor: float = 1.0,
+        format: str = "PNG",
+    ) -> QImage | bool | None:
         if self.viewer.stitches_np.shape[0] == 0:
             return None
         if icon:
@@ -1187,20 +1208,31 @@ class MainWindow(QMainWindow):
             quality = -1
             if format in ("JPEG", "WebP"):
                 quality = 95
-            return image.save(str(path), format, quality)
+            return image.save(str(path), format, quality)  # type: ignore[call-overload]
         return image
 
     def _show_export_preview(
-        self, title, image, default_name, renderer_key=None, icon=False, dpi=300
-    ):
+        self,
+        title: str,
+        image: QImage,
+        default_name: str,
+        renderer_key: str | None = None,
+        icon: bool = False,
+        dpi: int = 300,
+    ) -> None:
         default_path = str(Path(self.last_directory or Path.cwd()) / default_name)
         bounds = self.viewer.bounds
         design_width_mm = bounds[2] - bounds[0]
         design_height_mm = bounds[3] - bounds[1]
 
-        def _render_callback(transparent=False, scale_factor=1.0, format="PNG", quality=95):
+        def _render_callback(
+            transparent: bool = False,
+            scale_factor: float = 1.0,
+            format: str = "PNG",
+            quality: int = 95,
+        ) -> QImage | None:
             background = "transparent" if transparent else self.viewer.background_color
-            image = self.export_png(
+            result = self.export_png(
                 icon=icon,
                 dpi=dpi,
                 background=background,
@@ -1208,9 +1240,11 @@ class MainWindow(QMainWindow):
                 scale_factor=scale_factor,
                 format=format,
             )
-            return image
+            if isinstance(result, QImage):
+                return result
+            return None
 
-        def _on_transparent_changed(checked):
+        def _on_transparent_changed(checked: bool) -> None:
             self.export_transparent_background = checked
             self.config.set("export_transparent_background", checked)
 
@@ -1234,15 +1268,16 @@ class MainWindow(QMainWindow):
             self.last_directory = str(selected_path.parent)
             self.statusBar().showMessage(f"Exported {_sanitize_path(selected_path)}", 3000)
 
-    def export_print_png(self):
+    def export_print_png(self) -> None:
         if not self._can_export_image():
             return
+        background: tuple[int, int, int] | str
         if self.export_transparent_background:
             background = "transparent"
         else:
             background = self.viewer.background_color
         image = self.export_png(dpi=300, background=background, renderer_key="simple")
-        if image is None:
+        if image is None or not isinstance(image, QImage):
             return
         self._show_export_preview(
             "Export PNG for print",
@@ -1252,15 +1287,16 @@ class MainWindow(QMainWindow):
             dpi=300,
         )
 
-    def export_shaded_png(self):
+    def export_shaded_png(self) -> None:
         if not self._can_export_image():
             return
+        background: tuple[int, int, int] | str
         if self.export_transparent_background:
             background = "transparent"
         else:
             background = self.viewer.background_color
         image = self.export_png(dpi=300, background=background)
-        if image is None:
+        if image is None or not isinstance(image, QImage):
             return
         self._show_export_preview(
             "Export shaded PNG for print",
@@ -1269,15 +1305,16 @@ class MainWindow(QMainWindow):
             dpi=300,
         )
 
-    def export_icon_png(self):
+    def export_icon_png(self) -> None:
         if not self._can_export_image():
             return
+        background: tuple[int, int, int] | str
         if self.export_transparent_background:
             background = "transparent"
         else:
             background = self.viewer.background_color
         image = self.export_png(icon=True, dpi=96, background=background)
-        if image is None:
+        if image is None or not isinstance(image, QImage):
             return
         self._show_export_preview(
             "Export preview PNG",
@@ -1287,7 +1324,13 @@ class MainWindow(QMainWindow):
             dpi=96,
         )
 
-    def open_file(self, path, precompute_density=True, delete_after_load=False, autoplay=False):
+    def open_file(
+        self,
+        path: str | Path,
+        precompute_density: bool = True,
+        delete_after_load: bool = False,
+        autoplay: bool = False,
+    ) -> bool:
         selected_path = Path(path).resolve()
         if not self.viewer.load_design(
             str(selected_path),
@@ -1323,12 +1366,12 @@ class MainWindow(QMainWindow):
                 pass
         return True
 
-    def show_command_panel(self):
+    def show_command_panel(self) -> None:
         self.command_dock.show()
         self.command_dock.raise_()
         self.refresh_command_panel()
 
-    def toggle_full_screen(self):
+    def toggle_full_screen(self) -> None:
         if not self.is_fullscreen:
             self._fullscreen_was_maximized = self.isMaximized()
             self.is_fullscreen = True
@@ -1342,7 +1385,7 @@ class MainWindow(QMainWindow):
         else:
             self.showNormal()
 
-    def play(self):
+    def play(self) -> None:
         """Start simulation playback from the beginning of the design."""
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
@@ -1351,13 +1394,13 @@ class MainWindow(QMainWindow):
         self.viewer.is_playing = False
         self.viewer.toggle_auto_play(forward=True)
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
         else:
             event.ignore()
 
-    def dropEvent(self, event):
+    def dropEvent(self, event: QDropEvent) -> None:
         urls = event.mimeData().urls()
         if urls:
             self.open_file(urls[0].toLocalFile())
