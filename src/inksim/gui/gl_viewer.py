@@ -8,12 +8,15 @@ screen using the same GPU pipeline as the offscreen export renderer.
 It is used when the active stitch renderer is "gpu_textured".
 """
 
+from __future__ import annotations
+
 import ctypes
 import time
 from pathlib import Path
+from typing import Any
 
 import numpy as np
-from OpenGL.GL import *
+from OpenGL.GL import *  # noqa: F403
 from PySide6.QtCore import Qt
 from PySide6.QtGui import (
     QColor,
@@ -31,6 +34,7 @@ from PySide6.QtOpenGL import (
     QOpenGLVertexArrayObject,
 )
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
+from PySide6.QtWidgets import QWidget
 
 from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_WARNING_PER_MM2
 from ..debug import is_enabled, logger
@@ -45,7 +49,7 @@ from ..render.stitches_gl import (
 )
 
 
-def _check_gl_error(label):
+def _check_gl_error(label: str) -> None:
     """Log any pending OpenGL error under the given label."""
     err = glGetError()
     if err == GL_NO_ERROR:
@@ -270,7 +274,7 @@ void main() {
 """
 
 
-def list_thread_textures():
+def list_thread_textures() -> list[tuple[str, Path]]:
     """Return ``[(label, path)]`` of available thread normal/mask textures.
 
     Only the packaged assets under ``assets/thread_textures/`` are listed;
@@ -278,7 +282,7 @@ def list_thread_textures():
     The dev-only previews under ``scripts/texture/renders/`` are intentionally
     omitted from the menu.
     """
-    results = []
+    results: list[tuple[str, Path]] = []
     here = Path(__file__).resolve().parent
     assets_dir = here.parent / "assets" / "thread_textures"
     if assets_dir.exists():
@@ -294,20 +298,20 @@ class GLStitchWidget(QOpenGLWidget):
     can switch between raster and OpenGL rendering modes.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         # Mouse/keyboard input is handled entirely by the parent viewer (pan,
         # zoom, stitch stepping, needle, timeline...); this widget is only a
         # display surface, so let all mouse events pass through to it.
         self.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self._viewer = parent
-        self._program = None
-        self._vao = None
-        self._vbo = None
-        self._ibo = None
-        self._texture = None
-        self._cap_texture = None
-        self._texture_path = None
+        self._viewer: Any = parent
+        self._program: QOpenGLShaderProgram | None = None
+        self._vao: QOpenGLVertexArrayObject | None = None
+        self._vbo: QOpenGLBuffer | None = None
+        self._ibo: QOpenGLBuffer | None = None
+        self._texture: QOpenGLTexture | None = None
+        self._cap_texture: QOpenGLTexture | None = None
+        self._texture_path: Path | None = None
         self._width_fraction = 1.0
         self._cap_fraction = 0.0
         self._zoom = 1.0
@@ -329,7 +333,7 @@ class GLStitchWidget(QOpenGLWidget):
         # Overlay state (mirrors the parent viewer's analysis overlays).
         self._show_jumps = False
         self._risky_jumps_only = False
-        self._jump_segments = []
+        self._jump_segments: list[tuple[float, float, float, float, bool, int]] = []
         self._show_density = False
         self._density_points = np.zeros((0, 2), dtype=np.float32)
         self._density_values = np.zeros((0,), dtype=np.float32)
@@ -345,46 +349,49 @@ class GLStitchWidget(QOpenGLWidget):
         self._show_grid = True
         self._updates_blocked = False
         self._pending_update = False
+        self._grid_program: QOpenGLShaderProgram | None = None
+        self._density_program: QOpenGLShaderProgram | None = None
+        self._density_vao: QOpenGLVertexArrayObject | None = None
+        self._density_vbo: QOpenGLBuffer | None = None
+        self._cleaned_up = False
 
-    def _maybe_update(self):
+    def _maybe_update(self) -> None:
         """Schedule a repaint unless updates are temporarily blocked."""
         if self._updates_blocked:
             self._pending_update = True
         else:
             self.update()
 
-    def block_updates(self):
+    def block_updates(self) -> None:
         """Stop individual setters from scheduling repaints."""
         self._updates_blocked = True
         self._pending_update = False
 
-    def unblock_updates(self):
+    def unblock_updates(self) -> None:
         """Re-enable repaints; the caller decides when to call update()."""
         self._updates_blocked = False
 
-    def set_view(self, zoom, pan_x, pan_y, zoom_ratio=1.0):
+    def set_view(self, zoom: float, pan_x: float, pan_y: float, zoom_ratio: float = 1.0) -> None:
         self._zoom = zoom
         self._zoom_ratio = zoom_ratio
         self._pan = np.array([pan_x, pan_y], dtype=np.float32)
         self._maybe_update()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Release OpenGL resources while the context is still current.
 
         QOpenGLTexture/QOpenGLBuffer objects must be destroyed with a current
         context, otherwise Qt prints warnings about textures not being
         destroyed. Call this before the widget is hidden/destroyed.
         """
-        if getattr(self, "_cleaned_up", False):
+        if self._cleaned_up:
             return
         self._cleaned_up = True
-        if not self.context():
+        ctx = self.context()
+        if ctx is None or not ctx.isValid():
             return
-        if not self.context().isValid():
-            return
-        context = self.context()
         self.makeCurrent()
-        if QOpenGLContext.currentContext() != context:
+        if QOpenGLContext.currentContext() != ctx:
             self._cleaned_up = False
             return
         try:
@@ -421,19 +428,19 @@ class GLStitchWidget(QOpenGLWidget):
         finally:
             self.doneCurrent()
 
-    def set_background(self, r, g, b):
+    def set_background(self, r: float, g: float, b: float) -> None:
         self._bg_color = (r / 255.0, g / 255.0, b / 255.0)
         self._maybe_update()
 
-    def set_light_factor(self, light_factor):
+    def set_light_factor(self, light_factor: float) -> None:
         self._light_factor = light_factor
         self._maybe_update()
 
-    def set_dark_factor(self, dark_factor):
+    def set_dark_factor(self, dark_factor: float) -> None:
         self._dark_factor = dark_factor
         self._maybe_update()
 
-    def set_stitches(self, stitches, line_width):
+    def set_stitches(self, stitches: np.ndarray, line_width: float) -> None:
         """Set the full stitch array; geometry is (re)built for all of it.
 
         Use `set_visible_count` to change how many stitches are drawn --
@@ -447,7 +454,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._needs_upload = True
         self._maybe_update()
 
-    def invalidate_geometry(self):
+    def invalidate_geometry(self) -> None:
         """Force a rebuild of the stitch quad geometry on the next paint.
 
         Call this after the parent viewer mutates stitch coordinates in
@@ -456,45 +463,66 @@ class GLStitchWidget(QOpenGLWidget):
         self._needs_upload = True
         self._maybe_update()
 
-    def set_visible_count(self, visible_count):
+    def set_visible_count(self, visible_count: int) -> None:
         self._visible_count = visible_count
         self._maybe_update()
 
-    def set_reverse_draw_order(self, enabled):
+    def set_reverse_draw_order(self, enabled: bool) -> None:
         """Draw visible stitch index ranges in reverse Z-order when enabled."""
         if enabled == self._reverse_draw_order:
             return
         self._reverse_draw_order = enabled
         self._maybe_update()
 
-    def set_jumps(self, show_jumps, risky_only, jump_segments):
+    def set_jumps(
+        self,
+        show_jumps: bool,
+        risky_only: bool,
+        jump_segments: list[tuple[float, float, float, float, bool, int]],
+    ) -> None:
         self._show_jumps = show_jumps
         self._risky_jumps_only = risky_only
         self._jump_segments = jump_segments
         self._maybe_update()
 
-    def set_density(self, show_density, points, values, repeated):
+    def set_density(
+        self,
+        show_density: bool,
+        points: np.ndarray,
+        values: np.ndarray,
+        repeated: np.ndarray,
+    ) -> None:
         self._show_density = show_density
         self._density_points = points
         self._density_values = values
         self._density_repeated = repeated
         self._maybe_update()
 
-    def set_needle(self, show_needle, world_x, world_y, color, radius, width, fullscreen, pulse):
+    def set_needle(
+        self,
+        show_needle: bool,
+        world_x: float,
+        world_y: float,
+        color: tuple[int, int, int],
+        radius: float,
+        width: float,
+        fullscreen: bool,
+        pulse: float,
+    ) -> None:
         self._show_needle = show_needle
         self._needle_pos = np.array([world_x, world_y], dtype=np.float32)
         self._needle_color = color
-        self._needle_radius = radius
-        self._needle_width = width
+        self._needle_radius = float(radius)
+        self._needle_width = float(width)
         self._needle_fullscreen = fullscreen
-        self._needle_pulse = pulse
+        self._needle_pulse = float(pulse)
         self._maybe_update()
 
-    def set_show_stitches(self, show_stitches):
+    def set_show_stitches(self, show_stitches: bool) -> None:
         self._show_stitches = show_stitches
         self._maybe_update()
 
-    def set_show_grid(self, show_grid):
+    def set_show_grid(self, show_grid: bool) -> None:
         self._show_grid = show_grid
         self._maybe_update()
 
@@ -557,7 +585,7 @@ class GLStitchWidget(QOpenGLWidget):
         # stitch on top), not the depth buffer, so depth testing stays off.
         glDisable(GL_DEPTH_TEST)
 
-    def _load_texture(self, path):
+    def _load_texture(self, path: Path) -> None:
         """(Re)create the thread texture from *path* (a normal/mask PNG)."""
         tex_data, tex_w, tex_h = _load_texture(path)
         if self._texture is not None:
@@ -567,7 +595,11 @@ class GLStitchWidget(QOpenGLWidget):
         self._texture.setFormat(QOpenGLTexture.RGBAFormat)
         self._texture.setSize(tex_w, tex_h)
         self._texture.allocateStorage()
-        self._texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, tex_data.tobytes())
+        self._texture.setData(
+            QOpenGLTexture.RGBA,
+            QOpenGLTexture.UInt8,
+            tex_data.tobytes(),  # type: ignore[arg-type]
+        )
         self._texture.setMinificationFilter(QOpenGLTexture.LinearMipMapLinear)
         self._texture.setMagnificationFilter(QOpenGLTexture.Linear)
         self._texture.setWrapMode(QOpenGLTexture.DirectionS, QOpenGLTexture.Repeat)
@@ -603,14 +635,18 @@ class GLStitchWidget(QOpenGLWidget):
         cap_texture.setFormat(QOpenGLTexture.RGBAFormat)
         cap_texture.setSize(cap_w, cap_h)
         cap_texture.allocateStorage()
-        cap_texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, cap_data.tobytes())
+        cap_texture.setData(
+            QOpenGLTexture.RGBA,
+            QOpenGLTexture.UInt8,
+            cap_data.tobytes(),  # type: ignore[arg-type]
+        )
         cap_texture.setMinificationFilter(QOpenGLTexture.Linear)
         cap_texture.setMagnificationFilter(QOpenGLTexture.Linear)
         cap_texture.setWrapMode(QOpenGLTexture.DirectionS, QOpenGLTexture.ClampToEdge)
         cap_texture.setWrapMode(QOpenGLTexture.DirectionT, QOpenGLTexture.ClampToEdge)
         self._cap_texture = cap_texture
 
-    def set_texture_path(self, path):
+    def set_texture_path(self, path: Path) -> None:
         """Swap the thread texture at runtime (e.g. from a context menu)."""
         if self._texture is None:
             # GL context not initialised yet; remember the path for later.
@@ -625,11 +661,15 @@ class GLStitchWidget(QOpenGLWidget):
         self._needs_upload = True
         self.update()
 
-    def texture_path(self):
+    def texture_path(self) -> Path | None:
         """Return the currently active texture path (or None before init)."""
         return self._texture_path
 
-    def _configure_vao(self):
+    def _configure_vao(self) -> None:
+        assert self._vao is not None
+        assert self._vbo is not None
+        assert self._ibo is not None
+        assert self._program is not None
         self._vao.bind()
         self._vbo.bind()
         self._ibo.bind()
@@ -659,7 +699,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._ibo.release()
         self._vbo.release()
 
-    def _upload_geometry(self):
+    def _upload_geometry(self) -> None:
         if not self._needs_upload or self._stitches.shape[0] == 0:
             return
         # Build geometry once in model space (zoom=1, pan=0) for ALL stitches;
@@ -705,7 +745,7 @@ class GLStitchWidget(QOpenGLWidget):
                 idx.shape[0],
             )
 
-    def paintGL(self):
+    def paintGL(self) -> None:
         if self._program is None or not self._program.isLinked():
             return
 
@@ -839,7 +879,7 @@ class GLStitchWidget(QOpenGLWidget):
                 draw_count,
             )
 
-    def _draw_trace_overlay(self):
+    def _draw_trace_overlay(self) -> None:
         """Draw the viewer's event trace panel on top of the GL output."""
         viewer = self._viewer
         if (
@@ -875,7 +915,7 @@ class GLStitchWidget(QOpenGLWidget):
             painter.drawText(x + padding, y + padding + (i + 1) * line_height - 3, line)
         painter.end()
 
-    def _draw_grid_gl(self, w, h):
+    def _draw_grid_gl(self, w: int, h: int) -> None:
         """Draw the measurement grid in the background using a full-screen pass."""
         if self._grid_program is None or not self._grid_program.isLinked():
             return
@@ -888,7 +928,7 @@ class GLStitchWidget(QOpenGLWidget):
         glDrawArrays(GL_TRIANGLES, 0, 3)
         self._grid_program.release()
 
-    def _draw_needle_gl(self, w, h):
+    def _draw_needle_gl(self, w: int, h: int) -> None:
         """Draw the needle crosshair on top of the stitches (QPainter).
 
         Matches the CPU viewer's needle: white cross with a dark outline,
@@ -901,18 +941,18 @@ class GLStitchWidget(QOpenGLWidget):
         needle_y = int(sy)
         pulse = self._needle_pulse
         if self._needle_fullscreen:
-            arm = max(w, h)
+            arm = float(max(w, h))
         else:
             arm = self._needle_radius + 66 * pulse
-        radius = 6 + 18 * pulse
-        outer_radius = 42 * pulse
+        radius = float(6 + 18 * pulse)
+        outer_radius = float(42 * pulse)
+        line_width = float(self._needle_width)
 
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        w = self._needle_width
         color = QColor(*self._needle_color)
         # Cross: dark outline + needle-color fill.
-        painter.setPen(QPen(QColor(10, 10, 10), (8 if outer_radius else 4) * w))
+        painter.setPen(QPen(QColor(10, 10, 10), (8 if outer_radius else 4) * line_width))
         painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
         painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
         if outer_radius:
@@ -920,24 +960,27 @@ class GLStitchWidget(QOpenGLWidget):
             painter.drawEllipse(
                 needle_x - outer_radius, needle_y - outer_radius, outer_radius * 2, outer_radius * 2
             )
-        painter.setPen(QPen(color, (3 if outer_radius else 2) * w))
+        painter.setPen(QPen(color, (3 if outer_radius else 2) * line_width))
         painter.setBrush(Qt.NoBrush)
         painter.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
         painter.drawLine(needle_x - arm, needle_y, needle_x + arm, needle_y)
         painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
         # Center dot: needle color with dark outline (fixed size).
         painter.setBrush(color)
-        painter.setPen(QPen(QColor(10, 10, 10), 2 * w))
-        marker_radius = 5 if outer_radius else 3
+        painter.setPen(QPen(QColor(10, 10, 10), 2 * line_width))
+        marker_radius = float(5 if outer_radius else 3)
         painter.drawEllipse(
-            needle_x - marker_radius, needle_y - marker_radius, marker_radius * 2, marker_radius * 2
+            needle_x - marker_radius,
+            needle_y - marker_radius,
+            int(marker_radius * 2),
+            int(marker_radius * 2),
         )
         painter.end()
 
-    def _world_to_screen(self, x, y):
+    def _world_to_screen(self, x: float, y: float) -> tuple[float, float]:
         return x * self._zoom + self._pan[0], y * self._zoom + self._pan[1]
 
-    def _draw_density_gl(self, w, h):
+    def _draw_density_gl(self, w: int, h: int) -> None:
         """Draw density markers as GL points (one draw call, no Python loop)."""
         if self._density_program is None or not self._density_program.isLinked():
             return
@@ -1028,7 +1071,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._density_vao.release()
         self._density_program.release()
 
-    def _draw_jumps_overlay(self):
+    def _draw_jumps_overlay(self) -> None:
         """Draw jump paths on top of the stitches."""
         if not self._show_jumps:
             return
@@ -1046,5 +1089,5 @@ class GLStitchWidget(QOpenGLWidget):
             painter.drawLine(int(sx1), int(sy1), int(sx2), int(sy2))
         painter.end()
 
-    def resizeGL(self, w, h):
+    def resizeGL(self, w: int, h: int) -> None:
         glViewport(0, 0, w, h)

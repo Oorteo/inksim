@@ -217,7 +217,7 @@ class EmbroideryViewerWidget(QWidget):
         self.color_count = 0
         self.command_events: dict[int, list[str]] = {}
         self.command_timeline: list[tuple[str, int, int, float, float]] = []
-        self.jump_segments: list[list[float | int]] = []
+        self.jump_segments: list[tuple[float, float, float, float, bool, int]] = []
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
         self.stitch_density_np = np.zeros((0,), dtype=np.float32)
         self.repeated_stitch_np = np.zeros((0,), dtype=np.bool_)
@@ -720,7 +720,7 @@ class EmbroideryViewerWidget(QWidget):
             jump_coordinates = np.asarray(self.jump_segments, dtype=np.float32)
             rotate_coordinates(jump_coordinates[:, 0:2])
             rotate_coordinates(jump_coordinates[:, 2:4])
-            self.jump_segments = jump_coordinates.tolist()
+            self.jump_segments = jump_coordinates.tolist()  # type: ignore[assignment]
 
         rotated_corners = np.array(
             [[min_x, min_y], [min_x, max_y], [max_x, min_y], [max_x, max_y]],
@@ -1044,7 +1044,7 @@ class EmbroideryViewerWidget(QWidget):
                 self.command_events.setdefault(event_position, []).append("JUMP")
                 self.command_timeline.append(("JUMP", event_position, -1, x, y))
                 is_risky = has_stitch and not color_change_in_group
-                self.jump_segments.append([last_x, last_y, x, y, int(is_risky), len(segs)])
+                self.jump_segments.append((last_x, last_y, x, y, bool(is_risky), len(segs)))
                 jump_run_indices.append(len(self.jump_segments) - 1)
                 last_x, last_y = x, y
                 continue
@@ -1056,7 +1056,11 @@ class EmbroideryViewerWidget(QWidget):
             is_color_change = hasattr(emb, "COLOR_CHANGE") and cmd == emb.COLOR_CHANGE
             if is_color_change:
                 for jump_index in jump_run_indices:
-                    self.jump_segments[jump_index][4] = 0
+                    self.jump_segments[jump_index] = (
+                        self.jump_segments[jump_index][:4]
+                        + (False,)
+                        + self.jump_segments[jump_index][5:]
+                    )
                 jump_run_indices = []
                 event_position = len(segs)
                 details = []
@@ -1771,7 +1775,7 @@ class EmbroideryViewerWidget(QWidget):
             textures = list_thread_textures()
             active_path = self._gl_widget.texture_path()
 
-            def _texture_action(texture_label: str, texture_path: str) -> Any:
+            def _texture_action(texture_label: str, texture_path: Path) -> Any:
                 action = texture_menu.addAction(texture_label)
                 action.setCheckable(True)
                 action.setChecked(

@@ -115,6 +115,10 @@ disable_error_code = ["attr-defined", "no-any-return", "var-annotated", "valid-t
 module = "inksim.render.stitches_gl"
 disable_error_code = ["name-defined"]
 
+[[tool.mypy.overrides]]
+module = "inksim.gui.gl_viewer"
+disable_error_code = ["name-defined", "call-overload", "union-attr"]
+
 [tool.poe.tasks]
 test = "pytest"
 lint = "ruff check ."
