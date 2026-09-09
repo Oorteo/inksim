@@ -1,17 +1,27 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+"""Grid rendering helpers."""
+
+from __future__ import annotations
+
 import numba
 import numpy as np
 
+
 @numba.njit(cache=True)
-def _mix_channel(bg, line, k, denom):
+def _mix_channel(
+    bg: int | np.uint8,
+    line: int | np.uint8,
+    k: int | np.uint8,
+    denom: int | np.uint8,
+) -> np.uint8:
     """Blend a single colour channel toward line with strength k/denom."""
     return np.uint8((int(bg) * (denom - k) + int(line) * k) // denom)
 
 
 @numba.njit(cache=True)
-def render_grid_numba(buf, zoom, pan_x, pan_y):
+def render_grid_numba(buf: np.ndarray, zoom: float, pan_x: float, pan_y: float) -> None:
     # Draw helper grid into the RGB buffer.
     # - every 1 mm: fine grid line at high zoom levels
     # - every 10 mm: minor grid line
@@ -30,9 +40,9 @@ def render_grid_numba(buf, zoom, pan_x, pan_y):
     # Choose light or dark grid lines based on the background colour.
     bg_lum = (int(buf[0, 0, 0]) + int(buf[0, 0, 1]) + int(buf[0, 0, 2])) // 3
     if bg_lum > 127:
-        line = 0      # dark lines on light background
+        line = 0  # dark lines on light background
     else:
-        line = 255    # light lines on dark background
+        line = 255  # light lines on dark background
 
     # World-space area currently visible in the viewport.
     x_world_min = (-pan_x) / zoom
@@ -82,14 +92,15 @@ def render_grid_numba(buf, zoom, pan_x, pan_y):
                 buf[sy, x, 2] = _mix_channel(buf[sy, x, 2], line, 15, denom)
 
     # Vertical lines.
-    for xw in range(x_start, x_end+1, 10):
+    for xw in range(x_start, x_end + 1, 10):
         # Project world x to screen x.
         sx = int(xw * zoom + pan_x)
-        if sx < 0 or sx >= w: continue
+        if sx < 0 or sx >= w:
+            continue
 
         # Choose line style.
-        is_major = (xw % 50 == 0)
-        is_axis = (xw == 0)
+        is_major = xw % 50 == 0
+        is_axis = xw == 0
 
         if is_axis:
             r, g, b = 200, 100, 100
@@ -117,11 +128,12 @@ def render_grid_numba(buf, zoom, pan_x, pan_y):
             buf[y, sx, 2] = _mix_channel(buf[y, sx, 2], b, strength, denom)
 
     # Horizontal lines (same logic as vertical).
-    for yw in range(y_start, y_end+1, 10):
+    for yw in range(y_start, y_end + 1, 10):
         sy = int(yw * zoom + pan_y)
-        if sy < 0 or sy >= h: continue
-        is_major = (yw % 50 == 0)
-        is_axis = (yw == 0)
+        if sy < 0 or sy >= h:
+            continue
+        is_major = yw % 50 == 0
+        is_axis = yw == 0
 
         if is_axis:
             r, g, b = 100, 200, 100

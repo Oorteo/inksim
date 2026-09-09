@@ -3,6 +3,8 @@
 
 """About dialog for the InkSim application."""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 from PySide6.QtCore import Qt
@@ -13,6 +15,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QPlainTextEdit,
     QVBoxLayout,
+    QWidget,
 )
 
 from ..constants import APP_TITLE
@@ -20,7 +23,7 @@ from ..runtime import runtime_info_lines
 from ..update_check import last_check_text
 
 
-def show_about(parent):
+def show_about(parent: QWidget) -> None:
     """Show the InkSim About dialog."""
     dialog = QDialog(parent)
     dialog.setWindowTitle(f"About {APP_TITLE}")
@@ -42,14 +45,11 @@ def show_about(parent):
     logo = QLabel(dialog)
     logo_path = Path(__file__).parent.parent / "assets" / "InkSim_colorful_small.png"
     pixmap = QPixmap(str(logo_path))
-    logo.setPixmap(pixmap.scaled(180, 180, Qt.KeepAspectRatio,
-                                  Qt.SmoothTransformation))
+    logo.setPixmap(pixmap.scaled(180, 180, Qt.KeepAspectRatio, Qt.SmoothTransformation))
     logo.setAlignment(Qt.AlignCenter)
     layout.addWidget(logo)
 
-    tagline = QLabel(
-        "Interactive embroidery simulation, inspection, and export.", dialog
-    )
+    tagline = QLabel("Interactive embroidery simulation, inspection, and export.", dialog)
     tagline.setObjectName("tagline")
     tagline.setAlignment(Qt.AlignCenter)
     layout.addWidget(tagline)
@@ -71,9 +71,7 @@ def show_about(parent):
     runtime.setMaximumHeight(210)
     layout.addWidget(runtime)
 
-    last_check = QLabel(
-        f"Last update check: {last_check_text(parent.config)}", dialog
-    )
+    last_check = QLabel(f"Last update check: {last_check_text(parent.config)}", dialog)
     last_check.setObjectName("body")
     last_check.setAlignment(Qt.AlignCenter)
     layout.addWidget(last_check)

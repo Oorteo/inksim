@@ -12,6 +12,11 @@ log/
 __pycache__
 .vscode/
 
+# Test coverage output
+.coverage
+htmlcov/
+
+
 # see scripts/texture/generate_variants.sh
 # - live load from src/inksim/assets/
 scripts/texture/renders/

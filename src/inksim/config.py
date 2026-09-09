@@ -13,11 +13,12 @@ from __future__ import annotations
 import os
 import sys
 import tempfile
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
 import tomli_w
-from filelock import FileLock, Timeout
+from filelock import FileLock
 
 
 def _default_config_dir() -> Path:
@@ -125,7 +126,7 @@ class Config:
         self._data.update(values)
         self.save()
 
-    def update(self, key: str, updater: "callable") -> None:
+    def update(self, key: str, updater: Callable[[Any], Any]) -> None:
         """Read *key*, apply *updater* under the file lock, and persist.
 
         This guarantees an atomic read-modify-write for a single key across

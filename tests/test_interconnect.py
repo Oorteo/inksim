@@ -80,12 +80,14 @@ def test_open_and_delete_preserves_document_path_for_save_as(qapp, tmp_path):
     window = FakeWindow()
     server = InterconnectServer(window, f"inksim-test-{uuid4().hex}")
 
-    response = server._dispatch({
-        "auth_token": server.auth_token,
-        "command": "open_and_delete",
-        "path": "/tmp/transient.csv",
-        "document_path": str(document_path),
-    })
+    response = server._dispatch(
+        {
+            "auth_token": server.auth_token,
+            "command": "open_and_delete",
+            "path": "/tmp/transient.csv",
+            "document_path": str(document_path),
+        }
+    )
 
     assert response["ok"]
     assert window.calls == [

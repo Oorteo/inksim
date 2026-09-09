@@ -1,19 +1,17 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""OpenGL textured-quad stitch renderer for InkSim.
+"""OpenGL textured-quad stitch renderer for InkSim."""
 
-This renderer rasterises stitches as continuous textured ribbon quads
-using a normal-map thread texture and Blinn-Phong lighting.  It renders
-offscreen into an RGB buffer so it plugs into the existing viewport
-pipeline without changing the viewer widget.
-"""
+from __future__ import annotations
+
 import json
 import math
 import sys
 from pathlib import Path
 
 import numpy as np
+from OpenGL.GL import *
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QImage, QOffscreenSurface, QOpenGLContext, QSurfaceFormat
 from PySide6.QtOpenGL import (
@@ -26,7 +24,6 @@ from PySide6.QtOpenGL import (
     QOpenGLVertexArrayObject,
 )
 from PySide6.QtWidgets import QApplication
-from OpenGL.GL import *
 
 VERTEX_SHADER = """
 #version 330 core
@@ -124,7 +121,7 @@ def _default_texture_path() -> Path:
         return candidate
     raise FileNotFoundError(
         f"Thread normal/mask texture not found at {candidate}. "
-        "Run scripts/texture/generate_variants.sh to (re)generate it."
+        f"Run scripts/texture/generate_variants.sh to (re)generate it."
     )
 
 
@@ -145,7 +142,7 @@ def _default_cap_mask_path() -> Path:
 _DEFAULT_CAP_MASK_PATH = _default_cap_mask_path()
 
 
-def _lighting_coefficients(dark_factor, light_factor):
+def _lighting_coefficients(dark_factor: float, light_factor: float) -> tuple[float, float, float]:
     """Compute Blinn-Phong coefficients from the shading factors.
 
     ``light_factor`` lifts the lit surface and strengthens the sheen;
@@ -159,7 +156,7 @@ def _lighting_coefficients(dark_factor, light_factor):
     return k_a, k_d, k_s
 
 
-def _normal_strengths(zoom):
+def _normal_strengths(zoom: float) -> tuple[float, float]:
     """Return ``(tangent, bitangent)`` normal-map strengths by zoom.
 
     The normal map's tangent (along-length) component produces the pleasant
@@ -176,7 +173,7 @@ def _normal_strengths(zoom):
     return tangent, bitangent
 
 
-def _load_texture(path: Path):
+def _load_texture(path: Path) -> tuple[np.ndarray, int, int]:
     """Load a PNG as an RGBA uint8 NumPy array using Qt (no PIL dependency)."""
     img = QImage(str(path))
     if img.isNull():
@@ -187,9 +184,11 @@ def _load_texture(path: Path):
     ptr = img.constBits()
     if not isinstance(ptr, memoryview):
         ptr = memoryview(ptr)
-    data = np.frombuffer(ptr, dtype=np.uint8).reshape(
-        (height, img.bytesPerLine() // 4, 4)
-    )[:, :width, :].copy()
+    data = (
+        np.frombuffer(ptr, dtype=np.uint8)
+        .reshape((height, img.bytesPerLine() // 4, 4))[:, :width, :]
+        .copy()
+    )
     return data, width, height
 
 
@@ -238,17 +237,17 @@ def texture_cap_radius_fraction(path: Path) -> float:
 
 
 def _build_satin_quads(
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    thread_texture_aspect=8.0,
-    stitch_height_scale=1.875,
-    width_fraction=1.0,
-    cap_fraction=0.0,
-):
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    thread_texture_aspect: float = 8.0,
+    stitch_height_scale: float = 1.875,
+    width_fraction: float = 1.0,
+    cap_fraction: float = 0.0,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Convert stitch segments into textured quad vertex data.
 
     Returns ``(vertices, indices, index_counts)`` where ``index_counts[i]``
@@ -418,14 +417,21 @@ def _build_satin_quads(
     # loop index (the red->magenta / green->cyan color-shift bug).
     for ci in range(5):
         if ci < 2:
-            t3 = (st_tx, st_ty, st_tz); n3 = (st_nx, st_ny, st_nz)
+            t3 = (st_tx, st_ty, st_tz)
+            n3 = (st_nx, st_ny, st_nz)
         elif ci == 2:
-            t3 = (md_tx, md_ty, md_tz); n3 = (md_nx, md_ny, md_nz)
+            t3 = (md_tx, md_ty, md_tz)
+            n3 = (md_nx, md_ny, md_nz)
         else:
-            t3 = (en_tx, en_ty, en_tz); n3 = (en_nx, en_ny, en_nz)
+            t3 = (en_tx, en_ty, en_tz)
+            n3 = (en_nx, en_ny, en_nz)
         for vi in (ci, ci + 5):
-            verts[:, vi, 4] = t3[0]; verts[:, vi, 5] = t3[1]; verts[:, vi, 6] = t3[2]
-            verts[:, vi, 10] = n3[0]; verts[:, vi, 11] = n3[1]; verts[:, vi, 12] = n3[2]
+            verts[:, vi, 4] = t3[0]
+            verts[:, vi, 5] = t3[1]
+            verts[:, vi, 6] = t3[2]
+            verts[:, vi, 10] = n3[0]
+            verts[:, vi, 11] = n3[1]
+            verts[:, vi, 12] = n3[2]
 
     # bitangent (tilt-independent) + color
     for v in range(total_verts):
@@ -453,7 +459,7 @@ def _build_satin_quads(
         verts[:, ci + 5, 16] = mu_cols[ci]
         verts[:, ci + 5, 17] = 1.0
 
-    verts = verts[valid].reshape(-1)
+    flat_verts = verts[valid].reshape(-1)
 
     # indices: 24 per stitch (4 quad strips = 8 triangles) over the five
     # columns: (tS,nS) (nS,m) (m,nE) (nE,tE).
@@ -464,8 +470,8 @@ def _build_satin_quads(
     for seg in range(4):
         a_ = seg
         b_ = seg + 1
-        lo = idx[:, seg * 6:seg * 6 + 3]
-        hi = idx[:, seg * 6 + 3:(seg + 1) * 6]
+        lo = idx[:, seg * 6 : seg * 6 + 3]
+        hi = idx[:, seg * 6 + 3 : (seg + 1) * 6]
         lo[:, 0] = base + a_
         lo[:, 1] = base + b_
         lo[:, 2] = base + a_ + 5
@@ -473,48 +479,48 @@ def _build_satin_quads(
         hi[:, 1] = base + b_ + 5
         hi[:, 2] = base + a_ + 5
 
-    idx = idx.reshape(-1)
+    flat_idx = idx.reshape(-1)
 
     per_stitch = np.where(valid, per_stitch_idx, 0)
     index_counts = np.cumsum(per_stitch).astype(np.int64)
 
-    return verts, idx, index_counts
+    return flat_verts, flat_idx, index_counts
 
 
 class _SharedGLContext:
     """Lazily-created offscreen GL context shared by all frames."""
 
-    app = None
-    context = None
-    surface = None
-    program = None
-    vao = None
-    vbo = None
-    ibo = None
-    texture = None
-    cap_texture = None
-    fbo = None
-    initialized = False
+    app: QApplication | None = None
+    context: QOpenGLContext | None = None
+    surface: QOffscreenSurface | None = None
+    program: QOpenGLShaderProgram | None = None
+    vao: QOpenGLVertexArrayObject | None = None
+    vbo: QOpenGLBuffer | None = None
+    ibo: QOpenGLBuffer | None = None
+    texture: QOpenGLTexture | None = None
+    cap_texture: QOpenGLTexture | None = None
+    fbo: QOpenGLFramebufferObject | None = None
+    initialized: bool = False
 
 
 class _FrameResources:
     """Per-frame vertex/index data and sizes."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.vbo_size = 0
         self.ibo_size = 0
         self.index_count = 0
         self.fbo_size = (0, 0)
 
 
-def _ensure_qapp():
+def _ensure_qapp() -> None:
     if QApplication.instance() is None:
         if not sys.argv:
             sys.argv.append("inksim")
         _SharedGLContext.app = QApplication(sys.argv)
 
 
-def _init_gl(width, height):
+def _init_gl(width: int, height: int) -> None:
     _ensure_qapp()
 
     if _SharedGLContext.initialized:
@@ -594,7 +600,7 @@ def _init_gl(width, height):
     texture.setFormat(QOpenGLTexture.RGBAFormat)
     texture.setSize(tex_w, tex_h)
     texture.allocateStorage()
-    texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, tex_data.tobytes())
+    texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, tex_data.tobytes())  # type: ignore[call-overload]
     texture.setMinificationFilter(QOpenGLTexture.LinearMipMapLinear)
     texture.setMagnificationFilter(QOpenGLTexture.Linear)
     texture.setWrapMode(QOpenGLTexture.DirectionS, QOpenGLTexture.Repeat)
@@ -621,9 +627,7 @@ def _init_gl(width, height):
     cap_path = _DEFAULT_CAP_MASK_PATH
     if cap_path.exists():
         cap_src, cap_w, cap_h = _load_texture(cap_path)
-        cap_data = np.concatenate(
-            [cap_src, cap_src[:, ::-1, :]], axis=1
-        )
+        cap_data = np.concatenate([cap_src, cap_src[:, ::-1, :]], axis=1)
         cap_w = cap_data.shape[1]
     else:
         cap_data = np.full((1, 1, 4), 255, dtype=np.uint8)
@@ -633,7 +637,7 @@ def _init_gl(width, height):
     cap_texture.setFormat(QOpenGLTexture.RGBAFormat)
     cap_texture.setSize(cap_w, cap_h)
     cap_texture.allocateStorage()
-    cap_texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, cap_data.tobytes())
+    cap_texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, cap_data.tobytes())  # type: ignore[call-overload]
     cap_texture.setMinificationFilter(QOpenGLTexture.Linear)
     cap_texture.setMagnificationFilter(QOpenGLTexture.Linear)
     cap_texture.setWrapMode(QOpenGLTexture.DirectionS, QOpenGLTexture.ClampToEdge)
@@ -661,7 +665,7 @@ def _init_gl(width, height):
     _SharedGLContext.initialized = True
 
 
-def _resize_fbo(width, height):
+def _resize_fbo(width: int, height: int) -> None:
     if _SharedGLContext.fbo is None or _SharedGLContext.fbo.size() != QSize(width, height):
         fbo_format = QOpenGLFramebufferObjectFormat()
         fbo_format.setAttachment(QOpenGLFramebufferObject.CombinedDepthStencil)
@@ -673,7 +677,7 @@ def _resize_fbo(width, height):
         _SharedGLContext.fbo = new_fbo
 
 
-def _upload_geometry(vertices, indices):
+def _upload_geometry(vertices: np.ndarray, indices: np.ndarray) -> None:
     vbo = _SharedGLContext.vbo
     ibo = _SharedGLContext.ibo
     vbo.bind()
@@ -692,16 +696,16 @@ def _upload_geometry(vertices, indices):
 
 
 def render_gpu_textured(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor,
-    light_factor,
-):
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+) -> None:
     """Render visible stitches into *buf* as textured thread quads.
 
     *buf* is an RGB uint8 NumPy array with the background already drawn.
@@ -747,12 +751,27 @@ def render_gpu_textured(
     sy = -2.0 / height
     tx = -1.0
     ty = 1.0
-    transform = np.array([
-        sx, 0.0, 0.0, 0.0,
-        0.0, sy, 0.0, 0.0,
-        0.0, 0.0, 1.0, 0.0,
-        tx, ty, 0.0, 1.0,
-    ], dtype=np.float32)
+    transform = np.array(
+        [
+            sx,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            sy,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            tx,
+            ty,
+            0.0,
+            1.0,
+        ],
+        dtype=np.float32,
+    )
 
     glUniformMatrix4fv(program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
     glUniform3f(program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
@@ -791,11 +810,13 @@ def render_gpu_textured(
     rgba_ptr = rgba_image.bits()
     if not isinstance(rgba_ptr, memoryview):
         rgba_ptr = memoryview(rgba_ptr)
-    rgba = np.frombuffer(rgba_ptr, dtype=np.uint8).reshape(
-        (height, rgba_image.bytesPerLine() // 4, 4)
-    )[:, :width, :].copy()
+    rgba = (
+        np.frombuffer(rgba_ptr, dtype=np.uint8)
+        .reshape((height, rgba_image.bytesPerLine() // 4, 4))[:, :width, :]
+        .copy()
+    )
 
-    if prev_context:
+    if prev_context and prev_surface is not None:
         prev_context.makeCurrent(prev_surface)
     else:
         _SharedGLContext.context.doneCurrent()
@@ -805,15 +826,11 @@ def render_gpu_textured(
         # FBO output is premultiplied RGBA; composite it over the existing
         # RGBA buffer. RGB is already scaled by src alpha, and the resulting
         # alpha follows the standard porter-duff over operator.
-        buf[:, :, :3] = (
-            rgba[:, :, :3]
-            + buf[:, :, :3] * (1.0 - alpha[:, :, None])
-        ).astype(np.uint8)
+        buf[:, :, :3] = (rgba[:, :, :3] + buf[:, :, :3] * (1.0 - alpha[:, :, None])).astype(
+            np.uint8
+        )
         buf[:, :, 3] = np.maximum(buf[:, :, 3], rgba[:, :, 3])
     elif buf.shape[2] == 3:
-        buf[:] = (
-            rgba[:, :, :3]
-            + buf * (1.0 - alpha[:, :, None])
-        ).astype(np.uint8)
+        buf[:] = (rgba[:, :, :3] + buf * (1.0 - alpha[:, :, None])).astype(np.uint8)
     else:
         raise ValueError(f"Unsupported buffer channel count: {buf.shape[2]}")

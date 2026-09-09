@@ -3,16 +3,23 @@
 
 """Markdown help content for the InkSim viewer."""
 
+from __future__ import annotations
+
 import io
 import re
+from typing import TYPE_CHECKING
 
-from PySide6.QtWidgets import QDialog, QDialogButtonBox, QTextEdit, QVBoxLayout
+from PySide6.QtWidgets import QDialog, QDialogButtonBox, QTextEdit, QVBoxLayout, QWidget
 
+if TYPE_CHECKING:
+    from .viewer import EmbroideryViewerWidget
 
 _ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*m")
 
 HELP_SECTIONS = (
-    ("Mouse", """
+    (
+        "Mouse",
+        """
 
 | Action | Result |
 | --- | --- |
@@ -22,8 +29,11 @@ HELP_SECTIONS = (
 | Double-click design | Seek to visible stitch |
 | W / A / S / D | Pan up / left / down / right |
 | Click timeline | Seek stitch |
-"""),
-    ("Playback", """
+""",
+    ),
+    (
+        "Playback",
+        """
 
 | Key | Result |
 | --- | --- |
@@ -36,8 +46,11 @@ HELP_SECTIONS = (
 | Home / End | First or last stitch |
 | Space | Play or pause |
 | Esc | Finish playback directionally (forward → full design, backward → hide all) |
-"""),
-    ("View", """
+""",
+    ),
+    (
+        "View",
+        """
 
 | Key | Result |
 | --- | --- |
@@ -58,8 +71,11 @@ HELP_SECTIONS = (
 | R | Choose stitch renderer |
 | H | Toggle help |
 | I | Toggle settings |
-"""),
-    ("Rendering", """
+""",
+    ),
+    (
+        "Rendering",
+        """
 
 | Key | Result |
 | --- | --- |
@@ -67,11 +83,12 @@ HELP_SECTIONS = (
 | Ctrl + [ / ] | Adjust dark shading |
 | Alt + [ / ] | Adjust light shading |
 | + / - | Zoom |
-"""),
+""",
+    ),
 )
 
 
-def show_help(viewer):
+def show_help(viewer: EmbroideryViewerWidget) -> None:
     """Show the viewer help dialog."""
     viewer._show_markdown_columns_dialog(
         "help_dialog",
@@ -83,7 +100,7 @@ def show_help(viewer):
     )
 
 
-def show_command_line_help(parent):
+def show_command_line_help(parent: QWidget) -> None:
     """Show a read-only dialog with the inksim command-line help text."""
     from ..cli import build_argument_parser
 

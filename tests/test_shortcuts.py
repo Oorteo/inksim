@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from PySide6.QtCore import QPoint, Qt
-from PySide6.QtGui import QKeyEvent
-from PySide6.QtGui import QWheelEvent
+from PySide6.QtGui import QKeyEvent, QWheelEvent
 from PySide6.QtWidgets import QWidget
 
 from inksim.gui.shortcuts import ViewerShortcutFilter
@@ -57,8 +56,7 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
     shortcut_filter = ViewerShortcutFilter(window, viewer)
     assert shortcut_filter.handle_key_event(key_event(Qt.Key_Right))
     assert viewer.visible_count == 20
-    assert shortcut_filter.handle_key_event(
-        key_event(Qt.Key_Left, Qt.AltModifier))
+    assert shortcut_filter.handle_key_event(key_event(Qt.Key_Left, Qt.AltModifier))
     assert viewer.visible_count == 19
     shortcut_filter._last_key_time = 0
     assert shortcut_filter.handle_key_event(key_event(Qt.Key_E))
@@ -81,22 +79,40 @@ def test_alt_wheel_steps_with_angle_and_pixel_delta(qtbot):
     viewer.visible_count = 4
 
     angle_event = QWheelEvent(
-        QPoint(10, 10), QPoint(10, 10), QPoint(0, 0), QPoint(0, 120),
-        Qt.NoButton, Qt.AltModifier, Qt.ScrollPhase.ScrollUpdate, False,
+        QPoint(10, 10),
+        QPoint(10, 10),
+        QPoint(0, 0),
+        QPoint(0, 120),
+        Qt.NoButton,
+        Qt.AltModifier,
+        Qt.ScrollPhase.ScrollUpdate,
+        False,
     )
     viewer.wheelEvent(angle_event)
     assert viewer.visible_count == 5
 
     pixel_event = QWheelEvent(
-        QPoint(10, 10), QPoint(10, 10), QPoint(0, 15), QPoint(0, 0),
-        Qt.NoButton, Qt.AltModifier, Qt.ScrollPhase.ScrollUpdate, False,
+        QPoint(10, 10),
+        QPoint(10, 10),
+        QPoint(0, 15),
+        QPoint(0, 0),
+        Qt.NoButton,
+        Qt.AltModifier,
+        Qt.ScrollPhase.ScrollUpdate,
+        False,
     )
     viewer.wheelEvent(pixel_event)
     assert viewer.visible_count == 6
 
     ctrl_event = QWheelEvent(
-        QPoint(10, 10), QPoint(10, 10), QPoint(0, 0), QPoint(0, -120),
-        Qt.NoButton, Qt.ControlModifier, Qt.ScrollPhase.ScrollUpdate, False,
+        QPoint(10, 10),
+        QPoint(10, 10),
+        QPoint(0, 0),
+        QPoint(0, -120),
+        Qt.NoButton,
+        Qt.ControlModifier,
+        Qt.ScrollPhase.ScrollUpdate,
+        False,
     )
     viewer.wheelEvent(ctrl_event)
     assert viewer.visible_count == 5
@@ -104,6 +120,7 @@ def test_alt_wheel_steps_with_angle_and_pixel_delta(qtbot):
 
 def test_double_click_seek_selects_nearest_visible_stitch(qtbot):
     import numpy as np
+
     from inksim.gui.viewer import EmbroideryViewerWidget
 
     viewer = EmbroideryViewerWidget(None, None)
@@ -149,6 +166,7 @@ def test_maximum_zoom_is_based_on_five_millimeter_viewport_span(qtbot):
 
 def test_c_shortcut_centers_current_needle(qtbot):
     import numpy as np
+
     from inksim.gui.viewer import EmbroideryViewerWidget
 
     viewer = EmbroideryViewerWidget(None, None)

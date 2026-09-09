@@ -3,23 +3,25 @@
 
 """Qt-backed stitch rendering helpers."""
 
+from __future__ import annotations
+
 import numpy as np
 from PySide6.QtCore import QLineF, Qt
 from PySide6.QtGui import QColor, QPainter, QPen
 
 
 def render_simple_qt(
-    painter,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor=0.0,
-    light_factor=0.0,
-    show_stitches=True,
-):
+    painter: QPainter,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float = 0.0,
+    light_factor: float = 0.0,
+    show_stitches: bool = True,
+) -> None:
     """Draw flat-color stitches with Qt's antialiased vector painter."""
     if not show_stitches or visible_count == 0:
         return
@@ -36,11 +38,9 @@ def render_simple_qt(
     run_starts = np.concatenate(([0], np.flatnonzero(color_changes) + 1))
     run_ends = np.concatenate((run_starts[1:], [len(colors)]))
 
-    for start, end in zip(run_starts, run_ends):
+    for start, end in zip(run_starts, run_ends, strict=False):
         color = colors[start]
         pen.setColor(QColor(int(color[0]), int(color[1]), int(color[2])))
         painter.setPen(pen)
         group = endpoints[start:end]
-        painter.drawLines(
-            [QLineF(x1, y1, x2, y2) for x1, y1, x2, y2 in group]
-        )
+        painter.drawLines([QLineF(x1, y1, x2, y2) for x1, y1, x2, y2 in group])

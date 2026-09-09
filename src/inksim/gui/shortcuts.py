@@ -3,35 +3,47 @@
 
 """Central keyboard handling for the main viewer window."""
 
+from __future__ import annotations
+
 import time
+from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QEvent, QObject, Qt
+from PySide6.QtGui import QKeyEvent
 from PySide6.QtWidgets import QApplication
 
 from ..debug import logger
+
+if TYPE_CHECKING:
+    from PySide6.QtWidgets import QWidget
+
+    from .viewer import EmbroideryViewerWidget
 
 
 class ViewerShortcutFilter(QObject):
     """Route main-window key presses to the viewer from one place."""
 
-    def __init__(self, window, viewer):
+    def __init__(self, window: QWidget, viewer: EmbroideryViewerWidget) -> None:
         super().__init__(window)
         self.window = window
         self.viewer = viewer
-        self._last_key_time = 0
-        self._key_throttle = 0.03
-        QApplication.instance().installEventFilter(self)
+        self._last_key_time: float = 0.0
+        self._key_throttle: float = 0.03
+        app = QApplication.instance()
+        if app is not None:
+            app.installEventFilter(self)
 
-    def eventFilter(self, watched, event):
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if event.type() != QEvent.KeyPress or not hasattr(watched, "window"):
             return False
         if watched.window() is not self.window:
             return False
         if QApplication.activePopupWidget() is not None:
             return False
+        assert isinstance(event, QKeyEvent)
         return self.handle_key_event(event)
 
-    def _key_label(self, event) -> str:
+    def _key_label(self, event: QKeyEvent) -> str:
         """Return a compact label describing the key press for event trace."""
         modifiers = []
         if event.modifiers() & Qt.ControlModifier:
@@ -96,7 +108,7 @@ class ViewerShortcutFilter(QObject):
             return f"{'+'.join(modifiers)}+{label}"
         return label
 
-    def handle_key_event(self, event):
+    def handle_key_event(self, event: QKeyEvent) -> bool:
         viewer = self.viewer
         now = time.time()
         key = event.key()
@@ -107,10 +119,21 @@ class ViewerShortcutFilter(QObject):
             # Navigation/playback keys (arrows, space) are still allowed to
             # repeat so users can hold them for rapid stepping.
             if key in (
-                Qt.Key_Z, Qt.Key_X, Qt.Key_V, Qt.Key_J, Qt.Key_B, Qt.Key_E,
+                Qt.Key_Z,
+                Qt.Key_X,
+                Qt.Key_V,
+                Qt.Key_J,
+                Qt.Key_B,
+                Qt.Key_E,
                 Qt.Key_N,
-                Qt.Key_G, Qt.Key_R, Qt.Key_F, Qt.Key_M, Qt.Key_H,
-                Qt.Key_I, Qt.Key_1, Qt.Key_F11,
+                Qt.Key_G,
+                Qt.Key_R,
+                Qt.Key_F,
+                Qt.Key_M,
+                Qt.Key_H,
+                Qt.Key_I,
+                Qt.Key_1,
+                Qt.Key_F11,
             ):
                 return True
         if is_alt and key in (Qt.Key_F, Qt.Key_P):
@@ -134,9 +157,15 @@ class ViewerShortcutFilter(QObject):
         highlight_needle = False
         step = 1 if is_alt else 10
 
-        if is_shift and not is_alt and not is_ctrl and key in (
-            Qt.Key_Right,
-            Qt.Key_Left,
+        if (
+            is_shift
+            and not is_alt
+            and not is_ctrl
+            and key
+            in (
+                Qt.Key_Right,
+                Qt.Key_Left,
+            )
         ):
             changed = viewer.jump_to_command(1 if key == Qt.Key_Right else -1)
             cursor_changed = changed
@@ -145,15 +174,21 @@ class ViewerShortcutFilter(QObject):
                 viewer.play_timer.stop()
                 viewer.is_playing = False
             handled = changed
-        elif viewer.is_playing and not is_alt and not is_ctrl and key in (
-            Qt.Key_Right,
-            Qt.Key_Left,
+        elif (
+            viewer.is_playing
+            and not is_alt
+            and not is_ctrl
+            and key
+            in (
+                Qt.Key_Right,
+                Qt.Key_Left,
+            )
         ):
             viewer.set_playback_direction(key == Qt.Key_Right)
             handled = True
-        elif (viewer.is_playing and not is_alt and not is_ctrl and key in (
-            Qt.Key_Up, Qt.Key_Down
-        )) or (is_ctrl and not is_alt and key in (Qt.Key_Up, Qt.Key_Down)):
+        elif (
+            viewer.is_playing and not is_alt and not is_ctrl and key in (Qt.Key_Up, Qt.Key_Down)
+        ) or (is_ctrl and not is_alt and key in (Qt.Key_Up, Qt.Key_Down)):
             viewer.adjust_playback_speed(1 if key == Qt.Key_Up else -1)
             handled = True
         elif is_ctrl and key in (Qt.Key_Right, Qt.Key_Left):
@@ -175,7 +210,9 @@ class ViewerShortcutFilter(QObject):
                 viewer._last_dir = -1
             logger.debug(
                 "Ctrl+A toggled visible_count to %s/%s (renderer=%s)",
-                viewer.visible_count, total, viewer.active_renderer,
+                viewer.visible_count,
+                total,
+                viewer.active_renderer,
             )
             viewer.notify_cursor_changed()
             viewer.invalidate_cache()
@@ -187,9 +224,7 @@ class ViewerShortcutFilter(QObject):
                 viewer.play_timer.stop()
                 viewer.is_playing = False
             handled = True
-        elif not is_alt and not is_ctrl and key in (
-            Qt.Key_W, Qt.Key_A, Qt.Key_S, Qt.Key_D
-        ):
+        elif not is_alt and not is_ctrl and key in (Qt.Key_W, Qt.Key_A, Qt.Key_S, Qt.Key_D):
             pan_step = 40
             if key == Qt.Key_W:
                 viewer.pan_y -= pan_step
@@ -288,11 +323,19 @@ class ViewerShortcutFilter(QObject):
             viewer.grid_toggled.emit(viewer.show_grid)
             changed = True
             handled = True
-        elif key in (Qt.Key_B, Qt.Key_E, Qt.Key_J, Qt.Key_X, Qt.Key_V, Qt.Key_Z) and not is_alt and not is_ctrl:
+        elif (
+            key in (Qt.Key_B, Qt.Key_E, Qt.Key_J, Qt.Key_X, Qt.Key_V, Qt.Key_Z)
+            and not is_alt
+            and not is_ctrl
+        ):
             viewer.toggle_display_mode(
                 {
-                    Qt.Key_B: "B", Qt.Key_E: "E", Qt.Key_J: "J", Qt.Key_X: "X",
-                    Qt.Key_V: "V", Qt.Key_Z: "Z",
+                    Qt.Key_B: "B",
+                    Qt.Key_E: "E",
+                    Qt.Key_J: "J",
+                    Qt.Key_X: "X",
+                    Qt.Key_V: "V",
+                    Qt.Key_Z: "Z",
                 }[key]
             )
             changed = True
@@ -344,11 +387,7 @@ class ViewerShortcutFilter(QObject):
                 viewer.notify_cursor_changed()
             if highlight_needle:
                 viewer.highlight_needle()
-            if (
-                viewer.is_playing
-                and key in (Qt.Key_Home, Qt.Key_End)
-                and not is_ctrl
-            ):
+            if viewer.is_playing and key in (Qt.Key_Home, Qt.Key_End) and not is_ctrl:
                 viewer.play_timer.stop()
                 viewer.is_playing = False
             viewer.invalidate_cache()
