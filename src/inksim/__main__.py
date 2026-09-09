@@ -17,6 +17,8 @@ user keep their expected meaning.  The project launcher can use either its
 fallback; both launch modes execute ``python -m inksim``.
 """
 
+from __future__ import annotations
+
 from .cli import main
 
 main()
