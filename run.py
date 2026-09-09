@@ -12,15 +12,15 @@ from pathlib import Path
 # Root of the project (where this file lives)
 ROOT = Path(__file__).resolve().parent
 
-# Available tasks. Value is either a single shell command or a list of commands.
+# Available tasks: key -> (description, list of shell commands).
 TASKS = {
-    "i": ("install", ["uv sync --all-groups"]),
-    "t": ("test", ["uv run poe test"]),
-    "l": ("lint", ["uv run poe lint"]),
-    "f": ("format", ["uv run poe format"]),
-    "c": ("typecheck", ["uv run poe typecheck"]),
-    "k": ("check (lint + typecheck)", ["uv run poe check"]),
-    "x": ("fix auto-fixable issues", ["uv run poe fix"]),
+    "i": ("install dev environment", ["uv sync --all-groups"]),
+    "t": ("run tests with coverage", ["uv run poe test"]),
+    "l": ("run linter", ["uv run poe lint"]),
+    "f": ("format source files", ["uv run poe format"]),
+    "c": ("run static type checker", ["uv run poe typecheck"]),
+    "k": ("lint + typecheck", ["uv run poe check"]),
+    "x": ("auto-fix lint issues", ["uv run poe fix"]),
     "h": ("install git pre-commit hooks", ["uv run poe install-hooks"]),
     "q": ("quit", None),
 }
@@ -29,9 +29,16 @@ TASKS = {
 def print_menu() -> None:
     print()
     print("InkSim development menu")
-    print("=" * 30)
-    for key, (name, _) in TASKS.items():
-        print(f"  {key}: {name}")
+    print("=" * 55)
+    for key, (name, commands) in TASKS.items():
+        if commands is None:
+            print(f"  {key}: {name}")
+        elif len(commands) == 1:
+            print(f"  {key}: {name:<35} -> {commands[0]}")
+        else:
+            print(f"  {key}: {name}")
+            for command in commands:
+                print(f"      -> {command}")
     print()
 
 
