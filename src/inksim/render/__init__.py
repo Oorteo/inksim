@@ -3,6 +3,8 @@
 
 """Rendering helpers used by the InkSim user interface."""
 
+from __future__ import annotations
+
 from .density import (
     calculate_stitch_density_numba as calculate_stitch_density_numba,
     render_density_numba as render_density_numba,
