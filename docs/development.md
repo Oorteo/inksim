@@ -11,6 +11,79 @@ uv sync --dev
 The runtime dependencies are declared in `pyproject.toml`. Test tools are in
 the `dev` dependency group and are not included in the application wheel.
 
+## Development Workflow
+
+InkSim ships with a small interactive task menu in the project root:
+
+```bash
+./run.py
+```
+
+The menu uses numbers so there is no risk of typos. The most common quick
+checks are first, the slow test suite is on `0`, and one-off setup tasks are
+at the end:
+
+```text
+1: lint + typecheck      -> uv run poe check
+2: run linter            -> uv run poe lint
+3: run type checker      -> uv run poe typecheck
+4: preview format changes -> uv run ruff format . --diff
+5: format source files   -> uv run poe format
+6: preview auto-fixes    -> uv run ruff check . --diff
+7: auto-fix lint issues  -> uv run poe fix
+8: install git hooks     -> uv run poe install-hooks
+9: install dev env       -> uv sync --all-groups
+0: run tests             -> uv run poe test
+q: quit
+```
+
+You can also run tasks directly with `uv run poe <task>`. Available tasks are
+`test`, `lint`, `format`, `typecheck`, `fix`, `check` and `install-hooks`.
+
+### Linting and formatting
+
+`ruff` handles linting, import sorting and formatting. The configuration lives
+in `pyproject.toml`. Run it before a commit:
+
+```bash
+uv run poe fix     # auto-fix what is safe
+uv run poe format  # apply formatting
+uv run poe check   # lint + mypy
+```
+
+### Type checking
+
+`mypy` is configured in `pyproject.toml`. Run it with:
+
+```bash
+uv run poe typecheck
+```
+
+The project supports Python 3.11+ at runtime, but `mypy` is configured to parse
+with Python 3.12 syntax so that current third-party stubs keep working.
+
+### Tests
+
+The test suite runs with `pytest` and `pytest-cov`:
+
+```bash
+uv run poe test
+```
+
+It produces a terminal coverage summary and an HTML report in `htmlcov/`.
+
+### Pre-commit hooks
+
+Git hooks are optional but recommended. Install them once with:
+
+```bash
+uv run poe install-hooks
+```
+
+Before each commit the hooks run a quick `ruff check`, `ruff format --check`
+and `mypy`. The full test suite is intentionally not in the hook so commits
+stay fast.
+
 ## Rendering Architecture
 
 The current viewer intentionally uses a portable CPU rendering path:
