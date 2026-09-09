@@ -19,9 +19,14 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "mypy",
     "pillow",
+    "poethepoet",
+    "pre-commit",
     "pytest",
+    "pytest-cov",
     "pytest-qt",
+    "ruff",
     "scipy",
 ]
 
@@ -40,7 +45,80 @@ inksim-gui = "inksim.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "--cov=src/inksim --cov-report=term-missing --cov-report=html"
 
+[tool.coverage.run]
+source = ["src/inksim"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+
+[tool.ruff]
+target-version = "py311"        # Modernize syntax for Python 3.11+
+line-length = 100               # Keep lines readable on typical screens
+extend-exclude = [
+    ".venv",                    # uv virtual environment
+    "build",                    # build artifacts
+    "dist",                     # distribution packages
+    ".git",                     # version control metadata
+    "__pycache__",              # Python bytecode cache
+]
+
+[tool.ruff.lint]
+# Rule families:
+#   C90 - McCabe complexity (e.g. function too complicated)
+#   E   - pycodestyle errors (formatting / whitespace problems)
+#   F   - Pyflakes (undefined names, unused imports, duplicate imports, etc.)
+#   I   - isort (import ordering and formatting)
+#   UP  - pyupgrade (old Python syntax that can be modernized)
+#   B   - flake8-bugbear (likely bugs and suspicious patterns)
+select = ["C90", "E", "F", "I", "UP", "B"]
+
+# Ignored formatting rules. These are either already handled by `ruff format`
+# or intentionally allowed by this project. Only valid ruff rule codes can be used.
+ignore = [
+    "E201",  # whitespace after '('
+    "E202",  # whitespace before ')'
+    "E226",  # missing whitespace around arithmetic operator
+    "E241",  # multiple spaces after ','
+    "E501",  # line too long - handled by the formatter
+    "F405",  # names from star imports (e.g. PyOpenGL `from OpenGL.GL import *`)
+    "C901",  # function too complex - refactor gradually
+    "B904",  # raise ... from err - refactor gradually
+]
+
+# Per-file exceptions. These files contain patterns that are intentionally
+# allowed for now and will be cleaned up gradually.
+[tool.ruff.lint.per-file-ignores]
+"src/inksim/gui/gl_viewer.py" = ["F403", "F405"]    # PyOpenGL star imports
+"src/inksim/render/__init__.py" = ["I001"]          # explicit re-exports grouped by module
+"src/inksim/render/stitches_gl.py" = ["F403", "F405"] # PyOpenGL star imports
+
+[tool.mypy]
+# Use 3.12 for analysis so that third-party stubs (e.g. numpy) that rely on
+# newer syntax do not break parsing. The project still supports Python 3.11+
+# at runtime via `requires-python` above.
+python_version = "3.12"
+packages = ["src/inksim"]
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+# Be permissive about attributes on PySide6/Qt objects and other dynamic
+# third-party APIs while the codebase is being gradually typed.
+disable_error_code = ["attr-defined", "no-any-return", "var-annotated", "valid-type", "misc"]
+
+[tool.poe.tasks]
+test = "pytest"
+lint = "ruff check ."
+format = "ruff format ."
+typecheck = "mypy src/inksim"
+fix = "ruff check --fix ."
+check = ["lint", "typecheck"]
+install-hooks = "pre-commit install"
 
 [build-system]
 requires = ["uv_build>=0.12.2,<0.13.0"]
