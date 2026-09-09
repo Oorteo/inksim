@@ -288,7 +288,7 @@ def main() -> None:
         if directories or any(not path.is_file() for path in input_paths):
             parser.error("batch export requires embroidery files, not directories")
 
-    export_paths = []
+    export_paths: list[Path] = []
     if export_requested:
         export_value = export_values[0]
         if args.export_png is not None:
@@ -343,15 +343,17 @@ def main() -> None:
         except OSError as ex:
             parser.error(f"cannot create debug log {log_path}: {ex}")
 
-    window_size = args.size
-    window_position = args.position
-    snap_layout_key = args.snap
-    app = QApplication.instance() or QApplication([])
+    window_size: tuple[int, int] | None = args.size
+    window_position: tuple[int, int] | None = args.position
+    snap_layout_key: str | None = args.snap
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication([])
     app.setApplicationName(APP_TITLE)
     app.setOrganizationName(APP_TITLE)
     app.setWindowIcon(QIcon(str(Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
-    first_input = input_paths[0] if input_paths else None
-    document_path = args.document_path
+    first_input: Path | None = input_paths[0] if input_paths else None
+    document_path: Path | None = args.document_path
     frame = MainWindow(
         fullscreen=args.fullscreen,
         window_size=window_size,
@@ -361,7 +363,7 @@ def main() -> None:
         document_path=document_path,
         snap_layout_key=snap_layout_key,
     )
-    interconnect = None
+    interconnect: InterconnectServer | None = None
     if args.server:
         try:
             interconnect = InterconnectServer(frame)
@@ -425,12 +427,12 @@ def main() -> None:
                 )
         frame.close()
         raise SystemExit(0 if success else 1)
-    splash = SplashScreen()
+    splash: SplashScreen = SplashScreen()
     splash.show_centered()
     splash.set_message("Preparing InkSim...")
-    warmup = RendererWarmupThread(app)
+    warmup: RendererWarmupThread = RendererWarmupThread(app)
 
-    def finish_startup():
+    def finish_startup() -> None:
         frame.show_initial_window(
             False,
             str(first_input) if first_input and first_input.is_dir() else None,
@@ -454,7 +456,7 @@ def main() -> None:
     warmup.finished.connect(finish_startup)
     warmup.start()
 
-    def handle_sigint(signum, frame_info):
+    def handle_sigint(signum: int, frame_info: object) -> None:
         app.quit()
 
     signal.signal(signal.SIGINT, handle_sigint)
