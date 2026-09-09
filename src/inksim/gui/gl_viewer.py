@@ -13,7 +13,7 @@ from __future__ import annotations
 import ctypes
 import time
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 from OpenGL.GL import *  # noqa: F403
@@ -34,7 +34,9 @@ from PySide6.QtOpenGL import (
     QOpenGLVertexArrayObject,
 )
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
-from PySide6.QtWidgets import QWidget
+
+if TYPE_CHECKING:
+    from .viewer import EmbroideryViewerWidget
 
 from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_WARNING_PER_MM2
 from ..debug import is_enabled, logger
@@ -298,13 +300,13 @@ class GLStitchWidget(QOpenGLWidget):
     can switch between raster and OpenGL rendering modes.
     """
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: EmbroideryViewerWidget | None = None) -> None:
         super().__init__(parent)
         # Mouse/keyboard input is handled entirely by the parent viewer (pan,
         # zoom, stitch stepping, needle, timeline...); this widget is only a
         # display surface, so let all mouse events pass through to it.
         self.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self._viewer: Any = parent
+        self._viewer: EmbroideryViewerWidget | None = parent
         self._program: QOpenGLShaderProgram | None = None
         self._vao: QOpenGLVertexArrayObject | None = None
         self._vbo: QOpenGLBuffer | None = None

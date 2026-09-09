@@ -5,7 +5,7 @@ import time
 from collections import deque
 from pathlib import Path
 from threading import Lock
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pystitch as emb
@@ -511,7 +511,7 @@ class EmbroideryViewerWidget(QWidget):
             else:
                 self.needle_fullscreen = str(nf).strip().lower() in ("true", "1", "yes", "on")
 
-    def _save_view_setting(self, key: str, value: Any) -> None:
+    def _save_view_setting(self, key: str, value: object) -> None:
         view = self.config.get("view", {})
         if not isinstance(view, dict):
             view = {}
