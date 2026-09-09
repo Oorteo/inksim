@@ -238,7 +238,8 @@ def render_shaded_numba(
     light_factor,
     use_realistic=False,
 ):
-    # Draw visible stitch segments into the RGB buffer.    # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
+    # Draw visible stitch segments into the RGB buffer.
+    # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
     # like the previous 0.05. The GPU renderer keeps its own mapping.
     light_factor = (
         light_factor * 0.1

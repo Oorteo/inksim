@@ -124,7 +124,8 @@ def _default_texture_path() -> Path:
     if candidate.exists():
         return candidate
     raise FileNotFoundError(
-        f"Thread normal/mask texture not found at {candidate}. Run scripts/texture/generate_variants.sh to (re)generate it."
+        f"Thread normal/mask texture not found at {candidate}. "
+        f"Run scripts/texture/generate_variants.sh to (re)generate it."
     )
 
 

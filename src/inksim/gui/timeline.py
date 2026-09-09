@@ -182,7 +182,10 @@ class TimelineWidget(QWidget):
         txt_center = f"{visible / total * 100:.1f}%"
         if self.viewer.bounds != (0, 0, 0, 0):
             bounds = self.viewer.bounds
-            txt_right = f"{bounds[2] - bounds[0]:.1f} x {bounds[3] - bounds[1]:.1f} mm | {self.viewer.color_count} color sections"
+            txt_right = (
+                f"{bounds[2] - bounds[0]:.1f} x {bounds[3] - bounds[1]:.1f} mm | "
+                f"{self.viewer.color_count} color sections"
+            )
         else:
             txt_right = ""
         font_metrics = painter.fontMetrics()

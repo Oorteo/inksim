@@ -878,7 +878,10 @@ class MainWindow(QMainWindow):
                 answer = QMessageBox.question(
                     self,
                     "Close InkSim server",
-                    "The Inkscape instance that started this server is no longer running.\n\nDo you want to close InkSim?",
+                    (
+                        "The Inkscape instance that started this server is no longer running.\n\n"
+                        "Do you want to close InkSim?"
+                    ),
                 )
                 if answer == QMessageBox.Yes:
                     self._allow_close = True
@@ -1231,7 +1234,11 @@ class MainWindow(QMainWindow):
             self._add_recent_directory(selected_path.parent)
         total = self.viewer.stitches_np.shape[0]
         bounds = self.viewer.bounds
-        self._base_title = f"{APP_TITLE} - {selected_path.name} - {total} sts - {bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm"
+        width_mm = bounds[2] - bounds[0]
+        height_mm = bounds[3] - bounds[1]
+        self._base_title = (
+            f"{APP_TITLE} - {selected_path.name} - {total} sts - {width_mm:.1f}x{height_mm:.1f}mm"
+        )
         self._update_window_title()
         self.progress.update()
         self.refresh_command_panel()

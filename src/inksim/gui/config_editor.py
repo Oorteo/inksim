@@ -42,7 +42,8 @@ class ConfigEditorDialog(QDialog):
         layout.addWidget(path_label)
 
         hint = QLabel(
-            "Edit the TOML file directly. Save writes it back atomically; changes that affect this session may need an application restart.",
+            "Edit the TOML file directly. Save writes it back atomically; "
+            "changes that affect this session may need an application restart.",
             self,
         )
         hint.setWordWrap(True)

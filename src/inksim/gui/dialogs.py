@@ -44,7 +44,8 @@ class CalibrationDialog(QDialog):
         root = QVBoxLayout(self)
 
         info = QLabel(
-            "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK."
+            "Hold a ruler against the screen and drag the slider until the bar "
+            "below is exactly 100 mm long, then press OK."
         )
         info.setWordWrap(True)
         root.addWidget(info)

@@ -111,7 +111,9 @@ class DensityWorker(QRunnable):
             )
         except Exception as error:
             density_debug(
-                f"worker failed request={self.request_id} elapsed={time.perf_counter() - started_at:.3f}s error={error!r}"
+                f"worker failed request={self.request_id} "
+                f"elapsed={time.perf_counter() - started_at:.3f}s "
+                f"error={error!r}"
             )
             with density_results_lock:
                 density_results.append(("failed", self.owner_id, self.request_id, error))
@@ -1087,7 +1089,8 @@ class EmbroideryViewerWidget(QWidget):
         if precompute_density and len(self.stitch_points_np) > 0:
             self._start_density_calculation()
         density_debug(
-            f"load finished path={path!r} stitches={len(self.stitches_np)} elapsed={time.perf_counter() - started_at:.3f}s"
+            f"load finished path={path!r} stitches={len(self.stitches_np)} "
+            f"elapsed={time.perf_counter() - started_at:.3f}s"
         )
         return True
 
@@ -1100,7 +1103,9 @@ class EmbroideryViewerWidget(QWidget):
     def _start_density_calculation(self, show_status=False):
         if self.density_ready or self._density_worker is not None:
             density_debug(
-                f"worker skipped request={self._density_request_id} ready={self.density_ready} active={self._density_worker is not None}"
+                f"worker skipped request={self._density_request_id} "
+                f"ready={self.density_ready} "
+                f"active={self._density_worker is not None}"
             )
             return
         if show_status:
