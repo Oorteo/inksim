@@ -7,11 +7,10 @@ from __future__ import annotations
 
 from pathlib import Path
 from time import monotonic
-from typing import Any
 
 import numpy as np
 from PySide6.QtCore import Qt, QThread, QTimer
-from PySide6.QtGui import QColor, QPainter, QPaintEvent, QPen, QPixmap
+from PySide6.QtGui import QCloseEvent, QColor, QPainter, QPaintEvent, QPen, QPixmap
 from PySide6.QtWidgets import QApplication, QLabel, QSplashScreen, QVBoxLayout, QWidget
 
 from ..render import (
@@ -124,6 +123,6 @@ class SplashScreen(QSplashScreen):
         elapsed_ms = int((monotonic() - self._shown_at) * 1000)
         QTimer.singleShot(max(0, minimum_ms - elapsed_ms), self.close)
 
-    def closeEvent(self, event: Any) -> None:
+    def closeEvent(self, event: QCloseEvent) -> None:
         self.spinner.stop()
         event.accept()

@@ -5,11 +5,14 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QPoint, QRect, Qt, Signal
 from PySide6.QtGui import QColor, QMouseEvent, QPainter, QPaintEvent, QPen
 from PySide6.QtWidgets import QWidget
+
+if TYPE_CHECKING:
+    from .viewer import EmbroideryViewerWidget
 
 
 class TimelineWidget(QWidget):
@@ -17,7 +20,7 @@ class TimelineWidget(QWidget):
 
     seek_requested = Signal(int)
 
-    def __init__(self, parent: QWidget, viewer_panel: Any) -> None:
+    def __init__(self, parent: QWidget, viewer_panel: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer_panel
         self.setMinimumHeight(58)
@@ -183,9 +186,9 @@ class TimelineWidget(QWidget):
             )
         else:
             txt_left = f"{visible}/{total} | {stitches_per_minute} stitches/min"
-        commands = self.viewer.command_events.get(visible, ())
-        if commands:
-            txt_left += f" | {' | '.join(commands)}"
+        visible_commands: list[str] | tuple[()] = self.viewer.command_events.get(visible, ())
+        if visible_commands:
+            txt_left += f" | {' | '.join(visible_commands)}"
         txt_center = f"{visible / total * 100:.1f}%"
         if self.viewer.bounds != (0, 0, 0, 0):
             bounds = self.viewer.bounds

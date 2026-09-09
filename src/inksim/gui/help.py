@@ -7,9 +7,12 @@ from __future__ import annotations
 
 import io
 import re
-from typing import Any
+from typing import TYPE_CHECKING
 
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QTextEdit, QVBoxLayout, QWidget
+
+if TYPE_CHECKING:
+    from .viewer import EmbroideryViewerWidget
 
 _ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*m")
 
@@ -85,7 +88,7 @@ HELP_SECTIONS = (
 )
 
 
-def show_help(viewer: Any) -> None:
+def show_help(viewer: EmbroideryViewerWidget) -> None:
     """Show the viewer help dialog."""
     viewer._show_markdown_columns_dialog(
         "help_dialog",

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor
@@ -20,6 +20,9 @@ from PySide6.QtWidgets import (
     QWidgetAction,
 )
 
+if TYPE_CHECKING:
+    from .viewer import EmbroideryViewerWidget
+
 from ..constants import (
     NEEDLE_RADIUS_MAX,
     NEEDLE_RADIUS_MIN,
@@ -31,7 +34,7 @@ from ..constants import (
 class _SliderPopup(QMenu):
     """Popup with vertical sliders for DF / LF / LW tuning."""
 
-    def __init__(self, parent: QWidget, viewer: Any) -> None:
+    def __init__(self, parent: QWidget, viewer: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer
         self._sliders: dict[str, QSlider] = {}
@@ -101,7 +104,7 @@ class _SliderPopup(QMenu):
 class _NeedlePopup(QMenu):
     """Popup with sliders for needle radius, width, color and fullscreen."""
 
-    def __init__(self, parent: QWidget, viewer: Any) -> None:
+    def __init__(self, parent: QWidget, viewer: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer
         self._sliders: dict[str, QSlider] = {}
@@ -233,7 +236,7 @@ class _NeedlePopup(QMenu):
 class ModeBar(QWidget):
     """Clickable indicators for the main viewer display modes."""
 
-    def __init__(self, parent: QWidget, viewer: Any) -> None:
+    def __init__(self, parent: QWidget, viewer: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer
         self.setFixedHeight(38)
