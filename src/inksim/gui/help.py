@@ -3,10 +3,13 @@
 
 """Markdown help content for the InkSim viewer."""
 
+from __future__ import annotations
+
 import io
 import re
+from typing import Any
 
-from PySide6.QtWidgets import QDialog, QDialogButtonBox, QTextEdit, QVBoxLayout
+from PySide6.QtWidgets import QDialog, QDialogButtonBox, QTextEdit, QVBoxLayout, QWidget
 
 _ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*m")
 
@@ -82,7 +85,7 @@ HELP_SECTIONS = (
 )
 
 
-def show_help(viewer):
+def show_help(viewer: Any) -> None:
     """Show the viewer help dialog."""
     viewer._show_markdown_columns_dialog(
         "help_dialog",
@@ -94,7 +97,7 @@ def show_help(viewer):
     )
 
 
-def show_command_line_help(parent):
+def show_command_line_help(parent: QWidget) -> None:
     """Show a read-only dialog with the inksim command-line help text."""
     from ..cli import build_argument_parser
 

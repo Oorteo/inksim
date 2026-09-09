@@ -3,6 +3,8 @@
 
 """About dialog for the InkSim application."""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 from PySide6.QtCore import Qt
@@ -13,6 +15,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QPlainTextEdit,
     QVBoxLayout,
+    QWidget,
 )
 
 from ..constants import APP_TITLE
@@ -20,7 +23,7 @@ from ..runtime import runtime_info_lines
 from ..update_check import last_check_text
 
 
-def show_about(parent):
+def show_about(parent: QWidget) -> None:
     """Show the InkSim About dialog."""
     dialog = QDialog(parent)
     dialog.setWindowTitle(f"About {APP_TITLE}")
