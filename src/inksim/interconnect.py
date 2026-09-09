@@ -9,7 +9,7 @@ import json
 import os
 import secrets
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from PySide6.QtCore import QObject, QStandardPaths, Signal
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
@@ -20,6 +20,9 @@ from .constants import (
     TOKEN_FILENAME,
 )
 from .debug import logger
+
+if TYPE_CHECKING:
+    from .gui.frame import MainWindow
 
 
 def _token_path() -> Path:
@@ -71,7 +74,7 @@ class InterconnectServer(QObject):
 
     error = Signal(str)
 
-    def __init__(self, window: Any, server_name: str = IPC_SERVER_NAME) -> None:
+    def __init__(self, window: MainWindow, server_name: str = IPC_SERVER_NAME) -> None:
         super().__init__(window)
         self.window = window
         self.server_name = server_name

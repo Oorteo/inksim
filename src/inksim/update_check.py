@@ -18,6 +18,8 @@ import urllib.request
 
 from PySide6.QtCore import QThread, Signal
 
+from .config import Config
+
 PYPI_JSON_URL = "https://pypi.org/pypi/inksim/json"
 REQUEST_TIMEOUT_S = 5.0
 
@@ -67,7 +69,7 @@ def fetch_latest_version(timeout: float = REQUEST_TIMEOUT_S) -> str | None:
     return version or None
 
 
-def should_check(config, now: float | None = None) -> bool:  # type: ignore[no-untyped-def]
+def should_check(config: Config, now: float | None = None) -> bool:
     """Return True when an automatic check is due.
 
     The check is skipped when disabled, or when the last check happened more
@@ -91,22 +93,22 @@ def should_check(config, now: float | None = None) -> bool:  # type: ignore[no-u
     return (now - last) >= interval_days * 86400.0
 
 
-def record_check(config, now: float | None = None) -> None:  # type: ignore[no-untyped-def]
+def record_check(config: Config, now: float | None = None) -> None:
     """Persist the timestamp of the most recent check."""
     config.set(CONFIG_LAST_CHECK, time.time() if now is None else now)
 
 
-def record_result(config, result: str) -> None:  # type: ignore[no-untyped-def]
+def record_result(config: Config, result: str) -> None:
     """Persist the human-readable result of the most recent check."""
     config.set(CONFIG_LAST_RESULT, result)
 
 
-def last_result(config) -> str:  # type: ignore[no-untyped-def]
+def last_result(config: Config) -> str:
     """Return the stored result of the most recent check, or ""."""
     return config.get(CONFIG_LAST_RESULT, "") or ""
 
 
-def last_check_text(config) -> str:  # type: ignore[no-untyped-def]
+def last_check_text(config: Config) -> str:
     """Return a human-readable description of the last check, if any."""
     last = config.get(CONFIG_LAST_CHECK)
     if last is None:
