@@ -1,6 +1,14 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+"""Numba-accelerated CPU rasterizers for stitch rendering.
+
+The functions in this module are decorated with ``@numba.njit`` and are kept
+untyped so that Numba can infer types from the numpy arrays passed at runtime.
+"""
+
+from __future__ import annotations
+
 import numba
 import numpy as np
 
