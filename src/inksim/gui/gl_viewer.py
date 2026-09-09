@@ -526,7 +526,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._show_grid = show_grid
         self._maybe_update()
 
-    def initializeGL(self):
+    def initializeGL(self) -> None:
         # Re-arm cleanup so a recreated GL context can be released again.
         self._cleaned_up = False
         self.context().aboutToBeDestroyed.connect(self.cleanup)
@@ -725,14 +725,14 @@ class GLStitchWidget(QOpenGLWidget):
         if verts.nbytes > self._vbo.size():
             self._vbo.allocate(verts.tobytes(), verts.nbytes)
         else:
-            self._vbo.write(0, verts.tobytes(), verts.nbytes)
+            self._vbo.write(0, verts.tobytes(), verts.nbytes)  # type: ignore[arg-type]
         self._vbo.release()
 
         self._ibo.bind()
         if idx.nbytes > self._ibo.size():
             self._ibo.allocate(idx.tobytes(), idx.nbytes)
         else:
-            self._ibo.write(0, idx.tobytes(), idx.nbytes)
+            self._ibo.write(0, idx.tobytes(), idx.nbytes)  # type: ignore[arg-type]
         self._ibo.release()
         self._needs_upload = False
         elapsed = time.perf_counter() - upload_started_at

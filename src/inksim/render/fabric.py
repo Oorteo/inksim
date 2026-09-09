@@ -10,7 +10,7 @@ import numpy as np
 
 
 @numba.njit(cache=True)
-def render_fabric_numba(buf, zoom):
+def render_fabric_numba(buf: np.ndarray, zoom: float) -> None:
     """Render a lit plain-weave fabric surface at the current zoom."""
     height, width, _ = buf.shape
     thread_spacing = max(1.5, 0.45 * zoom)

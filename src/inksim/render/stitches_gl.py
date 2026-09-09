@@ -237,17 +237,17 @@ def texture_cap_radius_fraction(path: Path) -> float:
 
 
 def _build_satin_quads(
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    thread_texture_aspect=8.0,
-    stitch_height_scale=1.875,
-    width_fraction=1.0,
-    cap_fraction=0.0,
-):
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    thread_texture_aspect: float = 8.0,
+    stitch_height_scale: float = 1.875,
+    width_fraction: float = 1.0,
+    cap_fraction: float = 0.0,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Convert stitch segments into textured quad vertex data.
 
     Returns ``(vertices, indices, index_counts)`` where ``index_counts[i]``
@@ -459,7 +459,7 @@ def _build_satin_quads(
         verts[:, ci + 5, 16] = mu_cols[ci]
         verts[:, ci + 5, 17] = 1.0
 
-    verts = verts[valid].reshape(-1)
+    flat_verts = verts[valid].reshape(-1)
 
     # indices: 24 per stitch (4 quad strips = 8 triangles) over the five
     # columns: (tS,nS) (nS,m) (m,nE) (nE,tE).
@@ -479,48 +479,48 @@ def _build_satin_quads(
         hi[:, 1] = base + b_ + 5
         hi[:, 2] = base + a_ + 5
 
-    idx = idx.reshape(-1)
+    flat_idx = idx.reshape(-1)
 
     per_stitch = np.where(valid, per_stitch_idx, 0)
     index_counts = np.cumsum(per_stitch).astype(np.int64)
 
-    return verts, idx, index_counts
+    return flat_verts, flat_idx, index_counts
 
 
 class _SharedGLContext:
     """Lazily-created offscreen GL context shared by all frames."""
 
-    app = None
-    context = None
-    surface = None
-    program = None
-    vao = None
-    vbo = None
-    ibo = None
-    texture = None
-    cap_texture = None
-    fbo = None
-    initialized = False
+    app: QApplication | None = None
+    context: QOpenGLContext | None = None
+    surface: QOffscreenSurface | None = None
+    program: QOpenGLShaderProgram | None = None
+    vao: QOpenGLVertexArrayObject | None = None
+    vbo: QOpenGLBuffer | None = None
+    ibo: QOpenGLBuffer | None = None
+    texture: QOpenGLTexture | None = None
+    cap_texture: QOpenGLTexture | None = None
+    fbo: QOpenGLFramebufferObject | None = None
+    initialized: bool = False
 
 
 class _FrameResources:
     """Per-frame vertex/index data and sizes."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.vbo_size = 0
         self.ibo_size = 0
         self.index_count = 0
         self.fbo_size = (0, 0)
 
 
-def _ensure_qapp():
+def _ensure_qapp() -> None:
     if QApplication.instance() is None:
         if not sys.argv:
             sys.argv.append("inksim")
         _SharedGLContext.app = QApplication(sys.argv)
 
 
-def _init_gl(width, height):
+def _init_gl(width: int, height: int) -> None:
     _ensure_qapp()
 
     if _SharedGLContext.initialized:
@@ -600,7 +600,7 @@ def _init_gl(width, height):
     texture.setFormat(QOpenGLTexture.RGBAFormat)
     texture.setSize(tex_w, tex_h)
     texture.allocateStorage()
-    texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, tex_data.tobytes())
+    texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, tex_data.tobytes())  # type: ignore[call-overload]
     texture.setMinificationFilter(QOpenGLTexture.LinearMipMapLinear)
     texture.setMagnificationFilter(QOpenGLTexture.Linear)
     texture.setWrapMode(QOpenGLTexture.DirectionS, QOpenGLTexture.Repeat)
@@ -637,7 +637,7 @@ def _init_gl(width, height):
     cap_texture.setFormat(QOpenGLTexture.RGBAFormat)
     cap_texture.setSize(cap_w, cap_h)
     cap_texture.allocateStorage()
-    cap_texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, cap_data.tobytes())
+    cap_texture.setData(QOpenGLTexture.RGBA, QOpenGLTexture.UInt8, cap_data.tobytes())  # type: ignore[call-overload]
     cap_texture.setMinificationFilter(QOpenGLTexture.Linear)
     cap_texture.setMagnificationFilter(QOpenGLTexture.Linear)
     cap_texture.setWrapMode(QOpenGLTexture.DirectionS, QOpenGLTexture.ClampToEdge)
@@ -665,7 +665,7 @@ def _init_gl(width, height):
     _SharedGLContext.initialized = True
 
 
-def _resize_fbo(width, height):
+def _resize_fbo(width: int, height: int) -> None:
     if _SharedGLContext.fbo is None or _SharedGLContext.fbo.size() != QSize(width, height):
         fbo_format = QOpenGLFramebufferObjectFormat()
         fbo_format.setAttachment(QOpenGLFramebufferObject.CombinedDepthStencil)
@@ -677,7 +677,7 @@ def _resize_fbo(width, height):
         _SharedGLContext.fbo = new_fbo
 
 
-def _upload_geometry(vertices, indices):
+def _upload_geometry(vertices: np.ndarray, indices: np.ndarray) -> None:
     vbo = _SharedGLContext.vbo
     ibo = _SharedGLContext.ibo
     vbo.bind()

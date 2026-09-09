@@ -113,7 +113,7 @@ disable_error_code = ["attr-defined", "no-any-return", "var-annotated", "valid-t
 
 [[tool.mypy.overrides]]
 module = "inksim.render.stitches_gl"
-disable_error_code = ["name-defined"]
+disable_error_code = ["name-defined", "union-attr", "arg-type"]
 
 [[tool.mypy.overrides]]
 module = "inksim.gui.gl_viewer"

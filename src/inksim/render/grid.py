@@ -10,13 +10,18 @@ import numpy as np
 
 
 @numba.njit(cache=True)
-def _mix_channel(bg, line, k, denom):
+def _mix_channel(
+    bg: int | np.uint8,
+    line: int | np.uint8,
+    k: int | np.uint8,
+    denom: int | np.uint8,
+) -> np.uint8:
     """Blend a single colour channel toward line with strength k/denom."""
     return np.uint8((int(bg) * (denom - k) + int(line) * k) // denom)
 
 
 @numba.njit(cache=True)
-def render_grid_numba(buf, zoom, pan_x, pan_y):
+def render_grid_numba(buf: np.ndarray, zoom: float, pan_x: float, pan_y: float) -> None:
     # Draw helper grid into the RGB buffer.
     # - every 1 mm: fine grid line at high zoom levels
     # - every 10 mm: minor grid line

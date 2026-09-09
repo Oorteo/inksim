@@ -17,16 +17,16 @@ from ..constants import MAX_RENDER_LINE_WIDTH_PX, MAX_RENDER_STEPS
 
 @numba.njit(cache=True)
 def render_shaded_volume_natural_numba(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor,
-    light_factor,
-):
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+) -> None:
     """Render volume-shaded stitches with subtle per-stitch shade variation."""
     # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
     # like the previous 0.05. The GPU renderer keeps its own mapping.
@@ -119,16 +119,16 @@ def render_shaded_volume_natural_numba(
 
 @numba.njit(cache=True)
 def render_realistic_twist_numba(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor,
-    light_factor,
-):
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+) -> None:
     """Render stable cylindrical threads with a subtle symmetric helical sheen."""
     # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
     # like the previous 0.05. The GPU renderer keeps its own mapping.
@@ -234,18 +234,18 @@ def render_realistic_twist_numba(
 
 @numba.njit(cache=True)
 def render_shaded_numba(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    use_shaded,
-    line_width,
-    dark_factor,
-    light_factor,
-    use_realistic=False,
-):
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    use_shaded: bool,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+    use_realistic: bool = False,
+) -> None:
     # Draw visible stitch segments into the RGB buffer.
     # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
     # like the previous 0.05. The GPU renderer keeps its own mapping.
@@ -405,16 +405,16 @@ def render_shaded_numba(
 
 @numba.njit(cache=True)
 def render_shaded_volume_numba(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor,
-    light_factor,
-):
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+) -> None:
     """Render shaded stitches with a dark-light-dark axial thread profile."""
     # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
     # like the previous 0.05. The GPU renderer keeps its own mapping.
