@@ -1,10 +1,13 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from __future__ import annotations
+
+from collections.abc import Callable
 from pathlib import Path
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPainter, QPixmap
+from PySide6.QtGui import QImage, QPainter, QPaintEvent, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -24,17 +27,17 @@ from PySide6.QtWidgets import (
 class _PreviewWidget(QWidget):
     """Widget that paints the preview image scaled to its current size."""
 
-    def __init__(self, image, parent=None):
+    def __init__(self, image: QImage, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._image = image
         self.setMinimumSize(40, 40)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-    def set_image(self, image):
+    def set_image(self, image: QImage) -> None:
         self._image = image
         self.update()
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
         rect = self.rect()
@@ -61,19 +64,19 @@ class ExportPreviewDialog(QDialog):
 
     def __init__(
         self,
-        title,
-        image,
-        default_name,
-        file_filter,
-        extension,
-        render_callback=None,
-        transparent_default=False,
-        on_transparent_changed=None,
-        parent=None,
-        base_dpi=300,
-        design_width_mm=0.0,
-        design_height_mm=0.0,
-    ):
+        title: str,
+        image: QImage,
+        default_name: str,
+        file_filter: str,
+        extension: str,
+        render_callback: Callable[..., QImage | None] | None = None,
+        transparent_default: bool = False,
+        on_transparent_changed: Callable[[bool], None] | None = None,
+        parent: QWidget | None = None,
+        base_dpi: int = 300,
+        design_width_mm: float = 0.0,
+        design_height_mm: float = 0.0,
+    ) -> None:
         super().__init__(parent)
         self.setWindowTitle(title)
         self.setMinimumSize(640, 480)
@@ -89,7 +92,7 @@ class ExportPreviewDialog(QDialog):
         self._extension = extension
         self._render_callback = render_callback
         self._transparent_changed_callback = on_transparent_changed
-        self._selected_path = None
+        self._selected_path: Path | None = None
 
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
@@ -162,7 +165,7 @@ class ExportPreviewDialog(QDialog):
         button_layout.addStretch()
         layout.addLayout(button_layout)
 
-    def _format_info(self, scale):
+    def _format_info(self, scale: float) -> str:
         width = max(1, round(self._base_width * scale))
         height = max(1, round(self._base_height * scale))
         effective_dpi = round(self._base_dpi * scale)
@@ -171,15 +174,15 @@ class ExportPreviewDialog(QDialog):
             f"{self._design_width_mm:.1f} x {self._design_height_mm:.1f} mm"
         )
 
-    def _max_allowed_scale(self):
+    def _max_allowed_scale(self) -> float:
         if self._base_width <= 0 or self._base_height <= 0:
-            return 1
+            return 1.0
         return min(
             self.MAX_SIDE_PX / self._base_width,
             self.MAX_SIDE_PX / self._base_height,
         )
 
-    def _update_scale_availability(self):
+    def _update_scale_availability(self) -> None:
         max_scale = self._max_allowed_scale()
         model = self._scale_combo.model()
         for index, scale in enumerate(self.SCALE_FACTORS):
@@ -197,28 +200,31 @@ class ExportPreviewDialog(QDialog):
                     self._scale_combo.setCurrentIndex(self.SCALE_FACTORS.index(scale))
                     break
 
-    def _update_quality_visibility(self):
+    def _update_quality_visibility(self) -> None:
         fmt = self._current_format()
         self._quality_combo.setEnabled(fmt == "WebP")
         self._quality_combo.setVisible(fmt == "WebP")
 
-    def _current_scale(self):
-        return self._scale_combo.currentData()
+    def _current_scale(self) -> float:
+        data = self._scale_combo.currentData()
+        return float(data) if data is not None else 1.0
 
-    def _current_format(self):
-        return self._format_combo.currentData()
+    def _current_format(self) -> str:
+        data = self._format_combo.currentData()
+        return str(data) if data is not None else "PNG"
 
-    def _current_quality(self):
-        return self._quality_combo.currentData()
+    def _current_quality(self) -> int:
+        data = self._quality_combo.currentData()
+        return int(data) if data is not None else 95
 
-    def _is_transparent_allowed(self):
+    def _is_transparent_allowed(self) -> bool:
         return self._current_format() in ("PNG", "WebP")
 
-    def _on_scale_changed(self):
+    def _on_scale_changed(self) -> None:
         self._update_scale_availability()
         self._regenerate_preview()
 
-    def _on_format_changed(self):
+    def _on_format_changed(self) -> None:
         self._update_quality_visibility()
         if not self._is_transparent_allowed() and self._transparent_check.isChecked():
             self._transparent_check.setChecked(False)
@@ -227,11 +233,11 @@ class ExportPreviewDialog(QDialog):
         )
         self._regenerate_preview()
 
-    def _on_quality_changed(self):
+    def _on_quality_changed(self) -> None:
         if self._current_format() == "WebP":
             self._regenerate_preview()
 
-    def _reset_action_buttons(self):
+    def _reset_action_buttons(self) -> None:
         """Re-enable Copy/Save after the preview changes."""
         if self._copy_button.text() != "Copy to clipboard":
             self._copy_button.setText("Copy to clipboard")
@@ -240,7 +246,7 @@ class ExportPreviewDialog(QDialog):
             self._save_button.setText("Save...")
             self._save_button.setEnabled(True)
 
-    def _regenerate_preview(self):
+    def _regenerate_preview(self) -> None:
         self._reset_action_buttons()
         if self._render_callback is None:
             self._info_label.setText(self._format_info(self._current_scale()))
@@ -257,26 +263,28 @@ class ExportPreviewDialog(QDialog):
             self._preview.set_image(self._image)
             self._info_label.setText(self._format_info(self._current_scale()))
 
-    def _on_transparent_changed(self, checked):
+    def _on_transparent_changed(self, checked: bool) -> None:
         if self._transparent_changed_callback is not None:
             self._transparent_changed_callback(checked)
         if not self._is_transparent_allowed():
             return
         self._regenerate_preview()
 
-    def _format_suffix(self):
+    def _format_suffix(self) -> str:
         return {
             "PNG": ".png",
             "WebP": ".webp",
         }[self._current_format()]
 
-    def _copy_to_clipboard(self):
+    def _copy_to_clipboard(self) -> None:
         clipboard = QApplication.clipboard()
+        if clipboard is None:
+            return
         clipboard.setPixmap(QPixmap.fromImage(self._image))
         self._copy_button.setText("Copied!")
         self._copy_button.setEnabled(False)
 
-    def _save_image(self):
+    def _save_image(self) -> None:
         default_name = str(Path(self._default_name).with_suffix(self._format_suffix()))
         file_filter = {
             "PNG": "PNG files (*.png)",
@@ -294,12 +302,12 @@ class ExportPreviewDialog(QDialog):
         selected_path = selected_path.with_suffix(self._format_suffix())
         fmt = self._current_format()
         quality = self._current_quality() if fmt == "WebP" else -1
-        if not self._image.save(str(selected_path), fmt, quality):
+        if not self._image.save(str(selected_path), fmt.encode(), quality):
             QMessageBox.critical(self, "Save image", f"Failed to save {selected_path}")
             return
         self._selected_path = selected_path
         self._save_button.setText("Saved!")
         self._save_button.setEnabled(False)
 
-    def selected_path(self):
+    def selected_path(self) -> Path | None:
         return self._selected_path
