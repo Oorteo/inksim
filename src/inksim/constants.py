@@ -3,17 +3,20 @@
 
 """Application constants shared by the InkSim modules."""
 
+from __future__ import annotations
+
 import getpass
 import os
 
 
-def _make_ipc_server_name():
+def _make_ipc_server_name() -> str:
     """Return a per-user IPC endpoint name.
 
     Multiple users on the same machine must each have their own server, so the
     name includes the current user's id.  ``os.getuid`` is used on Unix-like
     platforms; on Windows ``getpass.getuser`` is the fallback.
     """
+    user_id: int | str
     try:
         user_id = os.getuid()
     except AttributeError:

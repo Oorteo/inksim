@@ -3,6 +3,8 @@
 
 """Application-wide opt-in debug logging."""
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 
@@ -13,11 +15,11 @@ logger.addHandler(logging.NullHandler())
 _debug_enabled = False
 
 
-def is_enabled():
+def is_enabled() -> bool:
     return _debug_enabled
 
 
-def configure_logging(enabled, log_path):
+def configure_logging(enabled: bool, log_path: str | Path) -> Path | None:
     """Enable file logging for debug diagnostics when requested."""
     global _debug_enabled
     if not enabled:
