@@ -1440,7 +1440,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def draw_needle_overlay(self, painter: QPainter) -> None:
         """Draw the current needle position above the cached stitch bitmap."""
-        if not self.show_stitches or not self.show_needle or self.stitches_np.shape[0] == 0:
+        if not self.show_needle or self.stitches_np.shape[0] == 0:
             return
         world_x, world_y = self._needle_world_pos()
         needle_x = world_x * self.zoom + self.pan_x

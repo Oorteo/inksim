@@ -288,13 +288,13 @@ void main() {
         discard;
     }
     if (v_repeated > 0.5) {
-        // Zero-length stitch: red ring with a colored center (matches CPU).
+        // Zero-length stitch: orange ring with a colored center (matches CPU).
         float ring = smoothstep(0.30, 0.42, r) * (1.0 - smoothstep(0.42, 0.5, r));
         if (ring < 0.01) {
             fragColor = vec4(v_color, 1.0);
             return;
         }
-        fragColor = vec4(0.92, 0.14, 0.14, 1.0);
+        fragColor = vec4(0.784, 0.235, 0.706, 1.0);
         return;
     }
     // Full marker color with a small dark puncture center (matches CPU).
@@ -1053,7 +1053,7 @@ class GLStitchWidget(QOpenGLWidget):
         colors[crit] = (220 / 255.0, 35 / 255.0, 35 / 255.0)
         colors[warn] = (235 / 255.0, 175 / 255.0, 25 / 255.0)
 
-        radius = np.where(rep, 0.35, 0.2).astype(np.float32)
+        radius = np.where(rep, 0.175, 0.1).astype(np.float32)
         repeated_flag = rep.astype(np.float32)
 
         data = np.empty((visible, 7), dtype=np.float32)
