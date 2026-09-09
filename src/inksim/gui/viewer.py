@@ -1191,14 +1191,14 @@ class EmbroideryViewerWidget(QWidget):
         other_results: list[tuple[str, int, int, np.ndarray | BaseException]] = []
         with density_results_lock:
             while density_results:
-                result_type, _, request_id, result = density_results.popleft()
-                if request_id == self._density_owner_id:
+                result_type, owner_id, request_id, result = density_results.popleft()
+                if owner_id == self._density_owner_id:
                     if isinstance(result, np.ndarray):
                         own_finished.append((request_id, result))
                     else:
                         own_failed.append((request_id, result))
                 else:
-                    other_results.append((result_type, _, request_id, result))
+                    other_results.append((result_type, owner_id, request_id, result))
             density_results.extend(other_results)
         for request_id, density in own_finished:
             self._density_ready(request_id, density)
