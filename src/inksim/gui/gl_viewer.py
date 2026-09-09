@@ -288,16 +288,17 @@ void main() {
         discard;
     }
     if (v_repeated > 0.5) {
-        // Zero-length stitch: red ring (matches the CPU renderer).
+        // Zero-length stitch: red ring with a colored center (matches CPU).
         float ring = smoothstep(0.30, 0.42, r) * (1.0 - smoothstep(0.42, 0.5, r));
         if (ring < 0.01) {
-            discard;
+            fragColor = vec4(v_color, 1.0);
+            return;
         }
         fragColor = vec4(0.92, 0.14, 0.14, 1.0);
         return;
     }
-    // Darker center (needle puncture).
-    vec3 col = mix(vec3(0.04, 0.04, 0.04), v_color, smoothstep(0.0, 0.5, r));
+    // Full marker color with a small dark puncture center (matches CPU).
+    vec3 col = mix(vec3(0.04, 0.04, 0.04), v_color, smoothstep(0.0, 0.12, r));
     fragColor = vec4(col, 1.0);
 }
 """
