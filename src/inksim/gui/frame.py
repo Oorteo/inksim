@@ -1,13 +1,27 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from __future__ import annotations
+
 import os
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QRect, QSignalBlocker, QTimer, Qt
-from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence
+from PySide6.QtCore import QEvent, QObject, QRect, QSignalBlocker, Qt, QTimer
+from PySide6.QtGui import (
+    QAction,
+    QCloseEvent,
+    QColor,
+    QDragEnterEvent,
+    QDropEvent,
+    QIcon,
+    QImage,
+    QKeySequence,
+    QMoveEvent,
+    QResizeEvent,
+)
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -17,6 +31,7 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QLabel,
     QMainWindow,
+    QMenu,
     QMessageBox,
     QTableWidget,
     QTableWidgetItem,
@@ -25,7 +40,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..config import Config
-from ..constants import *
+from ..constants import APP_TITLE, DEFAULT_STATUS_TEXT
 from ..debug import logger
 from ..formats import (
     extension_from_output_filter,
@@ -43,9 +58,9 @@ from ..update_check import (
     record_result,
     should_check,
 )
-from .dialogs import EmbroideryOpenDialog
 from .about import show_about
 from .config_editor import show_config_editor
+from .dialogs import EmbroideryOpenDialog
 from .export_dialog import ExportPreviewDialog
 from .help import show_command_line_help
 from .shortcuts import ViewerShortcutFilter
@@ -59,59 +74,60 @@ class MainWindow(QMainWindow):
 
     def __init__(
         self,
-        fullscreen=False,
-        window_size=None,
-        window_position=None,
-        server_mode=False,
-        delete_input=False,
-        document_path=None,
-        snap_layout_key=None,
-    ):
+        fullscreen: bool = False,
+        window_size: tuple[int, int] | None = None,
+        window_position: tuple[int, int] | None = None,
+        server_mode: bool = False,
+        delete_input: bool = False,
+        document_path: str | Path | None = None,
+        snap_layout_key: str | None = None,
+    ) -> None:
         super().__init__()
         self.setWindowTitle(APP_TITLE)
-        self.setWindowIcon(QIcon(str(
-            Path(__file__).parent.parent / "assets" / "app_icons" / "inksim.svg")))
-        self._default_size = window_size or (1200, 980)
+        self.setWindowIcon(
+            QIcon(str(Path(__file__).parent.parent / "assets" / "app_icons" / "inksim.svg"))
+        )
+        self._default_size: tuple[int, int] = window_size or (1200, 980)
         self.resize(*self._default_size)
         self.setAcceptDrops(True)
-        self.is_fullscreen = False
-        self._fullscreen_was_maximized = False
-        self.server_mode = server_mode
-        self._delete_input = delete_input
-        self._allow_close = False
-        self._startup_fullscreen = fullscreen
-        self._should_maximize_default = not window_size and not fullscreen
-        self.config = Config()
-        self._snap_layout_key = snap_layout_key
-        self.last_directory = _unsanitize_path(self.config.get("last_directory", ""))
-        self.export_transparent_background = self.config.get(
+        self.is_fullscreen: bool = False
+        self._fullscreen_was_maximized: bool = False
+        self.server_mode: bool = server_mode
+        self._delete_input: bool = delete_input
+        self._allow_close: bool = False
+        self._startup_fullscreen: bool = fullscreen
+        self._should_maximize_default: bool = not window_size and not fullscreen
+        self.config: Config = Config()
+        self._snap_layout_key: str | None = snap_layout_key
+        self.last_directory: str = _unsanitize_path(self.config.get("last_directory", ""))
+        self.export_transparent_background: bool = self.config.get(
             "export_transparent_background", False
         )
-        self.document_path = None
+        self.document_path: Path | None = None
         if document_path is not None:
             self.set_document_path(document_path)
-        self.recent_directories = self._load_recent_directories()
-        self.current_file_path = None
-        self._source_mtime_ns = None
-        self._last_source_check = 0.0
-        self._source_check_interval_s = 0.4
-        self._is_reloading_from_disk = False
-        self._layout_state = "free"
-        self._layout_changing = False
-        self._free_geometry = None
-        self._free_maximized = False
-        self._snapped_geometry = None
-        self._last_geometry = self.geometry()
-        self._base_title = APP_TITLE
-        self._update_thread = None
-        self._update_suffix = self._resolve_update_suffix(last_result(self.config))
+        self.recent_directories: list[str] = self._load_recent_directories()
+        self.current_file_path: Path | None = None
+        self._source_mtime_ns: int | None = None
+        self._last_source_check: float = 0.0
+        self._source_check_interval_s: float = 0.4
+        self._is_reloading_from_disk: bool = False
+        self._layout_state: str = "free"
+        self._layout_changing: bool = False
+        self._free_geometry: QRect | None = None
+        self._free_maximized: bool = False
+        self._snapped_geometry: QRect | None = None
+        self._last_geometry: QRect = self.geometry()
+        self._base_title: str = APP_TITLE
+        self._update_thread: UpdateCheckThread | None = None
+        self._update_suffix: str = self._resolve_update_suffix(last_result(self.config))
         self._update_window_title()
 
         main_panel = QWidget(self)
         layout = QVBoxLayout(main_panel)
-        self.viewer = EmbroideryViewerWidget(main_panel, None, self.config)
-        self.progress = TimelineWidget(main_panel, self.viewer)
-        self.mode_status = ModeBar(main_panel, self.viewer)
+        self.viewer: EmbroideryViewerWidget = EmbroideryViewerWidget(main_panel, None, self.config)
+        self.progress: TimelineWidget = TimelineWidget(main_panel, self.viewer)
+        self.mode_status: ModeBar = ModeBar(main_panel, self.viewer)
         self.progress.seek_requested.connect(self.viewer.seek_to)
         self.viewer.mode_panel = self.mode_status
         self.viewer.progress_bar = self.progress
@@ -119,21 +135,23 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.mode_status)
         layout.addWidget(self.progress)
         self.setCentralWidget(main_panel)
-        self._main_panel = main_panel
-        self._updating_command_panel = False
+        self._main_panel: QWidget = main_panel
+        self._updating_command_panel: bool = False
         self._build_command_dock()
         self.viewer.cursor_changed.connect(self._sync_command_panel_cursor)
-        self.shortcut_filter = ViewerShortcutFilter(self, self.viewer)
+        self.shortcut_filter: ViewerShortcutFilter = ViewerShortcutFilter(self, self.viewer)
         self._build_menus()
         self.statusBar().showMessage(DEFAULT_STATUS_TEXT)
-        QApplication.instance().installEventFilter(self)
+        app = QApplication.instance()
+        assert app is not None
+        app.installEventFilter(self)
 
         if window_position:
             self.move(*window_position)
         elif not window_size and not fullscreen:
             self._restore_window_layout()
 
-    def set_snap_layout_key(self, key):
+    def set_snap_layout_key(self, key: str | None) -> None:
         """Switch the snap-layout profile used for save/restore."""
         if not key:
             return
@@ -141,14 +159,14 @@ class MainWindow(QMainWindow):
         if self._layout_state == "snapped":
             self._restore_snap_layout()
 
-    def _layout_config_key(self, key=None):
+    def _layout_config_key(self, key: str | None = None) -> str:
         """Return the config section name for the active layout profile."""
         key = key or self._snap_layout_key
         if key:
             return f"window_layout_snap/{key}"
         return "window_layout"
 
-    def _restore_window_layout(self):
+    def _restore_window_layout(self) -> None:
         """Restore the last saved window geometry, falling back to centred."""
         layout = self.config.get(self._layout_config_key(), {})
         if not isinstance(layout, dict):
@@ -166,22 +184,24 @@ class MainWindow(QMainWindow):
         if layout.get("maximized"):
             self.showMaximized()
 
-    def _has_snap_layout(self):
+    def _has_snap_layout(self) -> bool:
         """Return True when a saved snap layout exists for the active profile."""
         layout = self.config.get(self._layout_config_key(), {})
         return isinstance(layout, dict) and layout.get("x") is not None
 
-    def _restore_snap_layout(self):
+    def _restore_snap_layout(self) -> None:
         """Restore the snapped geometry for the active profile."""
         layout = self.config.get(self._layout_config_key(), {})
         if isinstance(layout, dict) and layout.get("x") is not None:
-            self._snapped_geometry = QRect(layout["x"], layout["y"], layout["width"], layout["height"])
+            self._snapped_geometry = QRect(
+                layout["x"], layout["y"], layout["width"], layout["height"]
+            )
         else:
             self._snapped_geometry = self._default_snapped_geometry()
         self.setGeometry(self._snapped_geometry)
         self._last_geometry = self._snapped_geometry
 
-    def _save_window_layout(self):
+    def _save_window_layout(self) -> None:
         """Persist the current window geometry to the active profile."""
         if self.is_fullscreen or self.isMinimized():
             return
@@ -195,7 +215,7 @@ class MainWindow(QMainWindow):
         }
         self.config.set(self._layout_config_key(), layout)
 
-    def _save_snap_layout(self):
+    def _save_snap_layout(self) -> None:
         """Persist the current snapped geometry if it is valid."""
         if self._snapped_geometry is None:
             return
@@ -205,31 +225,27 @@ class MainWindow(QMainWindow):
             {"x": geo.x(), "y": geo.y(), "width": geo.width(), "height": geo.height()},
         )
 
-    def _save_current_snap_position(self, checked=False):
+    def _save_current_snap_position(self, checked: bool = False) -> None:
         """Save the current snapped geometry under the active profile."""
         if self._layout_state != "snapped":
-            self.statusBar().showMessage(
-                "Switch to snap layout first (press M).", 3000
-            )
+            self.statusBar().showMessage("Switch to snap layout first (press M).", 3000)
             return
         self._save_snap_layout()
         key_text = f" ({self._snap_layout_key})" if self._snap_layout_key else ""
-        self.statusBar().showMessage(
-            f"Snap position saved{key_text}.", 3000
-        )
+        self.statusBar().showMessage(f"Snap position saved{key_text}.", 3000)
 
-    def _clear_saved_snap_position(self, checked=False):
+    def _clear_saved_snap_position(self, checked: bool = False) -> None:
         """Remove the saved snap geometry for the active profile."""
         self.config.delete(self._layout_config_key())
         key_text = f" ({self._snap_layout_key})" if self._snap_layout_key else ""
-        self.statusBar().showMessage(
-            f"Saved snap position cleared{key_text}.", 3000
-        )
+        self.statusBar().showMessage(f"Saved snap position cleared{key_text}.", 3000)
 
-    def eventFilter(self, watched, event):
+    def eventFilter(self, watched: QObject | None, event: QEvent | None) -> bool:
         if self._is_reloading_from_disk:
             return False
         if self.current_file_path is None:
+            return False
+        if event is None:
             return False
         event_type = event.type()
         if event_type not in {
@@ -245,13 +261,13 @@ class MainWindow(QMainWindow):
         self._reload_if_source_changed()
         return False
 
-    def _capture_source_mtime(self, file_path):
+    def _capture_source_mtime(self, file_path: Path | str) -> int | None:
         try:
             return Path(file_path).stat().st_mtime_ns
         except OSError:
             return None
 
-    def _show_reload_dialog(self):
+    def _show_reload_dialog(self) -> QDialog:
         dialog = QDialog(self)
         dialog.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
         dialog.setModal(True)
@@ -265,7 +281,7 @@ class MainWindow(QMainWindow):
         QApplication.processEvents()
         return dialog
 
-    def _reload_if_source_changed(self):
+    def _reload_if_source_changed(self) -> None:
         now = time.monotonic()
         if now - self._last_source_check < self._source_check_interval_s:
             return
@@ -288,13 +304,13 @@ class MainWindow(QMainWindow):
             dialog.close()
             self._is_reloading_from_disk = False
 
-    def _load_recent_directories(self):
+    def _load_recent_directories(self) -> list[str]:
         """Load the last opened embroidery directories from TOML config."""
         values = self.config.get("recent_directories", [])
         if not isinstance(values, list):
             values = []
-        seen = set()
-        result = []
+        seen: set[Path] = set()
+        result: list[str] = []
         for value in values:
             path = Path(_unsanitize_path(str(value))).resolve()
             if path.is_dir() and path not in seen:
@@ -304,23 +320,23 @@ class MainWindow(QMainWindow):
                     break
         return result
 
-    def _save_recent_directories(self):
+    def _save_recent_directories(self) -> None:
         """Persist the recent-directory list back to TOML config."""
         compact = [_sanitize_path(d) for d in self.recent_directories]
         self.config.set("recent_directories", compact)
 
-    def _add_recent_directory(self, directory):
+    def _add_recent_directory(self, directory: Path | str) -> None:
         """Move *directory* to the front of the recent list, cap at 10."""
         path = Path(str(directory)).resolve()
         if not path.is_dir():
             return
         text = str(path)
-        self.recent_directories = [text] + [
-            d for d in self.recent_directories if d != text
-        ][:9]
+        self.recent_directories = [text] + [d for d in self.recent_directories if d != text][:9]
         self._save_recent_directories()
 
-    def show_initial_window(self, autoplay=False, initial_directory=None):
+    def show_initial_window(
+        self, autoplay: bool = False, initial_directory: str | Path | None = None
+    ) -> None:
         """Show the fully initialized window after optional startup work."""
         if self._startup_fullscreen:
             self.is_fullscreen = True
@@ -347,53 +363,68 @@ class MainWindow(QMainWindow):
                 self.last_directory = str(directory_path.resolve())
             QTimer.singleShot(0, self.open_file_dialog)
 
-    def _action(self, menu, text, slot, shortcut=None, checkable=False):
+    def _action(
+        self,
+        menu: QMenu | None,
+        text: str,
+        slot: Callable[..., None],
+        shortcut: str | None = None,
+        checkable: bool = False,
+    ) -> QAction:
         action = QAction(text, self)
         action.setCheckable(checkable)
         if shortcut:
             action.setShortcut(QKeySequence(shortcut))
 
-        def _traced_slot(checked=False):
-            self.viewer._trace_event(shortcut)
+        def _traced_slot(checked: bool = False) -> None:
+            self.viewer._trace_event(shortcut or "")
             try:
                 slot(checked)
             except TypeError:
                 slot()
 
         action.triggered.connect(_traced_slot if shortcut else slot)
-        menu.addAction(action)
+        if menu is not None:
+            menu.addAction(action)
         return action
 
-    def _build_menus(self):
+    def _add_separator(self, menu: QMenu | None) -> None:
+        if menu is not None:
+            menu.addSeparator()
+
+    def _build_menus(self) -> None:
         file_menu = self.menuBar().addMenu("&File")
         self._action(file_menu, "Open embroidery file", self.open_file_dialog, "Ctrl+O")
-        self._action(file_menu, "Save as embroidery...", self.save_as_embroidery, "Ctrl+S")
+        self._action(file_menu, "Save as embroidery...", self._save_as_embroidery_slot, "Ctrl+S")
         export_menu = file_menu.addMenu("Export")
         self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png, "Ctrl+E")
         self._action(export_menu, "Preview PNG...", self.export_icon_png)
         self._action(export_menu, "Simple PNG ...", self.export_print_png)
-        self._action(file_menu, "Center needle", self.viewer.center_needle, "C")
-        self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen, "F")
-        self._action(file_menu, "Calibrate display size...", self.viewer.calibrate_display)
-        self.grid_action = self._action(file_menu, "Show measurement grid", self.toggle_grid, "G", True)
+        self._action(file_menu, "Center needle", self._center_needle_slot, "C")
+        self._action(file_menu, "Fit design to window", self._fit_to_screen_slot, "F")
+        self._action(file_menu, "Calibrate display size...", self._calibrate_display_slot)
+        self.grid_action = self._action(
+            file_menu, "Show measurement grid", self.toggle_grid, "G", True
+        )
         self.grid_action.setChecked(True)
-        self.realistic_action = self._action(file_menu, "GPU textured render", self.toggle_realistic, "Z", True)
+        self.realistic_action = self._action(
+            file_menu, "GPU textured render", self.toggle_realistic, "Z", True
+        )
         self.viewer.grid_toggled.connect(self.grid_action.setChecked)
         self.viewer.renderer_changed.connect(
-            lambda renderer: self.realistic_action.setChecked(
-                renderer == "gpu_textured"
-            )
+            lambda renderer: self.realistic_action.setChecked(renderer == "gpu_textured")
         )
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
         self.viewer.status_message.connect(self.statusBar().showMessage)
-        self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer, "R")
-        file_menu.addSeparator()
-        self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.rotate_design(-1))
-        self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))
-        file_menu.addSeparator()
+        self._action(file_menu, "Choose stitch renderer...", self._select_renderer_slot, "R")
+        self._add_separator(file_menu)
+        self._action(file_menu, "Rotate left 90 deg", lambda checked: self.viewer.rotate_design(-1))
+        self._action(file_menu, "Rotate right 90 deg", lambda checked: self.viewer.rotate_design(1))
+        self._add_separator(file_menu)
         self._action(file_menu, "Quit", self.request_quit, "Ctrl+Q")
+        self._add_separator(file_menu)
         view_menu = self.menuBar().addMenu("&View")
-        self._action(view_menu, "Actual size (1:1)", self.viewer.set_one_to_one, "1")
+        self._action(view_menu, "Actual size (1:1)", self._set_one_to_one_slot, "1")
         self._action(view_menu, "Fullscreen", self.toggle_full_screen, "F11")
         view_menu.addSeparator()
         self.command_panel_action = self._action(
@@ -407,7 +438,7 @@ class MainWindow(QMainWindow):
         self._action(
             view_menu,
             "Show/hide all",
-            self.toggle_show_all,
+            self._toggle_show_all_slot,
             "Ctrl+A",
         )
         self.needle_action = self._action(
@@ -439,66 +470,100 @@ class MainWindow(QMainWindow):
         )
         self._update_snap_menu_state()
         view_menu.addSeparator()
-        self._action(
-            view_menu,
-            "Cycle background",
-            lambda checked=False: self.viewer.toggle_display_mode("B"),
-            "B",
-        )
+        self._action(view_menu, "Cycle background", self._cycle_background_slot, "B")
         playback = self.menuBar().addMenu("&Playback")
-        self._action(
-            playback,
-            "Play/Pause",
-            lambda checked=False: self.viewer.toggle_auto_play(),
-            "Space",
-        )
+        self._action(playback, "Play/Pause", self._toggle_auto_play_slot, "Space")
         playback.addSeparator()
-        self._action(
-            playback,
-            "Prev color",
-            lambda: (self.viewer.jump_to_color(-1), self._refresh_after_color_jump()),
-            "Ctrl+Left",
-        )
-        self._action(
-            playback,
-            "Next color",
-            lambda: (self.viewer.jump_to_color(1), self._refresh_after_color_jump()),
-            "Ctrl+Right",
-        )
+        self._action(playback, "Prev color", self._prev_color_slot, "Ctrl+Left")
+        self._action(playback, "Next color", self._next_color_slot, "Ctrl+Right")
         playback.addSeparator()
-        self._action(
-            playback,
-            "Prev command",
-            lambda: (self.viewer.jump_to_command(-1), self._refresh_after_color_jump()),
-            "Shift+Left",
-        )
-        self._action(
-            playback,
-            "Next command",
-            lambda: (self.viewer.jump_to_command(1), self._refresh_after_color_jump()),
-            "Shift+Right",
-        )
+        self._action(playback, "Prev command", self._prev_command_slot, "Shift+Left")
+        self._action(playback, "Next command", self._next_command_slot, "Shift+Right")
         help_menu = self.menuBar().addMenu("&Help")
-        self._action(help_menu, "Help", self.viewer.show_help, "H")
-        self._action(help_menu, "Status", self.viewer.show_settings, "I")
-        self._action(help_menu, "Config", lambda: show_config_editor(self, self.config))
+        self._action(help_menu, "Help", self._show_help_slot, "H")
+        self._action(help_menu, "Status", self._show_settings_slot, "I")
+        self._action(help_menu, "Config", self._show_config_editor_slot)
         self._action(
             help_menu,
             "Command line options...",
-            lambda: show_command_line_help(self),
+            self._show_command_line_help_slot,
         )
-        self.trace_action = self._action(
+        self.trace_action: QAction = self._action(
             help_menu,
             "Trace events",
-            lambda checked=False: self.viewer.set_trace_events(self.trace_action.isChecked()),
+            self._trace_events_slot,
             "Ctrl+T",
             checkable=True,
         )
-        self._action(help_menu, f"About {APP_TITLE}", lambda: show_about(self))
+        self._action(help_menu, f"About {APP_TITLE}", self._show_about_slot)
         help_menu.addSeparator()
         self._action(help_menu, "Check for updates", self._check_for_updates)
 
-    def _finish_initial_display(self, autoplay):
+    def _center_needle_slot(self, checked: bool = False) -> None:
+        self.viewer.center_needle()
+
+    def _fit_to_screen_slot(self, checked: bool = False) -> None:
+        self.viewer.fit_to_screen()
+
+    def _calibrate_display_slot(self, checked: bool = False) -> None:
+        self.viewer.calibrate_display()
+
+    def _select_renderer_slot(self, checked: bool = False) -> None:
+        self.viewer.select_renderer()
+
+    def _toggle_show_all_slot(self, checked: bool = False) -> None:
+        self.toggle_show_all()
+
+    def _show_help_slot(self, checked: bool = False) -> None:
+        self.viewer.show_help()
+
+    def _show_settings_slot(self, checked: bool = False) -> None:
+        self.viewer.show_settings()
+
+    def _show_config_editor_slot(self, checked: bool = False) -> None:
+        show_config_editor(self, self.config)
+
+    def _show_command_line_help_slot(self, checked: bool = False) -> None:
+        show_command_line_help(self)
+
+    def _show_about_slot(self, checked: bool = False) -> None:
+        show_about(self)
+
+    def _rotate_left_slot(self, checked: bool = False) -> None:
+        self.viewer.rotate_design(-1)
+
+    def _rotate_right_slot(self, checked: bool = False) -> None:
+        self.viewer.rotate_design(1)
+
+    def _set_one_to_one_slot(self, checked: bool = False) -> None:
+        self.viewer.set_one_to_one()
+
+    def _cycle_background_slot(self, checked: bool = False) -> None:
+        self.viewer.toggle_display_mode("B")
+
+    def _toggle_auto_play_slot(self, checked: bool = False) -> None:
+        self.viewer.toggle_auto_play()
+
+    def _prev_color_slot(self, checked: bool = False) -> None:
+        self.viewer.jump_to_color(-1)
+        self._refresh_after_color_jump()
+
+    def _next_color_slot(self, checked: bool = False) -> None:
+        self.viewer.jump_to_color(1)
+        self._refresh_after_color_jump()
+
+    def _prev_command_slot(self, checked: bool = False) -> None:
+        self.viewer.jump_to_command(-1)
+        self._refresh_after_color_jump()
+
+    def _next_command_slot(self, checked: bool = False) -> None:
+        self.viewer.jump_to_command(1)
+        self._refresh_after_color_jump()
+
+    def _trace_events_slot(self, checked: bool = False) -> None:
+        self.viewer.set_trace_events(self.trace_action.isChecked())
+
+    def _finish_initial_display(self, autoplay: bool) -> None:
         self.viewer.fit_to_screen()
         self.progress.update()
         if autoplay:
@@ -509,36 +574,34 @@ class MainWindow(QMainWindow):
             self.viewer.invalidate_cache()
             self.viewer.update()
 
-    def _refresh_after_color_jump(self):
+    def _refresh_after_color_jump(self) -> None:
         self.viewer.invalidate_cache()
         self.viewer.update()
         self.progress.update()
 
-    def _maybe_auto_check_updates(self):
+    def _maybe_auto_check_updates(self) -> None:
         """Run an update check once per configured interval, if enabled."""
         if not should_check(self.config):
             return
         self._check_for_updates(automatic=True)
 
-    def _check_for_updates(self, automatic=False):
+    def _check_for_updates(self, automatic: bool = False) -> None:
         """Query PyPI for a newer version and notify the user."""
         if self._update_thread is not None and self._update_thread.isRunning():
             return
         self.statusBar().showMessage("Checking for updates...", 3000)
         thread = UpdateCheckThread(self)
-        thread.result_ready.connect(
-            lambda latest: self._on_update_result(latest, automatic)
-        )
+        thread.result_ready.connect(lambda latest: self._on_update_result(latest, automatic))
         thread.finished.connect(thread.deleteLater)
         thread.finished.connect(lambda: self._clear_update_thread(thread))
         self._update_thread = thread
         thread.start()
 
-    def _clear_update_thread(self, thread):
+    def _clear_update_thread(self, thread: UpdateCheckThread) -> None:
         if self._update_thread is thread:
             self._update_thread = None
 
-    def _on_update_result(self, latest, automatic=False):
+    def _on_update_result(self, latest: str, automatic: bool = False) -> None:
         record_check(self.config)
         if not latest:
             if automatic:
@@ -546,8 +609,7 @@ class MainWindow(QMainWindow):
             QMessageBox.information(
                 self,
                 "Check for updates",
-                "Could not reach PyPI to check for updates.\n"
-                "Check your internet connection and try again.",
+                "Could not reach PyPI to check for updates.\nCheck your internet connection and try again.",
             )
             return
         installed = current_version()
@@ -575,11 +637,7 @@ class MainWindow(QMainWindow):
             title = "Up to date"
             suffix = ""
             stored = ""
-            message = (
-                f"InkSim is up to date.\n\n"
-                f"Installed: {installed}\n"
-                f"Latest:    {latest}"
-            )
+            message = f"InkSim is up to date.\n\nInstalled: {installed}\nLatest:    {latest}"
         if automatic:
             # Automatic checks surface the result permanently in the window
             # title instead of popping up another dialog.  Store only the raw
@@ -590,7 +648,7 @@ class MainWindow(QMainWindow):
             return
         QMessageBox.information(self, title, message)
 
-    def _build_command_dock(self):
+    def _build_command_dock(self) -> None:
         self.command_table = QTableWidget(0, 4, self)
         command_font = self.command_table.font()
         command_font.setPointSize(max(8, command_font.pointSize() - 1))
@@ -609,9 +667,7 @@ class MainWindow(QMainWindow):
         self.command_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.command_table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.command_table.setAlternatingRowColors(True)
-        self.command_table.currentCellChanged.connect(
-            self._command_panel_current_cell_changed
-        )
+        self.command_table.currentCellChanged.connect(self._command_panel_current_cell_changed)
 
         self.command_dock = QDockWidget("Commands", self)
         self.command_dock.setObjectName("commandDock")
@@ -622,16 +678,16 @@ class MainWindow(QMainWindow):
         self.command_dock.hide()
         self.command_dock.visibilityChanged.connect(self._command_dock_visibility_changed)
 
-    def _command_dock_visibility_changed(self, visible):
+    def _command_dock_visibility_changed(self, visible: bool) -> None:
         if hasattr(self, "command_panel_action"):
             self.command_panel_action.setChecked(visible)
         if visible:
             self.refresh_command_panel()
 
-    def toggle_command_panel(self, checked):
+    def toggle_command_panel(self, checked: bool) -> None:
         self.command_dock.setVisible(checked)
 
-    def refresh_command_panel(self):
+    def refresh_command_panel(self) -> None:
         table = self.command_table
         with QSignalBlocker(table):
             table.setRowCount(len(self.viewer.command_timeline))
@@ -658,7 +714,7 @@ class MainWindow(QMainWindow):
                     item.setForeground(color)
         self._sync_command_panel_cursor()
 
-    def _command_panel_color(self, label):
+    def _command_panel_color(self, label: str) -> QColor:
         if label == "STITCH":
             return QColor(35, 35, 35)
         if label == "JUMP":
@@ -669,7 +725,7 @@ class MainWindow(QMainWindow):
             return QColor(210, 125, 20)
         return QColor(55, 95, 160)
 
-    def _sync_command_panel_cursor(self):
+    def _sync_command_panel_cursor(self) -> None:
         if self._updating_command_panel:
             return
         if not self.command_dock.isVisible():
@@ -685,13 +741,20 @@ class MainWindow(QMainWindow):
                 label = item.data(Qt.UserRole + 1)
                 item.setText(f"> {label}" if row == command_index else label)
             self.command_table.setCurrentCell(command_index, 0)
-            self.command_table.scrollToItem(
-                self.command_table.item(command_index, 0),
-                QAbstractItemView.PositionAtCenter,
-            )
+            scroll_item = self.command_table.item(command_index, 0)
+            if scroll_item is not None:
+                self.command_table.scrollToItem(
+                    scroll_item,
+                    QAbstractItemView.PositionAtCenter,
+                )
 
-    def _command_panel_current_cell_changed(self, current_row, current_column,
-                                            _previous_row, _previous_column):
+    def _command_panel_current_cell_changed(
+        self,
+        current_row: int,
+        current_column: int,
+        _previous_row: int,
+        _previous_column: int,
+    ) -> None:
         if current_row < 0:
             return
         item = self.command_table.item(current_row, current_column)
@@ -709,7 +772,7 @@ class MainWindow(QMainWindow):
         finally:
             self._updating_command_panel = False
 
-    def show_window(self, focus=True):
+    def show_window(self, focus: bool = True) -> None:
         """Show the window and optionally request keyboard focus."""
         if self.isMinimized():
             self.setWindowState(self.windowState() & ~Qt.WindowMinimized)
@@ -718,15 +781,16 @@ class MainWindow(QMainWindow):
         if focus:
             self.focus_window()
 
-    def focus_window(self):
+    def focus_window(self) -> None:
         """Raise and activate the main window through the window manager."""
         self.show_window(focus=False)
         self.raise_()
         self.activateWindow()
 
-    def _default_snapped_geometry(self):
+    def _default_snapped_geometry(self) -> QRect:
         """Return a rectangle covering the right half of the primary screen."""
         screen = self.screen() or QApplication.primaryScreen()
+        assert screen is not None
         area = screen.availableGeometry()
         frame = self.frameGeometry()
         client = self.geometry()
@@ -743,7 +807,7 @@ class MainWindow(QMainWindow):
             area.height() - top - bottom,
         )
 
-    def _set_snapped_geometry(self):
+    def _set_snapped_geometry(self) -> None:
         """Apply the snapped layout, restoring the active profile if known."""
         layout = self.config.get(self._layout_config_key(), {})
         if isinstance(layout, dict) and layout.get("x") is not None:
@@ -752,7 +816,7 @@ class MainWindow(QMainWindow):
             target = self._snapped_geometry or self._default_snapped_geometry()
         self.setGeometry(target)
 
-    def toggle_window_layout(self):
+    def toggle_window_layout(self) -> None:
         """Toggle between the free layout and the snapped layout."""
         if self.is_fullscreen or self._layout_changing:
             return
@@ -763,6 +827,7 @@ class MainWindow(QMainWindow):
                 if self._free_maximized:
                     default_width, default_height = self._default_size
                     screen = self.screen() or QApplication.primaryScreen()
+                    assert screen is not None
                     area = screen.availableGeometry()
                     x = area.x() + max(0, (area.width() - default_width) // 2)
                     y = area.y() + max(0, (area.height() - default_height) // 2)
@@ -785,15 +850,15 @@ class MainWindow(QMainWindow):
         finally:
             self._layout_changing = False
 
-    def moveEvent(self, event):
+    def moveEvent(self, event: QMoveEvent) -> None:
         super().moveEvent(event)
         self._detect_manual_geometry_change()
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
         self._detect_manual_geometry_change()
 
-    def _detect_manual_geometry_change(self):
+    def _detect_manual_geometry_change(self) -> None:
         if self._layout_changing or self.is_fullscreen or self.isMaximized() or self.isMinimized():
             return
         current = self.geometry()
@@ -804,7 +869,7 @@ class MainWindow(QMainWindow):
             self._free_geometry = current
         self._last_geometry = current
 
-    def _update_window_title(self):
+    def _update_window_title(self) -> None:
         """Show layout state and update status in the window title."""
         snap_prefix = "[snap] " if self._layout_state == "snapped" else ""
         base = self._base_title
@@ -833,7 +898,7 @@ class MainWindow(QMainWindow):
             return f" [development version {installed}]"
         return ""
 
-    def _update_snap_menu_state(self):
+    def _update_snap_menu_state(self) -> None:
         """Enable snap save/clear only when the snap layout is active."""
         enabled = self._layout_state == "snapped"
         if getattr(self, "save_snap_action", None):
@@ -841,13 +906,13 @@ class MainWindow(QMainWindow):
         if getattr(self, "clear_snap_action", None):
             self.clear_snap_action.setEnabled(enabled)
 
-    def request_quit(self):
+    def request_quit(self) -> None:
         """Close the application instead of hiding a server window."""
         self._allow_close = True
         self.close()
 
     @staticmethod
-    def _inkscape_running():
+    def _inkscape_running() -> bool:
         """Return True when at least one Inkscape process is running.
 
         Probing for a running process named ``inkscape`` is more reliable
@@ -855,6 +920,7 @@ class MainWindow(QMainWindow):
         as it has forwarded the design.
         """
         import subprocess
+
         try:
             if os.name == "nt":
                 # Suppress the console window that ``tasklist`` would
@@ -868,16 +934,15 @@ class MainWindow(QMainWindow):
                     creationflags=creationflags,
                 )
                 lowered = result.stdout.lower()
-                return ("inkscape.exe" in lowered
-                        or "inkscape.com" in lowered)
+                return "inkscape.exe" in lowered or "inkscape.com" in lowered
             result = subprocess.run(
-                ["pgrep", "-x", "inkscape"], capture_output=True, check=False
+                ["pgrep", "-x", "inkscape"], capture_output=True, check=False, text=True
             )
             return result.returncode == 0
         except OSError:
             return False
 
-    def _save_current_layout(self):
+    def _save_current_layout(self) -> None:
         """Persist whatever layout is currently active."""
         if self.is_fullscreen or self.isMinimized():
             return
@@ -886,15 +951,17 @@ class MainWindow(QMainWindow):
         else:
             self._save_window_layout()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: QCloseEvent) -> None:
         if self.server_mode and not self._allow_close:
             alive = self._inkscape_running()
             if not alive:
                 answer = QMessageBox.question(
                     self,
                     "Close InkSim server",
-                    "The Inkscape instance that started this server is no "
-                    "longer running.\n\nDo you want to close InkSim?",
+                    (
+                        "The Inkscape instance that started this server is no longer running.\n\n"
+                        "Do you want to close InkSim?"
+                    ),
                 )
                 if answer == QMessageBox.Yes:
                     self._allow_close = True
@@ -918,24 +985,23 @@ class MainWindow(QMainWindow):
             interconnect.stop()
         event.accept()
 
-    def toggle_grid(self, checked):
+    def toggle_grid(self, checked: bool) -> None:
         self.viewer.show_grid = checked
         self.viewer.invalidate_cache()
         self.viewer.update()
         self.viewer.update_mode_indicators()
 
-    def toggle_realistic(self, checked):
+    def toggle_realistic(self, checked: bool) -> None:
         if not self.viewer._opengl33_available and self.viewer.active_renderer != "gpu_textured":
             self.statusBar().showMessage(
-                "GPU textured renderer requires OpenGL 3.3 (not available); "
-                "using CPU raster renderer",
+                "GPU textured renderer requires OpenGL 3.3 (not available); using CPU raster renderer",
                 5000,
             )
             self.realistic_action.setChecked(False)
             return
         self.viewer.toggle_display_mode("Z")
 
-    def toggle_show_all(self, checked=False):
+    def toggle_show_all(self, checked: bool = False) -> None:
         total = self.viewer.stitches_np.shape[0]
         if self.viewer.visible_count < total:
             self.viewer.visible_count = total
@@ -945,7 +1011,8 @@ class MainWindow(QMainWindow):
             self.viewer._last_dir = -1
         logger.debug(
             "Show/hide all toggled visible_count to %s/%s",
-            self.viewer.visible_count, total,
+            self.viewer.visible_count,
+            total,
         )
         self.viewer.notify_cursor_changed()
         self.viewer.invalidate_cache()
@@ -957,7 +1024,7 @@ class MainWindow(QMainWindow):
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
 
-    def toggle_needle(self, checked):
+    def toggle_needle(self, checked: bool) -> None:
         self.viewer.show_needle = checked
         if checked:
             self.viewer.highlight_needle()
@@ -965,39 +1032,45 @@ class MainWindow(QMainWindow):
             self.viewer.stop_needle_highlight()
         self.viewer.update()
 
-    def open_file_dialog(self):
+    def open_file_dialog(self) -> None:
         dialog = EmbroideryOpenDialog(
             self, self.last_directory, self.current_file_path, self.recent_directories
         )
         if dialog.exec() == QDialog.Accepted:
-            self.open_file(dialog.selected_path)
+            selected = dialog.selected_path
+            if selected is not None:
+                self.open_file(selected)
             chosen_background = dialog.background_color
             if chosen_background != self.viewer.background_color:
                 self.viewer.background_color = chosen_background
-                self.viewer._save_view_setting(
-                    "view/background_color", list(chosen_background)
-                )
+                self.viewer._save_view_setting("view/background_color", list(chosen_background))
                 if self.viewer.active_renderer == "gpu_textured":
                     self.viewer._gl_widget.set_background(*chosen_background)
                 self.viewer.invalidate_cache()
                 self.viewer.repaint()
 
-    def set_document_path(self, document_path):
+    def set_document_path(self, document_path: str | Path) -> None:
         """Set the source document used for Save As defaults."""
         path = Path(document_path).resolve()
         self.document_path = path
         self.last_directory = str(path.parent)
 
-    def _preferred_source_path(self):
+    def _preferred_source_path(self) -> Path | None:
         """Return the authoritative source path for output defaults."""
         return self.document_path or self.current_file_path
 
-    def _default_export_name(self, suffix):
+    def _default_export_name(self, suffix: str) -> str:
         source_path = self._preferred_source_path()
         base_name = source_path.stem if source_path else "inksim"
         return f"{base_name}{suffix}"
 
-    def _choose_export_path(self, title, default_name, file_filter, extension):
+    def _choose_export_path(
+        self,
+        title: str,
+        default_name: str,
+        file_filter: str,
+        extension: str,
+    ) -> Path | None:
         export_directory = Path(self.last_directory or Path.cwd())
         default_path = export_directory / default_name
         path, _ = QFileDialog.getSaveFileName(
@@ -1011,15 +1084,14 @@ class MainWindow(QMainWindow):
         selected_path = Path(path)
         return selected_path.with_suffix(extension)
 
-    def _default_save_name(self):
+    def _default_save_name(self) -> str:
         return self._default_save_path().name
 
-    def _default_save_path(self):
+    def _default_save_path(self) -> Path:
         source_path = self._preferred_source_path()
         base_name = source_path.stem if source_path else "inksim"
         current_extension = (
-            self.current_file_path.suffix.lstrip(".").lower()
-            if self.current_file_path else ""
+            self.current_file_path.suffix.lstrip(".").lower() if self.current_file_path else ""
         )
         writable_extensions = {
             file_type["extension"] for file_type in get_supported_output_formats()
@@ -1031,7 +1103,7 @@ class MainWindow(QMainWindow):
             return self.document_path.with_name(filename)
         return Path(self.last_directory or Path.cwd()) / filename
 
-    def _choose_save_as_path(self):
+    def _choose_save_as_path(self) -> Path | None:
         output_filter = get_supported_output_filter()
         default_path = self._default_save_path()
         dialog = QFileDialog(self, "Save embroidery as", str(default_path))
@@ -1040,7 +1112,7 @@ class MainWindow(QMainWindow):
         dialog.setDirectory(str(default_path.parent))
         dialog.selectFile(default_path.name)
 
-        def on_filter_selected(selected_filter):
+        def on_filter_selected(selected_filter: str) -> None:
             extension = extension_from_output_filter(selected_filter)
             if not extension:
                 return
@@ -1066,16 +1138,19 @@ class MainWindow(QMainWindow):
             extension = "dst"
         return selected_path.with_suffix(f".{extension}")
 
-    def _path_with_output_extension(self, path, extension):
+    def _save_as_embroidery_slot(self, checked: bool = False) -> None:
+        self.save_as_embroidery()
+
+    def _path_with_output_extension(self, path: str | Path, extension: str) -> str:
         return str(Path(path).with_suffix(f".{extension}"))
 
-    def save_as_embroidery(self):
+    def save_as_embroidery(self) -> bool:
         path = self._choose_save_as_path()
         if path is None:
             return False
         return self.save_embroidery_to_path(path)
 
-    def save_embroidery_to_path(self, path):
+    def save_embroidery_to_path(self, path: str | Path) -> bool:
         pattern = self.viewer.pattern
         if pattern is None:
             QMessageBox.warning(self, "Save embroidery", "No embroidery file is loaded.")
@@ -1088,25 +1163,23 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(f"Saved {path}", 3000)
         return True
 
-    def _can_export_image(self):
+    def _can_export_image(self) -> bool:
         if self.viewer.stitches_np.shape[0] == 0:
-            QMessageBox.information(
-                self, "Export", "No embroidery file is loaded to export."
-            )
+            QMessageBox.information(self, "Export", "No embroidery file is loaded to export.")
             return False
         return True
 
     def export_png(
         self,
-        path=None,
-        icon=False,
-        dpi=300,
-        background="transparent",
-        grid=False,
-        renderer_key=None,
-        scale_factor=1.0,
-        format="PNG",
-    ):
+        path: str | Path | None = None,
+        icon: bool = False,
+        dpi: int = 300,
+        background: tuple[int, int, int] | str = "transparent",
+        grid: bool = False,
+        renderer_key: str | None = None,
+        scale_factor: float = 1.0,
+        format: str = "PNG",
+    ) -> QImage | bool | None:
         if self.viewer.stitches_np.shape[0] == 0:
             return None
         if icon:
@@ -1135,18 +1208,31 @@ class MainWindow(QMainWindow):
             quality = -1
             if format in ("JPEG", "WebP"):
                 quality = 95
-            return image.save(str(path), format, quality)
+            return image.save(str(path), format, quality)  # type: ignore[call-overload]
         return image
 
-    def _show_export_preview(self, title, image, default_name, renderer_key=None, icon=False, dpi=300):
+    def _show_export_preview(
+        self,
+        title: str,
+        image: QImage,
+        default_name: str,
+        renderer_key: str | None = None,
+        icon: bool = False,
+        dpi: int = 300,
+    ) -> None:
         default_path = str(Path(self.last_directory or Path.cwd()) / default_name)
         bounds = self.viewer.bounds
         design_width_mm = bounds[2] - bounds[0]
         design_height_mm = bounds[3] - bounds[1]
 
-        def _render_callback(transparent=False, scale_factor=1.0, format="PNG", quality=95):
+        def _render_callback(
+            transparent: bool = False,
+            scale_factor: float = 1.0,
+            format: str = "PNG",
+            quality: int = 95,
+        ) -> QImage | None:
             background = "transparent" if transparent else self.viewer.background_color
-            image = self.export_png(
+            result = self.export_png(
                 icon=icon,
                 dpi=dpi,
                 background=background,
@@ -1154,9 +1240,11 @@ class MainWindow(QMainWindow):
                 scale_factor=scale_factor,
                 format=format,
             )
-            return image
+            if isinstance(result, QImage):
+                return result
+            return None
 
-        def _on_transparent_changed(checked):
+        def _on_transparent_changed(checked: bool) -> None:
             self.export_transparent_background = checked
             self.config.set("export_transparent_background", checked)
 
@@ -1180,15 +1268,16 @@ class MainWindow(QMainWindow):
             self.last_directory = str(selected_path.parent)
             self.statusBar().showMessage(f"Exported {_sanitize_path(selected_path)}", 3000)
 
-    def export_print_png(self):
+    def export_print_png(self) -> None:
         if not self._can_export_image():
             return
+        background: tuple[int, int, int] | str
         if self.export_transparent_background:
             background = "transparent"
         else:
             background = self.viewer.background_color
         image = self.export_png(dpi=300, background=background, renderer_key="simple")
-        if image is None:
+        if image is None or not isinstance(image, QImage):
             return
         self._show_export_preview(
             "Export PNG for print",
@@ -1198,15 +1287,16 @@ class MainWindow(QMainWindow):
             dpi=300,
         )
 
-    def export_shaded_png(self):
+    def export_shaded_png(self) -> None:
         if not self._can_export_image():
             return
+        background: tuple[int, int, int] | str
         if self.export_transparent_background:
             background = "transparent"
         else:
             background = self.viewer.background_color
         image = self.export_png(dpi=300, background=background)
-        if image is None:
+        if image is None or not isinstance(image, QImage):
             return
         self._show_export_preview(
             "Export shaded PNG for print",
@@ -1215,15 +1305,16 @@ class MainWindow(QMainWindow):
             dpi=300,
         )
 
-    def export_icon_png(self):
+    def export_icon_png(self) -> None:
         if not self._can_export_image():
             return
+        background: tuple[int, int, int] | str
         if self.export_transparent_background:
             background = "transparent"
         else:
             background = self.viewer.background_color
         image = self.export_png(icon=True, dpi=96, background=background)
-        if image is None:
+        if image is None or not isinstance(image, QImage):
             return
         self._show_export_preview(
             "Export preview PNG",
@@ -1233,7 +1324,13 @@ class MainWindow(QMainWindow):
             dpi=96,
         )
 
-    def open_file(self, path, precompute_density=True, delete_after_load=False, autoplay=False):
+    def open_file(
+        self,
+        path: str | Path,
+        precompute_density: bool = True,
+        delete_after_load: bool = False,
+        autoplay: bool = False,
+    ) -> bool:
         selected_path = Path(path).resolve()
         if not self.viewer.load_design(
             str(selected_path),
@@ -1250,9 +1347,10 @@ class MainWindow(QMainWindow):
             self._add_recent_directory(selected_path.parent)
         total = self.viewer.stitches_np.shape[0]
         bounds = self.viewer.bounds
+        width_mm = bounds[2] - bounds[0]
+        height_mm = bounds[3] - bounds[1]
         self._base_title = (
-            f"{APP_TITLE} - {selected_path.name} - {total} sts - "
-            f"{bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm"
+            f"{APP_TITLE} - {selected_path.name} - {total} sts - {width_mm:.1f}x{height_mm:.1f}mm"
         )
         self._update_window_title()
         self.progress.update()
@@ -1268,12 +1366,12 @@ class MainWindow(QMainWindow):
                 pass
         return True
 
-    def show_command_panel(self):
+    def show_command_panel(self) -> None:
         self.command_dock.show()
         self.command_dock.raise_()
         self.refresh_command_panel()
 
-    def toggle_full_screen(self):
+    def toggle_full_screen(self) -> None:
         if not self.is_fullscreen:
             self._fullscreen_was_maximized = self.isMaximized()
             self.is_fullscreen = True
@@ -1287,7 +1385,7 @@ class MainWindow(QMainWindow):
         else:
             self.showNormal()
 
-    def play(self):
+    def play(self) -> None:
         """Start simulation playback from the beginning of the design."""
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
@@ -1296,13 +1394,13 @@ class MainWindow(QMainWindow):
         self.viewer.is_playing = False
         self.viewer.toggle_auto_play(forward=True)
 
-    def dragEnterEvent(self, event):
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
         else:
             event.ignore()
 
-    def dropEvent(self, event):
+    def dropEvent(self, event: QDropEvent) -> None:
         urls = event.mimeData().urls()
         if urls:
             self.open_file(urls[0].toLocalFile())

@@ -1,9 +1,18 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+"""Interactive stitch timeline shown below the embroidery viewer."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from PySide6.QtCore import QPoint, QRect, Qt, Signal
-from PySide6.QtGui import QColor, QPainter, QPen
+from PySide6.QtGui import QColor, QMouseEvent, QPainter, QPaintEvent, QPen
 from PySide6.QtWidgets import QWidget
+
+if TYPE_CHECKING:
+    from .viewer import EmbroideryViewerWidget
 
 
 class TimelineWidget(QWidget):
@@ -11,7 +20,7 @@ class TimelineWidget(QWidget):
 
     seek_requested = Signal(int)
 
-    def __init__(self, parent, viewer_panel):
+    def __init__(self, parent: QWidget, viewer_panel: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer_panel
         self.setMinimumHeight(58)
@@ -22,7 +31,7 @@ class TimelineWidget(QWidget):
         self.bar_y = 8
         self.bar_h = 14
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
             self.dragging = True
             self.drag_moved = False
@@ -33,7 +42,7 @@ class TimelineWidget(QWidget):
         else:
             super().mousePressEvent(event)
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
             if self.dragging:
                 self.seek(event.position().x())
@@ -45,7 +54,7 @@ class TimelineWidget(QWidget):
         else:
             super().mouseReleaseEvent(event)
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
         if self.dragging and event.buttons() & Qt.LeftButton:
             self.drag_moved = True
             self.seek(event.position().x())
@@ -53,18 +62,17 @@ class TimelineWidget(QWidget):
         else:
             super().mouseMoveEvent(event)
 
-    def seek(self, mouse_x):
+    def seek(self, mouse_x: float) -> None:
         width = self.width()
         total = self.viewer.stitches_np.shape[0]
         if total == 0 or width == 0:
             return
         bar_width = width - 2 * self.margin_x
-        ratio = max(0.0, min(1.0, (mouse_x - self.margin_x) / bar_width
-                             if bar_width > 0 else 0))
+        ratio = max(0.0, min(1.0, (mouse_x - self.margin_x) / bar_width if bar_width > 0 else 0))
         self.seek_requested.emit(int(ratio * total))
         self.update()
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.fillRect(self.rect(), QColor(250, 250, 250))
@@ -88,17 +96,19 @@ class TimelineWidget(QWidget):
         if bar_width < total:
             step = max(1, total // max(1, bar_width))
             for index in range(0, total, step):
-                color = QColor(int(stitches[index, 4]), int(stitches[index, 5]),
-                               int(stitches[index, 6]))
+                color = QColor(
+                    int(stitches[index, 4]), int(stitches[index, 5]), int(stitches[index, 6])
+                )
                 x = bar_x + int(index / total * bar_width)
                 painter.setPen(QPen(color))
                 painter.drawLine(x, self.bar_y, x, self.bar_y + self.bar_h)
         else:
-            last_color = None
+            last_color: tuple[int, int, int] | None = None
             block_start = 0
             for index in range(total):
-                color = tuple(int(value) for value in stitches[index, 4:7])
-                if color != last_color and last_color is not None:
+                rgb = tuple(int(value) for value in stitches[index, 4:7])
+                assert len(rgb) == 3
+                if rgb != last_color and last_color is not None:
                     x0 = bar_x + int(block_start / total * bar_width)
                     x1 = bar_x + int(index / total * bar_width)
                     qcolor = QColor(*last_color)
@@ -106,7 +116,7 @@ class TimelineWidget(QWidget):
                     painter.setPen(QPen(qcolor))
                     painter.drawRect(x0, self.bar_y, max(2, x1 - x0), self.bar_h)
                     block_start = index
-                last_color = color
+                last_color = rgb
             if last_color:
                 x0 = bar_x + int(block_start / total * bar_width)
                 qcolor = QColor(*last_color)
@@ -115,38 +125,42 @@ class TimelineWidget(QWidget):
                 painter.drawRect(x0, self.bar_y, bar_width - (x0 - bar_x), self.bar_h)
 
         command_colors = {
-            "JUMP": QColor(100, 100, 100), "COLOR CHANGE": QColor(210, 45, 45),
-            "TRIM": QColor(230, 140, 20), "STOP": QColor(180, 40, 40),
-            "SLOW": QColor(70, 100, 180), "FAST": QColor(40, 150, 90),
+            "JUMP": QColor(100, 100, 100),
+            "COLOR CHANGE": QColor(210, 45, 45),
+            "TRIM": QColor(230, 140, 20),
+            "STOP": QColor(180, 40, 40),
+            "SLOW": QColor(70, 100, 180),
+            "FAST": QColor(40, 150, 90),
         }
         progress_width = int(visible / total * bar_width)
         painter.setBrush(QColor(255, 255, 255, 150))
         painter.setPen(Qt.NoPen)
         if progress_width < bar_width:
-            painter.drawRect(bar_x + progress_width, self.bar_y,
-                             bar_width - progress_width, self.bar_h)
+            painter.drawRect(
+                bar_x + progress_width, self.bar_y, bar_width - progress_width, self.bar_h
+            )
         painter.restore()
 
         painter.save()
-        painter.setClipRect(QRect(bar_x, 0, bar_width,
-                                  self.bar_y + self.bar_h))
+        painter.setClipRect(QRect(bar_x, 0, bar_width, self.bar_y + self.bar_h))
         for stitch_index, commands in self.viewer.command_events.items():
             marker_x = bar_x + int(stitch_index / total * bar_width)
             for marker_index, command in enumerate(commands):
-                color = command_colors.get(command)
-                if color is None and command.startswith("COLOR CHANGE"):
-                    color = command_colors["COLOR CHANGE"]
-                color = color or QColor(80, 80, 80)
+                marker_color = command_colors.get(command)
+                if marker_color is None and command.startswith("COLOR CHANGE"):
+                    marker_color = command_colors["COLOR CHANGE"]
+                marker_color = marker_color or QColor(80, 80, 80)
                 marker_y = self.bar_y - 5 + marker_index * 5
                 painter.setPen(QPen(QColor(30, 30, 30), 1))
-                painter.drawLine(marker_x, marker_y, marker_x,
-                                 self.bar_y + self.bar_h)
-                painter.setBrush(color)
-                painter.drawPolygon([
-                    QPoint(marker_x, marker_y),
-                    QPoint(marker_x - 4, marker_y + 5),
-                    QPoint(marker_x + 4, marker_y + 5),
-                ])
+                painter.drawLine(marker_x, marker_y, marker_x, self.bar_y + self.bar_h)
+                painter.setBrush(marker_color)
+                painter.drawPolygon(
+                    [
+                        QPoint(marker_x, marker_y),
+                        QPoint(marker_x - 4, marker_y + 5),
+                        QPoint(marker_x + 4, marker_y + 5),
+                    ]
+                )
         painter.restore()
 
         knob_x = bar_x + progress_width
@@ -161,23 +175,27 @@ class TimelineWidget(QWidget):
             dx = float(last_stitch[2] - last_stitch[0])
             dy = float(last_stitch[3] - last_stitch[1])
             last_step_mm = (dx * dx + dy * dy) ** 0.5
-        stitches_per_minute = int(round(
-            self.viewer.play_step / self.viewer.play_speed * 60000
-        )) if self.viewer.play_speed > 0 else 0
+        stitches_per_minute = (
+            int(round(self.viewer.play_step / self.viewer.play_speed * 60000))
+            if self.viewer.play_speed > 0
+            else 0
+        )
         if visible > 0:
-            txt_left = (f"{visible}/{total} | {stitches_per_minute} stitches/min "
-                        f"| [{last_step_mm:.2f} mm]")
+            txt_left = (
+                f"{visible}/{total} | {stitches_per_minute} stitches/min | [{last_step_mm:.2f} mm]"
+            )
         else:
             txt_left = f"{visible}/{total} | {stitches_per_minute} stitches/min"
-        commands = self.viewer.command_events.get(visible, ())
-        if commands:
-            txt_left += f" | {' | '.join(commands)}"
+        visible_commands: list[str] | tuple[()] = self.viewer.command_events.get(visible, ())
+        if visible_commands:
+            txt_left += f" | {' | '.join(visible_commands)}"
         txt_center = f"{visible / total * 100:.1f}%"
         if self.viewer.bounds != (0, 0, 0, 0):
             bounds = self.viewer.bounds
-            txt_right = (f"{bounds[2] - bounds[0]:.1f} x "
-                         f"{bounds[3] - bounds[1]:.1f} mm | "
-                         f"{self.viewer.color_count} color sections")
+            txt_right = (
+                f"{bounds[2] - bounds[0]:.1f} x {bounds[3] - bounds[1]:.1f} mm | "
+                f"{self.viewer.color_count} color sections"
+            )
         else:
             txt_right = ""
         font_metrics = painter.fontMetrics()
@@ -187,10 +205,8 @@ class TimelineWidget(QWidget):
         center_width = int(bar_width * 0.15)
         right_width = bar_width - left_width - center_width
         left_rect = QRect(bar_x, text_top, left_width, text_height)
-        center_rect = QRect(bar_x + left_width, text_top,
-                            center_width, text_height)
-        right_rect = QRect(bar_x + left_width + center_width, text_top,
-                           right_width, text_height)
+        center_rect = QRect(bar_x + left_width, text_top, center_width, text_height)
+        right_rect = QRect(bar_x + left_width + center_width, text_top, right_width, text_height)
         painter.drawText(
             left_rect,
             Qt.AlignLeft | Qt.AlignVCenter,

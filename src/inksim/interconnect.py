@@ -3,36 +3,40 @@
 
 """Local JSON-line interconnect for controlling a running InkSim window."""
 
+from __future__ import annotations
+
 import json
 import os
 import secrets
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 from PySide6.QtCore import QObject, QStandardPaths, Signal
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
-from .debug import logger
 from .constants import (
-    APP_ORGANIZATION,
-    APP_TITLE,
     IPC_PROTOCOL_VERSION,
     IPC_SERVER_NAME,
     TOKEN_FILENAME,
 )
+from .debug import logger
+
+if TYPE_CHECKING:
+    from .gui.frame import MainWindow
 
 
-def _token_path():
+def _token_path() -> Path:
     """Return the path where the active server's auth token is stored."""
-    config_dir = Path(QStandardPaths.writableLocation(
-        QStandardPaths.StandardLocation.ConfigLocation
-    ))
+    config_dir = Path(
+        QStandardPaths.writableLocation(QStandardPaths.StandardLocation.ConfigLocation)
+    )
     config_dir.mkdir(parents=True, exist_ok=True)
     token_path = config_dir / TOKEN_FILENAME
     logger.debug("IPC token path: %s", token_path)
     return token_path
 
 
-def read_auth_token():
+def read_auth_token() -> str | None:
     """Read the auth token of the currently running server, if any."""
     token_file = _token_path()
     try:
@@ -44,7 +48,7 @@ def read_auth_token():
     return token
 
 
-def write_auth_token(token):
+def write_auth_token(token: str) -> Path:
     """Write the auth token so that clients can authenticate."""
     token_file = _token_path()
     token_file.write_text(token, encoding="utf-8")
@@ -57,7 +61,7 @@ def write_auth_token(token):
     return token_file
 
 
-def clear_auth_token():
+def clear_auth_token() -> None:
     """Remove the auth token when the server shuts down."""
     try:
         _token_path().unlink()
@@ -70,13 +74,13 @@ class InterconnectServer(QObject):
 
     error = Signal(str)
 
-    def __init__(self, window, server_name=IPC_SERVER_NAME):
+    def __init__(self, window: MainWindow, server_name: str = IPC_SERVER_NAME) -> None:
         super().__init__(window)
         self.window = window
         self.server_name = server_name
         self.server = QLocalServer(self)
         self.server.newConnection.connect(self._accept_connections)
-        self._buffers = {}
+        self._buffers: dict[QLocalSocket, bytearray] = {}
         self._auth_token = secrets.token_urlsafe(32)
         self._supported_commands = {
             "hello",
@@ -90,10 +94,10 @@ class InterconnectServer(QObject):
         }
 
     @property
-    def auth_token(self):
+    def auth_token(self) -> str:
         return self._auth_token
 
-    def start(self):
+    def start(self) -> bool:
         """Start listening, returning False when another server is active."""
         logger.debug("IPC server starting: %s", self.server_name)
         # Windows permits multiple named-pipe server instances with the same
@@ -122,25 +126,21 @@ class InterconnectServer(QObject):
         self.error.emit(self.server.errorString())
         return False
 
-    def stop(self):
+    def stop(self) -> None:
         """Stop listening and remove the local endpoint."""
         self.server.close()
         QLocalServer.removeServer(self.server_name)
         clear_auth_token()
 
-    def _accept_connections(self):
+    def _accept_connections(self) -> None:
         while self.server.hasPendingConnections():
             socket = self.server.nextPendingConnection()
             logger.debug("IPC server accepted a connection")
             self._buffers[socket] = bytearray()
-            socket.readyRead.connect(
-                lambda socket=socket: self._read_socket(socket)
-            )
-            socket.disconnected.connect(
-                lambda socket=socket: self._forget_socket(socket)
-            )
+            socket.readyRead.connect(lambda socket=socket: self._read_socket(socket))
+            socket.disconnected.connect(lambda socket=socket: self._forget_socket(socket))
 
-    def _forget_socket(self, socket):
+    def _forget_socket(self, socket: QLocalSocket) -> None:
         self._buffers.pop(socket, None)
         try:
             socket.deleteLater()
@@ -148,8 +148,8 @@ class InterconnectServer(QObject):
             # Qt may have deleted the socket immediately after disconnect.
             pass
 
-    def _read_socket(self, socket):
-        self._buffers[socket].extend(bytes(socket.readAll()))
+    def _read_socket(self, socket: QLocalSocket) -> None:
+        self._buffers[socket].extend(socket.readAll().data())
         while b"\n" in self._buffers[socket]:
             raw, remainder = self._buffers[socket].split(b"\n", 1)
             self._buffers[socket] = bytearray(remainder)
@@ -164,19 +164,18 @@ class InterconnectServer(QObject):
             socket.flush()
             logger.debug("IPC server sent response: ok=%s", response.get("ok"))
 
-    def _check_auth(self, request):
+    def _check_auth(self, request: dict[str, Any]) -> None:
         """Validate protocol version and auth token."""
         version = request.get("protocol_version")
         if version is not None and version != IPC_PROTOCOL_VERSION:
             raise ValueError(
-                f"unsupported protocol version {version}; "
-                f"expected {IPC_PROTOCOL_VERSION}"
+                f"unsupported protocol version {version}; expected {IPC_PROTOCOL_VERSION}"
             )
         token = request.get("auth_token")
         if token != self._auth_token:
             raise ValueError("invalid or missing auth token")
 
-    def _dispatch(self, request):
+    def _dispatch(self, request: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(request, dict):
             raise ValueError("command must be a JSON object")
         command = request.get("command")
@@ -234,7 +233,11 @@ class InterconnectServer(QObject):
         raise ValueError(f"unknown command: {command!r}")
 
 
-def send_command(command, server_name=IPC_SERVER_NAME, timeout=10000):
+def send_command(
+    command: dict[str, Any],
+    server_name: str = IPC_SERVER_NAME,
+    timeout: int = 10000,
+) -> dict[str, Any]:
     """Send one command to a running InkSim server and return its response.
 
     The timeout is generous because ``open``/``open_and_delete`` load the
@@ -258,7 +261,7 @@ def send_command(command, server_name=IPC_SERVER_NAME, timeout=10000):
     if not socket.waitForBytesWritten(timeout) or not socket.waitForReadyRead(timeout):
         logger.debug("IPC client response wait failed: %s", socket.errorString())
         raise RuntimeError("InkSim server did not respond")
-    response = bytes(socket.readLine()).decode("utf-8").strip()
+    response = bytes(socket.readLine().data()).decode("utf-8").strip()
     socket.disconnectFromServer()
     logger.debug("IPC client received response")
     return json.loads(response)

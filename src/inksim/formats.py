@@ -3,19 +3,23 @@
 
 """Embroidery input-format helpers."""
 
+from __future__ import annotations
+
+from typing import Any
+
 import pystitch as emb
 
 
-def get_supported_input_wildcard():
+def get_supported_input_wildcard() -> str:
     """Build a file filter from the formats readable by pystitch."""
     extensions = get_supported_input_extensions()
     patterns = ";".join(f"*.{ext}" for ext in sorted(extensions))
     return f"Embroidery files ({patterns})|{patterns}|All files|*.*"
 
 
-def get_supported_input_extensions():
+def get_supported_input_extensions() -> set[str]:
     """Return lowercase filename extensions readable by pystitch."""
-    extensions = set()
+    extensions: set[str] = set()
     try:
         supported_formats = emb.supported_formats()
     except Exception:
@@ -30,14 +34,14 @@ def get_supported_input_extensions():
     return extensions
 
 
-def get_supported_output_formats():
+def get_supported_output_formats() -> list[dict[str, Any]]:
     """Return writable pystitch formats with their display metadata."""
-    formats = []
+    formats: list[dict[str, Any]] = []
     try:
         supported_formats = emb.supported_formats()
     except Exception:
         return formats
-    seen_extensions = set()
+    seen_extensions: set[str] = set()
     for file_type in supported_formats:
         if file_type.get("writer") is None:
             continue
@@ -47,9 +51,7 @@ def get_supported_output_formats():
         extensions = file_type.get("extensions", (extension,))
         if isinstance(extensions, str):
             extensions = (extensions,)
-        clean_extensions = tuple(
-            ext.lstrip(".").lower() for ext in extensions if ext
-        )
+        clean_extensions = tuple(ext.lstrip(".").lower() for ext in extensions if ext)
         if not clean_extensions:
             clean_extensions = (extension.lstrip(".").lower(),)
         primary_extension = extension.lstrip(".").lower()
@@ -66,19 +68,17 @@ def get_supported_output_formats():
     return sorted(formats, key=lambda item: (item["description"], item["extension"]))
 
 
-def get_supported_output_filter():
+def get_supported_output_filter() -> str:
     """Build a Qt file filter for all formats writable by pystitch."""
-    filters = []
+    filters: list[str] = []
     for file_type in get_supported_output_formats():
         patterns = " ".join(f"*.{ext}" for ext in file_type["extensions"])
-        filters.append(
-            f"{file_type['description']} - .{file_type['extension']} ({patterns})"
-        )
+        filters.append(f"{file_type['description']} - .{file_type['extension']} ({patterns})")
     filters.append("All files (*)")
     return ";;".join(filters)
 
 
-def extension_from_output_filter(selected_filter):
+def extension_from_output_filter(selected_filter: str) -> str:
     """Return the primary extension encoded in a Qt output-format filter."""
     suffix_marker = " - ."
     suffix_start = selected_filter.find(suffix_marker)

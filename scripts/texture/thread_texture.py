@@ -13,6 +13,7 @@ Outputs:
   - height map (for displacement)
   - combined RGBA preview (diffuse + alpha)
 """
+
 import argparse
 import json
 import math
@@ -58,13 +59,18 @@ def generate_thread_textures(
         # Suggest a width close to the requested one where width / twist_periods
         # is an integer. Prefer multiples of 16 for GPU-friendly texture sizes.
         raw_best = round(twist_periods * round(expected_period))
-        candidate_widths = [w for w in range(max(16, raw_best - 96), raw_best + 97)
-                            if w > 0 and abs(w / twist_periods - round(w / twist_periods)) < 1e-9]
+        candidate_widths = [
+            w
+            for w in range(max(16, raw_best - 96), raw_best + 97)
+            if w > 0 and abs(w / twist_periods - round(w / twist_periods)) < 1e-9
+        ]
         if candidate_widths:
+
             def _score(w: int) -> tuple[float, int]:
                 dist = abs(w - width)
                 align = 0 if w % 16 == 0 else 1
                 return (align, dist)
+
             best_width = min(candidate_widths, key=_score)
             suggestion = f" Try --width {best_width}."
         else:
@@ -101,6 +107,7 @@ def generate_thread_textures(
         noise = np.random.randn(height, width) * fiber_noise * 25.0
         try:
             from scipy.ndimage import gaussian_filter
+
             noise = gaussian_filter(noise, sigma=0.6)
         except ImportError:
             # Simple fallback smoothing. Must preserve the array shape: the
@@ -108,11 +115,7 @@ def generate_thread_textures(
             # width - 1, so a naive [:-1] slice (which drops a column) would
             # crash with an out-of-bounds index.
             for _ in range(2):
-                noise = (
-                    np.roll(noise, 1, axis=1)
-                    + noise
-                    + np.roll(noise, -1, axis=1)
-                ) / 3.0
+                noise = (np.roll(noise, 1, axis=1) + noise + np.roll(noise, -1, axis=1)) / 3.0
     else:
         noise = np.zeros((height, width), dtype=np.float32)
 
@@ -168,7 +171,7 @@ def generate_thread_textures(
                 v = ny
                 if v > 0:
                     tt = v
-                    base_color = c_mid * (1.0 - tt ** 0.8) + c_top * (tt ** 0.8)
+                    base_color = c_mid * (1.0 - tt**0.8) + c_top * (tt**0.8)
                 else:
                     tt = -v
                     base_color = c_mid * (1.0 - tt) + c_bot * tt
@@ -233,7 +236,9 @@ def generate_thread_textures(
             if fiber_noise > 0.0:
                 noise_val = noise[yi_int, x] * 0.5
                 final_color += noise_val
-                final_normal += np.array([noise_val * 0.01, noise_val * 0.01, 0.0], dtype=np.float32)
+                final_normal += np.array(
+                    [noise_val * 0.01, noise_val * 0.01, 0.0], dtype=np.float32
+                )
                 final_normal = final_normal / (np.linalg.norm(final_normal) + 1e-8)
 
             final_color = np.clip(final_color, 0.0, 255.0)
@@ -267,9 +272,7 @@ def generate_thread_textures(
     # mismatched rows at the join).
     cap_center_y = (height - 1) / 2.0
     if covered_rows.size:
-        cap_radius_px = max(
-            cap_center_y - covered_rows[0], covered_rows[-1] - cap_center_y
-        ) + 1.5
+        cap_radius_px = max(cap_center_y - covered_rows[0], covered_rows[-1] - cap_center_y) + 1.5
     else:
         cap_radius_px = height / 2.0
     # The thread always fits inside the canvas, so the arc half-width cannot
@@ -288,9 +291,7 @@ def generate_thread_textures(
     cap_width = int(math.ceil(cap_radius_px)) + 1
     cap_xs = np.arange(cap_width, dtype=np.float32)[None, :]
     cap_ys = np.arange(height, dtype=np.float32)[:, None]
-    cap_dist = np.sqrt(
-        (cap_xs - (cap_width - 1.0)) ** 2 + (cap_ys - cap_center_y) ** 2
-    )
+    cap_dist = np.sqrt((cap_xs - (cap_width - 1.0)) ** 2 + (cap_ys - cap_center_y) ** 2)
     cap_mask = np.clip(cap_radius_px - cap_dist, 0.0, 1.0)
 
     # Save textures.
@@ -421,42 +422,56 @@ def _parse_color(value: str) -> tuple[int, int, int]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Generate PBR textures for embroidered thread"
+    parser = argparse.ArgumentParser(description="Generate PBR textures for embroidered thread")
+    parser.add_argument(
+        "--width",
+        type=int,
+        default=512,
+        help="Texture width in pixels (along the stitch direction)",
     )
-    parser.add_argument("--width", type=int, default=512,
-                        help="Texture width in pixels (along the stitch direction)")
-    parser.add_argument("--height", type=int, default=128,
-                        help="Texture height in pixels (across the thread width)")
-    parser.add_argument("--twist-periods", "--twist-period", type=float, default=3.0,
-                        dest="twist_periods",
-                        help="Number of full twist periods across the texture width (tiling-safe)")
-    parser.add_argument("--strands", type=int, default=3,
-                        help="Number of twisted strands (2 or 3)")
-    parser.add_argument("--strand-radius", type=float, default=24.0,
-                        help="Strand radius in pixels")
-    parser.add_argument("--helix-radius", type=float, default=11.0,
-                        help="Helix radius in pixels")
-    parser.add_argument("--strand-spacing", type=float, default=0.0,
-                        help="Extra radial spacing between strand centres (0 = touching, >0 = gaps)")
-    parser.add_argument("--blend-softness", type=float, default=2.5,
-                        help="Strand blending softness (1-4)")
-    parser.add_argument("--fiber-noise", type=float, default=0.06,
-                        help="Fibre texture intensity (0-0.15)")
-    parser.add_argument("--output-dir", type=Path, default="./thread_textures",
-                        help="Output directory")
-    parser.add_argument("--prefix", type=str, default="thread",
-                        help="Output filename prefix")
-    parser.add_argument("--tile-preview", action="store_true",
-                        help="Also write *_tile_preview.png for normal_mask "
-                             "and diffuse so tiling seams are visible immediately")
+    parser.add_argument(
+        "--height", type=int, default=128, help="Texture height in pixels (across the thread width)"
+    )
+    parser.add_argument(
+        "--twist-periods",
+        "--twist-period",
+        type=float,
+        default=3.0,
+        dest="twist_periods",
+        help="Number of full twist periods across the texture width (tiling-safe)",
+    )
+    parser.add_argument("--strands", type=int, default=3, help="Number of twisted strands (2 or 3)")
+    parser.add_argument("--strand-radius", type=float, default=24.0, help="Strand radius in pixels")
+    parser.add_argument("--helix-radius", type=float, default=11.0, help="Helix radius in pixels")
+    parser.add_argument(
+        "--strand-spacing",
+        type=float,
+        default=0.0,
+        help="Extra radial spacing between strand centres (0 = touching, >0 = gaps)",
+    )
+    parser.add_argument(
+        "--blend-softness", type=float, default=2.5, help="Strand blending softness (1-4)"
+    )
+    parser.add_argument(
+        "--fiber-noise", type=float, default=0.06, help="Fibre texture intensity (0-0.15)"
+    )
+    parser.add_argument(
+        "--output-dir", type=Path, default="./thread_textures", help="Output directory"
+    )
+    parser.add_argument("--prefix", type=str, default="thread", help="Output filename prefix")
+    parser.add_argument(
+        "--tile-preview",
+        action="store_true",
+        help="Also write *_tile_preview.png for normal_mask and diffuse so tiling seams are visible immediately",
+    )
 
-    parser.add_argument("--color-top", type=str, default="180,220,255",
-                        help="Top (lit) colour as R,G,B")
-    parser.add_argument("--color-mid", type=str, default="100,140,255",
-                        help="Mid colour as R,G,B")
-    parser.add_argument("--color-bottom", type=str, default="50,60,200",
-                        help="Bottom (shadow) colour as R,G,B")
+    parser.add_argument(
+        "--color-top", type=str, default="180,220,255", help="Top (lit) colour as R,G,B"
+    )
+    parser.add_argument("--color-mid", type=str, default="100,140,255", help="Mid colour as R,G,B")
+    parser.add_argument(
+        "--color-bottom", type=str, default="50,60,200", help="Bottom (shadow) colour as R,G,B"
+    )
 
     args = parser.parse_args()
 

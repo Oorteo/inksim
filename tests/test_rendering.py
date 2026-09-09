@@ -4,17 +4,16 @@
 from pathlib import Path
 
 import numpy as np
-from PySide6.QtWidgets import QApplication, QDialog
 
 from inksim.formats import (
     extension_from_output_filter,
     get_supported_output_filter,
     get_supported_output_formats,
 )
+from inksim.gui.viewer import EmbroideryViewerWidget
 from inksim.render.export import render_export_image
 from inksim.render.grid import render_grid_numba
 from inksim.render.registry import STITCH_RENDERERS
-from inksim.gui.viewer import EmbroideryViewerWidget
 
 
 def test_all_registered_renderers_export_without_crashing(qapp, tmp_path):
@@ -46,9 +45,7 @@ def test_export_image_keeps_margin_and_design_dpi():
     """The exported image keeps a small margin so stitches extending past the
     strict bounds are not clipped. The physical tags still encode the design's
     real-world size via the rendering zoom."""
-    stitches = np.array(
-        [[0, 0, 50, 30, 220, 30, 40]], dtype=np.float32
-    )
+    stitches = np.array([[0, 0, 50, 30, 220, 30, 40]], dtype=np.float32)
     bounds = (0, 0, 50, 30)
     width_px = 500
     height_px = 300
@@ -78,9 +75,7 @@ def test_export_image_keeps_margin_and_design_dpi():
 def test_export_image_includes_physical_size_metadata():
     """Exported images carry mm dimensions and resolution so Inkscape can
     import them at the correct physical size."""
-    stitches = np.array(
-        [[0, 0, 20, 10, 220, 30, 40]], dtype=np.float32
-    )
+    stitches = np.array([[0, 0, 20, 10, 220, 30, 40]], dtype=np.float32)
     bounds = (0, 0, 20, 10)
     design_width_mm = 20.0
     design_height_mm = 10.0

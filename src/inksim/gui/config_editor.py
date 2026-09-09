@@ -3,6 +3,8 @@
 
 """Raw configuration-file editor for InkSim's TOML-backed storage."""
 
+from __future__ import annotations
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
@@ -12,13 +14,14 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QPlainTextEdit,
     QVBoxLayout,
+    QWidget,
 )
 
 from ..config import Config
 from ..runtime import _sanitize_path
 
 
-def show_config_editor(parent, config):
+def show_config_editor(parent: QWidget | None, config: Config) -> None:
     """Open a modal editor for the TOML config file."""
     dialog = ConfigEditorDialog(parent, config)
     dialog.exec()
@@ -27,7 +30,7 @@ def show_config_editor(parent, config):
 class ConfigEditorDialog(QDialog):
     """Show and edit the TOML configuration path and contents."""
 
-    def __init__(self, parent, config: Config):
+    def __init__(self, parent: QWidget | None, config: Config) -> None:
         super().__init__(parent)
         self.config = config
         self.setWindowTitle("Configuration file")
@@ -53,16 +56,14 @@ class ConfigEditorDialog(QDialog):
         self._editor.setFont(QFont("Monospace", 10))
         layout.addWidget(self._editor, 1)
 
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.Save | QDialogButtonBox.Close, self
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Close, self)
         buttons.accepted.connect(self._save)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
 
         self._reload()
 
-    def _reload(self):
+    def _reload(self) -> None:
         """Display the current TOML contents, reading from disk first.
 
         Other parts of the application (e.g. the viewer) keep their own
@@ -75,7 +76,7 @@ class ConfigEditorDialog(QDialog):
         except Exception as ex:  # noqa: BLE001
             self._editor.setPlainText(f"# Could not read config: {ex}\n")
 
-    def _save(self):
+    def _save(self) -> None:
         text = self._editor.toPlainText()
         try:
             self.config.load_text(text)

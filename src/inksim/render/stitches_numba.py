@@ -1,6 +1,14 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+"""Numba-accelerated CPU rasterizers for stitch rendering.
+
+The functions in this module are decorated with ``@numba.njit`` and are kept
+untyped so that Numba can infer types from the numpy arrays passed at runtime.
+"""
+
+from __future__ import annotations
+
 import numba
 import numpy as np
 
@@ -9,16 +17,16 @@ from ..constants import MAX_RENDER_LINE_WIDTH_PX, MAX_RENDER_STEPS
 
 @numba.njit(cache=True)
 def render_shaded_volume_natural_numba(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor,
-    light_factor,
-):
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+) -> None:
     """Render volume-shaded stitches with subtle per-stitch shade variation."""
     # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
     # like the previous 0.05. The GPU renderer keeps its own mapping.
@@ -55,14 +63,17 @@ def render_shaded_volume_natural_numba(
         r_base = int(stitches[i, 4])
         g_base = int(stitches[i, 5])
         b_base = int(stitches[i, 6])
-        phase_seed = np.sin(
-            (stitches[i, 0] + stitches[i, 2]) * 17.13
-            + (stitches[i, 1] + stitches[i, 3]) * 31.71
-            + i * 11.37
-            + r_base * 0.013
-            + g_base * 0.021
-            + b_base * 0.034
-        ) * 43758.5453
+        phase_seed = (
+            np.sin(
+                (stitches[i, 0] + stitches[i, 2]) * 17.13
+                + (stitches[i, 1] + stitches[i, 3]) * 31.71
+                + i * 11.37
+                + r_base * 0.013
+                + g_base * 0.021
+                + b_base * 0.034
+            )
+            * 43758.5453
+        )
         phase = phase_seed - np.floor(phase_seed)
         dark_variation = 0.96 + 0.08 * phase
         light_variation = 0.96 + 0.08 * (1.0 - phase)
@@ -96,9 +107,7 @@ def render_shaded_volume_natural_numba(
 
                 t = along / length
                 profile = 1.0 - abs(2.0 * t - 1.0)
-                local_variation = 1.0 + 0.025 * np.sin(
-                    2.0 * np.pi * t + phase * 2.0 * np.pi
-                )
+                local_variation = 1.0 + 0.025 * np.sin(2.0 * np.pi * t + phase * 2.0 * np.pi)
                 rr = min(255.0, (r_dark + (r_light - r_dark) * profile) * local_variation)
                 gg = min(255.0, (g_dark + (g_light - g_dark) * profile) * local_variation)
                 bb = min(255.0, (b_dark + (b_light - b_dark) * profile) * local_variation)
@@ -110,16 +119,16 @@ def render_shaded_volume_natural_numba(
 
 @numba.njit(cache=True)
 def render_realistic_twist_numba(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor,
-    light_factor,
-):
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+) -> None:
     """Render stable cylindrical threads with a subtle symmetric helical sheen."""
     # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
     # like the previous 0.05. The GPU renderer keeps its own mapping.
@@ -155,14 +164,17 @@ def render_realistic_twist_numba(
         b_base = int(stitches[i, 6])
         world_mid_x = (stitches[i, 0] + stitches[i, 2]) * 0.5
         world_mid_y = (stitches[i, 1] + stitches[i, 3]) * 0.5
-        phase_seed = np.sin(
-            world_mid_x * 12.9898
-            + world_mid_y * 78.233
-            + i * 37.719
-            + r_base * 0.017
-            + g_base * 0.031
-            + b_base * 0.047
-        ) * 43758.5453
+        phase_seed = (
+            np.sin(
+                world_mid_x * 12.9898
+                + world_mid_y * 78.233
+                + i * 37.719
+                + r_base * 0.017
+                + g_base * 0.031
+                + b_base * 0.047
+            )
+            * 43758.5453
+        )
         phase = phase_seed - np.floor(phase_seed)
         phase_offset = 2.0 * np.pi * phase
         r_dark = r_base * (0.72 + 0.28 * dark_factor)
@@ -200,19 +212,14 @@ def render_realistic_twist_numba(
                 symmetric_along = min(normalized_along, 1.0 - normalized_along)
                 wave_count = max(1.0, np.floor(length / twist_pitch + 0.5))
                 helix = 0.5 + 0.5 * np.cos(
-                    2.0 * np.pi * symmetric_along * wave_count
-                    + phase_offset
+                    2.0 * np.pi * symmetric_along * wave_count + phase_offset
                 )
                 endpoint_span = min(0.5, 3.0 * thread_radius / length)
                 endpoint_position = min(1.0, symmetric_along / endpoint_span)
                 endpoint_fade = endpoint_position * endpoint_position
                 endpoint_fade = endpoint_fade * (3.0 - 2.0 * endpoint_position)
                 helix *= endpoint_fade
-                intensity = (
-                    0.54
-                    + 0.12 * cylinder
-                    + helix_strength * (2.0 * helix - 1.0)
-                )
+                intensity = 0.54 + 0.12 * cylinder + helix_strength * (2.0 * helix - 1.0)
                 endpoint_shadow = (1.0 - endpoint_fade) * (1.0 - endpoint_fade)
                 intensity -= 0.22 * endpoint_shadow
                 rr = min(255.0, r_dark + (r_light - r_dark) * intensity)
@@ -227,21 +234,24 @@ def render_realistic_twist_numba(
 
 @numba.njit(cache=True)
 def render_shaded_numba(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    use_shaded,
-    line_width,
-    dark_factor,
-    light_factor,
-    use_realistic=False,
-):
-    # Draw visible stitch segments into the RGB buffer.    # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    use_shaded: bool,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+    use_realistic: bool = False,
+) -> None:
+    # Draw visible stitch segments into the RGB buffer.
+    # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
     # like the previous 0.05. The GPU renderer keeps its own mapping.
-    light_factor = light_factor * 0.1    # Each segment is [x1, y1, x2, y2, r, g, b] in mm + base thread color.
+    light_factor = (
+        light_factor * 0.1
+    )  # Each segment is [x1, y1, x2, y2, r, g, b] in mm + base thread color.
     # We project mm -> screen pixels using zoom/pan and then rasterize.
     h, w, _ = buf.shape
     # The configured width is in mm; convert it to screen pixels with the
@@ -257,10 +267,10 @@ def render_shaded_numba(
 
     for i in range(visible_count):
         # Convert segment endpoints from world space (mm) to screen pixels.
-        x1 = stitches[i,0] * zoom + pan_x
-        y1 = stitches[i,1] * zoom + pan_y
-        x2 = stitches[i,2] * zoom + pan_x
-        y2 = stitches[i,3] * zoom + pan_y
+        x1 = stitches[i, 0] * zoom + pan_x
+        y1 = stitches[i, 1] * zoom + pan_y
+        x2 = stitches[i, 2] * zoom + pan_x
+        y2 = stitches[i, 3] * zoom + pan_y
 
         # Get base thread color for this segment.
         r_base = int(stitches[i, 4])
@@ -268,14 +278,17 @@ def render_shaded_numba(
         b_base = int(stitches[i, 6])
 
         # Cheap reject: ignore segments completely far outside the viewport.
-        if (x1 < -200 and x2 < -200) or (x1 > w+200 and x2 > w+200): continue
-        if (y1 < -200 and y2 < -200) or (y1 > h+200 and y2 > h+200): continue
+        if (x1 < -200 and x2 < -200) or (x1 > w + 200 and x2 > w + 200):
+            continue
+        if (y1 < -200 and y2 < -200) or (y1 > h + 200 and y2 > h + 200):
+            continue
 
         # Compute the segment length in pixels and sample points along it.
         dx = x2 - x1
         dy = y2 - y1
-        length = np.sqrt(dx*dx + dy*dy)
-        if length <= 0: continue
+        length = np.sqrt(dx * dx + dy * dy)
+        if length <= 0:
+            continue
         normal_x = -dy / length
         normal_y = dx / length
 
@@ -299,7 +312,7 @@ def render_shaded_numba(
             MAX_RENDER_STEPS,
             max(1, int(np.ceil(length * sample_factor))),
         )
-        for s in range(steps+1):
+        for s in range(steps + 1):
             t = s / steps
             x = x1 + dx * t
             y = y1 + dy * t
@@ -329,8 +342,8 @@ def render_shaded_numba(
                 r_loop = lw_int + 1
                 for oy in range(-r_loop, r_loop + 1):
                     for ox in range(-r_loop, r_loop + 1):
-                        distance_squared = ox*ox + oy*oy
-                        if distance_squared > render_radius*render_radius + 0.5:
+                        distance_squared = ox * ox + oy * oy
+                        if distance_squared > render_radius * render_radius + 0.5:
                             continue
                         xi = int(x + ox)
                         yi = int(y + oy)
@@ -356,7 +369,8 @@ def render_shaded_numba(
                                 spec_center = -0.30
                                 spec_width = 0.28
                                 spec_dist = across - spec_center
-                                if spec_dist < 0: spec_dist = -spec_dist
+                                if spec_dist < 0:
+                                    spec_dist = -spec_dist
                                 if spec_dist < spec_width:
                                     spec = 1.0 - spec_dist / spec_width
                                     spec = spec * spec  # sharper falloff
@@ -371,7 +385,7 @@ def render_shaded_numba(
                                     bb = int(bb + (255 - bb) * spec_strength)
 
                                 # Soft AA on edge only
-                                if distance_squared > (hw - 0.6)*(hw - 0.6):
+                                if distance_squared > (hw - 0.6) * (hw - 0.6):
                                     buf[yi, xi, 0] = (buf[yi, xi, 0] + rr) // 2
                                     buf[yi, xi, 1] = (buf[yi, xi, 1] + gg) // 2
                                     buf[yi, xi, 2] = (buf[yi, xi, 2] + bb) // 2
@@ -379,28 +393,28 @@ def render_shaded_numba(
                                     buf[yi, xi, 0] = rr
                                     buf[yi, xi, 1] = gg
                                     buf[yi, xi, 2] = bb
-                            elif distance_squared <= (hw-0.5)*(hw-0.5):
+                            elif distance_squared <= (hw - 0.5) * (hw - 0.5):
                                 buf[yi, xi, 0] = r
                                 buf[yi, xi, 1] = g
                                 buf[yi, xi, 2] = b
                             else:
-                                buf[yi, xi, 0] = (buf[yi, xi, 0] + r)//2
-                                buf[yi, xi, 1] = (buf[yi, xi, 1] + g)//2
-                                buf[yi, xi, 2] = (buf[yi, xi, 2] + b)//2
+                                buf[yi, xi, 0] = (buf[yi, xi, 0] + r) // 2
+                                buf[yi, xi, 1] = (buf[yi, xi, 1] + g) // 2
+                                buf[yi, xi, 2] = (buf[yi, xi, 2] + b) // 2
 
 
 @numba.njit(cache=True)
 def render_shaded_volume_numba(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor,
-    light_factor,
-):
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+) -> None:
     """Render shaded stitches with a dark-light-dark axial thread profile."""
     # Shaded preview is too bright at the default LF=0.5; remap so 0.5 feels
     # like the previous 0.05. The GPU renderer keeps its own mapping.
@@ -474,4 +488,3 @@ def render_shaded_volume_numba(
                 buf[py, px, 0] = int(buf[py, px, 0] * (1.0 - alpha) + rr * alpha)
                 buf[py, px, 1] = int(buf[py, px, 1] * (1.0 - alpha) + gg * alpha)
                 buf[py, px, 2] = int(buf[py, px, 2] * (1.0 - alpha) + bb * alpha)
-

@@ -3,8 +3,13 @@
 
 """Registered stitch renderers used by the viewer and renderer picker."""
 
+from __future__ import annotations
+
 from collections.abc import Callable
 from dataclasses import dataclass
+from typing import Any
+
+import numpy as np
 
 from .stitches import (
     render_realistic_twist_numba,
@@ -23,14 +28,19 @@ class StitchRenderer:
     key: str
     label: str
     kind: str
-    render: Callable | None
+    render: Callable[..., Any] | None
 
 
 STITCH_RENDERERS = (
     StitchRenderer("simple", "Simple", "vector", None),
     StitchRenderer("shaded", "Shaded", "raster", render_shaded_numba),
     StitchRenderer("shaded_volume", "Shaded Volume", "raster", render_shaded_volume_numba),
-    StitchRenderer("shaded_volume_natural", "Shaded Volume Natural", "raster", render_shaded_volume_natural_numba),
+    StitchRenderer(
+        "shaded_volume_natural",
+        "Shaded Volume Natural",
+        "raster",
+        render_shaded_volume_natural_numba,
+    ),
     StitchRenderer("realistic_twist", "Realistic Twist", "raster", render_realistic_twist_numba),
     StitchRenderer("gpu_textured", "GPU Textured", "raster", render_gpu_textured),
 )
@@ -42,18 +52,18 @@ VECTOR_RENDERERS = {
 
 
 def render_stitches(
-    renderer_key,
-    buffer,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor,
-    light_factor,
-    show_stitches=True,
-):
+    renderer_key: str,
+    buffer: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+    show_stitches: bool = True,
+) -> None:
     """Render stitches using a registered renderer."""
     renderer = RENDERERS_BY_KEY[renderer_key]
     if renderer.kind != "raster" or renderer.render is None:

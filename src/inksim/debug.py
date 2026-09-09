@@ -3,6 +3,8 @@
 
 """Application-wide opt-in debug logging."""
 
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 
@@ -13,11 +15,11 @@ logger.addHandler(logging.NullHandler())
 _debug_enabled = False
 
 
-def is_enabled():
+def is_enabled() -> bool:
     return _debug_enabled
 
 
-def configure_logging(enabled, log_path):
+def configure_logging(enabled: bool, log_path: str | Path) -> Path | None:
     """Enable file logging for debug diagnostics when requested."""
     global _debug_enabled
     if not enabled:
@@ -25,9 +27,7 @@ def configure_logging(enabled, log_path):
     path = Path(log_path).expanduser()
     path.parent.mkdir(parents=True, exist_ok=True)
     handler = logging.FileHandler(path, mode="w", encoding="utf-8")
-    handler.setFormatter(
-        logging.Formatter("%(created).6f thread=%(thread)d %(message)s")
-    )
+    handler.setFormatter(logging.Formatter("%(created).6f thread=%(thread)d %(message)s"))
     logger.addHandler(handler)
     _debug_enabled = True
     return path

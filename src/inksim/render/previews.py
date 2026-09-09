@@ -3,6 +3,8 @@
 
 """Qt preview images for the renderer picker."""
 
+from __future__ import annotations
+
 import numpy as np
 from PySide6.QtGui import QColor, QImage, QPainter
 
@@ -10,7 +12,7 @@ from ..constants import DEFAULT_DARK_FACTOR, DEFAULT_LIGHT_FACTOR
 from .registry import VECTOR_RENDERERS, render_stitches
 
 
-def preview_stitches(renderer_key, width=360, height=220):
+def preview_stitches(renderer_key: str, width: int = 360, height: int = 220) -> QImage:
     """Render a small representative preview for the renderer picker."""
     center_x = width * 0.5
     center_y = height * 0.5
@@ -47,9 +49,7 @@ def preview_stitches(renderer_key, width=360, height=220):
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         painter.setRenderHint(QPainter.Antialiasing)
-        VECTOR_RENDERERS[renderer_key](
-            painter, stitches, len(stitches), 1.0, 0, 0, line_width
-        )
+        VECTOR_RENDERERS[renderer_key](painter, stitches, len(stitches), 1.0, 0, 0, line_width)
         painter.end()
         return image
 

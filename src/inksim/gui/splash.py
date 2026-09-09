@@ -1,11 +1,16 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+"""Startup splash screen and warmup thread."""
+
+from __future__ import annotations
+
 from pathlib import Path
 from time import monotonic
 
+import numpy as np
 from PySide6.QtCore import Qt, QThread, QTimer
-from PySide6.QtGui import QColor, QPainter, QPen, QPixmap
+from PySide6.QtGui import QCloseEvent, QColor, QPainter, QPaintEvent, QPen, QPixmap
 from PySide6.QtWidgets import QApplication, QLabel, QSplashScreen, QVBoxLayout, QWidget
 
 from ..render import (
@@ -18,43 +23,39 @@ from ..render import (
 class RendererWarmupThread(QThread):
     """Compile the first-use Numba renderers away from the Qt GUI thread."""
 
-    def run(self):
-        import numpy as np
-
+    def run(self) -> None:
         buffer = np.full((16, 16, 3), 255, dtype=np.uint8)
         stitches = np.array(
             [(0, 0, 5, 5, 40, 150, 90)],
             dtype=np.float32,
         )
         render_grid_numba(buffer, 1.0, 8.0, 8.0)
-        render_shaded_numba(
-            buffer, stitches, 1, 1.0, 8.0, 8.0, True, 0.4, 0.75, 0.45
-        )
+        render_shaded_numba(buffer, stitches, 1, 1.0, 8.0, 8.0, True, 0.4, 0.75, 0.45)
         render_fabric_numba(buffer, 1.0)
 
 
 class LoadingSpinner(QWidget):
     """Small animated activity indicator for the startup splash."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setFixedSize(32, 32)
         self._angle = 0
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._advance)
 
-    def start(self):
+    def start(self) -> None:
         self._timer.start(80)
         self.update()
 
-    def stop(self):
+    def stop(self) -> None:
         self._timer.stop()
 
-    def _advance(self):
+    def _advance(self) -> None:
         self._angle = (self._angle + 30) % 360
         self.update()
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.translate(self.width() / 2, self.height() / 2)
@@ -72,19 +73,11 @@ class LoadingSpinner(QWidget):
 class SplashScreen(QSplashScreen):
     """Small frameless startup window with an activity indicator."""
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowFlags(
-            Qt.FramelessWindowHint
-            | Qt.SplashScreen
-            | Qt.WindowStaysOnTopHint
-        )
+    def __init__(self) -> None:
+        super().__init__()
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.SplashScreen | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setStyleSheet(
-            "background: #faf8f4;"
-            "border: 1px solid #c8c4bc;"
-            "border-radius: 8px;"
-        )
+        self.setStyleSheet("background: #faf8f4;border: 1px solid #c8c4bc;border-radius: 8px;")
         self.setWindowTitle("InkSim")
 
         self.logo = QLabel(self)
@@ -97,8 +90,7 @@ class SplashScreen(QSplashScreen):
         self.status = QLabel("Starting InkSim...", self)
         self.status.setAlignment(Qt.AlignCenter)
         self.status.setStyleSheet(
-            "color: #343434; background: rgba(255, 255, 255, 180); "
-            "border: 0; padding: 5px 10px;"
+            "color: #343434; background: rgba(255, 255, 255, 180); border: 0; padding: 5px 10px;"
         )
 
         self.spinner = LoadingSpinner(self)
@@ -110,12 +102,12 @@ class SplashScreen(QSplashScreen):
         layout.addWidget(self.status)
         layout.addWidget(self.spinner, alignment=Qt.AlignCenter)
         self.adjustSize()
-        self._shown_at = None
+        self._shown_at: float | None = None
 
-    def set_message(self, message):
+    def set_message(self, message: str) -> None:
         self.status.setText(message)
 
-    def show_centered(self):
+    def show_centered(self) -> None:
         screen = QApplication.primaryScreen()
         if screen is not None:
             self.move(screen.availableGeometry().center() - self.rect().center())
@@ -123,7 +115,7 @@ class SplashScreen(QSplashScreen):
         self._shown_at = monotonic()
         self.spinner.start()
 
-    def close_after(self, minimum_ms=1500):
+    def close_after(self, minimum_ms: int = 1500) -> None:
         """Close after the minimum visible time has elapsed."""
         if self._shown_at is None:
             self.close()
@@ -131,6 +123,6 @@ class SplashScreen(QSplashScreen):
         elapsed_ms = int((monotonic() - self._shown_at) * 1000)
         QTimer.singleShot(max(0, minimum_ms - elapsed_ms), self.close)
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: QCloseEvent) -> None:
         self.spinner.stop()
         event.accept()

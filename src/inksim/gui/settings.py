@@ -3,31 +3,40 @@
 
 """Markdown settings view for the InkSim viewer."""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from ..constants import (
     DENSITY_CRITICAL_PER_MM2,
     DENSITY_RADIUS_MM,
     DENSITY_WARNING_PER_MM2,
 )
 
+if TYPE_CHECKING:
+    from .viewer import EmbroideryViewerWidget
 
-def _state(value):
+
+def _state(value: bool) -> str:
     return "on" if value else "off"
 
 
-def _jump_state(viewer):
+def _jump_state(viewer: EmbroideryViewerWidget) -> str:
     if not viewer.show_jumps:
         return "off"
     return "risky only" if viewer.risky_jumps_only else "all"
 
 
-def settings_sections(viewer):
+def settings_sections(viewer: EmbroideryViewerWidget) -> tuple[tuple[str, str], ...]:
     """Build Markdown sections for the current viewer state."""
     total = viewer.stitches_np.shape[0]
     min_x, min_y, max_x, max_y = viewer.bounds
     width = max_x - min_x
     height = max_y - min_y
     return (
-        ("Design", f"""
+        (
+            "Design",
+            f"""
 
 | Property | Value |
 | --- | --- |
@@ -36,8 +45,11 @@ def settings_sections(viewer):
 | Bounds | {width:.1f} x {height:.1f} mm |
 | Minimum | {min_x:.1f}, {min_y:.1f} |
 | Maximum | {max_x:.1f}, {max_y:.1f} |
-"""),
-    ("Viewport", f"""
+""",
+        ),
+        (
+            "Viewport",
+            f"""
 
 | Property | Value |
 | --- | --- |
@@ -51,16 +63,22 @@ def settings_sections(viewer):
 | Density | {_state(viewer.show_density)} |
 | Needle | {_state(viewer.show_needle)} |
 | Gradient | {_state(viewer.zoom > 1.2)} |
-"""),
-    ("Density", f"""
+""",
+        ),
+        (
+            "Density",
+            f"""
 
 | Property | Value |
 | --- | --- |
 | Radius | {DENSITY_RADIUS_MM:.1f} mm |
 | Warning | {DENSITY_WARNING_PER_MM2:.1f} /mm^2 |
 | Critical | {DENSITY_CRITICAL_PER_MM2:.1f} /mm^2 |
-"""),
-    ("Rendering", f"""
+""",
+        ),
+        (
+            "Rendering",
+            f"""
 
 | Property | Value |
 | --- | --- |
@@ -68,8 +86,11 @@ def settings_sections(viewer):
 | Dark factor | {viewer.dark_factor:.2f} |
 | Light factor | {viewer.light_factor:.2f} |
 | Shading step | {viewer.shading_step:.2f} |
-"""),
-    ("Playback", f"""
+""",
+        ),
+        (
+            "Playback",
+            f"""
 
 | Property | Value |
 | --- | --- |
@@ -78,11 +99,12 @@ def settings_sections(viewer):
 | Timer step | {viewer.play_step} |
 | Direction | {"forward" if viewer._last_dir > 0 else "backward"} |
 | Playing | {_state(viewer.is_playing)} |
-"""),
+""",
+        ),
     )
 
 
-def show_settings(viewer):
+def show_settings(viewer: EmbroideryViewerWidget) -> None:
     """Show a Markdown snapshot of the current viewer state."""
     viewer._show_markdown_columns_dialog(
         "settings_dialog",

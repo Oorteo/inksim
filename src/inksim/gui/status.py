@@ -1,6 +1,10 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
@@ -16,6 +20,9 @@ from PySide6.QtWidgets import (
     QWidgetAction,
 )
 
+if TYPE_CHECKING:
+    from .viewer import EmbroideryViewerWidget
+
 from ..constants import (
     NEEDLE_RADIUS_MAX,
     NEEDLE_RADIUS_MIN,
@@ -27,11 +34,11 @@ from ..constants import (
 class _SliderPopup(QMenu):
     """Popup with vertical sliders for DF / LF / LW tuning."""
 
-    def __init__(self, parent, viewer):
+    def __init__(self, parent: QWidget, viewer: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer
-        self._sliders = {}
-        self._labels = {}
+        self._sliders: dict[str, QSlider] = {}
+        self._labels: dict[str, QLabel] = {}
 
         container = QWidget(self)
         layout = QHBoxLayout(container)
@@ -55,7 +62,7 @@ class _SliderPopup(QMenu):
             slider.setFixedHeight(140)
             slider.setValue(self._to_slider(getattr(viewer, attr), lo, hi))
             slider.valueChanged.connect(
-                lambda value, a=attr, l=lo, h=hi: self._apply(a, value, l, h)
+                lambda value, a=attr, lo=lo, h=hi: self._apply(a, value, lo, h)
             )
             column.addWidget(slider, alignment=Qt.AlignCenter)
 
@@ -75,21 +82,21 @@ class _SliderPopup(QMenu):
         self.addAction(action)
 
     @staticmethod
-    def _to_slider(value, lo, hi):
+    def _to_slider(value: float, lo: float, hi: float) -> int:
         return int(round((value - lo) / (hi - lo) * 1000))
 
     @staticmethod
-    def _from_slider(value, lo, hi):
+    def _from_slider(value: int, lo: float, hi: float) -> float:
         return lo + (value / 1000.0) * (hi - lo)
 
-    def _apply(self, attr, value, lo, hi):
+    def _apply(self, attr: str, value: int, lo: float, hi: float) -> None:
         setattr(self.viewer, attr, self._from_slider(value, lo, hi))
         self._refresh_labels()
         self.viewer.invalidate_cache()
         self.viewer.update()
         self.viewer.update_mode_indicators()
 
-    def _refresh_labels(self):
+    def _refresh_labels(self) -> None:
         for attr, label in self._labels.items():
             label.setText(f"{getattr(self.viewer, attr):.2f}")
 
@@ -97,11 +104,11 @@ class _SliderPopup(QMenu):
 class _NeedlePopup(QMenu):
     """Popup with sliders for needle radius, width, color and fullscreen."""
 
-    def __init__(self, parent, viewer):
+    def __init__(self, parent: QWidget, viewer: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer
-        self._sliders = {}
-        self._labels = {}
+        self._sliders: dict[str, QSlider] = {}
+        self._labels: dict[str, QLabel] = {}
 
         container = QWidget(self)
         layout = QVBoxLayout(container)
@@ -121,10 +128,10 @@ class _NeedlePopup(QMenu):
         radius_slider = QSlider(Qt.Vertical)
         radius_slider.setRange(0, 1000)
         radius_slider.setFixedHeight(140)
-        radius_slider.setValue(self._to_slider(
-            viewer.needle_radius, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX))
-        radius_slider.valueChanged.connect(
-            lambda v: self._apply_radius(v))
+        radius_slider.setValue(
+            self._to_slider(viewer.needle_radius, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX)
+        )
+        radius_slider.valueChanged.connect(lambda v: self._apply_radius(v))
         radius_col.addWidget(radius_slider, alignment=Qt.AlignCenter)
         self._radius_label = QLabel()
         self._radius_label.setAlignment(Qt.AlignCenter)
@@ -140,10 +147,10 @@ class _NeedlePopup(QMenu):
         width_slider = QSlider(Qt.Vertical)
         width_slider.setRange(0, 1000)
         width_slider.setFixedHeight(140)
-        width_slider.setValue(self._to_slider(
-            viewer.needle_width, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX))
-        width_slider.valueChanged.connect(
-            lambda v: self._apply_width(v))
+        width_slider.setValue(
+            self._to_slider(viewer.needle_width, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX)
+        )
+        width_slider.valueChanged.connect(lambda v: self._apply_width(v))
         width_col.addWidget(width_slider, alignment=Qt.AlignCenter)
         self._width_label = QLabel()
         self._width_label.setAlignment(Qt.AlignCenter)
@@ -170,34 +177,33 @@ class _NeedlePopup(QMenu):
         self.addAction(action)
 
     @staticmethod
-    def _to_slider(value, lo, hi):
+    def _to_slider(value: float, lo: float, hi: float) -> int:
         return int(round((value - lo) / (hi - lo) * 1000))
 
     @staticmethod
-    def _from_slider(value, lo, hi):
+    def _from_slider(value: int, lo: float, hi: float) -> float:
         return lo + (value / 1000.0) * (hi - lo)
 
-    def _apply_radius(self, value):
-        self.viewer.needle_radius = self._from_slider(
-            value, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX)
+    def _apply_radius(self, value: int) -> None:
+        self.viewer.needle_radius = self._from_slider(value, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX)
         self.viewer._save_view_setting("view/needle_radius", self.viewer.needle_radius)
         self._refresh_labels()
         self.viewer.update()
 
-    def _apply_width(self, value):
-        self.viewer.needle_width = self._from_slider(
-            value, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX)
+    def _apply_width(self, value: int) -> None:
+        self.viewer.needle_width = self._from_slider(value, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX)
         self.viewer._save_view_setting("view/needle_width", self.viewer.needle_width)
         self._refresh_labels()
         self.viewer.update()
 
-    def _choose_color(self):
+    def _choose_color(self) -> None:
         from PySide6.QtWidgets import QColorDialog
+
         original_color = self.viewer.needle_color
         dialog = QColorDialog(QColor(*original_color), self)
         dialog.setWindowTitle("Needle color")
 
-        def _on_preview(color):
+        def _on_preview(color: QColor) -> None:
             if color.isValid():
                 self.viewer.needle_color = (color.red(), color.green(), color.blue())
                 self.viewer.update()
@@ -214,16 +220,15 @@ class _NeedlePopup(QMenu):
         if not chosen.isValid():
             return
         self.viewer.needle_color = (chosen.red(), chosen.green(), chosen.blue())
-        self.viewer._save_view_setting(
-            "view/needle_color", list(self.viewer.needle_color))
+        self.viewer._save_view_setting("view/needle_color", list(self.viewer.needle_color))
         self.viewer.update()
 
-    def _toggle_fullscreen(self, checked):
+    def _toggle_fullscreen(self, checked: bool) -> None:
         self.viewer.needle_fullscreen = checked
         self.viewer._save_view_setting("view/needle_fullscreen", checked)
         self.viewer.update()
 
-    def _refresh_labels(self):
+    def _refresh_labels(self) -> None:
         self._radius_label.setText(f"{self.viewer.needle_radius:.0f}")
         self._width_label.setText(f"{self.viewer.needle_width:.1f}")
 
@@ -231,14 +236,14 @@ class _NeedlePopup(QMenu):
 class ModeBar(QWidget):
     """Clickable indicators for the main viewer display modes."""
 
-    def __init__(self, parent, viewer):
+    def __init__(self, parent: QWidget, viewer: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer
         self.setFixedHeight(38)
         self.setStyleSheet("background: rgb(245, 245, 245)")
         sizer = QHBoxLayout(self)
         sizer.setContentsMargins(4, 3, 4, 3)
-        self.buttons = {}
+        self.buttons: dict[str, QPushButton] = {}
         tooltips = {
             "Z": "Toggle GPU textured rendering",
             "X": "Toggle stitch density overlay",
@@ -269,9 +274,7 @@ class ModeBar(QWidget):
         sizer.addWidget(self.needle_reset_button)
         self.settings_button = QPushButton(self)
         self.settings_button.setMinimumWidth(180)
-        self.settings_button.setToolTip(
-            "Click to adjust dark factor, light factor and line width"
-        )
+        self.settings_button.setToolTip("Click to adjust dark factor, light factor and line width")
         self.settings_button.clicked.connect(self._show_sliders)
         sizer.addWidget(self.settings_button)
         self.reset_button = QPushButton(self)
@@ -282,28 +285,25 @@ class ModeBar(QWidget):
         sizer.addWidget(self.reset_button)
         self.update_indicators()
 
-    def toggle_mode(self, mode):
+    def toggle_mode(self, mode: str) -> None:
         self.viewer.toggle_display_mode(mode)
         self.viewer.setFocus()
 
-    def _show_sliders(self):
+    def _show_sliders(self) -> None:
         popup = _SliderPopup(self, self.viewer)
-        popup.exec(self.settings_button.mapToGlobal(
-            self.settings_button.rect().bottomLeft()
-        ))
+        popup.exec(self.settings_button.mapToGlobal(self.settings_button.rect().bottomLeft()))
 
-    def _show_needle_popup(self):
+    def _show_needle_popup(self) -> None:
         popup = _NeedlePopup(self, self.viewer)
-        popup.exec(self.needle_button.mapToGlobal(
-            self.needle_button.rect().bottomLeft()
-        ))
+        popup.exec(self.needle_button.mapToGlobal(self.needle_button.rect().bottomLeft()))
 
-    def _reset_needle(self):
+    def _reset_needle(self) -> None:
         from ..constants import (
             DEFAULT_NEEDLE_COLOR,
             DEFAULT_NEEDLE_RADIUS,
             DEFAULT_NEEDLE_WIDTH,
         )
+
         self.viewer.needle_color = DEFAULT_NEEDLE_COLOR
         self.viewer.needle_radius = DEFAULT_NEEDLE_RADIUS
         self.viewer.needle_width = DEFAULT_NEEDLE_WIDTH
@@ -314,11 +314,9 @@ class ModeBar(QWidget):
         self.viewer._save_view_setting("view/needle_fullscreen", False)
         self.viewer.update()
 
-    def update_indicators(self):
+    def update_indicators(self) -> None:
         self.settings_button.setText(
-            f"DF: {self.viewer.dark_factor:.2f}  "
-            f"LF: {self.viewer.light_factor:.2f}  "
-            f"LW: {self.viewer.line_width:.2f}"
+            f"DF: {self.viewer.dark_factor:.2f}  LF: {self.viewer.light_factor:.2f}  LW: {self.viewer.line_width:.2f}"
         )
         states = {
             "Z": self.viewer.active_renderer == "gpu_textured",
@@ -331,8 +329,10 @@ class ModeBar(QWidget):
             jump_state = 2 if self.viewer.risky_jumps_only else 1
         for mode, button in self.buttons.items():
             state = (
-                jump_state if mode == "J"
-                else self.viewer.background_cycle if mode == "B"
+                jump_state
+                if mode == "J"
+                else self.viewer.background_cycle
+                if mode == "B"
                 else int(states[mode])
             )
             if mode == "J" and state == 2:
@@ -348,9 +348,8 @@ class ModeBar(QWidget):
             else:
                 color = QColor(225, 225, 225)
             foreground = (
-                "white" if (mode == "B" and state == 1) or (state and mode != "B")
+                "white"
+                if (mode == "B" and state == 1) or (state and mode != "B")
                 else "rgb(45, 45, 45)"
             )
-            button.setStyleSheet(
-                f"background: {color.name()}; color: {foreground};"
-            )
+            button.setStyleSheet(f"background: {color.name()}; color: {foreground};")

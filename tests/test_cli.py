@@ -5,9 +5,10 @@ import os
 import subprocess
 import sys
 
+
 def test_package_defines_standard_console_and_gui_commands():
-    from pathlib import Path
     import tomllib
+    from pathlib import Path
 
     project = tomllib.loads(
         (Path(__file__).parents[1] / "pyproject.toml").read_text(encoding="utf-8")
@@ -17,9 +18,7 @@ def test_package_defines_standard_console_and_gui_commands():
     assert project["gui-scripts"]["inksim-gui"] == "inksim.cli:main"
 
 
-def test_cli_exports_sample_with_simple_and_default_renderers(
-    sample_design, tmp_path
-):
+def test_cli_exports_sample_with_simple_and_default_renderers(sample_design, tmp_path):
     environment = os.environ.copy()
     environment["QT_QPA_PLATFORM"] = "offscreen"
     for option, name in (

@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pystitch as emb
-from PySide6.QtCore import QPoint, Qt
+from PySide6.QtCore import QPoint
 from PySide6.QtWidgets import QTableWidget
 
 from inksim.gui.frame import MainWindow
@@ -35,8 +35,7 @@ def test_jump_risk_is_grouped_by_stitches_and_color_changes(qtbot, monkeypatch):
     viewer = EmbroideryViewerWidget(None, None)
     qtbot.addWidget(viewer)
 
-    assert viewer.load_design("sample_design", fit_to_screen=False,
-                              precompute_density=False)
+    assert viewer.load_design("sample_design", fit_to_screen=False, precompute_density=False)
     assert [segment[4] for segment in viewer.jump_segments] == [0, 0, 1, 1]
     assert "COLOR CHANGE" in viewer.command_events[0]
 
@@ -57,13 +56,9 @@ def test_all_supported_command_constants_are_recorded(qtbot, monkeypatch):
     viewer = EmbroideryViewerWidget(None, None)
     qtbot.addWidget(viewer)
 
-    assert viewer.load_design("sample_design", fit_to_screen=False,
-                              precompute_density=False)
-    commands = [command for events in viewer.command_events.values()
-                for command in events]
-    assert commands == [
-        "SEQUIN_MODE", "SEQUIN_EJECT", "FRAME_EJECT", "TIE_ON", "TIE_OFF"
-    ]
+    assert viewer.load_design("sample_design", fit_to_screen=False, precompute_density=False)
+    commands = [command for events in viewer.command_events.values() for command in events]
+    assert commands == ["SEQUIN_MODE", "SEQUIN_EJECT", "FRAME_EJECT", "TIE_ON", "TIE_OFF"]
 
 
 def test_repeated_stitches_only_compare_actual_stitch_points(qtbot, monkeypatch):
@@ -81,8 +76,7 @@ def test_repeated_stitches_only_compare_actual_stitch_points(qtbot, monkeypatch)
     viewer = EmbroideryViewerWidget(None, None)
     qtbot.addWidget(viewer)
 
-    assert viewer.load_design("sample_design", fit_to_screen=False,
-                              precompute_density=False)
+    assert viewer.load_design("sample_design", fit_to_screen=False, precompute_density=False)
     assert np.array_equal(
         viewer.repeated_stitch_np,
         np.array([False, False, True], dtype=np.bool_),
@@ -98,8 +92,7 @@ def test_command_context_uses_current_embroidery_cursor(qtbot, monkeypatch):
     viewer = EmbroideryViewerWidget(None, None)
     qtbot.addWidget(viewer)
 
-    assert viewer.load_design("sample_design", fit_to_screen=False,
-                              precompute_density=False)
+    assert viewer.load_design("sample_design", fit_to_screen=False, precompute_density=False)
     viewer.visible_count = 7
     rows = viewer.command_context_rows()
 
@@ -165,8 +158,7 @@ def test_command_dialog_table_uses_compact_columns(qtbot, monkeypatch):
     viewer = EmbroideryViewerWidget(None, None)
     qtbot.addWidget(viewer)
 
-    assert viewer.load_design("sample_design", fit_to_screen=False,
-                              precompute_density=False)
+    assert viewer.load_design("sample_design", fit_to_screen=False, precompute_density=False)
     viewer.show_command_context_dialog(QPoint(0, 0))
     qtbot.addWidget(viewer.command_dialog)
     table = viewer.command_dialog.findChild(QTableWidget)

@@ -3,9 +3,7 @@
 
 """Tests for the TOML-backed Config module."""
 
-import os
 import threading
-from pathlib import Path
 
 import pytest
 
