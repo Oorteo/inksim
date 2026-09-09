@@ -13,15 +13,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 
 # Available tasks: key -> (description, list of shell commands).
+# Ordered by speed/frequency: quick style checks first, expensive tests later,
+# one-off setup tasks last.
 TASKS = {
-    "i": ("install dev environment", ["uv sync --all-groups"]),
-    "t": ("run tests with coverage", ["uv run poe test"]),
-    "l": ("run linter", ["uv run poe lint"]),
-    "f": ("format source files", ["uv run poe format"]),
-    "c": ("run static type checker", ["uv run poe typecheck"]),
-    "k": ("lint + typecheck", ["uv run poe check"]),
-    "x": ("auto-fix lint issues", ["uv run poe fix"]),
-    "h": ("install git pre-commit hooks", ["uv run poe install-hooks"]),
+    "1": ("lint + typecheck", ["uv run poe check"]),
+    "2": ("run linter", ["uv run poe lint"]),
+    "3": ("run type checker", ["uv run poe typecheck"]),
+    "4": ("format source files", ["uv run poe format"]),
+    "5": ("auto-fix lint issues", ["uv run poe fix"]),
+    "6": ("install git pre-commit hooks", ["uv run poe install-hooks"]),
+    "7": ("install dev environment", ["uv sync --all-groups"]),
+    "8": ("run tests", ["uv run poe test"]),
     "q": ("quit", None),
 }
 
@@ -72,7 +74,7 @@ def main() -> int:
     while True:
         print_menu()
         try:
-            choice = input("Choose task [i/t/l/f/c/k/x/h/q]: ").strip().lower()
+            choice = input("Choose task [1-8/q]: ").strip()
         except (EOFError, KeyboardInterrupt):
             print("\nBye.")
             return 0
