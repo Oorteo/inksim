@@ -1,12 +1,17 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+"""InkSim command-line entry point."""
+
+from __future__ import annotations
+
 import argparse
 import json
 import os
 import signal
 import sys
 from pathlib import Path
+from typing import Any
 
 from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QIcon
@@ -20,7 +25,7 @@ from .interconnect import InterconnectServer, send_command
 from .runtime import runtime_info_lines
 
 
-def _parse_pair(value, name, separator):
+def _parse_pair(value: str, name: str, separator: str) -> tuple[int, int]:
     """Parse two integer values used for window geometry."""
     parts = value.split(separator)
     if len(parts) != 2:
@@ -34,7 +39,7 @@ def _parse_pair(value, name, separator):
     return first, second
 
 
-def _write_response_file(output_path, response):
+def _write_response_file(output_path: Path, response: dict[str, Any]) -> None:
     """Write a JSON response to ``output_path`` for a GUI-subsystem caller."""
     try:
         output_path.write_text(json.dumps(response), encoding="utf-8")
@@ -42,7 +47,7 @@ def _write_response_file(output_path, response):
         raise SystemExit(f"cannot write response to {output_path}: {ex}")
 
 
-def _send_command_and_exit(json_text, output_path=None):
+def _send_command_and_exit(json_text: str, output_path: Path | None = None) -> None:
     """Send a JSON command to a running server and print the response.
 
     When ``output_path`` is given the JSON response is written to that file
@@ -75,7 +80,8 @@ def _send_command_and_exit(json_text, output_path=None):
     raise SystemExit(0 if response.get("ok") else 1)
 
 
-def _default_log_path(input_paths):
+def _default_log_path(input_paths: list[Path]) -> Path:
+    """Return a sensible default log path based on the working directory."""
     project_root = Path.cwd()
     if (project_root / "pyproject.toml").is_file() and (project_root / "src" / "inksim").is_dir():
         return project_root / "log" / "inksim.log"
@@ -89,7 +95,7 @@ def _default_log_path(input_paths):
     return Path("inksim.log")
 
 
-def build_argument_parser():
+def build_argument_parser() -> argparse.ArgumentParser:
     """Return the ArgumentParser used by the inksim command line."""
     parser = argparse.ArgumentParser(description=APP_TITLE)
     parser.add_argument(
@@ -224,7 +230,8 @@ def build_argument_parser():
     return parser
 
 
-def main():
+def main() -> None:
+    """Run the InkSim command line application."""
     parser = build_argument_parser()
     args = parser.parse_args()
     if args.version:
