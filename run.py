@@ -19,12 +19,13 @@ TASKS = {
     "1": ("lint + typecheck", ["uv run poe check"]),
     "2": ("run linter", ["uv run poe lint"]),
     "3": ("run type checker", ["uv run poe typecheck"]),
-    "4": ("format source files", ["uv run poe format"]),
-    "5": ("preview auto-fixes", ["uv run ruff check . --show-fixes --diff"]),
-    "6": ("auto-fix lint issues", ["uv run poe fix"]),
-    "7": ("install git pre-commit hooks", ["uv run poe install-hooks"]),
-    "8": ("install dev environment", ["uv sync --all-groups"]),
-    "9": ("run tests", ["uv run poe test"]),
+    "4": ("preview format changes", ["uv run ruff format . --diff"]),
+    "5": ("format source files", ["uv run poe format"]),
+    "6": ("preview auto-fixes", ["uv run ruff check . --show-fixes --diff"]),
+    "7": ("auto-fix lint issues", ["uv run poe fix"]),
+    "8": ("install git pre-commit hooks", ["uv run poe install-hooks"]),
+    "9": ("install dev environment", ["uv sync --all-groups"]),
+    "0": ("run tests", ["uv run poe test"]),
     "q": ("quit", None),
 }
 
@@ -75,7 +76,7 @@ def main() -> int:
     while True:
         print_menu()
         try:
-            choice = input("Choose task [1-9/q]: ").strip()
+            choice = input("Choose task [1-9/0/q]: ").strip()
         except (EOFError, KeyboardInterrupt):
             print("\nBye.")
             return 0
