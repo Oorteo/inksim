@@ -9,7 +9,11 @@ from PySide6.QtCore import QPoint
 from PySide6.QtWidgets import QTableWidget
 
 from inksim.gui.frame import MainWindow
-from inksim.gui.viewer import EmbroideryViewerWidget
+from inksim.gui.viewer import (
+    EmbroideryViewerWidget,
+    density_results,
+    density_results_lock,
+)
 
 
 def stitch(x, y, command):
@@ -133,6 +137,46 @@ def test_bottom_view_toggle(qtbot):
 
     viewer.toggle_display_mode("E")
     assert not viewer.reverse_stitch_order
+
+
+def test_density_results_are_delivered_by_owner_id(qtbot):
+    """A finished density result is delivered to the viewer that owns it.
+
+    The result queue stores ``(result_type, owner_id, request_id, result)``.
+    ``_poll_density_results`` must match on ``owner_id`` (not ``request_id``),
+    otherwise results are silently dropped and every marker stays blue.
+    """
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+
+    density = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+    with density_results_lock:
+        density_results.clear()
+        density_results.append(("finished", viewer._density_owner_id, 0, density))
+
+    viewer._poll_density_results()
+
+    assert viewer.density_ready
+    assert np.array_equal(viewer.stitch_density_np, density)
+
+
+def test_density_results_for_other_owner_are_ignored(qtbot):
+    """Results owned by another viewer are left in the queue, not consumed."""
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+
+    density = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+    with density_results_lock:
+        density_results.clear()
+        density_results.append(("finished", viewer._density_owner_id + 1, 0, density))
+
+    viewer._poll_density_results()
+
+    assert not viewer.density_ready
+    assert viewer.stitch_density_np.shape == (0,)
+    # The foreign result must remain queued for its real owner.
+    with density_results_lock:
+        assert len(density_results) == 1
 
 
 def test_cancel_background_cycle_restores_configured_color(qtbot):
