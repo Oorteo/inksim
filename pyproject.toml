@@ -104,7 +104,7 @@ python_version = "3.12"
 packages = ["src/inksim"]
 warn_return_any = false
 warn_unused_configs = true
-disallow_untyped_defs = false
+disallow_untyped_defs = true
 ignore_missing_imports = true
 
 # Be permissive about attributes on PySide6/Qt objects and other dynamic
