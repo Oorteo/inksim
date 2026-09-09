@@ -1,13 +1,16 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from __future__ import annotations
+
 import os
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QRect, QSignalBlocker, Qt, QTimer
-from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence
+from PySide6.QtCore import QEvent, QObject, QRect, QSignalBlocker, Qt, QTimer
+from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence, QMoveEvent, QResizeEvent
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -17,6 +20,7 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QLabel,
     QMainWindow,
+    QMenu,
     QMessageBox,
     QTableWidget,
     QTableWidgetItem,
@@ -59,58 +63,60 @@ class MainWindow(QMainWindow):
 
     def __init__(
         self,
-        fullscreen=False,
-        window_size=None,
-        window_position=None,
-        server_mode=False,
-        delete_input=False,
-        document_path=None,
-        snap_layout_key=None,
-    ):
+        fullscreen: bool = False,
+        window_size: tuple[int, int] | None = None,
+        window_position: tuple[int, int] | None = None,
+        server_mode: bool = False,
+        delete_input: bool = False,
+        document_path: str | Path | None = None,
+        snap_layout_key: str | None = None,
+    ) -> None:
         super().__init__()
         self.setWindowTitle(APP_TITLE)
         self.setWindowIcon(
             QIcon(str(Path(__file__).parent.parent / "assets" / "app_icons" / "inksim.svg"))
         )
-        self._default_size = window_size or (1200, 980)
+        self._default_size: tuple[int, int] = window_size or (1200, 980)
         self.resize(*self._default_size)
         self.setAcceptDrops(True)
-        self.is_fullscreen = False
-        self._fullscreen_was_maximized = False
-        self.server_mode = server_mode
-        self._delete_input = delete_input
-        self._allow_close = False
-        self._startup_fullscreen = fullscreen
-        self._should_maximize_default = not window_size and not fullscreen
-        self.config = Config()
-        self._snap_layout_key = snap_layout_key
-        self.last_directory = _unsanitize_path(self.config.get("last_directory", ""))
-        self.export_transparent_background = self.config.get("export_transparent_background", False)
-        self.document_path = None
+        self.is_fullscreen: bool = False
+        self._fullscreen_was_maximized: bool = False
+        self.server_mode: bool = server_mode
+        self._delete_input: bool = delete_input
+        self._allow_close: bool = False
+        self._startup_fullscreen: bool = fullscreen
+        self._should_maximize_default: bool = not window_size and not fullscreen
+        self.config: Config = Config()
+        self._snap_layout_key: str | None = snap_layout_key
+        self.last_directory: str = _unsanitize_path(self.config.get("last_directory", ""))
+        self.export_transparent_background: bool = self.config.get(
+            "export_transparent_background", False
+        )
+        self.document_path: Path | None = None
         if document_path is not None:
             self.set_document_path(document_path)
-        self.recent_directories = self._load_recent_directories()
-        self.current_file_path = None
-        self._source_mtime_ns = None
-        self._last_source_check = 0.0
-        self._source_check_interval_s = 0.4
-        self._is_reloading_from_disk = False
-        self._layout_state = "free"
-        self._layout_changing = False
-        self._free_geometry = None
-        self._free_maximized = False
-        self._snapped_geometry = None
-        self._last_geometry = self.geometry()
-        self._base_title = APP_TITLE
-        self._update_thread = None
-        self._update_suffix = self._resolve_update_suffix(last_result(self.config))
+        self.recent_directories: list[str] = self._load_recent_directories()
+        self.current_file_path: Path | None = None
+        self._source_mtime_ns: int | None = None
+        self._last_source_check: float = 0.0
+        self._source_check_interval_s: float = 0.4
+        self._is_reloading_from_disk: bool = False
+        self._layout_state: str = "free"
+        self._layout_changing: bool = False
+        self._free_geometry: QRect | None = None
+        self._free_maximized: bool = False
+        self._snapped_geometry: QRect | None = None
+        self._last_geometry: QRect = self.geometry()
+        self._base_title: str = APP_TITLE
+        self._update_thread: UpdateCheckThread | None = None
+        self._update_suffix: str = self._resolve_update_suffix(last_result(self.config))
         self._update_window_title()
 
         main_panel = QWidget(self)
         layout = QVBoxLayout(main_panel)
-        self.viewer = EmbroideryViewerWidget(main_panel, None, self.config)
-        self.progress = TimelineWidget(main_panel, self.viewer)
-        self.mode_status = ModeBar(main_panel, self.viewer)
+        self.viewer: EmbroideryViewerWidget = EmbroideryViewerWidget(main_panel, None, self.config)
+        self.progress: TimelineWidget = TimelineWidget(main_panel, self.viewer)
+        self.mode_status: ModeBar = ModeBar(main_panel, self.viewer)
         self.progress.seek_requested.connect(self.viewer.seek_to)
         self.viewer.mode_panel = self.mode_status
         self.viewer.progress_bar = self.progress
@@ -118,21 +124,23 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.mode_status)
         layout.addWidget(self.progress)
         self.setCentralWidget(main_panel)
-        self._main_panel = main_panel
-        self._updating_command_panel = False
+        self._main_panel: QWidget = main_panel
+        self._updating_command_panel: bool = False
         self._build_command_dock()
         self.viewer.cursor_changed.connect(self._sync_command_panel_cursor)
-        self.shortcut_filter = ViewerShortcutFilter(self, self.viewer)
+        self.shortcut_filter: ViewerShortcutFilter = ViewerShortcutFilter(self, self.viewer)
         self._build_menus()
         self.statusBar().showMessage(DEFAULT_STATUS_TEXT)
-        QApplication.instance().installEventFilter(self)
+        app = QApplication.instance()
+        assert app is not None
+        app.installEventFilter(self)
 
         if window_position:
             self.move(*window_position)
         elif not window_size and not fullscreen:
             self._restore_window_layout()
 
-    def set_snap_layout_key(self, key):
+    def set_snap_layout_key(self, key: str | None) -> None:
         """Switch the snap-layout profile used for save/restore."""
         if not key:
             return
@@ -140,14 +148,14 @@ class MainWindow(QMainWindow):
         if self._layout_state == "snapped":
             self._restore_snap_layout()
 
-    def _layout_config_key(self, key=None):
+    def _layout_config_key(self, key: str | None = None) -> str:
         """Return the config section name for the active layout profile."""
         key = key or self._snap_layout_key
         if key:
             return f"window_layout_snap/{key}"
         return "window_layout"
 
-    def _restore_window_layout(self):
+    def _restore_window_layout(self) -> None:
         """Restore the last saved window geometry, falling back to centred."""
         layout = self.config.get(self._layout_config_key(), {})
         if not isinstance(layout, dict):
@@ -165,12 +173,12 @@ class MainWindow(QMainWindow):
         if layout.get("maximized"):
             self.showMaximized()
 
-    def _has_snap_layout(self):
+    def _has_snap_layout(self) -> bool:
         """Return True when a saved snap layout exists for the active profile."""
         layout = self.config.get(self._layout_config_key(), {})
         return isinstance(layout, dict) and layout.get("x") is not None
 
-    def _restore_snap_layout(self):
+    def _restore_snap_layout(self) -> None:
         """Restore the snapped geometry for the active profile."""
         layout = self.config.get(self._layout_config_key(), {})
         if isinstance(layout, dict) and layout.get("x") is not None:
@@ -182,7 +190,7 @@ class MainWindow(QMainWindow):
         self.setGeometry(self._snapped_geometry)
         self._last_geometry = self._snapped_geometry
 
-    def _save_window_layout(self):
+    def _save_window_layout(self) -> None:
         """Persist the current window geometry to the active profile."""
         if self.is_fullscreen or self.isMinimized():
             return
@@ -196,7 +204,7 @@ class MainWindow(QMainWindow):
         }
         self.config.set(self._layout_config_key(), layout)
 
-    def _save_snap_layout(self):
+    def _save_snap_layout(self) -> None:
         """Persist the current snapped geometry if it is valid."""
         if self._snapped_geometry is None:
             return
@@ -206,7 +214,7 @@ class MainWindow(QMainWindow):
             {"x": geo.x(), "y": geo.y(), "width": geo.width(), "height": geo.height()},
         )
 
-    def _save_current_snap_position(self, checked=False):
+    def _save_current_snap_position(self, checked: bool = False) -> None:
         """Save the current snapped geometry under the active profile."""
         if self._layout_state != "snapped":
             self.statusBar().showMessage("Switch to snap layout first (press M).", 3000)
@@ -215,16 +223,18 @@ class MainWindow(QMainWindow):
         key_text = f" ({self._snap_layout_key})" if self._snap_layout_key else ""
         self.statusBar().showMessage(f"Snap position saved{key_text}.", 3000)
 
-    def _clear_saved_snap_position(self, checked=False):
+    def _clear_saved_snap_position(self, checked: bool = False) -> None:
         """Remove the saved snap geometry for the active profile."""
         self.config.delete(self._layout_config_key())
         key_text = f" ({self._snap_layout_key})" if self._snap_layout_key else ""
         self.statusBar().showMessage(f"Saved snap position cleared{key_text}.", 3000)
 
-    def eventFilter(self, watched, event):
+    def eventFilter(self, watched: QObject | None, event: QEvent | None) -> bool:
         if self._is_reloading_from_disk:
             return False
         if self.current_file_path is None:
+            return False
+        if event is None:
             return False
         event_type = event.type()
         if event_type not in {
@@ -240,13 +250,13 @@ class MainWindow(QMainWindow):
         self._reload_if_source_changed()
         return False
 
-    def _capture_source_mtime(self, file_path):
+    def _capture_source_mtime(self, file_path: Path | str) -> int | None:
         try:
             return Path(file_path).stat().st_mtime_ns
         except OSError:
             return None
 
-    def _show_reload_dialog(self):
+    def _show_reload_dialog(self) -> QDialog:
         dialog = QDialog(self)
         dialog.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
         dialog.setModal(True)
@@ -260,7 +270,7 @@ class MainWindow(QMainWindow):
         QApplication.processEvents()
         return dialog
 
-    def _reload_if_source_changed(self):
+    def _reload_if_source_changed(self) -> None:
         now = time.monotonic()
         if now - self._last_source_check < self._source_check_interval_s:
             return
@@ -283,13 +293,13 @@ class MainWindow(QMainWindow):
             dialog.close()
             self._is_reloading_from_disk = False
 
-    def _load_recent_directories(self):
+    def _load_recent_directories(self) -> list[str]:
         """Load the last opened embroidery directories from TOML config."""
         values = self.config.get("recent_directories", [])
         if not isinstance(values, list):
             values = []
-        seen = set()
-        result = []
+        seen: set[Path] = set()
+        result: list[str] = []
         for value in values:
             path = Path(_unsanitize_path(str(value))).resolve()
             if path.is_dir() and path not in seen:
@@ -299,12 +309,12 @@ class MainWindow(QMainWindow):
                     break
         return result
 
-    def _save_recent_directories(self):
+    def _save_recent_directories(self) -> None:
         """Persist the recent-directory list back to TOML config."""
         compact = [_sanitize_path(d) for d in self.recent_directories]
         self.config.set("recent_directories", compact)
 
-    def _add_recent_directory(self, directory):
+    def _add_recent_directory(self, directory: Path | str) -> None:
         """Move *directory* to the front of the recent list, cap at 10."""
         path = Path(str(directory)).resolve()
         if not path.is_dir():
@@ -313,7 +323,9 @@ class MainWindow(QMainWindow):
         self.recent_directories = [text] + [d for d in self.recent_directories if d != text][:9]
         self._save_recent_directories()
 
-    def show_initial_window(self, autoplay=False, initial_directory=None):
+    def show_initial_window(
+        self, autoplay: bool = False, initial_directory: str | Path | None = None
+    ) -> None:
         """Show the fully initialized window after optional startup work."""
         if self._startup_fullscreen:
             self.is_fullscreen = True
@@ -340,34 +352,46 @@ class MainWindow(QMainWindow):
                 self.last_directory = str(directory_path.resolve())
             QTimer.singleShot(0, self.open_file_dialog)
 
-    def _action(self, menu, text, slot, shortcut=None, checkable=False):
+    def _action(
+        self,
+        menu: QMenu | None,
+        text: str,
+        slot: Callable[..., None],
+        shortcut: str | None = None,
+        checkable: bool = False,
+    ) -> QAction:
         action = QAction(text, self)
         action.setCheckable(checkable)
         if shortcut:
             action.setShortcut(QKeySequence(shortcut))
 
-        def _traced_slot(checked=False):
-            self.viewer._trace_event(shortcut)
+        def _traced_slot(checked: bool = False) -> None:
+            self.viewer._trace_event(shortcut or "")
             try:
                 slot(checked)
             except TypeError:
                 slot()
 
         action.triggered.connect(_traced_slot if shortcut else slot)
-        menu.addAction(action)
+        if menu is not None:
+            menu.addAction(action)
         return action
 
-    def _build_menus(self):
+    def _add_separator(self, menu: QMenu | None) -> None:
+        if menu is not None:
+            menu.addSeparator()
+
+    def _build_menus(self) -> None:
         file_menu = self.menuBar().addMenu("&File")
         self._action(file_menu, "Open embroidery file", self.open_file_dialog, "Ctrl+O")
-        self._action(file_menu, "Save as embroidery...", self.save_as_embroidery, "Ctrl+S")
+        self._action(file_menu, "Save as embroidery...", self._save_as_embroidery_slot, "Ctrl+S")
         export_menu = file_menu.addMenu("Export")
         self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png, "Ctrl+E")
         self._action(export_menu, "Preview PNG...", self.export_icon_png)
         self._action(export_menu, "Simple PNG ...", self.export_print_png)
-        self._action(file_menu, "Center needle", self.viewer.center_needle, "C")
-        self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen, "F")
-        self._action(file_menu, "Calibrate display size...", self.viewer.calibrate_display)
+        self._action(file_menu, "Center needle", self._center_needle_slot, "C")
+        self._action(file_menu, "Fit design to window", self._fit_to_screen_slot, "F")
+        self._action(file_menu, "Calibrate display size...", self._calibrate_display_slot)
         self.grid_action = self._action(
             file_menu, "Show measurement grid", self.toggle_grid, "G", True
         )
@@ -381,14 +405,15 @@ class MainWindow(QMainWindow):
         )
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
         self.viewer.status_message.connect(self.statusBar().showMessage)
-        self._action(file_menu, "Choose stitch renderer...", self.viewer.select_renderer, "R")
-        file_menu.addSeparator()
-        self._action(file_menu, "Rotate left 90 deg", lambda: self.viewer.rotate_design(-1))
-        self._action(file_menu, "Rotate right 90 deg", lambda: self.viewer.rotate_design(1))
-        file_menu.addSeparator()
+        self._action(file_menu, "Choose stitch renderer...", self._select_renderer_slot, "R")
+        self._add_separator(file_menu)
+        self._action(file_menu, "Rotate left 90 deg", lambda checked: self.viewer.rotate_design(-1))
+        self._action(file_menu, "Rotate right 90 deg", lambda checked: self.viewer.rotate_design(1))
+        self._add_separator(file_menu)
         self._action(file_menu, "Quit", self.request_quit, "Ctrl+Q")
+        self._add_separator(file_menu)
         view_menu = self.menuBar().addMenu("&View")
-        self._action(view_menu, "Actual size (1:1)", self.viewer.set_one_to_one, "1")
+        self._action(view_menu, "Actual size (1:1)", self._set_one_to_one_slot, "1")
         self._action(view_menu, "Fullscreen", self.toggle_full_screen, "F11")
         view_menu.addSeparator()
         self.command_panel_action = self._action(
@@ -402,7 +427,7 @@ class MainWindow(QMainWindow):
         self._action(
             view_menu,
             "Show/hide all",
-            self.toggle_show_all,
+            self._toggle_show_all_slot,
             "Ctrl+A",
         )
         self.needle_action = self._action(
@@ -434,66 +459,100 @@ class MainWindow(QMainWindow):
         )
         self._update_snap_menu_state()
         view_menu.addSeparator()
-        self._action(
-            view_menu,
-            "Cycle background",
-            lambda checked=False: self.viewer.toggle_display_mode("B"),
-            "B",
-        )
+        self._action(view_menu, "Cycle background", self._cycle_background_slot, "B")
         playback = self.menuBar().addMenu("&Playback")
-        self._action(
-            playback,
-            "Play/Pause",
-            lambda checked=False: self.viewer.toggle_auto_play(),
-            "Space",
-        )
+        self._action(playback, "Play/Pause", self._toggle_auto_play_slot, "Space")
         playback.addSeparator()
-        self._action(
-            playback,
-            "Prev color",
-            lambda: (self.viewer.jump_to_color(-1), self._refresh_after_color_jump()),
-            "Ctrl+Left",
-        )
-        self._action(
-            playback,
-            "Next color",
-            lambda: (self.viewer.jump_to_color(1), self._refresh_after_color_jump()),
-            "Ctrl+Right",
-        )
+        self._action(playback, "Prev color", self._prev_color_slot, "Ctrl+Left")
+        self._action(playback, "Next color", self._next_color_slot, "Ctrl+Right")
         playback.addSeparator()
-        self._action(
-            playback,
-            "Prev command",
-            lambda: (self.viewer.jump_to_command(-1), self._refresh_after_color_jump()),
-            "Shift+Left",
-        )
-        self._action(
-            playback,
-            "Next command",
-            lambda: (self.viewer.jump_to_command(1), self._refresh_after_color_jump()),
-            "Shift+Right",
-        )
+        self._action(playback, "Prev command", self._prev_command_slot, "Shift+Left")
+        self._action(playback, "Next command", self._next_command_slot, "Shift+Right")
         help_menu = self.menuBar().addMenu("&Help")
-        self._action(help_menu, "Help", self.viewer.show_help, "H")
-        self._action(help_menu, "Status", self.viewer.show_settings, "I")
-        self._action(help_menu, "Config", lambda: show_config_editor(self, self.config))
+        self._action(help_menu, "Help", self._show_help_slot, "H")
+        self._action(help_menu, "Status", self._show_settings_slot, "I")
+        self._action(help_menu, "Config", self._show_config_editor_slot)
         self._action(
             help_menu,
             "Command line options...",
-            lambda: show_command_line_help(self),
+            self._show_command_line_help_slot,
         )
-        self.trace_action = self._action(
+        self.trace_action: QAction = self._action(
             help_menu,
             "Trace events",
-            lambda checked=False: self.viewer.set_trace_events(self.trace_action.isChecked()),
+            self._trace_events_slot,
             "Ctrl+T",
             checkable=True,
         )
-        self._action(help_menu, f"About {APP_TITLE}", lambda: show_about(self))
+        self._action(help_menu, f"About {APP_TITLE}", self._show_about_slot)
         help_menu.addSeparator()
         self._action(help_menu, "Check for updates", self._check_for_updates)
 
-    def _finish_initial_display(self, autoplay):
+    def _center_needle_slot(self, checked: bool = False) -> None:
+        self.viewer.center_needle()
+
+    def _fit_to_screen_slot(self, checked: bool = False) -> None:
+        self.viewer.fit_to_screen()
+
+    def _calibrate_display_slot(self, checked: bool = False) -> None:
+        self.viewer.calibrate_display()
+
+    def _select_renderer_slot(self, checked: bool = False) -> None:
+        self.viewer.select_renderer()
+
+    def _toggle_show_all_slot(self, checked: bool = False) -> None:
+        self.toggle_show_all()
+
+    def _show_help_slot(self, checked: bool = False) -> None:
+        self.viewer.show_help()
+
+    def _show_settings_slot(self, checked: bool = False) -> None:
+        self.viewer.show_settings()
+
+    def _show_config_editor_slot(self, checked: bool = False) -> None:
+        show_config_editor(self, self.config)
+
+    def _show_command_line_help_slot(self, checked: bool = False) -> None:
+        show_command_line_help(self)
+
+    def _show_about_slot(self, checked: bool = False) -> None:
+        show_about(self)
+
+    def _rotate_left_slot(self, checked: bool = False) -> None:
+        self.viewer.rotate_design(-1)
+
+    def _rotate_right_slot(self, checked: bool = False) -> None:
+        self.viewer.rotate_design(1)
+
+    def _set_one_to_one_slot(self, checked: bool = False) -> None:
+        self.viewer.set_one_to_one()
+
+    def _cycle_background_slot(self, checked: bool = False) -> None:
+        self.viewer.toggle_display_mode("B")
+
+    def _toggle_auto_play_slot(self, checked: bool = False) -> None:
+        self.viewer.toggle_auto_play()
+
+    def _prev_color_slot(self, checked: bool = False) -> None:
+        self.viewer.jump_to_color(-1)
+        self._refresh_after_color_jump()
+
+    def _next_color_slot(self, checked: bool = False) -> None:
+        self.viewer.jump_to_color(1)
+        self._refresh_after_color_jump()
+
+    def _prev_command_slot(self, checked: bool = False) -> None:
+        self.viewer.jump_to_command(-1)
+        self._refresh_after_color_jump()
+
+    def _next_command_slot(self, checked: bool = False) -> None:
+        self.viewer.jump_to_command(1)
+        self._refresh_after_color_jump()
+
+    def _trace_events_slot(self, checked: bool = False) -> None:
+        self.viewer.set_trace_events(self.trace_action.isChecked())
+
+    def _finish_initial_display(self, autoplay: bool) -> None:
         self.viewer.fit_to_screen()
         self.progress.update()
         if autoplay:
@@ -504,18 +563,18 @@ class MainWindow(QMainWindow):
             self.viewer.invalidate_cache()
             self.viewer.update()
 
-    def _refresh_after_color_jump(self):
+    def _refresh_after_color_jump(self) -> None:
         self.viewer.invalidate_cache()
         self.viewer.update()
         self.progress.update()
 
-    def _maybe_auto_check_updates(self):
+    def _maybe_auto_check_updates(self) -> None:
         """Run an update check once per configured interval, if enabled."""
         if not should_check(self.config):
             return
         self._check_for_updates(automatic=True)
 
-    def _check_for_updates(self, automatic=False):
+    def _check_for_updates(self, automatic: bool = False) -> None:
         """Query PyPI for a newer version and notify the user."""
         if self._update_thread is not None and self._update_thread.isRunning():
             return
@@ -527,11 +586,11 @@ class MainWindow(QMainWindow):
         self._update_thread = thread
         thread.start()
 
-    def _clear_update_thread(self, thread):
+    def _clear_update_thread(self, thread: UpdateCheckThread) -> None:
         if self._update_thread is thread:
             self._update_thread = None
 
-    def _on_update_result(self, latest, automatic=False):
+    def _on_update_result(self, latest: str, automatic: bool = False) -> None:
         record_check(self.config)
         if not latest:
             if automatic:
@@ -578,7 +637,7 @@ class MainWindow(QMainWindow):
             return
         QMessageBox.information(self, title, message)
 
-    def _build_command_dock(self):
+    def _build_command_dock(self) -> None:
         self.command_table = QTableWidget(0, 4, self)
         command_font = self.command_table.font()
         command_font.setPointSize(max(8, command_font.pointSize() - 1))
@@ -608,16 +667,16 @@ class MainWindow(QMainWindow):
         self.command_dock.hide()
         self.command_dock.visibilityChanged.connect(self._command_dock_visibility_changed)
 
-    def _command_dock_visibility_changed(self, visible):
+    def _command_dock_visibility_changed(self, visible: bool) -> None:
         if hasattr(self, "command_panel_action"):
             self.command_panel_action.setChecked(visible)
         if visible:
             self.refresh_command_panel()
 
-    def toggle_command_panel(self, checked):
+    def toggle_command_panel(self, checked: bool) -> None:
         self.command_dock.setVisible(checked)
 
-    def refresh_command_panel(self):
+    def refresh_command_panel(self) -> None:
         table = self.command_table
         with QSignalBlocker(table):
             table.setRowCount(len(self.viewer.command_timeline))
@@ -644,7 +703,7 @@ class MainWindow(QMainWindow):
                     item.setForeground(color)
         self._sync_command_panel_cursor()
 
-    def _command_panel_color(self, label):
+    def _command_panel_color(self, label: str) -> QColor:
         if label == "STITCH":
             return QColor(35, 35, 35)
         if label == "JUMP":
@@ -655,7 +714,7 @@ class MainWindow(QMainWindow):
             return QColor(210, 125, 20)
         return QColor(55, 95, 160)
 
-    def _sync_command_panel_cursor(self):
+    def _sync_command_panel_cursor(self) -> None:
         if self._updating_command_panel:
             return
         if not self.command_dock.isVisible():
@@ -671,14 +730,20 @@ class MainWindow(QMainWindow):
                 label = item.data(Qt.UserRole + 1)
                 item.setText(f"> {label}" if row == command_index else label)
             self.command_table.setCurrentCell(command_index, 0)
-            self.command_table.scrollToItem(
-                self.command_table.item(command_index, 0),
-                QAbstractItemView.PositionAtCenter,
-            )
+            scroll_item = self.command_table.item(command_index, 0)
+            if scroll_item is not None:
+                self.command_table.scrollToItem(
+                    scroll_item,
+                    QAbstractItemView.PositionAtCenter,
+                )
 
     def _command_panel_current_cell_changed(
-        self, current_row, current_column, _previous_row, _previous_column
-    ):
+        self,
+        current_row: int,
+        current_column: int,
+        _previous_row: int,
+        _previous_column: int,
+    ) -> None:
         if current_row < 0:
             return
         item = self.command_table.item(current_row, current_column)
@@ -696,7 +761,7 @@ class MainWindow(QMainWindow):
         finally:
             self._updating_command_panel = False
 
-    def show_window(self, focus=True):
+    def show_window(self, focus: bool = True) -> None:
         """Show the window and optionally request keyboard focus."""
         if self.isMinimized():
             self.setWindowState(self.windowState() & ~Qt.WindowMinimized)
@@ -705,15 +770,16 @@ class MainWindow(QMainWindow):
         if focus:
             self.focus_window()
 
-    def focus_window(self):
+    def focus_window(self) -> None:
         """Raise and activate the main window through the window manager."""
         self.show_window(focus=False)
         self.raise_()
         self.activateWindow()
 
-    def _default_snapped_geometry(self):
+    def _default_snapped_geometry(self) -> QRect:
         """Return a rectangle covering the right half of the primary screen."""
         screen = self.screen() or QApplication.primaryScreen()
+        assert screen is not None
         area = screen.availableGeometry()
         frame = self.frameGeometry()
         client = self.geometry()
@@ -730,7 +796,7 @@ class MainWindow(QMainWindow):
             area.height() - top - bottom,
         )
 
-    def _set_snapped_geometry(self):
+    def _set_snapped_geometry(self) -> None:
         """Apply the snapped layout, restoring the active profile if known."""
         layout = self.config.get(self._layout_config_key(), {})
         if isinstance(layout, dict) and layout.get("x") is not None:
@@ -739,7 +805,7 @@ class MainWindow(QMainWindow):
             target = self._snapped_geometry or self._default_snapped_geometry()
         self.setGeometry(target)
 
-    def toggle_window_layout(self):
+    def toggle_window_layout(self) -> None:
         """Toggle between the free layout and the snapped layout."""
         if self.is_fullscreen or self._layout_changing:
             return
@@ -750,6 +816,7 @@ class MainWindow(QMainWindow):
                 if self._free_maximized:
                     default_width, default_height = self._default_size
                     screen = self.screen() or QApplication.primaryScreen()
+                    assert screen is not None
                     area = screen.availableGeometry()
                     x = area.x() + max(0, (area.width() - default_width) // 2)
                     y = area.y() + max(0, (area.height() - default_height) // 2)
@@ -772,15 +839,15 @@ class MainWindow(QMainWindow):
         finally:
             self._layout_changing = False
 
-    def moveEvent(self, event):
+    def moveEvent(self, event: QMoveEvent) -> None:
         super().moveEvent(event)
         self._detect_manual_geometry_change()
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
         self._detect_manual_geometry_change()
 
-    def _detect_manual_geometry_change(self):
+    def _detect_manual_geometry_change(self) -> None:
         if self._layout_changing or self.is_fullscreen or self.isMaximized() or self.isMinimized():
             return
         current = self.geometry()
@@ -791,7 +858,7 @@ class MainWindow(QMainWindow):
             self._free_geometry = current
         self._last_geometry = current
 
-    def _update_window_title(self):
+    def _update_window_title(self) -> None:
         """Show layout state and update status in the window title."""
         snap_prefix = "[snap] " if self._layout_state == "snapped" else ""
         base = self._base_title
@@ -1049,6 +1116,9 @@ class MainWindow(QMainWindow):
         if not extension:
             extension = "dst"
         return selected_path.with_suffix(f".{extension}")
+
+    def _save_as_embroidery_slot(self, checked: bool = False) -> None:
+        self.save_as_embroidery()
 
     def _path_with_output_extension(self, path, extension):
         return str(Path(path).with_suffix(f".{extension}"))
