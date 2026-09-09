@@ -19,5 +19,4 @@ fallback; both launch modes execute ``python -m inksim``.
 
 from .cli import main
 
-
 main()

@@ -11,21 +11,19 @@ from pathlib import Path
 from PySide6.QtCore import QObject, QStandardPaths, Signal
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
-from .debug import logger
 from .constants import (
-    APP_ORGANIZATION,
-    APP_TITLE,
     IPC_PROTOCOL_VERSION,
     IPC_SERVER_NAME,
     TOKEN_FILENAME,
 )
+from .debug import logger
 
 
 def _token_path():
     """Return the path where the active server's auth token is stored."""
-    config_dir = Path(QStandardPaths.writableLocation(
-        QStandardPaths.StandardLocation.ConfigLocation
-    ))
+    config_dir = Path(
+        QStandardPaths.writableLocation(QStandardPaths.StandardLocation.ConfigLocation)
+    )
     config_dir.mkdir(parents=True, exist_ok=True)
     token_path = config_dir / TOKEN_FILENAME
     logger.debug("IPC token path: %s", token_path)
@@ -133,12 +131,8 @@ class InterconnectServer(QObject):
             socket = self.server.nextPendingConnection()
             logger.debug("IPC server accepted a connection")
             self._buffers[socket] = bytearray()
-            socket.readyRead.connect(
-                lambda socket=socket: self._read_socket(socket)
-            )
-            socket.disconnected.connect(
-                lambda socket=socket: self._forget_socket(socket)
-            )
+            socket.readyRead.connect(lambda socket=socket: self._read_socket(socket))
+            socket.disconnected.connect(lambda socket=socket: self._forget_socket(socket))
 
     def _forget_socket(self, socket):
         self._buffers.pop(socket, None)
@@ -169,8 +163,7 @@ class InterconnectServer(QObject):
         version = request.get("protocol_version")
         if version is not None and version != IPC_PROTOCOL_VERSION:
             raise ValueError(
-                f"unsupported protocol version {version}; "
-                f"expected {IPC_PROTOCOL_VERSION}"
+                f"unsupported protocol version {version}; expected {IPC_PROTOCOL_VERSION}"
             )
         token = request.get("auth_token")
         if token != self._auth_token:

@@ -42,8 +42,7 @@ class ConfigEditorDialog(QDialog):
         layout.addWidget(path_label)
 
         hint = QLabel(
-            "Edit the TOML file directly. Save writes it back atomically; "
-            "changes that affect this session may need an application restart.",
+            "Edit the TOML file directly. Save writes it back atomically; changes that affect this session may need an application restart.",
             self,
         )
         hint.setWordWrap(True)
@@ -53,9 +52,7 @@ class ConfigEditorDialog(QDialog):
         self._editor.setFont(QFont("Monospace", 10))
         layout.addWidget(self._editor, 1)
 
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.Save | QDialogButtonBox.Close, self
-        )
+        buttons = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Close, self)
         buttons.accepted.connect(self._save)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)

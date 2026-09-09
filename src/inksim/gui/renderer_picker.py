@@ -8,10 +8,10 @@ from PySide6.QtGui import QKeySequence, QPixmap, QShortcut
 from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
+    QHBoxLayout,
     QLabel,
     QListWidget,
     QListWidgetItem,
-    QHBoxLayout,
     QVBoxLayout,
 )
 
@@ -36,8 +36,11 @@ class RendererPickerDialog(QDialog):
             item = QListWidgetItem(renderer.label, self.renderer_list)
             item.setData(Qt.UserRole, renderer.key)
         index = next(
-            (index for index, renderer in enumerate(STITCH_RENDERERS)
-             if renderer.key == selected_renderer),
+            (
+                index
+                for index, renderer in enumerate(STITCH_RENDERERS)
+                if renderer.key == selected_renderer
+            ),
             0,
         )
         self.renderer_list.setCurrentRow(index)

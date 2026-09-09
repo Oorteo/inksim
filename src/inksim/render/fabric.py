@@ -4,6 +4,7 @@
 import numba
 import numpy as np
 
+
 @numba.njit(cache=True)
 def render_fabric_numba(buf, zoom):
     """Render a lit plain-weave fabric surface at the current zoom."""
@@ -12,9 +13,7 @@ def render_fabric_numba(buf, zoom):
     bump_height = 0.08 * thread_spacing
     texture_strength = min(1.0, max(0.0, (thread_spacing - 2.5) / 4.0))
     light_x, light_y, light_z = -0.4, -0.4, 0.82
-    light_length = np.sqrt(
-        light_x * light_x + light_y * light_y + light_z * light_z
-    )
+    light_length = np.sqrt(light_x * light_x + light_y * light_y + light_z * light_z)
     light_x /= light_length
     light_y /= light_length
     light_z /= light_length
@@ -43,24 +42,16 @@ def render_fabric_numba(buf, zoom):
             normal_x = -dz_dx
             normal_y = -dz_dy
             normal_z = 1.0
-            normal_length = np.sqrt(
-                normal_x * normal_x
-                + normal_y * normal_y
-                + normal_z * normal_z
-            )
+            normal_length = np.sqrt(normal_x * normal_x + normal_y * normal_y + normal_z * normal_z)
             normal_x /= normal_length
             normal_y /= normal_length
             normal_z /= normal_length
             diffuse = max(
                 0.0,
-                normal_x * light_x
-                + normal_y * light_y
-                + normal_z * light_z,
+                normal_x * light_x + normal_y * light_y + normal_z * light_z,
             )
             gap_factor = 1.0 - 0.30 * (abs(distance) ** 4)
-            textured_shading = (
-                (0.52 + 0.48 * diffuse) * gap_factor + fiber_noise
-            )
+            textured_shading = (0.52 + 0.48 * diffuse) * gap_factor + fiber_noise
             shading = 1.0 + (textured_shading - 1.0) * texture_strength
             shading = max(0.35, min(1.15, shading))
             buf[y, x, 0] = max(0, min(255, int(base_r * shading)))

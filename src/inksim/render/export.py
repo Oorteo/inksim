@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import numpy as np
-from PySide6.QtCore import Qt
 from PySide6.QtGui import QImage, QPainter
 
 from .registry import RENDERERS_BY_KEY, VECTOR_RENDERERS
 from .viewport import render_viewport_raster
+
 
 def render_export_image(
     stitches,
@@ -63,8 +63,8 @@ def render_export_image(
         stitches,
         len(stitches),
         np.empty((0, 2), dtype=np.float32),
-        np.empty((0, ), dtype=np.float32),
-        np.empty((0, ), dtype=np.bool_),
+        np.empty((0,), dtype=np.float32),
+        np.empty((0,), dtype=np.bool_),
         zoom,
         offset_x,
         offset_y,
@@ -114,11 +114,14 @@ def render_export_image(
 
     # One human-readable comment with the key facts. InkSim-specific tags are
     # secondary to the standard resolution tags above.
-    image.setText("InkSim", (
-        f"created_by=InkSim; "
-        f"design_size_mm={design_width:.3f}x{design_height:.3f}; "
-        f"dpi={dpi:.2f}; "
-        f"renderer={renderer_key}; "
-        f"background={background}"
-    ))
+    image.setText(
+        "InkSim",
+        (
+            f"created_by=InkSim; "
+            f"design_size_mm={design_width:.3f}x{design_height:.3f}; "
+            f"dpi={dpi:.2f}; "
+            f"renderer={renderer_key}; "
+            f"background={background}"
+        ),
+    )
     return image

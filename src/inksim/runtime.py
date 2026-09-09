@@ -87,16 +87,13 @@ def runtime_info_lines():
 
     import numba
     import numpy
-    import pystitch
     import PySide6
     from PySide6.QtCore import qVersion
 
     pyside_version = getattr(PySide6, "__version__", "unknown")
 
     virtual_env = os.environ.get("VIRTUAL_ENV")
-    environment = virtual_env or (
-        sys.prefix if sys.prefix != sys.base_prefix else "none"
-    )
+    environment = virtual_env or (sys.prefix if sys.prefix != sys.base_prefix else "none")
     try:
         pystitch_version = importlib.metadata.version("pystitch")
     except importlib.metadata.PackageNotFoundError:

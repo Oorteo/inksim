@@ -5,7 +5,7 @@
 
 import numpy as np
 from PySide6.QtCore import QLineF, Qt
-from PySide6.QtGui import QColor, QPainter, QPen
+from PySide6.QtGui import QColor, QPen
 
 
 def render_simple_qt(
@@ -36,11 +36,9 @@ def render_simple_qt(
     run_starts = np.concatenate(([0], np.flatnonzero(color_changes) + 1))
     run_ends = np.concatenate((run_starts[1:], [len(colors)]))
 
-    for start, end in zip(run_starts, run_ends):
+    for start, end in zip(run_starts, run_ends, strict=False):
         color = colors[start]
         pen.setColor(QColor(int(color[0]), int(color[1]), int(color[2])))
         painter.setPen(pen)
         group = endpoints[start:end]
-        painter.drawLines(
-            [QLineF(x1, y1, x2, y2) for x1, y1, x2, y2 in group]
-        )
+        painter.drawLines([QLineF(x1, y1, x2, y2) for x1, y1, x2, y2 in group])

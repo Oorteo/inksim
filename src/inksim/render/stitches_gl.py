@@ -8,12 +8,14 @@ using a normal-map thread texture and Blinn-Phong lighting.  It renders
 offscreen into an RGB buffer so it plugs into the existing viewport
 pipeline without changing the viewer widget.
 """
+
 import json
 import math
 import sys
 from pathlib import Path
 
 import numpy as np
+from OpenGL.GL import *
 from PySide6.QtCore import QSize
 from PySide6.QtGui import QImage, QOffscreenSurface, QOpenGLContext, QSurfaceFormat
 from PySide6.QtOpenGL import (
@@ -26,7 +28,6 @@ from PySide6.QtOpenGL import (
     QOpenGLVertexArrayObject,
 )
 from PySide6.QtWidgets import QApplication
-from OpenGL.GL import *
 
 VERTEX_SHADER = """
 #version 330 core
@@ -123,8 +124,7 @@ def _default_texture_path() -> Path:
     if candidate.exists():
         return candidate
     raise FileNotFoundError(
-        f"Thread normal/mask texture not found at {candidate}. "
-        "Run scripts/texture/generate_variants.sh to (re)generate it."
+        f"Thread normal/mask texture not found at {candidate}. Run scripts/texture/generate_variants.sh to (re)generate it."
     )
 
 
@@ -187,9 +187,11 @@ def _load_texture(path: Path):
     ptr = img.constBits()
     if not isinstance(ptr, memoryview):
         ptr = memoryview(ptr)
-    data = np.frombuffer(ptr, dtype=np.uint8).reshape(
-        (height, img.bytesPerLine() // 4, 4)
-    )[:, :width, :].copy()
+    data = (
+        np.frombuffer(ptr, dtype=np.uint8)
+        .reshape((height, img.bytesPerLine() // 4, 4))[:, :width, :]
+        .copy()
+    )
     return data, width, height
 
 
@@ -418,14 +420,21 @@ def _build_satin_quads(
     # loop index (the red->magenta / green->cyan color-shift bug).
     for ci in range(5):
         if ci < 2:
-            t3 = (st_tx, st_ty, st_tz); n3 = (st_nx, st_ny, st_nz)
+            t3 = (st_tx, st_ty, st_tz)
+            n3 = (st_nx, st_ny, st_nz)
         elif ci == 2:
-            t3 = (md_tx, md_ty, md_tz); n3 = (md_nx, md_ny, md_nz)
+            t3 = (md_tx, md_ty, md_tz)
+            n3 = (md_nx, md_ny, md_nz)
         else:
-            t3 = (en_tx, en_ty, en_tz); n3 = (en_nx, en_ny, en_nz)
+            t3 = (en_tx, en_ty, en_tz)
+            n3 = (en_nx, en_ny, en_nz)
         for vi in (ci, ci + 5):
-            verts[:, vi, 4] = t3[0]; verts[:, vi, 5] = t3[1]; verts[:, vi, 6] = t3[2]
-            verts[:, vi, 10] = n3[0]; verts[:, vi, 11] = n3[1]; verts[:, vi, 12] = n3[2]
+            verts[:, vi, 4] = t3[0]
+            verts[:, vi, 5] = t3[1]
+            verts[:, vi, 6] = t3[2]
+            verts[:, vi, 10] = n3[0]
+            verts[:, vi, 11] = n3[1]
+            verts[:, vi, 12] = n3[2]
 
     # bitangent (tilt-independent) + color
     for v in range(total_verts):
@@ -464,8 +473,8 @@ def _build_satin_quads(
     for seg in range(4):
         a_ = seg
         b_ = seg + 1
-        lo = idx[:, seg * 6:seg * 6 + 3]
-        hi = idx[:, seg * 6 + 3:(seg + 1) * 6]
+        lo = idx[:, seg * 6 : seg * 6 + 3]
+        hi = idx[:, seg * 6 + 3 : (seg + 1) * 6]
         lo[:, 0] = base + a_
         lo[:, 1] = base + b_
         lo[:, 2] = base + a_ + 5
@@ -621,9 +630,7 @@ def _init_gl(width, height):
     cap_path = _DEFAULT_CAP_MASK_PATH
     if cap_path.exists():
         cap_src, cap_w, cap_h = _load_texture(cap_path)
-        cap_data = np.concatenate(
-            [cap_src, cap_src[:, ::-1, :]], axis=1
-        )
+        cap_data = np.concatenate([cap_src, cap_src[:, ::-1, :]], axis=1)
         cap_w = cap_data.shape[1]
     else:
         cap_data = np.full((1, 1, 4), 255, dtype=np.uint8)
@@ -747,12 +754,27 @@ def render_gpu_textured(
     sy = -2.0 / height
     tx = -1.0
     ty = 1.0
-    transform = np.array([
-        sx, 0.0, 0.0, 0.0,
-        0.0, sy, 0.0, 0.0,
-        0.0, 0.0, 1.0, 0.0,
-        tx, ty, 0.0, 1.0,
-    ], dtype=np.float32)
+    transform = np.array(
+        [
+            sx,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            sy,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            tx,
+            ty,
+            0.0,
+            1.0,
+        ],
+        dtype=np.float32,
+    )
 
     glUniformMatrix4fv(program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
     glUniform3f(program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
@@ -791,9 +813,11 @@ def render_gpu_textured(
     rgba_ptr = rgba_image.bits()
     if not isinstance(rgba_ptr, memoryview):
         rgba_ptr = memoryview(rgba_ptr)
-    rgba = np.frombuffer(rgba_ptr, dtype=np.uint8).reshape(
-        (height, rgba_image.bytesPerLine() // 4, 4)
-    )[:, :width, :].copy()
+    rgba = (
+        np.frombuffer(rgba_ptr, dtype=np.uint8)
+        .reshape((height, rgba_image.bytesPerLine() // 4, 4))[:, :width, :]
+        .copy()
+    )
 
     if prev_context:
         prev_context.makeCurrent(prev_surface)
@@ -805,15 +829,11 @@ def render_gpu_textured(
         # FBO output is premultiplied RGBA; composite it over the existing
         # RGBA buffer. RGB is already scaled by src alpha, and the resulting
         # alpha follows the standard porter-duff over operator.
-        buf[:, :, :3] = (
-            rgba[:, :, :3]
-            + buf[:, :, :3] * (1.0 - alpha[:, :, None])
-        ).astype(np.uint8)
+        buf[:, :, :3] = (rgba[:, :, :3] + buf[:, :, :3] * (1.0 - alpha[:, :, None])).astype(
+            np.uint8
+        )
         buf[:, :, 3] = np.maximum(buf[:, :, 3], rgba[:, :, 3])
     elif buf.shape[2] == 3:
-        buf[:] = (
-            rgba[:, :, :3]
-            + buf * (1.0 - alpha[:, :, None])
-        ).astype(np.uint8)
+        buf[:] = (rgba[:, :, :3] + buf * (1.0 - alpha[:, :, None])).astype(np.uint8)
     else:
         raise ValueError(f"Unsupported buffer channel count: {buf.shape[2]}")

@@ -8,11 +8,12 @@ import re
 
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QTextEdit, QVBoxLayout
 
-
 _ANSI_ESCAPE = re.compile(r"\x1b\[[0-9;]*m")
 
 HELP_SECTIONS = (
-    ("Mouse", """
+    (
+        "Mouse",
+        """
 
 | Action | Result |
 | --- | --- |
@@ -22,8 +23,11 @@ HELP_SECTIONS = (
 | Double-click design | Seek to visible stitch |
 | W / A / S / D | Pan up / left / down / right |
 | Click timeline | Seek stitch |
-"""),
-    ("Playback", """
+""",
+    ),
+    (
+        "Playback",
+        """
 
 | Key | Result |
 | --- | --- |
@@ -36,8 +40,11 @@ HELP_SECTIONS = (
 | Home / End | First or last stitch |
 | Space | Play or pause |
 | Esc | Finish playback directionally (forward → full design, backward → hide all) |
-"""),
-    ("View", """
+""",
+    ),
+    (
+        "View",
+        """
 
 | Key | Result |
 | --- | --- |
@@ -58,8 +65,11 @@ HELP_SECTIONS = (
 | R | Choose stitch renderer |
 | H | Toggle help |
 | I | Toggle settings |
-"""),
-    ("Rendering", """
+""",
+    ),
+    (
+        "Rendering",
+        """
 
 | Key | Result |
 | --- | --- |
@@ -67,7 +77,8 @@ HELP_SECTIONS = (
 | Ctrl + [ / ] | Adjust dark shading |
 | Alt + [ / ] | Adjust light shading |
 | + / - | Zoom |
-"""),
+""",
+    ),
 )
 
 

@@ -1,4 +1,3 @@
-
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -27,10 +26,7 @@ APP_ORGANIZATION = "InkSim"
 IPC_SERVER_NAME = _make_ipc_server_name()
 IPC_PROTOCOL_VERSION = 1
 TOKEN_FILENAME = "inksim-server.token"
-DEFAULT_STATUS_TEXT = (
-	"Space=play/pause | C=center | F=fit | F11=fullscreen | "
-	"Ctrl+Up/Dn=speed | Ctrl+Arrows=color | G=grid H=help"
-)
+DEFAULT_STATUS_TEXT = "Space=play/pause | C=center | F=fit | F11=fullscreen | Ctrl+Up/Dn=speed | Ctrl+Arrows=color | G=grid H=help"
 DENSITY_RADIUS_MM = 2.5
 DENSITY_WARNING_PER_MM2 = 3.0
 DENSITY_CRITICAL_PER_MM2 = 6.0
@@ -51,12 +47,12 @@ MIN_VISIBLE_DESIGN_PIXELS = 100.0
 MAX_ZOOM_DESIGN_MM = 5.0
 REALISTIC_END_FADE_PX = 4.0
 AUTO_THREAD_COLORS = (
-	(220, 30, 30),
-	(30, 100, 220),
-	(30, 160, 80),
-	(230, 150, 25),
-	(150, 60, 180),
-	(20, 170, 180),
-	(220, 70, 140),
-	(110, 110, 110),
+    (220, 30, 30),
+    (30, 100, 220),
+    (30, 160, 80),
+    (230, 150, 25),
+    (150, 60, 180),
+    (20, 170, 180),
+    (220, 70, 140),
+    (110, 110, 110),
 )

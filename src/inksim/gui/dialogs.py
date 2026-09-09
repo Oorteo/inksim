@@ -4,12 +4,23 @@
 import time
 from pathlib import Path
 
-from PySide6.QtCore import QTimer, Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QColor, QPainter, QPen
-from PySide6.QtWidgets import (QComboBox, QDialog, QDialogButtonBox,
-                               QDoubleSpinBox, QFileDialog, QHBoxLayout, QLabel,
-                               QListWidget, QPushButton, QSlider, QSplitter,
-                               QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QDoubleSpinBox,
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
+    QListWidget,
+    QPushButton,
+    QSlider,
+    QSplitter,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ..formats import get_supported_input_extensions
 from ..runtime import _sanitize_path
@@ -33,8 +44,7 @@ class CalibrationDialog(QDialog):
         root = QVBoxLayout(self)
 
         info = QLabel(
-            "Hold a ruler against the screen and drag the slider until the "
-            "bar below is exactly 100 mm long, then press OK."
+            "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK."
         )
         info.setWordWrap(True)
         root.addWidget(info)
@@ -145,7 +155,7 @@ class EmbroideryOpenDialog(QDialog):
         recent_layout.addWidget(QLabel("Recent:", self))
         self.recent_combo = QComboBox(self)
         self.recent_combo.addItem("— choose directory —")
-        for directory in (recent_directories or []):
+        for directory in recent_directories or []:
             self.recent_combo.addItem(directory)
         self.recent_combo.setEnabled(self.recent_combo.count() > 1)
         recent_layout.addWidget(self.recent_combo, 1)
@@ -200,9 +210,7 @@ class EmbroideryOpenDialog(QDialog):
     def _sync_real_preview_button(self, renderer_key):
         is_real = renderer_key == "gpu_textured"
         self._real_preview_button.setChecked(is_real)
-        self._real_preview_button.setText(
-            "Normal preview" if is_real else "Real preview"
-        )
+        self._real_preview_button.setText("Normal preview" if is_real else "Real preview")
 
     def done(self, result):
         """Release the preview's GL objects before the dialog is hidden."""
@@ -212,32 +220,44 @@ class EmbroideryOpenDialog(QDialog):
     def refresh_files(self):
         if not self.current_directory.is_dir():
             return
-        directories = sorted((path for path in self.current_directory.iterdir()
-                              if path.is_dir()), key=lambda path: path.name.lower())
+        directories = sorted(
+            (path for path in self.current_directory.iterdir() if path.is_dir()),
+            key=lambda path: path.name.lower(),
+        )
         self.directory_text.blockSignals(True)
         self.directory_text.clear()
-        self.directory_text.addItems([_sanitize_path(self.current_directory),
-                                      *(_sanitize_path(path) for path in directories)])
+        self.directory_text.addItems(
+            [
+                _sanitize_path(self.current_directory),
+                *(_sanitize_path(path) for path in directories),
+            ]
+        )
         self.directory_text.setCurrentText(_sanitize_path(self.current_directory))
         self.directory_text.blockSignals(False)
-        files = sorted((path for path in self.current_directory.iterdir()
-                        if path.is_file() and path.suffix.lower().lstrip(".")
-                        in self.extensions), key=lambda path: path.name.lower())
+        files = sorted(
+            (
+                path
+                for path in self.current_directory.iterdir()
+                if path.is_file() and path.suffix.lower().lstrip(".") in self.extensions
+            ),
+            key=lambda path: path.name.lower(),
+        )
         self.file_paths = files
         self.file_list.clear()
         self.file_list.addItems([path.name for path in files])
         self._resize_file_list(files)
         self.selected_path = None
         if files:
-            selected_index = next((index for index, path in enumerate(files)
-                                   if path == self.initial_file), 0)
+            selected_index = next(
+                (index for index, path in enumerate(files) if path == self.initial_file), 0
+            )
             self.file_list.setCurrentRow(selected_index)
 
     def _resize_file_list(self, files):
-        widest = max((self.file_list.fontMetrics().horizontalAdvance(path.name)
-                      for path in files), default=0)
-        self.file_list.setMinimumWidth(min(max(160, widest + 32),
-                                           max(160, self.width() - 432)))
+        widest = max(
+            (self.file_list.fontMetrics().horizontalAdvance(path.name) for path in files), default=0
+        )
+        self.file_list.setMinimumWidth(min(max(160, widest + 32), max(160, self.width() - 432)))
 
     def _on_row_changed(self, row):
         if row < 0 or row >= len(self.file_paths):
@@ -251,8 +271,7 @@ class EmbroideryOpenDialog(QDialog):
             precompute_density=False,
         )
         density_debug(
-            f"dialog preview load returned row={row} "
-            f"elapsed={time.perf_counter() - started_at:.3f}s"
+            f"dialog preview load returned row={row} elapsed={time.perf_counter() - started_at:.3f}s"
         )
 
     def open_selected(self):
@@ -281,7 +300,8 @@ class EmbroideryOpenDialog(QDialog):
         self.set_directory(self.current_directory.parent)
 
     def browse_directory(self):
-        directory = QFileDialog.getExistingDirectory(self, "Choose directory",
-                                                      str(self.current_directory))
+        directory = QFileDialog.getExistingDirectory(
+            self, "Choose directory", str(self.current_directory)
+        )
         if directory:
             self.set_directory(directory)

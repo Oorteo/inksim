@@ -166,11 +166,7 @@ class ExportPreviewDialog(QDialog):
         width = max(1, round(self._base_width * scale))
         height = max(1, round(self._base_height * scale))
         effective_dpi = round(self._base_dpi * scale)
-        return (
-            f"{width} x {height} px | "
-            f"{effective_dpi} DPI | "
-            f"{self._design_width_mm:.1f} x {self._design_height_mm:.1f} mm"
-        )
+        return f"{width} x {height} px | {effective_dpi} DPI | {self._design_width_mm:.1f} x {self._design_height_mm:.1f} mm"
 
     def _max_allowed_scale(self):
         if self._base_width <= 0 or self._base_height <= 0:
@@ -223,7 +219,9 @@ class ExportPreviewDialog(QDialog):
         self._update_quality_visibility()
         if not self._is_transparent_allowed() and self._transparent_check.isChecked():
             self._transparent_check.setChecked(False)
-        self._transparent_check.setEnabled(self._is_transparent_allowed() and self._render_callback is not None)
+        self._transparent_check.setEnabled(
+            self._is_transparent_allowed() and self._render_callback is not None
+        )
         self._regenerate_preview()
 
     def _on_quality_changed(self):

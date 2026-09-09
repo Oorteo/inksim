@@ -1,18 +1,18 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import time
 from collections import deque
 from pathlib import Path
 from threading import Lock
-import time
 
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import (
     QEasingCurve,
     QRunnable,
-    QThreadPool,
     Qt,
+    QThreadPool,
     QTimer,
     QVariantAnimation,
     Signal,
@@ -47,7 +47,18 @@ from PySide6.QtWidgets import (
 )
 
 from ..config import Config
-from ..constants import *
+from ..constants import (
+    AUTO_THREAD_COLORS,
+    DEFAULT_BACKGROUND_COLOR,
+    DEFAULT_DARK_FACTOR,
+    DEFAULT_LIGHT_FACTOR,
+    DEFAULT_LINE_WIDTH_MM,
+    DEFAULT_NEEDLE_COLOR,
+    DEFAULT_NEEDLE_RADIUS,
+    DEFAULT_NEEDLE_WIDTH,
+    MAX_ZOOM_DESIGN_MM,
+    MIN_VISIBLE_DESIGN_PIXELS,
+)
 from ..debug import is_enabled, logger
 from ..render import (
     RENDERERS_BY_KEY,
@@ -61,14 +72,12 @@ from .gl_viewer import GLStitchWidget, list_thread_textures
 from .help import show_help
 from .settings import show_settings
 
-
 _COMMAND_NAMES = {}
 for _name in dir(emb):
     if not _name.isupper() or _name.endswith("_MASK"):
         continue
     _value = getattr(emb, _name)
-    if (isinstance(_value, int) and 0 <= _value <= emb.COMMAND_MASK
-            and _value not in _COMMAND_NAMES):
+    if isinstance(_value, int) and 0 <= _value <= emb.COMMAND_MASK and _value not in _COMMAND_NAMES:
         _COMMAND_NAMES[_value] = _name
 
 
@@ -102,23 +111,16 @@ class DensityWorker(QRunnable):
             )
         except Exception as error:
             density_debug(
-                f"worker failed request={self.request_id} "
-                f"elapsed={time.perf_counter() - started_at:.3f}s "
-                f"error={error!r}"
+                f"worker failed request={self.request_id} elapsed={time.perf_counter() - started_at:.3f}s error={error!r}"
             )
             with density_results_lock:
-                density_results.append(
-                    ("failed", self.owner_id, self.request_id, error)
-                )
+                density_results.append(("failed", self.owner_id, self.request_id, error))
         else:
             density_debug(
-                f"worker finished request={self.request_id} "
-                f"elapsed={time.perf_counter() - started_at:.3f}s"
+                f"worker finished request={self.request_id} elapsed={time.perf_counter() - started_at:.3f}s"
             )
             with density_results_lock:
-                density_results.append(
-                    ("finished", self.owner_id, self.request_id, density)
-                )
+                density_results.append(("finished", self.owner_id, self.request_id, density))
 
 
 class EmbroideryViewerWidget(QWidget):
@@ -194,8 +196,8 @@ class EmbroideryViewerWidget(QWidget):
         self.command_timeline = []
         self.jump_segments = []
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
-        self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
-        self.repeated_stitch_np = np.zeros((0, ), dtype=np.bool_)
+        self.stitch_density_np = np.zeros((0,), dtype=np.float32)
+        self.repeated_stitch_np = np.zeros((0,), dtype=np.bool_)
         self.density_ready = False
         self._density_request_id = 0
         self._density_worker = None
@@ -258,7 +260,7 @@ class EmbroideryViewerWidget(QWidget):
             return
         self._trace_buffer.append((time.time(), text))
         # Keep only the most recent entries so the panel stays readable.
-        self._trace_buffer[:] = self._trace_buffer[-self._trace_max_lines:]
+        self._trace_buffer[:] = self._trace_buffer[-self._trace_max_lines :]
         self.update()
 
     def _draw_trace_overlay(self, painter: QPainter) -> None:
@@ -279,9 +281,7 @@ class EmbroideryViewerWidget(QWidget):
         painter.setFont(font)
         # Use a small semi-transparent dark background so text is readable.
         lines = [label for _, label in self._trace_buffer]
-        max_w = max(
-            painter.fontMetrics().horizontalAdvance(line) for line in lines
-        )
+        max_w = max(painter.fontMetrics().horizontalAdvance(line) for line in lines)
         panel_w = max(min_width, max_w + padding * 2)
         panel_h = self._trace_max_lines * line_height + padding * 2
         x = self.width() - panel_w - margin
@@ -291,9 +291,7 @@ class EmbroideryViewerWidget(QWidget):
         painter.fillPath(path, QColor(0, 0, 0, 140))
         painter.setPen(QColor(255, 255, 255, 230))
         for i, line in enumerate(lines):
-            painter.drawText(
-                x + padding, y + padding + (i + 1) * line_height - 3, line
-            )
+            painter.drawText(x + padding, y + padding + (i + 1) * line_height - 3, line)
 
     def notify_cursor_changed(self):
         self.cursor_changed.emit()
@@ -332,9 +330,7 @@ class EmbroideryViewerWidget(QWidget):
         # Retry shortly until layout stabilizes.
         if w < 120 or h < 120:
             if retries > 0:
-                QTimer.singleShot(
-                    30, self, lambda: self._try_fit_to_screen(retries - 1)
-                )
+                QTimer.singleShot(30, self, lambda: self._try_fit_to_screen(retries - 1))
             return
         self._pending_fit_to_screen = False
         self.fit_to_screen()
@@ -396,10 +392,7 @@ class EmbroideryViewerWidget(QWidget):
         # display name can differ across sessions, so fall back to the first
         # valid value we find).
         specific = self._display_key()
-        keys = [specific] + [
-            k for k in calibration.keys()
-            if k != specific
-        ]
+        keys = [specific] + [k for k in calibration.keys() if k != specific]
         for key in keys:
             stored = calibration.get(key)
             if stored is not None:
@@ -433,12 +426,14 @@ class EmbroideryViewerWidget(QWidget):
 
         dialog = CalibrationDialog(self, self._pixels_per_mm())
         if dialog.exec() and dialog.pixels_per_mm() is not None:
-            self.config.merge_data({
-                "display_calibration": {
-                    self._display_key(): dialog.pixels_per_mm(),
-                    "default": dialog.pixels_per_mm(),
+            self.config.merge_data(
+                {
+                    "display_calibration": {
+                        self._display_key(): dialog.pixels_per_mm(),
+                        "default": dialog.pixels_per_mm(),
+                    }
                 }
-            })
+            )
             self.set_one_to_one()
 
     def _load_view_settings(self):
@@ -524,8 +519,7 @@ class EmbroideryViewerWidget(QWidget):
         if w < 10 or h < 10:
             w, h = 1200, 800
         if self.visible_count > 0:
-            stitch = self.stitches_np[min(self.visible_count - 1,
-                                          self.stitches_np.shape[0] - 1)]
+            stitch = self.stitches_np[min(self.visible_count - 1, self.stitches_np.shape[0] - 1)]
             world_x, world_y = stitch[2], stitch[3]
         else:
             stitch = self.stitches_np[0]
@@ -591,9 +585,7 @@ class EmbroideryViewerWidget(QWidget):
         """Increase or decrease playback speed while preserving its direction."""
         new_index = max(
             0,
-            min(
-                len(self.play_speed_levels) - 1,
-                self.play_speed_index + direction),
+            min(len(self.play_speed_levels) - 1, self.play_speed_index + direction),
         )
         if new_index == self.play_speed_index:
             return False
@@ -649,11 +641,9 @@ class EmbroideryViewerWidget(QWidget):
         positions = sorted(self.command_events)
         current = self.visible_count
         if direction > 0:
-            targets = (position for position in positions
-                       if position > current)
+            targets = (position for position in positions if position > current)
         else:
-            targets = (position for position in reversed(positions)
-                       if position < current)
+            targets = (position for position in reversed(positions) if position < current)
         target = next(targets, None)
         if target is None:
             target = self.stitches_np.shape[0] if direction > 0 else 0
@@ -740,8 +730,7 @@ class EmbroideryViewerWidget(QWidget):
                 self.set_renderer("gpu_textured")
             else:
                 self.status_message.emit(
-                    "GPU textured renderer requires OpenGL 3.3 (not available); "
-                    "using CPU raster renderer",
+                    "GPU textured renderer requires OpenGL 3.3 (not available); using CPU raster renderer",
                     5000,
                 )
         elif mode == "X":
@@ -827,9 +816,7 @@ class EmbroideryViewerWidget(QWidget):
             self._gl_widget.set_reverse_draw_order(self.reverse_stitch_order)
             self._gl_widget.set_show_grid(self.show_grid)
             # Analysis overlays (jumps, density, needle) mirror the CPU viewer.
-            self._gl_widget.set_jumps(
-                self.show_jumps, self.risky_jumps_only, self.jump_segments
-            )
+            self._gl_widget.set_jumps(self.show_jumps, self.risky_jumps_only, self.jump_segments)
             self._gl_widget.set_density(
                 self.show_density,
                 self.stitch_points_np,
@@ -909,18 +896,27 @@ class EmbroideryViewerWidget(QWidget):
         close_btn.setDefault(True)
         close_btn.clicked.connect(dlg.close)
         close_btn.setFocus()
-        grid.addWidget(close_btn, (len(sections) + columns - 1) // columns, 0,
-                        1, columns, alignment=Qt.AlignRight)
+        grid.addWidget(
+            close_btn,
+            (len(sections) + columns - 1) // columns,
+            0,
+            1,
+            columns,
+            alignment=Qt.AlignRight,
+        )
         for sequence in ("Esc", "Return", "Space"):
             shortcut = QShortcut(QKeySequence(sequence), dlg)
             shortcut.setContext(Qt.WindowShortcut)
             shortcut.activated.connect(dlg.close)
         dlg.setMinimumSize(width, height)
         dlg.move(self.window().geometry().center() - dlg.rect().center())
+
         def on_close(event):
             setattr(self, key, None)
             event.accept()
+
         dlg.closeEvent = on_close
+
         def on_dialog_key(event):
             key_code = event.key()
             shortcut = "H" if key == "help_dialog" else "I"
@@ -929,6 +925,7 @@ class EmbroideryViewerWidget(QWidget):
                 dlg.close()
                 return
             event.ignore()
+
         dlg.keyPressEvent = on_dialog_key
         setattr(self, key, dlg)
         dlg.show()
@@ -963,8 +960,7 @@ class EmbroideryViewerWidget(QWidget):
         segs = []
         last_x = last_y = 0
         cur_color_idx = 0
-        has_thread_colors = bool(
-            hasattr(pattern, "threadlist") and pattern.threadlist)
+        has_thread_colors = bool(hasattr(pattern, "threadlist") and pattern.threadlist)
         palette = pattern.threadlist if has_thread_colors else AUTO_THREAD_COLORS
         min_x = min_y = 1e9
         max_x = max_y = -1e9
@@ -974,8 +970,8 @@ class EmbroideryViewerWidget(QWidget):
         self.command_timeline = []
         self.jump_segments = []
         self.stitch_points_np = np.zeros((0, 2), dtype=np.float32)
-        self.stitch_density_np = np.zeros((0, ), dtype=np.float32)
-        self.repeated_stitch_np = np.zeros((0, ), dtype=np.bool_)
+        self.stitch_density_np = np.zeros((0,), dtype=np.float32)
+        self.repeated_stitch_np = np.zeros((0,), dtype=np.bool_)
         self.density_ready = False
         self._density_request_id += 1
         self._density_worker = None
@@ -991,30 +987,25 @@ class EmbroideryViewerWidget(QWidget):
             y = st[1] / 10.0
             raw_command = st[2] if len(st) > 2 else emb.STITCH
             if hasattr(emb, "decode_embroidery_command"):
-                cmd, thread, needle, order = emb.decode_embroidery_command(
-                    raw_command)
+                cmd, thread, needle, order = emb.decode_embroidery_command(raw_command)
             else:
                 cmd = raw_command
                 thread = needle = order = None
             if hasattr(emb, "JUMP") and cmd == emb.JUMP:
                 event_position = len(segs)
-                self.command_events.setdefault(event_position,
-                                               []).append("JUMP")
+                self.command_events.setdefault(event_position, []).append("JUMP")
                 self.command_timeline.append(("JUMP", event_position, -1, x, y))
                 is_risky = has_stitch and not color_change_in_group
-                self.jump_segments.append(
-                    [last_x, last_y, x, y, int(is_risky), len(segs)])
+                self.jump_segments.append([last_x, last_y, x, y, int(is_risky), len(segs)])
                 jump_run_indices.append(len(self.jump_segments) - 1)
                 last_x, last_y = x, y
                 continue
             if hasattr(emb, "END") and cmd == emb.END:
                 event_position = len(segs)
-                self.command_events.setdefault(event_position,
-                                               []).append("END")
+                self.command_events.setdefault(event_position, []).append("END")
                 self.command_timeline.append(("END", event_position, -1, x, y))
                 break
-            is_color_change = (hasattr(emb, "COLOR_CHANGE")
-                               and cmd == emb.COLOR_CHANGE)
+            is_color_change = hasattr(emb, "COLOR_CHANGE") and cmd == emb.COLOR_CHANGE
             if is_color_change:
                 for jump_index in jump_run_indices:
                     self.jump_segments[jump_index][4] = 0
@@ -1030,8 +1021,7 @@ class EmbroideryViewerWidget(QWidget):
                 command_label = "COLOR CHANGE"
                 if details:
                     command_label += f" ({', '.join(details)})"
-                self.command_events.setdefault(event_position,
-                                               []).append(command_label)
+                self.command_events.setdefault(event_position, []).append(command_label)
                 self.command_timeline.append((command_label, event_position, -1, x, y))
                 cur_color_idx += 1
                 if segs:
@@ -1042,8 +1032,7 @@ class EmbroideryViewerWidget(QWidget):
             command_name = _COMMAND_NAMES.get(cmd)
             if command_name is not None and command_name != "STITCH":
                 event_position = len(segs)
-                self.command_events.setdefault(event_position,
-                                               []).append(command_name)
+                self.command_events.setdefault(event_position, []).append(command_name)
                 self.command_timeline.append((command_name, event_position, -1, x, y))
                 continue
             if has_thread_colors:
@@ -1085,8 +1074,8 @@ class EmbroideryViewerWidget(QWidget):
             self.visible_count = 0 if autoplay else self.stitches_np.shape[0]
             self.notify_cursor_changed()
             self.color_boundaries = sorted(
-                {boundary for boundary in self.color_boundaries
-                 if boundary < len(segs)})
+                {boundary for boundary in self.color_boundaries if boundary < len(segs)}
+            )
             self.color_count = len(self.color_boundaries)
             if fit_to_screen:
                 self._pending_fit_to_screen = True
@@ -1098,8 +1087,7 @@ class EmbroideryViewerWidget(QWidget):
         if precompute_density and len(self.stitch_points_np) > 0:
             self._start_density_calculation()
         density_debug(
-            f"load finished path={path!r} stitches={len(self.stitches_np)} "
-            f"elapsed={time.perf_counter() - started_at:.3f}s"
+            f"load finished path={path!r} stitches={len(self.stitches_np)} elapsed={time.perf_counter() - started_at:.3f}s"
         )
         return True
 
@@ -1112,8 +1100,7 @@ class EmbroideryViewerWidget(QWidget):
     def _start_density_calculation(self, show_status=False):
         if self.density_ready or self._density_worker is not None:
             density_debug(
-                f"worker skipped request={self._density_request_id} "
-                f"ready={self.density_ready} active={self._density_worker is not None}"
+                f"worker skipped request={self._density_request_id} ready={self.density_ready} active={self._density_worker is not None}"
             )
             return
         if show_status:
@@ -1126,8 +1113,7 @@ class EmbroideryViewerWidget(QWidget):
         )
         self._density_worker = worker
         density_debug(
-            f"worker queued request={self._density_request_id} "
-            f"points={len(self.stitch_points_np)}"
+            f"worker queued request={self._density_request_id} points={len(self.stitch_points_np)}"
         )
         QThreadPool.globalInstance().start(worker)
 
@@ -1137,8 +1123,9 @@ class EmbroideryViewerWidget(QWidget):
         with density_results_lock:
             while density_results:
                 result = density_results.popleft()
-                (own_results if result[1] == self._density_owner_id
-                 else other_results).append(result)
+                (own_results if result[1] == self._density_owner_id else other_results).append(
+                    result
+                )
             density_results.extend(other_results)
         for result_type, _, request_id, result in own_results:
             if result_type == "finished":
@@ -1147,10 +1134,7 @@ class EmbroideryViewerWidget(QWidget):
                 self._density_failed(request_id, result)
 
     def _density_ready(self, request_id, density):
-        density_debug(
-            f"result received request={request_id} "
-            f"current={self._density_request_id}"
-        )
+        density_debug(f"result received request={request_id} current={self._density_request_id}")
         if request_id != self._density_request_id:
             return
         self._density_worker = None
@@ -1161,8 +1145,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def _density_failed(self, request_id, error):
         density_debug(
-            f"error received request={request_id} "
-            f"current={self._density_request_id} error={error!r}"
+            f"error received request={request_id} current={self._density_request_id} error={error!r}"
         )
         if request_id != self._density_request_id:
             return
@@ -1187,8 +1170,7 @@ class EmbroideryViewerWidget(QWidget):
             QTimer.singleShot(
                 0,
                 lambda: density_debug(
-                    f"paint finished sequence={paint_sequence} "
-                    f"elapsed={time.perf_counter() - paint_started_at:.3f}s"
+                    f"paint finished sequence={paint_sequence} elapsed={time.perf_counter() - paint_started_at:.3f}s"
                 ),
             )
         painter = QPainter(self)
@@ -1205,12 +1187,9 @@ class EmbroideryViewerWidget(QWidget):
             if abs(zoom_ratio - 1.0) < 0.001:
                 pan_delta_x = round(self.pan_x - self.cached_pan_x)
                 pan_delta_y = round(self.pan_y - self.cached_pan_y)
-                if (
-                    self.drag_start is not None
-                    or (
-                        abs(pan_delta_x) <= self.cached_padding
-                        and abs(pan_delta_y) <= self.cached_padding
-                    )
+                if self.drag_start is not None or (
+                    abs(pan_delta_x) <= self.cached_padding
+                    and abs(pan_delta_y) <= self.cached_padding
                 ):
                     painter.drawPixmap(
                         pan_delta_x - self.cached_padding,
@@ -1224,15 +1203,14 @@ class EmbroideryViewerWidget(QWidget):
                 bitmap_width = self.cached_bitmap_width
                 bitmap_height = self.cached_bitmap_height
                 preview_x = round(
-                    self.pan_x
-                    - zoom_ratio * (self.cached_pan_x + self.cached_padding)
+                    self.pan_x - zoom_ratio * (self.cached_pan_x + self.cached_padding)
                 )
                 preview_y = round(
-                    self.pan_y
-                    - zoom_ratio * (self.cached_pan_y + self.cached_padding)
+                    self.pan_y - zoom_ratio * (self.cached_pan_y + self.cached_padding)
                 )
                 painter.drawPixmap(
-                    preview_x, preview_y,
+                    preview_x,
+                    preview_y,
                     round(bitmap_width * zoom_ratio),
                     round(bitmap_height * zoom_ratio),
                     self.cached_bitmap,
@@ -1252,7 +1230,9 @@ class EmbroideryViewerWidget(QWidget):
             shadow_color = QColor(0, 0, 0, 160)
             painter.setFont(QFont(self.font().family(), 14))
             metrics = painter.fontMetrics()
-            first_line = "Open an embroidery file via File > Open or pass it as a command-line argument"
+            first_line = (
+                "Open an embroidery file via File > Open or pass it as a command-line argument"
+            )
             second_line = "H = Help"
             first_rect = metrics.boundingRect(first_line)
             second_rect = metrics.boundingRect(second_line)
@@ -1282,7 +1262,7 @@ class EmbroideryViewerWidget(QWidget):
         render_stitches = self.stitches_np
         render_visible_count = self.visible_count
         if self.reverse_stitch_order:
-            render_stitches = self.stitches_np[:self.visible_count][::-1].copy()
+            render_stitches = self.stitches_np[: self.visible_count][::-1].copy()
             render_visible_count = render_stitches.shape[0]
         buf = self._get_render_buffer(render_w, render_h)
         render_viewport_raster(
@@ -1331,9 +1311,7 @@ class EmbroideryViewerWidget(QWidget):
                 row_stride = img.bytesPerLine()
                 image_bytes = np.frombuffer(img.bits(), dtype=np.uint8)
                 image_rows = image_bytes.reshape((render_h, row_stride))
-                image_buffer = image_rows[:, :3 * render_w].reshape(
-                    (render_h, render_w, 3)
-                )
+                image_buffer = image_rows[:, : 3 * render_w].reshape((render_h, render_w, 3))
                 render_density_numba(
                     image_buffer,
                     self.stitch_points_np,
@@ -1389,8 +1367,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def draw_needle_overlay(self, painter):
         """Draw the current needle position above the cached stitch bitmap."""
-        if not self.show_stitches or not self.show_needle or self.stitches_np.shape[
-                0] == 0:
+        if not self.show_stitches or not self.show_needle or self.stitches_np.shape[0] == 0:
             return
         world_x, world_y = self._needle_world_pos()
         needle_x = int(world_x * self.zoom + self.pan_x)
@@ -1414,8 +1391,9 @@ class EmbroideryViewerWidget(QWidget):
         painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
         if outer_radius:
             painter.setBrush(Qt.NoBrush)
-            painter.drawEllipse(needle_x - outer_radius, needle_y - outer_radius,
-                                outer_radius * 2, outer_radius * 2)
+            painter.drawEllipse(
+                needle_x - outer_radius, needle_y - outer_radius, outer_radius * 2, outer_radius * 2
+            )
         painter.setPen(QPen(color, (3 if outer_radius else 2) * w))
         painter.setBrush(Qt.NoBrush)
         painter.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
@@ -1425,8 +1403,9 @@ class EmbroideryViewerWidget(QWidget):
         painter.setBrush(color)
         painter.setPen(QPen(QColor(10, 10, 10), 2 * w))
         marker_radius = 5 if outer_radius else 3
-        painter.drawEllipse(needle_x - marker_radius, needle_y - marker_radius,
-                            marker_radius * 2, marker_radius * 2)
+        painter.drawEllipse(
+            needle_x - marker_radius, needle_y - marker_radius, marker_radius * 2, marker_radius * 2
+        )
 
     def highlight_needle(self):
         """Pulse a large needle marker after user navigation."""
@@ -1472,8 +1451,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def wheelEvent(self, e):
         """Zoom or step through stitches around the mouse position."""
-        is_step_modifier = bool(
-            e.modifiers() & (Qt.AltModifier | Qt.ControlModifier))
+        is_step_modifier = bool(e.modifiers() & (Qt.AltModifier | Qt.ControlModifier))
         if is_step_modifier:
             self._trace_event("wheel+modifier step")
             delta = e.angleDelta().y()
@@ -1486,8 +1464,7 @@ class EmbroideryViewerWidget(QWidget):
             if delta != 0:
                 total = self.stitches_np.shape[0]
                 direction = 1 if delta > 0 else -1
-                self.visible_count = max(
-                    0, min(total, self.visible_count + direction))
+                self.visible_count = max(0, min(total, self.visible_count + direction))
                 self.notify_cursor_changed()
                 self._last_dir = direction
                 self.invalidate_cache()
@@ -1551,8 +1528,7 @@ class EmbroideryViewerWidget(QWidget):
         ratios = np.zeros(visible_count, dtype=np.float32)
         nonzero = lengths_squared > 0
         ratios[nonzero] = (
-            np.sum(offsets[nonzero] * vectors[nonzero], axis=1)
-            / lengths_squared[nonzero]
+            np.sum(offsets[nonzero] * vectors[nonzero], axis=1) / lengths_squared[nonzero]
         )
         ratios = np.clip(ratios, 0.0, 1.0)
         closest = start + vectors * ratios[:, None]
@@ -1670,8 +1646,7 @@ class EmbroideryViewerWidget(QWidget):
                 item.setData(Qt.UserRole, row)
                 table.setItem(row, column, item)
 
-        def on_current_cell_changed(current_row, _current_column, _previous_row,
-                                    _previous_column):
+        def on_current_cell_changed(current_row, _current_column, _previous_row, _previous_column):
             self._set_visible_count_from_command_index(current_row)
 
         table.currentCellChanged.connect(on_current_cell_changed)
@@ -1679,17 +1654,17 @@ class EmbroideryViewerWidget(QWidget):
         shortcut = QShortcut(QKeySequence("Esc"), dialog)
         shortcut.setContext(Qt.WidgetWithChildrenShortcut)
         shortcut.activated.connect(dialog.close)
+
         def on_close(event):
             self.command_dialog = None
             event.accept()
+
         dialog.closeEvent = on_close
         self.command_dialog = dialog
         current_index = self.current_command_index()
         if current_index >= 0:
             table.setCurrentCell(current_index, 1)
-            table.scrollToItem(
-                table.item(current_index, 1), QAbstractItemView.PositionAtCenter
-            )
+            table.scrollToItem(table.item(current_index, 1), QAbstractItemView.PositionAtCenter)
         dialog.move(global_position)
         dialog.show()
 

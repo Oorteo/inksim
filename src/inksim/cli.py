@@ -24,9 +24,7 @@ def _parse_pair(value, name, separator):
     """Parse two integer values used for window geometry."""
     parts = value.split(separator)
     if len(parts) != 2:
-        raise argparse.ArgumentTypeError(
-            f"{name} must use the format VALUE{separator}VALUE"
-        )
+        raise argparse.ArgumentTypeError(f"{name} must use the format VALUE{separator}VALUE")
     try:
         first, second = (int(part) for part in parts)
     except ValueError as ex:
@@ -79,9 +77,7 @@ def _send_command_and_exit(json_text, output_path=None):
 
 def _default_log_path(input_paths):
     project_root = Path.cwd()
-    if (project_root / "pyproject.toml").is_file() and (
-        project_root / "src" / "inksim"
-    ).is_dir():
+    if (project_root / "pyproject.toml").is_file() and (project_root / "src" / "inksim").is_dir():
         return project_root / "log" / "inksim.log"
     if not input_paths:
         return Path("inksim.log")
@@ -97,7 +93,9 @@ def build_argument_parser():
     """Return the ArgumentParser used by the inksim command line."""
     parser = argparse.ArgumentParser(description=APP_TITLE)
     parser.add_argument(
-        "-v", "--version", action="store_true",
+        "-v",
+        "--version",
+        action="store_true",
         help="Show InkSim and runtime dependency information and exit",
     )
     parser.add_argument(
@@ -106,23 +104,32 @@ def build_argument_parser():
         help="Input embroidery file(s) or directory",
     )
     parser.add_argument(
-        "-f", "--fullscreen", action="store_true",
+        "-f",
+        "--fullscreen",
+        action="store_true",
         help="Open the simulator fullscreen",
     )
     parser.add_argument(
-        "-p", "--play", action="store_true",
+        "-p",
+        "--play",
+        action="store_true",
         help="Start simulation playback immediately",
     )
     parser.add_argument(
-        "-s", "--server", action="store_true",
+        "-s",
+        "--server",
+        action="store_true",
         help="Keep the GUI available for local interconnect commands",
     )
     parser.add_argument(
-        "--delete-input", action="store_true",
+        "--delete-input",
+        action="store_true",
         help="Delete the first input file after it has been loaded (server mode)",
     )
     parser.add_argument(
-        "--document-path", type=Path, metavar="FILE",
+        "--document-path",
+        type=Path,
+        metavar="FILE",
         help="Original document path used as the default directory for open/save dialogs",
     )
     parser.add_argument(
@@ -131,15 +138,21 @@ def build_argument_parser():
         help="Send one JSON command to a running InkSim server and exit",
     )
     parser.add_argument(
-        "--output", type=Path, metavar="FILE",
+        "--output",
+        type=Path,
+        metavar="FILE",
         help="Write the --send-command JSON response to FILE instead of stdout",
     )
     parser.add_argument(
-        "--debug", "--dbg", action="store_true",
+        "--debug",
+        "--dbg",
+        action="store_true",
         help="Enable debug logging",
     )
     parser.add_argument(
-        "--log", type=Path, metavar="FILE",
+        "--log",
+        type=Path,
+        metavar="FILE",
         help="Write debug logging to FILE (implies --debug)",
     )
     parser.add_argument(
@@ -203,7 +216,8 @@ def build_argument_parser():
         help="Add a measurement grid to exported PNG",
     )
     parser.add_argument(
-        "-y", "--yes",
+        "-y",
+        "--yes",
         action="store_true",
         help="Overwrite existing batch export files without asking",
     )
@@ -219,13 +233,14 @@ def main():
     if args.output is not None and not args.send_command:
         parser.error("--output is only meaningful with --send-command")
     if args.send_command:
-        debug_enabled = args.debug or args.log is not None or bool(
-            os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG")
+        debug_enabled = (
+            args.debug
+            or args.log is not None
+            or bool(os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG"))
         )
         log_path = (
             args.log
-            or (Path(os.environ["INKSIM_LOG"])
-                if os.environ.get("INKSIM_LOG") else None)
+            or (Path(os.environ["INKSIM_LOG"]) if os.environ.get("INKSIM_LOG") else None)
             or _default_log_path([])
         )
         if debug_enabled:
@@ -236,7 +251,8 @@ def main():
         _send_command_and_exit(args.send_command, args.output)
 
     export_values = [
-        value for value in (
+        value
+        for value in (
             args.export_png,
             args.export_shaded_png,
             args.export_icon,
@@ -250,8 +266,7 @@ def main():
     export_requested = bool(export_values)
     if export_requested and not args.input_file:
         parser.error(
-            "an input embroidery file is required for export; "
-            "use: inksim INPUT_FILE --simple-png OUTPUT.png"
+            "an input embroidery file is required for export; use: inksim INPUT_FILE --simple-png OUTPUT.png"
         )
     if args.delete_input and not args.server:
         parser.error("--delete-input is only meaningful with --server")
@@ -279,12 +294,10 @@ def main():
         if len(input_paths) > 1 and explicit_path is not None:
             if not explicit_path.is_dir():
                 parser.error(
-                    "an explicit output path for multiple inputs must be "
-                    "an existing directory"
+                    "an explicit output path for multiple inputs must be an existing directory"
                 )
             export_paths = [
-                explicit_path / f"{input_path.stem}{default_suffix}"
-                for input_path in input_paths
+                explicit_path / f"{input_path.stem}{default_suffix}" for input_path in input_paths
             ]
         else:
             export_paths = [
@@ -307,8 +320,10 @@ def main():
                 if answer not in ("y", "yes"):
                     parser.error("export cancelled")
 
-    debug_enabled = args.debug or args.log is not None or bool(
-        os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG")
+    debug_enabled = (
+        args.debug
+        or args.log is not None
+        or bool(os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG"))
     )
     log_path = (
         args.log
@@ -327,8 +342,7 @@ def main():
     app = QApplication.instance() or QApplication([])
     app.setApplicationName(APP_TITLE)
     app.setOrganizationName(APP_TITLE)
-    app.setWindowIcon(QIcon(str(
-        Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
+    app.setWindowIcon(QIcon(str(Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
     first_input = input_paths[0] if input_paths else None
     document_path = args.document_path
     frame = MainWindow(
@@ -346,8 +360,7 @@ def main():
             interconnect = InterconnectServer(frame)
             if not interconnect.start():
                 print(
-                    "InkSim server is already running; forwarding command "
-                    "to the existing server.",
+                    "InkSim server is already running; forwarding command to the existing server.",
                     file=sys.stderr,
                 )
                 open_command = "open_and_delete" if args.delete_input else "open"
@@ -376,7 +389,7 @@ def main():
         success = True
         total_inputs = len(input_paths)
         for index, (input_path, export_path) in enumerate(
-            zip(input_paths, export_paths), 1
+            zip(input_paths, export_paths, strict=False), 1
         ):
             if not frame.open_file(str(input_path), precompute_density=False):
                 success = False
@@ -392,15 +405,11 @@ def main():
                 background=args.export_background,
                 grid=args.export_grid,
                 renderer_key=(
-                    "simple" if args.export_png is not None
-                    else frame.viewer.active_renderer
+                    "simple" if args.export_png is not None else frame.viewer.active_renderer
                 ),
             )
             if exported:
-                print(
-                    f"[{index}/{total_inputs}] Exported "
-                    f"{input_path} -> {export_path}"
-                )
+                print(f"[{index}/{total_inputs}] Exported {input_path} -> {export_path}")
             else:
                 success = False
                 print(

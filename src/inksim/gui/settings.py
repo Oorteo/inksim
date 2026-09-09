@@ -27,7 +27,9 @@ def settings_sections(viewer):
     width = max_x - min_x
     height = max_y - min_y
     return (
-        ("Design", f"""
+        (
+            "Design",
+            f"""
 
 | Property | Value |
 | --- | --- |
@@ -36,8 +38,11 @@ def settings_sections(viewer):
 | Bounds | {width:.1f} x {height:.1f} mm |
 | Minimum | {min_x:.1f}, {min_y:.1f} |
 | Maximum | {max_x:.1f}, {max_y:.1f} |
-"""),
-    ("Viewport", f"""
+""",
+        ),
+        (
+            "Viewport",
+            f"""
 
 | Property | Value |
 | --- | --- |
@@ -51,16 +56,22 @@ def settings_sections(viewer):
 | Density | {_state(viewer.show_density)} |
 | Needle | {_state(viewer.show_needle)} |
 | Gradient | {_state(viewer.zoom > 1.2)} |
-"""),
-    ("Density", f"""
+""",
+        ),
+        (
+            "Density",
+            f"""
 
 | Property | Value |
 | --- | --- |
 | Radius | {DENSITY_RADIUS_MM:.1f} mm |
 | Warning | {DENSITY_WARNING_PER_MM2:.1f} /mm^2 |
 | Critical | {DENSITY_CRITICAL_PER_MM2:.1f} /mm^2 |
-"""),
-    ("Rendering", f"""
+""",
+        ),
+        (
+            "Rendering",
+            f"""
 
 | Property | Value |
 | --- | --- |
@@ -68,8 +79,11 @@ def settings_sections(viewer):
 | Dark factor | {viewer.dark_factor:.2f} |
 | Light factor | {viewer.light_factor:.2f} |
 | Shading step | {viewer.shading_step:.2f} |
-"""),
-    ("Playback", f"""
+""",
+        ),
+        (
+            "Playback",
+            f"""
 
 | Property | Value |
 | --- | --- |
@@ -78,7 +92,8 @@ def settings_sections(viewer):
 | Timer step | {viewer.play_step} |
 | Direction | {"forward" if viewer._last_dir > 0 else "backward"} |
 | Playing | {_state(viewer.is_playing)} |
-"""),
+""",
+        ),
     )
 
 

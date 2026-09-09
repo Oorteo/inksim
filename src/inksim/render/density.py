@@ -6,6 +6,7 @@ import numpy as np
 
 from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_RADIUS_MM, DENSITY_WARNING_PER_MM2
 
+
 @numba.njit(cache=True)
 def calculate_stitch_density_numba(points, min_x, min_y, max_x, max_y):
     """Calculate stitch endpoints per square millimeter in a 5 mm circle."""

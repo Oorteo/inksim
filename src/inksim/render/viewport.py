@@ -32,11 +32,7 @@ def render_viewport_raster(
         render_fabric_numba(buffer, zoom)
     if show_grid:
         render_grid_numba(buffer, zoom, pan_x, pan_y)
-    if (
-        active_renderer not in VECTOR_RENDERERS
-        and stitches.shape[0] > 0
-        and visible_count > 0
-    ):
+    if active_renderer not in VECTOR_RENDERERS and stitches.shape[0] > 0 and visible_count > 0:
         render_stitches(
             active_renderer,
             buffer,

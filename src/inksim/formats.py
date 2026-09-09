@@ -47,9 +47,7 @@ def get_supported_output_formats():
         extensions = file_type.get("extensions", (extension,))
         if isinstance(extensions, str):
             extensions = (extensions,)
-        clean_extensions = tuple(
-            ext.lstrip(".").lower() for ext in extensions if ext
-        )
+        clean_extensions = tuple(ext.lstrip(".").lower() for ext in extensions if ext)
         if not clean_extensions:
             clean_extensions = (extension.lstrip(".").lower(),)
         primary_extension = extension.lstrip(".").lower()
@@ -71,9 +69,7 @@ def get_supported_output_filter():
     filters = []
     for file_type in get_supported_output_formats():
         patterns = " ".join(f"*.{ext}" for ext in file_type["extensions"])
-        filters.append(
-            f"{file_type['description']} - .{file_type['extension']} ({patterns})"
-        )
+        filters.append(f"{file_type['description']} - .{file_type['extension']} ({patterns})")
     filters.append("All files (*)")
     return ";;".join(filters)
 

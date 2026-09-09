@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QRect, QSignalBlocker, QTimer, Qt
+from PySide6.QtCore import QEvent, QRect, QSignalBlocker, Qt, QTimer
 from PySide6.QtGui import QAction, QColor, QIcon, QKeySequence
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..config import Config
-from ..constants import *
+from ..constants import APP_TITLE, DEFAULT_STATUS_TEXT
 from ..debug import logger
 from ..formats import (
     extension_from_output_filter,
@@ -43,9 +43,9 @@ from ..update_check import (
     record_result,
     should_check,
 )
-from .dialogs import EmbroideryOpenDialog
 from .about import show_about
 from .config_editor import show_config_editor
+from .dialogs import EmbroideryOpenDialog
 from .export_dialog import ExportPreviewDialog
 from .help import show_command_line_help
 from .shortcuts import ViewerShortcutFilter
@@ -69,8 +69,9 @@ class MainWindow(QMainWindow):
     ):
         super().__init__()
         self.setWindowTitle(APP_TITLE)
-        self.setWindowIcon(QIcon(str(
-            Path(__file__).parent.parent / "assets" / "app_icons" / "inksim.svg")))
+        self.setWindowIcon(
+            QIcon(str(Path(__file__).parent.parent / "assets" / "app_icons" / "inksim.svg"))
+        )
         self._default_size = window_size or (1200, 980)
         self.resize(*self._default_size)
         self.setAcceptDrops(True)
@@ -84,9 +85,7 @@ class MainWindow(QMainWindow):
         self.config = Config()
         self._snap_layout_key = snap_layout_key
         self.last_directory = _unsanitize_path(self.config.get("last_directory", ""))
-        self.export_transparent_background = self.config.get(
-            "export_transparent_background", False
-        )
+        self.export_transparent_background = self.config.get("export_transparent_background", False)
         self.document_path = None
         if document_path is not None:
             self.set_document_path(document_path)
@@ -175,7 +174,9 @@ class MainWindow(QMainWindow):
         """Restore the snapped geometry for the active profile."""
         layout = self.config.get(self._layout_config_key(), {})
         if isinstance(layout, dict) and layout.get("x") is not None:
-            self._snapped_geometry = QRect(layout["x"], layout["y"], layout["width"], layout["height"])
+            self._snapped_geometry = QRect(
+                layout["x"], layout["y"], layout["width"], layout["height"]
+            )
         else:
             self._snapped_geometry = self._default_snapped_geometry()
         self.setGeometry(self._snapped_geometry)
@@ -208,23 +209,17 @@ class MainWindow(QMainWindow):
     def _save_current_snap_position(self, checked=False):
         """Save the current snapped geometry under the active profile."""
         if self._layout_state != "snapped":
-            self.statusBar().showMessage(
-                "Switch to snap layout first (press M).", 3000
-            )
+            self.statusBar().showMessage("Switch to snap layout first (press M).", 3000)
             return
         self._save_snap_layout()
         key_text = f" ({self._snap_layout_key})" if self._snap_layout_key else ""
-        self.statusBar().showMessage(
-            f"Snap position saved{key_text}.", 3000
-        )
+        self.statusBar().showMessage(f"Snap position saved{key_text}.", 3000)
 
     def _clear_saved_snap_position(self, checked=False):
         """Remove the saved snap geometry for the active profile."""
         self.config.delete(self._layout_config_key())
         key_text = f" ({self._snap_layout_key})" if self._snap_layout_key else ""
-        self.statusBar().showMessage(
-            f"Saved snap position cleared{key_text}.", 3000
-        )
+        self.statusBar().showMessage(f"Saved snap position cleared{key_text}.", 3000)
 
     def eventFilter(self, watched, event):
         if self._is_reloading_from_disk:
@@ -315,9 +310,7 @@ class MainWindow(QMainWindow):
         if not path.is_dir():
             return
         text = str(path)
-        self.recent_directories = [text] + [
-            d for d in self.recent_directories if d != text
-        ][:9]
+        self.recent_directories = [text] + [d for d in self.recent_directories if d != text][:9]
         self._save_recent_directories()
 
     def show_initial_window(self, autoplay=False, initial_directory=None):
@@ -375,14 +368,16 @@ class MainWindow(QMainWindow):
         self._action(file_menu, "Center needle", self.viewer.center_needle, "C")
         self._action(file_menu, "Fit design to window", self.viewer.fit_to_screen, "F")
         self._action(file_menu, "Calibrate display size...", self.viewer.calibrate_display)
-        self.grid_action = self._action(file_menu, "Show measurement grid", self.toggle_grid, "G", True)
+        self.grid_action = self._action(
+            file_menu, "Show measurement grid", self.toggle_grid, "G", True
+        )
         self.grid_action.setChecked(True)
-        self.realistic_action = self._action(file_menu, "GPU textured render", self.toggle_realistic, "Z", True)
+        self.realistic_action = self._action(
+            file_menu, "GPU textured render", self.toggle_realistic, "Z", True
+        )
         self.viewer.grid_toggled.connect(self.grid_action.setChecked)
         self.viewer.renderer_changed.connect(
-            lambda renderer: self.realistic_action.setChecked(
-                renderer == "gpu_textured"
-            )
+            lambda renderer: self.realistic_action.setChecked(renderer == "gpu_textured")
         )
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
         self.viewer.status_message.connect(self.statusBar().showMessage)
@@ -526,9 +521,7 @@ class MainWindow(QMainWindow):
             return
         self.statusBar().showMessage("Checking for updates...", 3000)
         thread = UpdateCheckThread(self)
-        thread.result_ready.connect(
-            lambda latest: self._on_update_result(latest, automatic)
-        )
+        thread.result_ready.connect(lambda latest: self._on_update_result(latest, automatic))
         thread.finished.connect(thread.deleteLater)
         thread.finished.connect(lambda: self._clear_update_thread(thread))
         self._update_thread = thread
@@ -546,8 +539,7 @@ class MainWindow(QMainWindow):
             QMessageBox.information(
                 self,
                 "Check for updates",
-                "Could not reach PyPI to check for updates.\n"
-                "Check your internet connection and try again.",
+                "Could not reach PyPI to check for updates.\nCheck your internet connection and try again.",
             )
             return
         installed = current_version()
@@ -575,11 +567,7 @@ class MainWindow(QMainWindow):
             title = "Up to date"
             suffix = ""
             stored = ""
-            message = (
-                f"InkSim is up to date.\n\n"
-                f"Installed: {installed}\n"
-                f"Latest:    {latest}"
-            )
+            message = f"InkSim is up to date.\n\nInstalled: {installed}\nLatest:    {latest}"
         if automatic:
             # Automatic checks surface the result permanently in the window
             # title instead of popping up another dialog.  Store only the raw
@@ -609,9 +597,7 @@ class MainWindow(QMainWindow):
         self.command_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.command_table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.command_table.setAlternatingRowColors(True)
-        self.command_table.currentCellChanged.connect(
-            self._command_panel_current_cell_changed
-        )
+        self.command_table.currentCellChanged.connect(self._command_panel_current_cell_changed)
 
         self.command_dock = QDockWidget("Commands", self)
         self.command_dock.setObjectName("commandDock")
@@ -690,8 +676,9 @@ class MainWindow(QMainWindow):
                 QAbstractItemView.PositionAtCenter,
             )
 
-    def _command_panel_current_cell_changed(self, current_row, current_column,
-                                            _previous_row, _previous_column):
+    def _command_panel_current_cell_changed(
+        self, current_row, current_column, _previous_row, _previous_column
+    ):
         if current_row < 0:
             return
         item = self.command_table.item(current_row, current_column)
@@ -855,6 +842,7 @@ class MainWindow(QMainWindow):
         as it has forwarded the design.
         """
         import subprocess
+
         try:
             if os.name == "nt":
                 # Suppress the console window that ``tasklist`` would
@@ -868,11 +856,8 @@ class MainWindow(QMainWindow):
                     creationflags=creationflags,
                 )
                 lowered = result.stdout.lower()
-                return ("inkscape.exe" in lowered
-                        or "inkscape.com" in lowered)
-            result = subprocess.run(
-                ["pgrep", "-x", "inkscape"], capture_output=True, check=False
-            )
+                return "inkscape.exe" in lowered or "inkscape.com" in lowered
+            result = subprocess.run(["pgrep", "-x", "inkscape"], capture_output=True, check=False)
             return result.returncode == 0
         except OSError:
             return False
@@ -893,8 +878,7 @@ class MainWindow(QMainWindow):
                 answer = QMessageBox.question(
                     self,
                     "Close InkSim server",
-                    "The Inkscape instance that started this server is no "
-                    "longer running.\n\nDo you want to close InkSim?",
+                    "The Inkscape instance that started this server is no longer running.\n\nDo you want to close InkSim?",
                 )
                 if answer == QMessageBox.Yes:
                     self._allow_close = True
@@ -927,8 +911,7 @@ class MainWindow(QMainWindow):
     def toggle_realistic(self, checked):
         if not self.viewer._opengl33_available and self.viewer.active_renderer != "gpu_textured":
             self.statusBar().showMessage(
-                "GPU textured renderer requires OpenGL 3.3 (not available); "
-                "using CPU raster renderer",
+                "GPU textured renderer requires OpenGL 3.3 (not available); using CPU raster renderer",
                 5000,
             )
             self.realistic_action.setChecked(False)
@@ -945,7 +928,8 @@ class MainWindow(QMainWindow):
             self.viewer._last_dir = -1
         logger.debug(
             "Show/hide all toggled visible_count to %s/%s",
-            self.viewer.visible_count, total,
+            self.viewer.visible_count,
+            total,
         )
         self.viewer.notify_cursor_changed()
         self.viewer.invalidate_cache()
@@ -974,9 +958,7 @@ class MainWindow(QMainWindow):
             chosen_background = dialog.background_color
             if chosen_background != self.viewer.background_color:
                 self.viewer.background_color = chosen_background
-                self.viewer._save_view_setting(
-                    "view/background_color", list(chosen_background)
-                )
+                self.viewer._save_view_setting("view/background_color", list(chosen_background))
                 if self.viewer.active_renderer == "gpu_textured":
                     self.viewer._gl_widget.set_background(*chosen_background)
                 self.viewer.invalidate_cache()
@@ -1018,8 +1000,7 @@ class MainWindow(QMainWindow):
         source_path = self._preferred_source_path()
         base_name = source_path.stem if source_path else "inksim"
         current_extension = (
-            self.current_file_path.suffix.lstrip(".").lower()
-            if self.current_file_path else ""
+            self.current_file_path.suffix.lstrip(".").lower() if self.current_file_path else ""
         )
         writable_extensions = {
             file_type["extension"] for file_type in get_supported_output_formats()
@@ -1090,9 +1071,7 @@ class MainWindow(QMainWindow):
 
     def _can_export_image(self):
         if self.viewer.stitches_np.shape[0] == 0:
-            QMessageBox.information(
-                self, "Export", "No embroidery file is loaded to export."
-            )
+            QMessageBox.information(self, "Export", "No embroidery file is loaded to export.")
             return False
         return True
 
@@ -1138,7 +1117,9 @@ class MainWindow(QMainWindow):
             return image.save(str(path), format, quality)
         return image
 
-    def _show_export_preview(self, title, image, default_name, renderer_key=None, icon=False, dpi=300):
+    def _show_export_preview(
+        self, title, image, default_name, renderer_key=None, icon=False, dpi=300
+    ):
         default_path = str(Path(self.last_directory or Path.cwd()) / default_name)
         bounds = self.viewer.bounds
         design_width_mm = bounds[2] - bounds[0]
@@ -1250,10 +1231,7 @@ class MainWindow(QMainWindow):
             self._add_recent_directory(selected_path.parent)
         total = self.viewer.stitches_np.shape[0]
         bounds = self.viewer.bounds
-        self._base_title = (
-            f"{APP_TITLE} - {selected_path.name} - {total} sts - "
-            f"{bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm"
-        )
+        self._base_title = f"{APP_TITLE} - {selected_path.name} - {total} sts - {bounds[2] - bounds[0]:.1f}x{bounds[3] - bounds[1]:.1f}mm"
         self._update_window_title()
         self.progress.update()
         self.refresh_command_panel()

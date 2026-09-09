@@ -27,9 +27,7 @@ class RendererWarmupThread(QThread):
             dtype=np.float32,
         )
         render_grid_numba(buffer, 1.0, 8.0, 8.0)
-        render_shaded_numba(
-            buffer, stitches, 1, 1.0, 8.0, 8.0, True, 0.4, 0.75, 0.45
-        )
+        render_shaded_numba(buffer, stitches, 1, 1.0, 8.0, 8.0, True, 0.4, 0.75, 0.45)
         render_fabric_numba(buffer, 1.0)
 
 
@@ -74,17 +72,9 @@ class SplashScreen(QSplashScreen):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowFlags(
-            Qt.FramelessWindowHint
-            | Qt.SplashScreen
-            | Qt.WindowStaysOnTopHint
-        )
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.SplashScreen | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setStyleSheet(
-            "background: #faf8f4;"
-            "border: 1px solid #c8c4bc;"
-            "border-radius: 8px;"
-        )
+        self.setStyleSheet("background: #faf8f4;border: 1px solid #c8c4bc;border-radius: 8px;")
         self.setWindowTitle("InkSim")
 
         self.logo = QLabel(self)
@@ -97,8 +87,7 @@ class SplashScreen(QSplashScreen):
         self.status = QLabel("Starting InkSim...", self)
         self.status.setAlignment(Qt.AlignCenter)
         self.status.setStyleSheet(
-            "color: #343434; background: rgba(255, 255, 255, 180); "
-            "border: 0; padding: 5px 10px;"
+            "color: #343434; background: rgba(255, 255, 255, 180); border: 0; padding: 5px 10px;"
         )
 
         self.spinner = LoadingSpinner(self)

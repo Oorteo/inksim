@@ -59,8 +59,7 @@ class TimelineWidget(QWidget):
         if total == 0 or width == 0:
             return
         bar_width = width - 2 * self.margin_x
-        ratio = max(0.0, min(1.0, (mouse_x - self.margin_x) / bar_width
-                             if bar_width > 0 else 0))
+        ratio = max(0.0, min(1.0, (mouse_x - self.margin_x) / bar_width if bar_width > 0 else 0))
         self.seek_requested.emit(int(ratio * total))
         self.update()
 
@@ -88,8 +87,9 @@ class TimelineWidget(QWidget):
         if bar_width < total:
             step = max(1, total // max(1, bar_width))
             for index in range(0, total, step):
-                color = QColor(int(stitches[index, 4]), int(stitches[index, 5]),
-                               int(stitches[index, 6]))
+                color = QColor(
+                    int(stitches[index, 4]), int(stitches[index, 5]), int(stitches[index, 6])
+                )
                 x = bar_x + int(index / total * bar_width)
                 painter.setPen(QPen(color))
                 painter.drawLine(x, self.bar_y, x, self.bar_y + self.bar_h)
@@ -115,21 +115,24 @@ class TimelineWidget(QWidget):
                 painter.drawRect(x0, self.bar_y, bar_width - (x0 - bar_x), self.bar_h)
 
         command_colors = {
-            "JUMP": QColor(100, 100, 100), "COLOR CHANGE": QColor(210, 45, 45),
-            "TRIM": QColor(230, 140, 20), "STOP": QColor(180, 40, 40),
-            "SLOW": QColor(70, 100, 180), "FAST": QColor(40, 150, 90),
+            "JUMP": QColor(100, 100, 100),
+            "COLOR CHANGE": QColor(210, 45, 45),
+            "TRIM": QColor(230, 140, 20),
+            "STOP": QColor(180, 40, 40),
+            "SLOW": QColor(70, 100, 180),
+            "FAST": QColor(40, 150, 90),
         }
         progress_width = int(visible / total * bar_width)
         painter.setBrush(QColor(255, 255, 255, 150))
         painter.setPen(Qt.NoPen)
         if progress_width < bar_width:
-            painter.drawRect(bar_x + progress_width, self.bar_y,
-                             bar_width - progress_width, self.bar_h)
+            painter.drawRect(
+                bar_x + progress_width, self.bar_y, bar_width - progress_width, self.bar_h
+            )
         painter.restore()
 
         painter.save()
-        painter.setClipRect(QRect(bar_x, 0, bar_width,
-                                  self.bar_y + self.bar_h))
+        painter.setClipRect(QRect(bar_x, 0, bar_width, self.bar_y + self.bar_h))
         for stitch_index, commands in self.viewer.command_events.items():
             marker_x = bar_x + int(stitch_index / total * bar_width)
             for marker_index, command in enumerate(commands):
@@ -139,14 +142,15 @@ class TimelineWidget(QWidget):
                 color = color or QColor(80, 80, 80)
                 marker_y = self.bar_y - 5 + marker_index * 5
                 painter.setPen(QPen(QColor(30, 30, 30), 1))
-                painter.drawLine(marker_x, marker_y, marker_x,
-                                 self.bar_y + self.bar_h)
+                painter.drawLine(marker_x, marker_y, marker_x, self.bar_y + self.bar_h)
                 painter.setBrush(color)
-                painter.drawPolygon([
-                    QPoint(marker_x, marker_y),
-                    QPoint(marker_x - 4, marker_y + 5),
-                    QPoint(marker_x + 4, marker_y + 5),
-                ])
+                painter.drawPolygon(
+                    [
+                        QPoint(marker_x, marker_y),
+                        QPoint(marker_x - 4, marker_y + 5),
+                        QPoint(marker_x + 4, marker_y + 5),
+                    ]
+                )
         painter.restore()
 
         knob_x = bar_x + progress_width
@@ -161,12 +165,15 @@ class TimelineWidget(QWidget):
             dx = float(last_stitch[2] - last_stitch[0])
             dy = float(last_stitch[3] - last_stitch[1])
             last_step_mm = (dx * dx + dy * dy) ** 0.5
-        stitches_per_minute = int(round(
-            self.viewer.play_step / self.viewer.play_speed * 60000
-        )) if self.viewer.play_speed > 0 else 0
+        stitches_per_minute = (
+            int(round(self.viewer.play_step / self.viewer.play_speed * 60000))
+            if self.viewer.play_speed > 0
+            else 0
+        )
         if visible > 0:
-            txt_left = (f"{visible}/{total} | {stitches_per_minute} stitches/min "
-                        f"| [{last_step_mm:.2f} mm]")
+            txt_left = (
+                f"{visible}/{total} | {stitches_per_minute} stitches/min | [{last_step_mm:.2f} mm]"
+            )
         else:
             txt_left = f"{visible}/{total} | {stitches_per_minute} stitches/min"
         commands = self.viewer.command_events.get(visible, ())
@@ -175,9 +182,7 @@ class TimelineWidget(QWidget):
         txt_center = f"{visible / total * 100:.1f}%"
         if self.viewer.bounds != (0, 0, 0, 0):
             bounds = self.viewer.bounds
-            txt_right = (f"{bounds[2] - bounds[0]:.1f} x "
-                         f"{bounds[3] - bounds[1]:.1f} mm | "
-                         f"{self.viewer.color_count} color sections")
+            txt_right = f"{bounds[2] - bounds[0]:.1f} x {bounds[3] - bounds[1]:.1f} mm | {self.viewer.color_count} color sections"
         else:
             txt_right = ""
         font_metrics = painter.fontMetrics()
@@ -187,10 +192,8 @@ class TimelineWidget(QWidget):
         center_width = int(bar_width * 0.15)
         right_width = bar_width - left_width - center_width
         left_rect = QRect(bar_x, text_top, left_width, text_height)
-        center_rect = QRect(bar_x + left_width, text_top,
-                            center_width, text_height)
-        right_rect = QRect(bar_x + left_width + center_width, text_top,
-                           right_width, text_height)
+        center_rect = QRect(bar_x + left_width, text_top, center_width, text_height)
+        right_rect = QRect(bar_x + left_width + center_width, text_top, right_width, text_height)
         painter.drawText(
             left_rect,
             Qt.AlignLeft | Qt.AlignVCenter,

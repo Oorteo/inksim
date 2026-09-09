@@ -7,13 +7,14 @@ This widget renders stitches as textured thread quads directly to the
 screen using the same GPU pipeline as the offscreen export renderer.
 It is used when the active stitch renderer is "gpu_textured".
 """
+
 import ctypes
-import math
 import time
 from pathlib import Path
 
 import numpy as np
-from PySide6.QtCore import QSize, Qt
+from OpenGL.GL import *
+from PySide6.QtCore import Qt
 from PySide6.QtGui import (
     QColor,
     QFont,
@@ -21,20 +22,15 @@ from PySide6.QtGui import (
     QPainter,
     QPainterPath,
     QPen,
-    QSurfaceFormat,
 )
 from PySide6.QtOpenGL import (
     QOpenGLBuffer,
-    QOpenGLFramebufferObject,
-    QOpenGLFramebufferObjectFormat,
     QOpenGLShader,
     QOpenGLShaderProgram,
     QOpenGLTexture,
     QOpenGLVertexArrayObject,
 )
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
-from PySide6.QtWidgets import QApplication
-from OpenGL.GL import *
 
 from ..constants import DENSITY_CRITICAL_PER_MM2, DENSITY_WARNING_PER_MM2
 from ..debug import is_enabled, logger
@@ -44,8 +40,8 @@ from ..render.stitches_gl import (
     _lighting_coefficients,
     _load_texture,
     _normal_strengths,
-    texture_width_fraction,
     texture_cap_radius_fraction,
+    texture_width_fraction,
 )
 
 
@@ -64,6 +60,7 @@ def _check_gl_error(label):
         GL_INVALID_FRAMEBUFFER_OPERATION: "INVALID_FRAMEBUFFER_OPERATION",
     }
     logger.error("OpenGL error after %s: %s (0x%x)", label, names.get(err, "UNKNOWN"), err)
+
 
 VERTEX_SHADER = """
 #version 330 core
@@ -271,6 +268,7 @@ void main() {
     fragColor = vec4(col, 1.0);
 }
 """
+
 
 def list_thread_textures():
     """Return ``[(label, path)]`` of available thread normal/mask textures.
@@ -537,7 +535,9 @@ class GLStitchWidget(QOpenGLWidget):
         # Density point shader.
         self._density_program = QOpenGLShaderProgram(self)
         self._density_program.addShaderFromSourceCode(QOpenGLShader.Vertex, DENSITY_VERTEX_SHADER)
-        self._density_program.addShaderFromSourceCode(QOpenGLShader.Fragment, DENSITY_FRAGMENT_SHADER)
+        self._density_program.addShaderFromSourceCode(
+            QOpenGLShader.Fragment, DENSITY_FRAGMENT_SHADER
+        )
         if not self._density_program.link():
             logger.error("Density shader link failed: %s", self._density_program.log())
 
@@ -699,7 +699,11 @@ class GLStitchWidget(QOpenGLWidget):
         if elapsed > 0.1:
             logger.warning(
                 "GLStitchWidget._upload_geometry slow: %.3fs (stitches=%s, verts=%s, idx=%s)",
-                elapsed, self._stitches.shape[0], verts.shape[0], idx.shape[0])
+                elapsed,
+                self._stitches.shape[0],
+                verts.shape[0],
+                idx.shape[0],
+            )
 
     def paintGL(self):
         if self._program is None or not self._program.isLinked():
@@ -733,12 +737,27 @@ class GLStitchWidget(QOpenGLWidget):
             tx = self._pan[0] * 2.0 / w - 1.0
             ty = 1.0 - self._pan[1] * 2.0 / h
 
-            transform = np.array([
-                sx, 0.0, 0.0, 0.0,
-                0.0, sy, 0.0, 0.0,
-                0.0, 0.0, 1.0, 0.0,
-                tx, ty, 0.0, 1.0,
-            ], dtype=np.float32)
+            transform = np.array(
+                [
+                    sx,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    sy,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.0,
+                    tx,
+                    ty,
+                    0.0,
+                    1.0,
+                ],
+                dtype=np.float32,
+            )
 
             self._program.bind()
             glUniformMatrix4fv(self._program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
@@ -749,8 +768,12 @@ class GLStitchWidget(QOpenGLWidget):
             glUniform1f(self._program.uniformLocation("u_k_s"), k_s)
             glUniform1f(self._program.uniformLocation("u_specular_exponent"), 12.0)
             tangent_strength, bitangent_strength = _normal_strengths(self._zoom)
-            glUniform1f(self._program.uniformLocation("u_normal_strength_tangent"), tangent_strength)
-            glUniform1f(self._program.uniformLocation("u_normal_strength_bitangent"), bitangent_strength)
+            glUniform1f(
+                self._program.uniformLocation("u_normal_strength_tangent"), tangent_strength
+            )
+            glUniform1f(
+                self._program.uniformLocation("u_normal_strength_bitangent"), bitangent_strength
+            )
             glUniform1i(self._program.uniformLocation("u_debug_mode"), self._debug_mode)
 
             self._texture.bind(0)
@@ -765,8 +788,7 @@ class GLStitchWidget(QOpenGLWidget):
                 for stitch_index in range(count - 1, -1, -1):
                     index_count = int(self._index_counts[stitch_index])
                     previous_count = (
-                        int(self._index_counts[stitch_index - 1])
-                        if stitch_index > 0 else 0
+                        int(self._index_counts[stitch_index - 1]) if stitch_index > 0 else 0
                     )
                     if index_count > previous_count:
                         glDrawElements(
@@ -809,8 +831,13 @@ class GLStitchWidget(QOpenGLWidget):
 
         elapsed = time.perf_counter() - paint_started_at
         if elapsed > 0.1:
-            logger.warning("GLStitchWidget.paintGL slow: %.3fs (visible=%s/%s, draw_count=%s)",
-                           elapsed, count, self._stitches.shape[0], draw_count)
+            logger.warning(
+                "GLStitchWidget.paintGL slow: %.3fs (visible=%s/%s, draw_count=%s)",
+                elapsed,
+                count,
+                self._stitches.shape[0],
+                draw_count,
+            )
 
     def _draw_trace_overlay(self):
         """Draw the viewer's event trace panel on top of the GL output."""
@@ -890,8 +917,9 @@ class GLStitchWidget(QOpenGLWidget):
         painter.drawLine(needle_x, needle_y - arm, needle_x, needle_y + arm)
         if outer_radius:
             painter.setBrush(Qt.NoBrush)
-            painter.drawEllipse(needle_x - outer_radius, needle_y - outer_radius,
-                                outer_radius * 2, outer_radius * 2)
+            painter.drawEllipse(
+                needle_x - outer_radius, needle_y - outer_radius, outer_radius * 2, outer_radius * 2
+            )
         painter.setPen(QPen(color, (3 if outer_radius else 2) * w))
         painter.setBrush(Qt.NoBrush)
         painter.drawEllipse(needle_x - radius, needle_y - radius, radius * 2, radius * 2)
@@ -901,8 +929,9 @@ class GLStitchWidget(QOpenGLWidget):
         painter.setBrush(color)
         painter.setPen(QPen(QColor(10, 10, 10), 2 * w))
         marker_radius = 5 if outer_radius else 3
-        painter.drawEllipse(needle_x - marker_radius, needle_y - marker_radius,
-                            marker_radius * 2, marker_radius * 2)
+        painter.drawEllipse(
+            needle_x - marker_radius, needle_y - marker_radius, marker_radius * 2, marker_radius * 2
+        )
         painter.end()
 
     def _world_to_screen(self, x, y):
@@ -944,15 +973,32 @@ class GLStitchWidget(QOpenGLWidget):
         sy = -self._zoom * 2.0 / h
         tx = self._pan[0] * 2.0 / w - 1.0
         ty = 1.0 - self._pan[1] * 2.0 / h
-        transform = np.array([
-            sx, 0.0, 0.0, 0.0,
-            0.0, sy, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            tx, ty, 0.0, 1.0,
-        ], dtype=np.float32)
+        transform = np.array(
+            [
+                sx,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                sy,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                tx,
+                ty,
+                0.0,
+                1.0,
+            ],
+            dtype=np.float32,
+        )
 
         self._density_program.bind()
-        glUniformMatrix4fv(self._density_program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
+        glUniformMatrix4fv(
+            self._density_program.uniformLocation("u_transform"), 1, GL_FALSE, transform
+        )
         glUniform1f(self._density_program.uniformLocation("u_zoom"), self._zoom)
 
         self._density_vao.bind()
@@ -962,11 +1008,17 @@ class GLStitchWidget(QOpenGLWidget):
         self._density_program.enableAttributeArray(0)
         self._density_program.setAttributeBuffer(0, GL_FLOAT, 0, 2, stride)
         self._density_program.enableAttributeArray(1)
-        self._density_program.setAttributeBuffer(1, GL_FLOAT, 2 * np.dtype(np.float32).itemsize, 3, stride)
+        self._density_program.setAttributeBuffer(
+            1, GL_FLOAT, 2 * np.dtype(np.float32).itemsize, 3, stride
+        )
         self._density_program.enableAttributeArray(2)
-        self._density_program.setAttributeBuffer(2, GL_FLOAT, 5 * np.dtype(np.float32).itemsize, 1, stride)
+        self._density_program.setAttributeBuffer(
+            2, GL_FLOAT, 5 * np.dtype(np.float32).itemsize, 1, stride
+        )
         self._density_program.enableAttributeArray(3)
-        self._density_program.setAttributeBuffer(3, GL_FLOAT, 6 * np.dtype(np.float32).itemsize, 1, stride)
+        self._density_program.setAttributeBuffer(
+            3, GL_FLOAT, 6 * np.dtype(np.float32).itemsize, 1, stride
+        )
         glDrawArrays(GL_POINTS, 0, visible)
         self._density_program.disableAttributeArray(0)
         self._density_program.disableAttributeArray(1)

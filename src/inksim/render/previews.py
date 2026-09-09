@@ -47,9 +47,7 @@ def preview_stitches(renderer_key, width=360, height=220):
         image.fill(QColor(255, 255, 255))
         painter = QPainter(image)
         painter.setRenderHint(QPainter.Antialiasing)
-        VECTOR_RENDERERS[renderer_key](
-            painter, stitches, len(stitches), 1.0, 0, 0, line_width
-        )
+        VECTOR_RENDERERS[renderer_key](painter, stitches, len(stitches), 1.0, 0, 0, line_width)
         painter.end()
         return image
 

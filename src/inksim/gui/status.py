@@ -55,7 +55,7 @@ class _SliderPopup(QMenu):
             slider.setFixedHeight(140)
             slider.setValue(self._to_slider(getattr(viewer, attr), lo, hi))
             slider.valueChanged.connect(
-                lambda value, a=attr, l=lo, h=hi: self._apply(a, value, l, h)
+                lambda value, a=attr, lo=lo, h=hi: self._apply(a, value, lo, h)
             )
             column.addWidget(slider, alignment=Qt.AlignCenter)
 
@@ -121,10 +121,10 @@ class _NeedlePopup(QMenu):
         radius_slider = QSlider(Qt.Vertical)
         radius_slider.setRange(0, 1000)
         radius_slider.setFixedHeight(140)
-        radius_slider.setValue(self._to_slider(
-            viewer.needle_radius, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX))
-        radius_slider.valueChanged.connect(
-            lambda v: self._apply_radius(v))
+        radius_slider.setValue(
+            self._to_slider(viewer.needle_radius, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX)
+        )
+        radius_slider.valueChanged.connect(lambda v: self._apply_radius(v))
         radius_col.addWidget(radius_slider, alignment=Qt.AlignCenter)
         self._radius_label = QLabel()
         self._radius_label.setAlignment(Qt.AlignCenter)
@@ -140,10 +140,10 @@ class _NeedlePopup(QMenu):
         width_slider = QSlider(Qt.Vertical)
         width_slider.setRange(0, 1000)
         width_slider.setFixedHeight(140)
-        width_slider.setValue(self._to_slider(
-            viewer.needle_width, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX))
-        width_slider.valueChanged.connect(
-            lambda v: self._apply_width(v))
+        width_slider.setValue(
+            self._to_slider(viewer.needle_width, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX)
+        )
+        width_slider.valueChanged.connect(lambda v: self._apply_width(v))
         width_col.addWidget(width_slider, alignment=Qt.AlignCenter)
         self._width_label = QLabel()
         self._width_label.setAlignment(Qt.AlignCenter)
@@ -178,21 +178,20 @@ class _NeedlePopup(QMenu):
         return lo + (value / 1000.0) * (hi - lo)
 
     def _apply_radius(self, value):
-        self.viewer.needle_radius = self._from_slider(
-            value, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX)
+        self.viewer.needle_radius = self._from_slider(value, NEEDLE_RADIUS_MIN, NEEDLE_RADIUS_MAX)
         self.viewer._save_view_setting("view/needle_radius", self.viewer.needle_radius)
         self._refresh_labels()
         self.viewer.update()
 
     def _apply_width(self, value):
-        self.viewer.needle_width = self._from_slider(
-            value, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX)
+        self.viewer.needle_width = self._from_slider(value, NEEDLE_WIDTH_MIN, NEEDLE_WIDTH_MAX)
         self.viewer._save_view_setting("view/needle_width", self.viewer.needle_width)
         self._refresh_labels()
         self.viewer.update()
 
     def _choose_color(self):
         from PySide6.QtWidgets import QColorDialog
+
         original_color = self.viewer.needle_color
         dialog = QColorDialog(QColor(*original_color), self)
         dialog.setWindowTitle("Needle color")
@@ -214,8 +213,7 @@ class _NeedlePopup(QMenu):
         if not chosen.isValid():
             return
         self.viewer.needle_color = (chosen.red(), chosen.green(), chosen.blue())
-        self.viewer._save_view_setting(
-            "view/needle_color", list(self.viewer.needle_color))
+        self.viewer._save_view_setting("view/needle_color", list(self.viewer.needle_color))
         self.viewer.update()
 
     def _toggle_fullscreen(self, checked):
@@ -269,9 +267,7 @@ class ModeBar(QWidget):
         sizer.addWidget(self.needle_reset_button)
         self.settings_button = QPushButton(self)
         self.settings_button.setMinimumWidth(180)
-        self.settings_button.setToolTip(
-            "Click to adjust dark factor, light factor and line width"
-        )
+        self.settings_button.setToolTip("Click to adjust dark factor, light factor and line width")
         self.settings_button.clicked.connect(self._show_sliders)
         sizer.addWidget(self.settings_button)
         self.reset_button = QPushButton(self)
@@ -288,15 +284,11 @@ class ModeBar(QWidget):
 
     def _show_sliders(self):
         popup = _SliderPopup(self, self.viewer)
-        popup.exec(self.settings_button.mapToGlobal(
-            self.settings_button.rect().bottomLeft()
-        ))
+        popup.exec(self.settings_button.mapToGlobal(self.settings_button.rect().bottomLeft()))
 
     def _show_needle_popup(self):
         popup = _NeedlePopup(self, self.viewer)
-        popup.exec(self.needle_button.mapToGlobal(
-            self.needle_button.rect().bottomLeft()
-        ))
+        popup.exec(self.needle_button.mapToGlobal(self.needle_button.rect().bottomLeft()))
 
     def _reset_needle(self):
         from ..constants import (
@@ -304,6 +296,7 @@ class ModeBar(QWidget):
             DEFAULT_NEEDLE_RADIUS,
             DEFAULT_NEEDLE_WIDTH,
         )
+
         self.viewer.needle_color = DEFAULT_NEEDLE_COLOR
         self.viewer.needle_radius = DEFAULT_NEEDLE_RADIUS
         self.viewer.needle_width = DEFAULT_NEEDLE_WIDTH
@@ -316,9 +309,7 @@ class ModeBar(QWidget):
 
     def update_indicators(self):
         self.settings_button.setText(
-            f"DF: {self.viewer.dark_factor:.2f}  "
-            f"LF: {self.viewer.light_factor:.2f}  "
-            f"LW: {self.viewer.line_width:.2f}"
+            f"DF: {self.viewer.dark_factor:.2f}  LF: {self.viewer.light_factor:.2f}  LW: {self.viewer.line_width:.2f}"
         )
         states = {
             "Z": self.viewer.active_renderer == "gpu_textured",
@@ -331,8 +322,10 @@ class ModeBar(QWidget):
             jump_state = 2 if self.viewer.risky_jumps_only else 1
         for mode, button in self.buttons.items():
             state = (
-                jump_state if mode == "J"
-                else self.viewer.background_cycle if mode == "B"
+                jump_state
+                if mode == "J"
+                else self.viewer.background_cycle
+                if mode == "B"
                 else int(states[mode])
             )
             if mode == "J" and state == 2:
@@ -348,9 +341,8 @@ class ModeBar(QWidget):
             else:
                 color = QColor(225, 225, 225)
             foreground = (
-                "white" if (mode == "B" and state == 1) or (state and mode != "B")
+                "white"
+                if (mode == "B" and state == 1) or (state and mode != "B")
                 else "rgb(45, 45, 45)"
             )
-            button.setStyleSheet(
-                f"background: {color.name()}; color: {foreground};"
-            )
+            button.setStyleSheet(f"background: {color.name()}; color: {foreground};")

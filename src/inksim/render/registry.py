@@ -30,7 +30,12 @@ STITCH_RENDERERS = (
     StitchRenderer("simple", "Simple", "vector", None),
     StitchRenderer("shaded", "Shaded", "raster", render_shaded_numba),
     StitchRenderer("shaded_volume", "Shaded Volume", "raster", render_shaded_volume_numba),
-    StitchRenderer("shaded_volume_natural", "Shaded Volume Natural", "raster", render_shaded_volume_natural_numba),
+    StitchRenderer(
+        "shaded_volume_natural",
+        "Shaded Volume Natural",
+        "raster",
+        render_shaded_volume_natural_numba,
+    ),
     StitchRenderer("realistic_twist", "Realistic Twist", "raster", render_realistic_twist_numba),
     StitchRenderer("gpu_textured", "GPU Textured", "raster", render_gpu_textured),
 )
