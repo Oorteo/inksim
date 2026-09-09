@@ -36,6 +36,12 @@ def render_grid_numba(buf: np.ndarray, zoom: float, pan_x: float, pan_y: float) 
     solid_fine_grid = zoom >= 14.0
     fine_grid_dot_step = 2 if zoom >= 11.0 else 4
     solid_centimeter_grid = zoom >= 2.5
+    # 0.1 mm micro grid fades in from 30x to 50x zoom, matching the GPU
+    # shader (microFade = smoothstep(30, 50, zoom), strength 10%).
+    micro_fade = 0.0
+    if zoom >= 30.0:
+        micro_fade = min(1.0, (zoom - 30.0) / 20.0)
+    show_micro_grid = micro_fade > 0.0
 
     # Choose light or dark grid lines based on the background colour.
     bg_lum = (int(buf[0, 0, 0]) + int(buf[0, 0, 1]) + int(buf[0, 0, 2])) // 3
@@ -90,6 +96,38 @@ def render_grid_numba(buf: np.ndarray, zoom: float, pan_x: float, pan_y: float) 
                 buf[sy, x, 0] = _mix_channel(buf[sy, x, 0], line, 15, denom)
                 buf[sy, x, 1] = _mix_channel(buf[sy, x, 1], line, 15, denom)
                 buf[sy, x, 2] = _mix_channel(buf[sy, x, 2], line, 15, denom)
+
+    # 0.1 mm micro grid (fades in at high zoom, matching the GPU shader).
+    if show_micro_grid:
+        micro_strength = int(round(10 * micro_fade))
+        x_micro_start = int(np.floor(x_world_min / 0.1))
+        x_micro_end = int(np.ceil(x_world_max / 0.1))
+        y_micro_start = int(np.floor(y_world_min / 0.1))
+        y_micro_end = int(np.ceil(y_world_max / 0.1))
+
+        for xm in range(x_micro_start, x_micro_end + 1):
+            xw_micro = xm * 0.1
+            if abs(xw_micro - round(xw_micro)) < 1e-6:
+                continue  # skip 1 mm lines (already drawn by the fine grid)
+            sx = int(xw_micro * zoom + pan_x)
+            if sx < 0 or sx >= w:
+                continue
+            for y in range(h):
+                buf[y, sx, 0] = _mix_channel(buf[y, sx, 0], line, micro_strength, denom)
+                buf[y, sx, 1] = _mix_channel(buf[y, sx, 1], line, micro_strength, denom)
+                buf[y, sx, 2] = _mix_channel(buf[y, sx, 2], line, micro_strength, denom)
+
+        for ym in range(y_micro_start, y_micro_end + 1):
+            yw_micro = ym * 0.1
+            if abs(yw_micro - round(yw_micro)) < 1e-6:
+                continue
+            sy = int(yw_micro * zoom + pan_y)
+            if sy < 0 or sy >= h:
+                continue
+            for x in range(w):
+                buf[sy, x, 0] = _mix_channel(buf[sy, x, 0], line, micro_strength, denom)
+                buf[sy, x, 1] = _mix_channel(buf[sy, x, 1], line, micro_strength, denom)
+                buf[sy, x, 2] = _mix_channel(buf[sy, x, 2], line, micro_strength, denom)
 
     # Vertical lines.
     for xw in range(x_start, x_end + 1, 10):
