@@ -1,8 +1,14 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+"""Interactive stitch timeline shown below the embroidery viewer."""
+
+from __future__ import annotations
+
+from typing import Any
+
 from PySide6.QtCore import QPoint, QRect, Qt, Signal
-from PySide6.QtGui import QColor, QPainter, QPen
+from PySide6.QtGui import QColor, QMouseEvent, QPainter, QPaintEvent, QPen
 from PySide6.QtWidgets import QWidget
 
 
@@ -11,7 +17,7 @@ class TimelineWidget(QWidget):
 
     seek_requested = Signal(int)
 
-    def __init__(self, parent, viewer_panel):
+    def __init__(self, parent: QWidget, viewer_panel: Any) -> None:
         super().__init__(parent)
         self.viewer = viewer_panel
         self.setMinimumHeight(58)
@@ -22,7 +28,7 @@ class TimelineWidget(QWidget):
         self.bar_y = 8
         self.bar_h = 14
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
             self.dragging = True
             self.drag_moved = False
@@ -33,7 +39,7 @@ class TimelineWidget(QWidget):
         else:
             super().mousePressEvent(event)
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
             if self.dragging:
                 self.seek(event.position().x())
@@ -45,7 +51,7 @@ class TimelineWidget(QWidget):
         else:
             super().mouseReleaseEvent(event)
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
         if self.dragging and event.buttons() & Qt.LeftButton:
             self.drag_moved = True
             self.seek(event.position().x())
@@ -53,7 +59,7 @@ class TimelineWidget(QWidget):
         else:
             super().mouseMoveEvent(event)
 
-    def seek(self, mouse_x):
+    def seek(self, mouse_x: float) -> None:
         width = self.width()
         total = self.viewer.stitches_np.shape[0]
         if total == 0 or width == 0:
@@ -63,7 +69,7 @@ class TimelineWidget(QWidget):
         self.seek_requested.emit(int(ratio * total))
         self.update()
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.fillRect(self.rect(), QColor(250, 250, 250))
@@ -94,11 +100,12 @@ class TimelineWidget(QWidget):
                 painter.setPen(QPen(color))
                 painter.drawLine(x, self.bar_y, x, self.bar_y + self.bar_h)
         else:
-            last_color = None
+            last_color: tuple[int, int, int] | None = None
             block_start = 0
             for index in range(total):
-                color = tuple(int(value) for value in stitches[index, 4:7])
-                if color != last_color and last_color is not None:
+                rgb = tuple(int(value) for value in stitches[index, 4:7])
+                assert len(rgb) == 3
+                if rgb != last_color and last_color is not None:
                     x0 = bar_x + int(block_start / total * bar_width)
                     x1 = bar_x + int(index / total * bar_width)
                     qcolor = QColor(*last_color)
@@ -106,7 +113,7 @@ class TimelineWidget(QWidget):
                     painter.setPen(QPen(qcolor))
                     painter.drawRect(x0, self.bar_y, max(2, x1 - x0), self.bar_h)
                     block_start = index
-                last_color = color
+                last_color = rgb
             if last_color:
                 x0 = bar_x + int(block_start / total * bar_width)
                 qcolor = QColor(*last_color)
@@ -136,14 +143,14 @@ class TimelineWidget(QWidget):
         for stitch_index, commands in self.viewer.command_events.items():
             marker_x = bar_x + int(stitch_index / total * bar_width)
             for marker_index, command in enumerate(commands):
-                color = command_colors.get(command)
-                if color is None and command.startswith("COLOR CHANGE"):
-                    color = command_colors["COLOR CHANGE"]
-                color = color or QColor(80, 80, 80)
+                marker_color = command_colors.get(command)
+                if marker_color is None and command.startswith("COLOR CHANGE"):
+                    marker_color = command_colors["COLOR CHANGE"]
+                marker_color = marker_color or QColor(80, 80, 80)
                 marker_y = self.bar_y - 5 + marker_index * 5
                 painter.setPen(QPen(QColor(30, 30, 30), 1))
                 painter.drawLine(marker_x, marker_y, marker_x, self.bar_y + self.bar_h)
-                painter.setBrush(color)
+                painter.setBrush(marker_color)
                 painter.drawPolygon(
                     [
                         QPoint(marker_x, marker_y),

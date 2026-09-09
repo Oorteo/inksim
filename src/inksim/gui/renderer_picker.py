@@ -3,6 +3,8 @@
 
 """Renderer selection dialog with a live representative preview."""
 
+from __future__ import annotations
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QKeySequence, QPixmap, QShortcut
 from PySide6.QtWidgets import (
@@ -13,6 +15,7 @@ from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QVBoxLayout,
+    QWidget,
 )
 
 from ..render import STITCH_RENDERERS, preview_stitches
@@ -21,7 +24,7 @@ from ..render import STITCH_RENDERERS, preview_stitches
 class RendererPickerDialog(QDialog):
     """Choose a stitch renderer and preview its output."""
 
-    def __init__(self, parent, selected_renderer):
+    def __init__(self, parent: QWidget, selected_renderer: str) -> None:
         super().__init__(parent)
         self.setWindowTitle("Choose stitch renderer")
         self.resize(760, 460)
@@ -73,14 +76,14 @@ class RendererPickerDialog(QDialog):
         self._confirm_shortcut.activated.connect(self._accept_selection)
         self._update_preview()
 
-    def _update_preview(self):
+    def _update_preview(self) -> None:
         item = self.renderer_list.currentItem()
         if item is None:
             return
         renderer_key = item.data(Qt.UserRole)
         self.preview.setPixmap(QPixmap.fromImage(preview_stitches(renderer_key)))
 
-    def _accept_selection(self):
+    def _accept_selection(self) -> None:
         item = self.renderer_list.currentItem()
         if item is not None:
             self.selected_renderer = item.data(Qt.UserRole)
