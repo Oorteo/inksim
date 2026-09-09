@@ -68,6 +68,33 @@ def _check_gl_error(label: str) -> None:
     logger.error("OpenGL error after %s: %s (0x%x)", label, names.get(err, "UNKNOWN"), err)
 
 
+def _build_reversed_indices(idx: np.ndarray, index_counts: np.ndarray) -> np.ndarray:
+    """Reorder the flat index buffer so stitches draw in reverse order.
+
+    ``index_counts`` is the prefix array from ``_build_satin_quads``:
+    ``index_counts[i]`` is the number of index entries after stitch ``i``.
+    The returned array concatenates each stitch's index range in reverse
+    stitch order (last stitch first), so a single ``glDrawElements`` call
+    over the tail of this buffer reproduces the bottom-view (E) layering
+    without issuing one draw call per stitch.
+    """
+    n = index_counts.shape[0]
+    if n == 0:
+        return np.zeros((0,), dtype=np.uint32)
+    starts = np.empty(n, dtype=np.int64)
+    starts[0] = 0
+    starts[1:] = index_counts[:-1]
+    ends = index_counts
+    # Reverse stitch order: last stitch first.
+    order = np.arange(n - 1, -1, -1, dtype=np.int64)
+    rev_starts = starts[order]
+    rev_ends = ends[order]
+    slices = [idx[s:e] for s, e in zip(rev_starts, rev_ends, strict=False) if e > s]
+    if not slices:
+        return np.zeros((0,), dtype=np.uint32)
+    return np.concatenate(slices)
+
+
 VERTEX_SHADER = """
 #version 330 core
 layout(location = 0) in vec2 a_pos;
@@ -311,6 +338,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._vao: QOpenGLVertexArrayObject | None = None
         self._vbo: QOpenGLBuffer | None = None
         self._ibo: QOpenGLBuffer | None = None
+        self._reversed_ibo: QOpenGLBuffer | None = None
         self._texture: QOpenGLTexture | None = None
         self._cap_texture: QOpenGLTexture | None = None
         self._texture_path: Path | None = None
@@ -331,6 +359,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._verts = np.zeros((0,), dtype=np.float32)
         self._idx = np.zeros((0,), dtype=np.uint32)
         self._index_counts = np.zeros((0,), dtype=np.int64)
+        self._reversed_idx = np.zeros((0,), dtype=np.uint32)
         self._draw_count = 0
         # Overlay state (mirrors the parent viewer's analysis overlays).
         self._show_jumps = False
@@ -406,6 +435,9 @@ class GLStitchWidget(QOpenGLWidget):
             if self._ibo is not None:
                 self._ibo.destroy()
                 self._ibo = None
+            if self._reversed_ibo is not None:
+                self._reversed_ibo.destroy()
+                self._reversed_ibo = None
             if self._vbo is not None:
                 self._vbo.destroy()
                 self._vbo = None
@@ -550,6 +582,9 @@ class GLStitchWidget(QOpenGLWidget):
         self._vbo.create()
         self._ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
         self._ibo.create()
+
+        self._reversed_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+        self._reversed_ibo.create()
 
         self._configure_vao()
 
@@ -722,6 +757,9 @@ class GLStitchWidget(QOpenGLWidget):
         self._verts = verts
         self._idx = idx
         self._index_counts = index_counts
+        # Precompute the reverse-order index buffer once so bottom view (E)
+        # can be drawn with a single draw call instead of one per stitch.
+        self._reversed_idx = _build_reversed_indices(idx, index_counts)
 
         self._vbo.bind()
         if verts.nbytes > self._vbo.size():
@@ -736,6 +774,13 @@ class GLStitchWidget(QOpenGLWidget):
         else:
             self._ibo.write(0, idx.tobytes(), idx.nbytes)  # type: ignore[arg-type]
         self._ibo.release()
+
+        self._reversed_ibo.bind()
+        if self._reversed_idx.nbytes > self._reversed_ibo.size():
+            self._reversed_ibo.allocate(self._reversed_idx.tobytes(), self._reversed_idx.nbytes)
+        else:
+            self._reversed_ibo.write(0, self._reversed_idx.tobytes(), self._reversed_idx.nbytes)  # type: ignore[arg-type]
+        self._reversed_ibo.release()
         self._needs_upload = False
         elapsed = time.perf_counter() - upload_started_at
         if elapsed > 0.1:
@@ -827,19 +872,21 @@ class GLStitchWidget(QOpenGLWidget):
 
             self._vao.bind()
             if self._reverse_draw_order:
-                for stitch_index in range(count - 1, -1, -1):
-                    index_count = int(self._index_counts[stitch_index])
-                    previous_count = (
-                        int(self._index_counts[stitch_index - 1]) if stitch_index > 0 else 0
-                    )
-                    if index_count > previous_count:
-                        glDrawElements(
-                            GL_TRIANGLES,
-                            index_count - previous_count,
-                            GL_UNSIGNED_INT,
-                            ctypes.c_void_p(previous_count * 4),
-                        )
+                # Bottom view (E): draw the visible stitches in reverse order
+                # with a single draw call. The reversed index buffer holds all
+                # stitches last-first, so the first `count` stitches (in
+                # original order) occupy its trailing `draw_count` entries.
+                total = int(self._index_counts[-1]) if self._index_counts.shape[0] > 0 else 0
+                offset = total - draw_count
+                self._reversed_ibo.bind()
+                glDrawElements(
+                    GL_TRIANGLES,
+                    draw_count,
+                    GL_UNSIGNED_INT,
+                    ctypes.c_void_p(offset * 4),
+                )
             else:
+                self._ibo.bind()
                 glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
             self._vao.release()
             if self._cap_texture is not None:
