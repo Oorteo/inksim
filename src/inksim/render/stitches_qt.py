@@ -3,23 +3,25 @@
 
 """Qt-backed stitch rendering helpers."""
 
+from __future__ import annotations
+
 import numpy as np
 from PySide6.QtCore import QLineF, Qt
-from PySide6.QtGui import QColor, QPen
+from PySide6.QtGui import QColor, QPainter, QPen
 
 
 def render_simple_qt(
-    painter,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor=0.0,
-    light_factor=0.0,
-    show_stitches=True,
-):
+    painter: QPainter,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float = 0.0,
+    light_factor: float = 0.0,
+    show_stitches: bool = True,
+) -> None:
     """Draw flat-color stitches with Qt's antialiased vector painter."""
     if not show_stitches or visible_count == 0:
         return

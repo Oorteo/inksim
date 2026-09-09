@@ -111,6 +111,10 @@ ignore_missing_imports = true
 # third-party APIs while the codebase is being gradually typed.
 disable_error_code = ["attr-defined", "no-any-return", "var-annotated", "valid-type", "misc"]
 
+[[tool.mypy.overrides]]
+module = "inksim.render.stitches_gl"
+disable_error_code = ["name-defined"]
+
 [tool.poe.tasks]
 test = "pytest"
 lint = "ruff check ."

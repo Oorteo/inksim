@@ -3,6 +3,8 @@
 
 """Public stitch-rendering API."""
 
+from __future__ import annotations
+
 from .stitches_numba import (
     render_realistic_twist_numba,
     render_shaded_numba,

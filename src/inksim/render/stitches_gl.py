@@ -1,13 +1,9 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""OpenGL textured-quad stitch renderer for InkSim.
+"""OpenGL textured-quad stitch renderer for InkSim."""
 
-This renderer rasterises stitches as continuous textured ribbon quads
-using a normal-map thread texture and Blinn-Phong lighting.  It renders
-offscreen into an RGB buffer so it plugs into the existing viewport
-pipeline without changing the viewer widget.
-"""
+from __future__ import annotations
 
 import json
 import math
@@ -146,7 +142,7 @@ def _default_cap_mask_path() -> Path:
 _DEFAULT_CAP_MASK_PATH = _default_cap_mask_path()
 
 
-def _lighting_coefficients(dark_factor, light_factor):
+def _lighting_coefficients(dark_factor: float, light_factor: float) -> tuple[float, float, float]:
     """Compute Blinn-Phong coefficients from the shading factors.
 
     ``light_factor`` lifts the lit surface and strengthens the sheen;
@@ -160,7 +156,7 @@ def _lighting_coefficients(dark_factor, light_factor):
     return k_a, k_d, k_s
 
 
-def _normal_strengths(zoom):
+def _normal_strengths(zoom: float) -> tuple[float, float]:
     """Return ``(tangent, bitangent)`` normal-map strengths by zoom.
 
     The normal map's tangent (along-length) component produces the pleasant
@@ -177,7 +173,7 @@ def _normal_strengths(zoom):
     return tangent, bitangent
 
 
-def _load_texture(path: Path):
+def _load_texture(path: Path) -> tuple[np.ndarray, int, int]:
     """Load a PNG as an RGBA uint8 NumPy array using Qt (no PIL dependency)."""
     img = QImage(str(path))
     if img.isNull():
@@ -700,16 +696,16 @@ def _upload_geometry(vertices, indices):
 
 
 def render_gpu_textured(
-    buf,
-    stitches,
-    visible_count,
-    zoom,
-    pan_x,
-    pan_y,
-    line_width,
-    dark_factor,
-    light_factor,
-):
+    buf: np.ndarray,
+    stitches: np.ndarray,
+    visible_count: int,
+    zoom: float,
+    pan_x: float,
+    pan_y: float,
+    line_width: float,
+    dark_factor: float,
+    light_factor: float,
+) -> None:
     """Render visible stitches into *buf* as textured thread quads.
 
     *buf* is an RGB uint8 NumPy array with the background already drawn.
@@ -820,7 +816,7 @@ def render_gpu_textured(
         .copy()
     )
 
-    if prev_context:
+    if prev_context and prev_surface is not None:
         prev_context.makeCurrent(prev_surface)
     else:
         _SharedGLContext.context.doneCurrent()
