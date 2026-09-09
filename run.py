@@ -21,7 +21,7 @@ TASKS = {
     "3": ("run type checker", ["uv run poe typecheck"]),
     "4": ("preview format changes", ["uv run ruff format . --diff"]),
     "5": ("format source files", ["uv run poe format"]),
-    "6": ("preview auto-fixes", ["uv run ruff check . --show-fixes --diff"]),
+    "6": ("preview auto-fixes", ["uv run ruff check . --diff"]),
     "7": ("auto-fix lint issues", ["uv run poe fix"]),
     "8": ("install git pre-commit hooks", ["uv run poe install-hooks"]),
     "9": ("install dev environment", ["uv sync --all-groups"]),
