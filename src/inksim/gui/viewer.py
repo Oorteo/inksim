@@ -5,7 +5,7 @@ import time
 from collections import deque
 from pathlib import Path
 from threading import Lock
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pystitch as emb
@@ -20,6 +20,7 @@ from PySide6.QtCore import (
     Signal,
 )
 from PySide6.QtGui import (
+    QAction,
     QCloseEvent,
     QColor,
     QContextMenuEvent,
@@ -54,6 +55,10 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+if TYPE_CHECKING:
+    from .status import ModeBar
+    from .timeline import TimelineWidget
 
 from ..config import Config
 from ..constants import (
@@ -94,7 +99,7 @@ def density_debug(message: str) -> None:
     logger.debug(message)
 
 
-density_results: deque[tuple[str, int, int, Any]] = deque()
+density_results: deque[tuple[str, int, int, np.ndarray | BaseException]] = deque()
 density_results_lock = Lock()
 
 
@@ -162,7 +167,7 @@ class EmbroideryViewerWidget(QWidget):
     def __init__(
         self,
         parent: QWidget | None,
-        progress_bar: Any,
+        progress_bar: TimelineWidget | None,
         config: Config | None = None,
     ) -> None:
         """Create an empty viewer connected to the progress bar.
@@ -210,7 +215,7 @@ class EmbroideryViewerWidget(QWidget):
         self._needle_pulse_anim: QVariantAnimation | None = None
         self.config = config if config is not None else Config()
         self._load_view_settings()
-        self.pattern: Any = None
+        self.pattern: emb.Pattern | None = None
         self.stitches_np = np.zeros((0, 7), dtype=np.float32)
         self.bounds = (0.0, 0.0, 0.0, 0.0)
         self.color_boundaries: list[int] = []
@@ -246,7 +251,7 @@ class EmbroideryViewerWidget(QWidget):
         self._cache_valid = False
         self.progress_bar = progress_bar
         self._gl_widget = self._create_gl_widget()
-        self.mode_panel: Any = None
+        self.mode_panel: ModeBar | None = None
         self.command_dialog: QDialog | None = None
         self.help_dialog: QDialog | None = None
         self.settings_dialog: QDialog | None = None
@@ -908,7 +913,7 @@ class EmbroideryViewerWidget(QWidget):
         height: int = 700,
     ) -> None:
         """Show Markdown sections side by side in a responsive Qt grid."""
-        dialog: Any = getattr(self, key)
+        dialog: QDialog | None = getattr(self, key)
         if dialog is not None:
             dialog.close()
             return
@@ -1181,20 +1186,24 @@ class EmbroideryViewerWidget(QWidget):
         QThreadPool.globalInstance().start(worker)
 
     def _poll_density_results(self) -> None:
-        own_results: list[tuple[str, int, int, Any]] = []
-        other_results: list[tuple[str, int, int, Any]] = []
+        own_finished: list[tuple[int, np.ndarray]] = []
+        own_failed: list[tuple[int, BaseException]] = []
+        other_results: list[tuple[str, int, int, np.ndarray | BaseException]] = []
         with density_results_lock:
             while density_results:
-                result = density_results.popleft()
-                (own_results if result[1] == self._density_owner_id else other_results).append(
-                    result
-                )
+                result_type, _, request_id, result = density_results.popleft()
+                if request_id == self._density_owner_id:
+                    if isinstance(result, np.ndarray):
+                        own_finished.append((request_id, result))
+                    else:
+                        own_failed.append((request_id, result))
+                else:
+                    other_results.append((result_type, _, request_id, result))
             density_results.extend(other_results)
-        for result_type, _, request_id, result in own_results:
-            if result_type == "finished":
-                self._density_ready(request_id, result)
-            else:
-                self._density_failed(request_id, result)
+        for request_id, density in own_finished:
+            self._density_ready(request_id, density)
+        for request_id, error in own_failed:
+            self._density_failed(request_id, error)
 
     def _density_ready(self, request_id: int, density: np.ndarray) -> None:
         density_debug(f"result received request={request_id} current={self._density_request_id}")
@@ -1206,7 +1215,7 @@ class EmbroideryViewerWidget(QWidget):
         self.status_message.emit("Density map ready", 1500)
         self.invalidate_cache()
 
-    def _density_failed(self, request_id: int, error: Any) -> None:
+    def _density_failed(self, request_id: int, error: BaseException) -> None:
         density_debug(
             f"error received request={request_id} current={self._density_request_id} error={error!r}"
         )
@@ -1502,8 +1511,8 @@ class EmbroideryViewerWidget(QWidget):
         self._needle_pulse_anim.finished.connect(self._finish_needle_pulse)
         self._needle_pulse_anim.start()
 
-    def _on_needle_pulse(self, value: Any) -> None:
-        self.needle_pulse = float(value)
+    def _on_needle_pulse(self, value: float) -> None:
+        self.needle_pulse = value
         self.update()
 
     def _finish_needle_pulse(self) -> None:
@@ -1775,7 +1784,7 @@ class EmbroideryViewerWidget(QWidget):
             textures = list_thread_textures()
             active_path = self._gl_widget.texture_path()
 
-            def _texture_action(texture_label: str, texture_path: Path) -> Any:
+            def _texture_action(texture_label: str, texture_path: Path) -> QAction:
                 action = texture_menu.addAction(texture_label)
                 action.setCheckable(True)
                 action.setChecked(
