@@ -13,6 +13,7 @@ from PySide6.QtCore import Qt, QThread, QTimer
 from PySide6.QtGui import QCloseEvent, QColor, QPainter, QPaintEvent, QPen, QPixmap
 from PySide6.QtWidgets import QApplication, QLabel, QSplashScreen, QVBoxLayout, QWidget
 
+from ..i18n import _
 from ..render import (
     render_fabric_numba,
     render_grid_numba,
@@ -78,7 +79,7 @@ class SplashScreen(QSplashScreen):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.SplashScreen | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setStyleSheet("background: #faf8f4;border: 1px solid #c8c4bc;border-radius: 8px;")
-        self.setWindowTitle("InkSim")
+        self.setWindowTitle(_("app.title"))
 
         self.logo = QLabel(self)
         self.logo.setAttribute(Qt.WA_TranslucentBackground)
@@ -87,7 +88,7 @@ class SplashScreen(QSplashScreen):
         self.logo.setPixmap(QPixmap(str(asset_path)))
         self.logo.setAlignment(Qt.AlignCenter)
 
-        self.status = QLabel("Starting InkSim...", self)
+        self.status = QLabel(_("splash.loading"), self)
         self.status.setAlignment(Qt.AlignCenter)
         self.status.setStyleSheet(
             "color: #343434; background: rgba(255, 255, 255, 180); border: 0; padding: 5px 10px;"

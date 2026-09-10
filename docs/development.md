@@ -80,6 +80,64 @@ Git hooks are optional but recommended. Install them once with:
 uv run poe install-hooks
 ```
 
+## Internationalization (i18n)
+
+InkSim uses message-ID based JSON catalogs under `src/inksim/locales/`. Each
+locale is a flat JSON object where keys are stable IDs and values contain a
+`source` string (English source-of-truth) and a `translation` string.
+
+Supported locales are discovered automatically from files in that directory.
+
+### Adding or changing a UI string
+
+1. Use the imported `_` helper in source code:
+
+    ```python
+    from ..i18n import _
+
+    button = QPushButton(_("status.slider.width"))
+    ```
+
+2. Run the extractor to update the English catalog:
+
+    ```bash
+    uv run python scripts/i18n/extract.py
+    ```
+
+    This scans the source for `_()` calls, adds new IDs to `en.json` with the
+    source text, and preserves existing translations in `cs.json` / `sk.json`.
+
+### Translating to Czech or Slovak via Ollama
+
+The translator sends only **missing or stale** strings to a local Ollama model,
+so repeated runs are cheap:
+
+```bash
+# Generate/update Czech translations
+uv run python scripts/i18n/translate.py --lang cs --model deepseek-v4-flash:cloud
+
+# Generate/update Slovak translations
+uv run python scripts/i18n/translate.py --lang sk --model deepseek-v4-flash:cloud
+```
+
+Use `--dry-run` to preview the prompt without calling the model.
+
+### Running the application in another language
+
+```bash
+uv run python -m inksim --language cs
+```
+
+The chosen locale is persisted in the config file, so omitting `--language`
+uses the last selected one. English is the default fallback.
+
+### Native-speaker corrections
+
+Translations live in `src/inksim/locales/<locale>.json` and can be edited
+manually. Corrections and new locale contributions can be submitted through
+GitHub issues or pull requests; the JSON format is self-contained and diffs
+well.
+
 Before each commit the hooks run a quick `ruff check`, `ruff format --check`
 and `mypy`. The full test suite is intentionally not in the hook so commits
 stay fast.

@@ -23,6 +23,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..i18n import _
+
 
 class _PreviewWidget(QWidget):
     """Widget that paints the preview image scaled to its current size."""
@@ -113,14 +115,14 @@ class ExportPreviewDialog(QDialog):
             self._scale_combo.addItem(f"{scale}x", scale)
         self._scale_combo.setCurrentIndex(0)
         self._scale_combo.currentIndexChanged.connect(self._on_scale_changed)
-        options_layout.addWidget(QLabel("Scale:"))
+        options_layout.addWidget(QLabel(_("dialog.export.scale")))
         options_layout.addWidget(self._scale_combo)
 
         self._format_combo = QComboBox()
         for fmt in self.FORMATS:
             self._format_combo.addItem(fmt, fmt)
         self._format_combo.currentIndexChanged.connect(self._on_format_changed)
-        options_layout.addWidget(QLabel("Format:"))
+        options_layout.addWidget(QLabel(_("dialog.export.format")))
         options_layout.addWidget(self._format_combo)
 
         self._quality_combo = QComboBox()
@@ -128,11 +130,11 @@ class ExportPreviewDialog(QDialog):
             self._quality_combo.addItem(f"{quality}%", quality)
         self._quality_combo.setCurrentIndex(1)  # default 95%
         self._quality_combo.currentIndexChanged.connect(self._on_quality_changed)
-        options_layout.addWidget(QLabel("Quality:"))
+        options_layout.addWidget(QLabel(_("dialog.export.quality")))
         options_layout.addWidget(self._quality_combo)
         options_layout.addSpacing(16)
 
-        self._transparent_check = QCheckBox("Transparent background")
+        self._transparent_check = QCheckBox(_("dialog.export.transparent_bg"))
         self._transparent_check.setChecked(transparent_default)
         self._transparent_check.toggled.connect(self._on_transparent_changed)
         if render_callback is None:
@@ -147,17 +149,17 @@ class ExportPreviewDialog(QDialog):
         button_layout = QHBoxLayout()
         button_layout.addStretch()
 
-        self._copy_button = QPushButton("Copy to clipboard")
-        self._copy_button.setToolTip("Copy the full-resolution image to the clipboard")
+        self._copy_button = QPushButton(_("dialog.export.copy"))
+        self._copy_button.setToolTip(_("dialog.export.copy.tooltip"))
         self._copy_button.clicked.connect(self._copy_to_clipboard)
         button_layout.addWidget(self._copy_button)
 
-        self._save_button = QPushButton("Save...")
-        self._save_button.setToolTip("Save the image to a file")
+        self._save_button = QPushButton(_("dialog.export.save"))
+        self._save_button.setToolTip(_("dialog.export.save.tooltip"))
         self._save_button.clicked.connect(self._save_image)
         button_layout.addWidget(self._save_button)
 
-        self._close_button = QPushButton("Close")
+        self._close_button = QPushButton(_("dialog.export.close"))
         self._close_button.setDefault(True)
         self._close_button.clicked.connect(self.reject)
         button_layout.addWidget(self._close_button)
@@ -239,11 +241,11 @@ class ExportPreviewDialog(QDialog):
 
     def _reset_action_buttons(self) -> None:
         """Re-enable Copy/Save after the preview changes."""
-        if self._copy_button.text() != "Copy to clipboard":
-            self._copy_button.setText("Copy to clipboard")
+        if self._copy_button.text() != _("dialog.export.copy"):
+            self._copy_button.setText(_("dialog.export.copy"))
             self._copy_button.setEnabled(True)
-        if self._save_button.text() != "Save...":
-            self._save_button.setText("Save...")
+        if self._save_button.text() != _("dialog.export.save"):
+            self._save_button.setText(_("dialog.export.save"))
             self._save_button.setEnabled(True)
 
     def _regenerate_preview(self) -> None:
@@ -281,7 +283,7 @@ class ExportPreviewDialog(QDialog):
         if clipboard is None:
             return
         clipboard.setPixmap(QPixmap.fromImage(self._image))
-        self._copy_button.setText("Copied!")
+        self._copy_button.setText(_("dialog.export.copied"))
         self._copy_button.setEnabled(False)
 
     def _save_image(self) -> None:
@@ -290,9 +292,9 @@ class ExportPreviewDialog(QDialog):
             "PNG": "PNG files (*.png)",
             "WebP": "WebP files (*.webp)",
         }[self._current_format()]
-        path, _ = QFileDialog.getSaveFileName(
+        path, _selected_filter = QFileDialog.getSaveFileName(
             self,
-            "Save image",
+            _("dialog.export.save_error.title"),
             default_name,
             file_filter,
         )
@@ -303,10 +305,14 @@ class ExportPreviewDialog(QDialog):
         fmt = self._current_format()
         quality = self._current_quality() if fmt == "WebP" else -1
         if not self._image.save(str(selected_path), fmt.encode(), quality):
-            QMessageBox.critical(self, "Save image", f"Failed to save {selected_path}")
+            QMessageBox.critical(
+                self,
+                _("dialog.export.save_error.title"),
+                _("dialog.export.save_error.message").format(path=selected_path),
+            )
             return
         self._selected_path = selected_path
-        self._save_button.setText("Saved!")
+        self._save_button.setText(_("dialog.export.saved"))
         self._save_button.setEnabled(False)
 
     def selected_path(self) -> Path | None:

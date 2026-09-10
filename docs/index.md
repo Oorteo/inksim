@@ -15,6 +15,7 @@ previews.
 - [Inkscape / Ink/Stitch workflow](inkscape-workflow.md)
 - [Developer guide](development.md)
 - [Application interconnect](interconnect.md)
+- [Internationalization workflow](development.md#internationalization-i18n)
 
 InkSim is experimental software provided as-is for development and testing.
 See the repository [contribution guidelines](../CONTRIBUTING.md) before
