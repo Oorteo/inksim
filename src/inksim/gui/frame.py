@@ -572,31 +572,54 @@ class MainWindow(QMainWindow):
         self.viewer.show_settings()
 
     def _set_language_slot(self, locale: str) -> None:
-        """Store the requested UI language and restart the application."""
+        """Store the requested UI language and restart the application.
+
+        The change is only applied if the user confirms the restart; pressing
+        Escape or "No" reverts to the previous language.
+        """
+        previous = active_locale()
         set_active_locale(locale)
         name = get_language_name(locale)
-        QMessageBox.information(
+        answer = QMessageBox.question(
             self,
             _("dialog.language.title", "Language changed"),
             _(
                 "dialog.language.restart_message",
-                "The language has been set to {language}. InkSim will restart to apply it.",
+                "The language has been set to {language}. Restart InkSim now to apply it?",
             ).format(language=name),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
         )
-        self._restart_application()
+        if answer == QMessageBox.Yes:
+            self._restart_application()
+        else:
+            set_active_locale(previous)
+            self._rebuild_menus()
 
     def _clear_language_slot(self, checked: bool = False) -> None:
         """Revert to the system default language and restart the application."""
+        previous = active_locale()
         clear_active_locale()
-        QMessageBox.information(
+        answer = QMessageBox.question(
             self,
             _("dialog.language.title", "Language changed"),
             _(
                 "dialog.language.system_default_message",
-                "The system default language will be used. InkSim will restart to apply it.",
+                "The system default language will be used. Restart InkSim now to apply it?",
             ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
         )
-        self._restart_application()
+        if answer == QMessageBox.Yes:
+            self._restart_application()
+        else:
+            set_active_locale(previous)
+            self._rebuild_menus()
+
+    def _rebuild_menus(self) -> None:
+        """Rebuild the menu bar so checkmarks reflect the active locale."""
+        self.menuBar().clear()
+        self._build_menus()
 
     def _restart_application(self) -> None:
         """Relaunch InkSim with the same arguments and quit this instance.

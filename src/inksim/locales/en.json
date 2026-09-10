@@ -108,12 +108,12 @@
         "translation": "Transparent background"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "The language has been set to {language}. Restart InkSim to apply it."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "The language has been set to {language}. Restart InkSim now to apply it?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "The system default language will be used. InkSim will restart to apply it."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "The system default language will be used. Restart InkSim now to apply it?"
     },
     "dialog.language.title": {
         "source": "Language changed",
