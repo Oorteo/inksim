@@ -22,14 +22,18 @@ def render_simple_qt(
     light_factor: float = 0.0,
     show_stitches: bool = True,
 ) -> None:
-    """Draw flat-color stitches with Qt's antialiased vector painter."""
+    """Draw flat-color stitches with Qt's raster painter (fast, no AA)."""
     if not show_stitches or visible_count == 0:
         return
+    # Ensure antialiasing is off for the fast simple renderer; round caps
+    # and AA turn every stitch into an expensive vector shape operation.
+    painter.setRenderHint(QPainter.Antialiasing, False)
     pen = QPen()
     # Keep the Qt simple renderer fast: cap the visual stroke width so huge
     # zoom/line_width combinations do not turn every stitch into an expensive
     # wide antialiased fill.  Physical 1:1 width is preserved up to the cap.
     pen.setWidthF(max(1.0, min(6.0, line_width * zoom)))
+    # Round caps look better; with AA off the cost is acceptable.
     pen.setCapStyle(Qt.RoundCap)
     pen.setJoinStyle(Qt.RoundJoin)
     visible_stitches = stitches[:visible_count]

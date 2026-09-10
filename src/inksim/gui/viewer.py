@@ -1365,7 +1365,11 @@ class EmbroideryViewerWidget(QWidget):
         ).copy()
         if self.active_renderer in VECTOR_RENDERERS:
             stitch_painter = QPainter(img)
-            stitch_painter.setRenderHint(QPainter.Antialiasing)
+            # The simple Qt renderer is used as the fast fallback; antialiasing
+            # makes high-DPI / high-resolution panning extremely janky because
+            # every individual stitch segment is treated as a vector shape.
+            use_aa = self.active_renderer != "simple"
+            stitch_painter.setRenderHint(QPainter.Antialiasing, use_aa)
             render_function = VECTOR_RENDERERS[self.active_renderer]
             render_function(
                 stitch_painter,
