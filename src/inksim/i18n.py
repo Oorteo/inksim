@@ -200,7 +200,7 @@ def _active_priority_list() -> list[str]:
     if _current_locale is not None:
         candidates.append(_current_locale)
     try:
-        locale = Config.load().get("language")
+        locale = Config().get("language")
         if locale:
             candidates.append(locale)
     except Exception:  # noqa: BLE001
@@ -226,8 +226,23 @@ def set_active_locale(locale: str) -> None:
     locale = _resolve_locale(locale)
     _current_locale = locale
     try:
-        cfg = Config.load()
+        cfg = Config()
         cfg.set("language", locale)
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def clear_active_locale() -> None:
+    """Remove the stored language so the system default is used again.
+
+    After clearing, locale resolution falls back to the ``LANGUAGE`` / ``LC_ALL``
+    / ``LANG`` environment variables and finally ``en``.
+    """
+    global _current_locale
+    _current_locale = None
+    try:
+        cfg = Config()
+        cfg.delete("language")
     except Exception:  # noqa: BLE001
         pass
 

@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim to apply it.",
         "translation": "The language has been set to {language}. Restart InkSim to apply it."
     },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "The system default language will be used. InkSim will restart to apply it."
+    },
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "Language changed"
@@ -234,6 +238,10 @@
     "menu.language": {
         "source": "Language",
         "translation": "Language"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "System default"
     },
     "menu.playback": {
         "source": "&Playback",

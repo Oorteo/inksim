@@ -4,14 +4,16 @@
 from __future__ import annotations
 
 import os
+import sys
 import time
 from collections.abc import Callable
 from pathlib import Path
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QObject, QRect, QSignalBlocker, Qt, QTimer
+from PySide6.QtCore import QEvent, QObject, QProcess, QRect, QSignalBlocker, Qt, QTimer
 from PySide6.QtGui import (
     QAction,
+    QActionGroup,
     QCloseEvent,
     QColor,
     QDragEnterEvent,
@@ -47,7 +49,14 @@ from ..formats import (
     get_supported_output_filter,
     get_supported_output_formats,
 )
-from ..i18n import _, active_locale, available_locales, get_language_name, set_active_locale
+from ..i18n import (
+    _,
+    active_locale,
+    available_locales,
+    clear_active_locale,
+    get_language_name,
+    set_active_locale,
+)
 from ..render import render_export_image
 from ..runtime import _sanitize_path, _unsanitize_path
 from ..update_check import (
@@ -495,15 +504,29 @@ class MainWindow(QMainWindow):
         )
         language_menu = self.menuBar().addMenu(_("menu.language", "Language"))
         current = active_locale()
+        language_group = QActionGroup(self)
+        language_group.setExclusive(True)
+
+        system_action = self._action(
+            language_menu,
+            _("menu.language.system_default", "System default"),
+            self._clear_language_slot,
+        )
+        system_action.setCheckable(True)
+        system_action.setChecked(self.config.get("language") is None)
+        language_group.addAction(system_action)
+        language_menu.addSeparator()
+
         for locale in available_locales():
             name = get_language_name(locale)
             action = self._action(
                 language_menu,
-                f"{name} ({locale})" if locale != current else f"✓ {name} ({locale})",
+                f"{name} ({locale})",
                 lambda checked=False, loc=locale: self._set_language_slot(loc),
             )
             action.setCheckable(True)
             action.setChecked(locale == current)
+            language_group.addAction(action)
 
         help_menu = self.menuBar().addMenu(_("menu.help"))
         self._action(help_menu, _("menu.help.help"), self._show_help_slot, "H")
@@ -549,7 +572,7 @@ class MainWindow(QMainWindow):
         self.viewer.show_settings()
 
     def _set_language_slot(self, locale: str) -> None:
-        """Store the requested UI language and ask the user to restart."""
+        """Store the requested UI language and restart the application."""
         set_active_locale(locale)
         name = get_language_name(locale)
         QMessageBox.information(
@@ -557,9 +580,63 @@ class MainWindow(QMainWindow):
             _("dialog.language.title", "Language changed"),
             _(
                 "dialog.language.restart_message",
-                "The language has been set to {language}. Restart InkSim to apply it.",
+                "The language has been set to {language}. InkSim will restart to apply it.",
             ).format(language=name),
         )
+        self._restart_application()
+
+    def _clear_language_slot(self, checked: bool = False) -> None:
+        """Revert to the system default language and restart the application."""
+        clear_active_locale()
+        QMessageBox.information(
+            self,
+            _("dialog.language.title", "Language changed"),
+            _(
+                "dialog.language.system_default_message",
+                "The system default language will be used. InkSim will restart to apply it.",
+            ),
+        )
+        self._restart_application()
+
+    def _restart_application(self) -> None:
+        """Relaunch InkSim with the same arguments and quit this instance.
+
+        The ``-l/--lang/--language`` flag is dropped so the language stored in
+        config (just set by the menu) takes effect instead of the old CLI value.
+
+        The relaunch command mirrors how InkSim was originally started:
+
+        * Installed via ``.whl`` → ``sys.argv[0]`` is the ``inksim`` console
+          script, so it is relaunched directly.
+        * Run as ``python -m inksim`` → ``sys.argv[0]`` is ``__main__.py``,
+          which has no package context, so it is relaunched as ``-m inksim``.
+        """
+        program = sys.executable
+        args = self._args_without_language_flag(sys.argv[1:])
+        if Path(sys.argv[0]).name == "__main__.py":
+            launch = ["-m", "inksim", *args]
+        else:
+            launch = [sys.argv[0], *args]
+        QProcess.startDetached(program, launch)
+        self._allow_close = True
+        self.close()
+
+    @staticmethod
+    def _args_without_language_flag(argv: list[str]) -> list[str]:
+        """Return *argv* with any ``-l/--lang/--language`` flag and its value removed."""
+        result: list[str] = []
+        skip_next = False
+        for arg in argv:
+            if skip_next:
+                skip_next = False
+                continue
+            if arg in ("-l", "--lang", "--language"):
+                skip_next = True
+                continue
+            if arg.startswith("--lang=") or arg.startswith("--language="):
+                continue
+            result.append(arg)
+        return result
 
     def _show_config_editor_slot(self, checked: bool = False) -> None:
         show_config_editor(self, self.config)
