@@ -32,9 +32,10 @@ def render_shaded_volume_natural_numba(
     # like the previous 0.05. The GPU renderer keeps its own mapping.
     light_factor = light_factor * 0.1
     height, width, _ = buf.shape
+    # Match GPU stitch_height_scale=1.875; lower clamp so [ / ] width changes are visible.
     effective_width = min(
         MAX_RENDER_LINE_WIDTH_PX,
-        max(1.5, line_width * zoom),
+        max(0.4, line_width * zoom * 1.875),
     )
     half_width = effective_width * 0.5
     margin = int(np.ceil(half_width + 1.5))
@@ -134,7 +135,7 @@ def render_realistic_twist_numba(
     # like the previous 0.05. The GPU renderer keeps its own mapping.
     light_factor = light_factor * 0.1
     height, width, _ = buf.shape
-    thread_radius = max(0.75, line_width * zoom * 0.5)
+    thread_radius = max(0.2, line_width * zoom * 1.875 * 0.5)
     margin = int(np.ceil(thread_radius + 1.5))
     twist_pitch = max(2.0, zoom)
 
@@ -257,10 +258,10 @@ def render_shaded_numba(
     # The configured width is in mm; convert it to screen pixels with the
     # world-to-screen transform so thread thickness follows the design.
     # Realistic must keep same width as shaded to avoid thick blurry look.
-    minimum_line_width = 1.5 if use_shaded else 1.0
+    minimum_line_width = 0.4
     effective_line_width = min(
         MAX_RENDER_LINE_WIDTH_PX,
-        max(minimum_line_width, line_width * zoom),
+        max(minimum_line_width, line_width * zoom * 1.875),
     )
     hw = effective_line_width * 0.5
     lw_int = max(1, int(np.ceil(effective_line_width)))
@@ -420,9 +421,10 @@ def render_shaded_volume_numba(
     # like the previous 0.05. The GPU renderer keeps its own mapping.
     light_factor = light_factor * 0.1
     height, width, _ = buf.shape
+    # Match GPU stitch_height_scale=1.875; lower clamp so [ / ] width changes are visible.
     effective_width = min(
         MAX_RENDER_LINE_WIDTH_PX,
-        max(1.5, line_width * zoom),
+        max(0.4, line_width * zoom * 1.875),
     )
     half_width = effective_width * 0.5
     margin = int(np.ceil(half_width + 1.5))
