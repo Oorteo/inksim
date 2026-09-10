@@ -414,6 +414,9 @@ class MainWindow(QMainWindow):
         self.viewer.renderer_changed.connect(
             lambda renderer: self.realistic_action.setChecked(renderer == "gpu_textured")
         )
+        # The renderer may already be restored from config before this action
+        # is created, so sync the checkbox with the current state now.
+        self.realistic_action.setChecked(self.viewer.active_renderer == "gpu_textured")
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
         self.viewer.status_message.connect(self.statusBar().showMessage)
         self._action(file_menu, "Choose stitch renderer...", self._select_renderer_slot, "R")
@@ -1203,6 +1206,7 @@ class MainWindow(QMainWindow):
             dark_factor=self.viewer.dark_factor,
             light_factor=self.viewer.light_factor,
             scale_factor=scale_factor,
+            lighting_mode=self.viewer.lighting_mode,
         )
         if path is not None:
             quality = -1

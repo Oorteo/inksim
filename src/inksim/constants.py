@@ -39,6 +39,11 @@ DENSITY_CRITICAL_PER_MM2 = 6.0
 DEFAULT_LINE_WIDTH_MM = 0.4
 DEFAULT_DARK_FACTOR = 0.50
 DEFAULT_LIGHT_FACTOR = 0.50
+# GPU lighting profiles. "rich" gives strong thread shading (best for dark
+# colors), "bright" raises the ambient floor so light/white threads keep
+# their color instead of falling to near-black, and "flat" is nearly unlit.
+LIGHTING_MODES = ("rich", "bright", "flat")
+DEFAULT_LIGHTING_MODE = "rich"
 DEFAULT_BACKGROUND_COLOR = (0, 0, 0)
 DEFAULT_NEEDLE_COLOR = (255, 255, 255)
 DEFAULT_NEEDLE_RADIUS = 30.0

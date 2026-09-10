@@ -25,6 +25,7 @@ def render_export_image(
     dark_factor: float = 0.75,
     light_factor: float = 0.45,
     scale_factor: float = 1.0,
+    lighting_mode: str = "rich",
 ) -> QImage:
     """Render a PNG/WebP/JPEG using the same renderer as the viewer.
 
@@ -78,6 +79,7 @@ def render_export_image(
         grid,
         False,
         True,
+        lighting_mode,
     )
     if renderer_key not in VECTOR_RENDERERS and not opaque:
         changed = np.any(buffer[:, :, :3] != base_color, axis=2)
