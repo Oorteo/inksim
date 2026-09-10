@@ -48,50 +48,55 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 | `N`                   | Toggle the needle marker                                   |
 | `H`                   | Show help                                                  |
 | `I`                   | Show current viewer settings                               |
+| `L`                   | Cycle GPU lighting profile: rich → bright → flat           |
 | `+` / `-`             | Increase or decrease thread width                          |
 | `[` / `]`             | Adjust dark shading                                        |
 | `Shift+[` / `Shift+]` | Adjust light shading                                       |
 
-## PNG Export
+## Image Export
 
-InkSim supports three non-interactive export modes:
+InkSim supports four non-interactive command-line export modes:
 
 ```bash
 inksim design.pes --simple-png
 inksim design.pes --png
+inksim design.pes --webp
 inksim design.pes --icon
 
 # Or provide an explicit output path
 inksim design.pes --simple-png output.png
 inksim design.pes --png shaded-output.png
+inksim design.pes --webp shaded-output.webp
 inksim design.pes --icon preview.png
 
-# Batch export; each input gets its own basename-derived PNG
+# Batch export; each input gets its own basename-derived file
 inksim *.pes --png
-inksim *.pes --png exports/ -y
+inksim *.pes --webp exports/ -y
+inksim *.pes --icon exports/ -y
 ```
 
-| Option                    | Description                                          |
-| ------------------------- | ---------------------------------------------------- |
-| `--simple-png [PATH]`     | Flat PNG; defaults to `INPUT-simple.png`             |
-| `--png [PATH]`            | Shaded PNG; defaults to `INPUT.png`                  |
-| `--icon [PATH]`           | 256 x 256 preview PNG; defaults to `INPUT_thumb.png` |
-| `--dpi N`                 | DPI for print-sized exports; default is 300          |
-| `--bg transparent\|white` | Select the export background                         |
-| `--grid`                  | Add a 10 mm grid to the exported image               |
-| `-y`, `--yes`             | Overwrite existing batch output without asking       |
+| Option                    | Description                                                                                   |
+| ------------------------- | --------------------------------------------------------------------------------------------- |
+| `--simple-png [PATH]`     | Simple/flat renderer; defaults to `INPUT_TYPE-simple.png`                                     |
+| `--png [PATH]`            | Shaded volume renderer (default); defaults to `INPUT_TYPE.png`                                |
+| `--webp [PATH]`           | Shaded volume renderer (default); defaults to `INPUT_TYPE.webp`                               |
+| `--icon [PATH]`           | 256 x 256 icon/thumbnail, simple renderer; defaults to `INPUT_TYPE_thumb.png`                 |
+| `--active-renderer`       | For `--png`/`--webp`, use the viewer's active renderer instead of the default `shaded_volume` |
+| `--dpi N`                 | DPI for print-sized exports; default is 300                                                   |
+| `--bg transparent\|white` | Select the export background                                                                  |
+| `--grid`                  | Add a 10 mm grid to the exported image                                                        |
+| `-y`, `--yes`             | Overwrite existing batch output without asking                                                |
 
-Exported PNG/WebP/JPEG images keep a small margin around the design so stitches
+Exported PNG/WebP images keep a small margin around the design so stitches
 that extend past the strict bounding box are not clipped. They always set the
-standard physical-resolution tags (pixels per meter, i.e. PNG `pHYs` or JPEG
-EXIF resolution) using the design's rendering zoom, so Inkscape, GIMP and
-other tools import the design at the correct real-world size. A single
-human-readable `InkSim` text comment is also stored with the design dimensions,
-DPI and renderer for quick reference.
+standard physical-resolution tags (pixels per meter, i.e. PNG `pHYs`) using the
+design's rendering zoom, so Inkscape, GIMP and other tools import the design at
+the correct real-world size. A single human-readable `InkSim` text comment is
+also stored with the design dimensions, DPI and renderer for quick reference.
 
 When several input files are supplied, omitting the output path creates one
-PNG next to each input. An explicit output path must be an existing directory
-and is used as the destination directory for all generated PNGs. Existing
+image next to each input. An explicit output path must be an existing directory
+and is used as the destination directory for all generated files. Existing
 files are never overwritten without confirmation; use `-y` or `--yes` for
 unattended batch jobs. Batch exports stay console-only and report progress as
 `[n/N]`; the GUI currently opens only the first supplied input.
@@ -141,9 +146,9 @@ within a 2.5 mm radius:
 | Yellow | Warning density, from 3 stitches per mm2  |
 | Red    | Critical density, from 6 stitches per mm2 |
 
-Stitches with zero length are highlighted with a thin red circle. Their
+Stitches with zero length are highlighted with a thin magenta ring. Their
 center keeps the density color, so they can be distinguished from high-density
-areas. The circles are shown only while the density map is enabled and remain
+areas. The rings are shown only while the density map is enabled and remain
 nearly constant in size as the view is zoomed.
 
 ## Performance Diagnostics
