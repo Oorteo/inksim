@@ -32,7 +32,9 @@ def render_viewport_raster(
     show_stitches: bool = True,
 ) -> None:
     """Compose the non-Qt viewport layers into an RGB buffer."""
-    if active_renderer in ("realistic_twist",) and zoom > 1.2:
+    # Fabric background is GPU-only for now; the CPU realistic_twist renderer
+    # is too slow when it also has to synthesize fabric behind the stitches.
+    if active_renderer in ("realistic_twist",) and zoom > 1.2 and False:
         render_fabric_numba(buffer, zoom)
     if show_grid:
         render_grid_numba(buffer, zoom, pan_x, pan_y)

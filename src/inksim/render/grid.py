@@ -36,12 +36,13 @@ def render_grid_numba(buf: np.ndarray, zoom: float, pan_x: float, pan_y: float) 
     solid_fine_grid = zoom >= 14.0
     fine_grid_dot_step = 2 if zoom >= 11.0 else 4
     solid_centimeter_grid = zoom >= 2.5
-    # 0.1 mm micro grid fades in from 30x to 50x zoom, matching the GPU
-    # shader (microFade = smoothstep(30, 50, zoom), strength 10%).
+    # 0.1 mm micro grid is disabled in CPU mode: it is far too expensive to
+    # draw on the host while the GPU shader can do it in parallel.  Leave the
+    # fade calculation here so the GPU path can still mirror it if desired.
     micro_fade = 0.0
     if zoom >= 30.0:
         micro_fade = min(1.0, (zoom - 30.0) / 20.0)
-    show_micro_grid = micro_fade > 0.0
+    show_micro_grid = False
 
     # Choose light or dark grid lines based on the background colour.
     bg_lum = (int(buf[0, 0, 0]) + int(buf[0, 0, 1]) + int(buf[0, 0, 2])) // 3
