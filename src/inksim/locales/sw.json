@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "sw",
+    "name": "Swahili"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "Chunguza mpangilio wa mishono, rangi za nyuzi, miruko, upunguzaji, na amri za mashine kabla ya uzalishaji. Ona muundo shono kwa shono, badilisha mitindo ya kuonyesha, na hamisha unachokiona."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "Angalia sasisho la mwisho: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "Uigaji wa mwingiliano wa ushonaji, ukaguzi, na usafirishaji."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "Kuhusu {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "Urefu wa upau:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "Shikilia rula dhidi ya skrini na buruta kitelezi hadi upau ulio chini uwe na urefu wa mm 100 haswa, kisha bonyeza OK."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "Urefu halisi wa upau (mm):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "Sawazisha ukubwa wa onyesho"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "TOML batili"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "Imeshindwa kuhifadhi usanidi: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "Hitilafu"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "Faili la usanidi"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "Funga"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "Imenakiliwa!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "Nakili kwenye ubao wa kunakilia"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "Nakili picha ya mwonekano kamili kwenye ubao wa kunakilia"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "Muundo:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "Ubora:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "Hifadhi..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "Hifadhi picha kwenye faili"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "Imeshindwa kuhifadhi {path}"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "Hifadhi picha"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "Imehifadhiwa!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "Kiwango:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "Usuli wa uwazi"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "Rangi ya sindano"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "Onyesho la kawaida"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "Onyesho halisi"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "Fungua faili la embroidery"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "Chagua kionyeshi cha mishono"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&Faili"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "Sawazisha ukubwa wa onyesho..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "Weka sindano katikati"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "Chagua kionyeshi cha mishono..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "Hamisha"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "Ikoni/Picha ndogo..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "Chapisha yenye kivuli..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "Chapisha rahisi..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "Weka muundo kwenye dirisha"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "Utoaji wa GPU wenye texture"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "Fungua faili la embroidery"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "Ondoka"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "Zungusha kushoto digrii 90"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "Zungusha kulia digrii 90"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "Hifadhi kama embroidery..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "Onyesha gridi ya vipimo"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&Msaada"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "Kuhusu {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "Angalia sasisho"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "Chaguzi za mstari wa amri..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "Usanidi"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "Msaada"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "Hali"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "Fuatilia matukio"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&Uchezaji"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "Rangi inayofuata"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "Amri inayofuata"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "Cheza/Simama"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "Rangi iliyotangulia"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "Amri iliyotangulia"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&Mwonekano"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "Ukubwa halisi (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "Futa nafasi iliyohifadhiwa ya snap"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "Orodha ya amri"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "Zungusha usuli"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "Skrini kamili"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "Hifadhi nafasi ya sasa ya snap"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "Onyesha/ficha zote"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "Onyesha sindano"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "Snap mpangilio wa dirisha"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "Hakuna faili la embroidery lililopakiwa la kuhamisha."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "Hakuna faili la embroidery lililopakiwa."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "Inapakia upya"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "Imeshindwa kuhifadhi faili: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "Inapakia..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "Weka upya upana wa mstari na vipengele vya kivuli"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "Bonyeza kurekebisha kipengele cha giza, kipengele cha mwanga na upana wa mstari"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "Zungusha usuli: nyeusi, nyeupe, iliyosanidiwa"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "Mwonekano wa chini (chora mishono ya baadaye chini ya ya awali)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "Badilisha mwonekano wa msongamano wa mishono"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "Badilisha utoaji wa GPU wenye texture"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "Zungusha mwonekano wa miruko: zima, zote, hatari tu"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "Badilisha mwonekano wa mishono"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "Weka upya mipangilio ya sindano"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "Mipangilio ya msalaba wa sindano"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "Rangi…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "Skrini kamili"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "Radi"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "Upana"
+  }
+}

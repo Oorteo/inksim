@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "tl",
+    "name": "Tagalog"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "Galugarin ang pagkakasunod-sunod ng tahi, mga kulay ng sinulid, jumps, trims, at mga utos ng makina bago ang produksyon. I-preview ang disenyo nang paisa-isang tahi, lumipat ng mga estilo ng rendering, at i-export ang iyong nakikita."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "Huling tseke ng update: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "Interaktibong simulation ng burda, inspeksyon, at pag-export."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "Tungkol sa {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "Haba ng bar:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "Hawakan ang ruler sa screen at i-drag ang slider hanggang ang bar sa ibaba ay eksaktong 100 mm ang haba, pagkatapos pindutin ang OK."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "Pisikal na haba ng bar (mm):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "I-calibrate ang laki ng display"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "Hindi wastong TOML"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "Hindi na-save ang config: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "Error"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "File ng configuration"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "Isara"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "Nakopya!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "Kopyahin sa clipboard"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "Kopyahin ang full-resolution na imahe sa clipboard"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "Format:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "Kalidad:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "I-save..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "I-save ang imahe sa isang file"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "Hindi na-save ang {path}"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "I-save ang imahe"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "Na-save!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "Scale:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "Transparent na background"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "Kulay ng karayom"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "Normal na preview"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "Real na preview"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "Buksan ang file ng burda"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "Pumili ng stitch renderer"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&File"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "I-calibrate ang laki ng display..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "I-center ang karayom"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "Pumili ng stitch renderer..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "I-export"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "Icon/Thumbnail..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "Shaded print..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "Simple print..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "I-fit ang design sa window"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "GPU textured render"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "Buksan ang file ng burda"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "Lumabas"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "I-rotate pakaliwa 90 deg"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "I-rotate pakanan 90 deg"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "I-save bilang burda..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "Ipakita ang measurement grid"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&Tulong"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "Tungkol sa {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "Suriin ang mga update"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "Mga opsyon sa command line..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "Config"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "Tulong"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "Status"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "Trace events"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&Playback"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "Susunod na kulay"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "Susunod na command"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "Play/Pause"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "Nakaraang kulay"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "Nakaraang command"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&View"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "Aktwal na laki (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "I-clear ang naka-save na snap position"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "Listahan ng command"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "I-cycle ang background"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "Fullscreen"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "I-save ang kasalukuyang snap position"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "Ipakita/itago lahat"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "Ipakita ang karayom"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "I-snap ang layout ng window"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "Walang file ng burda na naka-load para i-export."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "Walang file ng burda na naka-load."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "Nagre-reload"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "Hindi na-save ang file: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "Naglo-load..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "I-reset ang line width at shading factors"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "I-click para i-adjust ang dark factor, light factor at line width"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "I-cycle ang background: itim, puti, naka-configure"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "Bottom view (iguhit ang mga huling stitch sa ilalim ng mga nauna)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "I-toggle ang stitch density overlay"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "I-toggle ang GPU textured rendering"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "I-cycle ang jump display: off, lahat, risky lang"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "I-toggle ang visibility ng stitch"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "I-reset ang mga setting ng karayom"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "Mga setting ng crosshair ng karayom"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "Kulay…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "Full screen"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "Radius"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "Width"
+  }
+}

@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "ru",
+    "name": "Russian"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "Изучайте порядок стежков, цвета ниток, переходы, обрезки и команды машины до производства. Просматривайте дизайн стежок за стежком, переключайте стили рендеринга и экспортируйте то, что видите."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "Последняя проверка обновлений: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "Интерактивная симуляция вышивки, просмотр и экспорт."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "О программе {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "Длина полосы:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "Приложите линейку к экрану и перетаскивайте ползунок, пока полоса ниже не станет ровно 100 мм, затем нажмите OK."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "Физическая длина полосы (мм):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "Калибровка размера экрана"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "Недопустимый TOML"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "Не удалось сохранить конфигурацию: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "Ошибка"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "Файл конфигурации"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "Закрыть"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "Скопировано!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "Копировать в буфер обмена"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "Скопировать изображение в полном разрешении в буфер обмена"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "Формат:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "Качество:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "Сохранить..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "Сохранить изображение в файл"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "Не удалось сохранить {path}"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "Сохранение изображения"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "Сохранено!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "Масштаб:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "Прозрачный фон"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "Цвет иглы"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "Обычный предпросмотр"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "Реальный предпросмотр"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "Открыть файл вышивки"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "Выберите рендерер стежков"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&Файл"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "Калибровать размер экрана..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "Центрировать иглу"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "Выбрать рендерер стежков..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "Экспорт"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "Иконка/Миниатюра..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "Затенённая печать..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "Простая печать..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "Вписать дизайн в окно"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "Текстурный рендер GPU"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "Открыть файл вышивки"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "Выход"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "Повернуть влево на 90°"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "Повернуть вправо на 90°"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "Сохранить как вышивку..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "Показать измерительную сетку"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&Справка"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "О программе {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "Проверить обновления"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "Параметры командной строки..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "Конфигурация"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "Справка"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "Статус"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "Трассировка событий"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&Воспроизведение"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "Следующий цвет"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "Следующая команда"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "Играть/Пауза"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "Предыдущий цвет"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "Предыдущая команда"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&Вид"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "Реальный размер (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "Очистить сохранённую позицию привязки"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "Список команд"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "Циклически менять фон"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "Полный экран"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "Сохранить текущую позицию привязки"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "Показать/скрыть всё"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "Показать иглу"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "Привязать раскладку окна"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "Нет загруженного файла вышивки для экспорта."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "Нет загруженного файла вышивки."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "Перезагрузка"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "Не удалось сохранить файл: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "Загрузка..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "Сбросить ширину линии и коэффициенты затенения"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "Нажмите, чтобы настроить тёмный фактор, светлый фактор и ширину линии"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "Циклически менять фон: чёрный, белый, настроенный"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "Вид снизу (рисовать более поздние стежки под более ранними)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "Переключить наложение плотности стежков"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "Переключить текстурный рендеринг GPU"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "Циклически менять отображение переходов: выкл, все, только рискованные"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "Переключить видимость стежков"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "Сбросить настройки иглы"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "Настройки перекрестия иглы"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "Цвет…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "Полный экран"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "Радиус"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "Ширина"
+  }
+}

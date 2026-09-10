@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "ku",
+    "name": "Kurdish"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "Berî hilberînê, rêza dirûn, rengên têlan, bazdan, qutkirin, û fermanên makîneyê bikole. Dîzaynê dirû bi dirû pêşdîtin bike, şêwazên nîşandanê biguherîne, û tiştê ku dibînî derxe."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "Kontrola nûvekirinê ya dawî: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "Simulasyona dirûnê ya înteraktîf, vekolîn, û derxistin."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "Der barê {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "Dirêjahiya barê:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "Rêberekê li hember ekranê bigire û sliderê bikşîne heya ku barê jêr tam 100 mm be, paşê OK bikirtîne."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "Dirêjahiya fizîkî ya barê (mm):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "Pîvana ekranê kalîbre bike"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "TOML ne derbasdar e"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "Têkçûna tomarkirina config: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "Çewtî"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "Pelê veavakirinê"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "Bigire"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "Hat kopîkirin!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "Kopî bike bo panoya têketinê"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "Wêneya bi çareseriya tam kopî bike bo panoya têketinê"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "Format:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "Kalîte:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "Tomar bike..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "Wêneyê tomar bike bo pelekê"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "Têkçûna tomarkirina {path}"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "Tomarkirina wêneyê"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "Hat tomarkirin!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "Pîvan:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "Paşxaneya zelal"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "Rengê derziyê"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "Pêşdîtina normal"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "Pêşdîtina rastîn"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "Pelê dirûnê veke"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "Rendererê dirûnê hilbijêre"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&Pel"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "Pîvana ekranê kalîbre bike..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "Derziyê navendî bike"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "Rendererê dirûnê hilbijêre..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "Derxe"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "Îkon/Wêneya biçûk..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "Çapkirina bi sih..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "Çapkirina sade..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "Dîzaynê bi pencereyê re bike"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "Rendera bi tekstura GPU"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "Pelê dirûnê veke"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "Derkeve"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "90 pile bizivire çep"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "90 pile bizivire rast"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "Wek dirûn tomar bike..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "Tora pîvanê nîşan bide"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&Alîkarî"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "Der barê {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "Nûvekirinan kontrol bike"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "Vebijarkên rêza fermanê..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "Config"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "Alîkarî"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "Rewş"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "Bûyeran şopîne"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&Lêdan"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "Rengê din"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "Fermana din"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "Lêdan/Sekinandin"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "Rengê berê"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "Fermana berê"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&Dîtin"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "Mezinahiya rastîn (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "Cihê snapê ya tomarkirî paqij bike"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "Lîsteya fermanan"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "Paşxaneyê biguherîne"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "Ekrana tam"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "Cihê snapê ya niha tomar bike"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "Hemû nîşan bide/veşêre"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "Derziyê nîşan bide"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "Pêkhatina pencereyê snap bike"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "Ji bo derxistinê tu pelê dirûnê nehatiye barkirin."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "Tu pelê dirûnê nehatiye barkirin."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "Ji nû ve barkirin"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "Têkçûna tomarkirina pelê: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "Tê barkirin..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "Firehiya xetê û faktorên sihê vesaz bike"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "Bikirtîne ji bo eyarkirina faktora tarî, faktora ronahî û firehiya xetê"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "Paşxaneyê biguherîne: reş, spî, veavakirî"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "Dîtina jêr (dirûnên paşîn di bin yên berê de bikişîne)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "Zêdekirina dendika dirûnê vekêşe/veşêre"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "Rendera bi tekstura GPU vekêşe/veşêre"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "Nîşandana bazdanê biguherîne: neçalak, hemû, tenê xeternak"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "Diyariya dirûnê vekêşe/veşêre"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "Mîhengên derziyê vesaz bike"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "Mîhengên xaçerêya derziyê"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "Reng…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "Ekrana tam"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "Nîvqutir"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "Firehî"
+  }
+}

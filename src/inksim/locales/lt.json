@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "lt",
+    "name": "Lithuanian"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "Naršyk dygsnių seką, siūlų spalvas, šuolius, apkarpymus ir mašinos komandas prieš gamybą. Peržiūrėk dizainą dygsnis po dygsnio, keisk atvaizdavimo stilius ir eksportuok tai, ką matai."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "Paskutinis atnaujinimo patikrinimas: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "Interaktyvi siuvinėjimo simuliacija, patikra ir eksportas."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "Apie {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "Juostos ilgis:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "Laikyk liniuotę prie ekrano ir tempk slankiklį, kol juosta žemiau bus tiksliai 100 mm ilgio, tada spausk OK."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "Fizinis juostos ilgis (mm):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "Kalibruoti ekrano dydį"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "Neteisingas TOML"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "Nepavyko išsaugoti konfigūracijos: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "Klaida"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "Konfigūracijos failas"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "Uždaryti"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "Nukopijuota!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "Kopijuoti į iškarpinę"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "Kopijuoti visos raiškos vaizdą į iškarpinę"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "Formatas:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "Kokybė:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "Išsaugoti..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "Išsaugoti vaizdą į failą"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "Nepavyko išsaugoti {path}"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "Išsaugoti vaizdą"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "Išsaugota!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "Mastelis:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "Skaidrus fonas"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "Adatos spalva"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "Įprasta peržiūra"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "Tikroviška peržiūra"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "Atidaryti siuvinėjimo failą"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "Pasirink dygsnių atvaizdavimo būdą"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&Failas"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "Kalibruoti ekrano dydį..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "Centruoti adatą"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "Pasirinkti dygsnių atvaizdavimo būdą..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "Eksportuoti"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "Piktograma/Mažas vaizdas..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "Šešėlinis spausdinimas..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "Paprastas spausdinimas..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "Pritaikyti dizainą prie lango"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "GPU tekstūrinis atvaizdavimas"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "Atidaryti siuvinėjimo failą"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "Išeiti"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "Pasukti į kairę 90 laipsnių"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "Pasukti į dešinę 90 laipsnių"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "Išsaugoti kaip siuvinėjimą..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "Rodyti matavimo tinklelį"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&Pagalba"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "Apie {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "Tikrinti atnaujinimus"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "Komandinės eilutės parinktys..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "Konfigūracija"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "Pagalba"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "Būsena"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "Įvykių sekimas"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&Atkūrimas"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "Kita spalva"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "Kita komanda"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "Leisti/Pristabdyti"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "Ankstesnė spalva"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "Ankstesnė komanda"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&Rodinys"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "Tikrasis dydis (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "Išvalyti išsaugotą pritraukimo padėtį"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "Komandų sąrašas"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "Keisti foną cikliškai"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "Visas ekranas"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "Išsaugoti dabartinę pritraukimo padėtį"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "Rodyti/slėpti viską"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "Rodyti adatą"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "Pritraukti lango išdėstymą"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "Nėra įkeltas siuvinėjimo failas eksportavimui."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "Nėra įkeltas siuvinėjimo failas."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "Įkeliama iš naujo"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "Nepavyko išsaugoti failo: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "Įkeliama..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "Atstatyti linijos plotį ir šešėliavimo koeficientus"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "Spustelėkite, kad pakoreguotumėte tamsos koeficientą, šviesos koeficientą ir linijos plotį"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "Keisti foną: juoda, balta, sukonfigūruota"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "Vaizdas iš apačios (piešti vėlesnius dygsnius po ankstesniais)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "Perjungti dygsnių tankio perdangą"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "Perjungti GPU tekstūrinį atvaizdavimą"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "Keisti šuolių rodymą: išjungta, visi, tik rizikingi"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "Perjungti dygsnių matomumą"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "Atstatyti adatos nustatymus"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "Adatos kryželio nustatymai"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "Spalva…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "Visas ekranas"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "Spindulys"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "Plotis"
+  }
+}

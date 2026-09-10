@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "sv",
+    "name": "Swedish"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "Utforska stygnordning, trådfärger, hopp, trimningar och maskinkommandon innan produktion. Förhandsvisa designen stygn för stygn, växla renderingsstilar och exportera det du ser."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "Senaste uppdateringskontroll: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "Interaktiv broderisimulering, inspektion och export."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "Om {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "Staplängd:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "Håll en linjal mot skärmen och dra reglaget tills stapeln nedan är exakt 100 mm lång, tryck sedan OK."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "Fysisk längd på stapeln (mm):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "Kalibrera visningsstorlek"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "Ogiltig TOML"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "Misslyckades att spara konfiguration: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "Fel"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "Konfigurationsfil"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "Stäng"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "Kopierad!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "Kopiera till urklipp"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "Kopiera bilden i full upplösning till urklipp"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "Format:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "Kvalitet:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "Spara..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "Spara bilden till en fil"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "Misslyckades att spara {path}"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "Spara bild"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "Sparad!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "Skala:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "Transparent bakgrund"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "Nålfärg"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "Normal förhandsvisning"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "Verklig förhandsvisning"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "Öppna broderifil"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "Välj stygnrenderare"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&Arkiv"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "Kalibrera visningsstorlek..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "Centrera nål"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "Välj stygnrenderare..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "Exportera"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "Ikon/miniatyr..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "Skuggad utskrift..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "Enkel utskrift..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "Anpassa design till fönster"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "GPU-texturerad rendering"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "Öppna broderifil"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "Avsluta"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "Rotera vänster 90 grader"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "Rotera höger 90 grader"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "Spara som broderi..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "Visa mätrutnät"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&Hjälp"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "Om {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "Sök efter uppdateringar"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "Kommandoradsalternativ..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "Konfiguration"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "Hjälp"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "Status"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "Spåra händelser"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&Uppspelning"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "Nästa färg"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "Nästa kommando"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "Spela/Pausa"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "Föregående färg"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "Föregående kommando"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&Visa"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "Verklig storlek (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "Rensa sparad snapposition"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "Kommandolista"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "Växla bakgrund"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "Helskärm"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "Spara aktuell snapposition"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "Visa/dölj allt"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "Visa nål"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "Snappa fönsterlayout"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "Ingen broderifil är inläst för export."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "Ingen broderifil är inläst."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "Laddar om"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "Misslyckades att spara fil: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "Läser in..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "Återställ linjebredd och skuggningsfaktorer"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "Klicka för att justera mörk faktor, ljus faktor och linjebredd"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "Växla bakgrund: svart, vit, konfigurerad"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "Bottenvy (rita senare stygn under tidigare)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "Växla stygn densitet overlay"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "Växla GPU-texturerad rendering"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "Växla hoppvisning: av, alla, endast riskfyllda"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "Växla stygnsynlighet"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "Återställ nålinställningar"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "Nålkorsinställningar"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "Färg…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "Helskärm"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "Radie"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "Bredd"
+  }
+}

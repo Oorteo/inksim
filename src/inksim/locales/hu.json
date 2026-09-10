@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "hu",
+    "name": "hu"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "Fedezd fel az öltéssorrendet, a cérnaszíneket, az ugrásokat, a vágásokat és a gép parancsokat a gyártás előtt. Tekintsd meg a mintát öltésről öltésre, válts megjelenítési stílusok között, és exportáld, amit látsz."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "Utolsó frissítés ellenőrzése: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "Interaktív hímzésszimuláció, ellenőrzés és exportálás."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "Névjegy: {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "Sáv hossza:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "Tarts vonalzót a képernyőhöz, és húzd a csúszkát, amíg az alábbi sáv pontosan 100 mm hosszú nem lesz, majd nyomd meg az OK gombot."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "A sáv fizikai hossza (mm):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "Képernyőméret kalibrálása"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "Érvénytelen TOML"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "A konfiguráció mentése sikertelen: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "Hiba"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "Konfigurációs fájl"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "Bezárás"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "Másolva!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "Másolás vágólapra"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "A teljes felbontású kép másolása a vágólapra"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "Formátum:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "Minőség:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "Mentés..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "A kép mentése fájlba"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "A(z) {path} mentése sikertelen"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "Kép mentése"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "Elmentve!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "Méretarány:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "Átlátszó háttér"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "Tű színe"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "Normál előnézet"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "Valós előnézet"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "Hímzésfájl megnyitása"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "Öltés-megjelenítő kiválasztása"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&Fájl"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "Képernyőméret kalibrálása..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "Tű középre"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "Öltés-megjelenítő kiválasztása..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "Exportálás"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "Ikon/Indexkép..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "Árnyékolt nyomat..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "Egyszerű nyomat..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "Minta illesztése az ablakhoz"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "GPU textúrázott megjelenítés"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "Hímzésfájl megnyitása"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "Kilépés"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "Forgatás balra 90 fok"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "Forgatás jobbra 90 fok"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "Mentés hímzésként..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "Mérési rács megjelenítése"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&Súgó"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "Névjegy: {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "Frissítések keresése"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "Parancssori opciók..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "Konfiguráció"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "Súgó"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "Állapot"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "Események nyomkövetése"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&Lejátszás"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "Következő szín"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "Következő parancs"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "Lejátszás/Szünet"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "Előző szín"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "Előző parancs"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&Nézet"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "Tényleges méret (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "Mentett rögzítési pozíció törlése"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "Parancslista"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "Háttér váltása"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "Teljes képernyő"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "Aktuális rögzítési pozíció mentése"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "Összes megjelenítése/elrejtése"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "Tű megjelenítése"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "Ablak elrendezés rögzítése"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "Nincs betöltött hímzésfájl az exportáláshoz."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "Nincs betöltött hímzésfájl."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "Újratöltés"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "A fájl mentése sikertelen: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "Betöltés..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "Vonalvastagság és árnyékolási tényezők visszaállítása"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "Kattints a sötét tényező, világos tényező és vonalvastagság beállításához"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "Háttér váltása: fekete, fehér, beállított"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "Alulnézet (a későbbi öltéseket a korábbiak alá rajzolja)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "Öltéssűrűség fedőréteg ki/be"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "GPU textúrázott megjelenítés ki/be"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "Ugrás megjelenítés váltása: ki, mind, csak kockázatos"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "Öltés láthatóság ki/be"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "Tű beállítások visszaállítása"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "Tű célkereszt beállítások"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "Szín…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "Teljes képernyő"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "Sugár"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "Szélesség"
+  }
+}

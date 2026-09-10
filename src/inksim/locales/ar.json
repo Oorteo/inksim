@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "ar",
+    "name": "ar"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "استكشف ترتيب الغرز، ألوان الخيوط، القفزات، القصاصات، وأوامر الآلة قبل الإنتاج. اعاين التصميم غرزة بغرزة، بدّل أنماط العرض، وصدر ما تراه."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "آخر فحص للتحديث: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "محاكاة تفاعلية للتطريز، فحص، وتصدير."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "حول {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "طول الشريط:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "ضع مسطرة أمام الشاشة واسحب المؤشر حتى يصبح الشريط أدناه بطول 100 مم بالضبط، ثم اضغط موافق."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "الطول الفعلي للشريط (مم):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "معايرة حجم العرض"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "TOML غير صالح"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "فشل حفظ الإعدادات: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "خطأ"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "ملف الإعدادات"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "إغلاق"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "تم النسخ!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "نسخ إلى الحافظة"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "انسخ الصورة بدقة كاملة إلى الحافظة"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "الصيغة:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "الجودة:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "حفظ..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "احفظ الصورة إلى ملف"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "فشل حفظ {path}"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "حفظ الصورة"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "تم الحفظ!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "المقياس:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "خلفية شفافة"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "لون الإبرة"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "معاينة عادية"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "معاينة حقيقية"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "فتح ملف تطريز"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "اختيار عارض الغرز"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "ملف"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "معايرة حجم العرض..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "توسيط الإبرة"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "اختيار عارض الغرز..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "تصدير"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "أيقونة/مصغرة..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "طباعة مظللة..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "طباعة بسيطة..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "ملاءمة التصميم مع النافذة"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "عرض محكم بواسطة GPU"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "فتح ملف تطريز"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "خروج"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "تدوير لليسار 90 درجة"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "تدوير لليمين 90 درجة"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "حفظ كتطريز..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "إظهار شبكة القياس"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "مساعدة"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "حول {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "التحقق من التحديثات"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "خيارات سطر الأوامر..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "الإعدادات"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "مساعدة"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "الحالة"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "تتبع الأحداث"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "تشغيل"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "اللون التالي"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "الأمر التالي"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "تشغيل/إيقاف"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "اللون السابق"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "الأمر السابق"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "عرض"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "الحجم الفعلي (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "مسح موضع الالتقاط المحفوظ"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "قائمة الأوامر"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "تبديل الخلفية"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "ملء الشاشة"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "حفظ موضع الالتقاط الحالي"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "إظهار/إخفاء الكل"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "إظهار الإبرة"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "التقاط تخطيط النافذة"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "لا يوجد ملف تطريز محمل للتصدير."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "لا يوجد ملف تطريز محمل."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "إعادة تحميل"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "فشل حفظ الملف: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "جارٍ التحميل..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "إعادة تعيين عرض الخط وعوامل التظليل"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "انقر لضبط عامل التظليل الداكن، عامل التظليل الفاتح، وعرض الخط"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "تبديل الخلفية: أسود، أبيض، مخصص"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "عرض سفلي (رسم الغرز اللاحقة تحت السابقة)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "تبديل تراكب كثافة الغرز"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "تبديل العرض المحكم بواسطة GPU"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "تبديل عرض القفزات: إيقاف، الكل، الخطرة فقط"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "تبديل رؤية الغرز"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "إعادة تعيين إعدادات الإبرة"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "إعدادات شبكاني الإبرة"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "اللون..."
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "ملء الشاشة"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "نصف القطر"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "العرض"
+  }
+}

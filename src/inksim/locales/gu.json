@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "gu",
+    "name": "Gujarati"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "ઇન્કસિમ"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "ઉત્પાદન પહેલાં ટાંકાનો ક્રમ, દોરાના રંગો, જમ્પ્સ, ટ્રિમ્સ અને મશીન કમાન્ડ્સનું અન્વેષણ કરો. ડિઝાઇનને ટાંકે ટાંકે પૂર્વાવલોકન કરો, રેન્ડરિંગ શૈલીઓ બદલો અને જે જુઓ તે નિકાસ કરો."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "છેલ્લી અપડેટ તપાસ: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "ઇન્ટરેક્ટિવ ભરતકામ સિમ્યુલેશન, નિરીક્ષણ અને નિકાસ."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "{app_title} વિશે"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "બાર લંબાઈ:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "સ્ક્રીન પર શાસક પકડી રાખો અને સ્લાઇડરને ખેંચો જ્યાં સુધી નીચેનો બાર બરાબર 100 મીમી લાંબો ન થાય, પછી ઓકે દબાવો."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "બારની ભૌતિક લંબાઈ (મીમી):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "ડિસ્પ્લે કદ માપાંકિત કરો"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "અમાન્ય TOML"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "રૂપરેખા સાચવવામાં નિષ્ફળ: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "ભૂલ"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "રૂપરેખા ફાઇલ"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "બંધ કરો"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "કૉપિ થઈ ગયું!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "ક્લિપબોર્ડ પર કૉપિ કરો"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "સંપૂર્ણ-રિઝોલ્યુશન છબીને ક્લિપબોર્ડ પર કૉપિ કરો"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "ફોર્મેટ:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "ગુણવત્તા:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "સાચવો..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "છબીને ફાઇલમાં સાચવો"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "{path} સાચવવામાં નિષ્ફળ"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "છબી સાચવો"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "સાચવાઈ ગયું!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "સ્કેલ:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "પારદર્શક પૃષ્ઠભૂમિ"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "સોયનો રંગ"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "સામાન્ય પૂર્વાવલોકન"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "વાસ્તવિક પૂર્વાવલોકન"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "ભરતકામ ફાઇલ ખોલો"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "ટાંકા રેન્ડરર પસંદ કરો"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&ફાઇલ"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "ડિસ્પ્લે કદ માપાંકિત કરો..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "સોયને કેન્દ્રમાં મૂકો"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "ટાંકા રેન્ડરર પસંદ કરો..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "નિકાસ"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "આયકન/થંબનેલ..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "શેડેડ પ્રિન્ટ..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "સરળ પ્રિન્ટ..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "ડિઝાઇનને વિન્ડોમાં ફિટ કરો"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "GPU ટેક્ષ્ચર્ડ રેન્ડર"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "ભરતકામ ફાઇલ ખોલો"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "બહાર નીકળો"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "ડાબે 90 ડિગ્રી ફેરવો"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "જમણે 90 ડિગ્રી ફેરવો"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "ભરતકામ તરીકે સાચવો..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "માપન ગ્રીડ બતાવો"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&મદદ"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "{app_title} વિશે"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "અપડેટ્સ માટે તપાસો"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "કમાન્ડ લાઇન વિકલ્પો..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "રૂપરેખા"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "મદદ"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "સ્થિતિ"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "ટ્રેસ ઇવેન્ટ્સ"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&પ્લેબેક"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "આગલો રંગ"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "આગલો કમાન્ડ"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "ચલાવો/થોભો"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "પાછલો રંગ"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "પાછલો કમાન્ડ"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&દૃશ્ય"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "વાસ્તવિક કદ (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "સાચવેલ સ્નેપ સ્થિતિ સાફ કરો"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "કમાન્ડ સૂચિ"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "પૃષ્ઠભૂમિ ચક્ર"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "ફુલસ્ક્રીન"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "વર્તમાન સ્નેપ સ્થિતિ સાચવો"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "બધું બતાવો/છુપાવો"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "સોય બતાવો"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "વિન્ડો લેઆઉટ સ્નેપ કરો"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "નિકાસ કરવા માટે કોઈ ભરતકામ ફાઇલ લોડ નથી."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "કોઈ ભરતકામ ફાઇલ લોડ નથી."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "ફરીથી લોડ થઈ રહ્યું છે"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "ફાઇલ સાચવવામાં નિષ્ફળ: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "લોડ થઈ રહ્યું છે..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "રેખા પહોળાઈ અને શેડિંગ પરિબળો રીસેટ કરો"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "ડાર્ક ફેક્ટર, લાઇટ ફેક્ટર અને રેખા પહોળાઈ સમાયોજિત કરવા ક્લિક કરો"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "પૃષ્ઠભૂમિ ચક્ર: કાળો, સફેદ, રૂપરેખાંકિત"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "નીચેનું દૃશ્ય (પાછળના ટાંકા પહેલાના ટાંકા નીચે દોરો)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "ટાંકા ઘનતા ઓવરલે ટૉગલ કરો"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "GPU ટેક્ષ્ચર્ડ રેન્ડરિંગ ટૉગલ કરો"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "જમ્પ ડિસ્પ્લે ચક્ર: બંધ, બધા, ફક્ત જોખમી"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "ટાંકા દૃશ્યતા ટૉગલ કરો"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "સોય સેટિંગ્સ રીસેટ કરો"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "સોય ક્રોસહેર સેટિંગ્સ"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "રંગ…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "ફુલ સ્ક્રીન"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "ત્રિજ્યા"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "પહોળાઈ"
+  }
+}

@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "el",
+    "name": "el"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "Εξερευνήστε τη σειρά των βελονιών, τα χρώματα κλωστής, τα άλματα, τα κοψίματα και τις εντολές μηχανής πριν την παραγωγή. Δείτε το σχέδιο βελονιά-βελονιά, αλλάξτε στυλ απόδοσης και εξάγετε ό,τι βλέπετε."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "Τελευταίος έλεγχος ενημέρωσης: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "Διαδραστική προσομοίωση κεντήματος, επιθεώρηση και εξαγωγή."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "Σχετικά με το {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "Μήκος γραμμής:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "Κρατήστε ένα χάρακα στην οθόνη και σύρετε το ρυθμιστικό μέχρι η γραμμή παρακάτω να έχει ακριβώς 100 mm, μετά πατήστε OK."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "Φυσικό μήκος της γραμμής (mm):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "Βαθμονόμηση μεγέθους οθόνης"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "Μη έγκυρο TOML"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "Αποτυχία αποθήκευσης ρυθμίσεων: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "Σφάλμα"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "Αρχείο ρυθμίσεων"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "Κλείσιμο"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "Αντιγράφηκε!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "Αντιγραφή στο πρόχειρο"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "Αντιγραφή της εικόνας πλήρους ανάλυσης στο πρόχειρο"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "Μορφή:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "Ποιότητα:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "Αποθήκευση..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "Αποθήκευση της εικόνας σε αρχείο"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "Αποτυχία αποθήκευσης {path}"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "Αποθήκευση εικόνας"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "Αποθηκεύτηκε!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "Κλίμακα:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "Διαφανές φόντο"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "Χρώμα βελόνας"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "Κανονική προεπισκόπηση"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "Ρεαλιστική προεπισκόπηση"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "Άνοιγμα αρχείου κεντήματος"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "Επιλογή απόδοσης βελονιάς"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&Αρχείο"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "Βαθμονόμηση μεγέθους οθόνης..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "Κέντρο βελόνας"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "Επιλογή απόδοσης βελονιάς..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "Εξαγωγή"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "Εικονίδιο/Μικρογραφία..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "Σκιασμένη εκτύπωση..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "Απλή εκτύπωση..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "Προσαρμογή σχεδίου στο παράθυρο"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "Απόδοση με υφή GPU"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "Άνοιγμα αρχείου κεντήματος"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "Έξοδος"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "Στροφή αριστερά 90 μοίρες"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "Στροφή δεξιά 90 μοίρες"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "Αποθήκευση ως κέντημα..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "Εμφάνιση πλέγματος μέτρησης"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&Βοήθεια"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "Σχετικά με το {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "Έλεγχος ενημερώσεων"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "Επιλογές γραμμής εντολών..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "Ρυθμίσεις"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "Βοήθεια"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "Κατάσταση"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "Καταγραφή συμβάντων"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&Αναπαραγωγή"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "Επόμενο χρώμα"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "Επόμενη εντολή"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "Αναπαραγωγή/Παύση"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "Προηγούμενο χρώμα"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "Προηγούμενη εντολή"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&Προβολή"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "Πραγματικό μέγεθος (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "Εκκαθάριση αποθηκευμένης θέσης αγκίστρωσης"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "Λίστα εντολών"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "Εναλλαγή φόντου"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "Πλήρης οθόνη"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "Αποθήκευση τρέχουσας θέσης αγκίστρωσης"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "Εμφάνιση/απόκρυψη όλων"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "Εμφάνιση βελόνας"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "Αγκίστρωση διάταξης παραθύρου"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "Δεν έχει φορτωθεί αρχείο κεντήματος για εξαγωγή."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "Δεν έχει φορτωθεί αρχείο κεντήματος."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "Επαναφόρτωση"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "Αποτυχία αποθήκευσης αρχείου: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "Φόρτωση..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "Επαναφορά πλάτους γραμμής και παραγόντων σκίασης"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "Κάντε κλικ για ρύθμιση σκούρου παράγοντα, ανοιχτού παράγοντα και πλάτους γραμμής"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "Εναλλαγή φόντου: μαύρο, άσπρο, ρυθμισμένο"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "Κάτω προβολή (σχεδίαση μεταγενέστερων βελονιών κάτω από τις προηγούμενες)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "Εναλλαγή επικάλυψης πυκνότητας βελονιάς"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "Εναλλαγή απόδοσης με υφή GPU"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "Εναλλαγή εμφάνισης αλμάτων: κλειστά, όλα, μόνο επικίνδυνα"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "Εναλλαγή ορατότητας βελονιάς"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "Επαναφορά ρυθμίσεων βελόνας"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "Ρυθμίσεις σταυρονήματος βελόνας"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "Χρώμα…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "Πλήρης οθόνη"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "Ακτίνα"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "Πλάτος"
+  }
+}
