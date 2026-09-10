@@ -82,7 +82,7 @@ from ..render import (
     render_viewport_raster,
 )
 from ..runtime import is_opengl33_available
-from .gl_viewer import GLStitchWidget, list_thread_textures
+from .gl_viewer import GLStitchWidget, list_thread_textures, resolve_thread_texture
 from .help import show_help
 from .settings import show_settings
 
@@ -250,8 +250,9 @@ class EmbroideryViewerWidget(QWidget):
         self.pan_render_timer.timeout.connect(self._finish_pan_render)
         self._cache_valid = False
         self.progress_bar = progress_bar
-        self._gl_widget = self._create_gl_widget()
         self.mode_panel: ModeBar | None = None
+        self._gl_widget = self._create_gl_widget()
+        self._apply_saved_render_state()
         self.command_dialog: QDialog | None = None
         self.help_dialog: QDialog | None = None
         self.settings_dialog: QDialog | None = None
@@ -340,6 +341,27 @@ class EmbroideryViewerWidget(QWidget):
         widget.hide()
         widget.setFocusPolicy(Qt.NoFocus)
         return widget
+
+    def _apply_saved_render_state(self) -> None:
+        """Restore the persisted renderer and thread texture after startup.
+
+        The thread texture is stored as a bare filename and resolved against
+        the packaged ``assets/thread_textures/`` directory, so it keeps
+        working whether the app runs from the source tree or an installed
+        wheel.  When the file no longer exists the GL widget falls back to
+        the packaged default.  The GPU textured renderer is only restored when
+        OpenGL 3.3 is available, so a machine without it keeps the CPU raster
+        renderer.
+        """
+        if self._saved_texture_path is not None:
+            resolved = resolve_thread_texture(self._saved_texture_path)
+            if resolved is not None:
+                self._gl_widget.set_texture_path(resolved)
+        if self._saved_renderer == "gpu_textured":
+            if self._opengl33_available:
+                self.set_renderer("gpu_textured")
+        elif self._saved_renderer is not None:
+            self.set_renderer(self._saved_renderer)
 
     def resizeEvent(self, event: QResizeEvent) -> None:
         """Invalidate the bitmap and retry deferred initial fitting."""
@@ -510,6 +532,17 @@ class EmbroideryViewerWidget(QWidget):
                 self.needle_fullscreen = nf
             else:
                 self.needle_fullscreen = str(nf).strip().lower() in ("true", "1", "yes", "on")
+        # Persisted renderer and thread texture. These are applied after the
+        # GL widget is created (the texture path must be pushed into it), so
+        # store them here and restore them in _apply_saved_render_state().
+        self._saved_renderer: str | None = None
+        self._saved_texture_path: str | None = None
+        ar = view.get("active_renderer")
+        if isinstance(ar, str) and ar in RENDERERS_BY_KEY:
+            self._saved_renderer = ar
+        tt = view.get("thread_texture")
+        if isinstance(tt, str):
+            self._saved_texture_path = tt
 
     def _save_view_setting(self, key: str, value: object) -> None:
         view = self.config.get("view", {})
@@ -821,6 +854,7 @@ class EmbroideryViewerWidget(QWidget):
         self.invalidate_cache()
         self.update()
         self.update_mode_indicators()
+        self._save_view_setting("view/active_renderer", renderer_key)
 
     def _update_gl_widget_visibility(self) -> None:
         if self.active_renderer == "gpu_textured":
@@ -1796,7 +1830,7 @@ class EmbroideryViewerWidget(QWidget):
                 )
                 action.setData(str(texture_path))
                 action.triggered.connect(
-                    lambda checked, p=texture_path: self._gl_widget.set_texture_path(p)
+                    lambda checked, p=texture_path: self._set_thread_texture(p)
                 )
                 return action
 
@@ -1808,6 +1842,17 @@ class EmbroideryViewerWidget(QWidget):
                 no_tex.setEnabled(False)
 
         menu.exec(e.globalPos())
+
+    def _set_thread_texture(self, path: Path) -> None:
+        """Apply a thread texture and persist it for the next startup.
+
+        Only the bare filename is stored so the setting survives a move from
+        the source tree to an installed wheel (where assets live under
+        ``site-packages``).  The full path is still applied to the live GL
+        widget.
+        """
+        self._gl_widget.set_texture_path(path)
+        self._save_view_setting("view/thread_texture", path.name)
 
     def _choose_background_color(self) -> None:
         self._cancel_background_cycle()

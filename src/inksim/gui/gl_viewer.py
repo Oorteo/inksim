@@ -321,6 +321,23 @@ def list_thread_textures() -> list[tuple[str, Path]]:
     return results
 
 
+def resolve_thread_texture(name: str | Path) -> Path | None:
+    """Resolve a thread texture name/path to an existing packaged asset.
+
+    Accepts either a full path or a bare filename (e.g.
+    ``thin_2strand_normal_mask.png``) relative to the packaged
+    ``assets/thread_textures/`` directory.  Returns ``None`` when the file
+    does not exist, so callers can fall back to the default texture.
+    """
+    here = Path(__file__).resolve().parent
+    assets_dir = here.parent / "assets" / "thread_textures"
+    candidate = Path(name)
+    if candidate.is_absolute():
+        return candidate if candidate.is_file() else None
+    resolved = assets_dir / candidate.name
+    return resolved if resolved.is_file() else None
+
+
 class GLStitchWidget(QOpenGLWidget):
     """OpenGL widget that renders textured stitch quads.
 
