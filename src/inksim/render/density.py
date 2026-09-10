@@ -91,10 +91,12 @@ def render_density_numba(
             continue
         if screen_y < -5 or screen_y >= height + 5:
             continue
-        marker_radius = 3
+        # Match the GPU renderer's world-space radii (0.1 mm dot, 0.175 mm
+        # ring) scaled by zoom, with a small minimum so markers stay visible.
+        marker_radius = max(2, int(round(0.1 * zoom)))
         outer_radius = marker_radius
         if repeated_stitch[point_index]:
-            outer_radius = min(8, max(5, 5 + int(np.floor(zoom / 10.0))))
+            outer_radius = max(marker_radius + 1, int(round(0.175 * zoom)))
         for offset_y in range(-outer_radius, outer_radius + 1):
             for offset_x in range(-outer_radius, outer_radius + 1):
                 distance_squared = offset_x * offset_x + offset_y * offset_y
@@ -103,19 +105,19 @@ def render_density_numba(
                 pixel_x = screen_x + offset_x
                 pixel_y = screen_y + offset_y
                 if 0 <= pixel_x < width and 0 <= pixel_y < height:
-                    if repeated_stitch[point_index] and (
-                        distance_squared >= (outer_radius - 1) * (outer_radius - 1)
-                        and distance_squared <= outer_radius * outer_radius
-                    ):
-                        buf[pixel_y, pixel_x, 0] = 235
-                        buf[pixel_y, pixel_x, 1] = 35
-                        buf[pixel_y, pixel_x, 2] = 35
-                    elif distance_squared <= marker_radius * marker_radius:
-                        if repeated_stitch[point_index] and distance_squared <= 1:
+                    if repeated_stitch[point_index]:
+                        if distance_squared <= marker_radius * marker_radius:
+                            # Center: density color (no dark puncture for a ring).
                             buf[pixel_y, pixel_x, 0] = r
                             buf[pixel_y, pixel_x, 1] = g
                             buf[pixel_y, pixel_x, 2] = b
-                        elif distance_squared <= 1:
+                        else:
+                            # Band from the dot edge to the ring edge: magenta.
+                            buf[pixel_y, pixel_x, 0] = 200
+                            buf[pixel_y, pixel_x, 1] = 60
+                            buf[pixel_y, pixel_x, 2] = 180
+                    elif distance_squared <= marker_radius * marker_radius:
+                        if distance_squared <= 1:
                             buf[pixel_y, pixel_x, 0] = 10
                             buf[pixel_y, pixel_x, 1] = 10
                             buf[pixel_y, pixel_x, 2] = 10

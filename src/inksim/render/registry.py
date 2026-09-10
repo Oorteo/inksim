@@ -63,6 +63,7 @@ def render_stitches(
     dark_factor: float,
     light_factor: float,
     show_stitches: bool = True,
+    lighting_mode: str = "rich",
 ) -> None:
     """Render stitches using a registered renderer."""
     renderer = RENDERERS_BY_KEY[renderer_key]
@@ -76,17 +77,31 @@ def render_stitches(
         "shaded_volume_natural",
         "gpu_textured",
     ):
-        renderer.render(
-            buffer,
-            stitches,
-            visible_count,
-            zoom,
-            pan_x,
-            pan_y,
-            line_width,
-            dark_factor,
-            light_factor,
-        )
+        if renderer_key == "gpu_textured":
+            renderer.render(
+                buffer,
+                stitches,
+                visible_count,
+                zoom,
+                pan_x,
+                pan_y,
+                line_width,
+                dark_factor,
+                light_factor,
+                lighting_mode,
+            )
+        else:
+            renderer.render(
+                buffer,
+                stitches,
+                visible_count,
+                zoom,
+                pan_x,
+                pan_y,
+                line_width,
+                dark_factor,
+                light_factor,
+            )
     else:
         renderer.render(
             buffer,

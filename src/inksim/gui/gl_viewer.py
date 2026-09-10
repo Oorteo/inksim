@@ -43,7 +43,7 @@ from ..debug import is_enabled, logger
 from ..render.stitches_gl import _build_satin_quads as build_satin_quads
 from ..render.stitches_gl import (
     _default_texture_path,
-    _lighting_coefficients,
+    _lighting_coefficients_for_mode,
     _load_texture,
     _normal_strengths,
     texture_cap_radius_fraction,
@@ -66,6 +66,33 @@ def _check_gl_error(label: str) -> None:
         GL_INVALID_FRAMEBUFFER_OPERATION: "INVALID_FRAMEBUFFER_OPERATION",
     }
     logger.error("OpenGL error after %s: %s (0x%x)", label, names.get(err, "UNKNOWN"), err)
+
+
+def _build_reversed_indices(idx: np.ndarray, index_counts: np.ndarray) -> np.ndarray:
+    """Reorder the flat index buffer so stitches draw in reverse order.
+
+    ``index_counts`` is the prefix array from ``_build_satin_quads``:
+    ``index_counts[i]`` is the number of index entries after stitch ``i``.
+    The returned array concatenates each stitch's index range in reverse
+    stitch order (last stitch first), so a single ``glDrawElements`` call
+    over the tail of this buffer reproduces the bottom-view (E) layering
+    without issuing one draw call per stitch.
+    """
+    n = index_counts.shape[0]
+    if n == 0:
+        return np.zeros((0,), dtype=np.uint32)
+    starts = np.empty(n, dtype=np.int64)
+    starts[0] = 0
+    starts[1:] = index_counts[:-1]
+    ends = index_counts
+    # Reverse stitch order: last stitch first.
+    order = np.arange(n - 1, -1, -1, dtype=np.int64)
+    rev_starts = starts[order]
+    rev_ends = ends[order]
+    slices = [idx[s:e] for s, e in zip(rev_starts, rev_ends, strict=False) if e > s]
+    if not slices:
+        return np.zeros((0,), dtype=np.uint32)
+    return np.concatenate(slices)
 
 
 VERTEX_SHADER = """
@@ -261,16 +288,17 @@ void main() {
         discard;
     }
     if (v_repeated > 0.5) {
-        // Zero-length stitch: red ring (matches the CPU renderer).
+        // Zero-length stitch: orange ring with a colored center (matches CPU).
         float ring = smoothstep(0.30, 0.42, r) * (1.0 - smoothstep(0.42, 0.5, r));
         if (ring < 0.01) {
-            discard;
+            fragColor = vec4(v_color, 1.0);
+            return;
         }
-        fragColor = vec4(0.92, 0.14, 0.14, 1.0);
+        fragColor = vec4(0.784, 0.235, 0.706, 1.0);
         return;
     }
-    // Darker center (needle puncture).
-    vec3 col = mix(vec3(0.04, 0.04, 0.04), v_color, smoothstep(0.0, 0.5, r));
+    // Full marker color with a small dark puncture center (matches CPU).
+    vec3 col = mix(vec3(0.04, 0.04, 0.04), v_color, smoothstep(0.0, 0.12, r));
     fragColor = vec4(col, 1.0);
 }
 """
@@ -293,6 +321,23 @@ def list_thread_textures() -> list[tuple[str, Path]]:
     return results
 
 
+def resolve_thread_texture(name: str | Path) -> Path | None:
+    """Resolve a thread texture name/path to an existing packaged asset.
+
+    Accepts either a full path or a bare filename (e.g.
+    ``thin_2strand_normal_mask.png``) relative to the packaged
+    ``assets/thread_textures/`` directory.  Returns ``None`` when the file
+    does not exist, so callers can fall back to the default texture.
+    """
+    here = Path(__file__).resolve().parent
+    assets_dir = here.parent / "assets" / "thread_textures"
+    candidate = Path(name)
+    if candidate.is_absolute():
+        return candidate if candidate.is_file() else None
+    resolved = assets_dir / candidate.name
+    return resolved if resolved.is_file() else None
+
+
 class GLStitchWidget(QOpenGLWidget):
     """OpenGL widget that renders textured stitch quads.
 
@@ -311,6 +356,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._vao: QOpenGLVertexArrayObject | None = None
         self._vbo: QOpenGLBuffer | None = None
         self._ibo: QOpenGLBuffer | None = None
+        self._reversed_ibo: QOpenGLBuffer | None = None
         self._texture: QOpenGLTexture | None = None
         self._cap_texture: QOpenGLTexture | None = None
         self._texture_path: Path | None = None
@@ -322,6 +368,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._bg_color = (0.0, 0.0, 0.0)
         self._dark_factor = 0.5
         self._light_factor = 0.45
+        self._lighting_mode = "rich"
         self._stitches = np.zeros((0, 7), dtype=np.float32)
         self._visible_count = 0
         self._reverse_draw_order = False
@@ -331,6 +378,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._verts = np.zeros((0,), dtype=np.float32)
         self._idx = np.zeros((0,), dtype=np.uint32)
         self._index_counts = np.zeros((0,), dtype=np.int64)
+        self._reversed_idx = np.zeros((0,), dtype=np.uint32)
         self._draw_count = 0
         # Overlay state (mirrors the parent viewer's analysis overlays).
         self._show_jumps = False
@@ -406,6 +454,9 @@ class GLStitchWidget(QOpenGLWidget):
             if self._ibo is not None:
                 self._ibo.destroy()
                 self._ibo = None
+            if self._reversed_ibo is not None:
+                self._reversed_ibo.destroy()
+                self._reversed_ibo = None
             if self._vbo is not None:
                 self._vbo.destroy()
                 self._vbo = None
@@ -440,6 +491,11 @@ class GLStitchWidget(QOpenGLWidget):
 
     def set_dark_factor(self, dark_factor: float) -> None:
         self._dark_factor = dark_factor
+        self._maybe_update()
+
+    def set_lighting_mode(self, mode: str) -> None:
+        """Select the GPU lighting profile (rich/bright/flat)."""
+        self._lighting_mode = mode
         self._maybe_update()
 
     def set_stitches(self, stitches: np.ndarray, line_width: float) -> None:
@@ -550,6 +606,9 @@ class GLStitchWidget(QOpenGLWidget):
         self._vbo.create()
         self._ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
         self._ibo.create()
+
+        self._reversed_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+        self._reversed_ibo.create()
 
         self._configure_vao()
 
@@ -722,6 +781,9 @@ class GLStitchWidget(QOpenGLWidget):
         self._verts = verts
         self._idx = idx
         self._index_counts = index_counts
+        # Precompute the reverse-order index buffer once so bottom view (E)
+        # can be drawn with a single draw call instead of one per stitch.
+        self._reversed_idx = _build_reversed_indices(idx, index_counts)
 
         self._vbo.bind()
         if verts.nbytes > self._vbo.size():
@@ -736,6 +798,13 @@ class GLStitchWidget(QOpenGLWidget):
         else:
             self._ibo.write(0, idx.tobytes(), idx.nbytes)  # type: ignore[arg-type]
         self._ibo.release()
+
+        self._reversed_ibo.bind()
+        if self._reversed_idx.nbytes > self._reversed_ibo.size():
+            self._reversed_ibo.allocate(self._reversed_idx.tobytes(), self._reversed_idx.nbytes)
+        else:
+            self._reversed_ibo.write(0, self._reversed_idx.tobytes(), self._reversed_idx.nbytes)  # type: ignore[arg-type]
+        self._reversed_ibo.release()
         self._needs_upload = False
         elapsed = time.perf_counter() - upload_started_at
         if elapsed > 0.1:
@@ -804,7 +873,9 @@ class GLStitchWidget(QOpenGLWidget):
             self._program.bind()
             glUniformMatrix4fv(self._program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
             glUniform3f(self._program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
-            k_a, k_d, k_s = _lighting_coefficients(self._dark_factor, self._light_factor)
+            k_a, k_d, k_s = _lighting_coefficients_for_mode(
+                self._dark_factor, self._light_factor, self._lighting_mode
+            )
             glUniform1f(self._program.uniformLocation("u_k_a"), k_a)
             glUniform1f(self._program.uniformLocation("u_k_d"), k_d)
             glUniform1f(self._program.uniformLocation("u_k_s"), k_s)
@@ -827,19 +898,21 @@ class GLStitchWidget(QOpenGLWidget):
 
             self._vao.bind()
             if self._reverse_draw_order:
-                for stitch_index in range(count - 1, -1, -1):
-                    index_count = int(self._index_counts[stitch_index])
-                    previous_count = (
-                        int(self._index_counts[stitch_index - 1]) if stitch_index > 0 else 0
-                    )
-                    if index_count > previous_count:
-                        glDrawElements(
-                            GL_TRIANGLES,
-                            index_count - previous_count,
-                            GL_UNSIGNED_INT,
-                            ctypes.c_void_p(previous_count * 4),
-                        )
+                # Bottom view (E): draw the visible stitches in reverse order
+                # with a single draw call. The reversed index buffer holds all
+                # stitches last-first, so the first `count` stitches (in
+                # original order) occupy its trailing `draw_count` entries.
+                total = int(self._index_counts[-1]) if self._index_counts.shape[0] > 0 else 0
+                offset = total - draw_count
+                self._reversed_ibo.bind()
+                glDrawElements(
+                    GL_TRIANGLES,
+                    draw_count,
+                    GL_UNSIGNED_INT,
+                    ctypes.c_void_p(offset * 4),
+                )
             else:
+                self._ibo.bind()
                 glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, None)
             self._vao.release()
             if self._cap_texture is not None:
@@ -1005,7 +1078,7 @@ class GLStitchWidget(QOpenGLWidget):
         colors[crit] = (220 / 255.0, 35 / 255.0, 35 / 255.0)
         colors[warn] = (235 / 255.0, 175 / 255.0, 25 / 255.0)
 
-        radius = np.where(rep, 0.35, 0.2).astype(np.float32)
+        radius = np.where(rep, 0.175, 0.1).astype(np.float32)
         repeated_flag = rep.astype(np.float32)
 
         data = np.empty((visible, 7), dtype=np.float32)

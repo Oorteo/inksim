@@ -32,9 +32,10 @@ def render_shaded_volume_natural_numba(
     # like the previous 0.05. The GPU renderer keeps its own mapping.
     light_factor = light_factor * 0.1
     height, width, _ = buf.shape
+    # Match GPU stitch_height_scale=1.875; lower clamp so [ / ] width changes are visible.
     effective_width = min(
         MAX_RENDER_LINE_WIDTH_PX,
-        max(1.5, line_width * zoom),
+        max(0.4, line_width * zoom * 1.875),
     )
     half_width = effective_width * 0.5
     margin = int(np.ceil(half_width + 1.5))
@@ -134,7 +135,10 @@ def render_realistic_twist_numba(
     # like the previous 0.05. The GPU renderer keeps its own mapping.
     light_factor = light_factor * 0.1
     height, width, _ = buf.shape
-    thread_radius = max(0.75, line_width * zoom * 0.5)
+    # Match GPU scale factor but keep the CPU realistic renderer from
+    # exploding when line_width/zoom produces a huge radius.  A cap of 8 px
+    # preserves the 1:1 look at normal zoom while keeping the pixel loop small.
+    thread_radius = min(8.0, max(0.2, line_width * zoom * 1.875 * 0.5))
     margin = int(np.ceil(thread_radius + 1.5))
     twist_pitch = max(2.0, zoom)
 
@@ -185,6 +189,10 @@ def render_realistic_twist_numba(
         r_light = r_base + (255 - r_base) * light_amount
         g_light = g_base + (255 - g_base) * light_amount
         b_light = b_base + (255 - b_base) * light_amount
+        # Precompute helix wave count per stitch; short stitches get no twist.
+        wave_count = max(1.0, np.floor(length / twist_pitch + 0.5))
+        if length < twist_pitch * 2.0:
+            wave_count = 1.0
 
         for py in range(min_y, max_y + 1):
             for px in range(min_x, max_x + 1):
@@ -210,18 +218,20 @@ def render_realistic_twist_numba(
                 cylinder = np.sqrt(max(0.0, 1.0 - across * across))
                 normalized_along = along_pos / length
                 symmetric_along = min(normalized_along, 1.0 - normalized_along)
-                wave_count = max(1.0, np.floor(length / twist_pitch + 0.5))
+                # Twist is precomputed per stitch; for very short stitches we
+                # still keep one wave so the cylinder does not look plastic.
                 helix = 0.5 + 0.5 * np.cos(
                     2.0 * np.pi * symmetric_along * wave_count + phase_offset
                 )
+                # Cheap linear endpoint fade instead of per-pixel smoothstep.
                 endpoint_span = min(0.5, 3.0 * thread_radius / length)
                 endpoint_position = min(1.0, symmetric_along / endpoint_span)
-                endpoint_fade = endpoint_position * endpoint_position
-                endpoint_fade = endpoint_fade * (3.0 - 2.0 * endpoint_position)
+                endpoint_fade = endpoint_position
                 helix *= endpoint_fade
                 intensity = 0.54 + 0.12 * cylinder + helix_strength * (2.0 * helix - 1.0)
-                endpoint_shadow = (1.0 - endpoint_fade) * (1.0 - endpoint_fade)
-                intensity -= 0.22 * endpoint_shadow
+                # Keep the original darkening but with the linear fade.
+                endpoint_shadow = 1.0 - endpoint_fade
+                intensity -= 0.22 * endpoint_shadow * endpoint_shadow
                 rr = min(255.0, r_dark + (r_light - r_dark) * intensity)
                 gg = min(255.0, g_dark + (g_light - g_dark) * intensity)
                 bb = min(255.0, b_dark + (b_light - b_dark) * intensity)
@@ -257,11 +267,15 @@ def render_shaded_numba(
     # The configured width is in mm; convert it to screen pixels with the
     # world-to-screen transform so thread thickness follows the design.
     # Realistic must keep same width as shaded to avoid thick blurry look.
-    minimum_line_width = 1.5 if use_shaded else 1.0
+    minimum_line_width = 0.4
+    # Cap realistic CPU width separately from shaded/volume; the realistic
+    # branch does heavy per-pixel work and must not balloon with large zoom.
     effective_line_width = min(
         MAX_RENDER_LINE_WIDTH_PX,
-        max(minimum_line_width, line_width * zoom),
+        max(minimum_line_width, line_width * zoom * 1.875),
     )
+    if use_realistic:
+        effective_line_width = min(8.0, effective_line_width)
     hw = effective_line_width * 0.5
     lw_int = max(1, int(np.ceil(effective_line_width)))
 
@@ -420,9 +434,10 @@ def render_shaded_volume_numba(
     # like the previous 0.05. The GPU renderer keeps its own mapping.
     light_factor = light_factor * 0.1
     height, width, _ = buf.shape
+    # Match GPU stitch_height_scale=1.875; lower clamp so [ / ] width changes are visible.
     effective_width = min(
         MAX_RENDER_LINE_WIDTH_PX,
-        max(1.5, line_width * zoom),
+        max(0.4, line_width * zoom * 1.875),
     )
     half_width = effective_width * 0.5
     margin = int(np.ceil(half_width + 1.5))

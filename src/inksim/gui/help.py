@@ -69,6 +69,7 @@ HELP_SECTIONS = (
 | E | Bottom view (draw later stitches under earlier ones) |
 | Z | Toggle realistic rendering |
 | R | Choose stitch renderer |
+| L | Cycle lighting: rich → bright → flat |
 | H | Toggle help |
 | I | Toggle settings |
 """,

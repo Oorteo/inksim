@@ -66,10 +66,12 @@ from ..constants import (
     DEFAULT_BACKGROUND_COLOR,
     DEFAULT_DARK_FACTOR,
     DEFAULT_LIGHT_FACTOR,
+    DEFAULT_LIGHTING_MODE,
     DEFAULT_LINE_WIDTH_MM,
     DEFAULT_NEEDLE_COLOR,
     DEFAULT_NEEDLE_RADIUS,
     DEFAULT_NEEDLE_WIDTH,
+    LIGHTING_MODES,
     MAX_ZOOM_DESIGN_MM,
     MIN_VISIBLE_DESIGN_PIXELS,
 )
@@ -82,7 +84,7 @@ from ..render import (
     render_viewport_raster,
 )
 from ..runtime import is_opengl33_available
-from .gl_viewer import GLStitchWidget, list_thread_textures
+from .gl_viewer import GLStitchWidget, list_thread_textures, resolve_thread_texture
 from .help import show_help
 from .settings import show_settings
 
@@ -190,6 +192,7 @@ class EmbroideryViewerWidget(QWidget):
         self._background_before_cycle: tuple[int, int, int] | None = None
         self.dark_factor = DEFAULT_DARK_FACTOR
         self.light_factor = DEFAULT_LIGHT_FACTOR
+        self.lighting_mode = DEFAULT_LIGHTING_MODE
         self.shading_step = 0.05
         self.visible_count = 0
         self.show_grid = True
@@ -250,8 +253,9 @@ class EmbroideryViewerWidget(QWidget):
         self.pan_render_timer.timeout.connect(self._finish_pan_render)
         self._cache_valid = False
         self.progress_bar = progress_bar
-        self._gl_widget = self._create_gl_widget()
         self.mode_panel: ModeBar | None = None
+        self._gl_widget = self._create_gl_widget()
+        self._apply_saved_render_state()
         self.command_dialog: QDialog | None = None
         self.help_dialog: QDialog | None = None
         self.settings_dialog: QDialog | None = None
@@ -340,6 +344,27 @@ class EmbroideryViewerWidget(QWidget):
         widget.hide()
         widget.setFocusPolicy(Qt.NoFocus)
         return widget
+
+    def _apply_saved_render_state(self) -> None:
+        """Restore the persisted renderer and thread texture after startup.
+
+        The thread texture is stored as a bare filename and resolved against
+        the packaged ``assets/thread_textures/`` directory, so it keeps
+        working whether the app runs from the source tree or an installed
+        wheel.  When the file no longer exists the GL widget falls back to
+        the packaged default.  The GPU textured renderer is only restored when
+        OpenGL 3.3 is available, so a machine without it keeps the CPU raster
+        renderer.
+        """
+        if self._saved_texture_path is not None:
+            resolved = resolve_thread_texture(self._saved_texture_path)
+            if resolved is not None:
+                self._gl_widget.set_texture_path(resolved)
+        if self._saved_renderer == "gpu_textured":
+            if self._opengl33_available:
+                self.set_renderer("gpu_textured")
+        elif self._saved_renderer is not None:
+            self.set_renderer(self._saved_renderer)
 
     def resizeEvent(self, event: QResizeEvent) -> None:
         """Invalidate the bitmap and retry deferred initial fitting."""
@@ -510,6 +535,20 @@ class EmbroideryViewerWidget(QWidget):
                 self.needle_fullscreen = nf
             else:
                 self.needle_fullscreen = str(nf).strip().lower() in ("true", "1", "yes", "on")
+        # Persisted renderer and thread texture. These are applied after the
+        # GL widget is created (the texture path must be pushed into it), so
+        # store them here and restore them in _apply_saved_render_state().
+        self._saved_renderer: str | None = None
+        self._saved_texture_path: str | None = None
+        ar = view.get("active_renderer")
+        if isinstance(ar, str) and ar in RENDERERS_BY_KEY:
+            self._saved_renderer = ar
+        tt = view.get("thread_texture")
+        if isinstance(tt, str):
+            self._saved_texture_path = tt
+        lm = view.get("lighting_mode")
+        if isinstance(lm, str) and lm in LIGHTING_MODES:
+            self.lighting_mode = lm
 
     def _save_view_setting(self, key: str, value: object) -> None:
         view = self.config.get("view", {})
@@ -779,6 +818,8 @@ class EmbroideryViewerWidget(QWidget):
                 self.calculate_stitch_density()
         elif mode == "V":
             self.show_stitches = not self.show_stitches
+        elif mode == "L":
+            self.cycle_lighting_mode()
         elif mode == "J":
             if not self.show_jumps:
                 self.show_jumps = True
@@ -790,6 +831,16 @@ class EmbroideryViewerWidget(QWidget):
                 self.risky_jumps_only = False
         self.update_mode_indicators()
         self.invalidate_cache()
+        self.update()
+
+    def cycle_lighting_mode(self) -> None:
+        """Advance the GPU lighting profile (rich -> bright -> flat -> rich)."""
+        index = LIGHTING_MODES.index(self.lighting_mode)
+        self.lighting_mode = LIGHTING_MODES[(index + 1) % len(LIGHTING_MODES)]
+        self._save_view_setting("view/lighting_mode", self.lighting_mode)
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.set_lighting_mode(self.lighting_mode)
+        self.status_message.emit(f"Lighting: {self.lighting_mode}", 2000)
         self.update()
 
     def _cancel_background_cycle(self) -> None:
@@ -821,6 +872,7 @@ class EmbroideryViewerWidget(QWidget):
         self.invalidate_cache()
         self.update()
         self.update_mode_indicators()
+        self._save_view_setting("view/active_renderer", renderer_key)
 
     def _update_gl_widget_visibility(self) -> None:
         if self.active_renderer == "gpu_textured":
@@ -850,6 +902,7 @@ class EmbroideryViewerWidget(QWidget):
             self._gl_widget.set_visible_count(self.visible_count)
             self._gl_widget.set_dark_factor(self.dark_factor)
             self._gl_widget.set_light_factor(self.light_factor)
+            self._gl_widget.set_lighting_mode(self.lighting_mode)
             # Thread width is adjustable via '[' / ']' (same as CPU renderers);
             # push it here so the GL geometry is rebuilt when it changes.
             self._gl_widget.set_stitches(self.stitches_np, self.line_width)
@@ -1191,14 +1244,14 @@ class EmbroideryViewerWidget(QWidget):
         other_results: list[tuple[str, int, int, np.ndarray | BaseException]] = []
         with density_results_lock:
             while density_results:
-                result_type, _, request_id, result = density_results.popleft()
-                if request_id == self._density_owner_id:
+                result_type, owner_id, request_id, result = density_results.popleft()
+                if owner_id == self._density_owner_id:
                     if isinstance(result, np.ndarray):
                         own_finished.append((request_id, result))
                     else:
                         own_failed.append((request_id, result))
                 else:
-                    other_results.append((result_type, _, request_id, result))
+                    other_results.append((result_type, owner_id, request_id, result))
             density_results.extend(other_results)
         for request_id, density in own_finished:
             self._density_ready(request_id, density)
@@ -1365,7 +1418,11 @@ class EmbroideryViewerWidget(QWidget):
         ).copy()
         if self.active_renderer in VECTOR_RENDERERS:
             stitch_painter = QPainter(img)
-            stitch_painter.setRenderHint(QPainter.Antialiasing)
+            # The simple Qt renderer is used as the fast fallback; antialiasing
+            # makes high-DPI / high-resolution panning extremely janky because
+            # every individual stitch segment is treated as a vector shape.
+            use_aa = self.active_renderer != "simple"
+            stitch_painter.setRenderHint(QPainter.Antialiasing, use_aa)
             render_function = VECTOR_RENDERERS[self.active_renderer]
             render_function(
                 stitch_painter,
@@ -1440,7 +1497,7 @@ class EmbroideryViewerWidget(QWidget):
 
     def draw_needle_overlay(self, painter: QPainter) -> None:
         """Draw the current needle position above the cached stitch bitmap."""
-        if not self.show_stitches or not self.show_needle or self.stitches_np.shape[0] == 0:
+        if not self.show_needle or self.stitches_np.shape[0] == 0:
             return
         world_x, world_y = self._needle_world_pos()
         needle_x = world_x * self.zoom + self.pan_x
@@ -1792,7 +1849,7 @@ class EmbroideryViewerWidget(QWidget):
                 )
                 action.setData(str(texture_path))
                 action.triggered.connect(
-                    lambda checked, p=texture_path: self._gl_widget.set_texture_path(p)
+                    lambda checked, p=texture_path: self._set_thread_texture(p)
                 )
                 return action
 
@@ -1803,7 +1860,35 @@ class EmbroideryViewerWidget(QWidget):
                 no_tex = texture_menu.addAction("(none found)")
                 no_tex.setEnabled(False)
 
+            lighting_menu = menu.addMenu("Lighting")
+            for mode in LIGHTING_MODES:
+                action = lighting_menu.addAction(mode)
+                action.setCheckable(True)
+                action.setChecked(self.lighting_mode == mode)
+                action.triggered.connect(lambda checked, m=mode: self._set_lighting_mode(m))
+
         menu.exec(e.globalPos())
+
+    def _set_lighting_mode(self, mode: str) -> None:
+        """Apply a GPU lighting profile and persist it."""
+        if mode not in LIGHTING_MODES:
+            return
+        self.lighting_mode = mode
+        self._save_view_setting("view/lighting_mode", mode)
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.set_lighting_mode(mode)
+        self.update()
+
+    def _set_thread_texture(self, path: Path) -> None:
+        """Apply a thread texture and persist it for the next startup.
+
+        Only the bare filename is stored so the setting survives a move from
+        the source tree to an installed wheel (where assets live under
+        ``site-packages``).  The full path is still applied to the live GL
+        widget.
+        """
+        self._gl_widget.set_texture_path(path)
+        self._save_view_setting("view/thread_texture", path.name)
 
     def _choose_background_color(self) -> None:
         self._cancel_background_cycle()

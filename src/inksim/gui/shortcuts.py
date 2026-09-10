@@ -132,6 +132,7 @@ class ViewerShortcutFilter(QObject):
                 Qt.Key_M,
                 Qt.Key_H,
                 Qt.Key_I,
+                Qt.Key_L,
                 Qt.Key_1,
                 Qt.Key_F11,
             ):
@@ -342,6 +343,10 @@ class ViewerShortcutFilter(QObject):
             handled = True
         elif key == Qt.Key_R and not is_alt and not is_ctrl:
             viewer.select_renderer()
+            changed = True
+            handled = True
+        elif key == Qt.Key_L and not is_alt and not is_ctrl:
+            viewer.cycle_lighting_mode()
             changed = True
             handled = True
         elif key == Qt.Key_N and not is_alt and not is_ctrl:

@@ -25,4 +25,4 @@ for arg in "$@"; do
 done
 
 cd "$PROJECT_DIR"
-uvr -m inksim --dbg "${ARGS[@]}"
+uv run -m inksim --dbg "${ARGS[@]}"

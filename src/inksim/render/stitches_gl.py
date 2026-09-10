@@ -156,6 +156,34 @@ def _lighting_coefficients(dark_factor: float, light_factor: float) -> tuple[flo
     return k_a, k_d, k_s
 
 
+def _lighting_coefficients_for_mode(
+    dark_factor: float,
+    light_factor: float,
+    mode: str,
+) -> tuple[float, float, float]:
+    """Return Blinn-Phong coefficients for a named lighting profile.
+
+    The default ``rich`` profile is the existing behaviour and gives strong
+    thread shading, which looks great on dark/saturated colors but drives
+    light threads (especially white) toward near-black in the shadowed
+    valleys.  ``bright`` raises the ambient floor and softens the diffuse
+    contrast so light colors keep their hue, while ``flat`` is almost unlit
+    (a thin, even thread with only a faint sheen).
+    """
+    k_a, k_d, k_s = _lighting_coefficients(dark_factor, light_factor)
+    if mode == "bright":
+        # Lift the ambient floor and compress the diffuse range so the
+        # shadowed side of a white thread stays visibly white.
+        k_a = 0.55 + 0.15 * light_factor - 0.10 * dark_factor
+        k_d = 0.35 + 0.15 * light_factor
+        k_s = 0.25 + 0.20 * light_factor
+    elif mode == "flat":
+        k_a = 0.85 + 0.05 * light_factor
+        k_d = 0.10 + 0.05 * light_factor
+        k_s = 0.10 + 0.10 * light_factor
+    return k_a, k_d, k_s
+
+
 def _normal_strengths(zoom: float) -> tuple[float, float]:
     """Return ``(tangent, bitangent)`` normal-map strengths by zoom.
 
@@ -503,6 +531,11 @@ class _SharedGLContext:
     initialized: bool = False
 
 
+# Tracks whether the aboutToQuit cleanup hook has been registered, so we do
+# not connect the same slot multiple times across repeated exports.
+_cleanup_connected = False
+
+
 class _FrameResources:
     """Per-frame vertex/index data and sizes."""
 
@@ -514,10 +547,19 @@ class _FrameResources:
 
 
 def _ensure_qapp() -> None:
+    global _cleanup_connected
     if QApplication.instance() is None:
         if not sys.argv:
             sys.argv.append("inksim")
         _SharedGLContext.app = QApplication(sys.argv)
+    # Release the shared offscreen GL resources before the application (and
+    # its GL context) is torn down, so QOpenGLTexture destructors do not run
+    # without a current context.
+    if not _cleanup_connected:
+        app = QApplication.instance()
+        if app is not None:
+            app.aboutToQuit.connect(_cleanup_gl)
+            _cleanup_connected = True
 
 
 def _init_gl(width: int, height: int) -> None:
@@ -695,6 +737,51 @@ def _upload_geometry(vertices: np.ndarray, indices: np.ndarray) -> None:
     ibo.release()
 
 
+def _cleanup_gl() -> None:
+    """Release the shared offscreen GL resources while the context is current.
+
+    The ``_SharedGLContext`` singleton holds QOpenGLTexture/QOpenGLBuffer
+    objects that are only used during export.  If they are left for the
+    garbage collector, their destructors run after the GL context is gone and
+    Qt prints ``QOpenGLTexturePrivate::destroy() called without a current
+    context``.  Destroying them here, with the context made current, avoids
+    that warning.
+    """
+    ctx = _SharedGLContext.context
+    if ctx is None or not _SharedGLContext.initialized:
+        return
+    surface = _SharedGLContext.surface
+    if surface is None:
+        return
+    try:
+        ctx.makeCurrent(surface)
+        if _SharedGLContext.texture is not None:
+            _SharedGLContext.texture.destroy()
+            _SharedGLContext.texture = None
+        if _SharedGLContext.cap_texture is not None:
+            _SharedGLContext.cap_texture.destroy()
+            _SharedGLContext.cap_texture = None
+        if _SharedGLContext.fbo is not None:
+            _SharedGLContext.fbo = None
+        if _SharedGLContext.program is not None:
+            _SharedGLContext.program.removeAllShaders()
+            _SharedGLContext.program = None
+        if _SharedGLContext.vao is not None:
+            _SharedGLContext.vao.destroy()
+            _SharedGLContext.vao = None
+        if _SharedGLContext.vbo is not None:
+            _SharedGLContext.vbo.destroy()
+            _SharedGLContext.vbo = None
+        if _SharedGLContext.ibo is not None:
+            _SharedGLContext.ibo.destroy()
+            _SharedGLContext.ibo = None
+        ctx.doneCurrent()
+    except Exception:
+        # Cleanup is best-effort; never let it crash the shutdown path.
+        pass
+    _SharedGLContext.initialized = False
+
+
 def render_gpu_textured(
     buf: np.ndarray,
     stitches: np.ndarray,
@@ -705,6 +792,7 @@ def render_gpu_textured(
     line_width: float,
     dark_factor: float,
     light_factor: float,
+    lighting_mode: str = "rich",
 ) -> None:
     """Render visible stitches into *buf* as textured thread quads.
 
@@ -777,7 +865,7 @@ def render_gpu_textured(
     glUniform3f(program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
 
     # Allow dark/light factors to influence ambient and diffuse lighting.
-    k_a, k_d, k_s = _lighting_coefficients(dark_factor, light_factor)
+    k_a, k_d, k_s = _lighting_coefficients_for_mode(dark_factor, light_factor, lighting_mode)
     glUniform1f(program.uniformLocation("u_k_a"), k_a)
     glUniform1f(program.uniformLocation("u_k_d"), k_d)
     glUniform1f(program.uniformLocation("u_k_s"), k_s)
