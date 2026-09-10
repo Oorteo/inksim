@@ -184,7 +184,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
         nargs="?",
         const="",
         metavar="PATH",
-        help="Export a clean print PNG and exit (default: INPUT-simple.png)",
+        help="Export a clean print PNG and exit (default: INPUT_TYPE-simple.png; use --simple-png=PATH)",
     )
     parser.add_argument(
         "--png",
@@ -192,7 +192,15 @@ def build_argument_parser() -> argparse.ArgumentParser:
         nargs="?",
         const="",
         metavar="PATH",
-        help="Export a shaded print PNG and exit (default: INPUT.png)",
+        help="Export a shaded print PNG and exit (default: INPUT_TYPE.png; use --png=PATH)",
+    )
+    parser.add_argument(
+        "--webp",
+        dest="export_webp",
+        nargs="?",
+        const="",
+        metavar="PATH",
+        help="Export a shaded print WebP and exit (default: INPUT_TYPE.webp; use --webp=PATH)",
     )
     parser.add_argument(
         "--icon",
@@ -200,26 +208,26 @@ def build_argument_parser() -> argparse.ArgumentParser:
         nargs="?",
         const="",
         metavar="PATH",
-        help="Export a 256px preview PNG and exit (default: INPUT_thumb.png)",
+        help="Export a 256px preview PNG and exit (default: INPUT_TYPE_thumb.png; use --icon=PATH)",
     )
     parser.add_argument(
         "--dpi",
         type=int,
         default=300,
-        help="DPI for --simple-png or --png (default: 300)",
+        help="DPI for --simple-png, --png or --webp (default: 300)",
     )
     parser.add_argument(
         "--bg",
         dest="export_background",
         choices=("transparent", "white"),
         default="transparent",
-        help="PNG background (default: transparent)",
+        help="Background for PNG/WebP export (default: transparent)",
     )
     parser.add_argument(
         "--grid",
         dest="export_grid",
         action="store_true",
-        help="Add a measurement grid to exported PNG",
+        help="Add a measurement grid to exported PNG/WebP",
     )
     parser.add_argument(
         "-y",
@@ -262,6 +270,7 @@ def main() -> None:
         for value in (
             args.export_png,
             args.export_shaded_png,
+            args.export_webp,
             args.export_icon,
         )
         if value is not None
@@ -273,7 +282,7 @@ def main() -> None:
     export_requested = bool(export_values)
     if export_requested and not args.input_file:
         parser.error(
-            "an input embroidery file is required for export; use: inksim INPUT_FILE --simple-png OUTPUT.png"
+            "an input embroidery file is required for export; use: inksim INPUT_FILE --simple-png=OUTPUT.png"
         )
     if args.delete_input and not args.server:
         parser.error("--delete-input is only meaningful with --server")
@@ -288,15 +297,34 @@ def main() -> None:
         if directories or any(not path.is_file() for path in input_paths):
             parser.error("batch export requires embroidery files, not directories")
 
+    def _default_export_suffix(input_path: Path, kind: str) -> str:
+        """Return a collision-resistant default suffix including the input extension."""
+        ext = input_path.suffix.lstrip(".").lower()
+        if ext:
+            ext_part = f"_{ext}"
+        else:
+            ext_part = ""
+        if kind == "simple":
+            return f"{ext_part}-simple.png"
+        if kind == "shaded":
+            return f"{ext_part}.png"
+        if kind == "webp":
+            return f"{ext_part}.webp"
+        return f"{ext_part}_thumb.png"
+
+    def _export_kind_and_format(args: argparse.Namespace) -> tuple[str, str]:
+        if args.export_png is not None:
+            return "simple", "PNG"
+        if args.export_shaded_png is not None:
+            return "shaded", "PNG"
+        if args.export_webp is not None:
+            return "webp", "WebP"
+        return "icon", "PNG"
+
     export_paths: list[Path] = []
     if export_requested:
         export_value = export_values[0]
-        if args.export_png is not None:
-            default_suffix = "-simple.png"
-        elif args.export_shaded_png is not None:
-            default_suffix = ".png"
-        else:
-            default_suffix = "_thumb.png"
+        kind, export_format = _export_kind_and_format(args)
         explicit_path = Path(export_value) if export_value else None
         if len(input_paths) > 1 and explicit_path is not None:
             if not explicit_path.is_dir():
@@ -304,16 +332,20 @@ def main() -> None:
                     "an explicit output path for multiple inputs must be an existing directory"
                 )
             export_paths = [
-                explicit_path / f"{input_path.stem}{default_suffix}" for input_path in input_paths
+                explicit_path / f"{input_path.stem}{_default_export_suffix(input_path, kind)}"
+                for input_path in input_paths
             ]
         else:
             export_paths = [
-                (input_path.parent / f"{input_path.stem}{default_suffix}")
+                (input_path.parent / f"{input_path.stem}{_default_export_suffix(input_path, kind)}")
                 if explicit_path is None
                 else explicit_path
                 for input_path in input_paths
             ]
-        export_paths = [path.with_suffix(".png") for path in export_paths]
+        if export_format == "WebP":
+            export_paths = [path.with_suffix(".webp") for path in export_paths]
+        else:
+            export_paths = [path.with_suffix(".png") for path in export_paths]
         if len(set(export_paths)) != len(export_paths):
             parser.error("input files produce duplicate output paths")
         if not args.yes:
@@ -416,6 +448,7 @@ def main() -> None:
                 renderer_key=(
                     "simple" if args.export_png is not None else frame.viewer.active_renderer
                 ),
+                format="WebP" if args.export_webp is not None else "PNG",
             )
             if exported:
                 print(f"[{index}/{total_inputs}] Exported {input_path} -> {export_path}")
