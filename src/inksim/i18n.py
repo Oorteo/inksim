@@ -118,17 +118,25 @@ def _resolve_priority_list(locales: list[str]) -> list[str]:
 
 
 class _TranslationCatalog:
-    """In-memory cache for a single locale catalog."""
+    """Lazy in-memory cache for a single locale catalog.
 
-    __slots__ = ("locale", "_messages", "_meta")
+    The backing JSON file is read only when a translation from this catalog
+    is first requested.  This keeps startup fast even when many locale files
+    ship with the application.
+    """
+
+    __slots__ = ("locale", "_messages", "_meta", "_loaded")
 
     def __init__(self, locale: str) -> None:
         self.locale = locale
         self._messages: dict[str, str] = {}
         self._meta: dict[str, Any] = {}
-        self._load()
+        self._loaded = False
 
-    def _load(self) -> None:
+    def _ensure_loaded(self) -> None:
+        if self._loaded:
+            return
+        self._loaded = True
         path = LOCALES_DIR / f"{self.locale}.json"
         if not path.exists():
             return
@@ -149,14 +157,17 @@ class _TranslationCatalog:
                 self._messages[key] = key
 
     def gettext(self, message_id: str, default: str | None = None) -> str:
+        self._ensure_loaded()
         return self._messages.get(message_id, default if default is not None else message_id)
 
     def lookup(self, message_id: str) -> str | None:
         """Return the translation if it exists, otherwise None."""
+        self._ensure_loaded()
         return self._messages.get(message_id)
 
     @property
     def language_name(self) -> str:
+        self._ensure_loaded()
         return self._meta.get("name", self.locale)
 
 

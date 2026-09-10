@@ -17,6 +17,9 @@ __pycache__
 htmlcov/
 
 
+#
+dist/
+
 # see scripts/texture/generate_variants.sh
 # - live load from src/inksim/assets/
 scripts/texture/renders/
