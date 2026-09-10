@@ -624,7 +624,7 @@ class MainWindow(QMainWindow):
                 f"A newer InkSim version is available.\n\n"
                 f"Installed: {installed}\n"
                 f"Latest:    {latest}\n\n"
-                f"Run `pip install --upgrade inksim` to update."
+                f"Update InkSim using the same tool you used to install it."
             )
         elif is_newer(installed, latest):
             title = "Development version"
