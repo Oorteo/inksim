@@ -230,6 +230,12 @@ def build_argument_parser() -> argparse.ArgumentParser:
         help="Add a measurement grid to exported PNG/WebP",
     )
     parser.add_argument(
+        "--active-renderer",
+        dest="export_active_renderer",
+        action="store_true",
+        help="For --png/--webp use the viewer's active renderer instead of the default shaded_volume",
+    )
+    parser.add_argument(
         "-y",
         "--yes",
         action="store_true",
@@ -439,13 +445,19 @@ def main() -> None:
                     file=sys.stderr,
                 )
                 continue
+            if args.export_png is not None:
+                renderer_key = "simple"
+            elif args.export_active_renderer:
+                renderer_key = frame.viewer.active_renderer
+            else:
+                renderer_key = "shaded_volume"
             exported = frame.export_png(
                 export_path,
                 icon=args.export_icon is not None,
                 dpi=96 if args.export_icon is not None else args.dpi,
                 background=args.export_background,
                 grid=args.export_grid,
-                renderer_key=("simple" if args.export_png is not None else "shaded_volume"),
+                renderer_key=renderer_key,
                 format="WebP" if args.export_webp is not None else "PNG",
             )
             if exported:

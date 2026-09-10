@@ -46,6 +46,31 @@ def test_cli_exports_sample_with_simple_and_default_renderers(sample_design, tmp
         assert output.stat().st_size > 0
 
 
+def test_cli_exports_with_active_renderer(sample_design, tmp_path):
+    """--active-renderer exports using the viewer's currently selected renderer."""
+    environment = os.environ.copy()
+    environment["QT_QPA_PLATFORM"] = "offscreen"
+    output = tmp_path / "active.png"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "inksim",
+            str(sample_design),
+            f"--png={output}",
+            "--active-renderer",
+            "-y",
+        ],
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert output.is_file()
+    assert output.stat().st_size > 0
+
+
 def test_cli_batch_export_from_subdirectory_files(sample_design, tmp_path):
     """Batch export must work when input files live in nested directories."""
     environment = os.environ.copy()
