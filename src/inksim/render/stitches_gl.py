@@ -156,6 +156,34 @@ def _lighting_coefficients(dark_factor: float, light_factor: float) -> tuple[flo
     return k_a, k_d, k_s
 
 
+def _lighting_coefficients_for_mode(
+    dark_factor: float,
+    light_factor: float,
+    mode: str,
+) -> tuple[float, float, float]:
+    """Return Blinn-Phong coefficients for a named lighting profile.
+
+    The default ``rich`` profile is the existing behaviour and gives strong
+    thread shading, which looks great on dark/saturated colors but drives
+    light threads (especially white) toward near-black in the shadowed
+    valleys.  ``bright`` raises the ambient floor and softens the diffuse
+    contrast so light colors keep their hue, while ``flat`` is almost unlit
+    (a thin, even thread with only a faint sheen).
+    """
+    k_a, k_d, k_s = _lighting_coefficients(dark_factor, light_factor)
+    if mode == "bright":
+        # Lift the ambient floor and compress the diffuse range so the
+        # shadowed side of a white thread stays visibly white.
+        k_a = 0.55 + 0.15 * light_factor - 0.10 * dark_factor
+        k_d = 0.35 + 0.15 * light_factor
+        k_s = 0.25 + 0.20 * light_factor
+    elif mode == "flat":
+        k_a = 0.85 + 0.05 * light_factor
+        k_d = 0.10 + 0.05 * light_factor
+        k_s = 0.10 + 0.10 * light_factor
+    return k_a, k_d, k_s
+
+
 def _normal_strengths(zoom: float) -> tuple[float, float]:
     """Return ``(tangent, bitangent)`` normal-map strengths by zoom.
 

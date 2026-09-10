@@ -43,7 +43,7 @@ from ..debug import is_enabled, logger
 from ..render.stitches_gl import _build_satin_quads as build_satin_quads
 from ..render.stitches_gl import (
     _default_texture_path,
-    _lighting_coefficients,
+    _lighting_coefficients_for_mode,
     _load_texture,
     _normal_strengths,
     texture_cap_radius_fraction,
@@ -368,6 +368,7 @@ class GLStitchWidget(QOpenGLWidget):
         self._bg_color = (0.0, 0.0, 0.0)
         self._dark_factor = 0.5
         self._light_factor = 0.45
+        self._lighting_mode = "rich"
         self._stitches = np.zeros((0, 7), dtype=np.float32)
         self._visible_count = 0
         self._reverse_draw_order = False
@@ -490,6 +491,11 @@ class GLStitchWidget(QOpenGLWidget):
 
     def set_dark_factor(self, dark_factor: float) -> None:
         self._dark_factor = dark_factor
+        self._maybe_update()
+
+    def set_lighting_mode(self, mode: str) -> None:
+        """Select the GPU lighting profile (rich/bright/flat)."""
+        self._lighting_mode = mode
         self._maybe_update()
 
     def set_stitches(self, stitches: np.ndarray, line_width: float) -> None:
@@ -867,7 +873,9 @@ class GLStitchWidget(QOpenGLWidget):
             self._program.bind()
             glUniformMatrix4fv(self._program.uniformLocation("u_transform"), 1, GL_FALSE, transform)
             glUniform3f(self._program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
-            k_a, k_d, k_s = _lighting_coefficients(self._dark_factor, self._light_factor)
+            k_a, k_d, k_s = _lighting_coefficients_for_mode(
+                self._dark_factor, self._light_factor, self._lighting_mode
+            )
             glUniform1f(self._program.uniformLocation("u_k_a"), k_a)
             glUniform1f(self._program.uniformLocation("u_k_d"), k_d)
             glUniform1f(self._program.uniformLocation("u_k_s"), k_s)

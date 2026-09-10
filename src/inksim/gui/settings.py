@@ -85,6 +85,7 @@ def settings_sections(viewer: EmbroideryViewerWidget) -> tuple[tuple[str, str], 
 | Line width | {viewer.line_width:.2f} mm |
 | Dark factor | {viewer.dark_factor:.2f} |
 | Light factor | {viewer.light_factor:.2f} |
+| Lighting mode | {viewer.lighting_mode} |
 | Shading step | {viewer.shading_step:.2f} |
 """,
         ),

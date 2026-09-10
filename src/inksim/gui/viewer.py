@@ -66,10 +66,12 @@ from ..constants import (
     DEFAULT_BACKGROUND_COLOR,
     DEFAULT_DARK_FACTOR,
     DEFAULT_LIGHT_FACTOR,
+    DEFAULT_LIGHTING_MODE,
     DEFAULT_LINE_WIDTH_MM,
     DEFAULT_NEEDLE_COLOR,
     DEFAULT_NEEDLE_RADIUS,
     DEFAULT_NEEDLE_WIDTH,
+    LIGHTING_MODES,
     MAX_ZOOM_DESIGN_MM,
     MIN_VISIBLE_DESIGN_PIXELS,
 )
@@ -190,6 +192,7 @@ class EmbroideryViewerWidget(QWidget):
         self._background_before_cycle: tuple[int, int, int] | None = None
         self.dark_factor = DEFAULT_DARK_FACTOR
         self.light_factor = DEFAULT_LIGHT_FACTOR
+        self.lighting_mode = DEFAULT_LIGHTING_MODE
         self.shading_step = 0.05
         self.visible_count = 0
         self.show_grid = True
@@ -543,6 +546,9 @@ class EmbroideryViewerWidget(QWidget):
         tt = view.get("thread_texture")
         if isinstance(tt, str):
             self._saved_texture_path = tt
+        lm = view.get("lighting_mode")
+        if isinstance(lm, str) and lm in LIGHTING_MODES:
+            self.lighting_mode = lm
 
     def _save_view_setting(self, key: str, value: object) -> None:
         view = self.config.get("view", {})
@@ -812,6 +818,8 @@ class EmbroideryViewerWidget(QWidget):
                 self.calculate_stitch_density()
         elif mode == "V":
             self.show_stitches = not self.show_stitches
+        elif mode == "L":
+            self.cycle_lighting_mode()
         elif mode == "J":
             if not self.show_jumps:
                 self.show_jumps = True
@@ -823,6 +831,16 @@ class EmbroideryViewerWidget(QWidget):
                 self.risky_jumps_only = False
         self.update_mode_indicators()
         self.invalidate_cache()
+        self.update()
+
+    def cycle_lighting_mode(self) -> None:
+        """Advance the GPU lighting profile (rich -> bright -> flat -> rich)."""
+        index = LIGHTING_MODES.index(self.lighting_mode)
+        self.lighting_mode = LIGHTING_MODES[(index + 1) % len(LIGHTING_MODES)]
+        self._save_view_setting("view/lighting_mode", self.lighting_mode)
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.set_lighting_mode(self.lighting_mode)
+        self.status_message.emit(f"Lighting: {self.lighting_mode}", 2000)
         self.update()
 
     def _cancel_background_cycle(self) -> None:
@@ -884,6 +902,7 @@ class EmbroideryViewerWidget(QWidget):
             self._gl_widget.set_visible_count(self.visible_count)
             self._gl_widget.set_dark_factor(self.dark_factor)
             self._gl_widget.set_light_factor(self.light_factor)
+            self._gl_widget.set_lighting_mode(self.lighting_mode)
             # Thread width is adjustable via '[' / ']' (same as CPU renderers);
             # push it here so the GL geometry is rebuilt when it changes.
             self._gl_widget.set_stitches(self.stitches_np, self.line_width)
@@ -1841,7 +1860,24 @@ class EmbroideryViewerWidget(QWidget):
                 no_tex = texture_menu.addAction("(none found)")
                 no_tex.setEnabled(False)
 
+            lighting_menu = menu.addMenu("Lighting")
+            for mode in LIGHTING_MODES:
+                action = lighting_menu.addAction(mode)
+                action.setCheckable(True)
+                action.setChecked(self.lighting_mode == mode)
+                action.triggered.connect(lambda checked, m=mode: self._set_lighting_mode(m))
+
         menu.exec(e.globalPos())
+
+    def _set_lighting_mode(self, mode: str) -> None:
+        """Apply a GPU lighting profile and persist it."""
+        if mode not in LIGHTING_MODES:
+            return
+        self.lighting_mode = mode
+        self._save_view_setting("view/lighting_mode", mode)
+        if self.active_renderer == "gpu_textured":
+            self._gl_widget.set_lighting_mode(mode)
+        self.update()
 
     def _set_thread_texture(self, path: Path) -> None:
         """Apply a thread texture and persist it for the next startup.
