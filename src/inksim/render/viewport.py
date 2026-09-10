@@ -30,6 +30,7 @@ def render_viewport_raster(
     show_grid: bool,
     show_density: bool,
     show_stitches: bool = True,
+    lighting_mode: str = "rich",
 ) -> None:
     """Compose the non-Qt viewport layers into an RGB buffer."""
     # Fabric background is GPU-only for now; the CPU realistic_twist renderer
@@ -51,6 +52,7 @@ def render_viewport_raster(
             dark_factor,
             light_factor,
             show_stitches,
+            lighting_mode,
         )
     if show_density and len(stitch_points) > 0:
         render_density_numba(

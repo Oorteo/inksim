@@ -792,6 +792,7 @@ def render_gpu_textured(
     line_width: float,
     dark_factor: float,
     light_factor: float,
+    lighting_mode: str = "rich",
 ) -> None:
     """Render visible stitches into *buf* as textured thread quads.
 
@@ -864,7 +865,7 @@ def render_gpu_textured(
     glUniform3f(program.uniformLocation("u_light_dir"), -0.4, -0.4, 0.82)
 
     # Allow dark/light factors to influence ambient and diffuse lighting.
-    k_a, k_d, k_s = _lighting_coefficients(dark_factor, light_factor)
+    k_a, k_d, k_s = _lighting_coefficients_for_mode(dark_factor, light_factor, lighting_mode)
     glUniform1f(program.uniformLocation("u_k_a"), k_a)
     glUniform1f(program.uniformLocation("u_k_d"), k_d)
     glUniform1f(program.uniformLocation("u_k_s"), k_s)

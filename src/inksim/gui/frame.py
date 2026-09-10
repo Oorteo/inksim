@@ -1206,6 +1206,7 @@ class MainWindow(QMainWindow):
             dark_factor=self.viewer.dark_factor,
             light_factor=self.viewer.light_factor,
             scale_factor=scale_factor,
+            lighting_mode=self.viewer.lighting_mode,
         )
         if path is not None:
             quality = -1
