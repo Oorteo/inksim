@@ -445,9 +445,7 @@ def main() -> None:
                 dpi=96 if args.export_icon is not None else args.dpi,
                 background=args.export_background,
                 grid=args.export_grid,
-                renderer_key=(
-                    "simple" if args.export_png is not None else frame.viewer.active_renderer
-                ),
+                renderer_key=("simple" if args.export_png is not None else "shaded_volume"),
                 format="WebP" if args.export_webp is not None else "PNG",
             )
             if exported:
