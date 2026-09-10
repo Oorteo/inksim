@@ -380,10 +380,10 @@ def main() -> None:
                 if answer not in ("y", "yes"):
                     parser.error("export cancelled")
 
-    if args.language is not None:
-        set_active_locale(args.language)
+    if args.lang is not None:
+        set_active_locale(args.lang)
     else:
-        active_locale()  # ensures the locale loaded from config is validated
+        active_locale()  # resolves config or environment locale
 
     debug_enabled = (
         args.debug

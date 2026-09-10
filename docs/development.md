@@ -87,6 +87,19 @@ locale is a flat JSON object where keys are stable IDs and values contain a
 `source` string (English source-of-truth) and a `translation` string.
 
 Supported locales are discovered automatically from files in that directory.
+Locale tags follow [BCP 47](https://tools.ietf.org/html/bcp47) with a hyphen,
+for example `pt-BR`, `pt-PT` or `cs-CZ`.
+
+### Fallback chain
+
+When a string is missing in a specific locale, the runtime falls back through:
+
+1. the exact locale file (e.g. `pt-BR.json`)
+2. the base language file (e.g. `pt.json`)
+3. the English source catalog (`en.json`)
+
+This lets regional variants contain only the strings that differ from the base
+language.
 
 ### Adding or changing a UI string
 
@@ -107,7 +120,7 @@ Supported locales are discovered automatically from files in that directory.
     This scans the source for `_()` calls, adds new IDs to `en.json` with the
     source text, and preserves existing translations in `cs.json` / `sk.json`.
 
-### Translating to Czech or Slovak via Ollama
+### Translating to Czech, Slovak or other locales via Ollama
 
 The translator sends only **missing or stale** strings to a local Ollama model,
 so repeated runs are cheap:
@@ -118,23 +131,34 @@ uv run python scripts/i18n/translate.py --lang cs --model deepseek-v4-flash:clou
 
 # Generate/update Slovak translations
 uv run python scripts/i18n/translate.py --lang sk --model deepseek-v4-flash:cloud
+
+# Regional variant, e.g. Brazilian Portuguese
+uv run python scripts/i18n/translate.py --lang pt-BR --model deepseek-v4-flash:cloud
 ```
 
-Use `--dry-run` to preview the prompt without calling the model.
+The script accepts both `pt-BR` and `pt_BR.UTF-8` style tags. Use `--dry-run`
+to preview the prompt without calling the model.
 
 ### Running the application in another language
 
 ```bash
-uv run python -m inksim --language cs
+uv run python -m inksim --lang cs
+uv run python -m inksim -l sk
 ```
 
-The chosen locale is persisted in the config file, so omitting `--language`
-uses the last selected one. English is the default fallback.
+The chosen locale is persisted in the config file, so omitting `--lang` uses
+the last selected one.
 
-### Native-speaker corrections
+The application also respects the system locale variables:
 
-Translations live in `src/inksim/locales/<locale>.json` and can be edited
-manually. Corrections and new locale contributions can be submitted through
+```bash
+LANG=pt_BR.UTF-8 uv run python -m inksim
+LANGUAGE=cs:sk:de uv run python -m inksim
+```
+
+Resolution order is: CLI argument → config → `LANGUAGE` (colon-separated
+priority list) → `LC_ALL` → `LANG` → `en`. Each locale also falls back to its
+base language (e.g. `pt-BR` → `pt`) before the next priority entry is tried.
 GitHub issues or pull requests; the JSON format is self-contained and diffs
 well.
 

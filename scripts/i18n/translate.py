@@ -132,8 +132,21 @@ def call_ollama(prompt: str, model: str) -> dict[str, str]:
     return {k: str(v) for k, v in raw.items()}
 
 
+def _normalize_locale_tag(value: str) -> str:
+    """Normalize ``pt_BR.UTF-8`` to ``pt-BR``."""
+    value = value.strip()
+    value = value.split(".")[0]
+    value = value.replace("_", "-")
+    parts = value.split("-")
+    if parts:
+        parts[0] = parts[0].lower()
+        parts[1:] = [part.upper() for part in parts[1:]]
+    return "-".join(parts)
+
+
 def translate_locale(locale: str, model: str, dry_run: bool = False) -> int:
     """Translate missing/stale strings for *locale* and update its catalog."""
+    locale = _normalize_locale_tag(locale)
     en_meta, en_messages = load_catalog(EN_CATALOG)
     target_path = LOCALES_DIR / f"{locale}.json"
     target_meta, target_messages = load_catalog(target_path)
@@ -184,11 +197,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    if args.lang == "en":
+    locale = _normalize_locale_tag(args.lang)
+    if locale.split("-")[0] == "en":
         parser.error("cannot translate into the source language 'en'")
 
     try:
-        return 0 if translate_locale(args.lang, args.model, args.dry_run) >= 0 else 1
+        return 0 if translate_locale(locale, args.model, args.dry_run) >= 0 else 1
     except Exception as ex:
         print(f"Translation failed: {ex}", file=sys.stderr)
         return 1

@@ -1,0 +1,378 @@
+{
+  "_meta": {
+    "language": "de",
+    "name": "de"
+  },
+  "app.title": {
+    "source": "InkSim",
+    "translation": "InkSim"
+  },
+  "dialog.about.body": {
+    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+    "translation": "Erkunde Stichreihenfolge, Garnfarben, Sprünge, Abschneider und Maschinenbefehle vor der Produktion. Vorschau des Designs Stich für Stich, wechsle den Rendering-Stil und exportiere, was du siehst."
+  },
+  "dialog.about.last_update_check": {
+    "source": "Last update check: {when}",
+    "translation": "Letzter Update-Check: {when}"
+  },
+  "dialog.about.tagline": {
+    "source": "Interactive embroidery simulation, inspection, and export.",
+    "translation": "Interaktive Stickerei-Simulation, Inspektion und Export."
+  },
+  "dialog.about.title": {
+    "source": "About {app_title}",
+    "translation": "Über {app_title}"
+  },
+  "dialog.calibrate.bar_length": {
+    "source": "Bar length:",
+    "translation": "Balkenlänge:"
+  },
+  "dialog.calibrate.info": {
+    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+    "translation": "Halte ein Lineal an den Bildschirm und ziehe den Schieberegler, bis der Balken unten genau 100 mm lang ist, dann drücke OK."
+  },
+  "dialog.calibrate.physical_length": {
+    "source": "Physical length of the bar (mm):",
+    "translation": "Physische Länge des Balkens (mm):"
+  },
+  "dialog.calibrate.title": {
+    "source": "Calibrate display size",
+    "translation": "Bildschirmgröße kalibrieren"
+  },
+  "dialog.config.invalid_toml": {
+    "source": "Invalid TOML",
+    "translation": "Ungültiges TOML"
+  },
+  "dialog.config.save_error.message": {
+    "source": "Failed to save config: {error}",
+    "translation": "Konfiguration konnte nicht gespeichert werden: {error}"
+  },
+  "dialog.config.save_error.title": {
+    "source": "Error",
+    "translation": "Fehler"
+  },
+  "dialog.config.title": {
+    "source": "Configuration file",
+    "translation": "Konfigurationsdatei"
+  },
+  "dialog.export.close": {
+    "source": "Close",
+    "translation": "Schließen"
+  },
+  "dialog.export.copied": {
+    "source": "Copied!",
+    "translation": "Kopiert!"
+  },
+  "dialog.export.copy": {
+    "source": "Copy to clipboard",
+    "translation": "In die Zwischenablage kopieren"
+  },
+  "dialog.export.copy.tooltip": {
+    "source": "Copy the full-resolution image to the clipboard",
+    "translation": "Das Bild in voller Auflösung in die Zwischenablage kopieren"
+  },
+  "dialog.export.format": {
+    "source": "Format:",
+    "translation": "Format:"
+  },
+  "dialog.export.quality": {
+    "source": "Quality:",
+    "translation": "Qualität:"
+  },
+  "dialog.export.save": {
+    "source": "Save...",
+    "translation": "Speichern..."
+  },
+  "dialog.export.save.tooltip": {
+    "source": "Save the image to a file",
+    "translation": "Das Bild in einer Datei speichern"
+  },
+  "dialog.export.save_error.message": {
+    "source": "Failed to save {path}",
+    "translation": "Speichern fehlgeschlagen: {path}"
+  },
+  "dialog.export.save_error.title": {
+    "source": "Save image",
+    "translation": "Bild speichern"
+  },
+  "dialog.export.saved": {
+    "source": "Saved!",
+    "translation": "Gespeichert!"
+  },
+  "dialog.export.scale": {
+    "source": "Scale:",
+    "translation": "Skalierung:"
+  },
+  "dialog.export.transparent_bg": {
+    "source": "Transparent background",
+    "translation": "Transparenter Hintergrund"
+  },
+  "dialog.needle_color.title": {
+    "source": "Needle color",
+    "translation": "Nadelfarbe"
+  },
+  "dialog.open.normal_preview": {
+    "source": "Normal preview",
+    "translation": "Normale Vorschau"
+  },
+  "dialog.open.real_preview": {
+    "source": "Real preview",
+    "translation": "Echte Vorschau"
+  },
+  "dialog.open.title": {
+    "source": "Open embroidery file",
+    "translation": "Stickdatei öffnen"
+  },
+  "dialog.renderer.title": {
+    "source": "Choose stitch renderer",
+    "translation": "Stich-Renderer wählen"
+  },
+  "menu.file": {
+    "source": "&File",
+    "translation": "&Datei"
+  },
+  "menu.file.calibrate": {
+    "source": "Calibrate display size...",
+    "translation": "Bildschirmgröße kalibrieren..."
+  },
+  "menu.file.center_needle": {
+    "source": "Center needle",
+    "translation": "Nadel zentrieren"
+  },
+  "menu.file.choose_renderer": {
+    "source": "Choose stitch renderer...",
+    "translation": "Stich-Renderer wählen..."
+  },
+  "menu.file.export": {
+    "source": "Export",
+    "translation": "Export"
+  },
+  "menu.file.export.icon": {
+    "source": "Icon/Thumbnail...",
+    "translation": "Symbol/Miniaturansicht..."
+  },
+  "menu.file.export.shaded_print": {
+    "source": "Shaded print...",
+    "translation": "Schattierter Druck..."
+  },
+  "menu.file.export.simple_print": {
+    "source": "Simple print...",
+    "translation": "Einfacher Druck..."
+  },
+  "menu.file.fit_design": {
+    "source": "Fit design to window",
+    "translation": "Design an Fenster anpassen"
+  },
+  "menu.file.gpu_textured_render": {
+    "source": "GPU textured render",
+    "translation": "GPU-texturiertes Rendering"
+  },
+  "menu.file.open": {
+    "source": "Open embroidery file",
+    "translation": "Stickdatei öffnen"
+  },
+  "menu.file.quit": {
+    "source": "Quit",
+    "translation": "Beenden"
+  },
+  "menu.file.rotate_left": {
+    "source": "Rotate left 90 deg",
+    "translation": "90 Grad nach links drehen"
+  },
+  "menu.file.rotate_right": {
+    "source": "Rotate right 90 deg",
+    "translation": "90 Grad nach rechts drehen"
+  },
+  "menu.file.save_as": {
+    "source": "Save as embroidery...",
+    "translation": "Als Stickerei speichern..."
+  },
+  "menu.file.show_grid": {
+    "source": "Show measurement grid",
+    "translation": "Messraster anzeigen"
+  },
+  "menu.help": {
+    "source": "&Help",
+    "translation": "&Hilfe"
+  },
+  "menu.help.about": {
+    "source": "About {app_title}",
+    "translation": "Über {app_title}"
+  },
+  "menu.help.check_updates": {
+    "source": "Check for updates",
+    "translation": "Nach Updates suchen"
+  },
+  "menu.help.cli_options": {
+    "source": "Command line options...",
+    "translation": "Kommandozeilenoptionen..."
+  },
+  "menu.help.config": {
+    "source": "Config",
+    "translation": "Konfiguration"
+  },
+  "menu.help.help": {
+    "source": "Help",
+    "translation": "Hilfe"
+  },
+  "menu.help.status": {
+    "source": "Status",
+    "translation": "Status"
+  },
+  "menu.help.trace_events": {
+    "source": "Trace events",
+    "translation": "Ereignisse verfolgen"
+  },
+  "menu.playback": {
+    "source": "&Playback",
+    "translation": "&Wiedergabe"
+  },
+  "menu.playback.next_color": {
+    "source": "Next color",
+    "translation": "Nächste Farbe"
+  },
+  "menu.playback.next_command": {
+    "source": "Next command",
+    "translation": "Nächster Befehl"
+  },
+  "menu.playback.play_pause": {
+    "source": "Play/Pause",
+    "translation": "Abspielen/Pause"
+  },
+  "menu.playback.prev_color": {
+    "source": "Prev color",
+    "translation": "Vorherige Farbe"
+  },
+  "menu.playback.prev_command": {
+    "source": "Prev command",
+    "translation": "Vorheriger Befehl"
+  },
+  "menu.view": {
+    "source": "&View",
+    "translation": "&Ansicht"
+  },
+  "menu.view.actual_size": {
+    "source": "Actual size (1:1)",
+    "translation": "Tatsächliche Größe (1:1)"
+  },
+  "menu.view.clear_snap": {
+    "source": "Clear saved snap position",
+    "translation": "Gespeicherte Einrastposition löschen"
+  },
+  "menu.view.command_list": {
+    "source": "Command list",
+    "translation": "Befehlsliste"
+  },
+  "menu.view.cycle_bg": {
+    "source": "Cycle background",
+    "translation": "Hintergrund wechseln"
+  },
+  "menu.view.fullscreen": {
+    "source": "Fullscreen",
+    "translation": "Vollbild"
+  },
+  "menu.view.save_snap": {
+    "source": "Save current snap position",
+    "translation": "Aktuelle Einrastposition speichern"
+  },
+  "menu.view.show_hide_all": {
+    "source": "Show/hide all",
+    "translation": "Alle anzeigen/ausblenden"
+  },
+  "menu.view.show_needle": {
+    "source": "Show needle",
+    "translation": "Nadel anzeigen"
+  },
+  "menu.view.snap_layout": {
+    "source": "Snap window layout",
+    "translation": "Fensterlayout einrasten"
+  },
+  "message.no_file_to_export": {
+    "source": "No embroidery file is loaded to export.",
+    "translation": "Keine Stickdatei zum Exportieren geladen."
+  },
+  "message.no_file_to_save": {
+    "source": "No embroidery file is loaded.",
+    "translation": "Keine Stickdatei geladen."
+  },
+  "message.reload.title": {
+    "source": "Reloading",
+    "translation": "Neu laden"
+  },
+  "message.save_error.message": {
+    "source": "Failed to save file: {error}",
+    "translation": "Datei konnte nicht gespeichert werden: {error}"
+  },
+  "splash.loading": {
+    "source": "Loading...",
+    "translation": "Lädt..."
+  },
+  "status.line_settings.reset": {
+    "source": "Reset line width and shading factors",
+    "translation": "Linienbreite und Schattierungsfaktoren zurücksetzen"
+  },
+  "status.line_settings.tooltip": {
+    "source": "Click to adjust dark factor, light factor and line width",
+    "translation": "Klicken, um Dunkelfaktor, Hellfaktor und Linienbreite anzupassen"
+  },
+  "status.mode.background": {
+    "source": "Cycle background: black, white, configured",
+    "translation": "Hintergrund wechseln: schwarz, weiß, konfiguriert"
+  },
+  "status.mode.bottom_view": {
+    "source": "Bottom view (draw later stitches under earlier ones)",
+    "translation": "Untere Ansicht (spätere Stiche unter früheren zeichnen)"
+  },
+  "status.mode.density": {
+    "source": "Toggle stitch density overlay",
+    "translation": "Stichdichte-Overlay umschalten"
+  },
+  "status.mode.gpu_textured": {
+    "source": "Toggle GPU textured rendering",
+    "translation": "GPU-texturiertes Rendering umschalten"
+  },
+  "status.mode.jump": {
+    "source": "Cycle jump display: off, all, risky only",
+    "translation": "Sprunganzeige wechseln: aus, alle, nur riskant"
+  },
+  "status.mode.visibility": {
+    "source": "Toggle stitch visibility",
+    "translation": "Stichsichtbarkeit umschalten"
+  },
+  "status.needle.reset": {
+    "source": "Reset needle settings",
+    "translation": "Nadelsettings zurücksetzen"
+  },
+  "status.needle.settings": {
+    "source": "Needle crosshair settings",
+    "translation": "Nadel-Fadenkreuz-Einstellungen"
+  },
+  "status.slider.color": {
+    "source": "Color…",
+    "translation": "Farbe…"
+  },
+  "status.slider.dark_factor": {
+    "source": "DF",
+    "translation": "DF"
+  },
+  "status.slider.fullscreen": {
+    "source": "Full screen",
+    "translation": "Vollbild"
+  },
+  "status.slider.light_factor": {
+    "source": "LF",
+    "translation": "LF"
+  },
+  "status.slider.line_width": {
+    "source": "LW",
+    "translation": "LW"
+  },
+  "status.slider.radius": {
+    "source": "Radius",
+    "translation": "Radius"
+  },
+  "status.slider.width": {
+    "source": "Width",
+    "translation": "Breite"
+  }
+}
