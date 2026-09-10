@@ -397,9 +397,9 @@ class MainWindow(QMainWindow):
         self._action(file_menu, "Open embroidery file", self.open_file_dialog, "Ctrl+O")
         self._action(file_menu, "Save as embroidery...", self._save_as_embroidery_slot, "Ctrl+S")
         export_menu = file_menu.addMenu("Export")
-        self._action(export_menu, "Shaded PNG for print...", self.export_shaded_png, "Ctrl+E")
-        self._action(export_menu, "Preview PNG...", self.export_icon_png)
-        self._action(export_menu, "Simple PNG ...", self.export_print_png)
+        self._action(export_menu, "Shaded print...", self.export_shaded_png, "Ctrl+E")
+        self._action(export_menu, "Icon/Thumbnail...", self.export_icon_png)
+        self._action(export_menu, "Simple print...", self.export_print_png)
         self._action(file_menu, "Center needle", self._center_needle_slot, "C")
         self._action(file_menu, "Fit design to window", self._fit_to_screen_slot, "F")
         self._action(file_menu, "Calibrate display size...", self._calibrate_display_slot)
@@ -1284,7 +1284,7 @@ class MainWindow(QMainWindow):
         if image is None or not isinstance(image, QImage):
             return
         self._show_export_preview(
-            "Export PNG for print",
+            "Export simple print",
             image,
             self._default_export_name("-simple.png"),
             renderer_key="simple",
@@ -1303,7 +1303,7 @@ class MainWindow(QMainWindow):
         if image is None or not isinstance(image, QImage):
             return
         self._show_export_preview(
-            "Export shaded PNG for print",
+            "Export shaded print",
             image,
             self._default_export_name(".png"),
             dpi=300,
@@ -1321,7 +1321,7 @@ class MainWindow(QMainWindow):
         if image is None or not isinstance(image, QImage):
             return
         self._show_export_preview(
-            "Export preview PNG",
+            "Export icon/thumbnail",
             image,
             self._default_export_name("_thumb.png"),
             icon=True,
