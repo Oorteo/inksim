@@ -503,6 +503,11 @@ class _SharedGLContext:
     initialized: bool = False
 
 
+# Tracks whether the aboutToQuit cleanup hook has been registered, so we do
+# not connect the same slot multiple times across repeated exports.
+_cleanup_connected = False
+
+
 class _FrameResources:
     """Per-frame vertex/index data and sizes."""
 
@@ -514,10 +519,19 @@ class _FrameResources:
 
 
 def _ensure_qapp() -> None:
+    global _cleanup_connected
     if QApplication.instance() is None:
         if not sys.argv:
             sys.argv.append("inksim")
         _SharedGLContext.app = QApplication(sys.argv)
+    # Release the shared offscreen GL resources before the application (and
+    # its GL context) is torn down, so QOpenGLTexture destructors do not run
+    # without a current context.
+    if not _cleanup_connected:
+        app = QApplication.instance()
+        if app is not None:
+            app.aboutToQuit.connect(_cleanup_gl)
+            _cleanup_connected = True
 
 
 def _init_gl(width: int, height: int) -> None:
@@ -693,6 +707,51 @@ def _upload_geometry(vertices: np.ndarray, indices: np.ndarray) -> None:
     else:
         ibo.write(0, indices.tobytes(), indices.nbytes)
     ibo.release()
+
+
+def _cleanup_gl() -> None:
+    """Release the shared offscreen GL resources while the context is current.
+
+    The ``_SharedGLContext`` singleton holds QOpenGLTexture/QOpenGLBuffer
+    objects that are only used during export.  If they are left for the
+    garbage collector, their destructors run after the GL context is gone and
+    Qt prints ``QOpenGLTexturePrivate::destroy() called without a current
+    context``.  Destroying them here, with the context made current, avoids
+    that warning.
+    """
+    ctx = _SharedGLContext.context
+    if ctx is None or not _SharedGLContext.initialized:
+        return
+    surface = _SharedGLContext.surface
+    if surface is None:
+        return
+    try:
+        ctx.makeCurrent(surface)
+        if _SharedGLContext.texture is not None:
+            _SharedGLContext.texture.destroy()
+            _SharedGLContext.texture = None
+        if _SharedGLContext.cap_texture is not None:
+            _SharedGLContext.cap_texture.destroy()
+            _SharedGLContext.cap_texture = None
+        if _SharedGLContext.fbo is not None:
+            _SharedGLContext.fbo = None
+        if _SharedGLContext.program is not None:
+            _SharedGLContext.program.removeAllShaders()
+            _SharedGLContext.program = None
+        if _SharedGLContext.vao is not None:
+            _SharedGLContext.vao.destroy()
+            _SharedGLContext.vao = None
+        if _SharedGLContext.vbo is not None:
+            _SharedGLContext.vbo.destroy()
+            _SharedGLContext.vbo = None
+        if _SharedGLContext.ibo is not None:
+            _SharedGLContext.ibo.destroy()
+            _SharedGLContext.ibo = None
+        ctx.doneCurrent()
+    except Exception:
+        # Cleanup is best-effort; never let it crash the shutdown path.
+        pass
+    _SharedGLContext.initialized = False
 
 
 def render_gpu_textured(
