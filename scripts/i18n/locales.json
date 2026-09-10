@@ -51,6 +51,76 @@
         "tier": 2
     },
     {
+        "code": "da",
+        "name": "Danish",
+        "tier": 2
+    },
+    {
+        "code": "sv",
+        "name": "Swedish",
+        "tier": 2
+    },
+    {
+        "code": "fi",
+        "name": "Finnish",
+        "tier": 2
+    },
+    {
+        "code": "hu",
+        "name": "Hungarian",
+        "tier": 2
+    },
+    {
+        "code": "ro",
+        "name": "Romanian",
+        "tier": 2
+    },
+    {
+        "code": "bg",
+        "name": "Bulgarian",
+        "tier": 2
+    },
+    {
+        "code": "hr",
+        "name": "Croatian",
+        "tier": 2
+    },
+    {
+        "code": "sl",
+        "name": "Slovenian",
+        "tier": 2
+    },
+    {
+        "code": "lt",
+        "name": "Lithuanian",
+        "tier": 2
+    },
+    {
+        "code": "lv",
+        "name": "Latvian",
+        "tier": 2
+    },
+    {
+        "code": "et",
+        "name": "Estonian",
+        "tier": 2
+    },
+    {
+        "code": "el",
+        "name": "Greek",
+        "tier": 2
+    },
+    {
+        "code": "ga",
+        "name": "Irish",
+        "tier": 2
+    },
+    {
+        "code": "mt",
+        "name": "Maltese",
+        "tier": 2
+    },
+    {
         "code": "ru",
         "name": "Russian",
         "tier": 2
@@ -59,6 +129,24 @@
         "code": "tr",
         "name": "Turkish",
         "tier": 2
+    },
+    {
+        "code": "no",
+        "name": "Norwegian",
+        "tier": 3,
+        "note": "Non-EU European language"
+    },
+    {
+        "code": "is",
+        "name": "Icelandic",
+        "tier": 3,
+        "note": "Non-EU European language"
+    },
+    {
+        "code": "uk",
+        "name": "Ukrainian",
+        "tier": 3,
+        "note": "Non-EU European language"
     },
     {
         "code": "es-MX",
