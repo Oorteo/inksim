@@ -71,6 +71,30 @@ def test_cli_exports_with_active_renderer(sample_design, tmp_path):
     assert output.stat().st_size > 0
 
 
+def test_cli_rejects_active_renderer_with_simple_png(sample_design, tmp_path):
+    """--active-renderer is only meaningful with --png/--webp."""
+    environment = os.environ.copy()
+    environment["QT_QPA_PLATFORM"] = "offscreen"
+    output = tmp_path / "active.png"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "inksim",
+            str(sample_design),
+            f"--simple-png={output}",
+            "--active-renderer",
+            "-y",
+        ],
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode != 0
+    assert "--active-renderer" in result.stderr
+
+
 def test_cli_batch_export_from_subdirectory_files(sample_design, tmp_path):
     """Batch export must work when input files live in nested directories."""
     environment = os.environ.copy()

@@ -286,6 +286,12 @@ def main() -> None:
     if args.dpi <= 0:
         parser.error("DPI must be greater than zero")
     export_requested = bool(export_values)
+    if (
+        export_requested
+        and args.export_active_renderer
+        and not (args.export_shaded_png is not None or args.export_webp is not None)
+    ):
+        parser.error("--active-renderer can only be used with --png or --webp")
     if export_requested and not args.input_file:
         parser.error(
             "an input embroidery file is required for export; use: inksim INPUT_FILE --simple-png=OUTPUT.png"
@@ -445,7 +451,7 @@ def main() -> None:
                     file=sys.stderr,
                 )
                 continue
-            if args.export_png is not None:
+            if args.export_png is not None or args.export_icon is not None:
                 renderer_key = "simple"
             elif args.export_active_renderer:
                 renderer_key = frame.viewer.active_renderer
