@@ -48,6 +48,7 @@ The Playback menu provides steps of 1, 10, 50, 100, and 500 stitches.
 | `N`                   | Toggle the needle marker                                   |
 | `H`                   | Show help                                                  |
 | `I`                   | Show current viewer settings                               |
+| `L`                   | Cycle GPU lighting profile: rich → bright → flat           |
 | `+` / `-`             | Increase or decrease thread width                          |
 | `[` / `]`             | Adjust dark shading                                        |
 | `Shift+[` / `Shift+]` | Adjust light shading                                       |
@@ -141,9 +142,9 @@ within a 2.5 mm radius:
 | Yellow | Warning density, from 3 stitches per mm2  |
 | Red    | Critical density, from 6 stitches per mm2 |
 
-Stitches with zero length are highlighted with a thin red circle. Their
+Stitches with zero length are highlighted with a thin magenta ring. Their
 center keeps the density color, so they can be distinguished from high-density
-areas. The circles are shown only while the density map is enabled and remain
+areas. The rings are shown only while the density map is enabled and remain
 nearly constant in size as the view is zoomed.
 
 ## Performance Diagnostics
