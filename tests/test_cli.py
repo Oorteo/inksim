@@ -22,8 +22,9 @@ def test_cli_exports_sample_with_simple_and_default_renderers(sample_design, tmp
     environment = os.environ.copy()
     environment["QT_QPA_PLATFORM"] = "offscreen"
     for option, name in (
-        ("--simple-png", "simple.png"),
-        ("--png", "default.png"),
+        ("--simple-png=", "simple.png"),
+        ("--png=", "default.png"),
+        ("--webp=", "default.webp"),
     ):
         output = tmp_path / name
         result = subprocess.run(
@@ -32,8 +33,7 @@ def test_cli_exports_sample_with_simple_and_default_renderers(sample_design, tmp
                 "-m",
                 "inksim",
                 str(sample_design),
-                option,
-                str(output),
+                f"{option}{output}",
                 "-y",
             ],
             env=environment,
@@ -44,3 +44,48 @@ def test_cli_exports_sample_with_simple_and_default_renderers(sample_design, tmp
         assert result.returncode == 0, result.stderr
         assert output.is_file()
         assert output.stat().st_size > 0
+
+
+def test_cli_batch_export_from_subdirectory_files(sample_design, tmp_path):
+    """Batch export must work when input files live in nested directories."""
+    environment = os.environ.copy()
+    environment["QT_QPA_PLATFORM"] = "offscreen"
+
+    sub_a = tmp_path / "a"
+    sub_b = tmp_path / "b" / "nested"
+    sub_a.mkdir()
+    sub_b.mkdir(parents=True)
+
+    file_a = sub_a / f"one{sample_design.suffix}"
+    file_b = sub_b / f"two{sample_design.suffix}"
+    file_a.write_bytes(sample_design.read_bytes())
+    file_b.write_bytes(sample_design.read_bytes())
+
+    output_dir = tmp_path / "out"
+    output_dir.mkdir()
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "inksim",
+            str(file_a),
+            str(file_b),
+            "--icon",
+            str(output_dir),
+            "-y",
+        ],
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+
+    ext = sample_design.suffix.lstrip(".").lower()
+    expected_a = output_dir / f"one_{ext}_thumb.png"
+    expected_b = output_dir / f"two_{ext}_thumb.png"
+    assert expected_a.is_file()
+    assert expected_a.stat().st_size > 0
+    assert expected_b.is_file()
+    assert expected_b.stat().st_size > 0
