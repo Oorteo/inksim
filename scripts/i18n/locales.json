@@ -182,6 +182,166 @@
         "tier": 3
     },
     {
+        "code": "ar",
+        "name": "Arabic",
+        "tier": 3
+    },
+    {
+        "code": "he",
+        "name": "Hebrew",
+        "tier": 3
+    },
+    {
+        "code": "hi",
+        "name": "Hindi",
+        "tier": 3
+    },
+    {
+        "code": "bn",
+        "name": "Bengali",
+        "tier": 3
+    },
+    {
+        "code": "ur",
+        "name": "Urdu",
+        "tier": 3
+    },
+    {
+        "code": "pa",
+        "name": "Punjabi",
+        "tier": 3
+    },
+    {
+        "code": "ta",
+        "name": "Tamil",
+        "tier": 3
+    },
+    {
+        "code": "te",
+        "name": "Telugu",
+        "tier": 3
+    },
+    {
+        "code": "mr",
+        "name": "Marathi",
+        "tier": 3
+    },
+    {
+        "code": "gu",
+        "name": "Gujarati",
+        "tier": 3
+    },
+    {
+        "code": "ml",
+        "name": "Malayalam",
+        "tier": 3
+    },
+    {
+        "code": "kn",
+        "name": "Kannada",
+        "tier": 3
+    },
+    {
+        "code": "fa",
+        "name": "Persian (Farsi)",
+        "tier": 3
+    },
+    {
+        "code": "ku",
+        "name": "Kurdish",
+        "tier": 3
+    },
+    {
+        "code": "ps",
+        "name": "Pashto",
+        "tier": 3
+    },
+    {
+        "code": "uz",
+        "name": "Uzbek",
+        "tier": 3
+    },
+    {
+        "code": "kk",
+        "name": "Kazakh",
+        "tier": 3
+    },
+    {
+        "code": "mn",
+        "name": "Mongolian",
+        "tier": 3
+    },
+    {
+        "code": "th",
+        "name": "Thai",
+        "tier": 3
+    },
+    {
+        "code": "vi",
+        "name": "Vietnamese",
+        "tier": 3
+    },
+    {
+        "code": "id",
+        "name": "Indonesian",
+        "tier": 3
+    },
+    {
+        "code": "ms",
+        "name": "Malay",
+        "tier": 3
+    },
+    {
+        "code": "tl",
+        "name": "Tagalog",
+        "tier": 3
+    },
+    {
+        "code": "sw",
+        "name": "Swahili",
+        "tier": 3
+    },
+    {
+        "code": "am",
+        "name": "Amharic",
+        "tier": 3
+    },
+    {
+        "code": "so",
+        "name": "Somali",
+        "tier": 3
+    },
+    {
+        "code": "ar-SA",
+        "name": "Arabic (Saudi Arabia)",
+        "tier": 4,
+        "base": "ar"
+    },
+    {
+        "code": "ar-EG",
+        "name": "Arabic (Egypt)",
+        "tier": 4,
+        "base": "ar"
+    },
+    {
+        "code": "ar-DZ",
+        "name": "Arabic (Algeria)",
+        "tier": 4,
+        "base": "ar"
+    },
+    {
+        "code": "ar-MA",
+        "name": "Arabic (Morocco)",
+        "tier": 4,
+        "base": "ar"
+    },
+    {
+        "code": "ar-IQ",
+        "name": "Arabic (Iraq)",
+        "tier": 4,
+        "base": "ar"
+    },
+    {
         "code": "cs-pra",
         "name": "Czech (Prague slang)",
         "tier": 4,
