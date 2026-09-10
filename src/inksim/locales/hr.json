@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "hr",
-    "name": "Croatian"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "Istražite redoslijed uboda, boje konca, preskoke, podrezivanja i naredbe stroja prije proizvodnje. Pregledajte dizajn ubod po ubod, mijenjajte stilove prikaza i izvezite ono što vidite."
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "Posljednja provjera ažuriranja: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "Interaktivna simulacija veza, pregled i izvoz."
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "O programu {app_title}"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "Duljina trake:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "Držite ravnalo uz ekran i povucite klizač dok traka ispod ne bude točno 100 mm duga, zatim pritisnite OK."
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "Fizička duljina trake (mm):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "Kalibriraj veličinu zaslona"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "Neispravan TOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "Neuspješno spremanje konfiguracije: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "Greška"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "Datoteka konfiguracije"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "Zatvori"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "Kopirano!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "Kopiraj u međuspremnik"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "Kopiraj sliku u punoj rezoluciji u međuspremnik"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "Format:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "Kvaliteta:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "Spremi..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "Spremi sliku u datoteku"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "Neuspješno spremanje {path}"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "Spremi sliku"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "Spremljeno!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "Mjerilo:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "Transparentna pozadina"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "Boja igle"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "Normalni pregled"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "Stvarni pregled"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "Otvori datoteku veza"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "Odaberi prikazivač uboda"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "&Datoteka"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "Kalibriraj veličinu zaslona..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "Centriraj iglu"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "Odaberi prikazivač uboda..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "Izvezi"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "Ikona/minijatura..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "Sjenčani ispis..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "Jednostavni ispis..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "Prilagodi dizajn prozoru"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPU teksturirani prikaz"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "Otvori datoteku veza"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "Izađi"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "Rotiraj lijevo 90 stupnjeva"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "Rotiraj desno 90 stupnjeva"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "Spremi kao vez..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "Prikaži mjernu mrežu"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "&Pomoć"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "O programu {app_title}"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "Provjeri ažuriranja"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "Opcije naredbenog retka..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "Konfiguracija"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "Pomoć"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "Status"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "Prati događaje"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "&Reprodukcija"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "Sljedeća boja"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "Sljedeća naredba"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "Reproduciraj/Pauza"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "Prethodna boja"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "Prethodna naredba"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "&Prikaz"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "Stvarna veličina (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "Očisti spremljenu poziciju snimanja"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "Popis naredbi"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "Promijeni pozadinu"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "Cijeli zaslon"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "Spremi trenutnu poziciju snimanja"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "Prikaži/sakrij sve"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "Prikaži iglu"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "Snimi raspored prozora"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "Nema učitane datoteke veza za izvoz."
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "Nema učitane datoteke veza."
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "Ponovno učitavanje"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "Neuspješno spremanje datoteke: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "Učitavanje..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "Resetiraj širinu linije i faktore sjenčanja"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "Kliknite za podešavanje faktora tame, faktora svjetla i širine linije"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "Promijeni pozadinu: crna, bijela, konfigurirana"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "Pogled odozdo (crtaj kasnije ubode ispod ranijih)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "Uključi/isključi prikaz gustoće uboda"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "Uključi/isključi GPU teksturirani prikaz"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "Promijeni prikaz preskoka: isključeno, sve, samo rizično"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "Uključi/isključi vidljivost uboda"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "Resetiraj postavke igle"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "Postavke križića igle"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "Boja…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "Cijeli zaslon"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "Radijus"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "Širina"
-  }
+    "_meta": {
+        "language": "hr",
+        "name": "Croatian"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Istražite redoslijed uboda, boje konca, preskoke, podrezivanja i naredbe stroja prije proizvodnje. Pregledajte dizajn ubod po ubod, mijenjajte stilove prikaza i izvezite ono što vidite."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Posljednja provjera ažuriranja: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Interaktivna simulacija veza, pregled i izvoz."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "O programu {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Duljina trake:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Držite ravnalo uz ekran i povucite klizač dok traka ispod ne bude točno 100 mm duga, zatim pritisnite OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Fizička duljina trake (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Kalibriraj veličinu zaslona"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Neispravan TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Neuspješno spremanje konfiguracije: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Greška"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Datoteka konfiguracije"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Zatvori"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Kopirano!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Kopiraj u međuspremnik"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Kopiraj sliku u punoj rezoluciji u međuspremnik"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Format:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Kvaliteta:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Spremi..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Spremi sliku u datoteku"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Neuspješno spremanje {path}"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Spremi sliku"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Spremljeno!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Mjerilo:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Transparentna pozadina"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Boja igle"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Normalni pregled"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Stvarni pregled"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Otvori datoteku veza"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Odaberi prikazivač uboda"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Datoteka"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Kalibriraj veličinu zaslona..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Centriraj iglu"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Odaberi prikazivač uboda..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Izvezi"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Ikona/minijatura..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Sjenčani ispis..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Jednostavni ispis..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Prilagodi dizajn prozoru"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU teksturirani prikaz"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Otvori datoteku veza"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Izađi"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Rotiraj lijevo 90 stupnjeva"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Rotiraj desno 90 stupnjeva"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Spremi kao vez..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Prikaži mjernu mrežu"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Pomoć"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "O programu {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Provjeri ažuriranja"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Opcije naredbenog retka..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Konfiguracija"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Pomoć"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Status"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Prati događaje"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Reprodukcija"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Sljedeća boja"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Sljedeća naredba"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Reproduciraj/Pauza"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Prethodna boja"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Prethodna naredba"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Prikaz"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Stvarna veličina (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Očisti spremljenu poziciju snimanja"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Popis naredbi"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Promijeni pozadinu"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Cijeli zaslon"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Spremi trenutnu poziciju snimanja"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Prikaži/sakrij sve"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Prikaži iglu"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Snimi raspored prozora"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Nema učitane datoteke veza za izvoz."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Nema učitane datoteke veza."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Ponovno učitavanje"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Neuspješno spremanje datoteke: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Učitavanje..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Resetiraj širinu linije i faktore sjenčanja"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Kliknite za podešavanje faktora tame, faktora svjetla i širine linije"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Promijeni pozadinu: crna, bijela, konfigurirana"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Pogled odozdo (crtaj kasnije ubode ispod ranijih)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Uključi/isključi prikaz gustoće uboda"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Uključi/isključi GPU teksturirani prikaz"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Promijeni prikaz preskoka: isključeno, sve, samo rizično"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Uključi/isključi vidljivost uboda"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Resetiraj postavke igle"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Postavke križića igle"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Boja…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Cijeli zaslon"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Radijus"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Širina"
+    }
 }

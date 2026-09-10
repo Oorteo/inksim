@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "da",
-    "name": "Danish"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "Udforsk stingrækkefølge, trådfarver, spring, trimninger og maskinkommandoer før produktion. Forhåndsvis designet sting for sting, skift renderingsstile, og eksportér det, du ser."
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "Sidste opdateringstjek: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "Interaktiv broderisimulering, inspektion og eksport."
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "Om {app_title}"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "Stanglængde:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "Hold en lineal mod skærmen, og træk skyderen, indtil stangen nedenfor er præcis 100 mm lang, og tryk derefter OK."
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "Fysisk længde af stangen (mm):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "Kalibrer skærmstørrelse"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "Ugyldig TOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "Kunne ikke gemme konfiguration: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "Fejl"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "Konfigurationsfil"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "Luk"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "Kopieret!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "Kopiér til udklipsholder"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "Kopiér billedet i fuld opløsning til udklipsholderen"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "Format:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "Kvalitet:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "Gem..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "Gem billedet til en fil"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "Kunne ikke gemme {path}"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "Gem billede"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "Gemt!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "Skala:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "Transparent baggrund"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "Nålefarve"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "Normal forhåndsvisning"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "Reel forhåndsvisning"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "Åbn broderifil"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "Vælg stingrenderer"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "&Fil"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "Kalibrer skærmstørrelse..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "Centrér nål"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "Vælg stingrenderer..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "Eksport"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "Ikon/Thumbnail..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "Skygget udskrift..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "Simpelt print..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "Tilpas design til vindue"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPU-tekstureret render"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "Åbn broderifil"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "Afslut"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "Roter venstre 90 grader"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "Roter højre 90 grader"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "Gem som broderi..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "Vis målegitter"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "&Hjælp"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "Om {app_title}"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "Søg efter opdateringer"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "Kommandolinjeindstillinger..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "Konfiguration"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "Hjælp"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "Status"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "Spor hændelser"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "&Afspilning"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "Næste farve"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "Næste kommando"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "Afspil/Pause"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "Forrige farve"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "Forrige kommando"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "&Visning"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "Faktisk størrelse (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "Ryd gemt snap-position"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "Kommandoliste"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "Skift baggrund"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "Fuldskærm"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "Gem nuværende snap-position"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "Vis/skjul alle"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "Vis nål"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "Snap vindueslayout"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "Ingen broderifil er indlæst til eksport."
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "Ingen broderifil er indlæst."
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "Genindlæser"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "Kunne ikke gemme fil: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "Indlæser..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "Nulstil linjebredde og skyggefaktorer"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "Klik for at justere mørk faktor, lys faktor og linjebredde"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "Skift baggrund: sort, hvid, konfigureret"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "Bundvisning (tegn senere sting under tidligere)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "Slå stingtæthedsoverlejring til/fra"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "Slå GPU-tekstureret rendering til/fra"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "Skift springvisning: fra, alle, kun risikable"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "Slå sting synlighed til/fra"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "Nulstil nåleindstillinger"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "Nål sigtekorn indstillinger"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "Farve…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "Fuldskærm"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "Radius"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "Bredde"
-  }
+    "_meta": {
+        "language": "da",
+        "name": "Danish"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Udforsk stingrækkefølge, trådfarver, spring, trimninger og maskinkommandoer før produktion. Forhåndsvis designet sting for sting, skift renderingsstile, og eksportér det, du ser."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Sidste opdateringstjek: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Interaktiv broderisimulering, inspektion og eksport."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "Om {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Stanglængde:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Hold en lineal mod skærmen, og træk skyderen, indtil stangen nedenfor er præcis 100 mm lang, og tryk derefter OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Fysisk længde af stangen (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Kalibrer skærmstørrelse"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Ugyldig TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Kunne ikke gemme konfiguration: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Fejl"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Konfigurationsfil"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Luk"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Kopieret!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Kopiér til udklipsholder"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Kopiér billedet i fuld opløsning til udklipsholderen"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Format:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Kvalitet:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Gem..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Gem billedet til en fil"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Kunne ikke gemme {path}"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Gem billede"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Gemt!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Skala:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Transparent baggrund"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Nålefarve"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Normal forhåndsvisning"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Reel forhåndsvisning"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Åbn broderifil"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Vælg stingrenderer"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Fil"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Kalibrer skærmstørrelse..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Centrér nål"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Vælg stingrenderer..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Eksport"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Ikon/Thumbnail..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Skygget udskrift..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Simpelt print..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Tilpas design til vindue"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU-tekstureret render"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Åbn broderifil"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Afslut"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Roter venstre 90 grader"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Roter højre 90 grader"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Gem som broderi..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Vis målegitter"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Hjælp"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "Om {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Søg efter opdateringer"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Kommandolinjeindstillinger..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Konfiguration"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Hjælp"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Status"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Spor hændelser"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Afspilning"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Næste farve"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Næste kommando"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Afspil/Pause"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Forrige farve"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Forrige kommando"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Visning"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Faktisk størrelse (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Ryd gemt snap-position"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Kommandoliste"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Skift baggrund"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Fuldskærm"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Gem nuværende snap-position"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Vis/skjul alle"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Vis nål"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Snap vindueslayout"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Ingen broderifil er indlæst til eksport."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Ingen broderifil er indlæst."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Genindlæser"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Kunne ikke gemme fil: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Indlæser..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Nulstil linjebredde og skyggefaktorer"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Klik for at justere mørk faktor, lys faktor og linjebredde"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Skift baggrund: sort, hvid, konfigureret"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Bundvisning (tegn senere sting under tidligere)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Slå stingtæthedsoverlejring til/fra"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Slå GPU-tekstureret rendering til/fra"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Skift springvisning: fra, alle, kun risikable"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Slå sting synlighed til/fra"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Nulstil nåleindstillinger"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Nål sigtekorn indstillinger"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Farve…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Fuldskærm"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Radius"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Bredde"
+    }
 }

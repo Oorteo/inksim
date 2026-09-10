@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "kn",
-    "name": "Kannada"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "ಉತ್ಪಾದನೆಗೆ ಮೊದಲು ಹೊಲಿಗೆ ಕ್ರಮ, ಥ್ರೆಡ್ ಬಣ್ಣಗಳು, ಜಂಪ್ಗಳು, ಟ್ರಿಮ್ಗಳು ಮತ್ತು ಯಂತ್ರ ಆಜ್ಞೆಗಳನ್ನು ಅನ್ವೇಷಿಸಿ. ವಿನ್ಯಾಸವನ್ನು ಹೊಲಿಗೆ ಹೊಲಿಗೆಯಾಗಿ ಪೂರ್ವವೀಕ್ಷಿಸಿ, ರೆಂಡರಿಂಗ್ ಶೈಲಿಗಳನ್ನು ಬದಲಾಯಿಸಿ ಮತ್ತು ನೀವು ನೋಡುವುದನ್ನು ರಫ್ತು ಮಾಡಿ."
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "ಕೊನೆಯ ನವೀಕರಣ ಪರಿಶೀಲನೆ: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "ಸಂವಾದಾತ್ಮಕ ಕಸೂತಿ ಸಿಮ್ಯುಲೇಶನ್, ಪರಿಶೀಲನೆ ಮತ್ತು ರಫ್ತು."
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "{app_title} ಬಗ್ಗೆ"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "ಪಟ್ಟಿಯ ಉದ್ದ:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "ಪರದೆಯ ವಿರುದ್ಧ ಆಡಳಿತಗಾರನನ್ನು ಹಿಡಿದುಕೊಳ್ಳಿ ಮತ್ತು ಕೆಳಗಿನ ಪಟ್ಟಿಯು ನಿಖರವಾಗಿ 100 ಮಿಮೀ ಉದ್ದವಾಗುವವರೆಗೆ ಸ್ಲೈಡರ್ ಅನ್ನು ಎಳೆಯಿರಿ, ನಂತರ ಸರಿ ಒತ್ತಿರಿ."
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "ಪಟ್ಟಿಯ ಭೌತಿಕ ಉದ್ದ (ಮಿಮೀ):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "ಪ್ರದರ್ಶನ ಗಾತ್ರವನ್ನು ಮಾಪನಾಂಕ ಮಾಡಿ"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "ಅಮಾನ್ಯ TOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "ಕಾನ್ಫಿಗ್ ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "ದೋಷ"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "ಸಂರಚನಾ ಫೈಲ್"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "ಮುಚ್ಚಿ"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "ನಕಲಿಸಲಾಗಿದೆ!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "ಕ್ಲಿಪ್ಬೋರ್ಡ್ಗೆ ನಕಲಿಸಿ"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "ಪೂರ್ಣ-ರೆಸಲ್ಯೂಶನ್ ಚಿತ್ರವನ್ನು ಕ್ಲಿಪ್ಬೋರ್ಡ್ಗೆ ನಕಲಿಸಿ"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "ಸ್ವರೂಪ:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "ಗುಣಮಟ್ಟ:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "ಉಳಿಸಿ..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "ಚಿತ್ರವನ್ನು ಫೈಲ್ಗೆ ಉಳಿಸಿ"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "{path} ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "ಚಿತ್ರ ಉಳಿಸಿ"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "ಉಳಿಸಲಾಗಿದೆ!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "ಪ್ರಮಾಣ:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "ಪಾರದರ್ಶಕ ಹಿನ್ನೆಲೆ"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "ಸೂಜಿ ಬಣ್ಣ"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "ಸಾಮಾನ್ಯ ಪೂರ್ವವೀಕ್ಷಣೆ"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "ನೈಜ ಪೂರ್ವವೀಕ್ಷಣೆ"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "ಕಸೂತಿ ಫೈಲ್ ತೆರೆಯಿರಿ"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "ಹೊಲಿಗೆ ರೆಂಡರರ್ ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "&ಫೈಲ್"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "ಪ್ರದರ್ಶನ ಗಾತ್ರವನ್ನು ಮಾಪನಾಂಕ ಮಾಡಿ..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "ಸೂಜಿಯನ್ನು ಮಧ್ಯದಲ್ಲಿ ಇರಿಸಿ"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "ಹೊಲಿಗೆ ರೆಂಡರರ್ ಆಯ್ಕೆಮಾಡಿ..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "ರಫ್ತು"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "ಐಕಾನ್/ಥಂಬ್ನೇಲ್..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "ಛಾಯೆಯ ಮುದ್ರಣ..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "ಸರಳ ಮುದ್ರಣ..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "ವಿಂಡೋಗೆ ವಿನ್ಯಾಸವನ್ನು ಹೊಂದಿಸಿ"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPU ಟೆಕ್ಸ್ಚರ್ಡ್ ರೆಂಡರ್"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "ಕಸೂತಿ ಫೈಲ್ ತೆರೆಯಿರಿ"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "ನಿರ್ಗಮಿಸಿ"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "ಎಡಕ್ಕೆ 90 ಡಿಗ್ರಿ ತಿರುಗಿಸಿ"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "ಬಲಕ್ಕೆ 90 ಡಿಗ್ರಿ ತಿರುಗಿಸಿ"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "ಕಸೂತಿಯಾಗಿ ಉಳಿಸಿ..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "ಮಾಪನ ಗ್ರಿಡ್ ತೋರಿಸಿ"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "&ಸಹಾಯ"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "{app_title} ಬಗ್ಗೆ"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "ನವೀಕರಣಗಳಿಗಾಗಿ ಪರಿಶೀಲಿಸಿ"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "ಕಮಾಂಡ್ ಲೈನ್ ಆಯ್ಕೆಗಳು..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "ಕಾನ್ಫಿಗ್"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "ಸಹಾಯ"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "ಸ್ಥಿತಿ"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "ಟ್ರೇಸ್ ಈವೆಂಟ್ಗಳು"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "&ಪ್ಲೇಬ್ಯಾಕ್"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "ಮುಂದಿನ ಬಣ್ಣ"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "ಮುಂದಿನ ಆಜ್ಞೆ"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "ಪ್ಲೇ/ವಿರಾಮ"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "ಹಿಂದಿನ ಬಣ್ಣ"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "ಹಿಂದಿನ ಆಜ್ಞೆ"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "&ವೀಕ್ಷಿಸಿ"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "ನಿಜವಾದ ಗಾತ್ರ (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "ಉಳಿಸಿದ ಸ್ನ್ಯಾಪ್ ಸ್ಥಾನವನ್ನು ಅಳಿಸಿ"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "ಆಜ್ಞೆ ಪಟ್ಟಿ"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "ಹಿನ್ನೆಲೆ ಬದಲಾಯಿಸಿ"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "ಪೂರ್ಣ ಪರದೆ"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "ಪ್ರಸ್ತುತ ಸ್ನ್ಯಾಪ್ ಸ್ಥಾನವನ್ನು ಉಳಿಸಿ"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "ಎಲ್ಲವನ್ನು ತೋರಿಸಿ/ಮರೆಮಾಡಿ"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "ಸೂಜಿ ತೋರಿಸಿ"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "ವಿಂಡೋ ವಿನ್ಯಾಸವನ್ನು ಸ್ನ್ಯಾಪ್ ಮಾಡಿ"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "ರಫ್ತು ಮಾಡಲು ಯಾವುದೇ ಕಸೂತಿ ಫೈಲ್ ಲೋಡ್ ಆಗಿಲ್ಲ."
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "ಯಾವುದೇ ಕಸೂತಿ ಫೈಲ್ ಲೋಡ್ ಆಗಿಲ್ಲ."
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "ಮರುಲೋಡ್ ಆಗುತ್ತಿದೆ"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "ಫೈಲ್ ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "ರೇಖೆಯ ಅಗಲ ಮತ್ತು ಛಾಯೆ ಅಂಶಗಳನ್ನು ಮರುಹೊಂದಿಸಿ"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "ಡಾರ್ಕ್ ಅಂಶ, ಲೈಟ್ ಅಂಶ ಮತ್ತು ರೇಖೆಯ ಅಗಲವನ್ನು ಸರಿಹೊಂದಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "ಹಿನ್ನೆಲೆ ಬದಲಾಯಿಸಿ: ಕಪ್ಪು, ಬಿಳಿ, ಸಂರಚಿತ"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "ಕೆಳಗಿನ ವೀಕ್ಷಣೆ (ನಂತರದ ಹೊಲಿಗೆಗಳನ್ನು ಹಿಂದಿನವುಗಳ ಕೆಳಗೆ ಎಳೆಯಿರಿ)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "ಹೊಲಿಗೆ ಸಾಂದ್ರತೆಯ ಓವರ್ಲೇ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "GPU ಟೆಕ್ಸ್ಚರ್ಡ್ ರೆಂಡರಿಂಗ್ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "ಜಂಪ್ ಪ್ರದರ್ಶನ ಬದಲಾಯಿಸಿ: ಆಫ್, ಎಲ್ಲಾ, ಅಪಾಯಕಾರಿ ಮಾತ್ರ"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "ಹೊಲಿಗೆ ಗೋಚರತೆಯನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "ಸೂಜಿ ಸೆಟ್ಟಿಂಗ್ಗಳನ್ನು ಮರುಹೊಂದಿಸಿ"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "ಸೂಜಿ ಕ್ರಾಸ್ಹೇರ್ ಸೆಟ್ಟಿಂಗ್ಗಳು"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "ಬಣ್ಣ…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "ಪೂರ್ಣ ಪರದೆ"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "ತ್ರಿಜ್ಯ"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "ಅಗಲ"
-  }
+    "_meta": {
+        "language": "kn",
+        "name": "Kannada"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "ಉತ್ಪಾದನೆಗೆ ಮೊದಲು ಹೊಲಿಗೆ ಕ್ರಮ, ಥ್ರೆಡ್ ಬಣ್ಣಗಳು, ಜಂಪ್ಗಳು, ಟ್ರಿಮ್ಗಳು ಮತ್ತು ಯಂತ್ರ ಆಜ್ಞೆಗಳನ್ನು ಅನ್ವೇಷಿಸಿ. ವಿನ್ಯಾಸವನ್ನು ಹೊಲಿಗೆ ಹೊಲಿಗೆಯಾಗಿ ಪೂರ್ವವೀಕ್ಷಿಸಿ, ರೆಂಡರಿಂಗ್ ಶೈಲಿಗಳನ್ನು ಬದಲಾಯಿಸಿ ಮತ್ತು ನೀವು ನೋಡುವುದನ್ನು ರಫ್ತು ಮಾಡಿ."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "ಕೊನೆಯ ನವೀಕರಣ ಪರಿಶೀಲನೆ: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "ಸಂವಾದಾತ್ಮಕ ಕಸೂತಿ ಸಿಮ್ಯುಲೇಶನ್, ಪರಿಶೀಲನೆ ಮತ್ತು ರಫ್ತು."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "{app_title} ಬಗ್ಗೆ"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "ಪಟ್ಟಿಯ ಉದ್ದ:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "ಪರದೆಯ ವಿರುದ್ಧ ಆಡಳಿತಗಾರನನ್ನು ಹಿಡಿದುಕೊಳ್ಳಿ ಮತ್ತು ಕೆಳಗಿನ ಪಟ್ಟಿಯು ನಿಖರವಾಗಿ 100 ಮಿಮೀ ಉದ್ದವಾಗುವವರೆಗೆ ಸ್ಲೈಡರ್ ಅನ್ನು ಎಳೆಯಿರಿ, ನಂತರ ಸರಿ ಒತ್ತಿರಿ."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "ಪಟ್ಟಿಯ ಭೌತಿಕ ಉದ್ದ (ಮಿಮೀ):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "ಪ್ರದರ್ಶನ ಗಾತ್ರವನ್ನು ಮಾಪನಾಂಕ ಮಾಡಿ"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "ಅಮಾನ್ಯ TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "ಕಾನ್ಫಿಗ್ ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "ದೋಷ"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "ಸಂರಚನಾ ಫೈಲ್"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "ಮುಚ್ಚಿ"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "ನಕಲಿಸಲಾಗಿದೆ!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "ಕ್ಲಿಪ್ಬೋರ್ಡ್ಗೆ ನಕಲಿಸಿ"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "ಪೂರ್ಣ-ರೆಸಲ್ಯೂಶನ್ ಚಿತ್ರವನ್ನು ಕ್ಲಿಪ್ಬೋರ್ಡ್ಗೆ ನಕಲಿಸಿ"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "ಸ್ವರೂಪ:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "ಗುಣಮಟ್ಟ:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "ಉಳಿಸಿ..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "ಚಿತ್ರವನ್ನು ಫೈಲ್ಗೆ ಉಳಿಸಿ"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "ಚಿತ್ರ ಉಳಿಸಿ"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "ಉಳಿಸಲಾಗಿದೆ!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "ಪ್ರಮಾಣ:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "ಪಾರದರ್ಶಕ ಹಿನ್ನೆಲೆ"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "ಸೂಜಿ ಬಣ್ಣ"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "ಸಾಮಾನ್ಯ ಪೂರ್ವವೀಕ್ಷಣೆ"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "ನೈಜ ಪೂರ್ವವೀಕ್ಷಣೆ"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "ಕಸೂತಿ ಫೈಲ್ ತೆರೆಯಿರಿ"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "ಹೊಲಿಗೆ ರೆಂಡರರ್ ಆಯ್ಕೆಮಾಡಿ"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&ಫೈಲ್"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "ಪ್ರದರ್ಶನ ಗಾತ್ರವನ್ನು ಮಾಪನಾಂಕ ಮಾಡಿ..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "ಸೂಜಿಯನ್ನು ಮಧ್ಯದಲ್ಲಿ ಇರಿಸಿ"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "ಹೊಲಿಗೆ ರೆಂಡರರ್ ಆಯ್ಕೆಮಾಡಿ..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "ರಫ್ತು"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "ಐಕಾನ್/ಥಂಬ್ನೇಲ್..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "ಛಾಯೆಯ ಮುದ್ರಣ..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "ಸರಳ ಮುದ್ರಣ..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "ವಿಂಡೋಗೆ ವಿನ್ಯಾಸವನ್ನು ಹೊಂದಿಸಿ"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU ಟೆಕ್ಸ್ಚರ್ಡ್ ರೆಂಡರ್"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "ಕಸೂತಿ ಫೈಲ್ ತೆರೆಯಿರಿ"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "ನಿರ್ಗಮಿಸಿ"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "ಎಡಕ್ಕೆ 90 ಡಿಗ್ರಿ ತಿರುಗಿಸಿ"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "ಬಲಕ್ಕೆ 90 ಡಿಗ್ರಿ ತಿರುಗಿಸಿ"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "ಕಸೂತಿಯಾಗಿ ಉಳಿಸಿ..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "ಮಾಪನ ಗ್ರಿಡ್ ತೋರಿಸಿ"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&ಸಹಾಯ"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "{app_title} ಬಗ್ಗೆ"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "ನವೀಕರಣಗಳಿಗಾಗಿ ಪರಿಶೀಲಿಸಿ"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "ಕಮಾಂಡ್ ಲೈನ್ ಆಯ್ಕೆಗಳು..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "ಕಾನ್ಫಿಗ್"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "ಸಹಾಯ"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "ಸ್ಥಿತಿ"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "ಟ್ರೇಸ್ ಈವೆಂಟ್ಗಳು"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&ಪ್ಲೇಬ್ಯಾಕ್"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "ಮುಂದಿನ ಬಣ್ಣ"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "ಮುಂದಿನ ಆಜ್ಞೆ"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "ಪ್ಲೇ/ವಿರಾಮ"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "ಹಿಂದಿನ ಬಣ್ಣ"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "ಹಿಂದಿನ ಆಜ್ಞೆ"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&ವೀಕ್ಷಿಸಿ"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "ನಿಜವಾದ ಗಾತ್ರ (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "ಉಳಿಸಿದ ಸ್ನ್ಯಾಪ್ ಸ್ಥಾನವನ್ನು ಅಳಿಸಿ"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "ಆಜ್ಞೆ ಪಟ್ಟಿ"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "ಹಿನ್ನೆಲೆ ಬದಲಾಯಿಸಿ"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "ಪೂರ್ಣ ಪರದೆ"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "ಪ್ರಸ್ತುತ ಸ್ನ್ಯಾಪ್ ಸ್ಥಾನವನ್ನು ಉಳಿಸಿ"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "ಎಲ್ಲವನ್ನು ತೋರಿಸಿ/ಮರೆಮಾಡಿ"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "ಸೂಜಿ ತೋರಿಸಿ"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "ವಿಂಡೋ ವಿನ್ಯಾಸವನ್ನು ಸ್ನ್ಯಾಪ್ ಮಾಡಿ"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "ರಫ್ತು ಮಾಡಲು ಯಾವುದೇ ಕಸೂತಿ ಫೈಲ್ ಲೋಡ್ ಆಗಿಲ್ಲ."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "ಯಾವುದೇ ಕಸೂತಿ ಫೈಲ್ ಲೋಡ್ ಆಗಿಲ್ಲ."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "ಮರುಲೋಡ್ ಆಗುತ್ತಿದೆ"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "ಫೈಲ್ ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "ರೇಖೆಯ ಅಗಲ ಮತ್ತು ಛಾಯೆ ಅಂಶಗಳನ್ನು ಮರುಹೊಂದಿಸಿ"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "ಡಾರ್ಕ್ ಅಂಶ, ಲೈಟ್ ಅಂಶ ಮತ್ತು ರೇಖೆಯ ಅಗಲವನ್ನು ಸರಿಹೊಂದಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "ಹಿನ್ನೆಲೆ ಬದಲಾಯಿಸಿ: ಕಪ್ಪು, ಬಿಳಿ, ಸಂರಚಿತ"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "ಕೆಳಗಿನ ವೀಕ್ಷಣೆ (ನಂತರದ ಹೊಲಿಗೆಗಳನ್ನು ಹಿಂದಿನವುಗಳ ಕೆಳಗೆ ಎಳೆಯಿರಿ)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "ಹೊಲಿಗೆ ಸಾಂದ್ರತೆಯ ಓವರ್ಲೇ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU ಟೆಕ್ಸ್ಚರ್ಡ್ ರೆಂಡರಿಂಗ್ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "ಜಂಪ್ ಪ್ರದರ್ಶನ ಬದಲಾಯಿಸಿ: ಆಫ್, ಎಲ್ಲಾ, ಅಪಾಯಕಾರಿ ಮಾತ್ರ"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "ಹೊಲಿಗೆ ಗೋಚರತೆಯನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "ಸೂಜಿ ಸೆಟ್ಟಿಂಗ್ಗಳನ್ನು ಮರುಹೊಂದಿಸಿ"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "ಸೂಜಿ ಕ್ರಾಸ್ಹೇರ್ ಸೆಟ್ಟಿಂಗ್ಗಳು"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "ಬಣ್ಣ…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "ಪೂರ್ಣ ಪರದೆ"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "ತ್ರಿಜ್ಯ"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "ಅಗಲ"
+    }
 }

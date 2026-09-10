@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "uz",
-    "name": "Uzbek"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "Ishlab chiqarishdan oldin tikuv tartibini, ip ranglarini, o'tishlarni, kesishlarni va mashina buyruqlarini o'rganing. Dizaynni tikuvma-tikuv ko'rib chiqing, render uslublarini almashtiring va ko'rganingizni eksport qiling."
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "So'nggi yangilanish tekshiruvi: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "Interaktiv kashta tikish simulyatsiyasi, tekshirish va eksport."
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "{app_title} haqida"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "Chiziq uzunligi:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "Ekran oldiga chizg'ich tuting va pastdagi chiziq aniq 100 mm bo'lguncha slayderni suring, so'ng OK tugmasini bosing."
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "Chiziqning jismoniy uzunligi (mm):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "Ekran o'lchamini kalibrlash"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "Noto'g'ri TOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "Konfiguratsiyani saqlashda xato: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "Xato"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "Konfiguratsiya fayli"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "Yopish"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "Nusxalandi!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "Buferga nusxalash"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "To'liq o'lchamdagi rasmni buferga nusxalash"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "Format:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "Sifat:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "Saqlash..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "Rasmni faylga saqlash"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "{path} saqlashda xato"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "Rasmni saqlash"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "Saqlandi!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "Masshtab:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "Shaffof fon"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "Igna rangi"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "Oddiy ko'rinish"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "Haqiqiy ko'rinish"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "Kashta faylini ochish"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "Tikuv rendererini tanlang"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "&Fayl"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "Ekran o'lchamini kalibrlash..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "Ignani markazga qo'yish"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "Tikuv rendererini tanlash..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "Eksport"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "Belgi/eskiz..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "Soyali chop etish..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "Oddiy chop etish..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "Dizaynni oynaga moslash"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPU teksturali render"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "Kashta faylini ochish"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "Chiqish"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "Chapga 90 daraja aylantirish"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "O'ngga 90 daraja aylantirish"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "Kashta sifatida saqlash..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "O'lchov panjarasini ko'rsatish"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "&Yordam"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "{app_title} haqida"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "Yangilanishlarni tekshirish"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "Buyruq qatori variantlari..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "Konfiguratsiya"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "Yordam"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "Holat"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "Hodisalarni kuzatish"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "&Ijro"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "Keyingi rang"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "Keyingi buyruq"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "Ijro/Pauza"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "Oldingi rang"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "Oldingi buyruq"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "&Ko'rinish"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "Haqiqiy o'lcham (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "Saqlangan snap pozitsiyasini tozalash"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "Buyruqlar ro'yxati"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "Fonni almashtirish"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "To'liq ekran"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "Joriy snap pozitsiyasini saqlash"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "Hammasini ko'rsatish/yashirish"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "Ignani ko'rsatish"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "Oyna tartibini snap qilish"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "Eksport qilish uchun kashta fayli yuklanmagan."
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "Kashta fayli yuklanmagan."
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "Qayta yuklanmoqda"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "Faylni saqlashda xato: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "Yuklanmoqda..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "Chiziq kengligi va soya omillarini tiklash"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "Qorong'u omil, yorug'lik omili va chiziq kengligini sozlash uchun bosing"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "Fonni almashtirish: qora, oq, sozlangan"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "Pastki ko'rinish (keyingi tikuvlarni oldingilar ostida chizish)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "Tikuv zichligi qoplamasini almashtirish"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "GPU teksturali renderlashni almashtirish"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "O'tishlarni ko'rsatish: o'chirilgan, hammasi, faqat xavfli"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "Tikuv ko'rinishini almashtirish"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "Igna sozlamalarini tiklash"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "Igna ko'ndalang chizig'i sozlamalari"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "Rang…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "To'liq ekran"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "Radius"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "Kenglik"
-  }
+    "_meta": {
+        "language": "uz",
+        "name": "Uzbek"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Ishlab chiqarishdan oldin tikuv tartibini, ip ranglarini, o'tishlarni, kesishlarni va mashina buyruqlarini o'rganing. Dizaynni tikuvma-tikuv ko'rib chiqing, render uslublarini almashtiring va ko'rganingizni eksport qiling."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "So'nggi yangilanish tekshiruvi: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Interaktiv kashta tikish simulyatsiyasi, tekshirish va eksport."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "{app_title} haqida"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Chiziq uzunligi:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Ekran oldiga chizg'ich tuting va pastdagi chiziq aniq 100 mm bo'lguncha slayderni suring, so'ng OK tugmasini bosing."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Chiziqning jismoniy uzunligi (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Ekran o'lchamini kalibrlash"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Noto'g'ri TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Konfiguratsiyani saqlashda xato: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Xato"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Konfiguratsiya fayli"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Yopish"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Nusxalandi!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Buferga nusxalash"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "To'liq o'lchamdagi rasmni buferga nusxalash"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Format:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Sifat:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Saqlash..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Rasmni faylga saqlash"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} saqlashda xato"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Rasmni saqlash"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Saqlandi!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Masshtab:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Shaffof fon"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Igna rangi"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Oddiy ko'rinish"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Haqiqiy ko'rinish"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Kashta faylini ochish"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Tikuv rendererini tanlang"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Fayl"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Ekran o'lchamini kalibrlash..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Ignani markazga qo'yish"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Tikuv rendererini tanlash..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Eksport"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Belgi/eskiz..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Soyali chop etish..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Oddiy chop etish..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Dizaynni oynaga moslash"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU teksturali render"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Kashta faylini ochish"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Chiqish"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Chapga 90 daraja aylantirish"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "O'ngga 90 daraja aylantirish"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Kashta sifatida saqlash..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "O'lchov panjarasini ko'rsatish"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Yordam"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "{app_title} haqida"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Yangilanishlarni tekshirish"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Buyruq qatori variantlari..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Konfiguratsiya"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Yordam"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Holat"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Hodisalarni kuzatish"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Ijro"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Keyingi rang"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Keyingi buyruq"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Ijro/Pauza"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Oldingi rang"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Oldingi buyruq"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Ko'rinish"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Haqiqiy o'lcham (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Saqlangan snap pozitsiyasini tozalash"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Buyruqlar ro'yxati"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Fonni almashtirish"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "To'liq ekran"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Joriy snap pozitsiyasini saqlash"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Hammasini ko'rsatish/yashirish"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Ignani ko'rsatish"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Oyna tartibini snap qilish"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Eksport qilish uchun kashta fayli yuklanmagan."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Kashta fayli yuklanmagan."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Qayta yuklanmoqda"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Faylni saqlashda xato: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Yuklanmoqda..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Chiziq kengligi va soya omillarini tiklash"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Qorong'u omil, yorug'lik omili va chiziq kengligini sozlash uchun bosing"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Fonni almashtirish: qora, oq, sozlangan"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Pastki ko'rinish (keyingi tikuvlarni oldingilar ostida chizish)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Tikuv zichligi qoplamasini almashtirish"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU teksturali renderlashni almashtirish"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "O'tishlarni ko'rsatish: o'chirilgan, hammasi, faqat xavfli"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Tikuv ko'rinishini almashtirish"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Igna sozlamalarini tiklash"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Igna ko'ndalang chizig'i sozlamalari"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Rang…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "To'liq ekran"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Radius"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Kenglik"
+    }
 }

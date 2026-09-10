@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "ur",
-    "name": "Urdu"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "پروڈکشن سے پہلے ٹانکے کی ترتیب، دھاگے کے رنگ، چھلانگیں، ٹرمز اور مشین کمانڈز دریافت کریں۔ ڈیزائن کو ٹانکے بہ ٹانکے دیکھیں، رینڈرنگ اسٹائل تبدیل کریں، اور جو دیکھیں اسے برآمد کریں۔"
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "آخری اپ ڈیٹ چیک: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "انٹرایکٹو کڑھائی سمولیشن، معائنہ اور برآمد۔"
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "تعارف {app_title}"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "بار کی لمبائی:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "سکرین کے سامنے ایک پیمانہ رکھیں اور سلائیڈر کو اس وقت تک گھسیٹیں جب تک نیچے والا بار بالکل 100 ملی میٹر نہ ہو جائے، پھر ٹھیک ہے دبائیں۔"
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "بار کی طبعی لمبائی (ملی میٹر):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "ڈسپلے سائز کیلبریٹ کریں"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "غلط TOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "کنفیگریشن محفوظ کرنے میں ناکام: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "خرابی"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "کنفیگریشن فائل"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "بند کریں"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "کاپی ہو گیا!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "کلپ بورڈ پر کاپی کریں"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "مکمل ریزولوشن تصویر کو کلپ بورڈ پر کاپی کریں"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "فارمیٹ:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "معیار:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "محفوظ کریں..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "تصویر کو فائل میں محفوظ کریں"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "محفوظ کرنے میں ناکام: {path}"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "تصویر محفوظ کریں"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "محفوظ ہو گیا!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "پیمانہ:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "شفاف پس منظر"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "سوئی کا رنگ"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "عام پیش منظر"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "حقیقی پیش منظر"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "کڑھائی فائل کھولیں"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "ٹانکا رینڈرر منتخب کریں"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "فائل"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "ڈسپلے سائز کیلبریٹ کریں..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "سوئی کو مرکز میں رکھیں"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "ٹانکا رینڈرر منتخب کریں..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "برآمد"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "آئیکن/تھمب نیل..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "شیڈڈ پرنٹ..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "سادہ پرنٹ..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "ڈیزائن کو ونڈو میں فٹ کریں"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPU ٹیکسچرڈ رینڈر"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "کڑھائی فائل کھولیں"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "چھوڑیں"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "بائیں 90 ڈگری گھمائیں"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "دائیں 90 ڈگری گھمائیں"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "کڑھائی کے طور پر محفوظ کریں..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "پیمائش گرڈ دکھائیں"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "مدد"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "تعارف {app_title}"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "اپ ڈیٹس چیک کریں"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "کمانڈ لائن اختیارات..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "کنفیگریشن"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "مدد"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "حالت"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "ٹریس ایونٹس"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "پلے بیک"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "اگلا رنگ"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "اگلا کمانڈ"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "چلائیں/روکیں"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "پچھلا رنگ"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "پچھلا کمانڈ"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "منظر"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "اصل سائز (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "محفوظ اسنیپ پوزیشن صاف کریں"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "کمانڈ فہرست"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "پس منظر سائیکل کریں"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "فل سکرین"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "موجودہ اسنیپ پوزیشن محفوظ کریں"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "سب دکھائیں/چھپائیں"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "سوئی دکھائیں"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "ونڈو ترتیب اسنیپ کریں"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "برآمد کرنے کے لیے کوئی کڑھائی فائل لوڈ نہیں ہے۔"
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "محفوظ کرنے کے لیے کوئی کڑھائی فائل لوڈ نہیں ہے۔"
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "دوبارہ لوڈ ہو رہا ہے"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "فائل محفوظ کرنے میں ناکام: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "لوڈ ہو رہا ہے..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "لائن چوڑائی اور شیڈنگ فیکٹرز ری سیٹ کریں"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "گہرے فیکٹر، ہلکے فیکٹر اور لائن چوڑائی ایڈجسٹ کرنے کے لیے کلک کریں"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "پس منظر سائیکل: سیاہ، سفید، کنفیگر شدہ"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "نیچے کا منظر (بعد کے ٹانکے پہلے والوں کے نیچے کھینچیں)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "ٹانکا کثافت اوورلے ٹوگل کریں"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "GPU ٹیکسچرڈ رینڈرنگ ٹوگل کریں"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "چھلانگ ڈسپلے سائیکل: بند، سب، صرف خطرناک"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "ٹانکا مرئیت ٹوگل کریں"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "سوئی ترتیبات ری سیٹ کریں"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "سوئی کراس ہیئر ترتیبات"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "رنگ…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "فل سکرین"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "رداس"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "چوڑائی"
-  }
+    "_meta": {
+        "language": "ur",
+        "name": "Urdu"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "پروڈکشن سے پہلے ٹانکے کی ترتیب، دھاگے کے رنگ، چھلانگیں، ٹرمز اور مشین کمانڈز دریافت کریں۔ ڈیزائن کو ٹانکے بہ ٹانکے دیکھیں، رینڈرنگ اسٹائل تبدیل کریں، اور جو دیکھیں اسے برآمد کریں۔"
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "آخری اپ ڈیٹ چیک: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "انٹرایکٹو کڑھائی سمولیشن، معائنہ اور برآمد۔"
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "تعارف {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "بار کی لمبائی:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "سکرین کے سامنے ایک پیمانہ رکھیں اور سلائیڈر کو اس وقت تک گھسیٹیں جب تک نیچے والا بار بالکل 100 ملی میٹر نہ ہو جائے، پھر ٹھیک ہے دبائیں۔"
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "بار کی طبعی لمبائی (ملی میٹر):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "ڈسپلے سائز کیلبریٹ کریں"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "غلط TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "کنفیگریشن محفوظ کرنے میں ناکام: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "خرابی"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "کنفیگریشن فائل"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "بند کریں"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "کاپی ہو گیا!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "کلپ بورڈ پر کاپی کریں"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "مکمل ریزولوشن تصویر کو کلپ بورڈ پر کاپی کریں"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "فارمیٹ:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "معیار:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "محفوظ کریں..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "تصویر کو فائل میں محفوظ کریں"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "محفوظ کرنے میں ناکام: {path}"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "تصویر محفوظ کریں"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "محفوظ ہو گیا!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "پیمانہ:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "شفاف پس منظر"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "سوئی کا رنگ"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "عام پیش منظر"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "حقیقی پیش منظر"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "کڑھائی فائل کھولیں"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "ٹانکا رینڈرر منتخب کریں"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "فائل"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "ڈسپلے سائز کیلبریٹ کریں..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "سوئی کو مرکز میں رکھیں"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "ٹانکا رینڈرر منتخب کریں..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "برآمد"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "آئیکن/تھمب نیل..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "شیڈڈ پرنٹ..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "سادہ پرنٹ..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "ڈیزائن کو ونڈو میں فٹ کریں"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU ٹیکسچرڈ رینڈر"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "کڑھائی فائل کھولیں"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "چھوڑیں"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "بائیں 90 ڈگری گھمائیں"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "دائیں 90 ڈگری گھمائیں"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "کڑھائی کے طور پر محفوظ کریں..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "پیمائش گرڈ دکھائیں"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "مدد"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "تعارف {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "اپ ڈیٹس چیک کریں"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "کمانڈ لائن اختیارات..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "کنفیگریشن"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "مدد"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "حالت"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "ٹریس ایونٹس"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "پلے بیک"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "اگلا رنگ"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "اگلا کمانڈ"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "چلائیں/روکیں"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "پچھلا رنگ"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "پچھلا کمانڈ"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "منظر"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "اصل سائز (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "محفوظ اسنیپ پوزیشن صاف کریں"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "کمانڈ فہرست"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "پس منظر سائیکل کریں"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "فل سکرین"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "موجودہ اسنیپ پوزیشن محفوظ کریں"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "سب دکھائیں/چھپائیں"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "سوئی دکھائیں"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "ونڈو ترتیب اسنیپ کریں"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "برآمد کرنے کے لیے کوئی کڑھائی فائل لوڈ نہیں ہے۔"
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "محفوظ کرنے کے لیے کوئی کڑھائی فائل لوڈ نہیں ہے۔"
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "دوبارہ لوڈ ہو رہا ہے"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "فائل محفوظ کرنے میں ناکام: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "لوڈ ہو رہا ہے..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "لائن چوڑائی اور شیڈنگ فیکٹرز ری سیٹ کریں"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "گہرے فیکٹر، ہلکے فیکٹر اور لائن چوڑائی ایڈجسٹ کرنے کے لیے کلک کریں"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "پس منظر سائیکل: سیاہ، سفید، کنفیگر شدہ"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "نیچے کا منظر (بعد کے ٹانکے پہلے والوں کے نیچے کھینچیں)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "ٹانکا کثافت اوورلے ٹوگل کریں"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU ٹیکسچرڈ رینڈرنگ ٹوگل کریں"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "چھلانگ ڈسپلے سائیکل: بند، سب، صرف خطرناک"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "ٹانکا مرئیت ٹوگل کریں"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "سوئی ترتیبات ری سیٹ کریں"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "سوئی کراس ہیئر ترتیبات"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "رنگ…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "فل سکرین"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "رداس"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "چوڑائی"
+    }
 }

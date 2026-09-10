@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "ga",
-    "name": "Irish"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "Déan iniúchadh ar ord na ngreama, dathanna snáithe, léimeanna, gearrthacha, agus orduithe meaisín roimh tháirgeadh. Réamhamharc an dearadh greama ar ghreama, athraigh stíleanna rindreála, agus easportáil an rud a fheiceann tú."
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "Seiceáil nuashonraithe deireanach: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "Insamhladh bróidnéireachta idirghníomhach, cigireacht, agus easportáil."
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "Maidir le {app_title}"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "Fad an bharra:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "Coinnigh rialóir i gcoinne an scáileáin agus tarraing an sleamhnán go dtí go mbeidh an barra thíos 100 mm go díreach, ansin brúigh OK."
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "Fad fisiciúil an bharra (mm):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "Calabraigh méid an taispeántais"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "TOML neamhbhailí"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "Theip ar an gcumraíocht a shábháil: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "Earráid"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "Comhad cumraíochta"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "Dún"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "Cóipeáilte!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "Cóipeáil go dtí an ghearrthaisce"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "Cóipeáil an íomhá lán-réitigh go dtí an ghearrthaisce"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "Formáid:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "Cáilíocht:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "Sábháil..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "Sábháil an íomhá go comhad"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "Theip ar {path} a shábháil"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "Sábháil íomhá"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "Sábháilte!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "Scála:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "Cúlra trédhearcach"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "Dath an tsnáthaid"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "Réamhamharc gnáth"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "Réamhamharc fíor"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "Oscail comhad bróidnéireachta"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "Roghnaigh rindreálaí greama"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "&Comhad"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "Calabraigh méid an taispeántais..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "Lárnaigh an tsnáthaid"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "Roghnaigh rindreálaí greama..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "Easportáil"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "Deilbhín/Mionsamhail..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "Priontáil scáthaithe..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "Priontáil shimplí..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "Oiriúnaigh an dearadh don fhuinneog"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "Rindreáil uigeachta GPU"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "Oscail comhad bróidnéireachta"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "Scoir"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "Roith clé 90 céim"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "Roith deas 90 céim"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "Sábháil mar bhróidnéireacht..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "Taispeáin eangach tomhais"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "&Cabhair"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "Maidir le {app_title}"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "Seiceáil le haghaidh nuashonruithe"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "Roghanna líne ordaithe..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "Cumraíocht"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "Cabhair"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "Stádas"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "Imeachtaí rianaithe"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "&Athsheinm"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "An chéad dath eile"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "An chéad ordú eile"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "Seinn/Sos"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "Dath roimhe seo"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "Ordú roimhe seo"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "&Amharc"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "Méid iarbhír (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "Glan suíomh snaidhm sábháilte"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "Liosta orduithe"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "Timpeallaigh cúlra"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "Lánscáileán"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "Sábháil suíomh snaidhm reatha"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "Taispeáin/folaigh gach rud"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "Taispeáin snáthaid"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "Snaidhm leagan amach na fuinneoige"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "Níl aon chomhad bróidnéireachta lódáilte le heasportáil."
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "Níl aon chomhad bróidnéireachta lódáilte."
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "Ag athlódáil"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "Theip ar an gcomhad a shábháil: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "Ag lódáil..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "Athshocraigh leithead líne agus fachtóirí scáthaithe"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "Cliceáil chun fachtóir dorcha, fachtóir éadrom agus leithead líne a choigeartú"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "Timpeallaigh cúlra: dubh, bán, cumraithe"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "Amharc bun (tarraing greama níos déanaí faoi na cinn níos luaithe)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "Athraigh forleagan dlús greama"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "Athraigh rindreáil uigeachta GPU"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "Timpeallaigh taispeáint léim: as, go léir, riosca amháin"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "Athraigh infheictheacht greama"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "Athshocraigh socruithe snáthaide"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "Socruithe crosbhóthar snáthaide"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "Dath…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "Lánscáileán"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "Ga"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "Leithead"
-  }
+    "_meta": {
+        "language": "ga",
+        "name": "Irish"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Déan iniúchadh ar ord na ngreama, dathanna snáithe, léimeanna, gearrthacha, agus orduithe meaisín roimh tháirgeadh. Réamhamharc an dearadh greama ar ghreama, athraigh stíleanna rindreála, agus easportáil an rud a fheiceann tú."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Seiceáil nuashonraithe deireanach: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Insamhladh bróidnéireachta idirghníomhach, cigireacht, agus easportáil."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "Maidir le {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Fad an bharra:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Coinnigh rialóir i gcoinne an scáileáin agus tarraing an sleamhnán go dtí go mbeidh an barra thíos 100 mm go díreach, ansin brúigh OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Fad fisiciúil an bharra (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Calabraigh méid an taispeántais"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "TOML neamhbhailí"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Theip ar an gcumraíocht a shábháil: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Earráid"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Comhad cumraíochta"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Dún"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Cóipeáilte!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Cóipeáil go dtí an ghearrthaisce"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Cóipeáil an íomhá lán-réitigh go dtí an ghearrthaisce"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Formáid:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Cáilíocht:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Sábháil..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Sábháil an íomhá go comhad"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Theip ar {path} a shábháil"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Sábháil íomhá"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Sábháilte!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Scála:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Cúlra trédhearcach"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Dath an tsnáthaid"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Réamhamharc gnáth"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Réamhamharc fíor"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Oscail comhad bróidnéireachta"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Roghnaigh rindreálaí greama"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Comhad"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Calabraigh méid an taispeántais..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Lárnaigh an tsnáthaid"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Roghnaigh rindreálaí greama..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Easportáil"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Deilbhín/Mionsamhail..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Priontáil scáthaithe..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Priontáil shimplí..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Oiriúnaigh an dearadh don fhuinneog"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "Rindreáil uigeachta GPU"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Oscail comhad bróidnéireachta"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Scoir"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Roith clé 90 céim"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Roith deas 90 céim"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Sábháil mar bhróidnéireacht..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Taispeáin eangach tomhais"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Cabhair"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "Maidir le {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Seiceáil le haghaidh nuashonruithe"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Roghanna líne ordaithe..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Cumraíocht"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Cabhair"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Stádas"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Imeachtaí rianaithe"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Athsheinm"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "An chéad dath eile"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "An chéad ordú eile"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Seinn/Sos"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Dath roimhe seo"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Ordú roimhe seo"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Amharc"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Méid iarbhír (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Glan suíomh snaidhm sábháilte"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Liosta orduithe"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Timpeallaigh cúlra"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Lánscáileán"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Sábháil suíomh snaidhm reatha"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Taispeáin/folaigh gach rud"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Taispeáin snáthaid"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Snaidhm leagan amach na fuinneoige"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Níl aon chomhad bróidnéireachta lódáilte le heasportáil."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Níl aon chomhad bróidnéireachta lódáilte."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Ag athlódáil"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Theip ar an gcomhad a shábháil: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Ag lódáil..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Athshocraigh leithead líne agus fachtóirí scáthaithe"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Cliceáil chun fachtóir dorcha, fachtóir éadrom agus leithead líne a choigeartú"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Timpeallaigh cúlra: dubh, bán, cumraithe"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Amharc bun (tarraing greama níos déanaí faoi na cinn níos luaithe)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Athraigh forleagan dlús greama"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Athraigh rindreáil uigeachta GPU"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Timpeallaigh taispeáint léim: as, go léir, riosca amháin"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Athraigh infheictheacht greama"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Athshocraigh socruithe snáthaide"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Socruithe crosbhóthar snáthaide"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Dath…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Lánscáileán"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Ga"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Leithead"
+    }
 }

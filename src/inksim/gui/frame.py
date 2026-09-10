@@ -47,7 +47,7 @@ from ..formats import (
     get_supported_output_filter,
     get_supported_output_formats,
 )
-from ..i18n import _
+from ..i18n import _, active_locale, available_locales, get_language_name, set_active_locale
 from ..render import render_export_image
 from ..runtime import _sanitize_path, _unsanitize_path
 from ..update_check import (
@@ -493,6 +493,18 @@ class MainWindow(QMainWindow):
         self._action(
             playback, _("menu.playback.next_command"), self._next_command_slot, "Shift+Right"
         )
+        language_menu = self.menuBar().addMenu(_("menu.language", "Language"))
+        current = active_locale()
+        for locale in available_locales():
+            name = get_language_name(locale)
+            action = self._action(
+                language_menu,
+                f"{name} ({locale})" if locale != current else f"✓ {name} ({locale})",
+                lambda checked=False, loc=locale: self._set_language_slot(loc),
+            )
+            action.setCheckable(True)
+            action.setChecked(locale == current)
+
         help_menu = self.menuBar().addMenu(_("menu.help"))
         self._action(help_menu, _("menu.help.help"), self._show_help_slot, "H")
         self._action(help_menu, _("menu.help.status"), self._show_settings_slot, "I")
@@ -535,6 +547,19 @@ class MainWindow(QMainWindow):
 
     def _show_settings_slot(self, checked: bool = False) -> None:
         self.viewer.show_settings()
+
+    def _set_language_slot(self, locale: str) -> None:
+        """Store the requested UI language and ask the user to restart."""
+        set_active_locale(locale)
+        name = get_language_name(locale)
+        QMessageBox.information(
+            self,
+            _("dialog.language.title", "Language changed"),
+            _(
+                "dialog.language.restart_message",
+                "The language has been set to {language}. Restart InkSim to apply it.",
+            ).format(language=name),
+        )
 
     def _show_config_editor_slot(self, checked: bool = False) -> None:
         show_config_editor(self, self.config)

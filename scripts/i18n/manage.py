@@ -113,7 +113,7 @@ def cmd_add(argv: list[str] | None = None) -> int:
     ordered: dict[str, Any] = {"_meta": {"language": args.code, "name": entry["name"]}}
     target_path.parent.mkdir(parents=True, exist_ok=True)
     with target_path.open("w", encoding="utf-8") as f:
-        json.dump(ordered, f, ensure_ascii=False, indent=2)
+        json.dump(ordered, f, ensure_ascii=False, indent=4)
         f.write("\n")
     print(f"Created empty catalog {target_path}.")
     return 0

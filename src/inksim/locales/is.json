@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "is",
-    "name": "is"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "Kannaðu sporaröð, þráðliti, stökk, klippingar og vélaskipanir fyrir framleiðslu. Forskoðaðu hönnunina spor fyrir spor, skiptu um teiknistíl og fluttu út það sem þú sérð."
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "Síðasta uppfærsluleit: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "Gagnvirk saumaskaparlíking, skoðun og útflutningur."
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "Um {app_title}"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "Lengd stiku:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "Haltu reglustiku við skjáinn og dragðu rennistikuna þar til stikan fyrir neðan er nákvæmlega 100 mm löng, og ýttu svo á OK."
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "Líkamleg lengd stikunnar (mm):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "Kvarða skjástærð"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "Ógilt TOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "Mistókst að vista stillingar: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "Villa"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "Stillingarskrá"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "Loka"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "Afritað!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "Afrita á klippiborð"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "Afrita myndina í fullri upplausn á klippiborðið"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "Snið:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "Gæði:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "Vista..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "Vista myndina í skrá"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "Mistókst að vista {path}"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "Vista mynd"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "Vistað!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "Kvarði:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "Gagnsær bakgrunnur"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "Litur nálar"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "Venjuleg forskoðun"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "Raunveruleg forskoðun"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "Opna saumaskaparskrá"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "Veldu sporateiknara"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "&Skrá"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "Kvarða skjástærð..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "Miðja nál"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "Veldu sporateiknara..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "Flytja út"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "Tákn/þumalmynd..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "Skyggður prentun..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "Einföld prentun..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "Laga hönnun að glugga"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPU áferðateikning"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "Opna saumaskaparskrá"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "Hætta"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "Snúa til vinstri 90 gráður"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "Snúa til hægri 90 gráður"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "Vista sem saumaskapur..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "Sýna mælingarnet"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "&Hjálp"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "Um {app_title}"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "Athuga uppfærslur"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "Skipanalínuvalkostir..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "Stillingar"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "Hjálp"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "Staða"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "Rekja atburði"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "&Spilun"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "Næsti litur"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "Næsta skipun"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "Spila/Stöðva"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "Fyrri litur"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "Fyrri skipun"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "&Sýn"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "Raunveruleg stærð (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "Hreinsa vistaða snappstöðu"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "Skipanalisti"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "Hringrás bakgrunns"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "Fullskjár"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "Vista núverandi snappstöðu"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "Sýna/fela allt"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "Sýna nál"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "Snappa gluggaskipulag"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "Engin saumaskaparskrá er hlaðin til útflutnings."
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "Engin saumaskaparskrá er hlaðin."
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "Endurhleðsla"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "Mistókst að vista skrá: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "Hleður..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "Endurstilla línubreidd og skyggingarstuðla"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "Smelltu til að stilla dökkstuðul, ljósstuðul og línubreidd"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "Hringrás bakgrunns: svartur, hvítur, stilltur"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "Neðri sýn (teikna síðari spor undir fyrri)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "Víxla þéttleikayfirlagi spora"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "Víxla GPU áferðateikningu"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "Hringrás stökkvísunar: af, allt, aðeins áhættusamt"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "Víxla sýnileika spora"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "Endurstilla nálarstillingar"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "Stillingar krosshárs nálar"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "Litur…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "Fullskjár"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "Radíus"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "Breidd"
-  }
+    "_meta": {
+        "language": "is",
+        "name": "is"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Kannaðu sporaröð, þráðliti, stökk, klippingar og vélaskipanir fyrir framleiðslu. Forskoðaðu hönnunina spor fyrir spor, skiptu um teiknistíl og fluttu út það sem þú sérð."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Síðasta uppfærsluleit: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Gagnvirk saumaskaparlíking, skoðun og útflutningur."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "Um {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Lengd stiku:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Haltu reglustiku við skjáinn og dragðu rennistikuna þar til stikan fyrir neðan er nákvæmlega 100 mm löng, og ýttu svo á OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Líkamleg lengd stikunnar (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Kvarða skjástærð"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Ógilt TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Mistókst að vista stillingar: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Villa"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Stillingarskrá"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Loka"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Afritað!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Afrita á klippiborð"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Afrita myndina í fullri upplausn á klippiborðið"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Snið:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Gæði:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Vista..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Vista myndina í skrá"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Mistókst að vista {path}"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Vista mynd"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Vistað!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Kvarði:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Gagnsær bakgrunnur"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Litur nálar"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Venjuleg forskoðun"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Raunveruleg forskoðun"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Opna saumaskaparskrá"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Veldu sporateiknara"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Skrá"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Kvarða skjástærð..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Miðja nál"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Veldu sporateiknara..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Flytja út"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Tákn/þumalmynd..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Skyggður prentun..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Einföld prentun..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Laga hönnun að glugga"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU áferðateikning"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Opna saumaskaparskrá"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Hætta"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Snúa til vinstri 90 gráður"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Snúa til hægri 90 gráður"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Vista sem saumaskapur..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Sýna mælingarnet"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Hjálp"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "Um {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Athuga uppfærslur"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Skipanalínuvalkostir..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Stillingar"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Hjálp"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Staða"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Rekja atburði"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Spilun"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Næsti litur"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Næsta skipun"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Spila/Stöðva"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Fyrri litur"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Fyrri skipun"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Sýn"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Raunveruleg stærð (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Hreinsa vistaða snappstöðu"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Skipanalisti"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Hringrás bakgrunns"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Fullskjár"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Vista núverandi snappstöðu"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Sýna/fela allt"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Sýna nál"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Snappa gluggaskipulag"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Engin saumaskaparskrá er hlaðin til útflutnings."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Engin saumaskaparskrá er hlaðin."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Endurhleðsla"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Mistókst að vista skrá: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Hleður..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Endurstilla línubreidd og skyggingarstuðla"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Smelltu til að stilla dökkstuðul, ljósstuðul og línubreidd"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Hringrás bakgrunns: svartur, hvítur, stilltur"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Neðri sýn (teikna síðari spor undir fyrri)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Víxla þéttleikayfirlagi spora"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Víxla GPU áferðateikningu"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Hringrás stökkvísunar: af, allt, aðeins áhættusamt"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Víxla sýnileika spora"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Endurstilla nálarstillingar"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Stillingar krosshárs nálar"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Litur…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Fullskjár"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Radíus"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Breidd"
+    }
 }

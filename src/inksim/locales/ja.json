@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "ja",
-    "name": "ja"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "生産前にステッチの順序、糸の色、ジャンプ、トリム、マシンコマンドを確認できます。デザインをステッチごとにプレビューし、レンダリングスタイルを切り替え、表示内容をエクスポートできます。"
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "最終更新確認: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "インタラクティブな刺繍シミュレーション、検査、エクスポート。"
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "{app_title} について"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "バーの長さ:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "定規を画面に当てて、下のバーがちょうど100mmになるまでスライダーをドラッグして、OKを押してください。"
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "バーの物理的な長さ (mm):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "表示サイズのキャリブレーション"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "無効なTOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "設定の保存に失敗しました: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "エラー"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "設定ファイル"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "閉じる"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "コピーしました！"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "クリップボードにコピー"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "フル解像度の画像をクリップボードにコピー"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "形式:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "品質:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "保存..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "画像をファイルに保存"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "{path} の保存に失敗しました"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "画像の保存"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "保存しました！"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "スケール:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "透明な背景"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "針の色"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "通常プレビュー"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "リアルプレビュー"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "刺繍ファイルを開く"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "ステッチレンダラーを選択"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "ファイル(&F)"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "表示サイズをキャリブレーション..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "針を中央に"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "ステッチレンダラーを選択..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "エクスポート"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "アイコン/サムネイル..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "シェーディング印刷..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "シンプル印刷..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "デザインをウィンドウに合わせる"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPUテクスチャレンダリング"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "刺繍ファイルを開く"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "終了"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "左に90度回転"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "右に90度回転"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "刺繍として保存..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "測定グリッドを表示"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "ヘルプ(&H)"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "{app_title} について"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "更新を確認"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "コマンドラインオプション..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "設定"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "ヘルプ"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "ステータス"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "トレースイベント"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "再生(&P)"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "次の色"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "次のコマンド"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "再生/一時停止"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "前の色"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "前のコマンド"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "表示(&V)"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "実際のサイズ (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "保存したスナップ位置をクリア"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "コマンドリスト"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "背景を切り替え"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "全画面"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "現在のスナップ位置を保存"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "すべて表示/非表示"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "針を表示"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "ウィンドウレイアウトをスナップ"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "エクスポートする刺繍ファイルが読み込まれていません。"
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "刺繍ファイルが読み込まれていません。"
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "再読み込み中"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "ファイルの保存に失敗しました: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "読み込み中..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "線幅とシェーディング係数をリセット"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "クリックでダーク係数、ライト係数、線幅を調整"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "背景を切り替え: 黒、白、設定済み"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "ボトムビュー (後のステッチを前の下に描画)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "ステッチ密度オーバーレイの切り替え"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "GPUテクスチャレンダリングの切り替え"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "ジャンプ表示を切り替え: オフ、すべて、リスクのみ"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "ステッチの表示/非表示を切り替え"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "針設定をリセット"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "針の十字線設定"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "色…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "全画面"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "半径"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "幅"
-  }
+    "_meta": {
+        "language": "ja",
+        "name": "ja"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "生産前にステッチの順序、糸の色、ジャンプ、トリム、マシンコマンドを確認できます。デザインをステッチごとにプレビューし、レンダリングスタイルを切り替え、表示内容をエクスポートできます。"
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "最終更新確認: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "インタラクティブな刺繍シミュレーション、検査、エクスポート。"
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "{app_title} について"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "バーの長さ:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "定規を画面に当てて、下のバーがちょうど100mmになるまでスライダーをドラッグして、OKを押してください。"
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "バーの物理的な長さ (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "表示サイズのキャリブレーション"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "無効なTOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "設定の保存に失敗しました: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "エラー"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "設定ファイル"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "閉じる"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "コピーしました！"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "クリップボードにコピー"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "フル解像度の画像をクリップボードにコピー"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "形式:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "品質:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "保存..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "画像をファイルに保存"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} の保存に失敗しました"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "画像の保存"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "保存しました！"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "スケール:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "透明な背景"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "針の色"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "通常プレビュー"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "リアルプレビュー"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "刺繍ファイルを開く"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "ステッチレンダラーを選択"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "ファイル(&F)"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "表示サイズをキャリブレーション..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "針を中央に"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "ステッチレンダラーを選択..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "エクスポート"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "アイコン/サムネイル..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "シェーディング印刷..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "シンプル印刷..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "デザインをウィンドウに合わせる"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPUテクスチャレンダリング"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "刺繍ファイルを開く"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "終了"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "左に90度回転"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "右に90度回転"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "刺繍として保存..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "測定グリッドを表示"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "ヘルプ(&H)"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "{app_title} について"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "更新を確認"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "コマンドラインオプション..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "設定"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "ヘルプ"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "ステータス"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "トレースイベント"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "再生(&P)"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "次の色"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "次のコマンド"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "再生/一時停止"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "前の色"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "前のコマンド"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "表示(&V)"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "実際のサイズ (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "保存したスナップ位置をクリア"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "コマンドリスト"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "背景を切り替え"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "全画面"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "現在のスナップ位置を保存"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "すべて表示/非表示"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "針を表示"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "ウィンドウレイアウトをスナップ"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "エクスポートする刺繍ファイルが読み込まれていません。"
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "刺繍ファイルが読み込まれていません。"
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "再読み込み中"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "ファイルの保存に失敗しました: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "読み込み中..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "線幅とシェーディング係数をリセット"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "クリックでダーク係数、ライト係数、線幅を調整"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "背景を切り替え: 黒、白、設定済み"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "ボトムビュー (後のステッチを前の下に描画)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "ステッチ密度オーバーレイの切り替え"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPUテクスチャレンダリングの切り替え"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "ジャンプ表示を切り替え: オフ、すべて、リスクのみ"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "ステッチの表示/非表示を切り替え"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "針設定をリセット"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "針の十字線設定"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "色…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "全画面"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "半径"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "幅"
+    }
 }

@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "kk",
-    "name": "Kazakh"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "Өндіріске дейін тігіс ретін, жіп түстерін, секірулерді, кесулерді және машина пәрмендерін зерттеңіз. Дизайнды тігіс-тігіспен алдын ала қараңыз, рендерлеу стильдерін ауыстырыңыз және көргеніңізді экспорттаңыз."
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "Соңғы жаңарту тексеруі: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "Интерактивті кестелеу симуляциясы, тексеру және экспорт."
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "{app_title} туралы"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "Жолақ ұзындығы:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "Экранға сызғышты қойып, төмендегі жолақ дәл 100 мм болғанша сырғытпаны сүйреңіз, содан кейін OK басыңыз."
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "Жолақтың физикалық ұзындығы (мм):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "Дисплей өлшемін калибрлеу"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "Жарамсыз TOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "Конфигурацияны сақтау сәтсіз аяқталды: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "Қате"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "Конфигурация файлы"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "Жабу"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "Көшірілді!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "Алмасу буферіне көшіру"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "Толық ажыратымдылықтағы суретті алмасу буферіне көшіру"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "Формат:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "Сапа:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "Сақтау..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "Суретті файлға сақтау"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "{path} сақтау сәтсіз аяқталды"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "Суретті сақтау"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "Сақталды!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "Масштаб:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "Мөлдір фон"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "Ине түсі"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "Қалыпты алдын ала қарау"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "Нақты алдын ала қарау"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "Кестелеу файлын ашу"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "Тігіс рендерерін таңдау"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "&Файл"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "Дисплей өлшемін калибрлеу..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "Инені ортаға қою"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "Тігіс рендерерін таңдау..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "Экспорт"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "Белгіше/Кіші сурет..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "Көлеңкелі басып шығару..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "Қарапайым басып шығару..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "Дизайнды терезеге сыйдыру"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPU текстуралы рендер"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "Кестелеу файлын ашу"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "Шығу"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "Солға 90 градусқа бұру"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "Оңға 90 градусқа бұру"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "Кестелеу ретінде сақтау..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "Өлшеу торын көрсету"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "&Көмек"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "{app_title} туралы"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "Жаңартуларды тексеру"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "Пәрмен жолы опциялары..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "Конфигурация"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "Көмек"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "Күй"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "Оқиғаларды қадағалау"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "&Ойнату"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "Келесі түс"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "Келесі пәрмен"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "Ойнату/Кідірту"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "Алдыңғы түс"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "Алдыңғы пәрмен"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "&Көрініс"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "Нақты өлшем (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "Сақталған түйістіру орнын тазалау"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "Пәрмендер тізімі"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "Фонды ауыстыру"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "Толық экран"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "Ағымдағы түйістіру орнын сақтау"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "Барлығын көрсету/жасыру"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "Инені көрсету"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "Терезе орналасуын түйістіру"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "Экспорттау үшін кестелеу файлы жүктелмеген."
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "Кестелеу файлы жүктелмеген."
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "Қайта жүктелуде"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "Файлды сақтау сәтсіз аяқталды: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "Жүктелуде..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "Сызық енін және көлеңкелеу факторларын қалпына келтіру"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "Қараңғы факторды, жарық факторды және сызық енін реттеу үшін басыңыз"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "Фонды ауыстыру: қара, ақ, конфигурацияланған"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "Төменгі көрініс (кейінгі тігістерді алдыңғылардың астына салу)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "Тігіс тығыздығы қабатын ауыстыру"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "GPU текстуралы рендерлеуді ауыстыру"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "Секіру көрсетілімін ауыстыру: өшірулі, барлығы, тек қауіпті"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "Тігіс көрінуін ауыстыру"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "Ине параметрлерін қалпына келтіру"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "Ине кресті параметрлері"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "Түс…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "Толық экран"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "Радиус"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "Ені"
-  }
+    "_meta": {
+        "language": "kk",
+        "name": "Kazakh"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Өндіріске дейін тігіс ретін, жіп түстерін, секірулерді, кесулерді және машина пәрмендерін зерттеңіз. Дизайнды тігіс-тігіспен алдын ала қараңыз, рендерлеу стильдерін ауыстырыңыз және көргеніңізді экспорттаңыз."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Соңғы жаңарту тексеруі: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Интерактивті кестелеу симуляциясы, тексеру және экспорт."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "{app_title} туралы"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Жолақ ұзындығы:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Экранға сызғышты қойып, төмендегі жолақ дәл 100 мм болғанша сырғытпаны сүйреңіз, содан кейін OK басыңыз."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Жолақтың физикалық ұзындығы (мм):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Дисплей өлшемін калибрлеу"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Жарамсыз TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Конфигурацияны сақтау сәтсіз аяқталды: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Қате"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Конфигурация файлы"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Жабу"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Көшірілді!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Алмасу буферіне көшіру"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Толық ажыратымдылықтағы суретті алмасу буферіне көшіру"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Формат:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Сапа:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Сақтау..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Суретті файлға сақтау"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} сақтау сәтсіз аяқталды"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Суретті сақтау"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Сақталды!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Масштаб:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Мөлдір фон"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Ине түсі"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Қалыпты алдын ала қарау"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Нақты алдын ала қарау"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Кестелеу файлын ашу"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Тігіс рендерерін таңдау"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Файл"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Дисплей өлшемін калибрлеу..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Инені ортаға қою"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Тігіс рендерерін таңдау..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Экспорт"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Белгіше/Кіші сурет..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Көлеңкелі басып шығару..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Қарапайым басып шығару..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Дизайнды терезеге сыйдыру"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU текстуралы рендер"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Кестелеу файлын ашу"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Шығу"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Солға 90 градусқа бұру"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Оңға 90 градусқа бұру"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Кестелеу ретінде сақтау..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Өлшеу торын көрсету"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Көмек"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "{app_title} туралы"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Жаңартуларды тексеру"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Пәрмен жолы опциялары..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Конфигурация"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Көмек"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Күй"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Оқиғаларды қадағалау"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Ойнату"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Келесі түс"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Келесі пәрмен"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Ойнату/Кідірту"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Алдыңғы түс"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Алдыңғы пәрмен"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Көрініс"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Нақты өлшем (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Сақталған түйістіру орнын тазалау"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Пәрмендер тізімі"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Фонды ауыстыру"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Толық экран"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Ағымдағы түйістіру орнын сақтау"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Барлығын көрсету/жасыру"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Инені көрсету"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Терезе орналасуын түйістіру"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Экспорттау үшін кестелеу файлы жүктелмеген."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Кестелеу файлы жүктелмеген."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Қайта жүктелуде"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Файлды сақтау сәтсіз аяқталды: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Жүктелуде..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Сызық енін және көлеңкелеу факторларын қалпына келтіру"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Қараңғы факторды, жарық факторды және сызық енін реттеу үшін басыңыз"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Фонды ауыстыру: қара, ақ, конфигурацияланған"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Төменгі көрініс (кейінгі тігістерді алдыңғылардың астына салу)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Тігіс тығыздығы қабатын ауыстыру"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU текстуралы рендерлеуді ауыстыру"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Секіру көрсетілімін ауыстыру: өшірулі, барлығы, тек қауіпті"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Тігіс көрінуін ауыстыру"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Ине параметрлерін қалпына келтіру"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Ине кресті параметрлері"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Түс…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Толық экран"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Радиус"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Ені"
+    }
 }

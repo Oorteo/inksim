@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "te",
-    "name": "Telugu"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "ఉత్పత్తికి ముందు కుట్టు క్రమం, థ్రెడ్ రంగులు, జంప్లు, ట్రిమ్లు మరియు మెషిన్ ఆదేశాలను అన్వేషించండి. డిజైన్ను కుట్టు వారీగా ప్రివ్యూ చేయండి, రెండరింగ్ శైలులను మార్చండి మరియు మీరు చూసేదాన్ని ఎగుమతి చేయండి."
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "చివరి నవీకరణ తనిఖీ: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "ఇంటరాక్టివ్ ఎంబ్రాయిడరీ సిమ్యులేషన్, తనిఖీ మరియు ఎగుమతి."
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "{app_title} గురించి"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "బార్ పొడవు:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "స్క్రీన్ పై పాలకుడిని పట్టుకుని, క్రింద ఉన్న బార్ సరిగ్గా 100 మి.మీ పొడవు వచ్చే వరకు స్లయిడర్ను లాగండి, ఆపై సరే నొక్కండి."
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "బార్ యొక్క భౌతిక పొడవు (మి.మీ):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "డిస్ప్లే పరిమాణాన్ని క్రమాంకనం చేయండి"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "చెల్లని TOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "కాన్ఫిగ్ సేవ్ చేయడంలో విఫలమైంది: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "లోపం"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "కాన్ఫిగరేషన్ ఫైల్"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "మూసివేయి"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "కాపీ చేయబడింది!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "క్లిప్బోర్డ్కు కాపీ చేయండి"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "పూర్తి-రిజల్యూషన్ చిత్రాన్ని క్లిప్బోర్డ్కు కాపీ చేయండి"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "ఫార్మాట్:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "నాణ్యత:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "సేవ్ చేయి..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "చిత్రాన్ని ఫైల్కు సేవ్ చేయండి"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "{path} సేవ్ చేయడంలో విఫలమైంది"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "చిత్రాన్ని సేవ్ చేయి"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "సేవ్ చేయబడింది!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "స్కేల్:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "పారదర్శక నేపథ్యం"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "సూది రంగు"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "సాధారణ ప్రివ్యూ"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "వాస్తవ ప్రివ్యూ"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "ఎంబ్రాయిడరీ ఫైల్ను తెరవండి"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "కుట్టు రెండరర్ను ఎంచుకోండి"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "&ఫైల్"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "డిస్ప్లే పరిమాణాన్ని క్రమాంకనం చేయండి..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "సూదిని కేంద్రీకరించండి"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "కుట్టు రెండరర్ను ఎంచుకోండి..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "ఎగుమతి"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "ఐకాన్/థంబ్నెయిల్..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "షేడెడ్ ప్రింట్..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "సాధారణ ప్రింట్..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "డిజైన్ను విండోకు సరిపోయేలా చేయండి"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPU టెక్స్చర్డ్ రెండర్"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "ఎంబ్రాయిడరీ ఫైల్ను తెరవండి"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "నిష్క్రమించు"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "ఎడమవైపు 90 డిగ్రీలు తిప్పండి"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "కుడివైపు 90 డిగ్రీలు తిప్పండి"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "ఎంబ్రాయిడరీగా సేవ్ చేయి..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "కొలత గ్రిడ్ను చూపించు"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "&సహాయం"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "{app_title} గురించి"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "నవీకరణల కోసం తనిఖీ చేయండి"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "కమాండ్ లైన్ ఎంపికలు..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "కాన్ఫిగ్"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "సహాయం"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "స్థితి"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "ట్రేస్ ఈవెంట్లు"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "&ప్లేబ్యాక్"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "తదుపరి రంగు"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "తదుపరి ఆదేశం"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "ప్లే/పాజ్"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "మునుపటి రంగు"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "మునుపటి ఆదేశం"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "&వీక్షణ"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "వాస్తవ పరిమాణం (1:1)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "సేవ్ చేసిన స్నాప్ స్థానాన్ని క్లియర్ చేయండి"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "ఆదేశ జాబితా"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "నేపథ్యాన్ని మార్చండి"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "పూర్తి స్క్రీన్"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "ప్రస్తుత స్నాప్ స్థానాన్ని సేవ్ చేయండి"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "అన్నీ చూపించు/దాచు"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "సూదిని చూపించు"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "విండో లేఅవుట్ను స్నాప్ చేయండి"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "ఎగుమతి చేయడానికి ఎంబ్రాయిడరీ ఫైల్ లోడ్ కాలేదు."
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "ఎంబ్రాయిడరీ ఫైల్ లోడ్ కాలేదు."
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "రీలోడ్ అవుతోంది"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "ఫైల్ సేవ్ చేయడంలో విఫలమైంది: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "లోడ్ అవుతోంది..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "లైన్ వెడల్పు మరియు షేడింగ్ కారకాలను రీసెట్ చేయండి"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "డార్క్ ఫ్యాక్టర్, లైట్ ఫ్యాక్టర్ మరియు లైన్ వెడల్పును సర్దుబాటు చేయడానికి క్లిక్ చేయండి"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "నేపథ్యాన్ని మార్చండి: నలుపు, తెలుపు, కాన్ఫిగర్ చేయబడినది"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "దిగువ వీక్షణ (తరువాతి కుట్లు మునుపటి వాటి క్రింద గీయండి)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "కుట్టు సాంద్రత ఓవర్లేను టోగుల్ చేయండి"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "GPU టెక్స్చర్డ్ రెండరింగ్ను టోగుల్ చేయండి"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "జంప్ ప్రదర్శనను మార్చండి: ఆఫ్, అన్నీ, ప్రమాదకరమైనవి మాత్రమే"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "కుట్టు దృశ్యమానతను టోగుల్ చేయండి"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "సూది సెట్టింగ్లను రీసెట్ చేయండి"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "సూది క్రాస్హైర్ సెట్టింగ్లు"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "రంగు…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "పూర్తి స్క్రీన్"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "వ్యాసార్థం"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "వెడల్పు"
-  }
+    "_meta": {
+        "language": "te",
+        "name": "Telugu"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "ఉత్పత్తికి ముందు కుట్టు క్రమం, థ్రెడ్ రంగులు, జంప్లు, ట్రిమ్లు మరియు మెషిన్ ఆదేశాలను అన్వేషించండి. డిజైన్ను కుట్టు వారీగా ప్రివ్యూ చేయండి, రెండరింగ్ శైలులను మార్చండి మరియు మీరు చూసేదాన్ని ఎగుమతి చేయండి."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "చివరి నవీకరణ తనిఖీ: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "ఇంటరాక్టివ్ ఎంబ్రాయిడరీ సిమ్యులేషన్, తనిఖీ మరియు ఎగుమతి."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "{app_title} గురించి"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "బార్ పొడవు:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "స్క్రీన్ పై పాలకుడిని పట్టుకుని, క్రింద ఉన్న బార్ సరిగ్గా 100 మి.మీ పొడవు వచ్చే వరకు స్లయిడర్ను లాగండి, ఆపై సరే నొక్కండి."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "బార్ యొక్క భౌతిక పొడవు (మి.మీ):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "డిస్ప్లే పరిమాణాన్ని క్రమాంకనం చేయండి"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "చెల్లని TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "కాన్ఫిగ్ సేవ్ చేయడంలో విఫలమైంది: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "లోపం"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "కాన్ఫిగరేషన్ ఫైల్"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "మూసివేయి"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "కాపీ చేయబడింది!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "క్లిప్బోర్డ్కు కాపీ చేయండి"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "పూర్తి-రిజల్యూషన్ చిత్రాన్ని క్లిప్బోర్డ్కు కాపీ చేయండి"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "ఫార్మాట్:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "నాణ్యత:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "సేవ్ చేయి..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "చిత్రాన్ని ఫైల్కు సేవ్ చేయండి"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} సేవ్ చేయడంలో విఫలమైంది"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "చిత్రాన్ని సేవ్ చేయి"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "సేవ్ చేయబడింది!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "స్కేల్:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "పారదర్శక నేపథ్యం"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "సూది రంగు"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "సాధారణ ప్రివ్యూ"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "వాస్తవ ప్రివ్యూ"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "ఎంబ్రాయిడరీ ఫైల్ను తెరవండి"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "కుట్టు రెండరర్ను ఎంచుకోండి"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&ఫైల్"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "డిస్ప్లే పరిమాణాన్ని క్రమాంకనం చేయండి..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "సూదిని కేంద్రీకరించండి"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "కుట్టు రెండరర్ను ఎంచుకోండి..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "ఎగుమతి"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "ఐకాన్/థంబ్నెయిల్..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "షేడెడ్ ప్రింట్..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "సాధారణ ప్రింట్..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "డిజైన్ను విండోకు సరిపోయేలా చేయండి"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU టెక్స్చర్డ్ రెండర్"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "ఎంబ్రాయిడరీ ఫైల్ను తెరవండి"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "నిష్క్రమించు"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "ఎడమవైపు 90 డిగ్రీలు తిప్పండి"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "కుడివైపు 90 డిగ్రీలు తిప్పండి"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "ఎంబ్రాయిడరీగా సేవ్ చేయి..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "కొలత గ్రిడ్ను చూపించు"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&సహాయం"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "{app_title} గురించి"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "నవీకరణల కోసం తనిఖీ చేయండి"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "కమాండ్ లైన్ ఎంపికలు..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "కాన్ఫిగ్"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "సహాయం"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "స్థితి"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "ట్రేస్ ఈవెంట్లు"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&ప్లేబ్యాక్"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "తదుపరి రంగు"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "తదుపరి ఆదేశం"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "ప్లే/పాజ్"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "మునుపటి రంగు"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "మునుపటి ఆదేశం"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&వీక్షణ"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "వాస్తవ పరిమాణం (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "సేవ్ చేసిన స్నాప్ స్థానాన్ని క్లియర్ చేయండి"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "ఆదేశ జాబితా"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "నేపథ్యాన్ని మార్చండి"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "పూర్తి స్క్రీన్"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "ప్రస్తుత స్నాప్ స్థానాన్ని సేవ్ చేయండి"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "అన్నీ చూపించు/దాచు"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "సూదిని చూపించు"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "విండో లేఅవుట్ను స్నాప్ చేయండి"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "ఎగుమతి చేయడానికి ఎంబ్రాయిడరీ ఫైల్ లోడ్ కాలేదు."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "ఎంబ్రాయిడరీ ఫైల్ లోడ్ కాలేదు."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "రీలోడ్ అవుతోంది"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "ఫైల్ సేవ్ చేయడంలో విఫలమైంది: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "లోడ్ అవుతోంది..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "లైన్ వెడల్పు మరియు షేడింగ్ కారకాలను రీసెట్ చేయండి"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "డార్క్ ఫ్యాక్టర్, లైట్ ఫ్యాక్టర్ మరియు లైన్ వెడల్పును సర్దుబాటు చేయడానికి క్లిక్ చేయండి"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "నేపథ్యాన్ని మార్చండి: నలుపు, తెలుపు, కాన్ఫిగర్ చేయబడినది"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "దిగువ వీక్షణ (తరువాతి కుట్లు మునుపటి వాటి క్రింద గీయండి)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "కుట్టు సాంద్రత ఓవర్లేను టోగుల్ చేయండి"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU టెక్స్చర్డ్ రెండరింగ్ను టోగుల్ చేయండి"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "జంప్ ప్రదర్శనను మార్చండి: ఆఫ్, అన్నీ, ప్రమాదకరమైనవి మాత్రమే"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "కుట్టు దృశ్యమానతను టోగుల్ చేయండి"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "సూది సెట్టింగ్లను రీసెట్ చేయండి"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "సూది క్రాస్హైర్ సెట్టింగ్లు"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "రంగు…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "పూర్తి స్క్రీన్"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "వ్యాసార్థం"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "వెడల్పు"
+    }
 }

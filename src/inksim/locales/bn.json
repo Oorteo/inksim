@@ -1,378 +1,378 @@
 {
-  "_meta": {
-    "language": "bn",
-    "name": "Bengali"
-  },
-  "app.title": {
-    "source": "InkSim",
-    "translation": "InkSim"
-  },
-  "dialog.about.body": {
-    "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-    "translation": "উৎপাদনের আগে স্টিচ অর্ডার, থ্রেড রং, জাম্প, ট্রিম এবং মেশিন কমান্ড অন্বেষণ করুন। ডিজাইনটি স্টিচে স্টিচে প্রিভিউ করুন, রেন্ডারিং স্টাইল পরিবর্তন করুন এবং যা দেখেন তা রপ্তানি করুন।"
-  },
-  "dialog.about.last_update_check": {
-    "source": "Last update check: {when}",
-    "translation": "সর্বশেষ আপডেট পরীক্ষা: {when}"
-  },
-  "dialog.about.tagline": {
-    "source": "Interactive embroidery simulation, inspection, and export.",
-    "translation": "ইন্টারেক্টিভ এমব্রয়ডারি সিমুলেশন, পরিদর্শন এবং রপ্তানি।"
-  },
-  "dialog.about.title": {
-    "source": "About {app_title}",
-    "translation": "{app_title} সম্পর্কে"
-  },
-  "dialog.calibrate.bar_length": {
-    "source": "Bar length:",
-    "translation": "বারের দৈর্ঘ্য:"
-  },
-  "dialog.calibrate.info": {
-    "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-    "translation": "স্ক্রিনের সাথে একটি রুলার ধরুন এবং স্লাইডারটি টেনে নিন যতক্ষণ না নিচের বারটি ঠিক ১০০ মিমি লম্বা হয়, তারপর ওকে চাপুন।"
-  },
-  "dialog.calibrate.physical_length": {
-    "source": "Physical length of the bar (mm):",
-    "translation": "বারের প্রকৃত দৈর্ঘ্য (মিমি):"
-  },
-  "dialog.calibrate.title": {
-    "source": "Calibrate display size",
-    "translation": "ডিসপ্লে সাইজ ক্যালিব্রেট করুন"
-  },
-  "dialog.config.invalid_toml": {
-    "source": "Invalid TOML",
-    "translation": "অবৈধ TOML"
-  },
-  "dialog.config.save_error.message": {
-    "source": "Failed to save config: {error}",
-    "translation": "কনফিগ সংরক্ষণ ব্যর্থ: {error}"
-  },
-  "dialog.config.save_error.title": {
-    "source": "Error",
-    "translation": "ত্রুটি"
-  },
-  "dialog.config.title": {
-    "source": "Configuration file",
-    "translation": "কনফিগারেশন ফাইল"
-  },
-  "dialog.export.close": {
-    "source": "Close",
-    "translation": "বন্ধ করুন"
-  },
-  "dialog.export.copied": {
-    "source": "Copied!",
-    "translation": "কপি হয়েছে!"
-  },
-  "dialog.export.copy": {
-    "source": "Copy to clipboard",
-    "translation": "ক্লিপবোর্ডে কপি করুন"
-  },
-  "dialog.export.copy.tooltip": {
-    "source": "Copy the full-resolution image to the clipboard",
-    "translation": "সম্পূর্ণ রেজোলিউশনের ছবিটি ক্লিপবোর্ডে কপি করুন"
-  },
-  "dialog.export.format": {
-    "source": "Format:",
-    "translation": "ফরম্যাট:"
-  },
-  "dialog.export.quality": {
-    "source": "Quality:",
-    "translation": "গুণমান:"
-  },
-  "dialog.export.save": {
-    "source": "Save...",
-    "translation": "সংরক্ষণ করুন..."
-  },
-  "dialog.export.save.tooltip": {
-    "source": "Save the image to a file",
-    "translation": "ছবিটি একটি ফাইলে সংরক্ষণ করুন"
-  },
-  "dialog.export.save_error.message": {
-    "source": "Failed to save {path}",
-    "translation": "{path} সংরক্ষণ ব্যর্থ"
-  },
-  "dialog.export.save_error.title": {
-    "source": "Save image",
-    "translation": "ছবি সংরক্ষণ"
-  },
-  "dialog.export.saved": {
-    "source": "Saved!",
-    "translation": "সংরক্ষিত হয়েছে!"
-  },
-  "dialog.export.scale": {
-    "source": "Scale:",
-    "translation": "স্কেল:"
-  },
-  "dialog.export.transparent_bg": {
-    "source": "Transparent background",
-    "translation": "স্বচ্ছ ব্যাকগ্রাউন্ড"
-  },
-  "dialog.needle_color.title": {
-    "source": "Needle color",
-    "translation": "সুইয়ের রং"
-  },
-  "dialog.open.normal_preview": {
-    "source": "Normal preview",
-    "translation": "সাধারণ প্রিভিউ"
-  },
-  "dialog.open.real_preview": {
-    "source": "Real preview",
-    "translation": "বাস্তব প্রিভিউ"
-  },
-  "dialog.open.title": {
-    "source": "Open embroidery file",
-    "translation": "এমব্রয়ডারি ফাইল খুলুন"
-  },
-  "dialog.renderer.title": {
-    "source": "Choose stitch renderer",
-    "translation": "স্টিচ রেন্ডারার নির্বাচন করুন"
-  },
-  "menu.file": {
-    "source": "&File",
-    "translation": "ফাইল"
-  },
-  "menu.file.calibrate": {
-    "source": "Calibrate display size...",
-    "translation": "ডিসপ্লে সাইজ ক্যালিব্রেট করুন..."
-  },
-  "menu.file.center_needle": {
-    "source": "Center needle",
-    "translation": "সুই কেন্দ্রীভূত করুন"
-  },
-  "menu.file.choose_renderer": {
-    "source": "Choose stitch renderer...",
-    "translation": "স্টিচ রেন্ডারার নির্বাচন করুন..."
-  },
-  "menu.file.export": {
-    "source": "Export",
-    "translation": "রপ্তানি"
-  },
-  "menu.file.export.icon": {
-    "source": "Icon/Thumbnail...",
-    "translation": "আইকন/থাম্বনেইল..."
-  },
-  "menu.file.export.shaded_print": {
-    "source": "Shaded print...",
-    "translation": "শেডেড প্রিন্ট..."
-  },
-  "menu.file.export.simple_print": {
-    "source": "Simple print...",
-    "translation": "সাধারণ প্রিন্ট..."
-  },
-  "menu.file.fit_design": {
-    "source": "Fit design to window",
-    "translation": "ডিজাইন উইন্ডোতে ফিট করুন"
-  },
-  "menu.file.gpu_textured_render": {
-    "source": "GPU textured render",
-    "translation": "GPU টেক্সচার্ড রেন্ডার"
-  },
-  "menu.file.open": {
-    "source": "Open embroidery file",
-    "translation": "এমব্রয়ডারি ফাইল খুলুন"
-  },
-  "menu.file.quit": {
-    "source": "Quit",
-    "translation": "প্রস্থান"
-  },
-  "menu.file.rotate_left": {
-    "source": "Rotate left 90 deg",
-    "translation": "বামে ৯০ ডিগ্রি ঘোরান"
-  },
-  "menu.file.rotate_right": {
-    "source": "Rotate right 90 deg",
-    "translation": "ডানে ৯০ ডিগ্রি ঘোরান"
-  },
-  "menu.file.save_as": {
-    "source": "Save as embroidery...",
-    "translation": "এমব্রয়ডারি হিসেবে সংরক্ষণ করুন..."
-  },
-  "menu.file.show_grid": {
-    "source": "Show measurement grid",
-    "translation": "পরিমাপ গ্রিড দেখান"
-  },
-  "menu.help": {
-    "source": "&Help",
-    "translation": "সাহায্য"
-  },
-  "menu.help.about": {
-    "source": "About {app_title}",
-    "translation": "{app_title} সম্পর্কে"
-  },
-  "menu.help.check_updates": {
-    "source": "Check for updates",
-    "translation": "আপডেটের জন্য পরীক্ষা করুন"
-  },
-  "menu.help.cli_options": {
-    "source": "Command line options...",
-    "translation": "কমান্ড লাইন অপশন..."
-  },
-  "menu.help.config": {
-    "source": "Config",
-    "translation": "কনফিগ"
-  },
-  "menu.help.help": {
-    "source": "Help",
-    "translation": "সাহায্য"
-  },
-  "menu.help.status": {
-    "source": "Status",
-    "translation": "স্থিতি"
-  },
-  "menu.help.trace_events": {
-    "source": "Trace events",
-    "translation": "ট্রেস ইভেন্ট"
-  },
-  "menu.playback": {
-    "source": "&Playback",
-    "translation": "প্লেব্যাক"
-  },
-  "menu.playback.next_color": {
-    "source": "Next color",
-    "translation": "পরের রং"
-  },
-  "menu.playback.next_command": {
-    "source": "Next command",
-    "translation": "পরের কমান্ড"
-  },
-  "menu.playback.play_pause": {
-    "source": "Play/Pause",
-    "translation": "প্লে/পজ"
-  },
-  "menu.playback.prev_color": {
-    "source": "Prev color",
-    "translation": "আগের রং"
-  },
-  "menu.playback.prev_command": {
-    "source": "Prev command",
-    "translation": "আগের কমান্ড"
-  },
-  "menu.view": {
-    "source": "&View",
-    "translation": "দৃশ্য"
-  },
-  "menu.view.actual_size": {
-    "source": "Actual size (1:1)",
-    "translation": "প্রকৃত আকার (১:১)"
-  },
-  "menu.view.clear_snap": {
-    "source": "Clear saved snap position",
-    "translation": "সংরক্ষিত স্ন্যাপ অবস্থান মুছুন"
-  },
-  "menu.view.command_list": {
-    "source": "Command list",
-    "translation": "কমান্ড তালিকা"
-  },
-  "menu.view.cycle_bg": {
-    "source": "Cycle background",
-    "translation": "ব্যাকগ্রাউন্ড সাইকেল করুন"
-  },
-  "menu.view.fullscreen": {
-    "source": "Fullscreen",
-    "translation": "ফুলস্ক্রিন"
-  },
-  "menu.view.save_snap": {
-    "source": "Save current snap position",
-    "translation": "বর্তমান স্ন্যাপ অবস্থান সংরক্ষণ করুন"
-  },
-  "menu.view.show_hide_all": {
-    "source": "Show/hide all",
-    "translation": "সব দেখান/লুকান"
-  },
-  "menu.view.show_needle": {
-    "source": "Show needle",
-    "translation": "সুই দেখান"
-  },
-  "menu.view.snap_layout": {
-    "source": "Snap window layout",
-    "translation": "উইন্ডো লেআউট স্ন্যাপ করুন"
-  },
-  "message.no_file_to_export": {
-    "source": "No embroidery file is loaded to export.",
-    "translation": "রপ্তানি করার জন্য কোনো এমব্রয়ডারি ফাইল লোড নেই।"
-  },
-  "message.no_file_to_save": {
-    "source": "No embroidery file is loaded.",
-    "translation": "কোনো এমব্রয়ডারি ফাইল লোড নেই।"
-  },
-  "message.reload.title": {
-    "source": "Reloading",
-    "translation": "পুনরায় লোড হচ্ছে"
-  },
-  "message.save_error.message": {
-    "source": "Failed to save file: {error}",
-    "translation": "ফাইল সংরক্ষণ ব্যর্থ: {error}"
-  },
-  "splash.loading": {
-    "source": "Loading...",
-    "translation": "লোড হচ্ছে..."
-  },
-  "status.line_settings.reset": {
-    "source": "Reset line width and shading factors",
-    "translation": "লাইন প্রস্থ এবং শেডিং ফ্যাক্টর রিসেট করুন"
-  },
-  "status.line_settings.tooltip": {
-    "source": "Click to adjust dark factor, light factor and line width",
-    "translation": "ডার্ক ফ্যাক্টর, লাইট ফ্যাক্টর এবং লাইন প্রস্থ সামঞ্জস্য করতে ক্লিক করুন"
-  },
-  "status.mode.background": {
-    "source": "Cycle background: black, white, configured",
-    "translation": "ব্যাকগ্রাউন্ড সাইকেল: কালো, সাদা, কনফিগারড"
-  },
-  "status.mode.bottom_view": {
-    "source": "Bottom view (draw later stitches under earlier ones)",
-    "translation": "নিচের দৃশ্য (আগের স্টিচের নিচে পরের স্টিচ আঁকুন)"
-  },
-  "status.mode.density": {
-    "source": "Toggle stitch density overlay",
-    "translation": "স্টিচ ঘনত্ব ওভারলে টগল করুন"
-  },
-  "status.mode.gpu_textured": {
-    "source": "Toggle GPU textured rendering",
-    "translation": "GPU টেক্সচার্ড রেন্ডারিং টগল করুন"
-  },
-  "status.mode.jump": {
-    "source": "Cycle jump display: off, all, risky only",
-    "translation": "জাম্প ডিসপ্লে সাইকেল: বন্ধ, সব, শুধু ঝুঁকিপূর্ণ"
-  },
-  "status.mode.visibility": {
-    "source": "Toggle stitch visibility",
-    "translation": "স্টিচ দৃশ্যমানতা টগল করুন"
-  },
-  "status.needle.reset": {
-    "source": "Reset needle settings",
-    "translation": "সুই সেটিংস রিসেট করুন"
-  },
-  "status.needle.settings": {
-    "source": "Needle crosshair settings",
-    "translation": "সুই ক্রসহেয়ার সেটিংস"
-  },
-  "status.slider.color": {
-    "source": "Color…",
-    "translation": "রং…"
-  },
-  "status.slider.dark_factor": {
-    "source": "DF",
-    "translation": "DF"
-  },
-  "status.slider.fullscreen": {
-    "source": "Full screen",
-    "translation": "ফুল স্ক্রিন"
-  },
-  "status.slider.light_factor": {
-    "source": "LF",
-    "translation": "LF"
-  },
-  "status.slider.line_width": {
-    "source": "LW",
-    "translation": "LW"
-  },
-  "status.slider.radius": {
-    "source": "Radius",
-    "translation": "ব্যাসার্ধ"
-  },
-  "status.slider.width": {
-    "source": "Width",
-    "translation": "প্রস্থ"
-  }
+    "_meta": {
+        "language": "bn",
+        "name": "Bengali"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "উৎপাদনের আগে স্টিচ অর্ডার, থ্রেড রং, জাম্প, ট্রিম এবং মেশিন কমান্ড অন্বেষণ করুন। ডিজাইনটি স্টিচে স্টিচে প্রিভিউ করুন, রেন্ডারিং স্টাইল পরিবর্তন করুন এবং যা দেখেন তা রপ্তানি করুন।"
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "সর্বশেষ আপডেট পরীক্ষা: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "ইন্টারেক্টিভ এমব্রয়ডারি সিমুলেশন, পরিদর্শন এবং রপ্তানি।"
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "{app_title} সম্পর্কে"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "বারের দৈর্ঘ্য:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "স্ক্রিনের সাথে একটি রুলার ধরুন এবং স্লাইডারটি টেনে নিন যতক্ষণ না নিচের বারটি ঠিক ১০০ মিমি লম্বা হয়, তারপর ওকে চাপুন।"
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "বারের প্রকৃত দৈর্ঘ্য (মিমি):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "ডিসপ্লে সাইজ ক্যালিব্রেট করুন"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "অবৈধ TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "কনফিগ সংরক্ষণ ব্যর্থ: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "ত্রুটি"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "কনফিগারেশন ফাইল"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "বন্ধ করুন"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "কপি হয়েছে!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "ক্লিপবোর্ডে কপি করুন"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "সম্পূর্ণ রেজোলিউশনের ছবিটি ক্লিপবোর্ডে কপি করুন"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "ফরম্যাট:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "গুণমান:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "সংরক্ষণ করুন..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "ছবিটি একটি ফাইলে সংরক্ষণ করুন"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} সংরক্ষণ ব্যর্থ"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "ছবি সংরক্ষণ"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "সংরক্ষিত হয়েছে!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "স্কেল:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "স্বচ্ছ ব্যাকগ্রাউন্ড"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "সুইয়ের রং"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "সাধারণ প্রিভিউ"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "বাস্তব প্রিভিউ"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "এমব্রয়ডারি ফাইল খুলুন"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "স্টিচ রেন্ডারার নির্বাচন করুন"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "ফাইল"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "ডিসপ্লে সাইজ ক্যালিব্রেট করুন..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "সুই কেন্দ্রীভূত করুন"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "স্টিচ রেন্ডারার নির্বাচন করুন..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "রপ্তানি"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "আইকন/থাম্বনেইল..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "শেডেড প্রিন্ট..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "সাধারণ প্রিন্ট..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "ডিজাইন উইন্ডোতে ফিট করুন"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU টেক্সচার্ড রেন্ডার"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "এমব্রয়ডারি ফাইল খুলুন"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "প্রস্থান"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "বামে ৯০ ডিগ্রি ঘোরান"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "ডানে ৯০ ডিগ্রি ঘোরান"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "এমব্রয়ডারি হিসেবে সংরক্ষণ করুন..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "পরিমাপ গ্রিড দেখান"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "সাহায্য"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "{app_title} সম্পর্কে"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "আপডেটের জন্য পরীক্ষা করুন"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "কমান্ড লাইন অপশন..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "কনফিগ"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "সাহায্য"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "স্থিতি"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "ট্রেস ইভেন্ট"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "প্লেব্যাক"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "পরের রং"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "পরের কমান্ড"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "প্লে/পজ"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "আগের রং"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "আগের কমান্ড"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "দৃশ্য"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "প্রকৃত আকার (১:১)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "সংরক্ষিত স্ন্যাপ অবস্থান মুছুন"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "কমান্ড তালিকা"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "ব্যাকগ্রাউন্ড সাইকেল করুন"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "ফুলস্ক্রিন"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "বর্তমান স্ন্যাপ অবস্থান সংরক্ষণ করুন"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "সব দেখান/লুকান"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "সুই দেখান"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "উইন্ডো লেআউট স্ন্যাপ করুন"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "রপ্তানি করার জন্য কোনো এমব্রয়ডারি ফাইল লোড নেই।"
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "কোনো এমব্রয়ডারি ফাইল লোড নেই।"
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "পুনরায় লোড হচ্ছে"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "ফাইল সংরক্ষণ ব্যর্থ: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "লোড হচ্ছে..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "লাইন প্রস্থ এবং শেডিং ফ্যাক্টর রিসেট করুন"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "ডার্ক ফ্যাক্টর, লাইট ফ্যাক্টর এবং লাইন প্রস্থ সামঞ্জস্য করতে ক্লিক করুন"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "ব্যাকগ্রাউন্ড সাইকেল: কালো, সাদা, কনফিগারড"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "নিচের দৃশ্য (আগের স্টিচের নিচে পরের স্টিচ আঁকুন)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "স্টিচ ঘনত্ব ওভারলে টগল করুন"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU টেক্সচার্ড রেন্ডারিং টগল করুন"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "জাম্প ডিসপ্লে সাইকেল: বন্ধ, সব, শুধু ঝুঁকিপূর্ণ"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "স্টিচ দৃশ্যমানতা টগল করুন"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "সুই সেটিংস রিসেট করুন"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "সুই ক্রসহেয়ার সেটিংস"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "রং…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "ফুল স্ক্রিন"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "ব্যাসার্ধ"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "প্রস্থ"
+    }
 }

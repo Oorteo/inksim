@@ -54,7 +54,7 @@ def save_catalog(path: Path, meta: dict[str, Any], messages: dict[str, dict[str,
     ordered: dict[str, Any] = {"_meta": meta}
     ordered.update(dict(sorted(messages.items())))
     with path.open("w", encoding="utf-8") as f:
-        json.dump(ordered, f, ensure_ascii=False, indent=2)
+        json.dump(ordered, f, ensure_ascii=False, indent=4)
         f.write("\n")
 
 

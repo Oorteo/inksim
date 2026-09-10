@@ -80,7 +80,7 @@ def load_catalog(path: Path) -> dict[str, Any]:
 def save_catalog(path: Path, data: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        json.dump(data, f, ensure_ascii=False, indent=4)
         f.write("\n")
 
 
@@ -96,10 +96,19 @@ def update_english_catalog() -> int:
             new_ids.append(msg_id)
             catalog[msg_id] = entry
         else:
-            # Preserve existing translation, but refresh source if needed.
+            # Preserve existing translation, but refresh source if a human-readable
+            # fallback is introduced for an ID that previously used the ID itself.
             existing = catalog[msg_id]
             if isinstance(existing, dict):
-                existing.setdefault("source", entry["source"])
+                old_source = existing.get("source", msg_id)
+                new_source = entry["source"]
+                old_translation = existing.get("translation", old_source)
+                if old_source == msg_id and new_source != msg_id:
+                    existing["source"] = new_source
+                    # For the source (English) catalog keep translation in sync
+                    # with source when it was still a placeholder.
+                    if old_translation == old_source:
+                        existing["translation"] = new_source
                 existing.setdefault("translation", entry["translation"])
             else:
                 catalog[msg_id] = {
