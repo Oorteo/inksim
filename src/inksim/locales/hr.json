@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Transparentna pozadina"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Jezik je postavljen na {language}. Restartaj InkSim da se primijeni."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Koristit će se zadani jezik sustava. InkSim će se restartati da se primijeni."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Promjena jezika"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Boja igle"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Prati događaje"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Jezik"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Zadano sustava"
     },
     "menu.playback": {
         "source": "&Playback",

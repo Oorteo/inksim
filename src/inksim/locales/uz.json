@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Shaffof fon"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Til {language} ga o'rnatildi. InkSimni qayta ishga tushir."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Tizimning standart tili ishlatiladi. InkSim qayta ishga tushadi."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Til o'zgartirildi"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Igna rangi"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Hodisalarni kuzatish"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Til"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Tizim standarti"
     },
     "menu.playback": {
         "source": "&Playback",

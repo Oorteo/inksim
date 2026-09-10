@@ -1,7 +1,7 @@
 {
     "_meta": {
-        "language": "ja",
-        "name": "Japanese"
+        "language": "vi",
+        "name": "Vietnamese"
     },
     "app.title": {
         "source": "InkSim",
@@ -9,367 +9,367 @@
     },
     "dialog.about.body": {
         "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-        "translation": "生産前にステッチの順序、糸の色、ジャンプ、トリム、マシンコマンドを確認できます。デザインをステッチごとにプレビューし、レンダリングスタイルを切り替え、表示内容をエクスポートできます。"
+        "translation": "Khám phá thứ tự mũi may, màu chỉ, bước nhảy, cắt chỉ và lệnh máy trước khi sản xuất. Xem trước thiết kế từng mũi, chuyển đổi kiểu hiển thị và xuất những gì bạn thấy."
     },
     "dialog.about.last_update_check": {
         "source": "Last update check: {when}",
-        "translation": "最終更新確認: {when}"
+        "translation": "Kiểm tra cập nhật lần cuối: {when}"
     },
     "dialog.about.tagline": {
         "source": "Interactive embroidery simulation, inspection, and export.",
-        "translation": "インタラクティブな刺繍シミュレーション、検査、エクスポート。"
+        "translation": "Mô phỏng thêu tương tác, kiểm tra và xuất."
     },
     "dialog.about.title": {
         "source": "About {app_title}",
-        "translation": "{app_title} について"
+        "translation": "Giới thiệu về {app_title}"
     },
     "dialog.calibrate.bar_length": {
         "source": "Bar length:",
-        "translation": "バーの長さ:"
+        "translation": "Chiều dài thanh:"
     },
     "dialog.calibrate.info": {
         "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-        "translation": "定規を画面に当てて、下のバーがちょうど100mmになるまでスライダーをドラッグして、OKを押してください。"
+        "translation": "Giữ thước kẻ sát màn hình và kéo thanh trượt cho đến khi thanh bên dưới dài đúng 100 mm, rồi nhấn OK."
     },
     "dialog.calibrate.physical_length": {
         "source": "Physical length of the bar (mm):",
-        "translation": "バーの物理的な長さ (mm):"
+        "translation": "Chiều dài thực tế của thanh (mm):"
     },
     "dialog.calibrate.title": {
         "source": "Calibrate display size",
-        "translation": "表示サイズのキャリブレーション"
+        "translation": "Hiệu chỉnh kích thước màn hình"
     },
     "dialog.config.invalid_toml": {
         "source": "Invalid TOML",
-        "translation": "無効なTOML"
+        "translation": "TOML không hợp lệ"
     },
     "dialog.config.save_error.message": {
         "source": "Failed to save config: {error}",
-        "translation": "設定の保存に失敗しました: {error}"
+        "translation": "Không thể lưu cấu hình: {error}"
     },
     "dialog.config.save_error.title": {
         "source": "Error",
-        "translation": "エラー"
+        "translation": "Lỗi"
     },
     "dialog.config.title": {
         "source": "Configuration file",
-        "translation": "設定ファイル"
+        "translation": "Tệp cấu hình"
     },
     "dialog.export.close": {
         "source": "Close",
-        "translation": "閉じる"
+        "translation": "Đóng"
     },
     "dialog.export.copied": {
         "source": "Copied!",
-        "translation": "コピーしました！"
+        "translation": "Đã sao chép!"
     },
     "dialog.export.copy": {
         "source": "Copy to clipboard",
-        "translation": "クリップボードにコピー"
+        "translation": "Sao chép vào clipboard"
     },
     "dialog.export.copy.tooltip": {
         "source": "Copy the full-resolution image to the clipboard",
-        "translation": "フル解像度の画像をクリップボードにコピー"
+        "translation": "Sao chép hình ảnh độ phân giải đầy đủ vào clipboard"
     },
     "dialog.export.format": {
         "source": "Format:",
-        "translation": "形式:"
+        "translation": "Định dạng:"
     },
     "dialog.export.quality": {
         "source": "Quality:",
-        "translation": "品質:"
+        "translation": "Chất lượng:"
     },
     "dialog.export.save": {
         "source": "Save...",
-        "translation": "保存..."
+        "translation": "Lưu..."
     },
     "dialog.export.save.tooltip": {
         "source": "Save the image to a file",
-        "translation": "画像をファイルに保存"
+        "translation": "Lưu hình ảnh vào tệp"
     },
     "dialog.export.save_error.message": {
         "source": "Failed to save {path}",
-        "translation": "{path} の保存に失敗しました"
+        "translation": "Không thể lưu {path}"
     },
     "dialog.export.save_error.title": {
         "source": "Save image",
-        "translation": "画像の保存"
+        "translation": "Lưu hình ảnh"
     },
     "dialog.export.saved": {
         "source": "Saved!",
-        "translation": "保存しました！"
+        "translation": "Đã lưu!"
     },
     "dialog.export.scale": {
         "source": "Scale:",
-        "translation": "スケール:"
+        "translation": "Tỷ lệ:"
     },
     "dialog.export.transparent_bg": {
         "source": "Transparent background",
-        "translation": "透明な背景"
+        "translation": "Nền trong suốt"
     },
     "dialog.language.restart_message": {
         "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "言語を{language}に設定したよ。反映するにはInkSimを再起動してね。"
+        "translation": "Ngôn ngữ đã được đặt thành {language}. Khởi động lại InkSim để áp dụng."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "システムのデフォルト言語を使うよ。反映するためにInkSimが再起動するね。"
+        "translation": "Ngôn ngữ mặc định của hệ thống sẽ được sử dụng. InkSim sẽ khởi động lại để áp dụng."
     },
     "dialog.language.title": {
         "source": "Language changed",
-        "translation": "言語が変更されました"
+        "translation": "Đã thay đổi ngôn ngữ"
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
-        "translation": "針の色"
+        "translation": "Màu kim"
     },
     "dialog.open.normal_preview": {
         "source": "Normal preview",
-        "translation": "通常プレビュー"
+        "translation": "Xem trước bình thường"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",
-        "translation": "リアルプレビュー"
+        "translation": "Xem trước thực tế"
     },
     "dialog.open.title": {
         "source": "Open embroidery file",
-        "translation": "刺繍ファイルを開く"
+        "translation": "Mở tệp thêu"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
-        "translation": "ステッチレンダラーを選択"
+        "translation": "Chọn trình kết xuất mũi may"
     },
     "menu.file": {
         "source": "&File",
-        "translation": "ファイル(&F)"
+        "translation": "&Tệp"
     },
     "menu.file.calibrate": {
         "source": "Calibrate display size...",
-        "translation": "表示サイズをキャリブレーション..."
+        "translation": "Hiệu chỉnh kích thước màn hình..."
     },
     "menu.file.center_needle": {
         "source": "Center needle",
-        "translation": "針を中央に"
+        "translation": "Căn giữa kim"
     },
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
-        "translation": "ステッチレンダラーを選択..."
+        "translation": "Chọn trình kết xuất mũi may..."
     },
     "menu.file.export": {
         "source": "Export",
-        "translation": "エクスポート"
+        "translation": "Xuất"
     },
     "menu.file.export.icon": {
         "source": "Icon/Thumbnail...",
-        "translation": "アイコン/サムネイル..."
+        "translation": "Biểu tượng/Hình thu nhỏ..."
     },
     "menu.file.export.shaded_print": {
         "source": "Shaded print...",
-        "translation": "シェーディング印刷..."
+        "translation": "In bóng..."
     },
     "menu.file.export.simple_print": {
         "source": "Simple print...",
-        "translation": "シンプル印刷..."
+        "translation": "In đơn giản..."
     },
     "menu.file.fit_design": {
         "source": "Fit design to window",
-        "translation": "デザインをウィンドウに合わせる"
+        "translation": "Vừa với cửa sổ"
     },
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
-        "translation": "GPUテクスチャレンダリング"
+        "translation": "Kết xuất kết cấu GPU"
     },
     "menu.file.open": {
         "source": "Open embroidery file",
-        "translation": "刺繍ファイルを開く"
+        "translation": "Mở tệp thêu"
     },
     "menu.file.quit": {
         "source": "Quit",
-        "translation": "終了"
+        "translation": "Thoát"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
-        "translation": "左に90度回転"
+        "translation": "Xoay trái 90 độ"
     },
     "menu.file.rotate_right": {
         "source": "Rotate right 90 deg",
-        "translation": "右に90度回転"
+        "translation": "Xoay phải 90 độ"
     },
     "menu.file.save_as": {
         "source": "Save as embroidery...",
-        "translation": "刺繍として保存..."
+        "translation": "Lưu dưới dạng thêu..."
     },
     "menu.file.show_grid": {
         "source": "Show measurement grid",
-        "translation": "測定グリッドを表示"
+        "translation": "Hiển thị lưới đo"
     },
     "menu.help": {
         "source": "&Help",
-        "translation": "ヘルプ(&H)"
+        "translation": "&Trợ giúp"
     },
     "menu.help.about": {
         "source": "About {app_title}",
-        "translation": "{app_title} について"
+        "translation": "Giới thiệu về {app_title}"
     },
     "menu.help.check_updates": {
         "source": "Check for updates",
-        "translation": "更新を確認"
+        "translation": "Kiểm tra cập nhật"
     },
     "menu.help.cli_options": {
         "source": "Command line options...",
-        "translation": "コマンドラインオプション..."
+        "translation": "Tùy chọn dòng lệnh..."
     },
     "menu.help.config": {
         "source": "Config",
-        "translation": "設定"
+        "translation": "Cấu hình"
     },
     "menu.help.help": {
         "source": "Help",
-        "translation": "ヘルプ"
+        "translation": "Trợ giúp"
     },
     "menu.help.status": {
         "source": "Status",
-        "translation": "ステータス"
+        "translation": "Trạng thái"
     },
     "menu.help.trace_events": {
         "source": "Trace events",
-        "translation": "トレースイベント"
+        "translation": "Sự kiện theo dõi"
     },
     "menu.language": {
         "source": "Language",
-        "translation": "言語"
+        "translation": "Ngôn ngữ"
     },
     "menu.language.system_default": {
         "source": "System default",
-        "translation": "システムのデフォルト"
+        "translation": "Mặc định hệ thống"
     },
     "menu.playback": {
         "source": "&Playback",
-        "translation": "再生(&P)"
+        "translation": "&Phát lại"
     },
     "menu.playback.next_color": {
         "source": "Next color",
-        "translation": "次の色"
+        "translation": "Màu tiếp theo"
     },
     "menu.playback.next_command": {
         "source": "Next command",
-        "translation": "次のコマンド"
+        "translation": "Lệnh tiếp theo"
     },
     "menu.playback.play_pause": {
         "source": "Play/Pause",
-        "translation": "再生/一時停止"
+        "translation": "Phát/Tạm dừng"
     },
     "menu.playback.prev_color": {
         "source": "Prev color",
-        "translation": "前の色"
+        "translation": "Màu trước"
     },
     "menu.playback.prev_command": {
         "source": "Prev command",
-        "translation": "前のコマンド"
+        "translation": "Lệnh trước"
     },
     "menu.view": {
         "source": "&View",
-        "translation": "表示(&V)"
+        "translation": "&Xem"
     },
     "menu.view.actual_size": {
         "source": "Actual size (1:1)",
-        "translation": "実際のサイズ (1:1)"
+        "translation": "Kích thước thực (1:1)"
     },
     "menu.view.clear_snap": {
         "source": "Clear saved snap position",
-        "translation": "保存したスナップ位置をクリア"
+        "translation": "Xóa vị trí chụp đã lưu"
     },
     "menu.view.command_list": {
         "source": "Command list",
-        "translation": "コマンドリスト"
+        "translation": "Danh sách lệnh"
     },
     "menu.view.cycle_bg": {
         "source": "Cycle background",
-        "translation": "背景を切り替え"
+        "translation": "Chuyển nền"
     },
     "menu.view.fullscreen": {
         "source": "Fullscreen",
-        "translation": "全画面"
+        "translation": "Toàn màn hình"
     },
     "menu.view.save_snap": {
         "source": "Save current snap position",
-        "translation": "現在のスナップ位置を保存"
+        "translation": "Lưu vị trí chụp hiện tại"
     },
     "menu.view.show_hide_all": {
         "source": "Show/hide all",
-        "translation": "すべて表示/非表示"
+        "translation": "Hiện/ẩn tất cả"
     },
     "menu.view.show_needle": {
         "source": "Show needle",
-        "translation": "針を表示"
+        "translation": "Hiện kim"
     },
     "menu.view.snap_layout": {
         "source": "Snap window layout",
-        "translation": "ウィンドウレイアウトをスナップ"
+        "translation": "Bố cục cửa sổ chụp"
     },
     "message.no_file_to_export": {
         "source": "No embroidery file is loaded to export.",
-        "translation": "エクスポートする刺繍ファイルが読み込まれていません。"
+        "translation": "Không có tệp thêu nào được tải để xuất."
     },
     "message.no_file_to_save": {
         "source": "No embroidery file is loaded.",
-        "translation": "刺繍ファイルが読み込まれていません。"
+        "translation": "Không có tệp thêu nào được tải."
     },
     "message.reload.title": {
         "source": "Reloading",
-        "translation": "再読み込み中"
+        "translation": "Đang tải lại"
     },
     "message.save_error.message": {
         "source": "Failed to save file: {error}",
-        "translation": "ファイルの保存に失敗しました: {error}"
+        "translation": "Không thể lưu tệp: {error}"
     },
     "splash.loading": {
         "source": "Loading...",
-        "translation": "読み込み中..."
+        "translation": "Đang tải..."
     },
     "status.line_settings.reset": {
         "source": "Reset line width and shading factors",
-        "translation": "線幅とシェーディング係数をリセット"
+        "translation": "Đặt lại độ rộng đường và hệ số bóng"
     },
     "status.line_settings.tooltip": {
         "source": "Click to adjust dark factor, light factor and line width",
-        "translation": "クリックでダーク係数、ライト係数、線幅を調整"
+        "translation": "Nhấp để điều chỉnh hệ số tối, hệ số sáng và độ rộng đường"
     },
     "status.mode.background": {
         "source": "Cycle background: black, white, configured",
-        "translation": "背景を切り替え: 黒、白、設定済み"
+        "translation": "Chuyển nền: đen, trắng, đã cấu hình"
     },
     "status.mode.bottom_view": {
         "source": "Bottom view (draw later stitches under earlier ones)",
-        "translation": "ボトムビュー (後のステッチを前の下に描画)"
+        "translation": "Xem từ dưới (vẽ các mũi sau dưới các mũi trước)"
     },
     "status.mode.density": {
         "source": "Toggle stitch density overlay",
-        "translation": "ステッチ密度オーバーレイの切り替え"
+        "translation": "Bật/tắt lớp phủ mật độ mũi may"
     },
     "status.mode.gpu_textured": {
         "source": "Toggle GPU textured rendering",
-        "translation": "GPUテクスチャレンダリングの切り替え"
+        "translation": "Bật/tắt kết xuất kết cấu GPU"
     },
     "status.mode.jump": {
         "source": "Cycle jump display: off, all, risky only",
-        "translation": "ジャンプ表示を切り替え: オフ、すべて、リスクのみ"
+        "translation": "Chuyển hiển thị bước nhảy: tắt, tất cả, chỉ nguy hiểm"
     },
     "status.mode.visibility": {
         "source": "Toggle stitch visibility",
-        "translation": "ステッチの表示/非表示を切り替え"
+        "translation": "Bật/tắt hiển thị mũi may"
     },
     "status.needle.reset": {
         "source": "Reset needle settings",
-        "translation": "針設定をリセット"
+        "translation": "Đặt lại cài đặt kim"
     },
     "status.needle.settings": {
         "source": "Needle crosshair settings",
-        "translation": "針の十字線設定"
+        "translation": "Cài đặt chữ thập kim"
     },
     "status.slider.color": {
         "source": "Color…",
-        "translation": "色…"
+        "translation": "Màu…"
     },
     "status.slider.dark_factor": {
         "source": "DF",
@@ -377,7 +377,7 @@
     },
     "status.slider.fullscreen": {
         "source": "Full screen",
-        "translation": "全画面"
+        "translation": "Toàn màn hình"
     },
     "status.slider.light_factor": {
         "source": "LF",
@@ -389,10 +389,10 @@
     },
     "status.slider.radius": {
         "source": "Radius",
-        "translation": "半径"
+        "translation": "Bán kính"
     },
     "status.slider.width": {
         "source": "Width",
-        "translation": "幅"
+        "translation": "Độ rộng"
     }
 }

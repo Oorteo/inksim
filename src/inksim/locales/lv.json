@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Caurspīdīgs fons"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Valoda ir iestatīta uz {language}. Restartē InkSim, lai to piemērotu."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Tiks izmantota sistēmas noklusējuma valoda. InkSim tiks restartēts, lai to piemērotu."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Valoda mainīta"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Adatas krāsa"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Izsekošanas notikumi"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Valoda"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Sistēmas noklusējums"
     },
     "menu.playback": {
         "source": "&Playback",

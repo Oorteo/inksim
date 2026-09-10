@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "شفاف شالید"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "ژبه {language} ته ټاکل شوې ده. د دې پلي کولو لپاره InkSim بیا پیل کړئ."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "د سیسټم ډیفالټ ژبه به وکارول شي. د دې پلي کولو لپاره InkSim به بیا پیل شي."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "ژبه بدله شوه"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "د سوزن رنګ"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "پیښې تعقیب کړئ"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "ژبه"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "د سیسټم ډیفالټ"
     },
     "menu.playback": {
         "source": "&Playback",

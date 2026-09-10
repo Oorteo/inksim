@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "ግልጽ ዳራ"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "ቋንቋው ወደ {language} ተቀይሯል። እንዲተገበር InkSimን እንደገና አስጀምር።"
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "የስርዓቱ ነባሪ ቋንቋ ጥቅም ላይ ይውላል። InkSim እንዲተገበር እንደገና ይጀምራል።"
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "ቋንቋ ተቀይሯል"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "የመርፌ ቀለም"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "ክስተቶችን ይከታተሉ"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "ቋንቋ"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "የስርዓት ነባሪ"
     },
     "menu.playback": {
         "source": "&Playback",

@@ -340,26 +340,5 @@
         "name": "Arabic (Iraq)",
         "tier": 4,
         "base": "ar"
-    },
-    {
-        "code": "cs-pra",
-        "name": "Czech (Prague slang)",
-        "tier": 4,
-        "base": "cs",
-        "note": "Humorous/dialect variant"
-    },
-    {
-        "code": "cs-brno",
-        "name": "Czech (Brno slang)",
-        "tier": 4,
-        "base": "cs",
-        "note": "Humorous/dialect variant"
-    },
-    {
-        "code": "sk-sar",
-        "name": "Slovak (Šariš dialect)",
-        "tier": 4,
-        "base": "sk",
-        "note": "Humorous/dialect variant"
     }
 ]

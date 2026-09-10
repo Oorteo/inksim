@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Διαφανές φόντο"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Η γλώσσα άλλαξε σε {language}. Κάνε επανεκκίνηση του InkSim για να εφαρμοστεί."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Θα χρησιμοποιηθεί η προεπιλεγμένη γλώσσα του συστήματος. Το InkSim θα επανεκκινήσει για να εφαρμοστεί."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Η γλώσσα άλλαξε"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Χρώμα βελόνας"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Καταγραφή συμβάντων"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Γλώσσα"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Προεπιλογή συστήματος"
     },
     "menu.playback": {
         "source": "&Playback",

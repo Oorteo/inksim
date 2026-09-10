@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Cúlra trédhearcach"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Tá an teanga socraithe go {language}. Atosaigh InkSim chun é a chur i bhfeidhm."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Úsáidfear teanga réamhshocraithe an chórais. Atosóidh InkSim chun é a chur i bhfeidhm."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Teanga athraithe"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Dath an tsnáthaid"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Imeachtaí rianaithe"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Teanga"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Réamhshocraithe an chórais"
     },
     "menu.playback": {
         "source": "&Playback",

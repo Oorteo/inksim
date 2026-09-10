@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "רקע שקוף"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "השפה הוגדרה ל-{language}. הפעל מחדש את InkSim כדי להחיל אותה."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "שפת ברירת המחדל של המערכת תשמש. InkSim יופעל מחדש כדי להחיל אותה."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "השפה שונתה"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "צבע מחט"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "אירועי מעקב"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "שפה"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "ברירת מחדל של המערכת"
     },
     "menu.playback": {
         "source": "&Playback",

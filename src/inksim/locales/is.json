@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Gagnsær bakgrunnur"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Tungumálið hefur verið stillt á {language}. Endurræstu InkSim til að beita því."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Kerfisstaðlaða tungumálið verður notað. InkSim mun endurræsa til að beita því."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Tungumáli breytt"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Litur nálar"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Rekja atburði"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Tungumál"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Kerfisstaðall"
     },
     "menu.playback": {
         "source": "&Playback",

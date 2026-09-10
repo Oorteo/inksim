@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "透明背景"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "语言已设置为{language}。重启InkSim以应用更改。"
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "将使用系统默认语言。InkSim将重启以应用更改。"
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "语言已更改"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "针颜色"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "跟踪事件"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "语言"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "系统默认"
     },
     "menu.playback": {
         "source": "&Playback",

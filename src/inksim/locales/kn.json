@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "ಪಾರದರ್ಶಕ ಹಿನ್ನೆಲೆ"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "ಭಾಷೆಯನ್ನು {language} ಗೆ ಹೊಂದಿಸಲಾಗಿದೆ. ಅದನ್ನು ಅನ್ವಯಿಸಲು InkSim ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಿ."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "ಸಿಸ್ಟಮ್ ಡೀಫಾಲ್ಟ್ ಭಾಷೆಯನ್ನು ಬಳಸಲಾಗುತ್ತದೆ. ಅದನ್ನು ಅನ್ವಯಿಸಲು InkSim ಮರುಪ್ರಾರಂಭವಾಗುತ್ತದೆ."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "ಭಾಷೆ ಬದಲಾಯಿಸಲಾಗಿದೆ"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "ಸೂಜಿ ಬಣ್ಣ"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "ಟ್ರೇಸ್ ಈವೆಂಟ್ಗಳು"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "ಭಾಷೆ"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "ಸಿಸ್ಟಮ್ ಡೀಫಾಲ್ಟ್"
     },
     "menu.playback": {
         "source": "&Playback",

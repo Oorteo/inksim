@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Fundal transparent"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Limba a fost setată la {language}. Repornește InkSim ca să se aplice."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Se va folosi limba implicită a sistemului. InkSim se va reporni ca să se aplice."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Limbă schimbată"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Culoarea acului"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Evenimente de urmărire"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Limbă"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Implicită de sistem"
     },
     "menu.playback": {
         "source": "&Playback",

@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Läpinäkyvä tausta"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Kieli on asetettu kielelle {language}. Käynnistä InkSim uudelleen ottaaksesi sen käyttöön."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Järjestelmän oletuskieltä käytetään. InkSim käynnistyy uudelleen ottaakseen sen käyttöön."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Kieli vaihdettu"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Neulan väri"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Jäljitä tapahtumat"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Kieli"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Järjestelmän oletus"
     },
     "menu.playback": {
         "source": "&Playback",

@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Transparent na background"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Naitakda na ang wika sa {language}. I-restart ang InkSim para mailapat ito."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Gagamitin ang default na wika ng system. Ire-restart ang InkSim para mailapat ito."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Binago ang wika"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Kulay ng karayom"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Trace events"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Wika"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Default ng system"
     },
     "menu.playback": {
         "source": "&Playback",

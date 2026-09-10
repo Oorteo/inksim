@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Asalka hufan (transparent)"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Luuqadda waxaa loo dejiyay {language}. Dib u bilow InkSim si loo adeegsado."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Luuqadda asalka ah ee nidaamka ayaa la isticmaali doonaa. InkSim wuxuu dib u bilaabi doonaa si loo adeegsado."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Luuqadda ayaa la beddelay"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Midabka cirbadda"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Raad raac dhacdooyinka"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Luuqad"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Asalka nidaamka"
     },
     "menu.playback": {
         "source": "&Playback",

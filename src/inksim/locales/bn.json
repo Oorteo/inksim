@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "স্বচ্ছ ব্যাকগ্রাউন্ড"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "ভাষা {language} এ সেট করা হয়েছে। এটি প্রয়োগ করতে InkSim আবার চালু করুন।"
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "সিস্টেমের ডিফল্ট ভাষা ব্যবহার হবে। এটি প্রয়োগ করতে InkSim আবার চালু হবে।"
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "ভাষা পরিবর্তিত হয়েছে"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "সুইয়ের রং"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "ট্রেস ইভেন্ট"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "ভাষা"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "সিস্টেম ডিফল্ট"
     },
     "menu.playback": {
         "source": "&Playback",

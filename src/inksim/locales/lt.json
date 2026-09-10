@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "Skaidrus fonas"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Kalba nustatyta į {language}. Paleisk InkSim iš naujo, kad pritaikytum."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Bus naudojama sistemos numatytoji kalba. InkSim bus perkrautas, kad ją pritaikytų."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Kalba pakeista"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Adatos spalva"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Įvykių sekimas"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Kalba"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Sistemos numatytoji"
     },
     "menu.playback": {
         "source": "&Playback",

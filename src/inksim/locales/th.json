@@ -107,6 +107,18 @@
         "source": "Transparent background",
         "translation": "พื้นหลังโปร่งใส"
     },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "ตั้งค่าภาษาเป็น {language} แล้ว รีสตาร์ท InkSim เพื่อให้มีผล"
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "จะใช้ภาษาตามค่าเริ่มต้นของระบบ InkSim จะรีสตาร์ทเพื่อให้มีผล"
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "เปลี่ยนภาษาแล้ว"
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "สีเข็ม"
@@ -222,6 +234,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "ติดตามเหตุการณ์"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "ภาษา"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "ค่าเริ่มต้นของระบบ"
     },
     "menu.playback": {
         "source": "&Playback",
