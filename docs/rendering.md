@@ -1,5 +1,22 @@
 # Rendering modes and overlays
 
+## Contents
+
+- [Stitch renderers](#stitch-renderers)
+  - [Simple](#simple)
+  - [Shaded](#shaded)
+  - [Shaded Volume](#shaded-volume)
+  - [Shaded Volume Natural](#shaded-volume-natural)
+  - [Realistic Twist](#realistic-twist)
+  - [GPU Textured](#gpu-textured)
+- [Overlays and helpers](#overlays-and-helpers)
+  - [Density map](#density-map)
+  - [Jumps](#jumps)
+  - [Needle crosshair](#needle-crosshair)
+  - [Measurement grid](#measurement-grid)
+  - [Bottom view](#bottom-view)
+- [Tips](#tips)
+
 InkSim can visualise the same embroidery design in several different ways.
 The goal is the same in every mode: show the stitch sequence, thread
 colours, and jumps clearly. Some modes are fast, others are more realistic,

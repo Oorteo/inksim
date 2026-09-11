@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "he",
+        "name": "Hebrew"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "חקור את סדר התפרים, צבעי החוט, קפיצות, גזירות ופקודות מכונה לפני הייצור. תצוגה מקדימה של העיצוב תפר אחר תפר, החלף סגנונות עיבוד וייצא את מה שאתה רואה."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "בדיקת עדכונים אחרונה: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "סימולציית רקמה אינטראקטיבית, בדיקה וייצוא."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "אודות {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "אורך הסרגל:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "החזק סרגל מול המסך וגרור את המחוון עד שהסרגל למטה יהיה באורך 100 מ\"מ בדיוק, ואז לחץ על אישור."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "אורך פיזי של הסרגל (מ\"מ):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "כיול גודל תצוגה"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "TOML לא תקין"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "שמירת התצורה נכשלה: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "שגיאה"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "קובץ תצורה"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "סגור"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "הועתק!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "העתק ללוח"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "העתק את התמונה ברזולוציה מלאה ללוח"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "פורמט:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "איכות:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "שמור..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "שמור את התמונה לקובץ"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "שמירת {path} נכשלה"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "שמירת תמונה"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "נשמר!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "קנה מידה:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "רקע שקוף"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "השפה הוגדרה ל-{language}. הפעל מחדש את InkSim כדי להחיל אותה."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "שפת ברירת המחדל של המערכת תשמש. InkSim יופעל מחדש כדי להחיל אותה."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "השפה שונתה"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "צבע מחט"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "תצוגה מקדימה רגילה"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "תצוגה מקדימה אמיתית"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "פתח קובץ רקמה"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "בחר מנוע עיבוד תפרים"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "קובץ"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "כיול גודל תצוגה..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "מרכז מחט"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "בחר מנוע עיבוד תפרים..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "ייצוא"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "אייקון/תמונה ממוזערת..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "הדפסה מוצללת..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "הדפסה פשוטה..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "התאם עיצוב לחלון"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "עיבוד מרקם GPU"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "פתח קובץ רקמה"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "יציאה"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "סובב שמאלה 90 מעלות"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "סובב ימינה 90 מעלות"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "שמור כרקמה..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "הצג רשת מדידה"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "עזרה"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "אודות {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "בדוק עדכונים"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "אפשרויות שורת פקודה..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "תצורה"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "עזרה"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "סטטוס"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "אירועי מעקב"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "שפה"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "ברירת מחדל של המערכת"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "השמעה"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "צבע הבא"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "פקודה הבאה"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "הפעל/השהה"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "צבע קודם"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "פקודה קודמת"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "תצוגה"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "גודל אמיתי (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "נקה מיקום הצמדה שמור"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "רשימת פקודות"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "החלף רקע"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "מסך מלא"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "שמור מיקום הצמדה נוכחי"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "הצג/הסתר הכל"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "הצג מחט"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "הצמד פריסת חלון"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "אין קובץ רקמה טעון לייצוא."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "אין קובץ רקמה טעון."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "טוען מחדש"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "שמירת הקובץ נכשלה: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "טוען..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "אפס רוחב קו וגורמי הצללה"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "לחץ כדי להתאים גורם כהה, גורם בהיר ורוחב קו"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "החלף רקע: שחור, לבן, מוגדר"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "תצוגה תחתונה (צייר תפרים מאוחרים מתחת לקודמים)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "החלף שכבת צפיפות תפרים"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "החלף עיבוד מרקם GPU"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "החלף תצוגת קפיצות: כבוי, הכל, רק מסוכן"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "החלף נראות תפרים"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "אפס הגדרות מחט"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "הגדרות צלב מחט"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "צבע…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "מסך מלא"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "רדיוס"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "רוחב"
+    }
+}

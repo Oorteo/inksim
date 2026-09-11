@@ -1,5 +1,11 @@
 # InkSim Interconnect
 
+## Contents
+
+- [Start The Server](#start-the-server)
+- [Client Script](#client-script)
+- [Protocol](#protocol)
+
 InkSim can expose a local control endpoint for external applications such as
 Ink/Stitch. The endpoint uses Qt `QLocalServer` and `QLocalSocket`, so it does
 not open a TCP port or require network access.

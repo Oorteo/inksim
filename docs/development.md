@@ -1,5 +1,24 @@
 # Developer Guide
 
+## Contents
+
+- [Environment](#environment)
+- [Development Workflow](#development-workflow)
+  - [Linting and formatting](#linting-and-formatting)
+  - [Type checking](#type-checking)
+  - [Tests](#tests)
+  - [Pre-commit hooks](#pre-commit-hooks)
+- [Internationalization (i18n)](#internationalization-i18n)
+  - [Fallback chain](#fallback-chain)
+  - [Adding or changing a UI string](#adding-or-changing-a-ui-string)
+  - [Translating locales via Ollama](#translating-locales-via-ollama)
+  - [Running the application in another language](#running-the-application-in-another-language)
+- [Rendering Architecture](#rendering-architecture)
+- [Runtime Diagnostics](#runtime-diagnostics)
+- [Test Data](#test-data)
+- [Packaging Check](#packaging-check)
+- [Code Changes](#code-changes)
+
 ## Environment
 
 InkSim uses `uv` and a project-local `.venv`. Synchronize the environment with:
@@ -10,6 +29,17 @@ uv sync --dev
 
 The runtime dependencies are declared in `pyproject.toml`. Test tools are in
 the `dev` dependency group and are not included in the application wheel.
+
+### `uv run` vs `uvr`
+
+The documentation uses `uv run` because it is available to everyone who has
+`uv` installed. Some project scripts use a `uvr` shebang instead — `uvr` is a
+small helper installed separately with `uv tool install uvr`. It wraps
+`uv run` but additionally detects the project context from the script's own
+path (equivalent to `uv run --project <script's project>`), so a script keeps
+working when invoked from a different working directory. It is optional: you
+can run the same scripts with `uv run` from the project root if you do not have
+`uvr` installed.
 
 ## Development Workflow
 
@@ -79,6 +109,93 @@ Git hooks are optional but recommended. Install them once with:
 ```bash
 uv run poe install-hooks
 ```
+
+## Internationalization (i18n)
+
+InkSim uses message-ID based JSON catalogs under `src/inksim/locales/`. Each
+locale is a flat JSON object where keys are stable IDs and values contain a
+`source` string (English source-of-truth) and a `translation` string.
+
+Supported locales are discovered automatically from files in that directory.
+Locale tags follow [BCP 47](https://tools.ietf.org/html/bcp47) with a hyphen,
+for example `pt-BR`, `pt-PT` or `cs-CZ`.
+
+### Fallback chain
+
+When a string is missing in a specific locale, the runtime falls back through:
+
+1. the exact locale file (e.g. `pt-BR.json`)
+2. the base language file (e.g. `pt.json`)
+3. the English source catalog (`en.json`)
+
+This lets regional variants contain only the strings that differ from the base
+language.
+
+### Adding or changing a UI string
+
+1. Use the imported `_` helper in source code:
+
+   ```python
+   from ..i18n import _
+
+   button = QPushButton(_("status.slider.width"))
+   ```
+
+2. Run the extractor to update the English catalog:
+
+   ```bash
+   uv run python scripts/i18n/extract.py
+   ```
+
+   This scans the source for `_()` calls, adds new IDs to `en.json` with the
+   source text, and preserves existing translations in the other locale files.
+
+### Translating locales via Ollama
+
+The translator sends only **missing or stale** strings to a local Ollama model,
+so repeated runs are cheap:
+
+```bash
+# Translate a single locale
+uv run python scripts/i18n/translate.py --lang cs --model deepseek-v4-flash:cloud
+
+# Regional variant, e.g. Brazilian Portuguese
+uv run python scripts/i18n/translate.py --lang pt-BR --model deepseek-v4-flash:cloud
+
+# Translate every roadmap locale up to a tier
+uv run python scripts/i18n/manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
+```
+
+The script accepts both `pt-BR` and `pt_BR.UTF-8` style tags. Use `--dry-run`
+to preview the prompt without calling the model.
+
+### Running the application in another language
+
+```bash
+uv run python -m inksim --lang cs
+uv run python -m inksim -l sk
+```
+
+The chosen locale is persisted in the config file, so omitting `--lang` uses
+the last selected one.
+
+The language can also be changed from inside the application via the
+**Language** menu. Selecting a locale stores it in the config file and prompts
+for a restart; a **System default** entry removes the stored language so the
+system locale variables are used again.
+
+The application also respects the system locale variables:
+
+```bash
+LANG=pt_BR.UTF-8 uv run python -m inksim
+LANGUAGE=cs:sk:de uv run python -m inksim
+```
+
+Resolution order is: CLI argument → config → `LANGUAGE` (colon-separated
+priority list) → `LC_ALL` → `LANG` → `en`. Each locale also falls back to its
+base language (e.g. `pt-BR` → `pt`) before the next priority entry is tried.
+GitHub issues or pull requests; the JSON format is self-contained and diffs
+well.
 
 Before each commit the hooks run a quick `ruff check`, `ruff format --check`
 and `mypy`. The full test suite is intentionally not in the hook so commits

@@ -29,6 +29,7 @@ from ..constants import (
     NEEDLE_WIDTH_MAX,
     NEEDLE_WIDTH_MIN,
 )
+from ..i18n import _
 
 
 class _SliderPopup(QMenu):
@@ -46,9 +47,9 @@ class _SliderPopup(QMenu):
         layout.setSpacing(12)
 
         specs = (
-            ("DF", "dark_factor", 0.0, 1.0),
-            ("LF", "light_factor", 0.0, 1.0),
-            ("LW", "line_width", 0.1, 1.0),
+            (_("status.slider.dark_factor"), "dark_factor", 0.0, 1.0),
+            (_("status.slider.light_factor"), "light_factor", 0.0, 1.0),
+            (_("status.slider.line_width"), "line_width", 0.1, 1.0),
         )
         for name, attr, lo, hi in specs:
             column = QVBoxLayout()
@@ -122,7 +123,7 @@ class _NeedlePopup(QMenu):
         # Radius slider.
         radius_col = QVBoxLayout()
         radius_col.setSpacing(4)
-        radius_title = QLabel("Radius")
+        radius_title = QLabel(_("status.slider.radius"))
         radius_title.setAlignment(Qt.AlignCenter)
         radius_col.addWidget(radius_title)
         radius_slider = QSlider(Qt.Vertical)
@@ -141,7 +142,7 @@ class _NeedlePopup(QMenu):
         # Width slider.
         width_col = QVBoxLayout()
         width_col.setSpacing(4)
-        width_title = QLabel("Width")
+        width_title = QLabel(_("status.slider.width"))
         width_title.setAlignment(Qt.AlignCenter)
         width_col.addWidget(width_title)
         width_slider = QSlider(Qt.Vertical)
@@ -160,12 +161,12 @@ class _NeedlePopup(QMenu):
         layout.addLayout(sliders_row)
 
         # Color button.
-        color_button = QPushButton("Color…")
+        color_button = QPushButton(_("status.slider.color"))
         color_button.clicked.connect(self._choose_color)
         layout.addWidget(color_button)
 
         # Fullscreen checkbox.
-        self._fullscreen_check = QCheckBox("Full screen")
+        self._fullscreen_check = QCheckBox(_("status.slider.fullscreen"))
         self._fullscreen_check.setChecked(viewer.needle_fullscreen)
         self._fullscreen_check.toggled.connect(self._toggle_fullscreen)
         layout.addWidget(self._fullscreen_check)
@@ -201,7 +202,7 @@ class _NeedlePopup(QMenu):
 
         original_color = self.viewer.needle_color
         dialog = QColorDialog(QColor(*original_color), self)
-        dialog.setWindowTitle("Needle color")
+        dialog.setWindowTitle(_("dialog.needle_color.title"))
 
         def _on_preview(color: QColor) -> None:
             if color.isValid():
@@ -245,12 +246,12 @@ class ModeBar(QWidget):
         sizer.setContentsMargins(4, 3, 4, 3)
         self.buttons: dict[str, QPushButton] = {}
         tooltips = {
-            "Z": "Toggle GPU textured rendering",
-            "X": "Toggle stitch density overlay",
-            "E": "Bottom view (draw later stitches under earlier ones)",
-            "J": "Cycle jump display: off, all, risky only",
-            "V": "Toggle stitch visibility",
-            "B": "Cycle background: black, white, configured",
+            "Z": _("status.mode.gpu_textured"),
+            "X": _("status.mode.density"),
+            "E": _("status.mode.bottom_view"),
+            "J": _("status.mode.jump"),
+            "V": _("status.mode.visibility"),
+            "B": _("status.mode.background"),
         }
         for mode in ("Z", "X", "E", "J", "V", "B"):
             button = QPushButton(mode, self)
@@ -263,23 +264,23 @@ class ModeBar(QWidget):
         # Needle settings button (cross symbol), on the right before DF/LF/LW.
         self.needle_button = QPushButton("✛", self)
         self.needle_button.setFixedSize(32, 32)
-        self.needle_button.setToolTip("Needle crosshair settings")
+        self.needle_button.setToolTip(_("status.needle.settings"))
         self.needle_button.clicked.connect(self._show_needle_popup)
         sizer.addWidget(self.needle_button)
         self.needle_reset_button = QPushButton(self)
         self.needle_reset_button.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
-        self.needle_reset_button.setToolTip("Reset needle settings")
+        self.needle_reset_button.setToolTip(_("status.needle.reset"))
         self.needle_reset_button.setFixedSize(32, 32)
         self.needle_reset_button.clicked.connect(self._reset_needle)
         sizer.addWidget(self.needle_reset_button)
         self.settings_button = QPushButton(self)
         self.settings_button.setMinimumWidth(180)
-        self.settings_button.setToolTip("Click to adjust dark factor, light factor and line width")
+        self.settings_button.setToolTip(_("status.line_settings.tooltip"))
         self.settings_button.clicked.connect(self._show_sliders)
         sizer.addWidget(self.settings_button)
         self.reset_button = QPushButton(self)
         self.reset_button.setIcon(self.style().standardIcon(QStyle.SP_BrowserReload))
-        self.reset_button.setToolTip("Reset line width and shading factors")
+        self.reset_button.setToolTip(_("status.line_settings.reset"))
         self.reset_button.setFixedSize(32, 32)
         self.reset_button.clicked.connect(self.viewer.reset_render_settings)
         sizer.addWidget(self.reset_button)

@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "ml",
+        "name": "Malayalam"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "ഉൽപ്പാദനത്തിന് മുമ്പ് സ്റ്റിച്ച് ഓർഡർ, ത്രെഡ് നിറങ്ങൾ, ജമ്പുകൾ, ട്രിമുകൾ, മെഷീൻ കമാൻഡുകൾ എന്നിവ പര്യവേക്ഷണം ചെയ്യുക. ഡിസൈൻ സ്റ്റിച്ച് ബൈ സ്റ്റിച്ച് പ്രിവ്യൂ ചെയ്യുക, റെൻഡറിംഗ് ശൈലികൾ മാറ്റുക, നിങ്ങൾ കാണുന്നത് എക്സ്പോർട്ട് ചെയ്യുക."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "അവസാന അപ്ഡേറ്റ് പരിശോധന: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "ഇന്ററാക്ടീവ് എംബ്രോയ്ഡറി സിമുലേഷൻ, പരിശോധന, എക്സ്പോർട്ട്."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "കുറിച്ച് {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "ബാർ നീളം:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "സ്ക്രീനിന് നേരെ ഒരു സ്കെയിൽ പിടിച്ച്, താഴെയുള്ള ബാർ കൃത്യമായി 100 മി.മീ. ആകുന്നതുവരെ സ്ലൈഡർ വലിച്ചിടുക, തുടർന്ന് ശരി അമർത്തുക."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "ബാറിന്റെ ഭൗതിക നീളം (മി.മീ.):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "ഡിസ്പ്ലേ വലുപ്പം കാലിബ്രേറ്റ് ചെയ്യുക"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "അസാധുവായ TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "കോൺഫിഗ് സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "പിശക്"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "കോൺഫിഗറേഷൻ ഫയൽ"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "അടയ്ക്കുക"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "പകർത്തി!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "പൂർണ്ണ റെസല്യൂഷൻ ചിത്രം ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "ഫോർമാറ്റ്:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "ഗുണനിലവാരം:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "സേവ് ചെയ്യുക..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "ചിത്രം ഒരു ഫയലിലേക്ക് സേവ് ചെയ്യുക"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "ചിത്രം സേവ് ചെയ്യുക"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "സേവ് ചെയ്തു!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "സ്കെയിൽ:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "സുതാര്യമായ പശ്ചാത്തലം"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "ഭാഷ {language} ആയി സജ്ജീകരിച്ചു. ഇത് പ്രയോഗിക്കാൻ InkSim പുനരാരംഭിക്കുക."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "സിസ്റ്റം ഡിഫോൾട്ട് ഭാഷ ഉപയോഗിക്കും. ഇത് പ്രയോഗിക്കാൻ InkSim പുനരാരംഭിക്കും."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "ഭാഷ മാറ്റി"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "സൂചി നിറം"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "സാധാരണ പ്രിവ്യൂ"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "യഥാർത്ഥ പ്രിവ്യൂ"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "എംബ്രോയ്ഡറി ഫയൽ തുറക്കുക"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "സ്റ്റിച്ച് റെൻഡറർ തിരഞ്ഞെടുക്കുക"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&ഫയൽ"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "ഡിസ്പ്ലേ വലുപ്പം കാലിബ്രേറ്റ് ചെയ്യുക..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "സൂചി മധ്യഭാഗത്ത് കൊണ്ടുവരിക"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "സ്റ്റിച്ച് റെൻഡറർ തിരഞ്ഞെടുക്കുക..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "എക്സ്പോർട്ട്"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "ഐക്കൺ/തംബ്നെയിൽ..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "ഷേഡുള്ള പ്രിന്റ്..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "ലളിതമായ പ്രിന്റ്..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "ഡിസൈൻ വിൻഡോയിൽ ഫിറ്റ് ചെയ്യുക"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU ടെക്സ്ചർ റെൻഡർ"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "എംബ്രോയ്ഡറി ഫയൽ തുറക്കുക"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "പുറത്തുകടക്കുക"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "ഇടത്തേക്ക് 90 ഡിഗ്രി തിരിക്കുക"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "വലത്തേക്ക് 90 ഡിഗ്രി തിരിക്കുക"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "എംബ്രോയ്ഡറിയായി സേവ് ചെയ്യുക..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "അളവ് ഗ്രിഡ് കാണിക്കുക"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&സഹായം"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "കുറിച്ച് {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "അപ്ഡേറ്റുകൾ പരിശോധിക്കുക"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "കമാൻഡ് ലൈൻ ഓപ്ഷനുകൾ..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "കോൺഫിഗ്"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "സഹായം"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "സ്റ്റാറ്റസ്"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "ട്രേസ് ഇവന്റുകൾ"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "ഭാഷ"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "സിസ്റ്റം ഡിഫോൾട്ട്"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&പ്ലേബാക്ക്"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "അടുത്ത നിറം"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "അടുത്ത കമാൻഡ്"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "പ്ലേ/താൽക്കാലിക നിർത്തുക"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "മുമ്പത്തെ നിറം"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "മുമ്പത്തെ കമാൻഡ്"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&കാഴ്ച"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "യഥാർത്ഥ വലുപ്പം (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "സേവ് ചെയ്ത സ്നാപ്പ് സ്ഥാനം മായ്ക്കുക"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "കമാൻഡ് ലിസ്റ്റ്"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "പശ്ചാത്തലം സൈക്കിൾ ചെയ്യുക"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "ഫുൾസ്ക്രീൻ"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "നിലവിലെ സ്നാപ്പ് സ്ഥാനം സേവ് ചെയ്യുക"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "എല്ലാം കാണിക്കുക/മറയ്ക്കുക"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "സൂചി കാണിക്കുക"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "വിൻഡോ ലേഔട്ട് സ്നാപ്പ് ചെയ്യുക"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "എക്സ്പോർട്ട് ചെയ്യാൻ എംബ്രോയ്ഡറി ഫയൽ ലോഡ് ചെയ്തിട്ടില്ല."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "എംബ്രോയ്ഡറി ഫയൽ ലോഡ് ചെയ്തിട്ടില്ല."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "വീണ്ടും ലോഡ് ചെയ്യുന്നു"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "ഫയൽ സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "ലോഡ് ചെയ്യുന്നു..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "വരയുടെ വീതിയും ഷേഡിംഗ് ഫാക്ടറുകളും റീസെറ്റ് ചെയ്യുക"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "ഇരുണ്ട ഫാക്ടർ, ഇളം ഫാക്ടർ, വരയുടെ വീതി എന്നിവ ക്രമീകരിക്കാൻ ക്ലിക്ക് ചെയ്യുക"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "പശ്ചാത്തലം സൈക്കിൾ ചെയ്യുക: കറുപ്പ്, വെളുപ്പ്, കോൺഫിഗർ ചെയ്തത്"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "താഴെയുള്ള കാഴ്ച (പിന്നീടുള്ള സ്റ്റിച്ചുകൾ മുമ്പുള്ളവയ്ക്ക് കീഴിൽ വരയ്ക്കുക)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "സ്റ്റിച്ച് സാന്ദ്രത ഓവർലേ ടോഗിൾ ചെയ്യുക"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU ടെക്സ്ചർ റെൻഡറിംഗ് ടോഗിൾ ചെയ്യുക"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "ജമ്പ് ഡിസ്പ്ലേ സൈക്കിൾ ചെയ്യുക: ഓഫ്, എല്ലാം, അപകടകരമായവ മാത്രം"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "സ്റ്റിച്ച് ദൃശ്യത ടോഗിൾ ചെയ്യുക"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "സൂചി ക്രമീകരണങ്ങൾ റീസെറ്റ് ചെയ്യുക"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "സൂചി ക്രോസ്ഹെയർ ക്രമീകരണങ്ങൾ"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "നിറം…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "ഫുൾ സ്ക്രീൻ"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "ആരം"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "വീതി"
+    }
+}

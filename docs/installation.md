@@ -1,5 +1,15 @@
 # Installation and Running
 
+## Contents
+
+- [Quick start](#quick-start)
+- [Update](#update)
+- [Alternative installers](#alternative-installers)
+- [Developer install](#developer-install)
+- [Command-line and GUI modes](#command-line-and-gui-modes)
+- [Running options](#running-options)
+- [GPU textured renderer](#gpu-textured-renderer)
+
 InkSim is a **standalone GUI application**, not an Inkscape extension. You do
 not copy files into Inkscape's `extensions` folder.
 
@@ -9,32 +19,32 @@ not copy files into Inkscape's `extensions` folder.
 ## Quick start
 
 1. Install [`uv`](https://docs.astral.sh/uv/getting-started/installation/):
-    - **macOS / Linux:**
+   - **macOS / Linux:**
 
-        ```bash
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        ```
+     ```bash
+     curl -LsSf https://astral.sh/uv/install.sh | sh
+     ```
 
-    - **Windows (PowerShell):**
+   - **Windows (PowerShell):**
 
-        ```powershell
-        powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-        ```
+     ```powershell
+     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+     ```
 
-    Restart the terminal so `uv` is on `PATH`.
+   Restart the terminal so `uv` is on `PATH`.
 
 2. Install InkSim:
 
-    ```bash
-    uv tool install inksim
-    ```
+   ```bash
+   uv tool install inksim
+   ```
 
 3. Run it:
 
-    ```bash
-    inksim
-    inksim design.pes
-    ```
+   ```bash
+   inksim
+   inksim design.pes
+   ```
 
 On Windows, `inksim-gui design.pes` starts without a console window.
 

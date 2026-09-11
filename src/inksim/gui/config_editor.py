@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..config import Config
+from ..i18n import _
 from ..runtime import _sanitize_path
 
 
@@ -33,7 +34,7 @@ class ConfigEditorDialog(QDialog):
     def __init__(self, parent: QWidget | None, config: Config) -> None:
         super().__init__(parent)
         self.config = config
-        self.setWindowTitle("Configuration file")
+        self.setWindowTitle(_("dialog.config.title"))
         self.resize(800, 600)
 
         layout = QVBoxLayout(self)
@@ -81,9 +82,13 @@ class ConfigEditorDialog(QDialog):
         try:
             self.config.load_text(text)
         except ValueError as ex:
-            QMessageBox.critical(self, "Invalid TOML", str(ex))
+            QMessageBox.critical(self, _("dialog.config.invalid_toml"), str(ex))
             return
         except Exception as ex:  # noqa: BLE001
-            QMessageBox.critical(self, "Error", f"Failed to save config: {ex}")
+            QMessageBox.critical(
+                self,
+                _("dialog.config.save_error.title"),
+                _("dialog.config.save_error.message").format(error=ex),
+            )
             return
         self.accept()

@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "vi",
+        "name": "Vietnamese"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Khám phá thứ tự mũi may, màu chỉ, bước nhảy, cắt chỉ và lệnh máy trước khi sản xuất. Xem trước thiết kế từng mũi, chuyển đổi kiểu hiển thị và xuất những gì bạn thấy."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Kiểm tra cập nhật lần cuối: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Mô phỏng thêu tương tác, kiểm tra và xuất."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "Giới thiệu về {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Chiều dài thanh:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Giữ thước kẻ sát màn hình và kéo thanh trượt cho đến khi thanh bên dưới dài đúng 100 mm, rồi nhấn OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Chiều dài thực tế của thanh (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Hiệu chỉnh kích thước màn hình"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "TOML không hợp lệ"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Không thể lưu cấu hình: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Lỗi"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Tệp cấu hình"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Đóng"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Đã sao chép!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Sao chép vào clipboard"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Sao chép hình ảnh độ phân giải đầy đủ vào clipboard"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Định dạng:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Chất lượng:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Lưu..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Lưu hình ảnh vào tệp"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Không thể lưu {path}"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Lưu hình ảnh"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Đã lưu!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Tỷ lệ:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Nền trong suốt"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Ngôn ngữ đã được đặt thành {language}. Khởi động lại InkSim để áp dụng."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Ngôn ngữ mặc định của hệ thống sẽ được sử dụng. InkSim sẽ khởi động lại để áp dụng."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Đã thay đổi ngôn ngữ"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Màu kim"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Xem trước bình thường"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Xem trước thực tế"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Mở tệp thêu"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Chọn trình kết xuất mũi may"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Tệp"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Hiệu chỉnh kích thước màn hình..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Căn giữa kim"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Chọn trình kết xuất mũi may..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Xuất"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Biểu tượng/Hình thu nhỏ..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "In bóng..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "In đơn giản..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Vừa với cửa sổ"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "Kết xuất kết cấu GPU"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Mở tệp thêu"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Thoát"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Xoay trái 90 độ"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Xoay phải 90 độ"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Lưu dưới dạng thêu..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Hiển thị lưới đo"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Trợ giúp"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "Giới thiệu về {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Kiểm tra cập nhật"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Tùy chọn dòng lệnh..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Cấu hình"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Trợ giúp"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Trạng thái"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Sự kiện theo dõi"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Ngôn ngữ"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Mặc định hệ thống"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Phát lại"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Màu tiếp theo"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Lệnh tiếp theo"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Phát/Tạm dừng"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Màu trước"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Lệnh trước"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Xem"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Kích thước thực (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Xóa vị trí chụp đã lưu"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Danh sách lệnh"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Chuyển nền"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Toàn màn hình"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Lưu vị trí chụp hiện tại"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Hiện/ẩn tất cả"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Hiện kim"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Bố cục cửa sổ chụp"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Không có tệp thêu nào được tải để xuất."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Không có tệp thêu nào được tải."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Đang tải lại"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Không thể lưu tệp: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Đang tải..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Đặt lại độ rộng đường và hệ số bóng"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Nhấp để điều chỉnh hệ số tối, hệ số sáng và độ rộng đường"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Chuyển nền: đen, trắng, đã cấu hình"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Xem từ dưới (vẽ các mũi sau dưới các mũi trước)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Bật/tắt lớp phủ mật độ mũi may"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Bật/tắt kết xuất kết cấu GPU"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Chuyển hiển thị bước nhảy: tắt, tất cả, chỉ nguy hiểm"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Bật/tắt hiển thị mũi may"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Đặt lại cài đặt kim"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Cài đặt chữ thập kim"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Màu…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Toàn màn hình"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Bán kính"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Độ rộng"
+    }
+}

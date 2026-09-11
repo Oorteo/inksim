@@ -1,0 +1,344 @@
+[
+    {
+        "code": "en",
+        "name": "English",
+        "tier": 0,
+        "note": "Source of truth; maintained by extract.py"
+    },
+    {
+        "code": "de",
+        "name": "German",
+        "tier": 1
+    },
+    {
+        "code": "cs",
+        "name": "Czech",
+        "tier": 1
+    },
+    {
+        "code": "sk",
+        "name": "Slovak",
+        "tier": 1
+    },
+    {
+        "code": "fr",
+        "name": "French",
+        "tier": 2
+    },
+    {
+        "code": "es",
+        "name": "Spanish",
+        "tier": 2
+    },
+    {
+        "code": "pt",
+        "name": "Portuguese",
+        "tier": 2
+    },
+    {
+        "code": "pl",
+        "name": "Polish",
+        "tier": 2
+    },
+    {
+        "code": "it",
+        "name": "Italian",
+        "tier": 2
+    },
+    {
+        "code": "nl",
+        "name": "Dutch",
+        "tier": 2
+    },
+    {
+        "code": "da",
+        "name": "Danish",
+        "tier": 2
+    },
+    {
+        "code": "sv",
+        "name": "Swedish",
+        "tier": 2
+    },
+    {
+        "code": "fi",
+        "name": "Finnish",
+        "tier": 2
+    },
+    {
+        "code": "hu",
+        "name": "Hungarian",
+        "tier": 2
+    },
+    {
+        "code": "ro",
+        "name": "Romanian",
+        "tier": 2
+    },
+    {
+        "code": "bg",
+        "name": "Bulgarian",
+        "tier": 2
+    },
+    {
+        "code": "hr",
+        "name": "Croatian",
+        "tier": 2
+    },
+    {
+        "code": "sl",
+        "name": "Slovenian",
+        "tier": 2
+    },
+    {
+        "code": "lt",
+        "name": "Lithuanian",
+        "tier": 2
+    },
+    {
+        "code": "lv",
+        "name": "Latvian",
+        "tier": 2
+    },
+    {
+        "code": "et",
+        "name": "Estonian",
+        "tier": 2
+    },
+    {
+        "code": "el",
+        "name": "Greek",
+        "tier": 2
+    },
+    {
+        "code": "ga",
+        "name": "Irish",
+        "tier": 2
+    },
+    {
+        "code": "mt",
+        "name": "Maltese",
+        "tier": 2
+    },
+    {
+        "code": "ru",
+        "name": "Russian",
+        "tier": 2
+    },
+    {
+        "code": "tr",
+        "name": "Turkish",
+        "tier": 2
+    },
+    {
+        "code": "no",
+        "name": "Norwegian",
+        "tier": 3,
+        "note": "Non-EU European language"
+    },
+    {
+        "code": "is",
+        "name": "Icelandic",
+        "tier": 3,
+        "note": "Non-EU European language"
+    },
+    {
+        "code": "uk",
+        "name": "Ukrainian",
+        "tier": 3,
+        "note": "Non-EU European language"
+    },
+    {
+        "code": "es-MX",
+        "name": "Spanish (Mexico)",
+        "tier": 3,
+        "base": "es"
+    },
+    {
+        "code": "pt-BR",
+        "name": "Portuguese (Brazil)",
+        "tier": 3,
+        "base": "pt"
+    },
+    {
+        "code": "zh-CN",
+        "name": "Chinese (Simplified)",
+        "tier": 3
+    },
+    {
+        "code": "zh-TW",
+        "name": "Chinese (Traditional)",
+        "tier": 3,
+        "base": "zh-CN"
+    },
+    {
+        "code": "ja",
+        "name": "Japanese",
+        "tier": 3
+    },
+    {
+        "code": "ko",
+        "name": "Korean",
+        "tier": 3
+    },
+    {
+        "code": "ar",
+        "name": "Arabic",
+        "tier": 3
+    },
+    {
+        "code": "he",
+        "name": "Hebrew",
+        "tier": 3
+    },
+    {
+        "code": "hi",
+        "name": "Hindi",
+        "tier": 3
+    },
+    {
+        "code": "bn",
+        "name": "Bengali",
+        "tier": 3
+    },
+    {
+        "code": "ur",
+        "name": "Urdu",
+        "tier": 3
+    },
+    {
+        "code": "pa",
+        "name": "Punjabi",
+        "tier": 3
+    },
+    {
+        "code": "ta",
+        "name": "Tamil",
+        "tier": 3
+    },
+    {
+        "code": "te",
+        "name": "Telugu",
+        "tier": 3
+    },
+    {
+        "code": "mr",
+        "name": "Marathi",
+        "tier": 3
+    },
+    {
+        "code": "gu",
+        "name": "Gujarati",
+        "tier": 3
+    },
+    {
+        "code": "ml",
+        "name": "Malayalam",
+        "tier": 3
+    },
+    {
+        "code": "kn",
+        "name": "Kannada",
+        "tier": 3
+    },
+    {
+        "code": "fa",
+        "name": "Persian (Farsi)",
+        "tier": 3
+    },
+    {
+        "code": "ku",
+        "name": "Kurdish",
+        "tier": 3
+    },
+    {
+        "code": "ps",
+        "name": "Pashto",
+        "tier": 3
+    },
+    {
+        "code": "uz",
+        "name": "Uzbek",
+        "tier": 3
+    },
+    {
+        "code": "kk",
+        "name": "Kazakh",
+        "tier": 3
+    },
+    {
+        "code": "mn",
+        "name": "Mongolian",
+        "tier": 3
+    },
+    {
+        "code": "th",
+        "name": "Thai",
+        "tier": 3
+    },
+    {
+        "code": "vi",
+        "name": "Vietnamese",
+        "tier": 3
+    },
+    {
+        "code": "id",
+        "name": "Indonesian",
+        "tier": 3
+    },
+    {
+        "code": "ms",
+        "name": "Malay",
+        "tier": 3
+    },
+    {
+        "code": "tl",
+        "name": "Tagalog",
+        "tier": 3
+    },
+    {
+        "code": "sw",
+        "name": "Swahili",
+        "tier": 3
+    },
+    {
+        "code": "am",
+        "name": "Amharic",
+        "tier": 3
+    },
+    {
+        "code": "so",
+        "name": "Somali",
+        "tier": 3
+    },
+    {
+        "code": "ar-SA",
+        "name": "Arabic (Saudi Arabia)",
+        "tier": 4,
+        "base": "ar"
+    },
+    {
+        "code": "ar-EG",
+        "name": "Arabic (Egypt)",
+        "tier": 4,
+        "base": "ar"
+    },
+    {
+        "code": "ar-DZ",
+        "name": "Arabic (Algeria)",
+        "tier": 4,
+        "base": "ar"
+    },
+    {
+        "code": "ar-MA",
+        "name": "Arabic (Morocco)",
+        "tier": 4,
+        "base": "ar"
+    },
+    {
+        "code": "ar-IQ",
+        "name": "Arabic (Iraq)",
+        "tier": 4,
+        "base": "ar"
+    }
+]

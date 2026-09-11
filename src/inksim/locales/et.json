@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "et",
+        "name": "Estonian"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Uuri enne tootmist pistete järjekorda, niidivärve, hüppeid, trimmimisi ja masinakäske. Eelvaata kujundust pistete kaupa, vaheta renderdusstiile ja ekspordi seda, mida näed."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Viimane uuenduste kontroll: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Interaktiivne tikkimissimulatsioon, kontroll ja eksport."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "Teave {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Riba pikkus:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Hoia joonlauda ekraani vastu ja lohista liugurit, kuni allolev riba on täpselt 100 mm pikk, seejärel vajuta OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Riba füüsiline pikkus (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Kalibreeri ekraani suurus"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Vigane TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Konfiguratsiooni salvestamine ebaõnnestus: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Viga"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Konfiguratsioonifail"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Sulge"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Kopeeritud!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Kopeeri lõikelauale"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Kopeeri täiseraldusvõimega pilt lõikelauale"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Vorming:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Kvaliteet:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Salvesta..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Salvesta pilt faili"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Faili {path} salvestamine ebaõnnestus"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Pildi salvestamine"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Salvestatud!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Skaala:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Läbipaistev taust"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Keel on seatud {language}. Taaskäivita InkSim, et see rakenduks."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Kasutatakse süsteemi vaikekeelt. InkSim taaskäivitatakse, et see rakenduks."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Keel muudetud"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Nõela värv"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Tavaline eelvaade"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Päris eelvaade"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Ava tikkimisfail"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Vali pistete renderdaja"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Fail"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Kalibreeri ekraani suurus..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Keskenda nõel"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Vali pistete renderdaja..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Ekspordi"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Ikoon/pisipilt..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Varjutatud väljatrükk..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Lihtne väljatrükk..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Sobita kujundus aknasse"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU tekstuuriga renderdus"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Ava tikkimisfail"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Välju"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Pööra vasakule 90 kraadi"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Pööra paremale 90 kraadi"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Salvesta tikkimisena..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Näita mõõtevõrku"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Abi"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "Teave {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Kontrolli uuendusi"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Käsurea valikud..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Konfiguratsioon"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Abi"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Olek"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Jälita sündmusi"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Keel"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Süsteemi vaike"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Taasesitus"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Järgmine värv"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Järgmine käsk"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Esita/Paus"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Eelmine värv"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Eelmine käsk"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Vaade"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Tegelik suurus (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Tühista salvestatud haakepositsioon"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Käskude loend"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Vaheta tausta"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Täisekraan"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Salvesta praegune haakepositsioon"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Näita/peida kõik"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Näita nõela"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Haagi akna paigutus"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Eksportimiseks pole laetud ühtegi tikkimisfaili."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Ühtegi tikkimisfaili pole laetud."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Laadimine uuesti"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Faili salvestamine ebaõnnestus: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Laadimine..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Lähtesta joone laius ja varjutustegurid"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Klõpsa, et reguleerida tumedustegurit, heledustegurit ja joone laiust"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Vaheta tausta: must, valge, seadistatud"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Altvaade (joonista hilisemad pisted varasemate alla)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Lülita pistetiheduse ülekatet"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Lülita GPU tekstuuriga renderdust"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Vaheta hüpete kuvamine: väljas, kõik, ainult riskantsed"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Lülita pistete nähtavust"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Lähtesta nõela seaded"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Nõela ristjoone seaded"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Värv…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Täisekraan"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Raadius"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Laius"
+    }
+}

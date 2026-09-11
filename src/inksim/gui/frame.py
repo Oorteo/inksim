@@ -4,14 +4,16 @@
 from __future__ import annotations
 
 import os
+import sys
 import time
 from collections.abc import Callable
 from pathlib import Path
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QObject, QRect, QSignalBlocker, Qt, QTimer
+from PySide6.QtCore import QEvent, QObject, QProcess, QRect, QSignalBlocker, Qt, QTimer
 from PySide6.QtGui import (
     QAction,
+    QActionGroup,
     QCloseEvent,
     QColor,
     QDragEnterEvent,
@@ -46,6 +48,14 @@ from ..formats import (
     extension_from_output_filter,
     get_supported_output_filter,
     get_supported_output_formats,
+)
+from ..i18n import (
+    _,
+    active_locale,
+    available_locales,
+    clear_active_locale,
+    get_language_name,
+    set_active_locale,
 )
 from ..render import render_export_image
 from ..runtime import _sanitize_path, _unsanitize_path
@@ -271,7 +281,7 @@ class MainWindow(QMainWindow):
         dialog = QDialog(self)
         dialog.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
         dialog.setModal(True)
-        dialog.setWindowTitle("Reloading")
+        dialog.setWindowTitle(_("message.reload.title"))
         layout = QVBoxLayout(dialog)
         layout.setContentsMargins(16, 12, 16, 12)
         layout.addWidget(QLabel("File changed on disk. Reloading...", dialog))
@@ -393,22 +403,24 @@ class MainWindow(QMainWindow):
             menu.addSeparator()
 
     def _build_menus(self) -> None:
-        file_menu = self.menuBar().addMenu("&File")
-        self._action(file_menu, "Open embroidery file", self.open_file_dialog, "Ctrl+O")
-        self._action(file_menu, "Save as embroidery...", self._save_as_embroidery_slot, "Ctrl+S")
-        export_menu = file_menu.addMenu("Export")
-        self._action(export_menu, "Shaded print...", self.export_shaded_png, "Ctrl+E")
-        self._action(export_menu, "Icon/Thumbnail...", self.export_icon_png)
-        self._action(export_menu, "Simple print...", self.export_print_png)
-        self._action(file_menu, "Center needle", self._center_needle_slot, "C")
-        self._action(file_menu, "Fit design to window", self._fit_to_screen_slot, "F")
-        self._action(file_menu, "Calibrate display size...", self._calibrate_display_slot)
+        file_menu = self.menuBar().addMenu(_("menu.file"))
+        self._action(file_menu, _("menu.file.open"), self.open_file_dialog, "Ctrl+O")
+        self._action(file_menu, _("menu.file.save_as"), self._save_as_embroidery_slot, "Ctrl+S")
+        export_menu = file_menu.addMenu(_("menu.file.export"))
+        self._action(
+            export_menu, _("menu.file.export.shaded_print"), self.export_shaded_png, "Ctrl+E"
+        )
+        self._action(export_menu, _("menu.file.export.icon"), self.export_icon_png)
+        self._action(export_menu, _("menu.file.export.simple_print"), self.export_print_png)
+        self._action(file_menu, _("menu.file.center_needle"), self._center_needle_slot, "C")
+        self._action(file_menu, _("menu.file.fit_design"), self._fit_to_screen_slot, "F")
+        self._action(file_menu, _("menu.file.calibrate"), self._calibrate_display_slot)
         self.grid_action = self._action(
-            file_menu, "Show measurement grid", self.toggle_grid, "G", True
+            file_menu, _("menu.file.show_grid"), self.toggle_grid, "G", True
         )
         self.grid_action.setChecked(True)
         self.realistic_action = self._action(
-            file_menu, "GPU textured render", self.toggle_realistic, "Z", True
+            file_menu, _("menu.file.gpu_textured_render"), self.toggle_realistic, "Z", True
         )
         self.viewer.grid_toggled.connect(self.grid_action.setChecked)
         self.viewer.renderer_changed.connect(
@@ -419,20 +431,24 @@ class MainWindow(QMainWindow):
         self.realistic_action.setChecked(self.viewer.active_renderer == "gpu_textured")
         self.viewer.fullscreen_requested.connect(self.toggle_full_screen)
         self.viewer.status_message.connect(self.statusBar().showMessage)
-        self._action(file_menu, "Choose stitch renderer...", self._select_renderer_slot, "R")
+        self._action(file_menu, _("menu.file.choose_renderer"), self._select_renderer_slot, "R")
         self._add_separator(file_menu)
-        self._action(file_menu, "Rotate left 90 deg", lambda checked: self.viewer.rotate_design(-1))
-        self._action(file_menu, "Rotate right 90 deg", lambda checked: self.viewer.rotate_design(1))
+        self._action(
+            file_menu, _("menu.file.rotate_left"), lambda checked: self.viewer.rotate_design(-1)
+        )
+        self._action(
+            file_menu, _("menu.file.rotate_right"), lambda checked: self.viewer.rotate_design(1)
+        )
         self._add_separator(file_menu)
-        self._action(file_menu, "Quit", self.request_quit, "Ctrl+Q")
+        self._action(file_menu, _("menu.file.quit"), self.request_quit, "Ctrl+Q")
         self._add_separator(file_menu)
-        view_menu = self.menuBar().addMenu("&View")
-        self._action(view_menu, "Actual size (1:1)", self._set_one_to_one_slot, "1")
-        self._action(view_menu, "Fullscreen", self.toggle_full_screen, "F11")
+        view_menu = self.menuBar().addMenu(_("menu.view"))
+        self._action(view_menu, _("menu.view.actual_size"), self._set_one_to_one_slot, "1")
+        self._action(view_menu, _("menu.view.fullscreen"), self.toggle_full_screen, "F11")
         view_menu.addSeparator()
         self.command_panel_action = self._action(
             view_menu,
-            "Command list",
+            _("menu.view.command_list"),
             self.toggle_command_panel,
             "Ctrl+L",
             True,
@@ -440,13 +456,13 @@ class MainWindow(QMainWindow):
         self.command_panel_action.setChecked(False)
         self._action(
             view_menu,
-            "Show/hide all",
+            _("menu.view.show_hide_all"),
             self._toggle_show_all_slot,
             "Ctrl+A",
         )
         self.needle_action = self._action(
             view_menu,
-            "Show needle",
+            _("menu.view.show_needle"),
             self.toggle_needle,
             "N",
             True,
@@ -455,7 +471,7 @@ class MainWindow(QMainWindow):
         self.viewer.show_needle_toggled.connect(self.needle_action.setChecked)
         self.layout_action = self._action(
             view_menu,
-            "Snap window layout",
+            _("menu.view.snap_layout"),
             self.toggle_window_layout,
             "M",
         )
@@ -463,44 +479,76 @@ class MainWindow(QMainWindow):
         view_menu.addSeparator()
         self.save_snap_action = self._action(
             view_menu,
-            "Save current snap position",
+            _("menu.view.save_snap"),
             self._save_current_snap_position,
         )
         self.clear_snap_action = self._action(
             view_menu,
-            "Clear saved snap position",
+            _("menu.view.clear_snap"),
             self._clear_saved_snap_position,
         )
         self._update_snap_menu_state()
         view_menu.addSeparator()
-        self._action(view_menu, "Cycle background", self._cycle_background_slot, "B")
-        playback = self.menuBar().addMenu("&Playback")
-        self._action(playback, "Play/Pause", self._toggle_auto_play_slot, "Space")
+        self._action(view_menu, _("menu.view.cycle_bg"), self._cycle_background_slot, "B")
+        playback = self.menuBar().addMenu(_("menu.playback"))
+        self._action(playback, _("menu.playback.play_pause"), self._toggle_auto_play_slot, "Space")
         playback.addSeparator()
-        self._action(playback, "Prev color", self._prev_color_slot, "Ctrl+Left")
-        self._action(playback, "Next color", self._next_color_slot, "Ctrl+Right")
+        self._action(playback, _("menu.playback.prev_color"), self._prev_color_slot, "Ctrl+Left")
+        self._action(playback, _("menu.playback.next_color"), self._next_color_slot, "Ctrl+Right")
         playback.addSeparator()
-        self._action(playback, "Prev command", self._prev_command_slot, "Shift+Left")
-        self._action(playback, "Next command", self._next_command_slot, "Shift+Right")
-        help_menu = self.menuBar().addMenu("&Help")
-        self._action(help_menu, "Help", self._show_help_slot, "H")
-        self._action(help_menu, "Status", self._show_settings_slot, "I")
-        self._action(help_menu, "Config", self._show_config_editor_slot)
+        self._action(
+            playback, _("menu.playback.prev_command"), self._prev_command_slot, "Shift+Left"
+        )
+        self._action(
+            playback, _("menu.playback.next_command"), self._next_command_slot, "Shift+Right"
+        )
+        language_menu = self.menuBar().addMenu(_("menu.language", "Language"))
+        current = active_locale()
+        language_group = QActionGroup(self)
+        language_group.setExclusive(True)
+
+        system_action = self._action(
+            language_menu,
+            _("menu.language.system_default", "System default"),
+            self._clear_language_slot,
+        )
+        system_action.setCheckable(True)
+        system_action.setChecked(self.config.get("language") is None)
+        language_group.addAction(system_action)
+        language_menu.addSeparator()
+
+        for locale in available_locales():
+            name = get_language_name(locale)
+            action = self._action(
+                language_menu,
+                f"{name} ({locale})",
+                lambda checked=False, loc=locale: self._set_language_slot(loc),
+            )
+            action.setCheckable(True)
+            action.setChecked(locale == current)
+            language_group.addAction(action)
+
+        help_menu = self.menuBar().addMenu(_("menu.help"))
+        self._action(help_menu, _("menu.help.help"), self._show_help_slot, "H")
+        self._action(help_menu, _("menu.help.status"), self._show_settings_slot, "I")
+        self._action(help_menu, _("menu.help.config"), self._show_config_editor_slot)
         self._action(
             help_menu,
-            "Command line options...",
+            _("menu.help.cli_options"),
             self._show_command_line_help_slot,
         )
         self.trace_action: QAction = self._action(
             help_menu,
-            "Trace events",
+            _("menu.help.trace_events"),
             self._trace_events_slot,
             "Ctrl+T",
             checkable=True,
         )
-        self._action(help_menu, f"About {APP_TITLE}", self._show_about_slot)
+        self._action(
+            help_menu, _("menu.help.about").format(app_title=APP_TITLE), self._show_about_slot
+        )
         help_menu.addSeparator()
-        self._action(help_menu, "Check for updates", self._check_for_updates)
+        self._action(help_menu, _("menu.help.check_updates"), self._check_for_updates)
 
     def _center_needle_slot(self, checked: bool = False) -> None:
         self.viewer.center_needle()
@@ -522,6 +570,96 @@ class MainWindow(QMainWindow):
 
     def _show_settings_slot(self, checked: bool = False) -> None:
         self.viewer.show_settings()
+
+    def _set_language_slot(self, locale: str) -> None:
+        """Store the requested UI language and restart the application.
+
+        The change is only applied if the user confirms the restart; pressing
+        Escape or "No" reverts to the previous language.
+        """
+        previous = active_locale()
+        set_active_locale(locale)
+        name = get_language_name(locale)
+        answer = QMessageBox.question(
+            self,
+            _("dialog.language.title", "Language changed"),
+            _(
+                "dialog.language.restart_message",
+                "The language has been set to {language}. Restart InkSim now to apply it?",
+            ).format(language=name),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
+        if answer == QMessageBox.Yes:
+            self._restart_application()
+        else:
+            set_active_locale(previous)
+            self._rebuild_menus()
+
+    def _clear_language_slot(self, checked: bool = False) -> None:
+        """Revert to the system default language and restart the application."""
+        previous = active_locale()
+        clear_active_locale()
+        answer = QMessageBox.question(
+            self,
+            _("dialog.language.title", "Language changed"),
+            _(
+                "dialog.language.system_default_message",
+                "The system default language will be used. Restart InkSim now to apply it?",
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
+        if answer == QMessageBox.Yes:
+            self._restart_application()
+        else:
+            set_active_locale(previous)
+            self._rebuild_menus()
+
+    def _rebuild_menus(self) -> None:
+        """Rebuild the menu bar so checkmarks reflect the active locale."""
+        self.menuBar().clear()
+        self._build_menus()
+
+    def _restart_application(self) -> None:
+        """Relaunch InkSim with the same arguments and quit this instance.
+
+        The ``-l/--lang/--language`` flag is dropped so the language stored in
+        config (just set by the menu) takes effect instead of the old CLI value.
+
+        The relaunch command mirrors how InkSim was originally started:
+
+        * Installed via ``.whl`` → ``sys.argv[0]`` is the ``inksim`` console
+          script, so it is relaunched directly.
+        * Run as ``python -m inksim`` → ``sys.argv[0]`` is ``__main__.py``,
+          which has no package context, so it is relaunched as ``-m inksim``.
+        """
+        program = sys.executable
+        args = self._args_without_language_flag(sys.argv[1:])
+        if Path(sys.argv[0]).name == "__main__.py":
+            launch = ["-m", "inksim", *args]
+        else:
+            launch = [sys.argv[0], *args]
+        QProcess.startDetached(program, launch)
+        self._allow_close = True
+        self.close()
+
+    @staticmethod
+    def _args_without_language_flag(argv: list[str]) -> list[str]:
+        """Return *argv* with any ``-l/--lang/--language`` flag and its value removed."""
+        result: list[str] = []
+        skip_next = False
+        for arg in argv:
+            if skip_next:
+                skip_next = False
+                continue
+            if arg in ("-l", "--lang", "--language"):
+                skip_next = True
+                continue
+            if arg.startswith("--lang=") or arg.startswith("--language="):
+                continue
+            result.append(arg)
+        return result
 
     def _show_config_editor_slot(self, checked: bool = False) -> None:
         show_config_editor(self, self.config)
@@ -1156,19 +1294,21 @@ class MainWindow(QMainWindow):
     def save_embroidery_to_path(self, path: str | Path) -> bool:
         pattern = self.viewer.pattern
         if pattern is None:
-            QMessageBox.warning(self, "Save embroidery", "No embroidery file is loaded.")
+            QMessageBox.warning(self, "Save embroidery", _("message.no_file_to_save"))
             return False
         try:
             emb.write(pattern, str(path))
         except (OSError, RuntimeError, ValueError) as error:
-            QMessageBox.critical(self, "Save embroidery", f"Failed to save file: {error}")
+            QMessageBox.critical(
+                self, "Save embroidery", _("message.save_error.message").format(error=error)
+            )
             return False
         self.statusBar().showMessage(f"Saved {path}", 3000)
         return True
 
     def _can_export_image(self) -> bool:
         if self.viewer.stitches_np.shape[0] == 0:
-            QMessageBox.information(self, "Export", "No embroidery file is loaded to export.")
+            QMessageBox.information(self, "Export", _("message.no_file_to_export"))
             return False
         return True
 

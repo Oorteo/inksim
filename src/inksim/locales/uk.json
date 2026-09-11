@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "uk",
+        "name": "Ukrainian"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Досліджуйте порядок стібків, кольори ниток, переходи, обрізки та команди машини перед виробництвом. Переглядайте дизайн стібок за стібком, перемикайте стилі рендерингу та експортуйте те, що бачите."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Остання перевірка оновлень: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Інтерактивна симуляція вишивки, перевірка та експорт."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "Про {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Довжина смуги:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Прикладіть лінійку до екрана та перетягуйте повзунок, поки смуга нижче не стане рівно 100 мм, потім натисніть OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Фізична довжина смуги (мм):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Калібрування розміру екрана"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Недійсний TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Не вдалося зберегти конфігурацію: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Помилка"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Файл конфігурації"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Закрити"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Скопійовано!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Копіювати в буфер обміну"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Скопіювати зображення повної роздільної здатності в буфер обміну"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Формат:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Якість:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Зберегти..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Зберегти зображення у файл"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Не вдалося зберегти {path}"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Збереження зображення"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Збережено!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Масштаб:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Прозорий фон"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Мову змінено на {language}. Перезапусти InkSim, щоб вона застосувалася."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Буде використано системну мову за замовчуванням. InkSim перезапуститься, щоб застосувати її."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Мову змінено"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Колір голки"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Звичайний попередній перегляд"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Реальний попередній перегляд"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Відкрити файл вишивки"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Виберіть рендерер стібків"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Файл"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Калібрувати розмір екрана..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Центрувати голку"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Виберіть рендерер стібків..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Експорт"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Іконка/Мініатюра..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Затінений друк..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Простий друк..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Вмістити дизайн у вікно"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "Текстурний рендеринг GPU"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Відкрити файл вишивки"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Вийти"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Повернути ліворуч на 90°"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Повернути праворуч на 90°"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Зберегти як вишивку..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Показати сітку вимірювань"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Довідка"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "Про {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Перевірити оновлення"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Параметри командного рядка..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Конфігурація"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Довідка"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Статус"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Трасування подій"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Мова"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Системна за замовчуванням"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Відтворення"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Наступний колір"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Наступна команда"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Грати/Пауза"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Попередній колір"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Попередня команда"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Вид"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Фактичний розмір (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Очистити збережену позицію прив'язки"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Список команд"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Циклічно змінювати фон"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Повноекранний режим"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Зберегти поточну позицію прив'язки"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Показати/приховати все"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Показати голку"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Прив'язати розташування вікна"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Не завантажено файл вишивки для експорту."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Не завантажено файл вишивки."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Перезавантаження"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Не вдалося зберегти файл: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Завантаження..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Скинути ширину лінії та коефіцієнти затінення"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Натисніть, щоб налаштувати темний фактор, світлий фактор і ширину лінії"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Циклічний фон: чорний, білий, налаштований"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Вид знизу (малювати пізніші стібки під ранішими)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Перемкнути накладання щільності стібків"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Перемкнути текстурний рендеринг GPU"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Циклічний показ переходів: вимк., усі, лише ризиковані"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Перемкнути видимість стібків"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Скинути налаштування голки"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Налаштування перехрестя голки"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Колір…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Повний екран"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Радіус"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Ширина"
+    }
+}

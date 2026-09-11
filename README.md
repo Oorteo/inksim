@@ -48,11 +48,13 @@ On Windows, `inksim-gui design.pes` starts without a console window.
 
 ## Documentation
 
+- [Documentation index](docs/index.md)
 - [Installation and running](docs/installation.md)
 - [User guide](docs/user-guide.md)
 - [Rendering modes and overlays](docs/rendering.md)
 - [Inkscape / Ink/Stitch workflow](docs/inkscape-workflow.md)
 - [Application interconnect](docs/interconnect.md)
+- [Developer guide](docs/development.md)
 - [Contributing](CONTRIBUTING.md)
 
 ## Background
