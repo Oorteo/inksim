@@ -34,10 +34,12 @@ the `dev` dependency group and are not included in the application wheel.
 
 The documentation uses `uv run` because it is available to everyone who has
 `uv` installed. Some project scripts use a `uvr` shebang instead — `uvr` is a
-small helper that wraps `uv run` and is installed separately with
-`uv tool install uvr`. It is optional: every `uvr <command>` in the scripts is
-equivalent to `uv run <command>`, so you can run the same scripts with `uv run`
-if you do not have `uvr` installed.
+small helper installed separately with `uv tool install uvr`. It wraps
+`uv run` but additionally detects the project context from the script's own
+path (equivalent to `uv run --project <script's project>`), so a script keeps
+working when invoked from a different working directory. It is optional: you
+can run the same scripts with `uv run` from the project root if you do not have
+`uvr` installed.
 
 ## Development Workflow
 
