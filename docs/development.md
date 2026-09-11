@@ -1,5 +1,24 @@
 # Developer Guide
 
+## Contents
+
+- [Environment](#environment)
+- [Development Workflow](#development-workflow)
+  - [Linting and formatting](#linting-and-formatting)
+  - [Type checking](#type-checking)
+  - [Tests](#tests)
+  - [Pre-commit hooks](#pre-commit-hooks)
+- [Internationalization (i18n)](#internationalization-i18n)
+  - [Fallback chain](#fallback-chain)
+  - [Adding or changing a UI string](#adding-or-changing-a-ui-string)
+  - [Translating locales via Ollama](#translating-locales-via-ollama)
+  - [Running the application in another language](#running-the-application-in-another-language)
+- [Rendering Architecture](#rendering-architecture)
+- [Runtime Diagnostics](#runtime-diagnostics)
+- [Test Data](#test-data)
+- [Packaging Check](#packaging-check)
+- [Code Changes](#code-changes)
+
 ## Environment
 
 InkSim uses `uv` and a project-local `.venv`. Synchronize the environment with:
@@ -118,22 +137,22 @@ language.
     ```
 
     This scans the source for `_()` calls, adds new IDs to `en.json` with the
-    source text, and preserves existing translations in `cs.json` / `sk.json`.
+    source text, and preserves existing translations in the other locale files.
 
-### Translating to Czech, Slovak or other locales via Ollama
+### Translating locales via Ollama
 
 The translator sends only **missing or stale** strings to a local Ollama model,
 so repeated runs are cheap:
 
 ```bash
-# Generate/update Czech translations
+# Translate a single locale
 uv run python scripts/i18n/translate.py --lang cs --model deepseek-v4-flash:cloud
-
-# Generate/update Slovak translations
-uv run python scripts/i18n/translate.py --lang sk --model deepseek-v4-flash:cloud
 
 # Regional variant, e.g. Brazilian Portuguese
 uv run python scripts/i18n/translate.py --lang pt-BR --model deepseek-v4-flash:cloud
+
+# Translate every roadmap locale up to a tier
+uv run python scripts/i18n/manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
 ```
 
 The script accepts both `pt-BR` and `pt_BR.UTF-8` style tags. Use `--dry-run`

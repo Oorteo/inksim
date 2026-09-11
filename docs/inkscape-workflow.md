@@ -1,5 +1,12 @@
 # Inkscape / Ink/Stitch / InkSim workflow
 
+## Contents
+
+- [Calling InkSim from Inkscape](#calling-inksim-from-inkscape-after-the-pr-is-released)
+- [Window layout and snap position](#window-layout-and-snap-position)
+- [Export preview back to Inkscape](#export-preview-back-to-inkscape)
+- [Tips](#tips)
+
 InkSim can work as an external preview for the [Ink/Stitch](https://inkstitch.org/) extension, but this integration is **not available in the current official Ink/Stitch release**. It is currently being developed and reviewed as a pull request.
 
 Until it is merged, start InkSim separately from a terminal as described in the [installation guide](installation.md), then paste your exported stitch files into InkSim manually.

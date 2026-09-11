@@ -1,5 +1,15 @@
 # Installation and Running
 
+## Contents
+
+- [Quick start](#quick-start)
+- [Update](#update)
+- [Alternative installers](#alternative-installers)
+- [Developer install](#developer-install)
+- [Command-line and GUI modes](#command-line-and-gui-modes)
+- [Running options](#running-options)
+- [GPU textured renderer](#gpu-textured-renderer)
+
 InkSim is a **standalone GUI application**, not an Inkscape extension. You do
 not copy files into Inkscape's `extensions` folder.
 
