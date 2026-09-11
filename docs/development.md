@@ -124,20 +124,20 @@ language.
 
 1. Use the imported `_` helper in source code:
 
-    ```python
-    from ..i18n import _
+   ```python
+   from ..i18n import _
 
-    button = QPushButton(_("status.slider.width"))
-    ```
+   button = QPushButton(_("status.slider.width"))
+   ```
 
 2. Run the extractor to update the English catalog:
 
-    ```bash
-    uv run python scripts/i18n/extract.py
-    ```
+   ```bash
+   uv run python scripts/i18n/extract.py
+   ```
 
-    This scans the source for `_()` calls, adds new IDs to `en.json` with the
-    source text, and preserves existing translations in the other locale files.
+   This scans the source for `_()` calls, adds new IDs to `en.json` with the
+   source text, and preserves existing translations in the other locale files.
 
 ### Translating locales via Ollama
 
