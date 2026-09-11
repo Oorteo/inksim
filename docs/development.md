@@ -30,6 +30,15 @@ uv sync --dev
 The runtime dependencies are declared in `pyproject.toml`. Test tools are in
 the `dev` dependency group and are not included in the application wheel.
 
+### `uv run` vs `uvr`
+
+The documentation uses `uv run` because it is available to everyone who has
+`uv` installed. Some project scripts use a `uvr` shebang instead — `uvr` is a
+small helper that wraps `uv run` and is installed separately with
+`uv tool install uvr`. It is optional: every `uvr <command>` in the scripts is
+equivalent to `uv run <command>`, so you can run the same scripts with `uv run`
+if you do not have `uvr` installed.
+
 ## Development Workflow
 
 InkSim ships with a small interactive task menu in the project root:
