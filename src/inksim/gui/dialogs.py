@@ -27,6 +27,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..formats import get_supported_input_extensions
+from ..i18n import _
 from ..runtime import _sanitize_path
 from .viewer import EmbroideryViewerWidget, density_debug
 
@@ -48,16 +49,13 @@ class CalibrationDialog(QDialog):
         initial_px_per_mm: float | None = None,
     ) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Calibrate display size")
+        self.setWindowTitle(_("dialog.calibrate.title"))
         self.resize(720, 260)
         self._px_per_mm: float | None = None
 
         root = QVBoxLayout(self)
 
-        info = QLabel(
-            "Hold a ruler against the screen and drag the slider until the bar "
-            "below is exactly 100 mm long, then press OK."
-        )
+        info = QLabel(_("dialog.calibrate.info"))
         info.setWordWrap(True)
         root.addWidget(info)
 
@@ -66,7 +64,7 @@ class CalibrationDialog(QDialog):
         root.addWidget(self._bar)
 
         slider_row = QHBoxLayout()
-        slider_row.addWidget(QLabel("Bar length:"))
+        slider_row.addWidget(QLabel(_("dialog.calibrate.bar_length")))
         self._slider = QSlider(Qt.Horizontal)
         self._slider.setRange(100, 2000)
         self._slider.valueChanged.connect(self._bar.set_pixel_length)
@@ -77,7 +75,7 @@ class CalibrationDialog(QDialog):
         root.addLayout(slider_row)
 
         mm_row = QHBoxLayout()
-        mm_row.addWidget(QLabel("Physical length of the bar (mm):"))
+        mm_row.addWidget(QLabel(_("dialog.calibrate.physical_length")))
         self._mm_spin = QDoubleSpinBox()
         self._mm_spin.setRange(1.0, 1000.0)
         self._mm_spin.setDecimals(1)
@@ -153,7 +151,7 @@ class EmbroideryOpenDialog(QDialog):
         recent_directories: Sequence[str] | None = None,
     ) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Open embroidery file")
+        self.setWindowTitle(_("dialog.open.title"))
         self.resize(1100, 720)
         self.selected_path: Path | None = None
         self.current_directory = Path(initial_directory or Path.cwd()).resolve()
@@ -232,7 +230,9 @@ class EmbroideryOpenDialog(QDialog):
     def _sync_real_preview_button(self, renderer_key: str) -> None:
         is_real = renderer_key == "gpu_textured"
         self._real_preview_button.setChecked(is_real)
-        self._real_preview_button.setText("Normal preview" if is_real else "Real preview")
+        self._real_preview_button.setText(
+            _("dialog.open.normal_preview") if is_real else _("dialog.open.real_preview")
+        )
 
     def done(self, result: int) -> None:
         """Release the preview's GL objects before the dialog is hidden."""

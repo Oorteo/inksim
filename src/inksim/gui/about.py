@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..constants import APP_TITLE
+from ..i18n import _
 from ..runtime import runtime_info_lines
 from ..update_check import last_check_text
 
@@ -26,7 +27,7 @@ from ..update_check import last_check_text
 def show_about(parent: QWidget) -> None:
     """Show the InkSim About dialog."""
     dialog = QDialog(parent)
-    dialog.setWindowTitle(f"About {APP_TITLE}")
+    dialog.setWindowTitle(_("dialog.about.title").format(app_title=APP_TITLE))
     dialog.setWindowIcon(parent.windowIcon())
     dialog.setMinimumWidth(620)
     dialog.setStyleSheet(
@@ -49,15 +50,13 @@ def show_about(parent: QWidget) -> None:
     logo.setAlignment(Qt.AlignCenter)
     layout.addWidget(logo)
 
-    tagline = QLabel("Interactive embroidery simulation, inspection, and export.", dialog)
+    tagline = QLabel(_("dialog.about.tagline"), dialog)
     tagline.setObjectName("tagline")
     tagline.setAlignment(Qt.AlignCenter)
     layout.addWidget(tagline)
 
     body = QLabel(
-        "Explore stitch order, thread colors, jumps, trims, and machine "
-        "commands before production. Preview the design stitch by stitch, "
-        "switch rendering styles, and export what you see.",
+        _("dialog.about.body"),
         dialog,
     )
     body.setObjectName("body")
@@ -71,7 +70,9 @@ def show_about(parent: QWidget) -> None:
     runtime.setMaximumHeight(210)
     layout.addWidget(runtime)
 
-    last_check = QLabel(f"Last update check: {last_check_text(parent.config)}", dialog)
+    last_check = QLabel(
+        _("dialog.about.last_update_check").format(when=last_check_text(parent.config)), dialog
+    )
     last_check.setObjectName("body")
     last_check.setAlignment(Qt.AlignCenter)
     layout.addWidget(last_check)

@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "pa",
+        "name": "Punjabi"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "ਉਤਪਾਦਨ ਤੋਂ ਪਹਿਲਾਂ ਸਿਲਾਈ ਕ੍ਰਮ, ਧਾਗੇ ਦੇ ਰੰਗ, ਜੰਪ, ਟ੍ਰਿਮ ਅਤੇ ਮਸ਼ੀਨ ਕਮਾਂਡਾਂ ਦੀ ਪੜਚੋਲ ਕਰੋ। ਡਿਜ਼ਾਈਨ ਨੂੰ ਸਿਲਾਈ ਦਰ ਸਿਲਾਈ ਵੇਖੋ, ਰੈਂਡਰਿੰਗ ਸ਼ੈਲੀਆਂ ਬਦਲੋ, ਅਤੇ ਜੋ ਵੇਖਦੇ ਹੋ ਉਸਨੂੰ ਐਕਸਪੋਰਟ ਕਰੋ।"
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "ਆਖਰੀ ਅੱਪਡੇਟ ਜਾਂਚ: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "ਇੰਟਰਐਕਟਿਵ ਕਢਾਈ ਸਿਮੂਲੇਸ਼ਨ, ਨਿਰੀਖਣ ਅਤੇ ਐਕਸਪੋਰਟ।"
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "{app_title} ਬਾਰੇ"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "ਬਾਰ ਲੰਬਾਈ:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "ਸਕਰੀਨ ਦੇ ਸਾਹਮਣੇ ਇੱਕ ਸਕੇਲ ਰੱਖੋ ਅਤੇ ਸਲਾਈਡਰ ਨੂੰ ਉਦੋਂ ਤੱਕ ਖਿੱਚੋ ਜਦੋਂ ਤੱਕ ਹੇਠਾਂ ਦੀ ਬਾਰ ਬਿਲਕੁਲ 100 ਮਿਲੀਮੀਟਰ ਲੰਬੀ ਨਾ ਹੋ ਜਾਵੇ, ਫਿਰ ਠੀਕ ਦਬਾਓ।"
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "ਬਾਰ ਦੀ ਭੌਤਿਕ ਲੰਬਾਈ (ਮਿਲੀਮੀਟਰ):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "ਡਿਸਪਲੇਅ ਆਕਾਰ ਕੈਲੀਬਰੇਟ ਕਰੋ"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "ਅਵੈਧ TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "ਕੌਨਫਿਗ ਸੇਵ ਕਰਨ ਵਿੱਚ ਅਸਫਲ: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "ਗਲਤੀ"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "ਕੌਨਫਿਗਰੇਸ਼ਨ ਫਾਈਲ"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "ਬੰਦ ਕਰੋ"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "ਕਾਪੀ ਹੋ ਗਿਆ!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਕਾਪੀ ਕਰੋ"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "ਪੂਰੀ-ਰਿਜ਼ੋਲਿਊਸ਼ਨ ਚਿੱਤਰ ਨੂੰ ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਕਾਪੀ ਕਰੋ"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "ਫਾਰਮੈਟ:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "ਗੁਣਵੱਤਾ:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "ਸੇਵ ਕਰੋ..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "ਚਿੱਤਰ ਨੂੰ ਫਾਈਲ ਵਿੱਚ ਸੇਵ ਕਰੋ"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} ਸੇਵ ਕਰਨ ਵਿੱਚ ਅਸਫਲ"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "ਚਿੱਤਰ ਸੇਵ ਕਰੋ"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "ਸੇਵ ਹੋ ਗਿਆ!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "ਸਕੇਲ:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "ਪਾਰਦਰਸ਼ੀ ਪਿਛੋਕੜ"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "ਭਾਸ਼ਾ {language} ਵਿੱਚ ਸੈੱਟ ਕੀਤੀ ਗਈ ਹੈ। ਇਸਨੂੰ ਲਾਗੂ ਕਰਨ ਲਈ InkSim ਨੂੰ ਮੁੜ ਚਾਲੂ ਕਰੋ।"
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "ਸਿਸਟਮ ਦੀ ਡਿਫੌਲਟ ਭਾਸ਼ਾ ਵਰਤੀ ਜਾਵੇਗੀ। ਇਸਨੂੰ ਲਾਗੂ ਕਰਨ ਲਈ InkSim ਮੁੜ ਚਾਲੂ ਹੋਵੇਗਾ।"
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "ਭਾਸ਼ਾ ਬਦਲੀ ਗਈ"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "ਸੂਈ ਦਾ ਰੰਗ"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "ਆਮ ਪ੍ਰੀਵਿਊ"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "ਅਸਲ ਪ੍ਰੀਵਿਊ"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "ਕਢਾਈ ਫਾਈਲ ਖੋਲ੍ਹੋ"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "ਸਿਲਾਈ ਰੈਂਡਰਰ ਚੁਣੋ"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "ਫਾਈਲ"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "ਡਿਸਪਲੇਅ ਆਕਾਰ ਕੈਲੀਬਰੇਟ ਕਰੋ..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "ਸੂਈ ਨੂੰ ਕੇਂਦਰ ਵਿੱਚ ਰੱਖੋ"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "ਸਿਲਾਈ ਰੈਂਡਰਰ ਚੁਣੋ..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "ਐਕਸਪੋਰਟ"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "ਆਈਕਾਨ/ਥੰਬਨੇਲ..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "ਸ਼ੇਡਡ ਪ੍ਰਿੰਟ..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "ਸਧਾਰਨ ਪ੍ਰਿੰਟ..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "ਡਿਜ਼ਾਈਨ ਨੂੰ ਵਿੰਡੋ ਵਿੱਚ ਫਿੱਟ ਕਰੋ"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU ਟੈਕਸਚਰਡ ਰੈਂਡਰ"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "ਕਢਾਈ ਫਾਈਲ ਖੋਲ੍ਹੋ"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "ਬਾਹਰ ਜਾਓ"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "ਖੱਬੇ 90 ਡਿਗਰੀ ਘੁਮਾਓ"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "ਸੱਜੇ 90 ਡਿਗਰੀ ਘੁਮਾਓ"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "ਕਢਾਈ ਵਜੋਂ ਸੇਵ ਕਰੋ..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "ਮਾਪ ਗਰਿੱਡ ਦਿਖਾਓ"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "ਮਦਦ"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "{app_title} ਬਾਰੇ"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "ਅੱਪਡੇਟਾਂ ਦੀ ਜਾਂਚ ਕਰੋ"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "ਕਮਾਂਡ ਲਾਈਨ ਵਿਕਲਪ..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "ਕੌਨਫਿਗ"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "ਮਦਦ"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "ਸਥਿਤੀ"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "ਟਰੇਸ ਇਵੈਂਟਸ"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "ਭਾਸ਼ਾ"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "ਸਿਸਟਮ ਡਿਫੌਲਟ"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "ਪਲੇਬੈਕ"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "ਅਗਲਾ ਰੰਗ"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "ਅਗਲੀ ਕਮਾਂਡ"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "ਚਲਾਓ/ਰੋਕੋ"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "ਪਿਛਲਾ ਰੰਗ"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "ਪਿਛਲੀ ਕਮਾਂਡ"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "ਦ੍ਰਿਸ਼"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "ਅਸਲ ਆਕਾਰ (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "ਸੇਵ ਕੀਤੀ ਸਨੈਪ ਸਥਿਤੀ ਸਾਫ਼ ਕਰੋ"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "ਕਮਾਂਡ ਸੂਚੀ"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "ਪਿਛੋਕੜ ਬਦਲੋ"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "ਪੂਰੀ ਸਕਰੀਨ"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "ਮੌਜੂਦਾ ਸਨੈਪ ਸਥਿਤੀ ਸੇਵ ਕਰੋ"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "ਸਭ ਦਿਖਾਓ/ਲੁਕਾਓ"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "ਸੂਈ ਦਿਖਾਓ"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "ਵਿੰਡੋ ਲੇਆਉਟ ਸਨੈਪ ਕਰੋ"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "ਐਕਸਪੋਰਟ ਕਰਨ ਲਈ ਕੋਈ ਕਢਾਈ ਫਾਈਲ ਲੋਡ ਨਹੀਂ ਹੈ।"
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "ਕੋਈ ਕਢਾਈ ਫਾਈਲ ਲੋਡ ਨਹੀਂ ਹੈ।"
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "ਮੁੜ ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "ਫਾਈਲ ਸੇਵ ਕਰਨ ਵਿੱਚ ਅਸਫਲ: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "ਲਾਈਨ ਚੌੜਾਈ ਅਤੇ ਸ਼ੇਡਿੰਗ ਫੈਕਟਰ ਰੀਸੈੱਟ ਕਰੋ"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "ਡਾਰਕ ਫੈਕਟਰ, ਲਾਈਟ ਫੈਕਟਰ ਅਤੇ ਲਾਈਨ ਚੌੜਾਈ ਵਿਵਸਥਿਤ ਕਰਨ ਲਈ ਕਲਿੱਕ ਕਰੋ"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "ਪਿਛੋਕੜ ਬਦਲੋ: ਕਾਲਾ, ਚਿੱਟਾ, ਕੌਨਫਿਗਰਡ"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "ਹੇਠਲਾ ਦ੍ਰਿਸ਼ (ਬਾਅਦ ਵਾਲੀਆਂ ਸਿਲਾਈਆਂ ਨੂੰ ਪਹਿਲਾਂ ਵਾਲੀਆਂ ਦੇ ਹੇਠਾਂ ਖਿੱਚੋ)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "ਸਿਲਾਈ ਘਣਤਾ ਓਵਰਲੇਅ ਟੌਗਲ ਕਰੋ"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU ਟੈਕਸਚਰਡ ਰੈਂਡਰਿੰਗ ਟੌਗਲ ਕਰੋ"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "ਜੰਪ ਡਿਸਪਲੇਅ ਬਦਲੋ: ਬੰਦ, ਸਾਰੇ, ਸਿਰਫ ਜੋਖਮ ਭਰੇ"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "ਸਿਲਾਈ ਦੀ ਦਿੱਖ ਟੌਗਲ ਕਰੋ"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "ਸੂਈ ਸੈਟਿੰਗਾਂ ਰੀਸੈੱਟ ਕਰੋ"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "ਸੂਈ ਕਰਾਸਹੇਅਰ ਸੈਟਿੰਗਾਂ"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "ਰੰਗ..."
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "ਪੂਰੀ ਸਕਰੀਨ"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "ਰੇਡੀਅਸ"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "ਚੌੜਾਈ"
+    }
+}

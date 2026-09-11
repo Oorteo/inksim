@@ -117,9 +117,16 @@ class Config:
         self.save()
 
     def delete(self, key: str) -> None:
-        """Remove *key* from the config and persist the file."""
-        self._data.pop(key, None)
-        self.save()
+        """Remove *key* from the config and persist the file.
+
+        Writes directly under the lock (re-reading first) rather than going
+        through :meth:`save`, whose merge step would re-introduce the deleted
+        key from the on-disk copy.
+        """
+        with self._lock.acquire(timeout=5.0):
+            self._load()
+            self._data.pop(key, None)
+            self._save_locked()
 
     def set_values(self, values: dict[str, Any]) -> None:
         """Update several top-level keys at once and persist once."""

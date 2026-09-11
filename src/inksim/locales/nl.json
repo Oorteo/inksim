@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "nl",
+        "name": "Dutch"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Verken de steekvolgorde, draadkleuren, sprongen, trims en machinecommando's vóór productie. Bekijk het ontwerp steek voor steek, wissel van weergavestijl en exporteer wat je ziet."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Laatste updatecontrole: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Interactieve borduursimulatie, inspectie en export."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "Over {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Balklengte:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Houd een liniaal tegen het scherm en sleep de schuifregelaar totdat de balk hieronder precies 100 mm lang is, druk dan op OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Fysieke lengte van de balk (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Kalibreer weergavegrootte"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Ongeldige TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Configuratie opslaan mislukt: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Fout"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Configuratiebestand"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Sluiten"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Gekopieerd!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Kopiëren naar klembord"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Kopieer de afbeelding op volledige resolutie naar het klembord"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Formaat:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Kwaliteit:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Opslaan..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Sla de afbeelding op in een bestand"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Opslaan van {path} mislukt"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Afbeelding opslaan"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Opgeslagen!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Schaal:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Transparante achtergrond"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "De taal is ingesteld op {language}. Herstart InkSim om dit toe te passen."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "De systeemstandaardtaal wordt gebruikt. InkSim herstart om dit toe te passen."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Taal gewijzigd"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Naaldkleur"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Normale voorbeeldweergave"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Echte voorbeeldweergave"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Borduurwerkbestand openen"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Kies steekrenderer"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Bestand"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Kalibreer weergavegrootte..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Naald centreren"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Kies steekrenderer..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Exporteren"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Pictogram/Thumbnail..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Gearceerde afdruk..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Eenvoudige afdruk..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Ontwerp aan venster aanpassen"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU-getextureerde weergave"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Borduurwerkbestand openen"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Afsluiten"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "90 graden naar links draaien"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "90 graden naar rechts draaien"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Opslaan als borduurwerk..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Meetraster tonen"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Help"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "Over {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Controleren op updates"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Commandoregelopties..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Configuratie"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Help"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Status"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Gebeurtenissen traceren"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Taal"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Systeemstandaard"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Afspelen"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Volgende kleur"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Volgende opdracht"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Afspelen/Pauzeren"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Vorige kleur"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Vorige opdracht"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Beeld"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Werkelijke grootte (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Opgeslagen snap-positie wissen"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Opdrachtlijst"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Achtergrond wisselen"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Volledig scherm"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Huidige snap-positie opslaan"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Alles tonen/verbergen"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Naald tonen"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Vensterindeling vastzetten"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Er is geen borduurwerkbestand geladen om te exporteren."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Er is geen borduurwerkbestand geladen."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Opnieuw laden"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Bestand opslaan mislukt: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Laden..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Lijnbreedte en arceringfactoren resetten"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Klik om donkere factor, lichte factor en lijnbreedte aan te passen"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Achtergrond wisselen: zwart, wit, geconfigureerd"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Onderaanzicht (teken latere steken onder eerdere)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Steekdichtheid-overlay aan/uit zetten"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU-getextureerde weergave aan/uit zetten"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Sprongweergave wisselen: uit, alle, alleen risicovol"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Steekzichtbaarheid aan/uit zetten"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Naaldinstellingen resetten"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Naaldkruisinstellingen"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Kleur…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Volledig scherm"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Straal"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Breedte"
+    }
+}

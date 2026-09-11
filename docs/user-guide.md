@@ -1,5 +1,16 @@
 # User Guide
 
+## Contents
+
+- [Mouse and Window](#mouse-and-window)
+- [Playback and Navigation](#playback-and-navigation)
+- [View and Analysis](#view-and-analysis)
+- [Image Export](#image-export)
+- [Supported Files](#supported-files)
+- [Rendering Notes](#rendering-notes)
+  - [Density Map](#density-map)
+- [Performance Diagnostics](#performance-diagnostics)
+
 ## Mouse and Window
 
 | Action                     | Function                     |

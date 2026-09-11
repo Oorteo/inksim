@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "sk",
+        "name": "Slovak"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Preskúmajte poradie stehov, farby nití, preskoky, odstrihy a príkazy stroja pred výrobou. Náhľad dizajnu steh po stehu, prepínanie štýlov vykresľovania a export toho, čo vidíte."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Posledná kontrola aktualizácií: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Interaktívna simulácia výšivky, kontrola a export."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "O aplikácii {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Dĺžka lišty:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Pridržte pravítko pri obrazovke a ťahajte posúvač, kým lišta nižšie nebude presne 100 mm dlhá, potom stlačte OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Fyzická dĺžka lišty (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Kalibrovať veľkosť displeja"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Neplatný TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Nepodarilo sa uložiť konfiguráciu: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Chyba"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Konfiguračný súbor"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Zavrieť"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Skopírované!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Kopírovať do schránky"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Skopírujte obrázok v plnom rozlíšení do schránky"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Formát:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Kvalita:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Uložiť..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Uložiť obrázok do súboru"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Nepodarilo sa uložiť {path}"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Uložiť obrázok"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Uložené!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Mierka:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Priehľadné pozadie"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Jazyk sa nastavil na {language}. Reštartuj InkSim, aby sa to použilo."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Použije sa systémový predvolený jazyk. InkSim sa reštartuje, aby sa to prejavilo."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Jazyk zmenený"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Farba ihly"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Normálny náhľad"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Reálny náhľad"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Otvoriť súbor výšivky"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Vyberte vykresľovač stehov"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Súbor"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Kalibrovať veľkosť displeja..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Vycentrovať ihlu"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Vyberte vykresľovač stehov..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Export"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Ikona/Náhľad..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Tieňovaná tlač..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Jednoduchá tlač..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Prispôsobiť dizajn oknu"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU textúrované vykresľovanie"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Otvoriť súbor výšivky"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Ukončiť"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Otočiť doľava o 90°"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Otočiť doprava o 90°"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Uložiť ako výšivku..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Zobraziť meraciu mriežku"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Pomoc"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "O aplikácii {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Skontrolovať aktualizácie"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Možnosti príkazového riadka..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Konfigurácia"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Pomoc"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Stav"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Sledovať udalosti"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Jazyk"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Systémový predvolený"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Prehrávanie"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Ďalšia farba"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Ďalší príkaz"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Prehrať/Pozastaviť"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Predchádzajúca farba"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Predchádzajúci príkaz"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Zobrazenie"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Skutočná veľkosť (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Vymazať uloženú pozíciu prichytenia"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Zoznam príkazov"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Cyklovať pozadie"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Celá obrazovka"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Uložiť aktuálnu pozíciu prichytenia"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Zobraziť/skryť všetko"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Zobraziť ihlu"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Prichytiť rozloženie okna"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Nie je načítaný žiadny súbor výšivky na export."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Nie je načítaný žiadny súbor výšivky."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Načítavanie"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Nepodarilo sa uložiť súbor: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Načítava sa..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Resetovať šírku čiary a faktory tieňovania"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Kliknite pre nastavenie tmavého faktora, svetlého faktora a šírky čiary"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Cyklovať pozadie: čierne, biele, nakonfigurované"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Pohľad zospodu (kresliť neskoršie stehy pod skoršie)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Prepnúť prekrytie hustoty stehov"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Prepnúť GPU textúrované vykresľovanie"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Cyklovať zobrazenie preskokov: vypnuté, všetky, iba rizikové"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Prepnúť viditeľnosť stehov"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Resetovať nastavenia ihly"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Nastavenia kríža ihly"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Farba…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Celá obrazovka"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Polomer"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Šírka"
+    }
+}

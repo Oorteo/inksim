@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "am",
+        "name": "Amharic"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "ከምርት በፊት የጥልፍ ቅደም ተከተል፣ የክር ቀለሞች፣ ዝላይዎች፣ መቆራረጦች እና የማሽን ትዕዛዞችን ይመርምሩ። ንድፉን በጥልፍ በጥልፍ ይተይቡ፣ የአቅራቢ ስልቶችን ይቀይሩ እና ያዩትን ያስወጡ።"
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "የመጨረሻ ዝመና ማረጋገጫ፡ {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "በይነተገናኝ ጥልፍ ማስመሰል፣ መመርመር እና ማስወጣት።"
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "ስለ {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "የባር ርዝመት፡"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "መለኪያ በስክሪኑ ላይ ይያዙ እና ከታች ያለው ባር በትክክል 100 ሚሜ እስኪሆን ድረስ ተንሸራታቹን ይጎትቱ፣ ከዚያ እሺ ይጫኑ።"
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "የባሩ አካላዊ ርዝመት (ሚሜ)፡"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "የማሳያ መጠን ያስተካክሉ"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "ልክ ያልሆነ TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "ኮንፊግ ማስቀመጥ አልተሳካም፡ {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "ስህተት"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "የውቅር ፋይል"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "ዝጋ"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "ተቀድቷል!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "ወደ ቅንጥብ ሰሌዳ ቅዳ"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "ሙሉ ጥራት ያለው ምስል ወደ ቅንጥብ ሰሌዳ ቅዳ"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "ቅርጸት፡"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "ጥራት፡"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "አስቀምጥ..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "ምስሉን ወደ ፋይል አስቀምጥ"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} ማስቀመጥ አልተሳካም"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "ምስል አስቀምጥ"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "ተቀምጧል!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "መጠን፡"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "ግልጽ ዳራ"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "ቋንቋው ወደ {language} ተቀይሯል። እንዲተገበር InkSimን እንደገና አስጀምር።"
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "የስርዓቱ ነባሪ ቋንቋ ጥቅም ላይ ይውላል። InkSim እንዲተገበር እንደገና ይጀምራል።"
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "ቋንቋ ተቀይሯል"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "የመርፌ ቀለም"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "መደበኛ ቅድመ-እይታ"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "እውነተኛ ቅድመ-እይታ"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "የጥልፍ ፋይል ክፈት"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "የጥልፍ አቅራቢ ይምረጡ"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "ፋይል"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "የማሳያ መጠን ያስተካክሉ..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "መርፌን መሃል አድርግ"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "የጥልፍ አቅራቢ ይምረጡ..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "አስወጣ"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "አዶ/ድንክ ምስል..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "ጥላ ያለው ህትመት..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "ቀላል ህትመት..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "ንድፉን ከመስኮቱ ጋር አስማማ"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU ቴክስቸር አቅራቢ"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "የጥልፍ ፋይል ክፈት"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "ውጣ"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "ወደ ግራ 90 ዲግሪ አሽከርክር"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "ወደ ቀኝ 90 ዲግሪ አሽከርክር"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "እንደ ጥልፍ አስቀምጥ..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "የመለኪያ ፍርግርግ አሳይ"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "እገዛ"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "ስለ {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "ዝማኔዎችን ያረጋግጡ"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "የትዕዛዝ መስመር አማራጮች..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "ውቅር"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "እገዛ"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "ሁኔታ"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "ክስተቶችን ይከታተሉ"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "ቋንቋ"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "የስርዓት ነባሪ"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "መልሶ ማጫወት"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "ቀጣይ ቀለም"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "ቀጣይ ትዕዛዝ"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "አጫውት/አቁም"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "ቀዳሚ ቀለም"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "ቀዳሚ ትዕዛዝ"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "እይታ"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "ትክክለኛ መጠን (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "የተቀመጠውን የመገጣጠሚያ ቦታ አጽዳ"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "የትዕዛዝ ዝርዝር"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "ዳራ ይቀይሩ"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "ሙሉ ስክሪን"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "የአሁኑን የመገጣጠሚያ ቦታ አስቀምጥ"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "ሁሉንም አሳይ/ደብቅ"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "መርፌ አሳይ"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "የመስኮት አቀማመጥ ይገጥም"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "ለማስወጣት ምንም የጥልፍ ፋይል አልተጫነም።"
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "ምንም የጥልፍ ፋይል አልተጫነም።"
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "እየጫነ ነው"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "ፋይል ማስቀመጥ አልተሳካም፡ {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "በመጫን ላይ..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "የመስመር ውፍረት እና የጥላ ምክንያቶችን ዳግም አስጀምር"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "የጨለማ ምክንያት፣ የብርሃን ምክንያት እና የመስመር ውፍረት ለማስተካከል ጠቅ ያድርጉ"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "ዳራ ይቀይሩ፡ ጥቁር፣ ነጭ፣ የተዋቀረ"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "የታችኛው እይታ (በኋላ የተሰፉትን ከቀዳሚዎቹ በታች ይሳሉ)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "የጥልፍ ጥግግት ሽፋን ይቀይሩ"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU ቴክስቸር አቅራቢን ይቀይሩ"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "የዝላይ ማሳያ ይቀይሩ፡ ጠፍቷል፣ ሁሉም፣ አደገኛ ብቻ"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "የጥልፍ እይታን ይቀይሩ"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "የመርፌ ቅንብሮችን ዳግም አስጀምር"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "የመርፌ መስቀል ቅንብሮች"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "ቀለም…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "ሙሉ ስክሪን"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "ራዲየስ"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "ውፍረት"
+    }
+}

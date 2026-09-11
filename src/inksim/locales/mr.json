@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "mr",
+        "name": "Marathi"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "उत्पादनापूर्वी टाक्यांचा क्रम, धाग्याचे रंग, उड्या, ट्रिम्स आणि मशीन कमांड्स एक्सप्लोर करा. डिझाइन टाका-टाक्याने पूर्वावलोकन करा, रेंडरिंग शैली बदला आणि जे दिसते ते निर्यात करा."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "शेवटची अपडेट तपासणी: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "परस्परसंवादी भरतकाम सिम्युलेशन, तपासणी आणि निर्यात."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "{app_title} बद्दल"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "पट्टीची लांबी:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "स्क्रीनवर शासक धरा आणि स्लाइडर ड्रॅग करा जोपर्यंत खालील पट्टी अगदी 100 मिमी लांब होत नाही, मग ठीक आहे दाबा."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "पट्टीची भौतिक लांबी (मिमी):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "प्रदर्शन आकार कॅलिब्रेट करा"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "अवैध TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "कॉन्फिग जतन करण्यात अयशस्वी: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "त्रुटी"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "कॉन्फिगरेशन फाइल"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "बंद करा"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "कॉपी केले!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "क्लिपबोर्डवर कॉपी करा"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "पूर्ण-रिझोल्यूशन प्रतिमा क्लिपबोर्डवर कॉपी करा"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "स्वरूप:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "गुणवत्ता:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "जतन करा..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "प्रतिमा फाइलमध्ये जतन करा"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} जतन करण्यात अयशस्वी"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "प्रतिमा जतन करा"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "जतन केले!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "स्केल:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "पारदर्शक पार्श्वभूमी"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "भाषा {language} वर सेट केली आहे. ती लागू करण्यासाठी InkSim पुन्हा सुरू करा."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "सिस्टम डीफॉल्ट भाषा वापरली जाईल. ती लागू करण्यासाठी InkSim पुन्हा सुरू होईल."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "भाषा बदलली"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "सुईचा रंग"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "सामान्य पूर्वावलोकन"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "वास्तविक पूर्वावलोकन"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "भरतकाम फाइल उघडा"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "टाका रेंडरर निवडा"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&फाइल"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "प्रदर्शन आकार कॅलिब्रेट करा..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "सुई मध्यभागी करा"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "टाका रेंडरर निवडा..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "निर्यात"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "आयकॉन/थंबनेल..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "शेडेड प्रिंट..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "साधा प्रिंट..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "डिझाइन विंडोमध्ये फिट करा"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU टेक्सचर रेंडर"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "भरतकाम फाइल उघडा"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "बाहेर पडा"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "डावीकडे 90 अंश फिरवा"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "उजवीकडे 90 अंश फिरवा"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "भरतकाम म्हणून जतन करा..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "मापन ग्रिड दाखवा"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&मदत"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "{app_title} बद्दल"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "अपडेट तपासा"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "कमांड लाइन पर्याय..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "कॉन्फिग"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "मदत"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "स्थिती"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "ट्रेस इव्हेंट"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "भाषा"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "सिस्टम डीफॉल्ट"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&प्लेबॅक"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "पुढील रंग"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "पुढील कमांड"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "प्ले/विराम"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "मागील रंग"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "मागील कमांड"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&दृश्य"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "वास्तविक आकार (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "जतन केलेली स्नॅप स्थिती साफ करा"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "कमांड सूची"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "पार्श्वभूमी बदला"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "पूर्ण स्क्रीन"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "सध्याची स्नॅप स्थिती जतन करा"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "सर्व दाखवा/लपवा"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "सुई दाखवा"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "स्नॅप विंडो लेआउट"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "निर्यात करण्यासाठी कोणतीही भरतकाम फाइल लोड केलेली नाही."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "कोणतीही भरतकाम फाइल लोड केलेली नाही."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "रीलोड होत आहे"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "फाइल जतन करण्यात अयशस्वी: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "लोड होत आहे..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "रेषा रुंदी आणि शेडिंग घटक रीसेट करा"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "गडद घटक, हलका घटक आणि रेषा रुंदी समायोजित करण्यासाठी क्लिक करा"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "पार्श्वभूमी बदला: काळा, पांढरा, कॉन्फिगर केलेले"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "तळाचा दृश्य (नंतरचे टाके आधीच्या खाली काढा)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "टाका घनता ओव्हरले टॉगल करा"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU टेक्सचर रेंडरिंग टॉगल करा"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "उडी प्रदर्शन बदला: बंद, सर्व, फक्त धोकादायक"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "टाका दृश्यमानता टॉगल करा"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "सुई सेटिंग्ज रीसेट करा"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "सुई क्रॉसहेअर सेटिंग्ज"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "रंग…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "पूर्ण स्क्रीन"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "त्रिज्या"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "रुंदी"
+    }
+}

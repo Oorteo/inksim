@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "fa",
+        "name": "Persian (Farsi)"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "ترتیب دوخت، رنگ نخ، پرشها، برشها و دستورات ماشین را قبل از تولید بررسی کنید. طرح را دوخت به دوخت پیشنمایش کنید، سبکهای رندر را تغییر دهید و آنچه میبینید را خروجی بگیرید."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "آخرین بررسی بهروزرسانی: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "شبیهسازی، بازرسی و خروجی تعاملی گلدوزی."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "درباره {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "طول نوار:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "یک خطکش را روی صفحه نگه دارید و لغزنده را بکشید تا نوار زیر دقیقاً ۱۰۰ میلیمتر شود، سپس OK را بزنید."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "طول فیزیکی نوار (میلیمتر):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "کالیبره کردن اندازه نمایش"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "TOML نامعتبر"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "ذخیره پیکربندی ناموفق بود: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "خطا"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "فایل پیکربندی"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "بستن"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "کپی شد!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "کپی در کلیپبورد"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "کپی تصویر با وضوح کامل در کلیپبورد"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "فرمت:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "کیفیت:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "ذخیره..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "ذخیره تصویر در یک فایل"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "ذخیره {path} ناموفق بود"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "ذخیره تصویر"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "ذخیره شد!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "مقیاس:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "پسزمینه شفاف"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "زبان به {language} تنظیم شد. برای اعمالش، InkSim رو دوباره راه‌اندازی کن."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "زبان پیش‌فرض سیستم استفاده می‌شه. InkSim برای اعمالش دوباره راه‌اندازی می‌شه."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "تغییر زبان"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "رنگ سوزن"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "پیشنمایش عادی"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "پیشنمایش واقعی"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "باز کردن فایل گلدوزی"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "انتخاب رندرکننده دوخت"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "فایل"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "کالیبره کردن اندازه نمایش..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "وسط قرار دادن سوزن"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "انتخاب رندرکننده دوخت..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "خروجی"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "آیکون/تصویر کوچک..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "چاپ سایهدار..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "چاپ ساده..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "تناسب طرح با پنجره"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "رندر بافتدار GPU"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "باز کردن فایل گلدوزی"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "خروج"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "چرخش ۹۰ درجه به چپ"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "چرخش ۹۰ درجه به راست"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "ذخیره به عنوان گلدوزی..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "نمایش شبکه اندازهگیری"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "کمک"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "درباره {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "بررسی بهروزرسانیها"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "گزینههای خط فرمان..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "پیکربندی"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "راهنما"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "وضعیت"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "ردیابی رویدادها"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "زبان"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "پیش‌فرض سیستم"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "پخش"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "رنگ بعدی"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "فرمان بعدی"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "پخش/توقف"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "رنگ قبلی"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "فرمان قبلی"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "نمایش"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "اندازه واقعی (۱:۱)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "پاک کردن موقعیت snap ذخیرهشده"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "لیست فرمانها"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "چرخش پسزمینه"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "تمامصفحه"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "ذخیره موقعیت snap فعلی"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "نمایش/مخفی کردن همه"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "نمایش سوزن"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "چسباندن چیدمان پنجره"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "هیچ فایل گلدوزی برای خروجی بارگذاری نشده است."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "هیچ فایل گلدوزی بارگذاری نشده است."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "بارگذاری مجدد"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "ذخیره فایل ناموفق بود: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "در حال بارگذاری..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "بازنشانی عرض خط و عوامل سایهزنی"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "برای تنظیم ضریب تیرگی، ضریب روشنایی و عرض خط کلیک کنید"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "چرخش پسزمینه: سیاه، سفید، پیکربندیشده"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "نمای پایین (کشیدن دوختهای بعدی زیر دوختهای قبلی)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "تغییر وضعیت نمایش تراکم دوخت"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "تغییر وضعیت رندر بافتدار GPU"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "چرخش نمایش پرش: خاموش، همه، فقط خطرناک"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "تغییر وضعیت نمایش دوخت"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "بازنشانی تنظیمات سوزن"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "تنظیمات نشانگر سوزن"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "رنگ…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "تمامصفحه"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "شعاع"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "عرض"
+    }
+}

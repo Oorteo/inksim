@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "tr",
+        "name": "Turkish"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Üretimden önce dikiş sırasını, iplik renklerini, atlamaları, kesimleri ve makine komutlarını keşfedin. Tasarımı dikiş dikiş önizleyin, işleme stillerini değiştirin ve gördüklerinizi dışa aktarın."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Son güncelleme kontrolü: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Etkileşimli nakış simülasyonu, inceleme ve dışa aktarma."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "{app_title} Hakkında"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Çubuk uzunluğu:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Ekrana bir cetvel tutun ve aşağıdaki çubuk tam 100 mm olana kadar kaydırıcıyı sürükleyin, ardından Tamam'a basın."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Çubuğun fiziksel uzunluğu (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Ekran boyutunu kalibre et"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Geçersiz TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Yapılandırma kaydedilemedi: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Hata"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Yapılandırma dosyası"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Kapat"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Kopyalandı!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Panoya kopyala"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Tam çözünürlüklü görüntüyü panoya kopyala"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Biçim:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Kalite:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Kaydet..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Görüntüyü bir dosyaya kaydet"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "{path} kaydedilemedi"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Görüntüyü kaydet"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Kaydedildi!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Ölçek:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Şeffaf arka plan"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Dil {language} olarak ayarlandı. Uygulamak için InkSim'i yeniden başlatın."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Sistem varsayılan dili kullanılacak. Uygulamak için InkSim yeniden başlatılacak."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Dil değişti"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "İğne rengi"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Normal önizleme"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Gerçek önizleme"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Nakış dosyası aç"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Dikiş işleyici seç"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Dosya"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Ekran boyutunu kalibre et..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "İğneyi ortala"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Dikiş işleyici seç..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Dışa aktar"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Simge/Küçük resim..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Gölgeli baskı..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Basit baskı..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Tasarımı pencereye sığdır"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU dokulu işleme"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Nakış dosyası aç"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Çıkış"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "90 derece sola döndür"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "90 derece sağa döndür"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Nakış olarak kaydet..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Ölçüm ızgarasını göster"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Yardım"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "{app_title} Hakkında"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Güncellemeleri kontrol et"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Komut satırı seçenekleri..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Yapılandırma"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Yardım"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Durum"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Olayları izle"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Dil"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Sistem varsayılanı"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Oynatma"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Sonraki renk"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Sonraki komut"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Oynat/Duraklat"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Önceki renk"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Önceki komut"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Görünüm"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Gerçek boyut (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Kayıtlı yapışma konumunu temizle"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Komut listesi"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Arka planı değiştir"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Tam ekran"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Geçerli yapışma konumunu kaydet"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Tümünü göster/gizle"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "İğneyi göster"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Pencere düzenini yapıştır"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Dışa aktarılacak nakış dosyası yüklü değil."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Nakış dosyası yüklü değil."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Yeniden yükleniyor"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Dosya kaydedilemedi: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Yükleniyor..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Çizgi genişliğini ve gölgelendirme faktörlerini sıfırla"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Koyu faktör, açık faktör ve çizgi genişliğini ayarlamak için tıklayın"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Arka planı değiştir: siyah, beyaz, yapılandırılmış"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Alt görünüm (sonraki dikişleri öncekilerin altına çiz)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Dikiş yoğunluğu katmanını aç/kapat"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "GPU dokulu işlemeyi aç/kapat"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Atlama görüntüsünü değiştir: kapalı, tümü, yalnızca riskli"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Dikiş görünürlüğünü aç/kapat"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "İğne ayarlarını sıfırla"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "İğne artı işareti ayarları"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Renk…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Tam ekran"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Yarıçap"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Genişlik"
+    }
+}

@@ -21,6 +21,7 @@ from .constants import APP_ORGANIZATION, APP_TITLE
 from .debug import configure_logging, logger
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
+from .i18n import active_locale, available_locales, set_active_locale
 from .interconnect import InterconnectServer, send_command
 from .runtime import runtime_info_lines
 
@@ -103,6 +104,14 @@ def build_argument_parser() -> argparse.ArgumentParser:
         "--version",
         action="store_true",
         help="Show InkSim and runtime dependency information and exit",
+    )
+    parser.add_argument(
+        "-l",
+        "--lang",
+        "--language",
+        choices=available_locales(),
+        default=None,
+        help="Override the UI language (default: from config or en)",
     )
     parser.add_argument(
         "input_file",
@@ -370,6 +379,11 @@ def main() -> None:
                     answer = ""
                 if answer not in ("y", "yes"):
                     parser.error("export cancelled")
+
+    if args.lang is not None:
+        set_active_locale(args.lang)
+    else:
+        active_locale()  # resolves config or environment locale
 
     debug_enabled = (
         args.debug

@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..i18n import _
 from ..render import STITCH_RENDERERS, preview_stitches
 
 
@@ -26,7 +27,7 @@ class RendererPickerDialog(QDialog):
 
     def __init__(self, parent: QWidget, selected_renderer: str) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Choose stitch renderer")
+        self.setWindowTitle(_("dialog.renderer.title"))
         self.resize(760, 460)
         self.selected_renderer = selected_renderer
         layout = QVBoxLayout(self)

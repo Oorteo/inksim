@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "bg",
+        "name": "Bulgarian"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Разгледайте реда на шевовете, цветовете на конците, преходите, подрязванията и командите на машината преди производство. Прегледайте дизайна бод по бод, сменете стиловете на рендиране и експортирайте това, което виждате."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Последна проверка за актуализации: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Интерактивна симулация на бродерия, инспекция и експорт."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "Относно {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Дължина на лентата:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Дръжте линийка до екрана и плъзнете плъзгача, докато лентата отдолу стане точно 100 мм, след това натиснете OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Физическа дължина на лентата (мм):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Калибриране на размера на дисплея"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "Невалиден TOML"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Грешка при запазване на конфигурацията: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Грешка"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Конфигурационен файл"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Затвори"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "Копирано!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Копирай в клипборда"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Копирай изображението с пълна резолюция в клипборда"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Формат:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Качество:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Запази..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Запази изображението във файл"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Грешка при запазване на {path}"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Запазване на изображение"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "Запазено!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Мащаб:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Прозрачен фон"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Езикът е зададен на {language}. Рестартирай InkSim, за да го приложиш."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Ще се използва системният език по подразбиране. InkSim ще се рестартира, за да го приложи."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Езикът е променен"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Цвят на иглата"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Нормален преглед"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Реален преглед"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Отвори файл за бродерия"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Избор на рендер за шевове"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "&Файл"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Калибриране на размера на дисплея..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Центрирай иглата"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Избор на рендер за шевове..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Експорт"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Икона/Миниатюра..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Засенчен печат..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Прост печат..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Побери дизайна в прозореца"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU текстуриран рендер"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Отвори файл за бродерия"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Изход"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Завърти наляво 90 градуса"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Завърти надясно 90 градуса"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Запази като бродерия..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Покажи измервателна мрежа"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "&Помощ"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "Относно {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Провери за актуализации"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Опции на командния ред..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Конфигурация"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Помощ"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Статус"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Проследяване на събития"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Език"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Системен по подразбиране"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "&Възпроизвеждане"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Следващ цвят"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Следваща команда"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Пусни/Пауза"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Предишен цвят"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Предишна команда"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "&Изглед"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Реален размер (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Изчисти запазената позиция на прихващане"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Списък с команди"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Смени фона"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Цял екран"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Запази текущата позиция на прихващане"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Покажи/скрий всичко"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Покажи иглата"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Прихвани оформлението на прозореца"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Няма зареден файл за бродерия за експорт."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Няма зареден файл за бродерия."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Презареждане"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Грешка при запазване на файла: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Зареждане..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Нулирай ширината на линията и факторите на засенчване"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Кликнете, за да настроите тъмен фактор, светъл фактор и ширина на линията"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Смени фона: черен, бял, конфигуриран"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Изглед отдолу (рисувай по-късните шевове под по-ранните)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Превключване на наслагване на плътността на шевовете"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Превключване на GPU текстуриран рендер"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Смени показването на преходи: изключено, всички, само рискови"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Превключване на видимостта на шевовете"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Нулирай настройките на иглата"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Настройки на кръста на иглата"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Цвят…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Цял екран"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Радиус"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Ширина"
+    }
+}

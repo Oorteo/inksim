@@ -1,0 +1,398 @@
+{
+    "_meta": {
+        "language": "so",
+        "name": "Somali"
+    },
+    "app.title": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "dialog.about.body": {
+        "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
+        "translation": "Sahmi nidaamka tolida, midabada dunta, boodboodka, goynta, iyo amarka mashiinka ka hor wax soo saar. Horudhac u samee naqshadda tol tol, beddel qaababka render-ka, oo dhoofso waxa aad aragto."
+    },
+    "dialog.about.last_update_check": {
+        "source": "Last update check: {when}",
+        "translation": "Hubinta cusboonaysiinta ugu dambeysay: {when}"
+    },
+    "dialog.about.tagline": {
+        "source": "Interactive embroidery simulation, inspection, and export.",
+        "translation": "Jilitaanka daabacaadda, baaritaanka, iyo dhoofinta isdhexgalka ah."
+    },
+    "dialog.about.title": {
+        "source": "About {app_title}",
+        "translation": "Ku saabsan {app_title}"
+    },
+    "dialog.calibrate.bar_length": {
+        "source": "Bar length:",
+        "translation": "Dhererka baarka:"
+    },
+    "dialog.calibrate.info": {
+        "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
+        "translation": "Haysa xisaabta (ruler) ee shaashadda oo jiid slider-ka ilaa uu baarka hoose uu noqdo dhererkiisu 100 mm, ka dib riix OK."
+    },
+    "dialog.calibrate.physical_length": {
+        "source": "Physical length of the bar (mm):",
+        "translation": "Dhererka jirka ee baarka (mm):"
+    },
+    "dialog.calibrate.title": {
+        "source": "Calibrate display size",
+        "translation": "Calaamadee cabbirka shaashadda"
+    },
+    "dialog.config.invalid_toml": {
+        "source": "Invalid TOML",
+        "translation": "TOML aan sax ahayn"
+    },
+    "dialog.config.save_error.message": {
+        "source": "Failed to save config: {error}",
+        "translation": "Kuma guuleysan kaydinta config: {error}"
+    },
+    "dialog.config.save_error.title": {
+        "source": "Error",
+        "translation": "Qalad"
+    },
+    "dialog.config.title": {
+        "source": "Configuration file",
+        "translation": "Faylka qaabaynta"
+    },
+    "dialog.export.close": {
+        "source": "Close",
+        "translation": "Xir"
+    },
+    "dialog.export.copied": {
+        "source": "Copied!",
+        "translation": "La koobiyay!"
+    },
+    "dialog.export.copy": {
+        "source": "Copy to clipboard",
+        "translation": "Koobiyee shaashadda (clipboard)"
+    },
+    "dialog.export.copy.tooltip": {
+        "source": "Copy the full-resolution image to the clipboard",
+        "translation": "Koobiyee sawirka buuxa ee tayada sare leh ee clipboard-ka"
+    },
+    "dialog.export.format": {
+        "source": "Format:",
+        "translation": "Qaabka:"
+    },
+    "dialog.export.quality": {
+        "source": "Quality:",
+        "translation": "Tayada:"
+    },
+    "dialog.export.save": {
+        "source": "Save...",
+        "translation": "Kaydi..."
+    },
+    "dialog.export.save.tooltip": {
+        "source": "Save the image to a file",
+        "translation": "Kaydi sawirka fayl"
+    },
+    "dialog.export.save_error.message": {
+        "source": "Failed to save {path}",
+        "translation": "Kuma guuleysan kaydinta {path}"
+    },
+    "dialog.export.save_error.title": {
+        "source": "Save image",
+        "translation": "Kaydi sawirka"
+    },
+    "dialog.export.saved": {
+        "source": "Saved!",
+        "translation": "La kaydiyay!"
+    },
+    "dialog.export.scale": {
+        "source": "Scale:",
+        "translation": "Miisaanka:"
+    },
+    "dialog.export.transparent_bg": {
+        "source": "Transparent background",
+        "translation": "Asalka hufan (transparent)"
+    },
+    "dialog.language.restart_message": {
+        "source": "The language has been set to {language}. Restart InkSim to apply it.",
+        "translation": "Luuqadda waxaa loo dejiyay {language}. Dib u bilow InkSim si loo adeegsado."
+    },
+    "dialog.language.system_default_message": {
+        "source": "The system default language will be used. InkSim will restart to apply it.",
+        "translation": "Luuqadda asalka ah ee nidaamka ayaa la isticmaali doonaa. InkSim wuxuu dib u bilaabi doonaa si loo adeegsado."
+    },
+    "dialog.language.title": {
+        "source": "Language changed",
+        "translation": "Luuqadda ayaa la beddelay"
+    },
+    "dialog.needle_color.title": {
+        "source": "Needle color",
+        "translation": "Midabka cirbadda"
+    },
+    "dialog.open.normal_preview": {
+        "source": "Normal preview",
+        "translation": "Horudhac caadi ah"
+    },
+    "dialog.open.real_preview": {
+        "source": "Real preview",
+        "translation": "Horudhac dhab ah"
+    },
+    "dialog.open.title": {
+        "source": "Open embroidery file",
+        "translation": "Fur faylka daabacaadda"
+    },
+    "dialog.renderer.title": {
+        "source": "Choose stitch renderer",
+        "translation": "Dooro renderer-ka tolida"
+    },
+    "menu.file": {
+        "source": "&File",
+        "translation": "Fayl"
+    },
+    "menu.file.calibrate": {
+        "source": "Calibrate display size...",
+        "translation": "Calaamadee cabbirka shaashadda..."
+    },
+    "menu.file.center_needle": {
+        "source": "Center needle",
+        "translation": "Xarunta cirbadda"
+    },
+    "menu.file.choose_renderer": {
+        "source": "Choose stitch renderer...",
+        "translation": "Dooro renderer-ka tolida..."
+    },
+    "menu.file.export": {
+        "source": "Export",
+        "translation": "Dhoofso"
+    },
+    "menu.file.export.icon": {
+        "source": "Icon/Thumbnail...",
+        "translation": "Icon/Thumbnail..."
+    },
+    "menu.file.export.shaded_print": {
+        "source": "Shaded print...",
+        "translation": "Daabac hadh leh..."
+    },
+    "menu.file.export.simple_print": {
+        "source": "Simple print...",
+        "translation": "Daabac fudud..."
+    },
+    "menu.file.fit_design": {
+        "source": "Fit design to window",
+        "translation": "Ku habboon naqshadda daaqadda"
+    },
+    "menu.file.gpu_textured_render": {
+        "source": "GPU textured render",
+        "translation": "GPU render-ka qaabka (textured)"
+    },
+    "menu.file.open": {
+        "source": "Open embroidery file",
+        "translation": "Fur faylka daabacaadda"
+    },
+    "menu.file.quit": {
+        "source": "Quit",
+        "translation": "Bax"
+    },
+    "menu.file.rotate_left": {
+        "source": "Rotate left 90 deg",
+        "translation": "Wareeji bidix 90 darajo"
+    },
+    "menu.file.rotate_right": {
+        "source": "Rotate right 90 deg",
+        "translation": "Wareeji midig 90 darajo"
+    },
+    "menu.file.save_as": {
+        "source": "Save as embroidery...",
+        "translation": "Kaydi sida daabacad..."
+    },
+    "menu.file.show_grid": {
+        "source": "Show measurement grid",
+        "translation": "Muuji shabagga cabbirka"
+    },
+    "menu.help": {
+        "source": "&Help",
+        "translation": "Caawimaad"
+    },
+    "menu.help.about": {
+        "source": "About {app_title}",
+        "translation": "Ku saabsan {app_title}"
+    },
+    "menu.help.check_updates": {
+        "source": "Check for updates",
+        "translation": "Hubi cusboonaysiinta"
+    },
+    "menu.help.cli_options": {
+        "source": "Command line options...",
+        "translation": "Ikhtiyaarrada safka amarka..."
+    },
+    "menu.help.config": {
+        "source": "Config",
+        "translation": "Config"
+    },
+    "menu.help.help": {
+        "source": "Help",
+        "translation": "Caawimaad"
+    },
+    "menu.help.status": {
+        "source": "Status",
+        "translation": "Heerka"
+    },
+    "menu.help.trace_events": {
+        "source": "Trace events",
+        "translation": "Raad raac dhacdooyinka"
+    },
+    "menu.language": {
+        "source": "Language",
+        "translation": "Luuqad"
+    },
+    "menu.language.system_default": {
+        "source": "System default",
+        "translation": "Asalka nidaamka"
+    },
+    "menu.playback": {
+        "source": "&Playback",
+        "translation": "Ciyaarista"
+    },
+    "menu.playback.next_color": {
+        "source": "Next color",
+        "translation": "Midabka xiga"
+    },
+    "menu.playback.next_command": {
+        "source": "Next command",
+        "translation": "Amarka xiga"
+    },
+    "menu.playback.play_pause": {
+        "source": "Play/Pause",
+        "translation": "Ciyaar/Hakad"
+    },
+    "menu.playback.prev_color": {
+        "source": "Prev color",
+        "translation": "Midabkii hore"
+    },
+    "menu.playback.prev_command": {
+        "source": "Prev command",
+        "translation": "Amarkii hore"
+    },
+    "menu.view": {
+        "source": "&View",
+        "translation": "Muuqaal"
+    },
+    "menu.view.actual_size": {
+        "source": "Actual size (1:1)",
+        "translation": "Cabbirka dhabta ah (1:1)"
+    },
+    "menu.view.clear_snap": {
+        "source": "Clear saved snap position",
+        "translation": "Tirtir booska snap-ka la kaydiyay"
+    },
+    "menu.view.command_list": {
+        "source": "Command list",
+        "translation": "Liiska amarka"
+    },
+    "menu.view.cycle_bg": {
+        "source": "Cycle background",
+        "translation": "Wareeji asalka"
+    },
+    "menu.view.fullscreen": {
+        "source": "Fullscreen",
+        "translation": "Shaashad buuxda"
+    },
+    "menu.view.save_snap": {
+        "source": "Save current snap position",
+        "translation": "Kaydi booska snap-ka hadda"
+    },
+    "menu.view.show_hide_all": {
+        "source": "Show/hide all",
+        "translation": "Muuji/qari dhammaan"
+    },
+    "menu.view.show_needle": {
+        "source": "Show needle",
+        "translation": "Muuji cirbadda"
+    },
+    "menu.view.snap_layout": {
+        "source": "Snap window layout",
+        "translation": "Qaabka daaqadda snap-ka"
+    },
+    "message.no_file_to_export": {
+        "source": "No embroidery file is loaded to export.",
+        "translation": "Ma jiro fayl daabacad oo la soo shubay si loo dhoofiyo."
+    },
+    "message.no_file_to_save": {
+        "source": "No embroidery file is loaded.",
+        "translation": "Ma jiro fayl daabacad oo la soo shubay."
+    },
+    "message.reload.title": {
+        "source": "Reloading",
+        "translation": "Dib u shubista"
+    },
+    "message.save_error.message": {
+        "source": "Failed to save file: {error}",
+        "translation": "Kuma guuleysan kaydinta faylka: {error}"
+    },
+    "splash.loading": {
+        "source": "Loading...",
+        "translation": "Soo shubid..."
+    },
+    "status.line_settings.reset": {
+        "source": "Reset line width and shading factors",
+        "translation": "Dib u dhig ballaca khadka iyo qodobada hadhka"
+    },
+    "status.line_settings.tooltip": {
+        "source": "Click to adjust dark factor, light factor and line width",
+        "translation": "Guji si aad u hagaajiso qodobka mugdiga, qodobka iftiinka iyo ballaca khadka"
+    },
+    "status.mode.background": {
+        "source": "Cycle background: black, white, configured",
+        "translation": "Wareeji asalka: madow, caddaan, qaabaysan"
+    },
+    "status.mode.bottom_view": {
+        "source": "Bottom view (draw later stitches under earlier ones)",
+        "translation": "Muuqaalka hoose (ku sawir tolmo dambe oo hoos yimaada kuwa hore)"
+    },
+    "status.mode.density": {
+        "source": "Toggle stitch density overlay",
+        "translation": "Beddel isku-darka cufnaanta tolida"
+    },
+    "status.mode.gpu_textured": {
+        "source": "Toggle GPU textured rendering",
+        "translation": "Beddel GPU render-ka qaabka (textured)"
+    },
+    "status.mode.jump": {
+        "source": "Cycle jump display: off, all, risky only",
+        "translation": "Wareeji muujinta boodboodka: dami, dhammaan, khatarta kaliya"
+    },
+    "status.mode.visibility": {
+        "source": "Toggle stitch visibility",
+        "translation": "Beddel muuqaalka tolida"
+    },
+    "status.needle.reset": {
+        "source": "Reset needle settings",
+        "translation": "Dib u dhig qaabaynta cirbadda"
+    },
+    "status.needle.settings": {
+        "source": "Needle crosshair settings",
+        "translation": "Qaabaynta isgoyska cirbadda"
+    },
+    "status.slider.color": {
+        "source": "Color…",
+        "translation": "Midab…"
+    },
+    "status.slider.dark_factor": {
+        "source": "DF",
+        "translation": "DF"
+    },
+    "status.slider.fullscreen": {
+        "source": "Full screen",
+        "translation": "Shaashad buuxda"
+    },
+    "status.slider.light_factor": {
+        "source": "LF",
+        "translation": "LF"
+    },
+    "status.slider.line_width": {
+        "source": "LW",
+        "translation": "LW"
+    },
+    "status.slider.radius": {
+        "source": "Radius",
+        "translation": "Raadiyaha"
+    },
+    "status.slider.width": {
+        "source": "Width",
+        "translation": "Ballaca"
+    }
+}
