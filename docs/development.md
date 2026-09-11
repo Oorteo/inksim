@@ -179,6 +179,11 @@ uv run python -m inksim -l sk
 The chosen locale is persisted in the config file, so omitting `--lang` uses
 the last selected one.
 
+The language can also be changed from inside the application via the
+**Language** menu. Selecting a locale stores it in the config file and prompts
+for a restart; a **System default** entry removes the stored language so the
+system locale variables are used again.
+
 The application also respects the system locale variables:
 
 ```bash
