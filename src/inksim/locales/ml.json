@@ -108,12 +108,16 @@
         "translation": "സുതാര്യമായ പശ്ചാത്തലം"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "ഭാഷ {language} ആയി സജ്ജീകരിച്ചു. ഇത് പ്രയോഗിക്കാൻ InkSim പുനരാരംഭിക്കുക."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "ഭാഷ {language} ആയി സജ്ജീകരിച്ചു. ഇത് ബാധകമാക്കാൻ ഇപ്പോൾ InkSim വീണ്ടും തുടങ്ങണോ?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "ഭാഷ മാറ്റിയിരിക്കുന്നു. പുതിയ ഭാഷ പ്രയോഗിക്കാൻ InkSim അടച്ച് Inkscape-ൽ നിന്ന് വീണ്ടും തുറക്കുക."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "സിസ്റ്റം ഡിഫോൾട്ട് ഭാഷ ഉപയോഗിക്കും. ഇത് പ്രയോഗിക്കാൻ InkSim പുനരാരംഭിക്കും."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "സിസ്റ്റത്തിന്റെ സ്ഥിര ഭാഷ ഉപയോഗിക്കും. ഇത് ബാധകമാക്കാൻ ഇപ്പോൾ InkSim വീണ്ടും തുടങ്ങണോ?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "സാധാരണ പ്രിവ്യൂ"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "സാധുവായ എംബ്രോയ്ഡറി ഫയൽ അല്ല"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

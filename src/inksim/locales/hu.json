@@ -108,12 +108,16 @@
         "translation": "Átlátszó háttér"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "A nyelv beállítva: {language}. Indítsd újra az InkSimet, hogy érvényesüljön."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "A nyelv beállítva: {language}. Indítsd újra az InkSimet, hogy érvénybe lépjen?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "A nyelv megváltozott. Zárd be az InkSimet, és nyisd meg újra az Inkscape-ből az új nyelv alkalmazásához."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "A rendszer alapértelmezett nyelve lesz használva. Az InkSim újraindul, hogy érvényesüljön."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "A rendszer alapértelmezett nyelve lesz használva. Indítsd újra az InkSimet, hogy érvénybe lépjen?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normál előnézet"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Nem érvényes hímzésfájl"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

@@ -108,12 +108,16 @@
         "translation": "ಪಾರದರ್ಶಕ ಹಿನ್ನೆಲೆ"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "ಭಾಷೆಯನ್ನು {language} ಗೆ ಹೊಂದಿಸಲಾಗಿದೆ. ಅದನ್ನು ಅನ್ವಯಿಸಲು InkSim ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಿ."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "ಭಾಷೆಯನ್ನು {language} ಆಗಿ ಹೊಂದಿಸಲಾಗಿದೆ. ಅದನ್ನು ಅನ್ವಯಿಸಲು ಈಗ InkSim ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸುವಿರಾ?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "ಭಾಷೆ ಬದಲಾಯಿಸಲಾಗಿದೆ. ಹೊಸ ಭಾಷೆಯನ್ನು ಅನ್ವಯಿಸಲು InkSim ಅನ್ನು ಮುಚ್ಚಿ ಮತ್ತು Inkscape ನಿಂದ ಮತ್ತೆ ತೆರೆಯಿರಿ."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "ಸಿಸ್ಟಮ್ ಡೀಫಾಲ್ಟ್ ಭಾಷೆಯನ್ನು ಬಳಸಲಾಗುತ್ತದೆ. ಅದನ್ನು ಅನ್ವಯಿಸಲು InkSim ಮರುಪ್ರಾರಂಭವಾಗುತ್ತದೆ."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "ಸಿಸ್ಟಂ ಡೀಫಾಲ್ಟ್ ಭಾಷೆ ಬಳಸಲಾಗುವುದು. ಅದನ್ನು ಅನ್ವಯಿಸಲು ಈಗ InkSim ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸುವಿರಾ?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "ಸಾಮಾನ್ಯ ಪೂರ್ವವೀಕ್ಷಣೆ"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "ಇದು ಸರಿಯಾದ ಎಂಬ್ರಾಯ್ಡರಿ ಫೈಲ್ ಅಲ್ಲ"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

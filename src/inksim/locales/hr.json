@@ -108,12 +108,16 @@
         "translation": "Transparentna pozadina"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Jezik je postavljen na {language}. Restartaj InkSim da se primijeni."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Jezik je postavljen na {language}. Ponovno pokreni InkSim sada da se primijeni?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Jezik je promijenjen. Zatvori InkSim i ponovno ga otvori iz Inkscapea kako bi primijenio novi jezik."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Koristit će se zadani jezik sustava. InkSim će se restartati da se primijeni."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Koristit će se zadani jezik sustava. Ponovno pokreni InkSim sada da se primijeni?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normalni pregled"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Nije ispravna datoteka za vez"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

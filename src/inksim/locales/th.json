@@ -108,12 +108,16 @@
         "translation": "พื้นหลังโปร่งใส"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "ตั้งค่าภาษาเป็น {language} แล้ว รีสตาร์ท InkSim เพื่อให้มีผล"
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "ตั้งค่าภาษาเป็น {language} เรียบร้อยแล้ว จะรีสตาร์ท InkSim เพื่อให้มีผลเลยไหม?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "เปลี่ยนภาษาแล้ว กรุณาปิด InkSim แล้วเปิดใหม่จาก Inkscape เพื่อใช้ภาษาใหม่"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "จะใช้ภาษาตามค่าเริ่มต้นของระบบ InkSim จะรีสตาร์ทเพื่อให้มีผล"
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "จะใช้ภาษาตามระบบตั้งค่าไว้ อยากให้มีผลต้องรีสตาร์ท InkSim เลยไหม?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "ตัวอย่างปกติ"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "ไฟล์นี้ไม่ใช่ไฟล์งานปักที่ถูกต้องนะ"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

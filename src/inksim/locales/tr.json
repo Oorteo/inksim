@@ -108,12 +108,16 @@
         "translation": "Şeffaf arka plan"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Dil {language} olarak ayarlandı. Uygulamak için InkSim'i yeniden başlatın."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Dil {language} olarak ayarlandı. Uygulamak için InkSim'i yeniden başlatmak ister misin?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Dil değiştirildi. Yeni dili uygulamak için InkSim'i kapat ve Inkscape'ten yeniden aç."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Sistem varsayılan dili kullanılacak. Uygulamak için InkSim yeniden başlatılacak."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Sistem varsayılan dili kullanılacak. Uygulamak için InkSim'i yeniden başlatmak ister misin?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normal önizleme"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Geçerli bir nakış dosyası değil."
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

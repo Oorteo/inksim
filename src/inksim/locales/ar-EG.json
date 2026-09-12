@@ -1,7 +1,7 @@
 {
     "_meta": {
-        "language": "no",
-        "name": "Norwegian"
+        "language": "ar-EG",
+        "name": "Arabic (Egypt)"
     },
     "app.title": {
         "source": "InkSim",
@@ -9,398 +9,398 @@
     },
     "dialog.about.body": {
         "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-        "translation": "Utforsk stingrekkefølge, trådfarger, hopp, trimming og maskinkommandoer før produksjon. Forhåndsvis designet sting for sting, bytt gjengivelsesstiler, og eksporter det du ser."
+        "translation": "استكشف ترتيب الغرز وألوان الخيوط والقفزات والقصاصات وأوامر الماكينة قبل الإنتاج. اعاين التصميم غرزة بغرزة، بدّل أنماط العرض، وصدّر ما تراه."
     },
     "dialog.about.last_update_check": {
         "source": "Last update check: {when}",
-        "translation": "Siste oppdateringssjekk: {when}"
+        "translation": "آخر فحص للتحديث: {when}"
     },
     "dialog.about.tagline": {
         "source": "Interactive embroidery simulation, inspection, and export.",
-        "translation": "Interaktiv broderisimulering, inspeksjon og eksport."
+        "translation": "محاكاة تطريز تفاعلية، فحص، وتصدير."
     },
     "dialog.about.title": {
         "source": "About {app_title}",
-        "translation": "Om {app_title}"
+        "translation": "حول {app_title}"
     },
     "dialog.calibrate.bar_length": {
         "source": "Bar length:",
-        "translation": "Stanglengde:"
+        "translation": "طول الشريط:"
     },
     "dialog.calibrate.info": {
         "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-        "translation": "Hold en linjal mot skjermen og dra glidebryteren til linjen under er nøyaktig 100 mm lang, og trykk deretter OK."
+        "translation": "ضع مسطرة على الشاشة واسحب المؤشر حتى يصبح الشريط بالأسفل بطول 100 ملم بالضبط، ثم اضغط موافق."
     },
     "dialog.calibrate.physical_length": {
         "source": "Physical length of the bar (mm):",
-        "translation": "Fysisk lengde på linjen (mm):"
+        "translation": "الطول الفعلي للشريط (ملم):"
     },
     "dialog.calibrate.title": {
         "source": "Calibrate display size",
-        "translation": "Kalibrer skjermstørrelse"
+        "translation": "معايرة حجم العرض"
     },
     "dialog.config.invalid_toml": {
         "source": "Invalid TOML",
-        "translation": "Ugyldig TOML"
+        "translation": "TOML غير صالح"
     },
     "dialog.config.save_error.message": {
         "source": "Failed to save config: {error}",
-        "translation": "Kunne ikke lagre konfigurasjon: {error}"
+        "translation": "فشل حفظ الإعدادات: {error}"
     },
     "dialog.config.save_error.title": {
         "source": "Error",
-        "translation": "Feil"
+        "translation": "خطأ"
     },
     "dialog.config.title": {
         "source": "Configuration file",
-        "translation": "Konfigurasjonsfil"
+        "translation": "ملف الإعدادات"
     },
     "dialog.export.close": {
         "source": "Close",
-        "translation": "Lukk"
+        "translation": "إغلاق"
     },
     "dialog.export.copied": {
         "source": "Copied!",
-        "translation": "Kopiert!"
+        "translation": "تم النسخ!"
     },
     "dialog.export.copy": {
         "source": "Copy to clipboard",
-        "translation": "Kopier til utklippstavle"
+        "translation": "نسخ إلى الحافظة"
     },
     "dialog.export.copy.tooltip": {
         "source": "Copy the full-resolution image to the clipboard",
-        "translation": "Kopier bildet i full oppløsning til utklippstavlen"
+        "translation": "نسخ الصورة بدقة كاملة إلى الحافظة"
     },
     "dialog.export.format": {
         "source": "Format:",
-        "translation": "Format:"
+        "translation": "الصيغة:"
     },
     "dialog.export.quality": {
         "source": "Quality:",
-        "translation": "Kvalitet:"
+        "translation": "الجودة:"
     },
     "dialog.export.save": {
         "source": "Save...",
-        "translation": "Lagre..."
+        "translation": "حفظ..."
     },
     "dialog.export.save.tooltip": {
         "source": "Save the image to a file",
-        "translation": "Lagre bildet til en fil"
+        "translation": "حفظ الصورة إلى ملف"
     },
     "dialog.export.save_error.message": {
         "source": "Failed to save {path}",
-        "translation": "Kunne ikke lagre {path}"
+        "translation": "فشل حفظ {path}"
     },
     "dialog.export.save_error.title": {
         "source": "Save image",
-        "translation": "Lagre bilde"
+        "translation": "حفظ الصورة"
     },
     "dialog.export.saved": {
         "source": "Saved!",
-        "translation": "Lagret!"
+        "translation": "تم الحفظ!"
     },
     "dialog.export.scale": {
         "source": "Scale:",
-        "translation": "Skala:"
+        "translation": "المقياس:"
     },
     "dialog.export.transparent_bg": {
         "source": "Transparent background",
-        "translation": "Gjennomsiktig bakgrunn"
+        "translation": "خلفية شفافة"
     },
     "dialog.language.restart_message": {
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
-        "translation": "Språket er satt til {language}. Start InkSim på nytt for å bruke det?"
+        "translation": "تم تعيين اللغة إلى {language}. هل تريد إعادة تشغيل InkSim الآن لتطبيقها؟"
     },
     "dialog.language.server_message": {
         "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Språket er endret. Lukk InkSim og åpne det på nytt fra Inkscape for å bruke det nye språket."
+        "translation": "اللغة اتغيرت. اقفل InkSim وافتحه تاني من Inkscape عشان تطبق اللغة الجديدة."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
-        "translation": "Systemets standardspråk vil bli brukt. Start InkSim på nytt for å bruke det?"
+        "translation": "سيتم استخدام اللغة الافتراضية للنظام. هل تريد إعادة تشغيل InkSim الآن لتطبيقها؟"
     },
     "dialog.language.title": {
         "source": "Language changed",
-        "translation": "Språk endret"
+        "translation": "تم تغيير اللغة"
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
-        "translation": "Nålfarge"
+        "translation": "لون الإبرة"
     },
     "dialog.open.normal_preview": {
         "source": "Normal preview",
-        "translation": "Normal forhåndsvisning"
+        "translation": "عرض عادي"
     },
     "dialog.open.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "Ikke en gyldig broderifil"
+        "translation": "ليس ملف تطريز صالح"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",
-        "translation": "Virkelig forhåndsvisning"
+        "translation": "عرض حقيقي"
     },
     "dialog.open.title": {
         "source": "Open embroidery file",
-        "translation": "Åpne broderifil"
+        "translation": "فتح ملف تطريز"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
-        "translation": "Velg stinggjengivelse"
+        "translation": "اختر محرك عرض الغرز"
     },
     "menu.file": {
         "source": "&File",
-        "translation": "&Fil"
+        "translation": "ملف"
     },
     "menu.file.calibrate": {
         "source": "Calibrate display size...",
-        "translation": "Kalibrer skjermstørrelse..."
+        "translation": "معايرة حجم العرض..."
     },
     "menu.file.center_needle": {
         "source": "Center needle",
-        "translation": "Sentrer nål"
+        "translation": "توسيط الإبرة"
     },
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
-        "translation": "Velg stinggjengivelse..."
+        "translation": "اختر محرك عرض الغرز..."
     },
     "menu.file.export": {
         "source": "Export",
-        "translation": "Eksporter"
+        "translation": "تصدير"
     },
     "menu.file.export.icon": {
         "source": "Icon/Thumbnail...",
-        "translation": "Ikon/miniatyrbilde..."
+        "translation": "أيقونة/صورة مصغرة..."
     },
     "menu.file.export.shaded_print": {
         "source": "Shaded print...",
-        "translation": "Skyggelagt utskrift..."
+        "translation": "طباعة مظللة..."
     },
     "menu.file.export.simple_print": {
         "source": "Simple print...",
-        "translation": "Enkel utskrift..."
+        "translation": "طباعة بسيطة..."
     },
     "menu.file.fit_design": {
         "source": "Fit design to window",
-        "translation": "Tilpass design til vindu"
+        "translation": "ملاءمة التصميم مع النافذة"
     },
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
-        "translation": "GPU-teksturert gjengivelse"
+        "translation": "عرض محكم بواسطة GPU"
     },
     "menu.file.open": {
         "source": "Open embroidery file",
-        "translation": "Åpne broderifil"
+        "translation": "فتح ملف تطريز"
     },
     "menu.file.quit": {
         "source": "Quit",
-        "translation": "Avslutt"
+        "translation": "خروج"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
-        "translation": "Roter venstre 90 grader"
+        "translation": "تدوير لليسار 90 درجة"
     },
     "menu.file.rotate_right": {
         "source": "Rotate right 90 deg",
-        "translation": "Roter høyre 90 grader"
+        "translation": "تدوير لليمين 90 درجة"
     },
     "menu.file.save_as": {
         "source": "Save as embroidery...",
-        "translation": "Lagre som broderi..."
+        "translation": "حفظ كتطريز..."
     },
     "menu.file.show_grid": {
         "source": "Show measurement grid",
-        "translation": "Vis målerutenett"
+        "translation": "إظهار شبكة القياس"
     },
     "menu.help": {
         "source": "&Help",
-        "translation": "&Hjelp"
+        "translation": "مساعدة"
     },
     "menu.help.about": {
         "source": "About {app_title}",
-        "translation": "Om {app_title}"
+        "translation": "حول {app_title}"
     },
     "menu.help.check_updates": {
         "source": "Check for updates",
-        "translation": "Se etter oppdateringer"
+        "translation": "التحقق من التحديثات"
     },
     "menu.help.cli_options": {
         "source": "Command line options...",
-        "translation": "Kommandolinjealternativer..."
+        "translation": "خيارات سطر الأوامر..."
     },
     "menu.help.config": {
         "source": "Config",
-        "translation": "Konfigurasjon"
+        "translation": "الإعدادات"
     },
     "menu.help.help": {
         "source": "Help",
-        "translation": "Hjelp"
+        "translation": "المساعدة"
     },
     "menu.help.status": {
         "source": "Status",
-        "translation": "Status"
+        "translation": "الحالة"
     },
     "menu.help.trace_events": {
         "source": "Trace events",
-        "translation": "Spor hendelser"
+        "translation": "تتبع الأحداث"
     },
     "menu.language": {
         "source": "Language",
-        "translation": "Språk"
+        "translation": "اللغة"
     },
     "menu.language.system_default": {
         "source": "System default",
-        "translation": "Systemstandard"
+        "translation": "الافتراضي للنظام"
     },
     "menu.playback": {
         "source": "&Playback",
-        "translation": "&Avspilling"
+        "translation": "تشغيل"
     },
     "menu.playback.next_color": {
         "source": "Next color",
-        "translation": "Neste farge"
+        "translation": "اللون التالي"
     },
     "menu.playback.next_command": {
         "source": "Next command",
-        "translation": "Neste kommando"
+        "translation": "الأمر التالي"
     },
     "menu.playback.play_pause": {
         "source": "Play/Pause",
-        "translation": "Spill/Pause"
+        "translation": "تشغيل/إيقاف مؤقت"
     },
     "menu.playback.prev_color": {
         "source": "Prev color",
-        "translation": "Forrige farge"
+        "translation": "اللون السابق"
     },
     "menu.playback.prev_command": {
         "source": "Prev command",
-        "translation": "Forrige kommando"
+        "translation": "الأمر السابق"
     },
     "menu.view": {
         "source": "&View",
-        "translation": "&Vis"
+        "translation": "عرض"
     },
     "menu.view.actual_size": {
         "source": "Actual size (1:1)",
-        "translation": "Faktisk størrelse (1:1)"
+        "translation": "الحجم الفعلي (1:1)"
     },
     "menu.view.clear_snap": {
         "source": "Clear saved snap position",
-        "translation": "Fjern lagret snap-posisjon"
+        "translation": "مسح موضع الالتقاط المحفوظ"
     },
     "menu.view.command_list": {
         "source": "Command list",
-        "translation": "Kommandooversikt"
+        "translation": "قائمة الأوامر"
     },
     "menu.view.cycle_bg": {
         "source": "Cycle background",
-        "translation": "Syklus bakgrunn"
+        "translation": "تبديل الخلفية"
     },
     "menu.view.fullscreen": {
         "source": "Fullscreen",
-        "translation": "Fullskjerm"
+        "translation": "ملء الشاشة"
     },
     "menu.view.save_snap": {
         "source": "Save current snap position",
-        "translation": "Lagre gjeldende snap-posisjon"
+        "translation": "حفظ موضع الالتقاط الحالي"
     },
     "menu.view.show_hide_all": {
         "source": "Show/hide all",
-        "translation": "Vis/skjul alle"
+        "translation": "إظهار/إخفاء الكل"
     },
     "menu.view.show_needle": {
         "source": "Show needle",
-        "translation": "Vis nål"
+        "translation": "إظهار الإبرة"
     },
     "menu.view.snap_layout": {
         "source": "Snap window layout",
-        "translation": "Snap vindusoppsett"
+        "translation": "التقاط تخطيط النافذة"
     },
     "message.no_file_to_export": {
         "source": "No embroidery file is loaded to export.",
-        "translation": "Ingen broderifil er lastet inn for eksport."
+        "translation": "لا يوجد ملف تطريز محمّل للتصدير."
     },
     "message.no_file_to_save": {
         "source": "No embroidery file is loaded.",
-        "translation": "Ingen broderifil er lastet inn."
+        "translation": "لا يوجد ملف تطريز محمّل."
     },
     "message.reload.title": {
         "source": "Reloading",
-        "translation": "Laster inn på nytt"
+        "translation": "إعادة التحميل"
     },
     "message.save_error.message": {
         "source": "Failed to save file: {error}",
-        "translation": "Kunne ikke lagre fil: {error}"
+        "translation": "فشل حفظ الملف: {error}"
     },
     "splash.loading": {
         "source": "Loading...",
-        "translation": "Laster inn..."
+        "translation": "جارِ التحميل..."
     },
     "status.line_settings.reset": {
         "source": "Reset line width and shading factors",
-        "translation": "Tilbakestill linjebredde og skyggefaktorer"
+        "translation": "إعادة تعيين عرض الخط وعوامل التظليل"
     },
     "status.line_settings.tooltip": {
         "source": "Click to adjust dark factor, light factor and line width",
-        "translation": "Klikk for å justere mørk faktor, lys faktor og linjebredde"
+        "translation": "انقر لضبط معامل الظلام ومعامل الإضاءة وعرض الخط"
     },
     "status.mode.background": {
         "source": "Cycle background: black, white, configured",
-        "translation": "Syklus bakgrunn: svart, hvit, konfigurert"
+        "translation": "تبديل الخلفية: أسود، أبيض، مُهيأ"
     },
     "status.mode.bottom_view": {
         "source": "Bottom view (draw later stitches under earlier ones)",
-        "translation": "Bunnvisning (tegn senere sting under tidligere)"
+        "translation": "عرض سفلي (رسم الغرز اللاحقة تحت السابقة)"
     },
     "status.mode.density": {
         "source": "Toggle stitch density overlay",
-        "translation": "Slå av/på stingtetthet-overlegg"
+        "translation": "تبديل تراكب كثافة الغرز"
     },
     "status.mode.gpu_textured": {
         "source": "Toggle GPU textured rendering",
-        "translation": "Slå av/på GPU-teksturert gjengivelse"
+        "translation": "تبديل العرض النسيجي بواسطة GPU"
     },
     "status.mode.jump": {
         "source": "Cycle jump display: off, all, risky only",
-        "translation": "Syklus hoppvisning: av, alle, bare risikable"
+        "translation": "تبديل عرض القفزات: إيقاف، الكل، الخطرة فقط"
     },
     "status.mode.visibility": {
         "source": "Toggle stitch visibility",
-        "translation": "Slå av/på sting-synlighet"
+        "translation": "تبديل رؤية الغرز"
     },
     "status.needle.reset": {
         "source": "Reset needle settings",
-        "translation": "Tilbakestill nålinstillinger"
+        "translation": "إعادة تعيين إعدادات الإبرة"
     },
     "status.needle.settings": {
         "source": "Needle crosshair settings",
-        "translation": "Nål-krysshårinnstillinger"
+        "translation": "إعدادات شبكاني الإبرة"
     },
     "status.slider.color": {
         "source": "Color…",
-        "translation": "Farge…"
+        "translation": "لون…"
     },
     "status.slider.dark_factor": {
         "source": "DF",
-        "translation": "DF"
+        "translation": "معامل الظلام"
     },
     "status.slider.fullscreen": {
         "source": "Full screen",
-        "translation": "Fullskjerm"
+        "translation": "ملء الشاشة"
     },
     "status.slider.light_factor": {
         "source": "LF",
-        "translation": "LF"
+        "translation": "معامل الإضاءة"
     },
     "status.slider.line_width": {
         "source": "LW",
-        "translation": "LW"
+        "translation": "عرض الخط"
     },
     "status.slider.radius": {
         "source": "Radius",
-        "translation": "Radius"
+        "translation": "نصف القطر"
     },
     "status.slider.width": {
         "source": "Width",
-        "translation": "Bredde"
+        "translation": "العرض"
     }
 }

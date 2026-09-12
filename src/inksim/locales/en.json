@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "The language has been set to {language}. Restart InkSim now to apply it?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "The system default language will be used. Restart InkSim now to apply it?"
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normal preview"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Not a valid embroidery file"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

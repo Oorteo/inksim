@@ -108,12 +108,16 @@
         "translation": "Paşxaneya zelal"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Ziman hatiye danîn {language}. Ji bo sepandinê InkSim ji nû ve dest pê bike."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Ziman wek {language} hate danîn. Ma tu dixwazî niha InkSim ji nû ve dest pê bikî?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "زمان گۆڕدرا. بۆ جێبەجێکردنی زمانی نوێ، InkSim دابخە و لە Inkscape دووبارە بیکەرەوە."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Zimanê standard ê pergalê dê were bikaranîn. InkSim dê ji nû ve dest pê bike ji bo sepandinê."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Zimanê standard ê pergalê dê were bikaranîn. Ma tu dixwazî niha InkSim ji nû ve dest pê bikî?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Pêşdîtina normal"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Ev ne pelgeyek embroidery ya derbasdar e."
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

@@ -108,12 +108,16 @@
         "translation": "Fundal transparent"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Limba a fost setată la {language}. Repornește InkSim ca să se aplice."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Limba a fost setată la {language}. Repornește InkSim acum pentru a o aplica?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Limba a fost schimbată. Închide InkSim și redeschide-l din Inkscape pentru a aplica noua limbă."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Se va folosi limba implicită a sistemului. InkSim se va reporni ca să se aplice."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Se va folosi limba implicită a sistemului. Repornește InkSim acum pentru a o aplica?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Previzualizare normală"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Nu este un fișier de broderie valid"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

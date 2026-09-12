@@ -108,12 +108,16 @@
         "translation": "Priehľadné pozadie"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Jazyk sa nastavil na {language}. Reštartuj InkSim, aby sa to použilo."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Jazyk bol nastavený na {language}. Reštartovať InkSim teraz, aby sa to uplatnilo?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Jazyk sa zmenil. Zatvor InkSim a znova ho otvor z Inkscape, aby sa nový jazyk použil."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Použije sa systémový predvolený jazyk. InkSim sa reštartuje, aby sa to prejavilo."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Použije sa systémový predvolený jazyk. Reštartovať InkSim teraz, aby sa to uplatnilo?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normálny náhľad"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Nie je platný výšivkový súbor"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

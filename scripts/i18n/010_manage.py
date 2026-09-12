@@ -14,10 +14,14 @@ The roadmap lives in ``locales.json`` and defines tiers:
 
 Examples:
 
-    ./scripts/i18n/manage.py list
-    ./scripts/i18n/manage.py add fr
-    ./scripts/i18n/manage.py translate fr --model deepseek-v4-flash:cloud
-    ./scripts/i18n/manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
+    ./scripts/i18n/010_manage.py list
+    ./scripts/i18n/010_manage.py add fr
+    ./scripts/i18n/010_manage.py sync
+    ./scripts/i18n/010_manage.py translate fr --model deepseek-v4-flash:cloud
+    ./scripts/i18n/010_manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
+
+The ``sync`` command refreshes ``src/inksim/locales/en.json`` from source and removes
+orphaned keys from other locale catalogs. It does not call a translation model.
 """
 
 from __future__ import annotations
@@ -32,7 +36,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 LOCALES_DIR = ROOT / "src" / "inksim" / "locales"
 ROADMAP = Path(__file__).with_suffix("").parent / "locales.json"
-TRANSLATE = Path(__file__).with_suffix("").parent / "translate.py"
+TRANSLATE = Path(__file__).with_suffix("").parent / "_translate.py"
 
 
 def load_roadmap() -> list[dict[str, Any]]:
@@ -119,6 +123,49 @@ def cmd_add(argv: list[str] | None = None) -> int:
     return 0
 
 
+def cmd_sync(argv: list[str] | None = None) -> int:
+    """Refresh ``en.json`` from source and remove orphaned keys from locales."""
+    parser = argparse.ArgumentParser(
+        description="Sync locale catalogs with the English source (no auto-translation)"
+    )
+    _ = parser.parse_args(argv or [])
+
+    extract = Path(__file__).with_suffix("").parent / "_extract.py"
+    rc = subprocess.run([sys.executable, str(extract)], check=False).returncode
+    if rc != 0:
+        print("Failed to refresh English source catalog.", file=sys.stderr)
+        return rc
+
+    en_path = LOCALES_DIR / "en.json"
+    en_data = load_catalog(en_path)
+    canonical_keys = {key for key in en_data if not key.startswith("_")}
+
+    removed_total = 0
+    for path in sorted(LOCALES_DIR.glob("*.json")):
+        if path.name == "en.json":
+            continue
+        data = load_catalog(path)
+        meta = data.pop("_meta", {"language": path.stem, "name": path.stem})
+        orphaned = [key for key in data if key not in canonical_keys]
+        if not orphaned:
+            continue
+        for key in orphaned:
+            del data[key]
+        ordered: dict[str, Any] = {"_meta": meta}
+        ordered.update(dict(sorted(data.items())))
+        with path.open("w", encoding="utf-8") as f:
+            json.dump(ordered, f, ensure_ascii=False, indent=4)
+            f.write("\n")
+        removed_total += len(orphaned)
+        print(f"Removed {len(orphaned)} orphaned key(s) from {path.name}: {', '.join(orphaned)}")
+
+    if removed_total == 0:
+        print("No orphaned keys found; locale catalogs are in sync.")
+    else:
+        print(f"\nRemoved {removed_total} orphaned key(s) total.")
+    return 0
+
+
 def cmd_translate(argv: list[str] | None = None) -> int:
     """Translate a single locale using translate.py."""
     parser = argparse.ArgumentParser(description="Translate a single locale")
@@ -171,9 +218,11 @@ def cmd_translate_all(argv: list[str] | None = None) -> int:
 def main(argv: list[str] | None = None) -> int:
     argv = list(argv) if argv is not None else sys.argv[1:]
     if not argv or argv[0] in ("-h", "--help"):
-        print("Usage: manage.py {list|add|translate|translate-all} [options]")
+        print("Usage: manage.py {list|add|sync|translate|translate-all} [options]")
         print("  list        --tier N")
         print("  add         <code>")
+        print("  sync        Refresh en.json from source and remove orphaned keys")
+        print("              from locale catalogs (does not auto-translate).")
         print("  translate   <code> [--model MODEL] [--dry-run]")
         print("  translate-all [--tier N] [--model MODEL] [--dry-run]")
         return 0 if argv and argv[0] in ("-h", "--help") else 1
@@ -183,6 +232,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_list(rest)
     if command == "add":
         return cmd_add(rest)
+    if command == "sync":
+        return cmd_sync(rest)
     if command == "translate":
         return cmd_translate(rest)
     if command == "translate-all":

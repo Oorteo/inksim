@@ -108,12 +108,16 @@
         "translation": "Latar belakang telus"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Bahasa telah ditetapkan kepada {language}. Mulakan semula InkSim untuk menggunakannya."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Bahasa telah ditetapkan kepada {language}. Mulakan semula InkSim sekarang untuk menggunakannya?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Bahasa telah ditukar. Tutup InkSim dan buka semula dari Inkscape untuk menggunakan bahasa baru."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Bahasa lalai sistem akan digunakan. InkSim akan dimulakan semula untuk menggunakannya."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Bahasa lalai sistem akan digunakan. Mulakan semula InkSim sekarang untuk menggunakannya?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Pratonton biasa"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Bukan fail sulaman yang sah."
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

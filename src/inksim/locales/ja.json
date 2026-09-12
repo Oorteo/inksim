@@ -108,12 +108,16 @@
         "translation": "透明な背景"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "言語を{language}に設定したよ。反映するにはInkSimを再起動してね。"
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "言語を{language}に設定したよ。今すぐInkSimを再起動して適用する？"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "言語が変更されました。InkscapeからInkSimを閉じて再度開いて、新しい言語を適用してください。"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "システムのデフォルト言語を使うよ。反映するためにInkSimが再起動するね。"
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "システムのデフォルト言語を使うよ。今すぐInkSimを再起動して適用する？"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "通常プレビュー"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "有効な刺繍ファイルではありません。"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",
