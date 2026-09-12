@@ -14,10 +14,10 @@ The roadmap lives in ``locales.json`` and defines tiers:
 
 Examples:
 
-    ./scripts/i18n/manage.py list
-    ./scripts/i18n/manage.py add fr
-    ./scripts/i18n/manage.py translate fr --model deepseek-v4-flash:cloud
-    ./scripts/i18n/manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
+    ./scripts/i18n/010_manage.py list
+    ./scripts/i18n/010_manage.py add fr
+    ./scripts/i18n/010_manage.py translate fr --model deepseek-v4-flash:cloud
+    ./scripts/i18n/010_manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 LOCALES_DIR = ROOT / "src" / "inksim" / "locales"
 ROADMAP = Path(__file__).with_suffix("").parent / "locales.json"
-TRANSLATE = Path(__file__).with_suffix("").parent / "translate.py"
+TRANSLATE = Path(__file__).with_suffix("").parent / "_translate.py"
 
 
 def load_roadmap() -> list[dict[str, Any]]:

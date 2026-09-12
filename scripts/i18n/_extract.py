@@ -12,7 +12,7 @@ are preserved.
 
 Run with the project interpreter:
 
-    uvr python scripts/i18n/extract.py
+    uvr python scripts/i18n/_extract.py
 """
 
 from __future__ import annotations
