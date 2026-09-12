@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Keel on seatud {language}. Taaskäivita InkSim kohe, et see rakenduks?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Keel on muudetud. Sulge InkSim ja ava see uuesti Inkscape'ist, et uut keelt rakendada."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Kasutatakse süsteemi vaikekeelt. Taaskäivita InkSim kohe, et see rakenduks?"

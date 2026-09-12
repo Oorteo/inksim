@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Til {language} ga o'rnatildi. Uni qo'llash uchun InkSim-ni hozir qayta ishga tushirasizmi?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Til o‘zgartirildi. Yangi tilni qo‘llash uchun InkSimni yoping va Inkscape'dan qayta oching."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Tizimning standart tili ishlatiladi. Uni qo'llash uchun InkSim-ni hozir qayta ishga tushirasizmi?"

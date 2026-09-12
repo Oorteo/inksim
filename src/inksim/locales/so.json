@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Luuqadda waxaa lagu beddelay {language}. Dib u bilow InkSim hadda si ay u dhaqangasho?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Afka waa la beddelay. Xir InkSim oo dib uga fur Inkscape si aad u adeegsato afka cusub."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Waxaa la isticmaali doonaa luuqadda asalka ah ee nidaamka. Dib u bilow InkSim hadda si ay u dhaqangasho?"

@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Lugha imewekwa kuwa {language}. Anzisha InkSim upya sasa ili itumike?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Lugha imebadilishwa. Funga InkSim na uifungue tena kutoka kwenye Inkscape ili kutumia lugha mpya."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Lugha ya mfumo itatumika. Anzisha InkSim upya sasa ili itumike?"

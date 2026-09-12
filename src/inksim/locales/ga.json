@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Tá an teanga socraithe ar {language}. Atosaigh InkSim anois chun é a chur i bhfeidhm?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Athraíodh an teanga. Dún InkSim agus athoscail é ó Inkscape chun an teanga nua a chur i bhfeidhm."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Úsáidfear teanga réamhshocraithe an chórais. Atosaigh InkSim anois chun é a chur i bhfeidhm?"

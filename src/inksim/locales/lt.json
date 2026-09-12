@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Kalba nustatyta į {language}. Paleisk InkSim iš naujo dabar, kad pritaikytum?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Kalba pakeista. Uždaryk InkSim ir iš naujo atidaryk iš Inkscape, kad pritaikytum naują kalbą."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Sistemos numatytoji kalba bus naudojama. Paleisk InkSim iš naujo dabar, kad pritaikytum?"

@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Valoda ir iestatīta uz {language}. Vai restartēt InkSim, lai to piemērotu?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Valoda ir mainīta. Aizver InkSim un atver to vēlreiz no Inkscape, lai piemērotu jauno valodu."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Sistēmas noklusētā valoda tiks izmantota. Vai restartēt InkSim tagad, lai to piemērotu?"

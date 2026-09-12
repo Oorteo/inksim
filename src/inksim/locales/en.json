@@ -107,14 +107,6 @@
         "source": "Transparent background",
         "translation": "Transparent background"
     },
-    "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
-        "translation": "The language has been set to {language}. Restart InkSim now to apply it?"
-    },
-    "dialog.language.system_default_message": {
-        "source": "The system default language will be used. Restart InkSim now to apply it?",
-        "translation": "The system default language will be used. Restart InkSim now to apply it?"
-    },
     "dialog.language.server_message": {
         "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
         "translation": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language."
@@ -131,6 +123,10 @@
         "source": "Normal preview",
         "translation": "Normal preview"
     },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Not a valid embroidery file"
+    },
     "dialog.open.real_preview": {
         "source": "Real preview",
         "translation": "Real preview"
@@ -138,10 +134,6 @@
     "dialog.open.title": {
         "source": "Open embroidery file",
         "translation": "Open embroidery file"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Not a valid embroidery file"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",

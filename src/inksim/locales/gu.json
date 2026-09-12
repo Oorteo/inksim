@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "ભાષા {language} પર સેટ થઈ ગઈ છે. શું હવે InkSim ફરી શરૂ કરીને તે લાગુ કરવું?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "ભાષા બદલાઈ ગઈ છે. નવી ભાષા લાગુ કરવા માટે InkSim બંધ કરો અને Inkscape માંથી ફરીથી ખોલો."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "સિસ્ટમ ડિફોલ્ટ ભાષા વપરાશમાં લેવાશે. શું હવે InkSim ફરી શરૂ કરીને તે લાગુ કરવું?"

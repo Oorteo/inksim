@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Il-lingwa ġiet issettjata għal {language}. Erġa' ibda InkSim issa biex tapplikaha?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Il-lingwa nbidlet. Agħlaq InkSim u iftaħ mill-ġdid minn Inkscape biex tapplika l-lingwa l-ġdida."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Il-lingwa default tas-sistema se tintuża. Erġa' ibda InkSim issa biex tapplikaha?"

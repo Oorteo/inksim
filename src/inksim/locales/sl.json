@@ -111,6 +111,10 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Jezik je bil nastavljen na {language}. Ponovno zaženi InkSim, da ga uveljaviš?"
     },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Jezik je bil spremenjen. Zapri InkSim in ga ponovno odpri iz Inkscape, da uveljaviš novi jezik."
+    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Uporabljen bo sistemski privzeti jezik. Ponovno zaženi InkSim, da ga uveljaviš?"
