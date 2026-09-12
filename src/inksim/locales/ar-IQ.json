@@ -1,7 +1,7 @@
 {
     "_meta": {
-        "language": "bg",
-        "name": "Bulgarian"
+        "language": "ar-IQ",
+        "name": "Arabic (Iraq)"
     },
     "app.title": {
         "source": "InkSim",
@@ -9,371 +9,371 @@
     },
     "dialog.about.body": {
         "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-        "translation": "Разгледайте реда на шевовете, цветовете на конците, преходите, подрязванията и командите на машината преди производство. Прегледайте дизайна бод по бод, сменете стиловете на рендиране и експортирайте това, което виждате."
+        "translation": "استكشف ترتيب الغرز، ألوان الخيط، القفزات، القصات، وأوامر الماكينة قبل الإنتاج. شاهد التصميم غرزة بغرزة، بدّل أساليب العرض، وصدّر ما تشوفه."
     },
     "dialog.about.last_update_check": {
         "source": "Last update check: {when}",
-        "translation": "Последна проверка за актуализации: {when}"
+        "translation": "آخر فحص للتحديث: {when}"
     },
     "dialog.about.tagline": {
         "source": "Interactive embroidery simulation, inspection, and export.",
-        "translation": "Интерактивна симулация на бродерия, инспекция и експорт."
+        "translation": "محاكاة تطريز تفاعلية، فحص، وتصدير."
     },
     "dialog.about.title": {
         "source": "About {app_title}",
-        "translation": "Относно {app_title}"
+        "translation": "حول {app_title}"
     },
     "dialog.calibrate.bar_length": {
         "source": "Bar length:",
-        "translation": "Дължина на лентата:"
+        "translation": "طول الشريط:"
     },
     "dialog.calibrate.info": {
         "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-        "translation": "Дръжте линийка до екрана и плъзнете плъзгача, докато лентата отдолу стане точно 100 мм, след това натиснете OK."
+        "translation": "ضع مسطرة على الشاشة واسحب المؤشر حتى يكون الشريط بالأسفل طوله بالضبط 100 مم، ثم اضغط OK."
     },
     "dialog.calibrate.physical_length": {
         "source": "Physical length of the bar (mm):",
-        "translation": "Физическа дължина на лентата (мм):"
+        "translation": "الطول الفعلي للشريط (مم):"
     },
     "dialog.calibrate.title": {
         "source": "Calibrate display size",
-        "translation": "Калибриране на размера на дисплея"
+        "translation": "معايرة حجم العرض"
     },
     "dialog.config.invalid_toml": {
         "source": "Invalid TOML",
-        "translation": "Невалиден TOML"
+        "translation": "TOML غير صالح"
     },
     "dialog.config.save_error.message": {
         "source": "Failed to save config: {error}",
-        "translation": "Грешка при запазване на конфигурацията: {error}"
+        "translation": "فشل حفظ الإعدادات: {error}"
     },
     "dialog.config.save_error.title": {
         "source": "Error",
-        "translation": "Грешка"
+        "translation": "خطأ"
     },
     "dialog.config.title": {
         "source": "Configuration file",
-        "translation": "Конфигурационен файл"
+        "translation": "ملف الإعدادات"
     },
     "dialog.export.close": {
         "source": "Close",
-        "translation": "Затвори"
+        "translation": "إغلاق"
     },
     "dialog.export.copied": {
         "source": "Copied!",
-        "translation": "Копирано!"
+        "translation": "تم النسخ!"
     },
     "dialog.export.copy": {
         "source": "Copy to clipboard",
-        "translation": "Копирай в клипборда"
+        "translation": "نسخ إلى الحافظة"
     },
     "dialog.export.copy.tooltip": {
         "source": "Copy the full-resolution image to the clipboard",
-        "translation": "Копирай изображението с пълна резолюция в клипборда"
+        "translation": "انسخ الصورة بدقة كاملة إلى الحافظة"
     },
     "dialog.export.format": {
         "source": "Format:",
-        "translation": "Формат:"
+        "translation": "الصيغة:"
     },
     "dialog.export.quality": {
         "source": "Quality:",
-        "translation": "Качество:"
+        "translation": "الجودة:"
     },
     "dialog.export.save": {
         "source": "Save...",
-        "translation": "Запази..."
+        "translation": "حفظ..."
     },
     "dialog.export.save.tooltip": {
         "source": "Save the image to a file",
-        "translation": "Запази изображението във файл"
+        "translation": "احفظ الصورة إلى ملف"
     },
     "dialog.export.save_error.message": {
         "source": "Failed to save {path}",
-        "translation": "Грешка при запазване на {path}"
+        "translation": "فشل حفظ {path}"
     },
     "dialog.export.save_error.title": {
         "source": "Save image",
-        "translation": "Запазване на изображение"
+        "translation": "حفظ الصورة"
     },
     "dialog.export.saved": {
         "source": "Saved!",
-        "translation": "Запазено!"
+        "translation": "تم الحفظ!"
     },
     "dialog.export.scale": {
         "source": "Scale:",
-        "translation": "Мащаб:"
+        "translation": "المقياس:"
     },
     "dialog.export.transparent_bg": {
         "source": "Transparent background",
-        "translation": "Прозрачен фон"
+        "translation": "خلفية شفافة"
     },
     "dialog.language.restart_message": {
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
-        "translation": "Езикът е зададен на {language}. Рестартирай InkSim сега, за да го приложиш?"
+        "translation": "تم تعيين اللغة إلى {language}. هل تريد إعادة تشغيل InkSim الآن لتطبيقها؟"
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
-        "translation": "Ще се използва системният език по подразбиране. Рестартирай InkSim сега, за да го приложиш?"
+        "translation": "سيتم استخدام لغة النظام الافتراضية. هل تريد إعادة تشغيل InkSim الآن لتطبيقها؟"
     },
     "dialog.language.title": {
         "source": "Language changed",
-        "translation": "Езикът е променен"
+        "translation": "تم تغيير اللغة"
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
-        "translation": "Цвят на иглата"
+        "translation": "لون الإبرة"
     },
     "dialog.open.normal_preview": {
         "source": "Normal preview",
-        "translation": "Нормален преглед"
+        "translation": "معاينة عادية"
     },
     "dialog.open.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "Това не е валиден файл за бродиране."
+        "translation": "ليس ملف تطريز صالح"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",
-        "translation": "Реален преглед"
+        "translation": "معاينة حقيقية"
     },
     "dialog.open.title": {
         "source": "Open embroidery file",
-        "translation": "Отвори файл за бродерия"
+        "translation": "فتح ملف تطريز"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
-        "translation": "Избор на рендер за шевове"
+        "translation": "اختر عرض الغرز"
     },
     "menu.file": {
         "source": "&File",
-        "translation": "&Файл"
+        "translation": "ملف"
     },
     "menu.file.calibrate": {
         "source": "Calibrate display size...",
-        "translation": "Калибриране на размера на дисплея..."
+        "translation": "معايرة حجم العرض..."
     },
     "menu.file.center_needle": {
         "source": "Center needle",
-        "translation": "Центрирай иглата"
+        "translation": "توسيط الإبرة"
     },
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
-        "translation": "Избор на рендер за шевове..."
+        "translation": "اختر عرض الغرز..."
     },
     "menu.file.export": {
         "source": "Export",
-        "translation": "Експорт"
+        "translation": "تصدير"
     },
     "menu.file.export.icon": {
         "source": "Icon/Thumbnail...",
-        "translation": "Икона/Миниатюра..."
+        "translation": "أيقونة/صورة مصغرة..."
     },
     "menu.file.export.shaded_print": {
         "source": "Shaded print...",
-        "translation": "Засенчен печат..."
+        "translation": "طباعة مظللة..."
     },
     "menu.file.export.simple_print": {
         "source": "Simple print...",
-        "translation": "Прост печат..."
+        "translation": "طباعة بسيطة..."
     },
     "menu.file.fit_design": {
         "source": "Fit design to window",
-        "translation": "Побери дизайна в прозореца"
+        "translation": "ملاءمة التصميم مع النافذة"
     },
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
-        "translation": "GPU текстуриран рендер"
+        "translation": "عرض بنسج GPU"
     },
     "menu.file.open": {
         "source": "Open embroidery file",
-        "translation": "Отвори файл за бродерия"
+        "translation": "فتح ملف تطريز"
     },
     "menu.file.quit": {
         "source": "Quit",
-        "translation": "Изход"
+        "translation": "خروج"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
-        "translation": "Завърти наляво 90 градуса"
+        "translation": "تدوير لليسار 90 درجة"
     },
     "menu.file.rotate_right": {
         "source": "Rotate right 90 deg",
-        "translation": "Завърти надясно 90 градуса"
+        "translation": "تدوير لليمين 90 درجة"
     },
     "menu.file.save_as": {
         "source": "Save as embroidery...",
-        "translation": "Запази като бродерия..."
+        "translation": "حفظ كتطريز..."
     },
     "menu.file.show_grid": {
         "source": "Show measurement grid",
-        "translation": "Покажи измервателна мрежа"
+        "translation": "إظهار شبكة القياس"
     },
     "menu.help": {
         "source": "&Help",
-        "translation": "&Помощ"
+        "translation": "مساعدة"
     },
     "menu.help.about": {
         "source": "About {app_title}",
-        "translation": "Относно {app_title}"
+        "translation": "حول {app_title}"
     },
     "menu.help.check_updates": {
         "source": "Check for updates",
-        "translation": "Провери за актуализации"
+        "translation": "التحقق من التحديثات"
     },
     "menu.help.cli_options": {
         "source": "Command line options...",
-        "translation": "Опции на командния ред..."
+        "translation": "خيارات سطر الأوامر..."
     },
     "menu.help.config": {
         "source": "Config",
-        "translation": "Конфигурация"
+        "translation": "الإعدادات"
     },
     "menu.help.help": {
         "source": "Help",
-        "translation": "Помощ"
+        "translation": "مساعدة"
     },
     "menu.help.status": {
         "source": "Status",
-        "translation": "Статус"
+        "translation": "الحالة"
     },
     "menu.help.trace_events": {
         "source": "Trace events",
-        "translation": "Проследяване на събития"
+        "translation": "تتبع الأحداث"
     },
     "menu.language": {
         "source": "Language",
-        "translation": "Език"
+        "translation": "اللغة"
     },
     "menu.language.system_default": {
         "source": "System default",
-        "translation": "Системен по подразбиране"
+        "translation": "الافتراضي للنظام"
     },
     "menu.playback": {
         "source": "&Playback",
-        "translation": "&Възпроизвеждане"
+        "translation": "تشغيل"
     },
     "menu.playback.next_color": {
         "source": "Next color",
-        "translation": "Следващ цвят"
+        "translation": "اللون التالي"
     },
     "menu.playback.next_command": {
         "source": "Next command",
-        "translation": "Следваща команда"
+        "translation": "الأمر التالي"
     },
     "menu.playback.play_pause": {
         "source": "Play/Pause",
-        "translation": "Пусни/Пауза"
+        "translation": "تشغيل/إيقاف مؤقت"
     },
     "menu.playback.prev_color": {
         "source": "Prev color",
-        "translation": "Предишен цвят"
+        "translation": "اللون السابق"
     },
     "menu.playback.prev_command": {
         "source": "Prev command",
-        "translation": "Предишна команда"
+        "translation": "الأمر السابق"
     },
     "menu.view": {
         "source": "&View",
-        "translation": "&Изглед"
+        "translation": "عرض"
     },
     "menu.view.actual_size": {
         "source": "Actual size (1:1)",
-        "translation": "Реален размер (1:1)"
+        "translation": "الحجم الفعلي (1:1)"
     },
     "menu.view.clear_snap": {
         "source": "Clear saved snap position",
-        "translation": "Изчисти запазената позиция на прихващане"
+        "translation": "مسح موضع الالتقاط المحفوظ"
     },
     "menu.view.command_list": {
         "source": "Command list",
-        "translation": "Списък с команди"
+        "translation": "قائمة الأوامر"
     },
     "menu.view.cycle_bg": {
         "source": "Cycle background",
-        "translation": "Смени фона"
+        "translation": "تبديل الخلفية"
     },
     "menu.view.fullscreen": {
         "source": "Fullscreen",
-        "translation": "Цял екран"
+        "translation": "ملء الشاشة"
     },
     "menu.view.save_snap": {
         "source": "Save current snap position",
-        "translation": "Запази текущата позиция на прихващане"
+        "translation": "حفظ موضع الالتقاط الحالي"
     },
     "menu.view.show_hide_all": {
         "source": "Show/hide all",
-        "translation": "Покажи/скрий всичко"
+        "translation": "إظهار/إخفاء الكل"
     },
     "menu.view.show_needle": {
         "source": "Show needle",
-        "translation": "Покажи иглата"
+        "translation": "إظهار الإبرة"
     },
     "menu.view.snap_layout": {
         "source": "Snap window layout",
-        "translation": "Прихвани оформлението на прозореца"
+        "translation": "محاذاة تخطيط النافذة"
     },
     "message.no_file_to_export": {
         "source": "No embroidery file is loaded to export.",
-        "translation": "Няма зареден файл за бродерия за експорт."
+        "translation": "لا يوجد ملف تطريز محمل للتصدير."
     },
     "message.no_file_to_save": {
         "source": "No embroidery file is loaded.",
-        "translation": "Няма зареден файл за бродерия."
+        "translation": "لا يوجد ملف تطريز محمل."
     },
     "message.reload.title": {
         "source": "Reloading",
-        "translation": "Презареждане"
+        "translation": "إعادة تحميل"
     },
     "message.save_error.message": {
         "source": "Failed to save file: {error}",
-        "translation": "Грешка при запазване на файла: {error}"
+        "translation": "فشل حفظ الملف: {error}"
     },
     "splash.loading": {
         "source": "Loading...",
-        "translation": "Зареждане..."
+        "translation": "جارٍ التحميل..."
     },
     "status.line_settings.reset": {
         "source": "Reset line width and shading factors",
-        "translation": "Нулирай ширината на линията и факторите на засенчване"
+        "translation": "إعادة تعيين عرض الخط وعوامل التظليل"
     },
     "status.line_settings.tooltip": {
         "source": "Click to adjust dark factor, light factor and line width",
-        "translation": "Кликнете, за да настроите тъмен фактор, светъл фактор и ширина на линията"
+        "translation": "انقر لضبط عامل الظلام، عامل الإضاءة، وعرض الخط"
     },
     "status.mode.background": {
         "source": "Cycle background: black, white, configured",
-        "translation": "Смени фона: черен, бял, конфигуриран"
+        "translation": "تبديل الخلفية: أسود، أبيض، مضبوط"
     },
     "status.mode.bottom_view": {
         "source": "Bottom view (draw later stitches under earlier ones)",
-        "translation": "Изглед отдолу (рисувай по-късните шевове под по-ранните)"
+        "translation": "عرض سفلي (رسم الغرز اللاحقة تحت السابقة)"
     },
     "status.mode.density": {
         "source": "Toggle stitch density overlay",
-        "translation": "Превключване на наслагване на плътността на шевовете"
+        "translation": "تبديل تراكب كثافة الغرز"
     },
     "status.mode.gpu_textured": {
         "source": "Toggle GPU textured rendering",
-        "translation": "Превключване на GPU текстуриран рендер"
+        "translation": "تبديل العرض بنسج GPU"
     },
     "status.mode.jump": {
         "source": "Cycle jump display: off, all, risky only",
-        "translation": "Смени показването на преходи: изключено, всички, само рискови"
+        "translation": "تبديل عرض القفزات: إيقاف، الكل، الخطرة فقط"
     },
     "status.mode.visibility": {
         "source": "Toggle stitch visibility",
-        "translation": "Превключване на видимостта на шевовете"
+        "translation": "تبديل رؤية الغرز"
     },
     "status.needle.reset": {
         "source": "Reset needle settings",
-        "translation": "Нулирай настройките на иглата"
+        "translation": "إعادة تعيين إعدادات الإبرة"
     },
     "status.needle.settings": {
         "source": "Needle crosshair settings",
-        "translation": "Настройки на кръста на иглата"
+        "translation": "إعدادات شبكاني الإبرة"
     },
     "status.slider.color": {
         "source": "Color…",
-        "translation": "Цвят…"
+        "translation": "لون..."
     },
     "status.slider.dark_factor": {
         "source": "DF",
@@ -381,7 +381,7 @@
     },
     "status.slider.fullscreen": {
         "source": "Full screen",
-        "translation": "Цял екран"
+        "translation": "ملء الشاشة"
     },
     "status.slider.light_factor": {
         "source": "LF",
@@ -393,10 +393,10 @@
     },
     "status.slider.radius": {
         "source": "Radius",
-        "translation": "Радиус"
+        "translation": "نصف القطر"
     },
     "status.slider.width": {
         "source": "Width",
-        "translation": "Ширина"
+        "translation": "العرض"
     }
 }

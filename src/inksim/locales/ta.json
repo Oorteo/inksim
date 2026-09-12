@@ -108,12 +108,12 @@
         "translation": "வெளிப்படையான பின்னணி"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "மொழி {language} ஆக அமைக்கப்பட்டது. அதைப் பயன்படுத்த InkSim-ஐ மறுதொடக்கம் செய்."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "மொழி {language} ஆக அமைக்கப்பட்டது. இப்போது InkSim-ஐ மறுதொடக்கம் செய்யலாமா?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "கணினியின் இயல்பு மொழி பயன்படுத்தப்படும். அதைப் பயன்படுத்த InkSim மறுதொடக்கம் செய்யப்படும்."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "சிஸ்டம் இயல்பு மொழி பயன்படுத்தப்படும். இப்போது InkSim-ஐ மறுதொடக்கம் செய்யலாமா?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "சாதாரண முன்னோட்டம்"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "சரியான எம்பிராய்டரி கோப்பு இல்லை"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

@@ -108,12 +108,12 @@
         "translation": "Latar belakang transparan"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Bahasa sudah diatur ke {language}. Restart InkSim untuk menerapkannya."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Bahasa telah diatur ke {language}. Restart InkSim sekarang untuk menerapkannya?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Bahasa bawaan sistem akan digunakan. InkSim akan restart untuk menerapkannya."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Bahasa default sistem akan digunakan. Restart InkSim sekarang untuk menerapkannya?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Pratinjau normal"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "File bordir tidak valid"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

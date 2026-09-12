@@ -108,12 +108,12 @@
         "translation": "Průhledné pozadí"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Jazyk byl nastaven na {language}. Restartujte InkSim, aby se projevil."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Jazyk byl nastaven na {language}. Restartovat InkSim nyní, aby se změna projevila?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Bude použit výchozí jazyk systému. InkSim se restartuje pro jeho použití."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Bude použit výchozí jazyk systému. Restartovat InkSim nyní, aby se projevil?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normální náhled"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Toto není platný soubor pro vyšívání."
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

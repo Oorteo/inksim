@@ -108,12 +108,12 @@
         "translation": "Läbipaistev taust"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Keel on seatud {language}. Taaskäivita InkSim, et see rakenduks."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Keel on seatud {language}. Taaskäivita InkSim kohe, et see rakenduks?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Kasutatakse süsteemi vaikekeelt. InkSim taaskäivitatakse, et see rakenduks."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Kasutatakse süsteemi vaikekeelt. Taaskäivita InkSim kohe, et see rakenduks?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Tavaline eelvaade"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "See ei ole kehtiv tikkimisfail."
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

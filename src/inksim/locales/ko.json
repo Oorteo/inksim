@@ -108,12 +108,12 @@
         "translation": "투명 배경"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "언어가 {language}(으)로 설정되었습니다. 적용하려면 InkSim을 다시 시작하세요."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "언어가 {language}로 설정됐어. 지금 InkSim을 다시 시작해서 적용할래?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "시스템 기본 언어가 사용됩니다. 적용하려면 InkSim이 다시 시작됩니다."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "시스템 기본 언어가 사용될 거야. 지금 InkSim을 다시 시작해서 적용할래?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "일반 미리보기"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "유효한 자수 파일이 아니야."
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

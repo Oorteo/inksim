@@ -108,12 +108,12 @@
         "translation": "خلفية شفافة"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "تم تعيين اللغة إلى {language}. أعد تشغيل InkSim لتطبيقها."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "تم ضبط اللغة على {language}. هل تريد إعادة تشغيل InkSim الآن لتطبيقها؟"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "سيتم استخدام اللغة الافتراضية للنظام. سيعاد تشغيل InkSim لتطبيقها."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "سيتم استخدام لغة النظام الافتراضية. هل تريد إعادة تشغيل InkSim الآن لتطبيقها؟"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "معاينة عادية"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "ليس ملف تطريز صالحًا"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

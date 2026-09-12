@@ -108,12 +108,12 @@
         "translation": "Läpinäkyvä tausta"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Kieli on asetettu kielelle {language}. Käynnistä InkSim uudelleen ottaaksesi sen käyttöön."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Kieli on asetettu kieleen {language}. Käynnistä InkSim uudelleen ottaaksesi sen käyttöön?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Järjestelmän oletuskieltä käytetään. InkSim käynnistyy uudelleen ottaakseen sen käyttöön."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Järjestelmän oletuskieltä käytetään. Käynnistä InkSim uudelleen ottaaksesi sen käyttöön?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normaali esikatselu"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Ei kelvollinen kirjontatiedosto"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

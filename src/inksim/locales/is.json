@@ -108,12 +108,12 @@
         "translation": "Gagnsær bakgrunnur"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Tungumálið hefur verið stillt á {language}. Endurræstu InkSim til að beita því."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Tungumálið hefur verið stillt á {language}. Endurræsa InkSim núna til að beita því?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Kerfisstaðlaða tungumálið verður notað. InkSim mun endurræsa til að beita því."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Sjálfgefið tungumál kerfisins verður notað. Endurræsa InkSim núna til að beita því?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Venjuleg forskoðun"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Ekki gilt útsaumsskrá"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

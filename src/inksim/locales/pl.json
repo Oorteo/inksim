@@ -108,12 +108,12 @@
         "translation": "Przezroczyste tło"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Ustawiono język na {language}. Zrestartuj InkSim, aby go zastosować."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Język został ustawiony na {language}. Zrestartuj teraz InkSim, aby go zastosować?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Użyjemy domyślnego języka systemu. InkSim zrestartuje się, aby go zastosować."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Zostanie użyty domyślny język systemu. Zrestartuj teraz InkSim, aby go zastosować?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normalny podgląd"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Nieprawidłowy plik haftu."
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

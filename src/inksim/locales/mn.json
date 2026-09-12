@@ -108,12 +108,12 @@
         "translation": "Ил тод дэвсгэр"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Хэл {language} болж тохируулагдлаа. Хэрэглэхийн тулд InkSim-ээ дахин эхлүүл."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Хэл {language} болсон. Хэрэгжихийн тулд InkSim-ийг дахин эхлүүлэх үү?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Системийн анхны хэл ашиглагдана. Үүнийг хэрэглэхийн тулд InkSim дахин эхлэх болно."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Системийн үндсэн хэл ашиглагдана. Хэрэгжихийн тулд InkSim-ийг дахин эхлүүлэх үү?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Энгийн урьдчилсан харагдац"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Зөв хээ файл биш."
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

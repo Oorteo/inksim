@@ -108,12 +108,12 @@
         "translation": "Cúlra trédhearcach"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Tá an teanga socraithe go {language}. Atosaigh InkSim chun é a chur i bhfeidhm."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Tá an teanga socraithe ar {language}. Atosaigh InkSim anois chun é a chur i bhfeidhm?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Úsáidfear teanga réamhshocraithe an chórais. Atosóidh InkSim chun é a chur i bhfeidhm."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Úsáidfear teanga réamhshocraithe an chórais. Atosaigh InkSim anois chun é a chur i bhfeidhm?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Réamhamharc gnáth"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Ní comhad bróidnéireachta bailí é"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

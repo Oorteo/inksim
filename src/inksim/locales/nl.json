@@ -108,12 +108,12 @@
         "translation": "Transparante achtergrond"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "De taal is ingesteld op {language}. Herstart InkSim om dit toe te passen."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "De taal is ingesteld op {language}. Herstart InkSim nu om dit toe te passen?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "De systeemstandaardtaal wordt gebruikt. InkSim herstart om dit toe te passen."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "De systeemstandaardtaal zal worden gebruikt. Herstart InkSim nu om dit toe te passen?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normale voorbeeldweergave"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Geen geldig borduurwerkbestand"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

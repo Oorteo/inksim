@@ -108,12 +108,12 @@
         "translation": "Transparenter Hintergrund"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Die Sprache wurde auf {language} gesetzt. Starte InkSim neu, um sie anzuwenden."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Die Sprache wurde auf {language} gesetzt. Starte InkSim jetzt neu, um sie zu übernehmen?"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Die Standardsprache des Systems wird verwendet. InkSim wird neu gestartet, um sie anzuwenden."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Die Standardsprache des Systems wird verwendet. Starte InkSim jetzt neu, um sie zu übernehmen?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Normale Vorschau"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Keine gültige Stickdatei."
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

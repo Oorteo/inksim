@@ -108,12 +108,12 @@
         "translation": "شفاف پس منظر"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "زبان {language} پر سیٹ کر دی گئی ہے۔ اسے لاگو کرنے کے لیے InkSim کو دوبارہ شروع کریں۔"
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "زبان {language} پر سیٹ ہو گئی ہے۔ کیا اب انک سِم کو دوبارہ شروع کریں تاکہ لاگو ہو؟"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "سسٹم کی ڈیفالٹ زبان استعمال کی جائے گی۔ اسے لاگو کرنے کے لیے InkSim دوبارہ شروع ہوگا۔"
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "سسٹم ڈیفالٹ زبان استعمال ہوگی۔ کیا اب انک سِم کو دوبارہ شروع کریں تاکہ لاگو ہو؟"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +126,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "عام پیش منظر"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "یہ کڑھائی کی درست فائل نہیں ہے۔"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",
