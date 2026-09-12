@@ -575,7 +575,7 @@ class MainWindow(QMainWindow):
         """Store the requested UI language and restart the application.
 
         The change is only applied if the user confirms the restart; pressing
-        Escape or "No" reverts to the previous language.
+        Escape or "No"/"Cancel" reverts to the previous language.
         """
         previous = active_locale()
         set_active_locale(locale)
@@ -585,8 +585,8 @@ class MainWindow(QMainWindow):
             "The language has been set to {language}. Restart InkSim now to apply it?",
             language=name,
         )
-        if answer == QMessageBox.Yes:
-            self._restart_application()
+        if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
+            self._apply_language_change()
         else:
             set_active_locale(previous)
             self._rebuild_menus()
@@ -599,8 +599,8 @@ class MainWindow(QMainWindow):
             "dialog.language.system_default_message",
             "The system default language will be used. Restart InkSim now to apply it?",
         )
-        if answer == QMessageBox.Yes:
-            self._restart_application()
+        if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
+            self._apply_language_change()
         else:
             set_active_locale(previous)
             self._rebuild_menus()
@@ -612,16 +612,18 @@ class MainWindow(QMainWindow):
 
         In server mode a plain restart would reopen InkSim without the current
         embroidery file (Inkscape provides it once via a temporary file), so the
-        dialog tells the user to restart from Inkscape instead.
+        user is asked to confirm closing the application. Cancelling reverts the
+        language change.
         """
         if self.server_mode:
-            return QMessageBox.information(
+            return QMessageBox.question(
                 self,
                 _("dialog.language.title", "Language changed"),
                 _(
                     "dialog.language.server_message",
                     "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
                 ),
+                QMessageBox.Ok | QMessageBox.Cancel,
                 QMessageBox.Ok,
             )
         return QMessageBox.question(
@@ -631,6 +633,19 @@ class MainWindow(QMainWindow):
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )
+
+    def _apply_language_change(self) -> None:
+        """Restart in standalone mode or close in server mode.
+
+        In server mode the embroidery file is a temporary input provided once by
+        Inkscape, so a self-restart would reopen an empty window. Closing is the
+        only safe way to let the user restart from Inkscape with the new language.
+        """
+        if self.server_mode:
+            self._allow_close = True
+            self.close()
+        else:
+            self._restart_application()
 
     def _rebuild_menus(self) -> None:
         """Rebuild the menu bar so checkmarks reflect the active locale."""

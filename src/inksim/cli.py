@@ -21,7 +21,7 @@ from .constants import APP_ORGANIZATION, APP_TITLE
 from .debug import configure_logging, logger
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
-from .i18n import active_locale, available_locales, set_active_locale
+from .i18n import active_locale, available_locales, set_runtime_locale
 from .interconnect import InterconnectServer, send_command
 from .runtime import runtime_info_lines
 
@@ -381,7 +381,7 @@ def main() -> None:
                     parser.error("export cancelled")
 
     if args.lang is not None:
-        set_active_locale(args.lang)
+        set_runtime_locale(args.lang)
     else:
         active_locale()  # resolves config or environment locale
 

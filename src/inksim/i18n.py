@@ -216,7 +216,7 @@ def active_locale() -> str:
 
 
 def set_active_locale(locale: str) -> None:
-    """Switch the active locale at runtime.
+    """Switch the active locale at runtime and persist it to config.
 
     The resolved locale (with fallback to the language base and then ``en``) is
     persisted to config.  Callers must refresh visible UI text afterwards;
@@ -230,6 +230,16 @@ def set_active_locale(locale: str) -> None:
         cfg.set("language", locale)
     except Exception:  # noqa: BLE001
         pass
+
+
+def set_runtime_locale(locale: str) -> None:
+    """Switch the active locale for this process only, without writing config.
+
+    Use this for temporary overrides such as the ``--lang`` command-line flag;
+    the user's stored config language is left untouched.
+    """
+    global _current_locale
+    _current_locale = _resolve_locale(locale)
 
 
 def clear_active_locale() -> None:
