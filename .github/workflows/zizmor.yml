@@ -1,0 +1,30 @@
+name: Scan GitHub Actions with zizmor
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  zizmor:
+    name: Scan workflows for known vulnerabilities
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install zizmor
+        run: uv tool install zizmor
+
+      - name: Scan workflows
+        run: uvx zizmor --min-severity medium .github/workflows
