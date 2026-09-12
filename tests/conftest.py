@@ -3,41 +3,14 @@
 
 from __future__ import annotations
 
-import atexit
-import gc
 from pathlib import Path
 
 import PySide6
 import pytest
-from PySide6.QtWidgets import QApplication
 
 # Some PySide6 builds omit __version__, which breaks pytest-qt's report header.
 if not hasattr(PySide6, "__version__"):
     PySide6.__version__ = "unknown"
-
-
-def _finalize_qt_objects() -> None:
-    """Release every remaining Qt object while the QApplication is still alive.
-
-    Some widgets hold QPixmap/QImage objects that are only freed when Python's
-    garbage collector runs.  If the QApplication is torn down first (which
-    happens at interpreter shutdown), that finalization aborts with
-    ``QPixmap: Must construct a QGuiApplication before a QPixmap``.
-
-    This runs via ``atexit`` so it fires after pytest and pytest-qt have fully
-    finished, but before the interpreter destroys the QApplication.
-    """
-    app = QApplication.instance()
-    if app is None:
-        return
-    app.closeAllWindows()
-    app.processEvents()
-    # Collect cycles so Qt objects are finalized while the app still exists.
-    gc.collect()
-    app.processEvents()
-
-
-atexit.register(_finalize_qt_objects)
 
 
 @pytest.fixture(autouse=True)
