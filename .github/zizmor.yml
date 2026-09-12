@@ -6,5 +6,7 @@
 # a concern for our public build/test workflows because no untrusted input is
 # used to populate the cache keys.
 rules:
-  unpinned-uses: ignore
-  cache-poisoning: ignore
+  unpinned-uses:
+    ignore: true
+  cache-poisoning:
+    ignore: true
