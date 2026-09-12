@@ -1,0 +1,38 @@
+# Default owner for everything in the repository.
+
+- @oorteo
+
+# Legal and project identity metadata. These may only be changed by the
+
+# repository owner, regardless of AI or contributor review.
+
+LICENSE @oorteo
+CLA.md @oorteo
+CONTRIBUTING.md @oorteo
+pyproject.toml @oorteo
+
+# CI/CD, automation and access control. Only the owner may change these,
+
+# because they define the guardrails themselves.
+
+.github/ @oorteo
+
+# Core entrypoints and runtime constants. Changes here can redirect how
+
+# the application behaves at startup or alter its public identity.
+
+src/inksim/cli.py @oorteo
+src/inksim/**main**.py @oorteo
+src/inksim/**init**.py @oorteo
+src/inksim/constants.py @oorteo
+src/inksim/config.py @oorteo
+
+# i18n translation files are part of the published asset set and require
+
+# owner review to avoid malicious or misleading messages.
+
+src/inksim/locales/ @oorteo
+
+# Bundled assets shipped with the application.
+
+src/inksim/assets/ @oorteo

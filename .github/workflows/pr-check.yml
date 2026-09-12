@@ -1,0 +1,57 @@
+name: PR check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-wheel:
+    name: Lint, type-check, test, security scan and build wheel
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync --frozen --group dev
+
+      - name: Check formatting
+        run: uv run ruff format --check src tests
+
+      - name: Lint code
+        run: uv run ruff check src tests
+
+      - name: Type check
+        run: uv run mypy src/inksim
+
+      - name: Run tests
+        run: uv run pytest
+
+      - name: Security scan
+        run: uv run python .github/scripts/security_scan.py
+
+      - name: Build wheel
+        run: uv build
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: inksim-wheel-${{ github.run_id }}
+          path: dist/*.whl
+          retention-days: 7
