@@ -145,6 +145,64 @@ def test_sample_design_can_load(sample_design, qtbot):
     window.close()
 
 
+def test_startup_with_directory_opens_file_dialog(qtbot, tmp_path, monkeypatch):
+    """Passing a directory as input opens the file dialog in that directory."""
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    opened_in: list[str] = []
+
+    def fake_open_file_dialog(checked: bool = False) -> None:
+        opened_in.append(window.last_directory)
+
+    monkeypatch.setattr(window, "open_file_dialog", fake_open_file_dialog)
+
+    window.show_initial_window(initial_directory=str(tmp_path))
+    qtbot.wait(100)
+
+    assert opened_in, "open_file_dialog was not called"
+    assert Path(opened_in[0]) == tmp_path.resolve()
+    window.close()
+
+
+def test_drag_and_drop_loads_file(sample_design, qtbot, monkeypatch):
+    """Dropping a file URL onto the main window loads the file."""
+    from PySide6.QtCore import QMimeData, Qt, QUrl
+    from PySide6.QtGui import QDropEvent
+
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    loaded: list[str] = []
+
+    def fake_open_file(path: str) -> bool:
+        loaded.append(path)
+        return True
+
+    monkeypatch.setattr(window, "open_file", fake_open_file)
+
+    mime_data = QMimeData()
+    mime_data.setUrls([QUrl.fromLocalFile(str(sample_design))])
+
+    drop_event = QDropEvent(
+        window.rect().center().toPointF(),
+        Qt.CopyAction,
+        mime_data,
+        Qt.LeftButton,
+        Qt.NoModifier,
+    )
+
+    window.dropEvent(drop_event)
+
+    assert loaded, "open_file was not called on drop"
+    assert Path(loaded[0]).resolve() == sample_design.resolve()
+    window.close()
+
+
 def test_switching_from_gpu_hides_widget_without_destroying_gl_resources():
     class FakeGLWidget:
         def __init__(self):
