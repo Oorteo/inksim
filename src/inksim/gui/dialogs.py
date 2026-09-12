@@ -287,13 +287,16 @@ class EmbroideryOpenDialog(QDialog):
         self.selected_path = self.file_paths[row]
         density_debug(f"dialog row changed row={row} path={self.selected_path!s}")
         started_at = time.perf_counter()
-        self.preview.load_design(
+        loaded = self.preview.load_design(
             str(self.selected_path),
             fit_to_screen=True,
             precompute_density=False,
+            show_error_dialog=False,
         )
+        if not loaded:
+            density_debug(f"dialog preview load failed row={row} path={self.selected_path!s}")
         density_debug(
-            f"dialog preview load returned row={row} elapsed={time.perf_counter() - started_at:.3f}s"
+            f"dialog preview load returned row={row} loaded={loaded} elapsed={time.perf_counter() - started_at:.3f}s"
         )
 
     def open_selected(self) -> None:

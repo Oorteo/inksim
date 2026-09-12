@@ -185,6 +185,26 @@ def test_open_dialog_cleans_preview_gl_resources_before_rejecting(qtbot, tmp_pat
     assert cleanup_calls == [True]
 
 
+def test_open_dialog_preview_survives_invalid_json(qtbot, tmp_path):
+    """Selecting a .json file that is not a valid embroidery preview must not crash."""
+    from inksim.gui.dialogs import EmbroideryOpenDialog
+
+    bad_json = tmp_path / "not_embroidery.json"
+    bad_json.write_text('{"foo": "bar"}')
+
+    dialog = EmbroideryOpenDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(50)
+
+    # Selecting the invalid json triggers a preview load.
+    dialog.file_list.setCurrentRow(0)
+
+    assert dialog.selected_path == bad_json
+    assert dialog.preview.pattern is None
+    dialog.reject()
+
+
 def test_save_as_embroidery_writes_pystitch_format(sample_design, qtbot, tmp_path):
     from inksim.gui.frame import MainWindow
 

@@ -1047,7 +1047,7 @@ class MainWindow(QMainWindow):
         if getattr(self, "clear_snap_action", None):
             self.clear_snap_action.setEnabled(enabled)
 
-    def request_quit(self) -> None:
+    def request_quit(self, checked: bool = False) -> None:
         """Close the application instead of hiding a server window."""
         self._allow_close = True
         self.close()
@@ -1173,7 +1173,7 @@ class MainWindow(QMainWindow):
             self.viewer.stop_needle_highlight()
         self.viewer.update()
 
-    def open_file_dialog(self) -> None:
+    def open_file_dialog(self, checked: bool = False) -> None:
         dialog = EmbroideryOpenDialog(
             self, self.last_directory, self.current_file_path, self.recent_directories
         )
@@ -1412,7 +1412,7 @@ class MainWindow(QMainWindow):
             self.last_directory = str(selected_path.parent)
             self.statusBar().showMessage(f"Exported {_sanitize_path(selected_path)}", 3000)
 
-    def export_print_png(self) -> None:
+    def export_print_png(self, checked: bool = False) -> None:
         if not self._can_export_image():
             return
         background: tuple[int, int, int] | str
@@ -1431,7 +1431,7 @@ class MainWindow(QMainWindow):
             dpi=300,
         )
 
-    def export_shaded_png(self) -> None:
+    def export_shaded_png(self, checked: bool = False) -> None:
         if not self._can_export_image():
             return
         background: tuple[int, int, int] | str
@@ -1449,7 +1449,7 @@ class MainWindow(QMainWindow):
             dpi=300,
         )
 
-    def export_icon_png(self) -> None:
+    def export_icon_png(self, checked: bool = False) -> None:
         if not self._can_export_image():
             return
         background: tuple[int, int, int] | str
@@ -1515,7 +1515,7 @@ class MainWindow(QMainWindow):
         self.command_dock.raise_()
         self.refresh_command_panel()
 
-    def toggle_full_screen(self) -> None:
+    def toggle_full_screen(self, checked: bool = False) -> None:
         if not self.is_fullscreen:
             self._fullscreen_was_maximized = self.isMaximized()
             self.is_fullscreen = True

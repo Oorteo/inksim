@@ -1042,6 +1042,7 @@ class EmbroideryViewerWidget(QWidget):
         fit_to_screen: bool = True,
         precompute_density: bool = True,
         autoplay: bool = False,
+        show_error_dialog: bool = True,
     ) -> bool:
         """Load an embroidery file into renderable stitch segments."""
         started_at = time.perf_counter()
@@ -1050,15 +1051,19 @@ class EmbroideryViewerWidget(QWidget):
         )
         try:
             pattern = emb.read(path)
-        except (OSError, RuntimeError, ValueError) as ex:
-            QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
+        except Exception as ex:
+            if show_error_dialog:
+                QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
+            density_debug(f"load failed path={path!r} error={ex!r}")
             return False
         if pattern is None:
-            QMessageBox.critical(
-                self,
-                "Error",
-                f"Unsupported or unrecognized embroidery file:\n{path}",
-            )
+            if show_error_dialog:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"Unsupported or unrecognized embroidery file:\n{path}",
+                )
+            density_debug(f"load unsupported path={path!r}")
             return False
         self.play_timer.stop()
         self.is_playing = False
