@@ -1204,6 +1204,15 @@ class EmbroideryViewerWidget(QWidget):
             if fit_to_screen:
                 self._pending_fit_to_screen = True
                 QTimer.singleShot(0, self._try_fit_to_screen)
+        else:
+            if show_error_dialog:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"The embroidery file contains no stitches:\n{path}",
+                )
+            density_debug(f"load empty path={path!r}")
+            return False
         self.invalidate_cache()
         self.update()
         if self.progress_bar:

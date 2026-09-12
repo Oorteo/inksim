@@ -203,6 +203,34 @@ def test_drag_and_drop_loads_file(sample_design, qtbot, monkeypatch):
     window.close()
 
 
+def test_empty_embroidery_file_shows_error_in_open_dialog(qtbot, tmp_path, monkeypatch):
+    """A file with zero stitches is treated as invalid in the open dialog."""
+    import pystitch as emb
+
+    from inksim.gui.dialogs import EmbroideryOpenDialog
+
+    empty_file = tmp_path / "empty.pes"
+    pattern = emb.EmbPattern()
+    pattern.stitches = []
+    emb.write(pattern, str(empty_file))
+
+    dialog = EmbroideryOpenDialog(
+        parent=None,
+        initial_directory=str(tmp_path),
+        selected_file=str(empty_file),
+    )
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    # Wait for the row change / preview to populate
+    qtbot.wait(50)
+
+    assert dialog.selected_path == empty_file
+    assert dialog.preview_error_label.isVisible()
+    assert "Not a valid embroidery file" in dialog.preview_error_label.text()
+    dialog.close()
+
+
 def test_switching_from_gpu_hides_widget_without_destroying_gl_resources():
     class FakeGLWidget:
         def __init__(self):
