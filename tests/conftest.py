@@ -11,6 +11,24 @@ if not hasattr(PySide6, "__version__"):
     PySide6.__version__ = "unknown"
 
 
+@pytest.fixture(scope="session")
+def qapp():
+    """Create a single QApplication that lives for the whole test session.
+
+    The default pytest-qt fixture destroys the application after each test,
+    which can crash if any deferred GUI objects (timers, pixmaps) are still
+    being finalized.  Keeping one application alive avoids those shutdown
+    aborts in headless CI runs.
+    """
+    from PySide6.QtWidgets import QApplication
+
+    app = QApplication.instance()
+    if app is None:
+        app = QApplication([])
+    yield app
+    # Do not explicitly destroy the application; let the process exit handle it.
+
+
 @pytest.fixture(autouse=True)
 def _isolate_config(tmp_path, monkeypatch):
     """Redirect the default config path to a temp dir for every test.
