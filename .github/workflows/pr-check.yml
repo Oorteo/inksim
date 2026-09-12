@@ -46,7 +46,7 @@ jobs:
         run: uv run mypy src/inksim
 
       - name: Run tests
-        run: xvfb-run -a uv run pytest
+        run: xvfb-run -a uv run pytest --no-cov
         env:
           QT_QPA_PLATFORM: offscreen
 
