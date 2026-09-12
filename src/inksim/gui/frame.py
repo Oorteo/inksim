@@ -581,9 +581,10 @@ class MainWindow(QMainWindow):
         set_active_locale(locale)
         name = get_language_name(locale)
         answer = self._show_language_restart_prompt(
-            "dialog.language.restart_message",
-            "The language has been set to {language}. Restart InkSim now to apply it?",
-            language=name,
+            _(
+                "dialog.language.restart_message",
+                "The language has been set to {language}. Restart InkSim now to apply it?",
+            ).format(language=name)
         )
         if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
             self._apply_language_change()
@@ -596,8 +597,10 @@ class MainWindow(QMainWindow):
         previous = active_locale()
         clear_active_locale()
         answer = self._show_language_restart_prompt(
-            "dialog.language.system_default_message",
-            "The system default language will be used. Restart InkSim now to apply it?",
+            _(
+                "dialog.language.system_default_message",
+                "The system default language will be used. Restart InkSim now to apply it?",
+            )
         )
         if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
             self._apply_language_change()
@@ -605,9 +608,7 @@ class MainWindow(QMainWindow):
             set_active_locale(previous)
             self._rebuild_menus()
 
-    def _show_language_restart_prompt(
-        self, message_key: str, default_text: str, **kwargs: str
-    ) -> int:
+    def _show_language_restart_prompt(self, message: str) -> int:
         """Ask whether to restart now, with a clearer explanation in server mode.
 
         In server mode a plain restart would reopen InkSim without the current
@@ -629,7 +630,7 @@ class MainWindow(QMainWindow):
         return QMessageBox.question(
             self,
             _("dialog.language.title", "Language changed"),
-            _(message_key, default_text).format(**kwargs),
+            message,
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )
