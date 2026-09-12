@@ -216,6 +216,7 @@ class EmbroideryViewerWidget(QWidget):
         self.needle_fullscreen: bool = False
         self.needle_pulse = 0.0
         self._needle_pulse_anim: QVariantAnimation | None = None
+        self.show_empty_hint = False
         self.config = config if config is not None else Config()
         self._load_view_settings()
         self.pattern: emb.Pattern | None = None
@@ -1042,6 +1043,7 @@ class EmbroideryViewerWidget(QWidget):
         fit_to_screen: bool = True,
         precompute_density: bool = True,
         autoplay: bool = False,
+        show_error_dialog: bool = True,
     ) -> bool:
         """Load an embroidery file into renderable stitch segments."""
         started_at = time.perf_counter()
@@ -1050,15 +1052,19 @@ class EmbroideryViewerWidget(QWidget):
         )
         try:
             pattern = emb.read(path)
-        except (OSError, RuntimeError, ValueError) as ex:
-            QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
+        except Exception as ex:
+            if show_error_dialog:
+                QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
+            density_debug(f"load failed path={path!r} error={ex!r}")
             return False
         if pattern is None:
-            QMessageBox.critical(
-                self,
-                "Error",
-                f"Unsupported or unrecognized embroidery file:\n{path}",
-            )
+            if show_error_dialog:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"Unsupported or unrecognized embroidery file:\n{path}",
+                )
+            density_debug(f"load unsupported path={path!r}")
             return False
         self.play_timer.stop()
         self.is_playing = False
@@ -1198,6 +1204,15 @@ class EmbroideryViewerWidget(QWidget):
             if fit_to_screen:
                 self._pending_fit_to_screen = True
                 QTimer.singleShot(0, self._try_fit_to_screen)
+        else:
+            if show_error_dialog:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"The embroidery file contains no stitches:\n{path}",
+                )
+            density_debug(f"load empty path={path!r}")
+            return False
         self.invalidate_cache()
         self.update()
         if self.progress_bar:
@@ -1349,7 +1364,7 @@ class EmbroideryViewerWidget(QWidget):
                 painter.end()
                 return
         w, h = self.width(), self.height()
-        if self.stitches_np.shape[0] == 0:
+        if self.stitches_np.shape[0] == 0 and self.show_empty_hint:
             # Dark panel so white text is always readable regardless of the
             # user's background colour.
             hint_color = QColor(255, 255, 255)

@@ -108,12 +108,16 @@
         "translation": "透明背景"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "语言已设置为{language}。重启InkSim以应用更改。"
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "语言已设置为 {language}。现在重启 InkSim 以应用吗？"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "语言已更改。关闭 InkSim 并从 Inkscape 重新打开以应用新语言。"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "将使用系统默认语言。InkSim将重启以应用更改。"
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "将使用系统默认语言。现在重启 InkSim 以应用吗？"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "普通预览"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "不是有效的刺绣文件"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

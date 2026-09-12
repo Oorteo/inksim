@@ -144,7 +144,7 @@ language.
 2. Run the extractor to update the English catalog:
 
    ```bash
-   uv run python scripts/i18n/extract.py
+   uv run python scripts/i18n/_extract.py
    ```
 
    This scans the source for `_()` calls, adds new IDs to `en.json` with the
@@ -157,13 +157,13 @@ so repeated runs are cheap:
 
 ```bash
 # Translate a single locale
-uv run python scripts/i18n/translate.py --lang cs --model deepseek-v4-flash:cloud
+uv run python scripts/i18n/_translate.py --lang cs --model deepseek-v4-flash:cloud
 
 # Regional variant, e.g. Brazilian Portuguese
-uv run python scripts/i18n/translate.py --lang pt-BR --model deepseek-v4-flash:cloud
+uv run python scripts/i18n/_translate.py --lang pt-BR --model deepseek-v4-flash:cloud
 
 # Translate every roadmap locale up to a tier
-uv run python scripts/i18n/manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
+uv run python scripts/i18n/010_manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
 ```
 
 The script accepts both `pt-BR` and `pt_BR.UTF-8` style tags. Use `--dry-run`

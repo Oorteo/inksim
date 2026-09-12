@@ -108,12 +108,16 @@
         "translation": "Skaidrus fonas"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Kalba nustatyta į {language}. Paleisk InkSim iš naujo, kad pritaikytum."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Kalba nustatyta į {language}. Paleisk InkSim iš naujo dabar, kad pritaikytum?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Kalba pakeista. Uždaryk InkSim ir iš naujo atidaryk iš Inkscape, kad pritaikytum naują kalbą."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Bus naudojama sistemos numatytoji kalba. InkSim bus perkrautas, kad ją pritaikytų."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Sistemos numatytoji kalba bus naudojama. Paleisk InkSim iš naujo dabar, kad pritaikytum?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Įprasta peržiūra"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Netinkamas siuvinėjimo failas"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

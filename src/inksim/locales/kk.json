@@ -108,12 +108,16 @@
         "translation": "Мөлдір фон"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Тіл {language} болып орнатылды. Оны қолдану үшін InkSim қайта іске қосыңыз."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Тіл {language} болып орнатылды. Оны қолдану үшін InkSim-ді қазір қайта іске қосыңыз ба?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Тіл өзгертілді. Жаңа тілді қолдану үшін InkSim-ді жауып, оны Inkscape-тен қайта ашыңыз."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Жүйенің әдепкі тілі қолданылады. InkSim оны қолдану үшін қайта іске қосылады."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Жүйенің әдепкі тілі қолданылады. Оны қолдану үшін InkSim-ді қазір қайта іске қосыңыз ба?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Қалыпты алдын ала қарау"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Жарамды кестелеу файлы емес"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

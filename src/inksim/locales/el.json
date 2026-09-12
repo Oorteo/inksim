@@ -108,12 +108,16 @@
         "translation": "Διαφανές φόντο"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "Η γλώσσα άλλαξε σε {language}. Κάνε επανεκκίνηση του InkSim για να εφαρμοστεί."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "Η γλώσσα έχει οριστεί σε {language}. Επανεκκίνησε το InkSim τώρα για να εφαρμοστεί;"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "Η γλώσσα άλλαξε. Κλείσε το InkSim και ξαναάνοιξέ το από το Inkscape για να εφαρμοστεί η νέα γλώσσα."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "Θα χρησιμοποιηθεί η προεπιλεγμένη γλώσσα του συστήματος. Το InkSim θα επανεκκινήσει για να εφαρμοστεί."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "Θα χρησιμοποιηθεί η προεπιλεγμένη γλώσσα συστήματος. Επανεκκίνησε το InkSim τώρα για να εφαρμοστεί;"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Κανονική προεπισκόπηση"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Δεν είναι έγκυρο αρχείο κεντήματος"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

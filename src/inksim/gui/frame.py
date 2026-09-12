@@ -575,23 +575,19 @@ class MainWindow(QMainWindow):
         """Store the requested UI language and restart the application.
 
         The change is only applied if the user confirms the restart; pressing
-        Escape or "No" reverts to the previous language.
+        Escape or "No"/"Cancel" reverts to the previous language.
         """
         previous = active_locale()
         set_active_locale(locale)
         name = get_language_name(locale)
-        answer = QMessageBox.question(
-            self,
-            _("dialog.language.title", "Language changed"),
+        answer = self._show_language_restart_prompt(
             _(
                 "dialog.language.restart_message",
                 "The language has been set to {language}. Restart InkSim now to apply it?",
-            ).format(language=name),
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes,
+            ).format(language=name)
         )
-        if answer == QMessageBox.Yes:
-            self._restart_application()
+        if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
+            self._apply_language_change()
         else:
             set_active_locale(previous)
             self._rebuild_menus()
@@ -600,21 +596,57 @@ class MainWindow(QMainWindow):
         """Revert to the system default language and restart the application."""
         previous = active_locale()
         clear_active_locale()
-        answer = QMessageBox.question(
-            self,
-            _("dialog.language.title", "Language changed"),
+        answer = self._show_language_restart_prompt(
             _(
                 "dialog.language.system_default_message",
                 "The system default language will be used. Restart InkSim now to apply it?",
-            ),
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes,
+            )
         )
-        if answer == QMessageBox.Yes:
-            self._restart_application()
+        if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
+            self._apply_language_change()
         else:
             set_active_locale(previous)
             self._rebuild_menus()
+
+    def _show_language_restart_prompt(self, message: str) -> int:
+        """Ask whether to restart now, with a clearer explanation in server mode.
+
+        In server mode a plain restart would reopen InkSim without the current
+        embroidery file (Inkscape provides it once via a temporary file), so the
+        user is asked to confirm closing the application. Cancelling reverts the
+        language change.
+        """
+        if self.server_mode:
+            return QMessageBox.question(
+                self,
+                _("dialog.language.title", "Language changed"),
+                _(
+                    "dialog.language.server_message",
+                    "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+                ),
+                QMessageBox.Ok | QMessageBox.Cancel,
+                QMessageBox.Ok,
+            )
+        return QMessageBox.question(
+            self,
+            _("dialog.language.title", "Language changed"),
+            message,
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
+
+    def _apply_language_change(self) -> None:
+        """Restart in standalone mode or close in server mode.
+
+        In server mode the embroidery file is a temporary input provided once by
+        Inkscape, so a self-restart would reopen an empty window. Closing is the
+        only safe way to let the user restart from Inkscape with the new language.
+        """
+        if self.server_mode:
+            self._allow_close = True
+            self.close()
+        else:
+            self._restart_application()
 
     def _rebuild_menus(self) -> None:
         """Rebuild the menu bar so checkmarks reflect the active locale."""
@@ -643,6 +675,21 @@ class MainWindow(QMainWindow):
         QProcess.startDetached(program, launch)
         self._allow_close = True
         self.close()
+
+    def _confirm_and_close(
+        self, title_key: str, title_default: str, text_key: str, text_default: str
+    ) -> None:
+        """Show a confirmation dialog and close the window if the user accepts."""
+        answer = QMessageBox.question(
+            self,
+            _(title_key, title_default),
+            _(text_key, text_default),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
+        if answer == QMessageBox.Yes:
+            self._allow_close = True
+            self.close()
 
     @staticmethod
     def _args_without_language_flag(argv: list[str]) -> list[str]:
@@ -1047,7 +1094,7 @@ class MainWindow(QMainWindow):
         if getattr(self, "clear_snap_action", None):
             self.clear_snap_action.setEnabled(enabled)
 
-    def request_quit(self) -> None:
+    def request_quit(self, checked: bool = False) -> None:
         """Close the application instead of hiding a server window."""
         self._allow_close = True
         self.close()
@@ -1173,7 +1220,7 @@ class MainWindow(QMainWindow):
             self.viewer.stop_needle_highlight()
         self.viewer.update()
 
-    def open_file_dialog(self) -> None:
+    def open_file_dialog(self, checked: bool = False) -> None:
         dialog = EmbroideryOpenDialog(
             self, self.last_directory, self.current_file_path, self.recent_directories
         )
@@ -1412,7 +1459,7 @@ class MainWindow(QMainWindow):
             self.last_directory = str(selected_path.parent)
             self.statusBar().showMessage(f"Exported {_sanitize_path(selected_path)}", 3000)
 
-    def export_print_png(self) -> None:
+    def export_print_png(self, checked: bool = False) -> None:
         if not self._can_export_image():
             return
         background: tuple[int, int, int] | str
@@ -1431,7 +1478,7 @@ class MainWindow(QMainWindow):
             dpi=300,
         )
 
-    def export_shaded_png(self) -> None:
+    def export_shaded_png(self, checked: bool = False) -> None:
         if not self._can_export_image():
             return
         background: tuple[int, int, int] | str
@@ -1449,7 +1496,7 @@ class MainWindow(QMainWindow):
             dpi=300,
         )
 
-    def export_icon_png(self) -> None:
+    def export_icon_png(self, checked: bool = False) -> None:
         if not self._can_export_image():
             return
         background: tuple[int, int, int] | str
@@ -1515,7 +1562,7 @@ class MainWindow(QMainWindow):
         self.command_dock.raise_()
         self.refresh_command_panel()
 
-    def toggle_full_screen(self) -> None:
+    def toggle_full_screen(self, checked: bool = False) -> None:
         if not self.is_fullscreen:
             self._fullscreen_was_maximized = self.isMaximized()
             self.is_fullscreen = True

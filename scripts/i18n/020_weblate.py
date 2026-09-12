@@ -19,8 +19,8 @@ Import merges the flat files back into the ``{source, translation}`` catalogs.
 
 Usage:
 
-    uvr python scripts/i18n/weblate.py export
-    uvr python scripts/i18n/weblate.py import
+    uvr python scripts/i18n/020_weblate.py export
+    uvr python scripts/i18n/020_weblate.py import
 """
 
 from __future__ import annotations

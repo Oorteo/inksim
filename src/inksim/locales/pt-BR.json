@@ -108,12 +108,16 @@
         "translation": "Fundo transparente"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "O idioma foi definido para {language}. Reinicie o InkSim para aplicar."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "O idioma foi definido para {language}. Reiniciar o InkSim agora para aplicar?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "O idioma foi alterado. Feche o InkSim e reabra-o pelo Inkscape para aplicar o novo idioma."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "O idioma padrão do sistema será usado. O InkSim será reiniciado para aplicar."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "O idioma padrão do sistema será usado. Reiniciar o InkSim agora para aplicar?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "Pré-visualização normal"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Não é um arquivo de bordado válido"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

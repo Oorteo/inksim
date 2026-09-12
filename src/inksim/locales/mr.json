@@ -108,12 +108,16 @@
         "translation": "पारदर्शक पार्श्वभूमी"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "भाषा {language} वर सेट केली आहे. ती लागू करण्यासाठी InkSim पुन्हा सुरू करा."
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "भाषा {language} वर सेट केली आहे. ती लागू करण्यासाठी आता InkSim पुन्हा सुरू करायचं का?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "भाषा बदलली आहे. नवीन भाषा लागू करण्यासाठी InkSim बंद करा आणि Inkscape मधून पुन्हा उघडा."
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "सिस्टम डीफॉल्ट भाषा वापरली जाईल. ती लागू करण्यासाठी InkSim पुन्हा सुरू होईल."
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "सिस्टम डीफॉल्ट भाषा वापरली जाईल. ती लागू करण्यासाठी आता InkSim पुन्हा सुरू करायचं का?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "सामान्य पूर्वावलोकन"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "वैध भरतकाम फाइल नाही"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",

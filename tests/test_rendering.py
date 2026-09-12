@@ -145,6 +145,92 @@ def test_sample_design_can_load(sample_design, qtbot):
     window.close()
 
 
+def test_startup_with_directory_opens_file_dialog(qtbot, tmp_path, monkeypatch):
+    """Passing a directory as input opens the file dialog in that directory."""
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    opened_in: list[str] = []
+
+    def fake_open_file_dialog(checked: bool = False) -> None:
+        opened_in.append(window.last_directory)
+
+    monkeypatch.setattr(window, "open_file_dialog", fake_open_file_dialog)
+
+    window.show_initial_window(initial_directory=str(tmp_path))
+    qtbot.wait(100)
+
+    assert opened_in, "open_file_dialog was not called"
+    assert Path(opened_in[0]) == tmp_path.resolve()
+    window.close()
+
+
+def test_drag_and_drop_loads_file(sample_design, qtbot, monkeypatch):
+    """Dropping a file URL onto the main window loads the file."""
+    from PySide6.QtCore import QMimeData, Qt, QUrl
+    from PySide6.QtGui import QDropEvent
+
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    loaded: list[str] = []
+
+    def fake_open_file(path: str) -> bool:
+        loaded.append(path)
+        return True
+
+    monkeypatch.setattr(window, "open_file", fake_open_file)
+
+    mime_data = QMimeData()
+    mime_data.setUrls([QUrl.fromLocalFile(str(sample_design))])
+
+    drop_event = QDropEvent(
+        window.rect().center().toPointF(),
+        Qt.CopyAction,
+        mime_data,
+        Qt.LeftButton,
+        Qt.NoModifier,
+    )
+
+    window.dropEvent(drop_event)
+
+    assert loaded, "open_file was not called on drop"
+    assert Path(loaded[0]).resolve() == sample_design.resolve()
+    window.close()
+
+
+def test_empty_embroidery_file_shows_error_in_open_dialog(qtbot, tmp_path, monkeypatch):
+    """A file with zero stitches is treated as invalid in the open dialog."""
+    import pystitch as emb
+
+    from inksim.gui.dialogs import EmbroideryOpenDialog
+
+    empty_file = tmp_path / "empty.pes"
+    pattern = emb.EmbPattern()
+    pattern.stitches = []
+    emb.write(pattern, str(empty_file))
+
+    dialog = EmbroideryOpenDialog(
+        parent=None,
+        initial_directory=str(tmp_path),
+        selected_file=str(empty_file),
+    )
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    # Wait for the row change / preview to populate
+    qtbot.wait(50)
+
+    assert dialog.selected_path == empty_file
+    assert dialog.preview_error_label.isVisible()
+    assert "Not a valid embroidery file" in dialog.preview_error_label.text()
+    dialog.close()
+
+
 def test_switching_from_gpu_hides_widget_without_destroying_gl_resources():
     class FakeGLWidget:
         def __init__(self):
@@ -183,6 +269,28 @@ def test_open_dialog_cleans_preview_gl_resources_before_rejecting(qtbot, tmp_pat
     dialog.reject()
 
     assert cleanup_calls == [True]
+
+
+def test_open_dialog_preview_survives_invalid_json(qtbot, tmp_path):
+    """Selecting a .json file that is not a valid embroidery preview must not crash."""
+    from inksim.gui.dialogs import EmbroideryOpenDialog
+
+    bad_json = tmp_path / "not_embroidery.json"
+    bad_json.write_text('{"foo": "bar"}')
+
+    dialog = EmbroideryOpenDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(50)
+
+    # Selecting the invalid json triggers a preview load.
+    dialog.file_list.setCurrentRow(0)
+
+    assert dialog.selected_path == bad_json
+    assert dialog.preview.pattern is None
+    assert dialog.preview_error_label.isVisible()
+    assert "Not a valid embroidery file" in dialog.preview_error_label.text()
+    dialog.reject()
 
 
 def test_save_as_embroidery_writes_pystitch_format(sample_design, qtbot, tmp_path):

@@ -11,8 +11,8 @@ merged back into the target catalog.
 
 Example usage:
 
-    uvr python scripts/i18n/translate.py --lang cs --model deepseek-v4-flash:cloud
-    uvr python scripts/i18n/translate.py --lang sk --model deepseek-v4-flash:cloud
+    uvr python scripts/i18n/_translate.py --lang cs --model deepseek-v4-flash:cloud
+    uvr python scripts/i18n/_translate.py --lang sk --model deepseek-v4-flash:cloud
 
 Set ``OLLAMA_HOST`` if the Ollama server is not on ``http://localhost:11434``.
 """

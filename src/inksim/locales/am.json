@@ -108,12 +108,16 @@
         "translation": "ግልጽ ዳራ"
     },
     "dialog.language.restart_message": {
-        "source": "The language has been set to {language}. Restart InkSim to apply it.",
-        "translation": "ቋንቋው ወደ {language} ተቀይሯል። እንዲተገበር InkSimን እንደገና አስጀምር።"
+        "source": "The language has been set to {language}. Restart InkSim now to apply it?",
+        "translation": "ቋንቋው ወደ {language} ተቀይሯል። ተግባራዊ ለማድረግ ኢንክሲምን አሁን እንደገና ያስጀምሩ?"
+    },
+    "dialog.language.server_message": {
+        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+        "translation": "ቋንቋው ተቀይሯል። አዲሱን ቋንቋ ለመተግበር InkSimን ዝጋ እና ከInkscape እንደገና ክፈት።"
     },
     "dialog.language.system_default_message": {
-        "source": "The system default language will be used. InkSim will restart to apply it.",
-        "translation": "የስርዓቱ ነባሪ ቋንቋ ጥቅም ላይ ይውላል። InkSim እንዲተገበር እንደገና ይጀምራል።"
+        "source": "The system default language will be used. Restart InkSim now to apply it?",
+        "translation": "የስርዓቱ ነባሪ ቋንቋ ጥቅም ላይ ይውላል። ተግባራዊ ለማድረግ ኢንክሲምን አሁን እንደገና ያስጀምሩ?"
     },
     "dialog.language.title": {
         "source": "Language changed",
@@ -126,6 +130,10 @@
     "dialog.open.normal_preview": {
         "source": "Normal preview",
         "translation": "መደበኛ ቅድመ-እይታ"
+    },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "ትክክለኛ የጌጥ ስፌት ፋይል አይደለም"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",
