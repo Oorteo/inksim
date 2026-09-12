@@ -26,7 +26,7 @@ jobs:
       - name: Install system dependencies for headless Qt
         run: |
           sudo apt-get update
-          sudo apt-get install -y libegl1 libgl1 libglx-mesa0 libxkbcommon0 libdbus-1-3 libfontconfig1
+          sudo apt-get install -y libegl1 libgl1 libglx-mesa0 libxkbcommon0 libdbus-1-3 libfontconfig1 xvfb
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -46,7 +46,7 @@ jobs:
         run: uv run mypy src/inksim
 
       - name: Run tests
-        run: uv run pytest
+        run: xvfb-run uv run pytest
 
       - name: Security scan
         run: uv run python .github/scripts/security_scan.py
