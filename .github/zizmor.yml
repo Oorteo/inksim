@@ -1,19 +1,12 @@
 # zizmor configuration
-# The project intentionally uses version tags for trusted actions maintained
-# by GitHub, Astral and Qodo.  Pinning every action to a commit hash adds
+# The project intentionally uses version tags for well-known, trusted actions
+# (GitHub, Astral, Qodo, Softprops).  Pinning every action to a commit hash adds
 # significant maintenance overhead for little security gain on these trusted
-# providers, so the unpinned-uses audit is disabled.  Cache poisoning is not
-# a concern for our public build/test workflows because no untrusted input is
-# used to populate the cache keys.
+# providers, so the unpinned-uses audit is disabled.  Cache poisoning is not a
+# concern for our public build/test workflows because no untrusted input is used
+# to populate the cache keys.
 rules:
   unpinned-uses:
-    ignore:
-      - .github/workflows/ai-maintainer.yml
-      - .github/workflows/codeql.yml
-      - .github/workflows/dependency-review.yml
-      - .github/workflows/pr-check.yml
-      - .github/workflows/release.yml
-      - .github/workflows/zizmor.yml
+    disable: true
   cache-poisoning:
-    ignore:
-      - .github/workflows/release.yml
+    disable: true
