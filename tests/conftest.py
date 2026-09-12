@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import PySide6
@@ -11,6 +12,23 @@ import pytest
 # Some PySide6 builds omit __version__, which breaks pytest-qt's report header.
 if not hasattr(PySide6, "__version__"):
     PySide6.__version__ = "unknown"
+
+
+def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
+    """Exit cleanly when all tests passed, skipping the PySide6 shutdown abort.
+
+    PySide6 6.11 aborts during interpreter shutdown when Qt's internal icon /
+    style cache constructs a QPixmap after the QApplication has already been
+    destroyed (``QPixmap: Must construct a QGuiApplication before a QPixmap``,
+    exit code 134 / SIGABRT).  This happens in the C++ layer after every
+    atexit handler has run, so it cannot be fixed from test code.
+
+    When the suite is green there is nothing left to report, so we exit the
+    process immediately and skip the broken teardown.  On failure we let pytest
+    finish normally so the error is reported.
+    """
+    if exitstatus == 0:
+        os._exit(0)
 
 
 @pytest.fixture(autouse=True)
