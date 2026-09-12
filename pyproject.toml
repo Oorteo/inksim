@@ -1,3 +1,7 @@
+[build-system]
+requires = ["uv_build>=0.12.2,<0.13.0"]
+build-backend = "uv_build"
+
 [project]
 name = "inksim"
 version = "0.5.2"
@@ -17,8 +21,13 @@ dependencies = [
     "filelock",
 ]
 
+[tool.uv.build-backend]
+module-name = "inksim"
+source = "src/inksim"
+
 [dependency-groups]
 dev = [
+    "bandit",
     "mypy",
     "pillow",
     "poethepoet",
@@ -101,7 +110,7 @@ ignore = [
 # newer syntax do not break parsing. The project still supports Python 3.11+
 # at runtime via `requires-python` above.
 python_version = "3.12"
-packages = ["src/inksim"]
+packages = ["inksim"]
 warn_return_any = false
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -127,7 +136,3 @@ typecheck = "mypy src/inksim"
 fix = "ruff check --fix ."
 check = ["lint", "typecheck"]
 install-hooks = "pre-commit install"
-
-[build-system]
-requires = ["uv_build>=0.12.2,<0.13.0"]
-build-backend = "uv_build"
