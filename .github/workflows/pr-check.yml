@@ -46,7 +46,9 @@ jobs:
         run: uv run mypy src/inksim
 
       - name: Run tests
-        run: xvfb-run uv run pytest
+        run: xvfb-run -a uv run pytest
+        env:
+          QT_QPA_PLATFORM: offscreen
 
       - name: Security scan
         run: uv run python .github/scripts/security_scan.py
