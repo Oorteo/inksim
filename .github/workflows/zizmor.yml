@@ -27,4 +27,4 @@ jobs:
         run: uv tool install zizmor
 
       - name: Scan workflows
-        run: uvx zizmor --min-severity medium .github/workflows
+        run: uvx zizmor --min-severity medium --config .github/zizmor.yml .github/workflows
