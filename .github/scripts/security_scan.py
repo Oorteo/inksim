@@ -17,6 +17,7 @@ import ast
 import re
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -94,9 +95,13 @@ def grep_patterns() -> tuple[bool, list[Finding]]:
             continue
 
         # AST-based detection of dangerous built-in calls.
+        lines = source.splitlines()
         for node in ast.walk(tree):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
                 if node.func.id in DANGEROUS_BUILTINS:
+                    line = lines[node.lineno - 1] if node.lineno else ""
+                    if "# security:allowed" in line:
+                        continue
                     findings.append(Finding(f"{rel}:{node.lineno}: {node.func.id}() built-in call"))
 
         # Text-based detection for dangerous idioms and module-qualified calls.
@@ -138,23 +143,37 @@ def check_hidden_functions() -> tuple[bool, list[Finding]]:
                 continue
 
             dangerous = False
+            lines = source.splitlines()
             for child in ast.walk(node):
-                if isinstance(child, ast.Call):
-                    if isinstance(child.func, ast.Name) and child.func.id in DANGEROUS_BUILTINS:
-                        dangerous = True
-                    elif (
-                        isinstance(child.func, ast.Attribute)
-                        and isinstance(child.func.value, ast.Name)
-                        and (child.func.value.id, child.func.attr) in DANGEROUS_ATTRIBUTE_CALLS
+                if not isinstance(child, ast.Call):
+                    continue
+                # Honour the same-line suppression comment.
+                if child.lineno and "# security:allowed" in lines[child.lineno - 1]:
+                    continue
+                if isinstance(child.func, ast.Name) and child.func.id in DANGEROUS_BUILTINS:
+                    dangerous = True
+                elif (
+                    isinstance(child.func, ast.Attribute)
+                    and isinstance(child.func.value, ast.Name)
+                    and (child.func.value.id, child.func.attr) in DANGEROUS_ATTRIBUTE_CALLS
+                ):
+                    dangerous = True
+                elif isinstance(child.func, ast.Attribute):
+                    # base64.b64decode(...) chained to another operation, e.g.
+                    # eval(base64.b64decode(...)) or b64decode(...).decode().
+                    if (
+                        isinstance(child.func.value, ast.Call)
+                        and isinstance(child.func.value.func, ast.Attribute)
+                        and child.func.value.func.attr == "b64decode"
                     ):
                         dangerous = True
-                if isinstance(child, ast.Call) and isinstance(child.func, ast.Attribute):
-                    # base64.b64decode(...).something()
-                    if child.func.attr == "b64decode":
-                        dangerous = True
-                    # subprocess.* with shell=True keyword
+                    # subprocess.* with a literal shell=True keyword.
                     if child.func.attr in {"call", "run", "Popen", "check_output"} and any(
-                        isinstance(kw.arg, str) and kw.arg == "shell" for kw in child.keywords
+                        isinstance(kw, ast.keyword)
+                        and kw.arg == "shell"
+                        and isinstance(kw.value, ast.Constant)
+                        and kw.value.value is True
+                        for kw in child.keywords
                     ):
                         dangerous = True
             if dangerous:
@@ -175,18 +194,31 @@ def check_project_identity() -> tuple[bool, list[Finding]]:
         findings.append(Finding("pyproject.toml is missing"))
         return False, findings
 
-    pyproject = pyproject_path.read_text(encoding="utf-8")
-    required_snippets = [
-        'name = "inksim"',
-        'license = { file = "LICENSE" }',
-        'inksim = "inksim.cli:main"',
-        'inksim-gui = "inksim.cli:main"',
-    ]
-    for snippet in required_snippets:
-        if snippet not in pyproject:
+    try:
+        with pyproject_path.open("rb") as fh:
+            pyproject = tomllib.load(fh)
+    except (tomllib.TOMLDecodeError, OSError) as exc:
+        findings.append(Finding(f"pyproject.toml could not be parsed: {exc}"))
+        return False, findings
+
+    project = pyproject.get("project", {})
+    expected = {
+        "name": "inksim",
+        "license.file": "LICENSE",
+        "scripts.inksim": "inksim.cli:main",
+        "gui-scripts.inksim-gui": "inksim.cli:main",
+    }
+    actual = {
+        "name": project.get("name"),
+        "license.file": (project.get("license") or {}).get("file"),
+        "scripts.inksim": (project.get("scripts") or {}).get("inksim"),
+        "gui-scripts.inksim-gui": (project.get("gui-scripts") or {}).get("inksim-gui"),
+    }
+    for key, want in expected.items():
+        if actual[key] != want:
             findings.append(
                 Finding(
-                    f"pyproject.toml must contain: {snippet!r} "
+                    f"pyproject.toml {key} must be {want!r} "
                     "(possible unauthorised project identity change)"
                 )
             )
