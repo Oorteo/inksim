@@ -7,6 +7,13 @@
 # used to populate the cache keys.
 rules:
   unpinned-uses:
-    ignore: true
+    ignore:
+      - .github/workflows/ai-maintainer.yml
+      - .github/workflows/codeql.yml
+      - .github/workflows/dependency-review.yml
+      - .github/workflows/pr-check.yml
+      - .github/workflows/release.yml
+      - .github/workflows/zizmor.yml
   cache-poisoning:
-    ignore: true
+    ignore:
+      - .github/workflows/release.yml
