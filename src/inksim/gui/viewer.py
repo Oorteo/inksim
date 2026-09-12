@@ -56,9 +56,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from .timeline import TimelineWidget
+
 if TYPE_CHECKING:
     from .status import ModeBar
-    from .timeline import TimelineWidget
 
 from ..config import Config
 from ..constants import (
