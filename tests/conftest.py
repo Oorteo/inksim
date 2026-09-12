@@ -1,32 +1,36 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from __future__ import annotations
+
+import gc
 from pathlib import Path
 
 import PySide6
 import pytest
+from PySide6.QtWidgets import QApplication
 
 # Some PySide6 builds omit __version__, which breaks pytest-qt's report header.
 if not hasattr(PySide6, "__version__"):
     PySide6.__version__ = "unknown"
 
 
-@pytest.fixture(scope="session")
-def qapp():
-    """Create a single QApplication that lives for the whole test session.
+@pytest.fixture(autouse=True, scope="session")
+def _cleanup_qt_on_session_end():
+    """Force pending Qt cleanup before the session QApplication exits.
 
-    The default pytest-qt fixture destroys the application after each test,
-    which can crash if any deferred GUI objects (timers, pixmaps) are still
-    being finalized.  Keeping one application alive avoids those shutdown
-    aborts in headless CI runs.
+    Some widgets hold Pixmaps that are freed only at Python garbage-collection
+    time.  If the QApplication is destroyed first, that finalization aborts.
+    Close all windows, pump the event loop and collect garbage while the app is
+    still alive.
     """
-    from PySide6.QtWidgets import QApplication
-
+    yield
     app = QApplication.instance()
-    if app is None:
-        app = QApplication([])
-    yield app
-    # Do not explicitly destroy the application; let the process exit handle it.
+    if app is not None:
+        app.closeAllWindows()
+        app.processEvents()
+        gc.collect()
+        app.processEvents()
 
 
 @pytest.fixture(autouse=True)
