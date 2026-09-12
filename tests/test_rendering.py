@@ -202,6 +202,8 @@ def test_open_dialog_preview_survives_invalid_json(qtbot, tmp_path):
 
     assert dialog.selected_path == bad_json
     assert dialog.preview.pattern is None
+    assert dialog.preview_error_label.isVisible()
+    assert "Not a valid embroidery file" in dialog.preview_error_label.text()
     dialog.reject()
 
 

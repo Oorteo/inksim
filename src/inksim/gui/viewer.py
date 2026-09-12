@@ -216,6 +216,7 @@ class EmbroideryViewerWidget(QWidget):
         self.needle_fullscreen: bool = False
         self.needle_pulse = 0.0
         self._needle_pulse_anim: QVariantAnimation | None = None
+        self.show_empty_hint = False
         self.config = config if config is not None else Config()
         self._load_view_settings()
         self.pattern: emb.Pattern | None = None
@@ -1354,7 +1355,7 @@ class EmbroideryViewerWidget(QWidget):
                 painter.end()
                 return
         w, h = self.width(), self.height()
-        if self.stitches_np.shape[0] == 0:
+        if self.stitches_np.shape[0] == 0 and self.show_empty_hint:
             # Dark panel so white text is always readable regardless of the
             # user's background colour.
             hint_color = QColor(255, 255, 255)

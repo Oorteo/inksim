@@ -135,6 +135,10 @@
         "source": "Open embroidery file",
         "translation": "Open embroidery file"
     },
+    "dialog.open.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Not a valid embroidery file"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Choose stitch renderer"

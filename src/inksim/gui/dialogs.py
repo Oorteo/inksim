@@ -9,13 +9,14 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QColor, QPainter, QPaintEvent, QPen
+from PySide6.QtGui import QColor, QPainter, QPaintEvent, QPen, QResizeEvent
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QDialogButtonBox,
     QDoubleSpinBox,
     QFileDialog,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QListWidget,
@@ -179,12 +180,38 @@ class EmbroideryOpenDialog(QDialog):
         root_layout.addLayout(recent_layout)
         self.file_list = QListWidget(self)
         preview_container = QWidget(self)
+        self.preview_container = preview_container
         preview_layout = QVBoxLayout()
         preview_container.setLayout(preview_layout)
         self.preview = EmbroideryViewerWidget(preview_container, None)
         self.preview.show_grid = False
         self.preview.show_needle = False
         preview_layout.addWidget(self.preview)
+        self.preview_error_overlay = QFrame(preview_container)
+        self.preview_error_overlay.setFrameShape(QFrame.NoFrame)
+        self.preview_error_overlay.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        overlay_layout = QVBoxLayout(self.preview_error_overlay)
+        overlay_layout.setContentsMargins(0, 0, 0, 0)
+        overlay_layout.addStretch(1)
+        self.preview_error_label = QLabel(
+            _("dialog.open.not_embroidery"), self.preview_error_overlay
+        )
+        self.preview_error_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.preview_error_label.setStyleSheet(
+            "color: rgba(240, 240, 240, 0.95);"
+            " font-size: 11pt;"
+            " font-style: italic;"
+            " background-color: rgba(0, 0, 0, 0.45);"
+            " border-radius: 8px;"
+            " padding: 10px 18px;"
+        )
+        self.preview_error_label.setWordWrap(False)
+        self.preview_error_label.setMinimumWidth(240)
+        self.preview_error_label.setVisible(False)
+        overlay_layout.addWidget(self.preview_error_label, 0, Qt.AlignmentFlag.AlignCenter)
+        overlay_layout.addStretch(1)
+        self.preview.renderer_changed.connect(self._on_preview_renderer_changed)
+        QTimer.singleShot(0, self._update_preview_error_overlay_geometry)
         splitter = QSplitter(Qt.Horizontal, self)
         splitter.addWidget(self.file_list)
         splitter.addWidget(preview_container)
@@ -234,10 +261,30 @@ class EmbroideryOpenDialog(QDialog):
             _("dialog.open.normal_preview") if is_real else _("dialog.open.real_preview")
         )
 
+    def _on_preview_renderer_changed(self, renderer_key: str) -> None:
+        """Keep the error overlay above the OpenGL widget in GPU textured mode."""
+        if self.preview_error_label.isVisible():
+            self.preview_error_overlay.raise_()
+        self._update_preview_error_overlay_geometry()
+
+    def _update_preview_error_overlay_geometry(self) -> None:
+        """Position the error overlay over the whole preview container."""
+        overlay = getattr(self, "preview_error_overlay", None)
+        container = getattr(self, "preview_container", None)
+        if overlay and container:
+            overlay.setGeometry(container.rect())
+            if self.preview_error_label.isVisible():
+                overlay.raise_()
+
     def done(self, result: int) -> None:
         """Release the preview's GL objects before the dialog is hidden."""
         self.preview._gl_widget.cleanup()
         super().done(result)
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        """Keep the error overlay label centered over the preview panel."""
+        super().resizeEvent(event)
+        QTimer.singleShot(0, self._update_preview_error_overlay_geometry)
 
     def refresh_files(self) -> None:
         if not self.current_directory.is_dir():
@@ -295,6 +342,9 @@ class EmbroideryOpenDialog(QDialog):
         )
         if not loaded:
             density_debug(f"dialog preview load failed row={row} path={self.selected_path!s}")
+        self.preview_error_label.setVisible(not loaded)
+        if not loaded:
+            self.preview_error_overlay.raise_()
         density_debug(
             f"dialog preview load returned row={row} loaded={loaded} elapsed={time.perf_counter() - started_at:.3f}s"
         )
