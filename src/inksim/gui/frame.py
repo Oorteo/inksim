@@ -1593,6 +1593,22 @@ class MainWindow(QMainWindow):
 
     def dropEvent(self, event: QDropEvent) -> None:
         urls = event.mimeData().urls()
-        if urls:
-            self.open_file(urls[0].toLocalFile())
+        if not urls:
+            event.ignore()
+            return
+        dropped_path = Path(urls[0].toLocalFile())
+        if dropped_path.is_dir():
+            dialog = EmbroideryOpenDialog(
+                self,
+                dropped_path,
+                self.current_file_path,
+                self.recent_directories,
+            )
+            if dialog.exec() == QDialog.Accepted:
+                selected = dialog.selected_path
+                if selected is not None:
+                    self.open_file(selected)
             event.acceptProposedAction()
+            return
+        self.open_file(dropped_path)
+        event.acceptProposedAction()
