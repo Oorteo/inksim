@@ -580,15 +580,10 @@ class MainWindow(QMainWindow):
         previous = active_locale()
         set_active_locale(locale)
         name = get_language_name(locale)
-        answer = QMessageBox.question(
-            self,
-            _("dialog.language.title", "Language changed"),
-            _(
-                "dialog.language.restart_message",
-                "The language has been set to {language}. Restart InkSim now to apply it?",
-            ).format(language=name),
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes,
+        answer = self._show_language_restart_prompt(
+            "dialog.language.restart_message",
+            "The language has been set to {language}. Restart InkSim now to apply it?",
+            language=name,
         )
         if answer == QMessageBox.Yes:
             self._restart_application()
@@ -600,21 +595,42 @@ class MainWindow(QMainWindow):
         """Revert to the system default language and restart the application."""
         previous = active_locale()
         clear_active_locale()
-        answer = QMessageBox.question(
-            self,
-            _("dialog.language.title", "Language changed"),
-            _(
-                "dialog.language.system_default_message",
-                "The system default language will be used. Restart InkSim now to apply it?",
-            ),
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes,
+        answer = self._show_language_restart_prompt(
+            "dialog.language.system_default_message",
+            "The system default language will be used. Restart InkSim now to apply it?",
         )
         if answer == QMessageBox.Yes:
             self._restart_application()
         else:
             set_active_locale(previous)
             self._rebuild_menus()
+
+    def _show_language_restart_prompt(
+        self, message_key: str, default_text: str, **kwargs: str
+    ) -> int:
+        """Ask whether to restart now, with a clearer explanation in server mode.
+
+        In server mode a plain restart would reopen InkSim without the current
+        embroidery file (Inkscape provides it once via a temporary file), so the
+        dialog tells the user to restart from Inkscape instead.
+        """
+        if self.server_mode:
+            return QMessageBox.information(
+                self,
+                _("dialog.language.title", "Language changed"),
+                _(
+                    "dialog.language.server_message",
+                    "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
+                ),
+                QMessageBox.Ok,
+            )
+        return QMessageBox.question(
+            self,
+            _("dialog.language.title", "Language changed"),
+            _(message_key, default_text).format(**kwargs),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
 
     def _rebuild_menus(self) -> None:
         """Rebuild the menu bar so checkmarks reflect the active locale."""
@@ -643,6 +659,21 @@ class MainWindow(QMainWindow):
         QProcess.startDetached(program, launch)
         self._allow_close = True
         self.close()
+
+    def _confirm_and_close(
+        self, title_key: str, title_default: str, text_key: str, text_default: str
+    ) -> None:
+        """Show a confirmation dialog and close the window if the user accepts."""
+        answer = QMessageBox.question(
+            self,
+            _(title_key, title_default),
+            _(text_key, text_default),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
+        if answer == QMessageBox.Yes:
+            self._allow_close = True
+            self.close()
 
     @staticmethod
     def _args_without_language_flag(argv: list[str]) -> list[str]:
