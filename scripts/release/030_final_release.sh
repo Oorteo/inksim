@@ -128,11 +128,16 @@ sha="$(git rev-parse "$remote_ref")"
 tag="v$version"
 
 git rev-parse -q --verify "refs/tags/$tag" >/dev/null && {
-    echo "Tag $tag already exists locally." >&2
+    printf '%s already has the tag %s, so there is nothing to release.\n' "$remote_ref" "$tag" >&2
+    printf '\nTo release a new version, promote the project version first:\n' >&2
+    printf '  git switch <release branch>\n' >&2
+    printf '  uv version %s --bump patch\n' "${version##*/}" >&2
+    printf '  git add pyproject.toml && git commit -m "chore: release <new version>"\n' >&2
+    printf '  open a pull request against %s and merge it\n' "$branch" >&2
     exit 1
 }
 git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1 && {
-    echo "Tag $tag already exists on origin." >&2
+    printf 'Tag %s already exists on origin, so %s was released already.\n' "$tag" "$version" >&2
     exit 1
 }
 
