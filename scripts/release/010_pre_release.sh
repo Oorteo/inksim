@@ -2,36 +2,41 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Publish a pre-release build for testing.
+# Publish a pre-release build for testing, without touching pyproject.toml.
 #
-# The script bumps the project version to the next release candidate (for
-# example 0.5.3 -> 0.5.4rc1, then 0.5.4rc1 -> 0.5.4rc2), commits the change,
-# creates an annotated tag and pushes both. The tag name spells the pre-release
-# with a hyphen (v0.5.4-rc.1) so that the release workflow can tell it apart
-# from a stable tag and publish it as a GitHub pre-release.
+# The version in pyproject.toml is the version the branch is heading towards;
+# it is never rewritten for a release. This script reads it, appends the next
+# release-candidate counter and creates a tag on the current commit. The
+# release workflow derives the exact distribution version from that tag, so no
+# commit is added and no reviewer has to approve a version-only change.
 set -euo pipefail
 
+push=true
+dry_run=false
+assume_yes=false
+fetch=true
+
 usage() {
-    printf 'Usage: %s [-y|--yes] [-n|--dry-run] [--no-push]\n' "${0##*/}"
+    printf 'Usage: %s [-y|--yes] [-n|--dry-run] [--no-push] [--no-fetch]\n' "${0##*/}"
     printf '\n'
-    printf 'Bumps the project version to the next release candidate, commits it,\n'
-    printf 'creates an annotated tag and pushes commit and tag.\n'
+    printf 'Creates a pre-release tag for the current commit. The version comes\n'
+    printf 'from pyproject.toml, the candidate counter is incremented from the\n'
+    printf 'existing tags. pyproject.toml is never modified.\n'
     printf '\n'
     printf 'Options:\n'
     printf '  -y, --yes      Do not ask for confirmation.\n'
     printf '  -n, --dry-run  Print the plan and exit without changing anything.\n'
-    printf '      --no-push  Commit and tag locally, but do not push.\n'
+    printf '      --no-push  Create the tag locally, but do not push it.\n'
+    printf '      --no-fetch Use the existing remote refs without fetching.\n'
     printf '  -h, --help     Show this help.\n'
 }
 
-assume_yes=false
-dry_run=false
-push=true
 while (($#)); do
     case "$1" in
     -y | --yes) assume_yes=true ;;
     -n | --dry-run) dry_run=true ;;
     --no-push) push=false ;;
+    --no-fetch) fetch=false ;;
     -h | --help)
         usage
         exit 0
@@ -71,43 +76,52 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
     echo "The working tree has uncommitted changes; commit or stash them first." >&2
+    echo "A tag points at a commit, so uncommitted work would not be released." >&2
     exit 1
 fi
 
-# The version is read with --dry-run and written with --no-sync so that uv
-# neither re-locks nor syncs the environment during a release.
-current_version="$(uv version --short --dry-run)"
-branch="$(git rev-parse --abbrev-ref HEAD)"
-
-# A release candidate in progress increments its own counter, anything else
-# starts a candidate for the next patch version.
-if [[ "$current_version" =~ [0-9](a|b|rc|\.dev)[0-9]+$ ]]; then
-    next_version="$(uv version --bump rc --dry-run --short)"
-else
-    next_version="$(uv version --bump patch --bump rc --dry-run --short)"
+if [[ "$fetch" == true ]]; then
+    if ! git fetch --quiet --tags origin; then
+        echo "Could not fetch tags from origin; continuing with the local ones." >&2
+    fi
 fi
 
-# PEP 440 writes the candidate as 0.5.4rc1, the tag uses 0.5.4-rc.1.
-tag_version="$(printf '%s' "$next_version" | sed -E 's/^(.*[0-9])(a|b|rc|\.dev)([0-9]+)$/\1-\2.\3/')"
-[[ "$tag_version" != "$next_version" ]] || {
-    echo "Refusing to tag: '$next_version' is not a pre-release version." >&2
+branch="$(git rev-parse --abbrev-ref HEAD)"
+commit="$(git rev-parse HEAD)"
+
+# pyproject.toml holds the version the branch is heading towards. It is only
+# read here, never rewritten.
+target_version="$(uv version --short --dry-run)"
+
+# Work on the release version itself: 0.5.4rc2 or 0.5.4 both start from 0.5.4.
+base_version="$(printf '%s' "$target_version" | sed -E 's/(a|b|rc|\.dev)[0-9]+$//')"
+[[ "$base_version" =~ ^[0-9]+(\.[0-9]+){2,3}$ ]] || {
+    printf '%s in pyproject.toml is not a plain release version.\n' "$target_version" >&2
     exit 1
 }
-tag="v$tag_version"
 
-if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
-    echo "Tag $tag already exists." >&2
-    exit 1
-fi
+# The candidate counter comes from the tags that already exist for this
+# version, so repeated runs produce rc.1, rc.2, rc.3 and so on.
+last_candidate=0
+while IFS= read -r existing; do
+    [[ "$existing" =~ ^v${base_version}-rc\.([0-9]+)$ ]] || continue
+    ((BASH_REMATCH[1] > last_candidate)) && last_candidate="${BASH_REMATCH[1]}"
+done < <(git tag --list "v${base_version}-rc.*")
+next_candidate=$((last_candidate + 1))
+
+tag="v${base_version}-rc.${next_candidate}"
+# PEP 440 spells the candidate 0.5.4rc1; the tag spells it v0.5.4-rc.1.
+dist_version="${base_version}rc${next_candidate}"
 
 printf '\nPre-release plan for: %s\n' "$project_root"
 printf '  Branch:       %s\n' "$branch"
-printf '  Version:      %s -> %s\n' "$current_version" "$next_version"
+printf '  Commit:       %s %s\n' "${commit:0:12}" "$(git log -1 --pretty=%s)"
+printf '  Version:      %s (from pyproject.toml, unchanged)\n' "$target_version"
 printf '  Tag:          %s (pre-release)\n' "$tag"
-printf '  Commit:       chore: release %s\n' "$next_version"
-printf '  Push:         %s\n' "$(if [[ "$push" == true ]]; then echo "yes (branch and tag)"; else echo "no"; fi)"
-printf '  Distributes:  %s %s via the release workflow\n' "inksim" "$next_version"
-printf '  Latest:       unchanged, pre-releases never become "latest"\n'
+printf '  Builds:       inksim-%s\n' "$dist_version"
+printf '  Commit made:  none\n'
+printf '  Push:         %s\n' "$(if [[ "$push" == true ]]; then echo "tag only"; else echo "no"; fi)"
+printf '  Latest:       unchanged, pre-releases never become latest\n'
 
 if [[ "$dry_run" == true ]]; then
     printf '\nDry run: nothing was changed.\n'
@@ -115,7 +129,8 @@ if [[ "$dry_run" == true ]]; then
 fi
 
 if [[ "$assume_yes" != true ]]; then
-    printf '\nCreate the commit and the tag now? [y/N] '
+    printf '\nCreate and %s %s now? [y/N] ' \
+        "$(if [[ "$push" == true ]]; then echo "push"; else echo "keep"; fi)" "$tag"
     read -r answer
     [[ "$answer" =~ ^[Yy]$ ]] || {
         printf 'Pre-release cancelled.\n'
@@ -124,19 +139,14 @@ if [[ "$assume_yes" != true ]]; then
 fi
 
 set -x
-uv version "$next_version" --no-sync
-git add pyproject.toml
-git commit -m "chore: release $next_version"
 git tag -a "$tag" -m "$tag"
 if [[ "$push" == true ]]; then
-    # Push both references at once so a failure cannot leave the release commit
-    # on the remote without its tag, which would skip the release workflow.
-    git push --atomic origin HEAD "$tag"
+    git push origin "$tag"
 fi
 set +x
 
 printf '\nPre-release %s is building. Testers install it with:\n' "$tag"
 printf '  pip install https://github.com/<owner>/<repo>/releases/download/%s/inksim-%s-py3-none-any.whl\n' \
-    "$tag" "$next_version"
-printf '\nWhen the candidate is accepted, promote it to a final version:\n'
-printf '  ./scripts/release/020_promote_release.sh\n'
+    "$tag" "$dist_version"
+printf '\nWhen the candidate is accepted, merge the work and tag the release:\n'
+printf '  ./scripts/release/030_final_release.sh\n'

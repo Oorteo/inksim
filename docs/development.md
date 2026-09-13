@@ -335,35 +335,41 @@ distribution to a GitHub release, and publishes it. Artifacts uploaded by the
 `PR check` workflow are not releases: they require a GitHub login and expire
 after a few days, so they are only meant for CI verification.
 
-### Version and tag conventions
+### The tag is the source of truth
 
-The version in `pyproject.toml` follows [PEP 440](https://peps.python.org/pep-0440/),
-while tags use a hyphen before the pre-release segment:
+`pyproject.toml` is never rewritten for a release. It holds the version the
+branch is heading towards, and the tag says what is actually being published.
+Before building, the workflow derives the distribution version from the tag and
+applies it to the checkout only:
 
-| Kind                  | Version in `pyproject.toml` | Tag           | GitHub release            |
-| --------------------- | --------------------------- | ------------- | ------------------------- |
-| Candidate             | `0.5.4rc1`                  | `v0.5.4-rc.1` | pre-release               |
-| Candidate, next round | `0.5.4rc2`                  | `v0.5.4-rc.2` | pre-release               |
-| Final                 | `0.5.4`                     | `v0.5.4`      | published, becomes latest |
+| Tag           | Distribution version | `pyproject.toml` |
+| ------------- | -------------------- | ---------------- |
+| `v0.5.4-rc.1` | `0.5.4rc1`           | unchanged        |
+| `v0.5.4-rc.2` | `0.5.4rc2`           | unchanged        |
+| `v0.5.4`      | `0.5.4`              | unchanged        |
 
-A tag without a hyphen produces a published release, which GitHub labels as the
-repository's latest release. Pre-releases never receive that label, so they
-cannot displace the current stable version.
+Only `[PEP 440](https://peps.python.org/pep-0440/)` spelling differs from the
+tag: a candidate carries a hyphen in the tag (`v0.5.4-rc.1`) because a
+hyphen-free tag would be read as the final release.
+
+This keeps version bumps out of the history, so no reviewer has to approve a
+change that only touches a version string, and no release candidate can be left
+behind on the default branch.
 
 ### Publishing a pre-release
 
-Use the helper script; it bumps the version, commits, tags and pushes:
+Tag the current commit and push the tag; no commit is created:
 
 ```bash
 ./scripts/release/010_pre_release.sh --dry-run   # inspect the plan first
 ./scripts/release/010_pre_release.sh
 ```
 
-Starting from a stable version it produces the first candidate of the next
-patch release (`0.5.3` to `0.5.4rc1`), and repeated runs increment the counter
-(`0.5.4rc1` to `0.5.4rc2`). The script refuses to run with a dirty working tree
-and refuses to reuse an existing tag. Testers can install a candidate directly
-from the release page:
+The script reads the version from `pyproject.toml`, counts the existing
+`v<version>-rc.*` tags and creates the next candidate, so repeated runs produce
+`rc.1`, `rc.2`, `rc.3`. It refuses to run with a dirty working tree, because a
+tag points at a commit and uncommitted work would not be released. Testers can
+install a candidate directly from the release page:
 
 ```bash
 pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksim-0.5.4rc1-py3-none-any.whl
@@ -371,56 +377,23 @@ pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksi
 
 ### Publishing a final release
 
-A final release is a two-stage flow. The version in `pyproject.toml` is the
-source of truth, and the distributions the release workflow builds come from the
-commit the tag points at, so the version has to be promoted on a development
-branch, merged, and only then tagged:
-
-| Step                    | Script                   | Where to run it         |
-| ----------------------- | ------------------------ | ----------------------- |
-| Prepare a candidate     | `010_pre_release.sh`     | development branch      |
-| Promote the candidate   | `020_promote_release.sh` | development branch      |
-| Merge the promotion     | pull request             | development branch      |
-| Tag the release         | `030_final_release.sh`   | default branch worktree |
-| Clean up old candidates | `040_prune_releases.sh`  | anywhere                |
-
-Promote the candidate on the development branch:
-
-```bash
-./scripts/release/020_promote_release.sh --dry-run   # inspect the plan first
-./scripts/release/020_promote_release.sh             # 0.5.4rc2 -> 0.5.4, commits
-```
-
-The script rewrites `pyproject.toml`, commits the change and prints the merge
-steps. It never tags anything and refuses to run on a version that is already
-final.
-
-Merge the promotion into the default branch:
-
-```bash
-git push origin <development branch>
-gh pr create --base main --title "Release 0.5.4" --body "..."
-gh pr merge --squash
-```
-
-The `Protect main` ruleset requires a pull request, but no approvals
-(`required_approving_review_count: 0`) and only allows squash merges, so
-releasing alone still works. The merge creates a new commit, so tags that point
-at the development branch, including the `-rc.N` ones, are not part of `main`
-afterwards; delete the branch once the merge is through.
-
-Finally tag the merged version from the worktree that holds the default branch:
+Once the work is merged, tag the default branch. The version in
+`pyproject.toml` has to be the release version by then, because it names the
+release:
 
 ```bash
 ./scripts/release/030_final_release.sh --dry-run   # inspect the plan first
 ./scripts/release/030_final_release.sh
 ```
 
-This script reads the version from the local `pyproject.toml` and tags the
-checked-out commit, which keeps the tag, the metadata and the built wheel in
-sync. It reports the CI status of that commit and refuses to tag unless every
-check passed; pass `--no-require-green` to override, `--branch` to tag another
-branch, and `--no-push` to create the tag locally.
+The script tags the checked-out commit, reports the CI status of that commit and
+refuses to tag unless every check passed; pass `--no-require-green` to override,
+`--branch` to tag another branch, and `--no-push` to create the tag locally.
+
+If the tag already exists and points at an older commit, the script does not
+move it. It prints both commits and offers three options: leave the tag alone,
+move it deliberately with `git tag -fa`, or release a different version. Silently
+retagging would change what an already published release contains.
 
 The PyPI upload stays a separate, manual step: run
 `./scripts/pypi/010_build.sh`, verify the wheel, then

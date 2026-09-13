@@ -2,13 +2,12 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Tag a final release from the default branch, after the promotion merge.
+# Tag a final release from the default branch.
 #
-# Run this from the worktree that holds the default branch, once
-# 020_promote_release.sh has been merged and the development branch deleted.
-# pyproject.toml is the source of truth for the version; the script tags the
-# current commit of the checked-out branch, so the tag name, the version in
-# the metadata and the distributions built by the release workflow all agree.
+# Run this from the worktree that holds the default branch, once the work for
+# the release has been merged. The version in pyproject.toml names the release
+# and is never rewritten; the tag is what the release workflow builds from, so
+# the script tags the current commit and leaves the file alone.
 set -euo pipefail
 
 push=true
@@ -105,24 +104,19 @@ fi
 default_branch="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
 default_branch="${default_branch:-main}"
 
-# pyproject.toml is the source of truth for the version.
+# pyproject.toml holds the version this branch is heading towards.
 version="$(uv version --short --dry-run)"
 [[ -n "$version" ]] || {
     echo "Could not read the version from pyproject.toml." >&2
     exit 1
 }
 
+# A pre-release in the file means the branch is still a staging branch; only
+# the plain release version is tagged here.
 if [[ ! "$version" =~ ^[0-9]+(\.[0-9]+){2,3}$ ]]; then
-    if [[ "$version" =~ [0-9](a|b|rc|\.dev)[0-9]+$ ]]; then
-        printf '%s is still a pre-release; promote it first:\n' "$version" >&2
-        printf '  ./scripts/release/020_promote_release.sh\n' >&2
-        printf '  git push origin %s\n' "$branch" >&2
-        printf '  gh pr create --base %s --title "Release <version>"\n' "$default_branch" >&2
-        printf '  gh pr merge --squash\n' >&2
-        printf 'then run this script again from the %s worktree.\n' "$default_branch" >&2
-    else
-        printf '%s is not a plain release version.\n' "$version" >&2
-    fi
+    printf '%s in pyproject.toml is not a plain release version.\n' "$version" >&2
+    printf 'Release candidates are published with ./scripts/release/010_pre_release.sh,\n' >&2
+    printf 'which tags the current commit without touching pyproject.toml.\n' >&2
     exit 1
 fi
 
@@ -133,18 +127,40 @@ else
 fi
 tag="v$version"
 
-git rev-parse -q --verify "refs/tags/$tag" >/dev/null && {
-    printf 'The tag %s already exists locally, so %s was released already.\n' "$tag" "$version" >&2
-    printf '\nTo release a new version, promote the project version first:\n' >&2
-    printf '  git switch <development branch>\n' >&2
-    printf '  uv version %s --bump patch\n' "$version" >&2
-    printf '  git add pyproject.toml && git commit -m "chore: release <new version>"\n' >&2
+# An existing tag may point at an older commit, for example when it was created
+# before further work landed. Report both commits and let the developer decide;
+# never move a tag silently, because that rewrites what the release contains.
+existing_local="$(git rev-parse -q --verify "refs/tags/$tag^{commit}" || true)"
+existing_remote=""
+if git ls-remote --exit-code --tags origin "refs/tags/$tag^{}" >/dev/null 2>&1; then
+    existing_remote="$(git ls-remote --tags origin "refs/tags/$tag^{}" | cut -f1)"
+fi
+
+if [[ -n "$existing_local" || -n "$existing_remote" ]]; then
+    printf '\nThe tag %s already exists.\n\n' "$tag" >&2
+    printf '  Tag points at:   %s %s\n' "${existing_local:0:12}" \
+        "$(git log -1 --pretty=%s "$existing_local" 2>/dev/null)" >&2
+    if [[ -n "$existing_remote" && "$existing_remote" != "$existing_local" ]]; then
+        printf '  On origin:       %s\n' "${existing_remote:0:12}" >&2
+    fi
+    printf '  Current commit:  %s %s\n' "${sha:0:12}" "$(git log -1 --pretty=%s "$sha")" >&2
+
+    if [[ -n "$existing_local" && "$existing_local" == "$sha" ]]; then
+        printf '\nNothing to do: the tag already points at the current commit.\n' >&2
+        exit 0
+    fi
+
+    printf '\nChoose how to continue:\n' >&2
+    printf '  1. Leave the existing tag as it is.\n' >&2
+    printf '     The release for %s is already published from the older commit.\n' "$version" >&2
+    printf '  2. Move the tag to the current commit (rewrites the published release).\n' >&2
+    printf '       git tag -fa %s -m %s && git push origin %s --force\n' \
+        "$tag" "$tag" "$tag" >&2
+    printf '  3. Release a different version instead: update the version in\n' >&2
+    printf '     pyproject.toml on a branch, merge it, and run this script again.\n' >&2
+    printf '\nThis script does not move or delete tags on its own.\n' >&2
     exit 1
-}
-git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1 && {
-    printf 'The tag %s already exists on origin, so %s was released already.\n' "$tag" "$version" >&2
-    exit 1
-}
+fi
 
 printf '\nFinal release plan\n'
 printf '  Project:      %s\n' "$project_root"
