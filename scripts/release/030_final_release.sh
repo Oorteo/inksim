@@ -2,37 +2,37 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Publish a final release by tagging the current tip of the main branch.
+# Tag a final release from the default branch, after the promotion merge.
 #
-# The version is read from the release branch, not from the working tree, so
-# the tag always matches the distributions the release workflow builds. The
-# script refuses to tag a pre-release version and refuses to reuse an existing
-# tag, keeping the version in pyproject.toml and the tag name in sync.
+# Run this from the worktree that holds the default branch, once
+# 020_promote_release.sh has been merged and the development branch deleted.
+# pyproject.toml is the source of truth for the version; the script tags the
+# current commit of the checked-out branch, so the tag name, the version in
+# the metadata and the distributions built by the release workflow all agree.
 set -euo pipefail
 
-branch="${RELEASE_BRANCH:-}"
 push=true
 dry_run=false
 assume_yes=false
-require_green=false
+require_green=true
 fetch=true
 
 usage() {
-    printf 'Usage: %s [-y|--yes] [-n|--dry-run] [--branch <name>]\n' "${0##*/}"
-    printf '          [--no-push] [--no-fetch] [--require-green]\n'
+    printf 'Usage: %s [-y|--yes] [-n|--dry-run]\n' "${0##*/}"
+    printf '          [--branch <name>] [--no-push] [--no-fetch] [--no-require-green]\n'
     printf '\n'
-    printf 'Tags the tip of the release branch with the version from its\n'
-    printf 'pyproject.toml and pushes the tag, which publishes a final release.\n'
+    printf 'Tags the current commit with the final version from pyproject.toml and\n'
+    printf 'pushes the tag, which publishes the release and its distributions.\n'
     printf '\n'
     printf 'Options:\n'
-    printf '  -y, --yes        Do not ask for confirmation.\n'
-    printf '  -n, --dry-run    Print the plan and exit without changing anything.\n'
-    printf '      --branch     Release branch to tag (default: the default branch).\n'
-    printf '      --no-push    Create the tag locally, but do not push it.\n'
-    printf '      --no-fetch   Use the existing remote refs without fetching.\n'
-    printf '      --require-green\n'
-    printf '                   Fail unless every CI check run passed.\n'
-    printf '  -h, --help       Show this help.\n'
+    printf '  -y, --yes             Do not ask for confirmation.\n'
+    printf '  -n, --dry-run         Print the plan and exit without changing anything.\n'
+    printf '      --branch <name>   Branch to tag (default: the checked-out branch).\n'
+    printf '      --no-push         Create the tag locally, but do not push it.\n'
+    printf '      --no-fetch        Use the existing remote refs without fetching.\n'
+    printf '      --no-require-green\n'
+    printf '                        Tag even when a CI check did not pass.\n'
+    printf '  -h, --help            Show this help.\n'
 }
 
 while (($#)); do
@@ -49,7 +49,7 @@ while (($#)); do
         ;;
     --no-push) push=false ;;
     --no-fetch) fetch=false ;;
-    --require-green) require_green=true ;;
+    --no-require-green) require_green=false ;;
     -h | --help)
         usage
         exit 0
@@ -93,85 +93,100 @@ if [[ "$fetch" == true ]]; then
     fi
 fi
 
-if [[ -z "$branch" ]]; then
-    branch="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
-    branch="${branch:-main}"
+current_branch="$(git rev-parse --abbrev-ref HEAD)"
+if [[ -z "${branch:-}" ]]; then
+    branch="$current_branch"
+fi
+if [[ "$branch" == "HEAD" ]]; then
+    echo "The repository is in a detached HEAD state; switch to a branch first." >&2
+    exit 1
 fi
 
-remote_ref="origin/$branch"
-git rev-parse -q --verify "refs/remotes/$remote_ref" >/dev/null || {
-    echo "No remote branch $remote_ref; fetch first or pass --branch." >&2
-    exit 1
-}
+default_branch="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
+default_branch="${default_branch:-main}"
 
-# Read the version from the branch that will be tagged, not from the working
-# tree: the release workflow builds whatever the tag points at.
-version="$(git show "$remote_ref:pyproject.toml" | sed -n 's/^version = "\(.*\)"$/\1/p' | head -1)"
+# pyproject.toml is the source of truth for the version.
+version="$(uv version --short --dry-run)"
 [[ -n "$version" ]] || {
-    echo "Could not read the version from $remote_ref:pyproject.toml." >&2
+    echo "Could not read the version from pyproject.toml." >&2
     exit 1
 }
 
 if [[ ! "$version" =~ ^[0-9]+(\.[0-9]+){2,3}$ ]]; then
     if [[ "$version" =~ [0-9](a|b|rc|\.dev)[0-9]+$ ]]; then
         printf '%s is still a pre-release; promote it first:\n' "$version" >&2
-        printf '  uv version --bump stable\n' >&2
-        printf '  git add pyproject.toml && git commit -m "chore: release <version>"\n' >&2
-        printf '  open a pull request against %s and merge it\n' "$branch" >&2
+        printf '  ./scripts/release/020_promote_release.sh\n' >&2
+        printf '  git push origin %s\n' "$branch" >&2
+        printf '  gh pr create --base %s --title "Release <version>"\n' "$default_branch" >&2
+        printf '  gh pr merge --squash\n' >&2
+        printf 'then run this script again from the %s worktree.\n' "$default_branch" >&2
     else
         printf '%s is not a plain release version.\n' "$version" >&2
     fi
     exit 1
 fi
 
-sha="$(git rev-parse "$remote_ref")"
+if [[ "$branch" == "$current_branch" ]]; then
+    sha="$(git rev-parse HEAD)"
+else
+    sha="$(git rev-parse "$branch")"
+fi
 tag="v$version"
 
 git rev-parse -q --verify "refs/tags/$tag" >/dev/null && {
-    printf '%s already has the tag %s, so there is nothing to release.\n' "$remote_ref" "$tag" >&2
+    printf 'The tag %s already exists locally, so %s was released already.\n' "$tag" "$version" >&2
     printf '\nTo release a new version, promote the project version first:\n' >&2
-    printf '  git switch <release branch>\n' >&2
-    printf '  uv version %s --bump patch\n' "${version##*/}" >&2
+    printf '  git switch <development branch>\n' >&2
+    printf '  uv version %s --bump patch\n' "$version" >&2
     printf '  git add pyproject.toml && git commit -m "chore: release <new version>"\n' >&2
-    printf '  open a pull request against %s and merge it\n' "$branch" >&2
     exit 1
 }
 git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1 && {
-    printf 'Tag %s already exists on origin, so %s was released already.\n' "$tag" "$version" >&2
+    printf 'The tag %s already exists on origin, so %s was released already.\n' "$tag" "$version" >&2
     exit 1
 }
 
-# The working tree is usually a feature branch, so a difference here is
-# expected; it only hints at a forgotten promotion.
-working_version="$(sed -n 's/^version = "\(.*\)"$/\1/p' pyproject.toml | head -1)"
-
 printf '\nFinal release plan\n'
 printf '  Project:      %s\n' "$project_root"
-printf '  Branch:       %s (%s)\n' "$branch" "$remote_ref"
+printf '  Branch:       %s%s\n' "$branch" \
+    "$(if [[ "$branch" == "$current_branch" ]]; then echo " (checked out)"; else echo ""; fi)"
 printf '  Commit:       %s\n' "${sha:0:12}"
-printf '  Version:      %s\n' "$version"
+printf '  Version:      %s (from pyproject.toml)\n' "$version"
 printf '  Tag:          %s (published release, becomes latest)\n' "$tag"
-if [[ -n "$working_version" && "$working_version" != "$version" ]]; then
-    printf '  Note:         the working tree still says %s\n' "$working_version"
+if [[ "$branch" != "$default_branch" ]]; then
+    printf '  Note:         %s is not the default branch (%s); the tag will point at\n' "$branch" "$default_branch"
+    printf '                a commit that is not on %s.\n' "$default_branch"
 fi
 
-# Report CI status for the commit that is about to be tagged.
+# Report the CI status of the commit that is about to be tagged.
+repository=""
 if command -v gh >/dev/null 2>&1; then
     repository="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)"
-    if [[ -n "$repository" ]]; then
-        checks="$(gh api "repos/$repository/commits/$sha/check-runs?per_page=100" \
-            --jq '[.check_runs[] | "\(.status)/\(.conclusion // "running")"] | .[]' 2>/dev/null || true)"
-        if [[ -z "$checks" ]]; then
-            printf '  CI checks:    none reported\n'
-        else
-            total="$(printf '%s\n' "$checks" | wc -l | tr -d ' ')"
-            green="$(printf '%s\n' "$checks" | grep -c '^completed/success$' || true)"
-            printf '  CI checks:    %s of %s passed\n' "$green" "$total"
-            if [[ "$green" != "$total" ]] && [[ "$require_green" == true ]]; then
-                printf '\nNot every check passed and --require-green was given.\n' >&2
-                printf '%s\n' "$checks" | sed 's/^/    /' >&2
-                exit 1
-            fi
+fi
+checks=""
+if [[ -n "$repository" ]]; then
+    checks="$(gh api "repos/$repository/commits/$sha/check-runs?per_page=100" \
+        --jq '[.check_runs[] | "\(.name): \(.status)/\(.conclusion // "running")"] | .[]' 2>/dev/null || true)"
+fi
+
+if [[ -z "$checks" ]]; then
+    if [[ "$require_green" == true ]]; then
+        printf '  CI checks:    none reported for %s\n' "${sha:0:12}"
+        printf '\nNo check runs were found for this commit, so the green requirement cannot be satisfied.\n' >&2
+        printf 'Wait for CI to report, or pass --no-require-green to tag anyway.\n' >&2
+        exit 1
+    fi
+    printf '  CI checks:    none reported\n'
+else
+    total="$(printf '%s\n' "$checks" | wc -l | tr -d ' ')"
+    green="$(printf '%s\n' "$checks" | grep -c ': completed/success$' || true)"
+    printf '  CI checks:    %s of %s passed\n' "$green" "$total"
+    if [[ "$green" != "$total" ]]; then
+        printf '%s\n' "$checks" | sed 's/^/                /'
+        if [[ "$require_green" == true ]]; then
+            printf '\nNot every check passed.\n' >&2
+            printf 'Fix the failures, or pass --no-require-green to tag anyway.\n' >&2
+            exit 1
         fi
     fi
 fi

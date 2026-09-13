@@ -371,37 +371,56 @@ pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksi
 
 ### Publishing a final release
 
-The version that ends up in the distributions comes from `pyproject.toml`, not
-from the tag, so a final release needs two steps: promote the version on a
-branch and merge it, then tag that merge commit.
+A final release is a two-stage flow. The version in `pyproject.toml` is the
+source of truth, and the distributions the release workflow builds come from the
+commit the tag points at, so the version has to be promoted on a development
+branch, merged, and only then tagged:
 
-Promote the candidate and prepare the merge:
+| Step                    | Script                   | Where to run it         |
+| ----------------------- | ------------------------ | ----------------------- |
+| Prepare a candidate     | `010_pre_release.sh`     | development branch      |
+| Promote the candidate   | `020_promote_release.sh` | development branch      |
+| Merge the promotion     | pull request             | development branch      |
+| Tag the release         | `030_final_release.sh`   | default branch worktree |
+| Clean up old candidates | `040_prune_releases.sh`  | anywhere                |
+
+Promote the candidate on the development branch:
 
 ```bash
-uv version --bump stable   # 0.5.4rc2 -> 0.5.4
-git add pyproject.toml && git commit -m "chore: release 0.5.4"
+./scripts/release/020_promote_release.sh --dry-run   # inspect the plan first
+./scripts/release/020_promote_release.sh             # 0.5.4rc2 -> 0.5.4, commits
+```
+
+The script rewrites `pyproject.toml`, commits the change and prints the merge
+steps. It never tags anything and refuses to run on a version that is already
+final.
+
+Merge the promotion into the default branch:
+
+```bash
+git push origin <development branch>
 gh pr create --base main --title "Release 0.5.4" --body "..."
 gh pr merge --squash
 ```
 
 The `Protect main` ruleset requires a pull request, but no approvals
-(`required_approving_review_count: 0`) and only allows squash merges, so a
-released-by-PR flow still works alone. Note that the merge creates a new commit:
-tags attached to the feature branch, including the `-rc.N` ones, are not part of
-`main` afterwards.
+(`required_approving_review_count: 0`) and only allows squash merges, so
+releasing alone still works. The merge creates a new commit, so tags that point
+at the development branch, including the `-rc.N` ones, are not part of `main`
+afterwards; delete the branch once the merge is through.
 
-Then tag the tip of `main` with the helper script, which reads the version from
-the remote branch and refuses to tag a pre-release or an existing tag:
+Finally tag the merged version from the worktree that holds the default branch:
 
 ```bash
 ./scripts/release/030_final_release.sh --dry-run   # inspect the plan first
 ./scripts/release/030_final_release.sh
 ```
 
-It prints the CI status of the commit before tagging and accepts `--branch` to
-target a branch other than the default, `--require-green` to fail unless every
-check passed, and `--no-push` to create the tag locally. Because the script tags
-`origin/<branch>`, the tag and the version inside the release always match.
+This script reads the version from the local `pyproject.toml` and tags the
+checked-out commit, which keeps the tag, the metadata and the built wheel in
+sync. It reports the CI status of that commit and refuses to tag unless every
+check passed; pass `--no-require-green` to override, `--branch` to tag another
+branch, and `--no-push` to create the tag locally.
 
 The PyPI upload stays a separate, manual step: run
 `./scripts/pypi/010_build.sh`, verify the wheel, then
@@ -413,9 +432,9 @@ GitHub expires Actions artifacts and caches automatically, but releases and
 their tags remain until they are deleted. To keep the release page clean:
 
 ```bash
-./scripts/release/020_prune_releases.sh --dry-run   # list what would go
-./scripts/release/020_prune_releases.sh             # keep the newest 5
-./scripts/release/020_prune_releases.sh --keep 2
+./scripts/release/040_prune_releases.sh --dry-run   # list what would go
+./scripts/release/040_prune_releases.sh             # keep the newest 5
+./scripts/release/040_prune_releases.sh --keep 2
 ```
 
 The script only deletes pre-releases, never published ones, and removes the

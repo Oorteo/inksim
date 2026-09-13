@@ -132,3 +132,10 @@ if [[ "$push" == true ]]; then
     git push origin HEAD
     git push origin "$tag"
 fi
+set +x
+
+printf '\nPre-release %s is building. Testers install it with:\n' "$tag"
+printf '  pip install https://github.com/<owner>/<repo>/releases/download/%s/inksim-%s-py3-none-any.whl\n' \
+    "$tag" "$next_version"
+printf '\nWhen the candidate is accepted, promote it to a final version:\n'
+printf '  ./scripts/release/020_promote_release.sh\n'
