@@ -129,8 +129,9 @@ git add pyproject.toml
 git commit -m "chore: release $next_version"
 git tag -a "$tag" -m "$tag"
 if [[ "$push" == true ]]; then
-    git push origin HEAD
-    git push origin "$tag"
+    # Push both references at once so a failure cannot leave the release commit
+    # on the remote without its tag, which would skip the release workflow.
+    git push --atomic origin HEAD "$tag"
 fi
 set +x
 

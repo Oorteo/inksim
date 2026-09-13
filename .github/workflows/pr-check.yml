@@ -56,10 +56,12 @@ jobs:
       - name: Build wheel
         run: uv build
 
-      # archive: false keeps the already-zipped wheel as a single file instead of
-      # wrapping it in another ZIP. The artifact name is taken from the file name.
+      # archive: false uploads the wheel as a single file instead of wrapping
+      # the already-zipped wheel in another ZIP. It requires upload-artifact@v7
+      # or newer, and the artifact takes its name from the file. The action
+      # fails if the path matches more than one file.
       - name: Upload wheel artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: dist/*.whl
           archive: false

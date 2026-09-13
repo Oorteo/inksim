@@ -80,12 +80,12 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
     exit 1
 }
 
-# Newest first; the API returns releases in publication order.
-all_tags="$(gh release list --limit 200 --json tagName,isPrerelease \
-    --jq '.[] | select(.isPrerelease) | .tagName')"
-
-# shellcheck disable=SC2086  # word splitting is intended to build the array
-prerelease_tags=($all_tags)
+# Newest first; the releases API returns them in publication order. Paginate so
+# that repositories with more releases than one page are still pruned fully.
+mapfile -t prerelease_tags < <(
+    gh api --paginate 'repos/{owner}/{repo}/releases?per_page=100' \
+        --jq '.[] | select(.prerelease) | .tag_name'
+)
 total="${#prerelease_tags[@]}"
 if ((keep > total)); then
     keep="$total"
