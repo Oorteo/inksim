@@ -39,8 +39,12 @@ jobs:
       - name: Build distributions
         run: uv build
 
+      # Tags containing a hyphen mark a pre-release (e.g. v0.5.4-rc.1). Plain
+      # version tags (e.g. v0.5.4) stay published releases and get the
+      # repository's "latest" label assigned by semantic version order.
       - name: Create GitHub release with wheel
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*
           generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}

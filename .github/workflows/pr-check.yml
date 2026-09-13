@@ -56,9 +56,11 @@ jobs:
       - name: Build wheel
         run: uv build
 
+      # archive: false keeps the already-zipped wheel as a single file instead of
+      # wrapping it in another ZIP. The artifact name is taken from the file name.
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v4
         with:
-          name: inksim-wheel-${{ github.run_id }}
           path: dist/*.whl
+          archive: false
           retention-days: 7

@@ -17,6 +17,7 @@
 - [Runtime Diagnostics](#runtime-diagnostics)
 - [Test Data](#test-data)
 - [Packaging Check](#packaging-check)
+- [Releasing](#releasing)
 - [Code Changes](#code-changes)
 
 ## Environment
@@ -325,6 +326,78 @@ uv build --wheel
 
 The wheel should contain the application and runtime assets, but not tests,
 test fixtures, or pytest dependencies.
+
+## Releasing
+
+Releases are cut from Git tags. The `Release wheel` workflow builds and tests
+the project whenever a `v*` tag is pushed, attaches the wheel and the source
+distribution to a GitHub release, and publishes it. Artifacts uploaded by the
+`PR check` workflow are not releases: they require a GitHub login and expire
+after a few days, so they are only meant for CI verification.
+
+### Version and tag conventions
+
+The version in `pyproject.toml` follows [PEP 440](https://peps.python.org/pep-0440/),
+while tags use a hyphen before the pre-release segment:
+
+| Kind                  | Version in `pyproject.toml` | Tag           | GitHub release            |
+| --------------------- | --------------------------- | ------------- | ------------------------- |
+| Candidate             | `0.5.4rc1`                  | `v0.5.4-rc.1` | pre-release               |
+| Candidate, next round | `0.5.4rc2`                  | `v0.5.4-rc.2` | pre-release               |
+| Final                 | `0.5.4`                     | `v0.5.4`      | published, becomes latest |
+
+A tag without a hyphen produces a published release, which GitHub labels as the
+repository's latest release. Pre-releases never receive that label, so they
+cannot displace the current stable version.
+
+### Publishing a pre-release
+
+Use the helper script; it bumps the version, commits, tags and pushes:
+
+```bash
+./scripts/release/010_pre_release.sh --dry-run   # inspect the plan first
+./scripts/release/010_pre_release.sh
+```
+
+Starting from a stable version it produces the first candidate of the next
+patch release (`0.5.3` to `0.5.4rc1`), and repeated runs increment the counter
+(`0.5.4rc1` to `0.5.4rc2`). The script refuses to run with a dirty working tree
+and refuses to reuse an existing tag. Testers can install a candidate directly
+from the release page:
+
+```bash
+pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksim-0.5.4rc1-py3-none-any.whl
+```
+
+### Publishing a final release
+
+Promote the candidate to a stable version before tagging:
+
+```bash
+uv version --bump stable   # 0.5.4rc2 -> 0.5.4
+git add pyproject.toml && git commit -m "chore: release 0.5.4"
+git tag -a v0.5.4 -m v0.5.4
+git push origin HEAD && git push origin v0.5.4
+```
+
+The PyPI upload stays a separate, manual step: run
+`./scripts/pypi/010_build.sh`, verify the wheel, then
+`./scripts/pypi/030_send_pypi.sh`.
+
+### Pruning old pre-releases
+
+GitHub expires Actions artifacts and caches automatically, but releases and
+their tags remain until they are deleted. To keep the release page clean:
+
+```bash
+./scripts/release/020_prune_releases.sh --dry-run   # list what would go
+./scripts/release/020_prune_releases.sh             # keep the newest 5
+./scripts/release/020_prune_releases.sh --keep 2
+```
+
+The script only deletes pre-releases, never published ones, and removes the
+matching Git tags together with them. It needs the GitHub CLI (`gh`) to be
+installed and authenticated.
 
 ## Code Changes
 
