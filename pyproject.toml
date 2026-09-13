@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "inksim"
-version = "0.5.4rc1"
+version = "0.5.4rc2"
 description = "Interactive embroidery simulator"
 authors = [{ name = "InkSim contributors" }]
 readme = "README.md"
