@@ -1,0 +1,71 @@
+name: Release wheel
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish release artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install system dependencies for headless Qt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1 libglx-mesa0 libxkbcommon0 libdbus-1-3 libfontconfig1 xvfb
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync dependencies
+        run: uv sync --group dev
+
+      - name: Run tests
+        run: xvfb-run -a uv run pytest
+        env:
+          QT_QPA_PLATFORM: offscreen
+
+      # The tag is the source of truth for the released version, so that
+      # pyproject.toml never has to be edited for a release. Tags spell
+      # pre-releases with a hyphen (v0.5.4-rc.1), which PEP 440 writes as
+      # 0.5.4rc1. The version is applied to the checkout only; nothing is
+      # committed back.
+      - name: Resolve version from tag
+        id: version
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if [[ "$version" =~ ^(.+)-rc\.([0-9]+)$ ]]; then
+            version="${BASH_REMATCH[1]}rc${BASH_REMATCH[2]}"
+          fi
+          printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
+          printf 'Releasing %s as %s\n' "$GITHUB_REF_NAME" "$version"
+
+      - name: Apply version from tag
+        run: uv version "${{ steps.version.outputs.version }}" --no-sync
+
+      - name: Build distributions
+        run: uv build
+
+      # Tags containing a hyphen mark a pre-release (e.g. v0.5.4-rc.1) and stay
+      # out of the repository's "latest" label. Plain version tags (e.g.
+      # v0.5.4) become the latest release. Only distributions are attached:
+      # uv build also drops a one-byte dist/.gitignore into the output directory.
+      - name: Create GitHub release with wheel
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}

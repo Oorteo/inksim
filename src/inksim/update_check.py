@@ -61,7 +61,8 @@ def fetch_latest_version(timeout: float = REQUEST_TIMEOUT_S) -> str | None:
         headers={"User-Agent": "inksim-update-check"},
     )
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
+        # PYPI_JSON_URL is a hardcoded HTTPS URL, so custom schemes are not a concern.
+        with urllib.request.urlopen(request, timeout=timeout) as response:  # nosec B310
             data = json.load(response)
     except (OSError, ValueError):
         return None

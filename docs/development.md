@@ -17,6 +17,7 @@
 - [Runtime Diagnostics](#runtime-diagnostics)
 - [Test Data](#test-data)
 - [Packaging Check](#packaging-check)
+- [Releasing](#releasing)
 - [Code Changes](#code-changes)
 
 ## Environment
@@ -325,6 +326,93 @@ uv build --wheel
 
 The wheel should contain the application and runtime assets, but not tests,
 test fixtures, or pytest dependencies.
+
+## Releasing
+
+Releases are cut from Git tags. The `Release wheel` workflow builds and tests
+the project whenever a `v*` tag is pushed, attaches the wheel and the source
+distribution to a GitHub release, and publishes it. Artifacts uploaded by the
+`PR check` workflow are not releases: they require a GitHub login and expire
+after a few days, so they are only meant for CI verification.
+
+### The tag is the source of truth
+
+`pyproject.toml` is never rewritten for a release. It holds the version the
+branch is heading towards, and the tag says what is actually being published.
+Before building, the workflow derives the distribution version from the tag and
+applies it to the checkout only:
+
+| Tag           | Distribution version | `pyproject.toml` |
+| ------------- | -------------------- | ---------------- |
+| `v0.5.4-rc.1` | `0.5.4rc1`           | unchanged        |
+| `v0.5.4-rc.2` | `0.5.4rc2`           | unchanged        |
+| `v0.5.4`      | `0.5.4`              | unchanged        |
+
+Only `[PEP 440](https://peps.python.org/pep-0440/)` spelling differs from the
+tag: a candidate carries a hyphen in the tag (`v0.5.4-rc.1`) because a
+hyphen-free tag would be read as the final release.
+
+This keeps version bumps out of the history, so no reviewer has to approve a
+change that only touches a version string, and no release candidate can be left
+behind on the default branch.
+
+### Publishing a pre-release
+
+Tag the current commit and push the tag; no commit is created:
+
+```bash
+./scripts/release/010_pre_release.sh --dry-run   # inspect the plan first
+./scripts/release/010_pre_release.sh
+```
+
+The script reads the version from `pyproject.toml`, counts the existing
+`v<version>-rc.*` tags and creates the next candidate, so repeated runs produce
+`rc.1`, `rc.2`, `rc.3`. It refuses to run with a dirty working tree, because a
+tag points at a commit and uncommitted work would not be released. Testers can
+install a candidate directly from the release page:
+
+```bash
+pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksim-0.5.4rc1-py3-none-any.whl
+```
+
+### Publishing a final release
+
+Once the work is merged, tag the default branch. The version in
+`pyproject.toml` has to be the release version by then, because it names the
+release:
+
+```bash
+./scripts/release/030_final_release.sh --dry-run   # inspect the plan first
+./scripts/release/030_final_release.sh
+```
+
+The script tags the checked-out commit, reports the CI status of that commit and
+refuses to tag unless every check passed; pass `--no-require-green` to override,
+`--branch` to tag another branch, and `--no-push` to create the tag locally.
+
+If the tag already exists and points at an older commit, the script does not
+move it. It prints both commits and offers three options: leave the tag alone,
+move it deliberately with `git tag -fa`, or release a different version. Silently
+retagging would change what an already published release contains.
+
+The PyPI upload stays a separate, manual step: run
+`./scripts/pypi/010_build.sh`, verify the wheel, then
+`./scripts/pypi/030_send_pypi.sh`.
+
+### Pruning old pre-releases
+
+GitHub expires Actions artifacts and caches automatically, but releases and
+their tags remain until they are deleted. To keep the release page clean:
+
+```bash
+./scripts/release/040_prune_releases.sh --dry-run   # list what would go
+./scripts/release/040_prune_releases.sh             # keep the newest 5
+./scripts/release/040_prune_releases.sh --keep 2
+```
+
+The script only deletes pre-releases, never published ones, and removes the
+matching Git tags together with them. It needs the GitHub CLI (`gh`) to be
+installed and authenticated.
 
 ## Code Changes
 

@@ -1,0 +1,37 @@
+# Default owner for everything in the repository.
+* @karnigen
+
+# Legal and project identity metadata. These may only be changed by the
+
+# repository owner, regardless of AI or contributor review.
+
+LICENSE @karnigen
+CLA.md @karnigen
+CONTRIBUTING.md @karnigen
+pyproject.toml @karnigen
+
+# CI/CD, automation and access control. Only the owner may change these,
+
+# because they define the guardrails themselves.
+
+.github/ @karnigen
+
+# Core entrypoints and runtime constants. Changes here can redirect how
+
+# the application behaves at startup or alter its public identity.
+
+src/inksim/cli.py @karnigen
+src/inksim/**main**.py @karnigen
+src/inksim/**init**.py @karnigen
+src/inksim/constants.py @karnigen
+src/inksim/config.py @karnigen
+
+# i18n translation files are part of the published asset set and require
+
+# owner review to avoid malicious or misleading messages.
+
+src/inksim/locales/ @karnigen
+
+# Bundled assets shipped with the application.
+
+src/inksim/assets/ @karnigen
