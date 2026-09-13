@@ -371,14 +371,37 @@ pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksi
 
 ### Publishing a final release
 
-Promote the candidate to a stable version before tagging:
+The version that ends up in the distributions comes from `pyproject.toml`, not
+from the tag, so a final release needs two steps: promote the version on a
+branch and merge it, then tag that merge commit.
+
+Promote the candidate and prepare the merge:
 
 ```bash
 uv version --bump stable   # 0.5.4rc2 -> 0.5.4
 git add pyproject.toml && git commit -m "chore: release 0.5.4"
-git tag -a v0.5.4 -m v0.5.4
-git push origin HEAD && git push origin v0.5.4
+gh pr create --base main --title "Release 0.5.4" --body "..."
+gh pr merge --squash
 ```
+
+The `Protect main` ruleset requires a pull request, but no approvals
+(`required_approving_review_count: 0`) and only allows squash merges, so a
+released-by-PR flow still works alone. Note that the merge creates a new commit:
+tags attached to the feature branch, including the `-rc.N` ones, are not part of
+`main` afterwards.
+
+Then tag the tip of `main` with the helper script, which reads the version from
+the remote branch and refuses to tag a pre-release or an existing tag:
+
+```bash
+./scripts/release/030_final_release.sh --dry-run   # inspect the plan first
+./scripts/release/030_final_release.sh
+```
+
+It prints the CI status of the commit before tagging and accepts `--branch` to
+target a branch other than the default, `--require-green` to fail unless every
+check passed, and `--no-push` to create the tag locally. Because the script tags
+`origin/<branch>`, the tag and the version inside the release always match.
 
 The PyPI upload stays a separate, manual step: run
 `./scripts/pypi/010_build.sh`, verify the wheel, then
