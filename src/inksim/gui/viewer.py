@@ -427,7 +427,7 @@ class EmbroideryViewerWidget(QWidget):
         if self.stitches_np.shape[0] == 0:
             return
         self.zoom = self._pixels_per_mm()
-        self.center_needle()
+        self.center_design()
 
     def _display_key(self) -> str:
         """Return a stable key identifying the current display."""
