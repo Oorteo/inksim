@@ -52,6 +52,8 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
     viewer.show_needle = False
     viewer.highlight_needle = lambda: None
     viewer.stop_needle_highlight = lambda: None
+    viewer.cycle_lighting_mode = lambda: None
+    viewer.cycle_thread_texture = lambda: None
 
     shortcut_filter = ViewerShortcutFilter(window, viewer)
     assert shortcut_filter.handle_key_event(key_event(Qt.Key_Right))

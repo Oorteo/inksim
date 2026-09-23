@@ -70,6 +70,7 @@ HELP_SECTIONS = (
 | Z | Toggle realistic rendering |
 | R | Choose stitch renderer |
 | L | Cycle lighting: rich → bright → flat |
+| T | Cycle thread texture (OpenGL only) |
 | H | Toggle help |
 | I | Toggle settings |
 """,

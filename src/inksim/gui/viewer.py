@@ -1907,6 +1907,28 @@ class EmbroideryViewerWidget(QWidget):
         self._gl_widget.set_texture_path(path)
         self._save_view_setting("view/thread_texture", path.name)
 
+    def cycle_thread_texture(self) -> None:
+        """Switch to the next available thread texture (OpenGL only).
+
+        The cycle wraps around at the end of the packaged texture list.  When
+        the active renderer is not GPU textured, the call is a no-op.
+        """
+        if self.active_renderer != "gpu_textured":
+            return
+        textures = list_thread_textures()
+        if not textures:
+            return
+        active = self._gl_widget.texture_path()
+        if active is None:
+            next_index = 0
+        else:
+            paths = [path for _, path in textures]
+            try:
+                next_index = (paths.index(Path(active)) + 1) % len(textures)
+            except ValueError:
+                next_index = 0
+        self._set_thread_texture(textures[next_index][1])
+
     def _choose_background_color(self) -> None:
         self._cancel_background_cycle()
         original_color = self.background_color
