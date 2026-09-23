@@ -1907,27 +1907,35 @@ class EmbroideryViewerWidget(QWidget):
         self._gl_widget.set_texture_path(path)
         self._save_view_setting("view/thread_texture", path.name)
 
-    def cycle_thread_texture(self) -> None:
-        """Switch to the next available thread texture (OpenGL only).
+    def cycle_thread_texture(self, direction: int = 1) -> None:
+        """Switch to the next/previous thread texture (OpenGL only).
 
-        The cycle wraps around at the end of the packaged texture list.  When
+        ``direction`` is +1 for forward cycling and -1 for backward cycling.
+        The cycle wraps around at the ends of the packaged texture list.  When
         the active renderer is not GPU textured, the call is a no-op.
         """
         if self.active_renderer != "gpu_textured":
+            self.status_message.emit(
+                "Thread textures are only available in the GPU textured renderer", 3000
+            )
             return
         textures = list_thread_textures()
         if not textures:
+            self.status_message.emit("No thread textures found", 3000)
             return
         active = self._gl_widget.texture_path()
+        paths = [path for _, path in textures]
         if active is None:
-            next_index = 0
+            current_index = 0 if direction < 0 else -1
         else:
-            paths = [path for _, path in textures]
             try:
-                next_index = (paths.index(Path(active)) + 1) % len(textures)
+                current_index = paths.index(Path(active))
             except ValueError:
-                next_index = 0
-        self._set_thread_texture(textures[next_index][1])
+                current_index = 0 if direction < 0 else -1
+        next_index = (current_index + direction) % len(textures)
+        label, path = textures[next_index]
+        self._set_thread_texture(path)
+        self.status_message.emit(f"Thread texture: {label}", 2000)
 
     def _choose_background_color(self) -> None:
         self._cancel_background_cycle()

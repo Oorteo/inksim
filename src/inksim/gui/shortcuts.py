@@ -351,7 +351,7 @@ class ViewerShortcutFilter(QObject):
             changed = True
             handled = True
         elif key == Qt.Key_T and not is_alt and not is_ctrl:
-            viewer.cycle_thread_texture()
+            viewer.cycle_thread_texture(-1 if is_shift else 1)
             changed = True
             handled = True
         elif key == Qt.Key_N and not is_alt and not is_ctrl:
