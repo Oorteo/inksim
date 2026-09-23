@@ -52,6 +52,8 @@ def test_arrow_alt_and_wasd_shortcuts(qtbot):
     viewer.show_needle = False
     viewer.highlight_needle = lambda: None
     viewer.stop_needle_highlight = lambda: None
+    viewer.cycle_lighting_mode = lambda: None
+    viewer.cycle_thread_texture = lambda direction=1: None
 
     shortcut_filter = ViewerShortcutFilter(window, viewer)
     assert shortcut_filter.handle_key_event(key_event(Qt.Key_Right))
@@ -162,6 +164,49 @@ def test_maximum_zoom_is_based_on_five_millimeter_viewport_span(qtbot):
     viewer.resize(1200, 800)
 
     assert viewer.maximum_zoom() == 240.0
+
+
+def test_texture_shortcut_cycles_forward_and_backward(qtbot, monkeypatch):
+    from pathlib import Path
+    from unittest.mock import MagicMock
+
+    from inksim.gui.viewer import EmbroideryViewerWidget
+
+    viewer = EmbroideryViewerWidget(None, None)
+    qtbot.addWidget(viewer)
+    viewer.active_renderer = "gpu_textured"
+
+    fake_textures = [
+        ("classic", Path("/tmp/classic_3strand_normal_mask.png")),
+        ("thin", Path("/tmp/thin_2strand_normal_mask.png")),
+        ("bold", Path("/tmp/bold_4strand_normal_mask.png")),
+    ]
+    monkeypatch.setattr("inksim.gui.viewer.list_thread_textures", lambda: fake_textures)
+
+    applied: list[Path] = []
+    mock_gl = MagicMock()
+    mock_gl.texture_path.side_effect = lambda: applied[-1] if applied else None
+    mock_gl.set_texture_path.side_effect = applied.append
+    viewer._gl_widget = mock_gl
+
+    statuses: list[str] = []
+    viewer.status_message.connect(lambda msg, ms: statuses.append(msg))
+
+    viewer.cycle_thread_texture(1)
+    assert applied[-1] == fake_textures[0][1]
+    assert statuses[-1] == "Thread texture: classic"
+
+    viewer.cycle_thread_texture(1)
+    assert applied[-1] == fake_textures[1][1]
+
+    viewer.cycle_thread_texture(1)
+    assert applied[-1] == fake_textures[2][1]
+
+    viewer.cycle_thread_texture(1)
+    assert applied[-1] == fake_textures[0][1]
+
+    viewer.cycle_thread_texture(-1)
+    assert applied[-1] == fake_textures[2][1]
 
 
 def test_c_shortcut_centers_current_needle(qtbot):
