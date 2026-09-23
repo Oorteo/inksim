@@ -427,7 +427,7 @@ class EmbroideryViewerWidget(QWidget):
         if self.stitches_np.shape[0] == 0:
             return
         self.zoom = self._pixels_per_mm()
-        self.center_needle()
+        self.center_design()
 
     def _display_key(self) -> str:
         """Return a stable key identifying the current display."""
@@ -1906,6 +1906,36 @@ class EmbroideryViewerWidget(QWidget):
         """
         self._gl_widget.set_texture_path(path)
         self._save_view_setting("view/thread_texture", path.name)
+
+    def cycle_thread_texture(self, direction: int = 1) -> None:
+        """Switch to the next/previous thread texture (OpenGL only).
+
+        ``direction`` is +1 for forward cycling and -1 for backward cycling.
+        The cycle wraps around at the ends of the packaged texture list.  When
+        the active renderer is not GPU textured, the call is a no-op.
+        """
+        if self.active_renderer != "gpu_textured":
+            self.status_message.emit(
+                "Thread textures are only available in the GPU textured renderer", 3000
+            )
+            return
+        textures = list_thread_textures()
+        if not textures:
+            self.status_message.emit("No thread textures found", 3000)
+            return
+        active = self._gl_widget.texture_path()
+        paths = [path for _, path in textures]
+        if active is None:
+            current_index = 0 if direction < 0 else -1
+        else:
+            try:
+                current_index = paths.index(Path(active))
+            except ValueError:
+                current_index = 0 if direction < 0 else -1
+        next_index = (current_index + direction) % len(textures)
+        label, path = textures[next_index]
+        self._set_thread_texture(path)
+        self.status_message.emit(f"Thread texture: {label}", 2000)
 
     def _choose_background_color(self) -> None:
         self._cancel_background_cycle()
