@@ -62,6 +62,20 @@ def _count_missing(code: str, en_data: dict[str, Any]) -> int:
     return sum(1 for msg_id in message_ids if msg_id not in target)
 
 
+def _count_untranslated(code: str, en_data: dict[str, Any]) -> int:
+    if code == "en":
+        return 0
+    message_ids = [key for key in en_data if not key.startswith("_")]
+    target = load_catalog(LOCALES_DIR / f"{code}.json")
+    return sum(
+        1
+        for msg_id in message_ids
+        if not isinstance(target.get(msg_id), dict)
+        or not target[msg_id].get("translation")
+        or target[msg_id]["translation"] == msg_id
+    )
+
+
 def _status(code: str, exists: bool, missing: int) -> str:
     if code == "en":
         return "source"
@@ -81,8 +95,8 @@ def cmd_list(argv: list[str] | None = None) -> int:
     en_data = load_catalog(en_path)
     en_count = sum(1 for key in en_data if not key.startswith("_"))
 
-    print(f"{'code':<10} {'tier':<5} {'status':<12} {'missing':<8} name")
-    print("-" * 60)
+    print(f"{'code':<10} {'tier':<5} {'status':<12} {'missing':<8} {'untranslated':<14} name")
+    print("-" * 78)
     for entry in roadmap:
         if args.tier is not None and entry["tier"] > args.tier:
             continue
@@ -90,9 +104,14 @@ def cmd_list(argv: list[str] | None = None) -> int:
         path = LOCALES_DIR / f"{code}.json"
         exists = path.exists()
         missing = _count_missing(code, en_data)
-        status = _status(code, exists, missing)
+        untranslated = _count_untranslated(code, en_data)
+        status = _status(code, exists, untranslated)
         missing_str = "-" if code == "en" else str(missing)
-        print(f"{code:<10} {entry['tier']:<5} {status:<12} {missing_str:<8} {entry['name']}")
+        untranslated_str = "-" if code == "en" else str(untranslated)
+        print(
+            f"{code:<10} {entry['tier']:<5} {status:<12} {missing_str:<8} "
+            f"{untranslated_str:<14} {entry['name']}"
+        )
     print(f"\nSource catalog 'en' has {en_count} message(s).")
     return 0
 
