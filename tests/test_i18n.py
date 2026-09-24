@@ -30,6 +30,12 @@ def test_english_catalog_contains_all_extracted_strings() -> None:
     catalog = load_catalog(EN_CATALOG)
 
     assert _message_ids(catalog) == set(extracted)
+    for message_id, extracted_entry in extracted.items():
+        if extracted_entry["source"] == message_id:
+            continue
+        catalog_entry = catalog[message_id]
+        assert catalog_entry["source"] == extracted_entry["source"]
+        assert catalog_entry["translation"] == extracted_entry["translation"]
 
 
 def test_all_locale_catalogs_are_complete_and_translated() -> None:

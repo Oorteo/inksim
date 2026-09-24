@@ -70,18 +70,21 @@ def _count_untranslated(code: str, en_data: dict[str, Any]) -> int:
     return sum(
         1
         for msg_id in message_ids
-        if not isinstance(target.get(msg_id), dict)
-        or not target[msg_id].get("translation")
-        or target[msg_id]["translation"] == msg_id
+        if msg_id in target
+        and (
+            not isinstance(target[msg_id], dict)
+            or not target[msg_id].get("translation")
+            or target[msg_id]["translation"] == msg_id
+        )
     )
 
 
-def _status(code: str, exists: bool, missing: int) -> str:
+def _status(code: str, exists: bool, missing: int, untranslated: int) -> str:
     if code == "en":
         return "source"
     if not exists:
         return "missing"
-    return "ready" if missing == 0 else "incomplete"
+    return "ready" if missing == 0 and untranslated == 0 else "incomplete"
 
 
 def cmd_list(argv: list[str] | None = None) -> int:
@@ -105,7 +108,7 @@ def cmd_list(argv: list[str] | None = None) -> int:
         exists = path.exists()
         missing = _count_missing(code, en_data)
         untranslated = _count_untranslated(code, en_data)
-        status = _status(code, exists, untranslated)
+        status = _status(code, exists, missing, untranslated)
         missing_str = "-" if code == "en" else str(missing)
         untranslated_str = "-" if code == "en" else str(untranslated)
         print(
