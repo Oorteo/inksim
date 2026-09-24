@@ -26,6 +26,9 @@ TASKS = {
     "8": ("install git pre-commit hooks", ["uv run poe install-hooks"]),
     "9": ("install dev environment", ["uv sync --all-groups"]),
     "0": ("run tests", ["uv run poe test"]),
+    "i1": ("sync translation strings", ["uv run python scripts/i18n/010_manage.py sync"]),
+    "i2": ("list translation status", ["uv run python scripts/i18n/010_manage.py list"]),
+    "i3": ("test translations", ["uv run pytest tests/test_i18n.py"]),
     "q": ("quit", None),
 }
 
@@ -76,7 +79,7 @@ def main() -> int:
     while True:
         print_menu()
         try:
-            choice = input("Choose task [1-9/0/q]: ").strip()
+            choice = input("Choose task [1-9/0/i1/i2/i3/q]: ").strip()
         except (EOFError, KeyboardInterrupt):
             print("\nBye.")
             return 0
