@@ -74,6 +74,7 @@ from .config_editor import show_config_editor
 from .dialogs import EmbroideryOpenDialog
 from .export_dialog import ExportPreviewDialog
 from .help import show_command_line_help
+from .inkscape_dialog import InkscapeIntegrationDialog
 from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
@@ -503,14 +504,19 @@ class MainWindow(QMainWindow):
         self._action(
             playback, _("menu.playback.next_command"), self._next_command_slot, "Shift+Right"
         )
-        integration_menu = self.menuBar().addMenu(_("menu.integration"))
+        current = active_locale()
+        integration_title = _("menu.integration")
+        language_title = _("menu.language", "&Language")
+        if current not in {"cs", "en"}:
+            integration_title = integration_title.replace("&", "")
+            language_title = language_title.replace("&", "")
+        integration_menu = self.menuBar().addMenu(integration_title)
         self._action(
             integration_menu,
             _("menu.integration.locate_inkscape"),
             self._locate_inkscape_slot,
         )
-        language_menu = self.menuBar().addMenu(_("menu.language", "Language"))
-        current = active_locale()
+        language_menu = self.menuBar().addMenu(language_title)
         language_group = QActionGroup(self)
         language_group.setExclusive(True)
 
@@ -559,15 +565,8 @@ class MainWindow(QMainWindow):
 
     def _locate_inkscape_slot(self, checked: bool = False) -> None:
         executable = shutil.which("inkscape")
-        if executable:
-            message = _("integration.inkscape.found").format(path=Path(executable).resolve())
-            QMessageBox.information(self, _("integration.inkscape.title"), message)
-            return
-        QMessageBox.warning(
-            self,
-            _("integration.inkscape.title"),
-            _("integration.inkscape.not_found"),
-        )
+        dialog = InkscapeIntegrationDialog(self, executable)
+        dialog.exec()
 
     def _center_needle_slot(self, checked: bool = False) -> None:
         self.viewer.center_needle()

@@ -223,10 +223,6 @@
         "source": "Inkscape",
         "translation": "Inkscape"
     },
-    "integration.inkscape.found": {
-        "source": "Inkscape executable: {path}",
-        "translation": "Spustitelný soubor Inkscape: {path}"
-    },
     "integration.inkscape.not_found": {
         "source": "Inkscape was not found on the system path.",
         "translation": "Inkscape nebyl nalezen v systémové cestě."
@@ -234,6 +230,30 @@
     "integration.inkscape.title": {
         "source": "Inkscape",
         "translation": "Inkscape"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Změnit"
+    },
+    "integration.inkscape.extensions": {
+        "source": "Extension directories:",
+        "translation": "Adresáře rozšíření:"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Uživatelská rozšíření: {path}"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Systémová rozšíření: {path}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Nedostupné"
     },
     "menu.help.about": {
         "source": "About {app_title}",
@@ -265,7 +285,7 @@
     },
     "menu.language": {
         "source": "&Language",
-        "translation": "Jazyk (&L)"
+        "translation": "&Jazyk"
     },
     "menu.language.system_default": {
         "source": "System default",

@@ -59,6 +59,15 @@ def _patch_blocking_dialogs(monkeypatch):
     monkeypatch.setattr("inksim.gui.frame.QMessageBox.information", lambda *a, **k: None)
     monkeypatch.setattr("inksim.gui.frame.QMessageBox.warning", lambda *a, **k: None)
 
+    class NoopInkscapeDialog:
+        def __init__(self, parent, executable):
+            pass
+
+        def exec(self):
+            return 0
+
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", NoopInkscapeDialog)
+
     # The renderer picker launches a GPU preview that requires a real GL
     # context; stub it out so the menu action can be exercised safely.
     class NoopRendererDialog:
@@ -117,36 +126,108 @@ def test_all_menu_actions_trigger_cpu(qtbot, monkeypatch, sample_design):
     _run_menu_smoke_test(qtbot, monkeypatch, sample_design, "shaded_volume")
 
 
-def test_locate_inkscape_shows_resolved_path(qtbot, monkeypatch):
-    """Show the resolved Inkscape executable path when it is available."""
+def test_menu_mnemonics_are_omitted_for_other_locales(qtbot, monkeypatch):
+    """Avoid English/Czech menu mnemonics in other localized menus."""
+    monkeypatch.setattr("inksim.i18n._current_locale", "fr")
     window = MainWindow(window_size=(320, 240))
     qtbot.addWidget(window)
-    messages = []
-    monkeypatch.setattr("inksim.gui.frame.shutil.which", lambda name: "/opt/inkscape/bin/inkscape")
-    monkeypatch.setattr(
-        "inksim.gui.frame.QMessageBox.information",
-        lambda parent, title, message: messages.append((title, message)),
+
+    menu_labels = [action.text() for action in window.menuBar().actions()]
+    plain_labels = [label.replace("&", "") for label in menu_labels]
+
+    assert "Tools" in plain_labels
+    assert "Langue" in plain_labels
+    assert all(
+        "&" not in label for label in menu_labels if label.replace("&", "") in {"Tools", "Langue"}
     )
+    window.close()
+
+
+def test_locate_inkscape_shows_resolved_path(qtbot, monkeypatch):
+    """Open the integration dialog with the executable found on PATH."""
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    executables = []
+
+    class RecordingDialog:
+        def __init__(self, parent, executable):
+            executables.append(executable)
+
+        def exec(self):
+            return 0
+
+    monkeypatch.setattr("inksim.gui.frame.shutil.which", lambda name: "/opt/inkscape/bin/inkscape")
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
 
     window._locate_inkscape_slot()
 
-    expected_path = Path("/opt/inkscape/bin/inkscape").resolve()
-    assert messages == [("Inkscape", f"Inkscape executable: {expected_path}")]
+    assert executables == ["/opt/inkscape/bin/inkscape"]
     window.close()
 
 
 def test_locate_inkscape_reports_missing_executable(qtbot, monkeypatch):
-    """Report clearly when Inkscape is not on the system path."""
+    """Open the integration dialog with no executable selected when missing."""
     window = MainWindow(window_size=(320, 240))
     qtbot.addWidget(window)
-    messages = []
+    executables = []
+
+    class RecordingDialog:
+        def __init__(self, parent, executable):
+            executables.append(executable)
+
+        def exec(self):
+            return 0
+
     monkeypatch.setattr("inksim.gui.frame.shutil.which", lambda name: None)
-    monkeypatch.setattr(
-        "inksim.gui.frame.QMessageBox.warning",
-        lambda parent, title, message: messages.append((title, message)),
-    )
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
 
     window._locate_inkscape_slot()
 
-    assert messages == [("Inkscape", "Inkscape was not found on the system path.")]
+    assert executables == [None]
     window.close()
+
+
+def test_inkscape_dialog_shows_extension_directories(qtbot, monkeypatch):
+    """Display the extension directories reported by the selected executable."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    outputs = iter(("/home/user/.config/inkscape\n", "/usr/share/inkscape\n"))
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.subprocess.run",
+        lambda *args, **kwargs: type("Result", (), {"stdout": next(outputs)})(),
+    )
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+
+    assert dialog.executable_label.text() == str(Path("/opt/inkscape/bin/inkscape").resolve())
+    assert (
+        dialog.user_extensions_label.text()
+        == "User extensions: /home/user/.config/inkscape/extensions"
+    )
+    assert (
+        dialog.system_extensions_label.text() == "System extensions: /usr/share/inkscape/extensions"
+    )
+
+
+def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
+    """Selecting another executable refreshes its extension directories."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.subprocess.run",
+        lambda args, **kwargs: type(
+            "Result", (), {"stdout": f"/custom/{'user' if 'user' in args[1] else 'system'}\n"}
+        )(),
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QFileDialog.getOpenFileName",
+        lambda *args, **kwargs: ("/custom/bin/inkscape", ""),
+    )
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+
+    dialog.change_button.click()
+
+    assert dialog.executable_label.text() == str(Path("/custom/bin/inkscape").resolve())
+    assert dialog.user_extensions_label.text().endswith("/custom/user/extensions")
+    assert dialog.system_extensions_label.text().endswith("/custom/system/extensions")
