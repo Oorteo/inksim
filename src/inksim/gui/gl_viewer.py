@@ -992,8 +992,9 @@ class GLStitchWidget(QOpenGLWidget):
 
     def _draw_grid_gl(self, w: int, h: int) -> None:
         """Draw the measurement grid in the background using a full-screen pass."""
-        if self._grid_program is None or not self._grid_program.isLinked():
+        if self._grid_program is None or not self._grid_program.isLinked() or self._vao is None:
             return
+        self._vao.bind()
         self._grid_program.bind()
         glUniform2f(self._grid_program.uniformLocation("u_viewport"), float(w), float(h))
         glUniform2f(self._grid_program.uniformLocation("u_pan"), self._pan[0], self._pan[1])
@@ -1002,6 +1003,7 @@ class GLStitchWidget(QOpenGLWidget):
         glUniform3f(self._grid_program.uniformLocation("u_bg_color"), *self._bg_color)
         glDrawArrays(GL_TRIANGLES, 0, 3)
         self._grid_program.release()
+        self._vao.release()
 
     def _draw_needle_gl(self, w: int, h: int) -> None:
         """Draw the needle crosshair on top of the stitches (QPainter).
