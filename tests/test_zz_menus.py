@@ -4,6 +4,7 @@
 """Smoke tests that every menu action can be triggered without crashing."""
 
 import time
+from pathlib import Path
 
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication
@@ -114,3 +115,38 @@ def _run_menu_smoke_test(qtbot, monkeypatch, sample_design, renderer_key):
 def test_all_menu_actions_trigger_cpu(qtbot, monkeypatch, sample_design):
     """Trigger every menu action with the default CPU renderer active."""
     _run_menu_smoke_test(qtbot, monkeypatch, sample_design, "shaded_volume")
+
+
+def test_locate_inkscape_shows_resolved_path(qtbot, monkeypatch):
+    """Show the resolved Inkscape executable path when it is available."""
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    messages = []
+    monkeypatch.setattr("inksim.gui.frame.shutil.which", lambda name: "/opt/inkscape/bin/inkscape")
+    monkeypatch.setattr(
+        "inksim.gui.frame.QMessageBox.information",
+        lambda parent, title, message: messages.append((title, message)),
+    )
+
+    window._locate_inkscape_slot()
+
+    expected_path = Path("/opt/inkscape/bin/inkscape").resolve()
+    assert messages == [("Inkscape", f"Inkscape executable: {expected_path}")]
+    window.close()
+
+
+def test_locate_inkscape_reports_missing_executable(qtbot, monkeypatch):
+    """Report clearly when Inkscape is not on the system path."""
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    messages = []
+    monkeypatch.setattr("inksim.gui.frame.shutil.which", lambda name: None)
+    monkeypatch.setattr(
+        "inksim.gui.frame.QMessageBox.warning",
+        lambda parent, title, message: messages.append((title, message)),
+    )
+
+    window._locate_inkscape_slot()
+
+    assert messages == [("Inkscape", "Inkscape was not found on the system path.")]
+    window.close()

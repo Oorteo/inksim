@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import sys
 import time
 from collections.abc import Callable
@@ -502,6 +503,12 @@ class MainWindow(QMainWindow):
         self._action(
             playback, _("menu.playback.next_command"), self._next_command_slot, "Shift+Right"
         )
+        integration_menu = self.menuBar().addMenu(_("menu.integration"))
+        self._action(
+            integration_menu,
+            _("menu.integration.locate_inkscape"),
+            self._locate_inkscape_slot,
+        )
         language_menu = self.menuBar().addMenu(_("menu.language", "Language"))
         current = active_locale()
         language_group = QActionGroup(self)
@@ -549,6 +556,18 @@ class MainWindow(QMainWindow):
         )
         help_menu.addSeparator()
         self._action(help_menu, _("menu.help.check_updates"), self._check_for_updates)
+
+    def _locate_inkscape_slot(self, checked: bool = False) -> None:
+        executable = shutil.which("inkscape")
+        if executable:
+            message = _("integration.inkscape.found").format(path=Path(executable).resolve())
+            QMessageBox.information(self, _("integration.inkscape.title"), message)
+            return
+        QMessageBox.warning(
+            self,
+            _("integration.inkscape.title"),
+            _("integration.inkscape.not_found"),
+        )
 
     def _center_needle_slot(self, checked: bool = False) -> None:
         self.viewer.center_needle()
