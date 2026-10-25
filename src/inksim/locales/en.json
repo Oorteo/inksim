@@ -215,6 +215,26 @@
         "source": "&Help",
         "translation": "&Help"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Tools"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.found": {
+        "source": "Inkscape executable: {path}",
+        "translation": "Inkscape executable: {path}"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape was not found on the system path."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
     "menu.help.about": {
         "source": "About {app_title}",
         "translation": "About {app_title}"
@@ -244,8 +264,8 @@
         "translation": "Trace events"
     },
     "menu.language": {
-        "source": "Language",
-        "translation": "Language"
+        "source": "&Language",
+        "translation": "&Language"
     },
     "menu.language.system_default": {
         "source": "System default",
