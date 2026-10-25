@@ -255,6 +255,30 @@
         "source": "Unavailable",
         "translation": "Unavailable"
     },
+    "integration.inkstitch.heading": {
+        "source": "Ink/Stitch installations:",
+        "translation": "Ink/Stitch installations:"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "No Ink/Stitch installation was found."
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Location: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Interpreter: {value}"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Command: {value}"
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Path: {path}"
+    },
     "menu.help.about": {
         "source": "About {app_title}",
         "translation": "About {app_title}"
