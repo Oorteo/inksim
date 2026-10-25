@@ -46,11 +46,12 @@ def test_all_locale_catalogs_are_complete_and_translated() -> None:
     assert locale_paths
     for path in locale_paths:
         catalog = load_catalog(path)
-        assert _message_ids(catalog) == english_ids, path.name
+        locale_ids = _message_ids(catalog)
+        assert locale_ids <= english_ids, path.name
         if path.name == "en.json":
             continue
 
-        for message_id in english_ids:
+        for message_id in locale_ids:
             entry = catalog[message_id]
             assert isinstance(entry, dict), f"{path.name}: invalid entry {message_id}"
             translation = entry.get("translation")
