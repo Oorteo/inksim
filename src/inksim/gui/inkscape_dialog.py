@@ -6,10 +6,13 @@
 from __future__ import annotations
 
 import subprocess
+import xml.etree.ElementTree as ET
+from dataclasses import dataclass
 from pathlib import Path
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QComboBox,
     QDialog,
     QDialogButtonBox,
     QFileDialog,
@@ -21,6 +24,21 @@ from PySide6.QtWidgets import (
 )
 
 from ..i18n import _
+
+
+@dataclass(frozen=True)
+class InkStitchCommand:
+    inx_path: Path
+    command: str
+    interpreter: str
+    location: str
+
+    @property
+    def resolved_path(self) -> Path:
+        command_path = Path(self.command).expanduser()
+        if self.location == "inx" and not command_path.is_absolute():
+            command_path = self.inx_path.parent / command_path
+        return command_path.resolve()
 
 
 class InkscapeIntegrationDialog(QDialog):
@@ -52,6 +70,15 @@ class InkscapeIntegrationDialog(QDialog):
             label.setWordWrap(True)
             label.setTextInteractionFlags(Qt.TextSelectableByMouse)
             layout.addWidget(label)
+
+        layout.addWidget(QLabel(_("integration.inkstitch.heading"), self))
+        self.inkstitch_combo = QComboBox(self)
+        self.inkstitch_combo.currentIndexChanged.connect(self._show_inkstitch_command)
+        layout.addWidget(self.inkstitch_combo)
+        self.inkstitch_details_label = QLabel(self)
+        self.inkstitch_details_label.setWordWrap(True)
+        self.inkstitch_details_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        layout.addWidget(self.inkstitch_details_label)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Close, self)
         buttons.rejected.connect(self.reject)
@@ -91,6 +118,76 @@ class InkscapeIntegrationDialog(QDialog):
         self.system_extensions_label.setText(
             _("integration.inkscape.system_extensions").format(path=system_path)
         )
+        extension_paths = [
+            Path(path)
+            for path in (user_path, system_path)
+            if path != _("integration.inkscape.directory_unavailable")
+        ]
+        installations = self._find_inkstitch_commands(extension_paths)
+        self.inkstitch_combo.clear()
+        for installation in installations:
+            self.inkstitch_combo.addItem(str(installation.resolved_path), installation)
+        self.inkstitch_combo.setVisible(len(installations) > 1)
+        if not installations:
+            self.inkstitch_details_label.setText(_("integration.inkstitch.not_found"))
+        else:
+            self._show_inkstitch_command(0)
+
+    def _show_inkstitch_command(self, index: int) -> None:
+        installation = self.inkstitch_combo.itemData(index)
+        if not isinstance(installation, InkStitchCommand):
+            return
+        self.inkstitch_details_label.setText(
+            "\n".join(
+                (
+                    _("integration.inkstitch.location").format(value=installation.location),
+                    _("integration.inkstitch.interpreter").format(value=installation.interpreter),
+                    _("integration.inkstitch.command").format(value=installation.command),
+                    _("integration.inkstitch.resolved_path").format(
+                        path=installation.resolved_path
+                    ),
+                )
+            )
+        )
+
+    @staticmethod
+    def _find_inkstitch_commands(extension_paths: list[Path]) -> list[InkStitchCommand]:
+        commands: dict[Path, InkStitchCommand] = {}
+        for extension_path in extension_paths:
+            if not extension_path.is_dir():
+                continue
+            try:
+                extension_directories = sorted(extension_path.iterdir())
+            except OSError:
+                continue
+            for extension_directory in extension_directories:
+                if not extension_directory.is_dir():
+                    continue
+                inx_directory = extension_directory / "inx"
+                if not inx_directory.is_dir():
+                    continue
+                for inx_path in sorted(inx_directory.rglob("inkstitch*about.inx")):
+                    if not inx_path.is_file() or inx_path.suffix != ".inx":
+                        continue
+                    try:
+                        root = ET.parse(inx_path).getroot()
+                    except (ET.ParseError, OSError):
+                        continue
+                    for element in root.iter():
+                        if element.tag.rsplit("}", 1)[-1] != "command":
+                            continue
+                        command = (element.text or "").strip()
+                        if not command:
+                            continue
+                        resolved_inx_path = inx_path.resolve()
+                        commands[resolved_inx_path] = InkStitchCommand(
+                            inx_path=resolved_inx_path,
+                            command=command,
+                            interpreter=element.get("interpreter", ""),
+                            location=element.get("location", ""),
+                        )
+                        break
+        return sorted(commands.values(), key=lambda item: str(item.resolved_path).casefold())
 
     @staticmethod
     def _extension_directory(executable: str, option: str) -> str:

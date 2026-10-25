@@ -231,3 +231,79 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     assert dialog.executable_label.text() == str(Path("/custom/bin/inkscape").resolve())
     assert dialog.user_extensions_label.text().endswith("/custom/user/extensions")
     assert dialog.system_extensions_label.text().endswith("/custom/system/extensions")
+
+
+def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeypatch):
+    """Read Ink/Stitch command metadata from its about INX file."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    inx_path = user_data / "extensions" / "inkstitch" / "inx" / "inkstitch_about.inx"
+    inx_path.parent.mkdir(parents=True)
+    inx_path.write_text(
+        '<inkscape-extension><command location="inx" interpreter="python">'
+        "../inkstitch.py</command></inkscape-extension>",
+        encoding="utf-8",
+    )
+    ignored_inx = user_data / "extensions" / "inkstitch" / "xxx" / "inkstitch_ignored_about.inx"
+    ignored_inx.parent.mkdir(parents=True)
+    ignored_inx.write_text(
+        '<inkscape-extension><command location="inx" interpreter="python">'
+        "../ignored.py</command></inkscape-extension>",
+        encoding="utf-8",
+    )
+    backup_inx = inx_path.parent / "inkstitch_backup_about.inx.bak"
+    backup_inx.write_text(inx_path.read_text(encoding="utf-8"), encoding="utf-8")
+    directory_inx = inx_path.parent / "inkstitch_directory_about.inx"
+    directory_inx.mkdir()
+
+    def fake_run(args, **kwargs):
+        directory = user_data if args[1] == "--user-data-directory" else system_data
+        return type("Result", (), {"stdout": f"{directory}\n"})()
+
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.subprocess.run", fake_run)
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+
+    expected_script = (inx_path.parent / "../inkstitch.py").resolve()
+    assert dialog.inkstitch_combo.isHidden()
+    assert dialog.inkstitch_combo.count() == 1
+    assert dialog.inkstitch_combo.itemText(0) == str(expected_script)
+    assert "Location: inx" in dialog.inkstitch_details_label.text()
+    assert "Interpreter: python" in dialog.inkstitch_details_label.text()
+    assert "Command: ../inkstitch.py" in dialog.inkstitch_details_label.text()
+    assert f"Path: {expected_script}" in dialog.inkstitch_details_label.text()
+
+
+def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
+    """Show a combo box and update details when multiple INX files are found."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    inx_paths = (
+        user_data / "extensions" / "inkstitch-user" / "inx" / "inkstitch_about.inx",
+        system_data / "extensions" / "inkstitch-system" / "inx" / "inkstitch_alt_about.inx",
+    )
+    for inx_path in inx_paths:
+        inx_path.parent.mkdir(parents=True)
+        inx_path.write_text(
+            '<inkscape-extension><command location="inx" interpreter="python">'
+            "../inkstitch.py</command></inkscape-extension>",
+            encoding="utf-8",
+        )
+
+    def fake_run(args, **kwargs):
+        directory = user_data if args[1] == "--user-data-directory" else system_data
+        return type("Result", (), {"stdout": f"{directory}\n"})()
+
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.subprocess.run", fake_run)
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+
+    assert not dialog.inkstitch_combo.isHidden()
+    assert dialog.inkstitch_combo.count() == 2
+    dialog.inkstitch_combo.setCurrentIndex(1)
+    selected_path = dialog.inkstitch_combo.currentText()
+    assert f"Path: {selected_path}" in dialog.inkstitch_details_label.text()

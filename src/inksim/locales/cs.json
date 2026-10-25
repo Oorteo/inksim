@@ -255,6 +255,30 @@
         "source": "Unavailable",
         "translation": "Nedostupné"
     },
+    "integration.inkstitch.heading": {
+        "source": "Ink/Stitch installations:",
+        "translation": "Instalace Ink/Stitch:"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Instalace Ink/Stitch nebyla nalezena."
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Umístění: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Interpret: {value}"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Příkaz: {value}"
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Cesta: {path}"
+    },
     "menu.help.about": {
         "source": "About {app_title}",
         "translation": "O aplikaci {app_title}"
