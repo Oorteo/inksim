@@ -54,6 +54,18 @@ def _patch_blocking_dialogs(monkeypatch):
             return 0  # QDialog.Rejected
 
     monkeypatch.setattr("inksim.gui.frame.EmbroideryOpenDialog", NoopOpenDialog)
+
+    class NoopBrowserDialog:
+        def __init__(self, *args, **kwargs):
+            self.result_action = None
+            self.preview_csv_path = None
+            self.document_path = None
+            self.selected_path = None
+
+        def exec(self):
+            return 0  # QDialog.Rejected
+
+    monkeypatch.setattr("inksim.gui.frame.OpenBrowserDialog", NoopBrowserDialog)
     monkeypatch.setattr("inksim.gui.frame.QFileDialog.getSaveFileName", lambda *a, **k: ("", ""))
     monkeypatch.setattr("inksim.gui.frame.QMessageBox.critical", lambda *a, **k: None)
     monkeypatch.setattr("inksim.gui.frame.QMessageBox.information", lambda *a, **k: None)

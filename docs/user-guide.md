@@ -2,6 +2,7 @@
 
 ## Contents
 
+- [Opening Files](#opening-files)
 - [Mouse and Window](#mouse-and-window)
 - [Playback and Navigation](#playback-and-navigation)
 - [View and Analysis](#view-and-analysis)
@@ -10,6 +11,25 @@
 - [Rendering Notes](#rendering-notes)
   - [Density Map](#density-map)
 - [Performance Diagnostics](#performance-diagnostics)
+
+## Opening Files
+
+**File → Open...** opens the new file browser. It lists supported embroidery
+files and `.svg` sources, shows a preview, and reports which external tools
+were detected. **File → Open embroidery file** keeps the previous
+embroidery-only dialog available.
+
+For an `.svg` source:
+
+- **Preview** converts the document to stitch data through Inkscape and
+  Ink/Stitch, then loads the result in the viewer.
+- **Edit in Inkscape** opens the source in a new tagged Inkscape window.
+- If Inkscape or Ink/Stitch is missing, the status area explains what is
+  needed. The **Tools...** button opens the Inkscape detection dialog.
+
+The preview reads the saved `.svg` from disk. Unsaved changes in Inkscape are
+not included. Use **Edit in Inkscape**, save the document, and preview again.
+Dropping an `.svg` on the main window opens the same browser.
 
 ## Mouse and Window
 
