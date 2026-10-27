@@ -147,6 +147,238 @@
         "source": "Choose stitch renderer",
         "translation": "Vyberte vykreslovač stehů"
     },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Otevřít soubor"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Složka"
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Nahoru"
+    },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Procházet..."
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Nedávné:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— vyberte složku —"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Vybrat složku"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Hledat soubory"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Zobrazit"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Všechny podporované"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Výšivky"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG zdroj"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV data stehů"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "V této složce nejsou žádné podporované soubory."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Tato složka není dostupná."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Složku nelze přečíst: {error}"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Soubor nelze přečíst: {error}"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Vyberte soubor k otevření."
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Dvojklikem na složku zobrazíte její soubory."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Dvojklikem na složku zobrazíte její soubory."
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Tento typ souboru nelze v InkSim otevřít."
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Složka"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Výšivka"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG zdroj"
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV data stehů"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Nepodporované"
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Velikost: {size}"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Změněno: {time}"
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Stehy: {count}"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Velikost: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Otevřít"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Náhled"
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Upravit v Inkscape"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Zrušit"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Nástroje..."
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Obnovit"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: nenalezen."
+    },
+    "dialog.open_browser.status.inkstitch": {
+        "source": "Ink/Stitch on PATH: {path}",
+        "translation": "Ink/Stitch v PATH: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch: not detected on PATH (it may still be installed inside Inkscape).",
+        "translation": "Ink/Stitch: nenalezen v PATH (může být nainstalovaný přímo v Inkscape)."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview uses Inkscape; Ink/Stitch must be installed as an Inkscape extension.",
+        "translation": "Náhled SVG používá Inkscape; Ink/Stitch musí být nainstalovaný jako rozšíření Inkscape."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview and editing need Inkscape. Use Tools... to locate it.",
+        "translation": "Náhled SVG a úpravy vyžadují Inkscape. Pomocí Nástroje... jej můžete najít."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG zdroj. Volbou Náhled vygenerujete data stehů pomocí Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG zdroj. Pro náhled stehů je potřeba Inkscape."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Toto SVG je pro náhled zde příliš velké."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG se nepodařilo vykreslit."
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Toto není platný soubor výšivky."
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Otevřít vybraný soubor výšivky."
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Vygenerovat data stehů z tohoto SVG pomocí Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Otevřít toto SVG v novém okně Inkscape."
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required for SVG preview.",
+        "translation": "Pro náhled SVG je potřeba Inkscape."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape se nepodařilo spustit: {error}"
+    },
+    "dialog.open_browser.converting": {
+        "source": "Generating stitch preview...",
+        "translation": "Generuji náhled stehů..."
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Stitch preview failed.",
+        "translation": "Náhled stehů se nepodařil."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Make sure Ink/Stitch is installed in Inkscape and can export CSV.",
+        "translation": "Zkontrolujte, že je v Inkscape nainstalovaný Ink/Stitch a umí exportovat CSV."
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Proces náhledu stehů selhal: {error}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "Časový limit pro náhled stehů vypršel."
+    },
+    "dialog.open_browser.cache_failed": {
+        "source": "Cannot create the preview cache: {error}",
+        "translation": "Nelze vytvořit cache náhledu: {error}"
+    },
     "menu.file": {
         "source": "&File",
         "translation": "&Soubor"
@@ -190,6 +422,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "Otevřít soubor výšivky"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Otevřít..."
     },
     "menu.file.quit": {
         "source": "Quit",

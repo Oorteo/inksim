@@ -143,9 +143,297 @@
         "source": "Open embroidery file",
         "translation": "Open embroidery file"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Browse..."
+    },
+    "dialog.open_browser.cache_failed": {
+        "source": "Cannot create the preview cache: {error}",
+        "translation": "Cannot create the preview cache: {error}"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Cancel"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Choose directory"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "The stitch preview process failed: {error}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Stitch preview failed.",
+        "translation": "Stitch preview failed."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Make sure Ink/Stitch is installed in Inkscape and can export CSV.",
+        "translation": "Make sure Ink/Stitch is installed in Inkscape and can export CSV."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "Stitch preview timed out."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Generating stitch preview...",
+        "translation": "Generating stitch preview..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Size: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Open this SVG in a new Inkscape window."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Edit in Inkscape"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "No supported files in this folder."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Cannot read this file: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Show"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "All supported"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV stitch data"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Embroidery"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG source"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Folder"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Double-click the folder to browse its files."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Double-click the folder to browse its files."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape could not be started: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required for SVG preview.",
+        "translation": "Inkscape is required for SVG preview."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "This folder is not accessible."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Modified: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Not a valid embroidery file"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Open"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Open the selected embroidery file."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Preview"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Generate stitch data from this SVG with Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Cannot read this folder: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Recent:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— choose directory —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Refresh"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Search files"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Select a file to open."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Size: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: not found."
+    },
+    "dialog.open_browser.status.inkstitch": {
+        "source": "Ink/Stitch on PATH: {path}",
+        "translation": "Ink/Stitch on PATH: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch: not detected on PATH (it may still be installed inside Inkscape).",
+        "translation": "Ink/Stitch: not detected on PATH (it may still be installed inside Inkscape)."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview and editing need Inkscape. Use Tools... to locate it.",
+        "translation": "SVG preview and editing need Inkscape. Use Tools... to locate it."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview uses Inkscape; Ink/Stitch must be installed as an Inkscape extension.",
+        "translation": "SVG preview uses Inkscape; Ink/Stitch must be installed as an Inkscape extension."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Stitches: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG source. Inkscape is required for stitch preview."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "The SVG could not be rendered."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "This SVG is too large to preview here."
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Open file"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Tools..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV stitch data"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Folder"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Embroidery"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Unsupported"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG source"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "This file type cannot be opened in InkSim."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Up"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Choose stitch renderer"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Change"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Unavailable"
+    },
+    "integration.inkscape.extensions": {
+        "source": "Extension directories:",
+        "translation": "Extension directories:"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape was not found on the system path."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "System extensions: {path}"
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "User extensions: {path}"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Command: {value}"
+    },
+    "integration.inkstitch.heading": {
+        "source": "Ink/Stitch installations:",
+        "translation": "Ink/Stitch installations:"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Interpreter: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Location: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "No Ink/Stitch installation was found."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Path: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -191,6 +479,10 @@
         "source": "Open embroidery file",
         "translation": "Open embroidery file"
     },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Open..."
+    },
     "menu.file.quit": {
         "source": "Quit",
         "translation": "Quit"
@@ -214,70 +506,6 @@
     "menu.help": {
         "source": "&Help",
         "translation": "&Help"
-    },
-    "menu.integration": {
-        "source": "&Tools",
-        "translation": "&Tools"
-    },
-    "menu.integration.locate_inkscape": {
-        "source": "Inkscape",
-        "translation": "Inkscape"
-    },
-    "integration.inkscape.not_found": {
-        "source": "Inkscape was not found on the system path.",
-        "translation": "Inkscape was not found on the system path."
-    },
-    "integration.inkscape.title": {
-        "source": "Inkscape",
-        "translation": "Inkscape"
-    },
-    "integration.inkscape.label": {
-        "source": "Inkscape:",
-        "translation": "Inkscape:"
-    },
-    "integration.inkscape.change": {
-        "source": "Change",
-        "translation": "Change"
-    },
-    "integration.inkscape.extensions": {
-        "source": "Extension directories:",
-        "translation": "Extension directories:"
-    },
-    "integration.inkscape.user_extensions": {
-        "source": "User extensions: {path}",
-        "translation": "User extensions: {path}"
-    },
-    "integration.inkscape.system_extensions": {
-        "source": "System extensions: {path}",
-        "translation": "System extensions: {path}"
-    },
-    "integration.inkscape.directory_unavailable": {
-        "source": "Unavailable",
-        "translation": "Unavailable"
-    },
-    "integration.inkstitch.heading": {
-        "source": "Ink/Stitch installations:",
-        "translation": "Ink/Stitch installations:"
-    },
-    "integration.inkstitch.not_found": {
-        "source": "No Ink/Stitch installation was found.",
-        "translation": "No Ink/Stitch installation was found."
-    },
-    "integration.inkstitch.location": {
-        "source": "Location: {value}",
-        "translation": "Location: {value}"
-    },
-    "integration.inkstitch.interpreter": {
-        "source": "Interpreter: {value}",
-        "translation": "Interpreter: {value}"
-    },
-    "integration.inkstitch.command": {
-        "source": "Command: {value}",
-        "translation": "Command: {value}"
-    },
-    "integration.inkstitch.resolved_path": {
-        "source": "Path: {path}",
-        "translation": "Path: {path}"
     },
     "menu.help.about": {
         "source": "About {app_title}",
@@ -306,6 +534,14 @@
     "menu.help.trace_events": {
         "source": "Trace events",
         "translation": "Trace events"
+    },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Tools"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
     },
     "menu.language": {
         "source": "&Language",

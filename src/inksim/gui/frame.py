@@ -75,6 +75,7 @@ from .dialogs import EmbroideryOpenDialog
 from .export_dialog import ExportPreviewDialog
 from .help import show_command_line_help
 from .inkscape_dialog import InkscapeIntegrationDialog
+from .open_dialog import OpenBrowserDialog
 from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
@@ -406,7 +407,13 @@ class MainWindow(QMainWindow):
 
     def _build_menus(self) -> None:
         file_menu = self.menuBar().addMenu(_("menu.file"))
-        self._action(file_menu, _("menu.file.open"), self.open_file_dialog, "Ctrl+O")
+        self._action(file_menu, _("menu.file.open_file"), self.open_browser_dialog, "Ctrl+O")
+        self._action(
+            file_menu,
+            _("menu.file.open"),
+            self.open_file_dialog,
+            "Ctrl+Shift+O",
+        )
         self._action(file_menu, _("menu.file.save_as"), self._save_as_embroidery_slot, "Ctrl+S")
         export_menu = file_menu.addMenu(_("menu.file.export"))
         self._action(
@@ -1085,6 +1092,21 @@ class MainWindow(QMainWindow):
             suffix = ""
         self.setWindowTitle(f"{snap_prefix}{base}{suffix}")
 
+    def _design_size_text(self) -> str:
+        """Return the current design size formatted for the window title."""
+        bounds = self.viewer.bounds
+        width_mm = bounds[2] - bounds[0]
+        height_mm = bounds[3] - bounds[1]
+        return f"{width_mm:.1f}x{height_mm:.1f}mm"
+
+    def _set_design_title(self, source_path: Path) -> None:
+        """Use *source_path* in the title after loading a generated preview."""
+        total = self.viewer.stitches_np.shape[0]
+        self._base_title = (
+            f"{APP_TITLE} - {source_path.name} - {total} sts - {self._design_size_text()}"
+        )
+        self._update_window_title()
+
     def _resolve_update_suffix(self, stored: str) -> str:
         """Return a clean title suffix from the stored version, if any."""
         if not stored or not isinstance(stored, str):
@@ -1237,6 +1259,40 @@ class MainWindow(QMainWindow):
         else:
             self.viewer.stop_needle_highlight()
         self.viewer.update()
+
+    def open_browser_dialog(
+        self,
+        checked: bool = False,
+        selected_file: str | Path | None = None,
+    ) -> None:
+        """Open the new file browser and handle its result action."""
+        initial_directory = (
+            Path(selected_file).parent if selected_file is not None else self.last_directory
+        )
+        dialog = OpenBrowserDialog(
+            self,
+            initial_directory,
+            selected_file or self.current_file_path,
+            self.recent_directories,
+        )
+        if dialog.exec() != QDialog.Accepted:
+            return
+        if dialog.result_action == "edit":
+            # The dialog already launched Inkscape; there is nothing to load.
+            return
+        if dialog.result_action == "preview" and dialog.preview_csv_path is not None:
+            source_path = dialog.document_path or dialog.selected_path
+            if source_path is not None:
+                self.set_document_path(source_path)
+            loaded = self.open_file(dialog.preview_csv_path, add_recent_directory=False)
+            if loaded and source_path is not None:
+                self.set_document_path(source_path)
+                self.config.set("last_directory", _sanitize_path(self.last_directory))
+                self._add_recent_directory(source_path.parent)
+                self._set_design_title(source_path)
+            return
+        if dialog.selected_path is not None:
+            self.open_file(dialog.selected_path)
 
     def open_file_dialog(self, checked: bool = False) -> None:
         dialog = EmbroideryOpenDialog(
@@ -1539,6 +1595,7 @@ class MainWindow(QMainWindow):
         precompute_density: bool = True,
         delete_after_load: bool = False,
         autoplay: bool = False,
+        add_recent_directory: bool = True,
     ) -> bool:
         selected_path = Path(path).resolve()
         if not self.viewer.load_design(
@@ -1553,13 +1610,11 @@ class MainWindow(QMainWindow):
         if not delete_after_load:
             self.last_directory = str(selected_path.parent)
             self.config.set("last_directory", _sanitize_path(self.last_directory))
-            self._add_recent_directory(selected_path.parent)
+            if add_recent_directory:
+                self._add_recent_directory(selected_path.parent)
         total = self.viewer.stitches_np.shape[0]
-        bounds = self.viewer.bounds
-        width_mm = bounds[2] - bounds[0]
-        height_mm = bounds[3] - bounds[1]
         self._base_title = (
-            f"{APP_TITLE} - {selected_path.name} - {total} sts - {width_mm:.1f}x{height_mm:.1f}mm"
+            f"{APP_TITLE} - {selected_path.name} - {total} sts - {self._design_size_text()}"
         )
         self._update_window_title()
         self.progress.update()
@@ -1626,6 +1681,10 @@ class MainWindow(QMainWindow):
                 selected = dialog.selected_path
                 if selected is not None:
                     self.open_file(selected)
+            event.acceptProposedAction()
+            return
+        if dropped_path.suffix.lower() == ".svg":
+            self.open_browser_dialog(selected_file=dropped_path)
             event.acceptProposedAction()
             return
         self.open_file(dropped_path)
