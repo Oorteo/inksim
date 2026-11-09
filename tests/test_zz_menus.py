@@ -278,8 +278,12 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
 
 def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeypatch):
     """Read Ink/Stitch command metadata from its about INX file."""
+    from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_EXTENSION_STATUS_KEY
 
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
     user_data = tmp_path / "user-data"
     system_data = tmp_path / "system-data"
     inx_path = user_data / "extensions" / "inkstitch" / "inx" / "inkstitch_about.inx"
@@ -317,6 +321,10 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert "Interpreter: python" in dialog.inkstitch_details_label.text()
     assert "Command: ../inkstitch.py" in dialog.inkstitch_details_label.text()
     assert f"Path: {expected_script}" in dialog.inkstitch_details_label.text()
+    status = config.get(INKSCAPE_EXTENSION_STATUS_KEY)
+    assert status["status"] == "found"
+    assert status["executable"] == str(Path("/opt/inkscape/bin/inkscape").resolve())
+    assert status["commands"][0]["path"] == str(expected_script)
 
 
 def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
@@ -354,8 +362,12 @@ def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
 
 def test_inkscape_dialog_reports_unresponsive_command(qtbot, monkeypatch):
     """Show a status bubble while probing and report a stuck Inkscape once, without waiting twice."""
+    from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_EXTENSION_STATUS_KEY
 
+    config = Config()
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
     warnings = []
     monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_PROBE_TIMEOUT_S", 0.5)
     starts = _fake_inkscape_probe(monkeypatch, sleep_seconds=30)
@@ -374,3 +386,4 @@ def test_inkscape_dialog_reports_unresponsive_command(qtbot, monkeypatch):
     assert dialog.change_button.isEnabled()
     assert len(warnings) == 1
     assert "0.5 seconds" in warnings[0][2]
+    assert config.get(INKSCAPE_EXTENSION_STATUS_KEY)["status"] == "error"

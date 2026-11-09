@@ -299,13 +299,25 @@
         "source": "Inkscape: not found.",
         "translation": "Inkscape: nenalezen."
     },
-    "dialog.open_browser.status.inkstitch": {
-        "source": "Ink/Stitch on PATH: {path}",
-        "translation": "Ink/Stitch v PATH: {path}"
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Rozšíření Ink/Stitch: kontrola se nezdařila. Zkuste to znovu přes Nástroje..."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Rozšíření Ink/Stitch: {path}"
     },
     "dialog.open_browser.status.inkstitch_missing": {
-        "source": "Ink/Stitch: not detected on PATH (it may still be installed inside Inkscape).",
-        "translation": "Ink/Stitch: nenalezen v PATH (může být nainstalovaný přímo v Inkscape)."
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Rozšíření Ink/Stitch: v adresářích rozšíření Inkscape nebylo nalezeno."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Rozšíření Ink/Stitch: bez nastaveného Inkscape nelze stav ověřit."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Rozšíření Ink/Stitch: zatím neověřeno. Ověřte ho přes Nástroje..."
     },
     "dialog.open_browser.status.svg_ready": {
         "source": "SVG preview uses Inkscape; Ink/Stitch must be installed as an Inkscape extension.",
@@ -494,6 +506,14 @@
     "integration.inkscape.timeout": {
         "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
         "translation": "Inkscape neodpověděl do {seconds} sekund. Jiná instance Inkscape nebo její rozšíření může blokovat komunikaci. Zavřete ostatní instance Inkscape nebo zakažte problematické rozšíření a zkuste to znovu."
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Nepodařilo se načíst adresáře rozšíření Inkscape: {error}"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Nepodařilo se uložit stav rozšíření Inkscape: {error}"
     },
     "integration.inkscape.probing": {
         "source": "Waiting for Inkscape to respond…",

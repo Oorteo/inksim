@@ -303,13 +303,25 @@
         "source": "Inkscape: not found.",
         "translation": "Inkscape: not found."
     },
-    "dialog.open_browser.status.inkstitch": {
-        "source": "Ink/Stitch on PATH: {path}",
-        "translation": "Ink/Stitch on PATH: {path}"
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch extension: could not check. Use Tools... to retry."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch extension: {path}"
     },
     "dialog.open_browser.status.inkstitch_missing": {
-        "source": "Ink/Stitch: not detected on PATH (it may still be installed inside Inkscape).",
-        "translation": "Ink/Stitch: not detected on PATH (it may still be installed inside Inkscape)."
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch extension: not found in Inkscape's extension directories."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch extension: cannot check until Inkscape is configured."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch extension: not checked yet. Use Tools... to check."
     },
     "dialog.open_browser.status.svg_needs_inkscape": {
         "source": "SVG preview and editing need Inkscape. Use Tools... to locate it.",
@@ -390,6 +402,14 @@
     "integration.inkscape.timeout": {
         "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
         "translation": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again."
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Could not read Inkscape extension directories: {error}"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Could not save the Inkscape extension status: {error}"
     },
     "integration.inkscape.probing": {
         "source": "Waiting for Inkscape to respond…",

@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from filelock import Timeout
 from PySide6.QtCore import QProcess, Qt, QTimer
 from PySide6.QtWidgets import (
     QApplication,
@@ -26,7 +27,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..config import Config
 from ..i18n import _
+from ..integration.paths import INKSCAPE_EXTENSION_STATUS_KEY
 
 # Cold starts of Inkscape on Windows (antivirus scans, profile setup) can exceed a few seconds.
 INKSCAPE_PROBE_TIMEOUT_S = 10
@@ -74,6 +77,7 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_process: QProcess | None = None
         self._probe_results: list[str] = []
         self._probe_executable = ""
+        self._probe_error: str | None = None
         self._probe_timer = QTimer(self)
         self._probe_timer.setSingleShot(True)
         self._probe_timer.timeout.connect(self._on_probe_timeout)
@@ -146,6 +150,7 @@ class InkscapeIntegrationDialog(QDialog):
     def _start_probe(self, executable_path: str) -> None:
         self._probe_executable = executable_path
         self._probe_results = []
+        self._probe_error = None
         self._set_probing(True)
         self._run_next_probe()
 
@@ -170,19 +175,28 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_process = None
         self._probe_timer.stop()
         output = ""
-        if (
+        if failed:
+            self._probe_error = process.errorString()
+        elif (
             not failed
             and process.exitStatus() == QProcess.ExitStatus.NormalExit
             and process.exitCode() == 0
         ):
             output = bytes(process.readAllStandardOutput().data()).decode(errors="replace").strip()
+            if not output:
+                self._probe_error = "Inkscape returned no extension directory."
+        elif process.exitStatus() == QProcess.ExitStatus.CrashExit:
+            self._probe_error = "Inkscape terminated unexpectedly."
+        else:
+            self._probe_error = f"Inkscape exited with code {process.exitCode()}."
         process.deleteLater()
         self._probe_results.append(output)
-        if output and len(self._probe_results) < len(_PROBE_OPTIONS):
+        if self._probe_error is not None:
+            self._probe_results.extend([""] * (len(_PROBE_OPTIONS) - len(self._probe_results)))
+            self._finish_probe(timed_out=False, error=self._probe_error)
+        elif len(self._probe_results) < len(_PROBE_OPTIONS):
             self._run_next_probe()
         else:
-            # A failed query means this executable cannot answer the rest either, so do not run them.
-            self._probe_results.extend([""] * (len(_PROBE_OPTIONS) - len(self._probe_results)))
             self._finish_probe(timed_out=False)
 
     def _on_probe_timeout(self) -> None:
@@ -194,16 +208,16 @@ class InkscapeIntegrationDialog(QDialog):
         process.deleteLater()
         self._finish_probe(timed_out=True)
 
-    def _finish_probe(self, timed_out: bool) -> None:
+    def _finish_probe(self, timed_out: bool, error: str | None = None) -> None:
         self._set_probing(False)
-        if timed_out:
+        if timed_out or error is not None:
             # An unresponsive Inkscape will not answer the second query either, so do not wait twice.
             user_path = system_path = _("integration.inkscape.directory_unavailable")
         else:
             user_path, system_path = (
                 self._extensions_directory(output) for output in self._probe_results
             )
-        self._apply_extension_directories(user_path, system_path, timed_out)
+        self._apply_extension_directories(user_path, system_path, timed_out, error)
 
     def _cancel_probe(self) -> None:
         process = self._probe_process
@@ -230,13 +244,19 @@ class InkscapeIntegrationDialog(QDialog):
         return str(Path(data_directory).expanduser() / "extensions")
 
     def _apply_extension_directories(
-        self, user_path: str, system_path: str, timed_out: bool
+        self, user_path: str, system_path: str, timed_out: bool, error: str | None = None
     ) -> None:
         if timed_out:
             QMessageBox.warning(
                 self,
                 _("integration.inkscape.title"),
                 _("integration.inkscape.timeout").format(seconds=INKSCAPE_PROBE_TIMEOUT_S),
+            )
+        elif error is not None:
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _("integration.inkscape.probe_failed").format(error=error),
             )
         self.user_extensions_label.setText(
             _("integration.inkscape.user_extensions").format(path=user_path)
@@ -249,7 +269,9 @@ class InkscapeIntegrationDialog(QDialog):
             for path in (user_path, system_path)
             if path != _("integration.inkscape.directory_unavailable")
         ]
-        installations = self._find_inkstitch_commands(extension_paths)
+        installations = (
+            [] if timed_out or error is not None else self._find_inkstitch_commands(extension_paths)
+        )
         self.inkstitch_combo.clear()
         for installation in installations:
             self.inkstitch_combo.addItem(str(installation.resolved_path), installation)
@@ -258,6 +280,38 @@ class InkscapeIntegrationDialog(QDialog):
             self.inkstitch_details_label.setText(_("integration.inkstitch.not_found"))
         else:
             self._show_inkstitch_command(0)
+        result = {
+            "executable": self._probe_executable,
+            "status": (
+                "error"
+                if timed_out or error is not None
+                else "found"
+                if installations
+                else "not_found"
+            ),
+            "user_extensions": user_path,
+            "system_extensions": system_path,
+            "commands": [
+                {
+                    "path": str(installation.resolved_path),
+                    "inx_path": str(installation.inx_path),
+                    "command": installation.command,
+                    "interpreter": installation.interpreter,
+                    "location": installation.location,
+                }
+                for installation in installations
+            ],
+        }
+        if error is not None:
+            result["error"] = error
+        try:
+            Config().set(INKSCAPE_EXTENSION_STATUS_KEY, result)
+        except (OSError, Timeout) as ex:
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _("integration.inkscape.config_save_failed").format(error=ex),
+            )
 
     def _show_inkstitch_command(self, index: int) -> None:
         installation = self.inkstitch_combo.itemData(index)
