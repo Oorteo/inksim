@@ -1213,6 +1213,7 @@ class EmbroideryViewerWidget(QWidget):
             if fit_to_screen:
                 self._pending_fit_to_screen = True
                 self._schedule_fit_to_screen(0)
+        else:
             if show_error_dialog:
                 QMessageBox.critical(
                     self,
