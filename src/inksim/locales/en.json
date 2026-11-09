@@ -387,6 +387,10 @@
         "source": "Unavailable",
         "translation": "Unavailable"
     },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within 3 seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape did not respond within 3 seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again."
+    },
     "integration.inkscape.extensions": {
         "source": "Extension directories:",
         "translation": "Extension directories:"
@@ -540,8 +544,8 @@
         "translation": "&Tools"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Inkscape",
-        "translation": "Inkscape"
+        "source": "Config",
+        "translation": "Config"
     },
     "menu.language": {
         "source": "&Language",

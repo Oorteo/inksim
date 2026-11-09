@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
     QLabel,
+    QMessageBox,
     QPushButton,
     QVBoxLayout,
     QWidget,
@@ -110,8 +111,17 @@ class InkscapeIntegrationDialog(QDialog):
 
         executable_path = str(Path(executable).resolve())
         self.executable_label.setText(executable_path)
-        user_path = self._extension_directory(executable_path, "--user-data-directory")
-        system_path = self._extension_directory(executable_path, "--system-data-directory")
+        unavailable = _("integration.inkscape.directory_unavailable")
+        try:
+            user_path = self._extension_directory(executable_path, "--user-data-directory")
+            system_path = self._extension_directory(executable_path, "--system-data-directory")
+        except subprocess.TimeoutExpired:
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _("integration.inkscape.timeout"),
+            )
+            user_path = system_path = unavailable
         self.user_extensions_label.setText(
             _("integration.inkscape.user_extensions").format(path=user_path)
         )
@@ -197,8 +207,10 @@ class InkscapeIntegrationDialog(QDialog):
                 check=True,
                 capture_output=True,
                 text=True,
-                timeout=10,
+                timeout=3,
             )
+        except subprocess.TimeoutExpired:
+            raise
         except (OSError, subprocess.SubprocessError):
             return _("integration.inkscape.directory_unavailable")
 

@@ -3,6 +3,7 @@
 
 """Smoke tests that every menu action can be triggered without crashing."""
 
+import subprocess
 import time
 from pathlib import Path
 
@@ -319,3 +320,28 @@ def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
     dialog.inkstitch_combo.setCurrentIndex(1)
     selected_path = dialog.inkstitch_combo.currentText()
     assert f"Path: {selected_path}" in dialog.inkstitch_details_label.text()
+
+
+def test_inkscape_dialog_reports_unresponsive_command(qtbot, monkeypatch):
+    """Report a stuck Inkscape probe promptly instead of silently retrying."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    calls = []
+    warnings = []
+
+    def timeout_run(args, **kwargs):
+        calls.append((args, kwargs))
+        raise subprocess.TimeoutExpired(args, kwargs["timeout"])
+
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.subprocess.run", timeout_run)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QMessageBox.warning",
+        lambda *args: warnings.append(args),
+    )
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+
+    assert len(calls) == 1
+    assert calls[0][1]["timeout"] == 3
+    assert len(warnings) == 1
+    assert "3 seconds" in warnings[0][2]

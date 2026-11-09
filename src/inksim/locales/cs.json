@@ -456,8 +456,8 @@
         "translation": "Nás&troje"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Inkscape",
-        "translation": "Inkscape"
+        "source": "Config",
+        "translation": "Konfigurace"
     },
     "integration.inkscape.not_found": {
         "source": "Inkscape was not found on the system path.",
@@ -490,6 +490,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Nedostupné"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within 3 seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape neodpověděl do 3 sekund. Jiná instance Inkscape nebo její rozšíření může blokovat komunikaci. Zavřete ostatní instance Inkscape nebo zakažte problematické rozšíření a zkuste to znovu."
     },
     "integration.inkstitch.heading": {
         "source": "Ink/Stitch installations:",
