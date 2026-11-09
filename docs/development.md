@@ -111,6 +111,10 @@ Git hooks are optional but recommended. Install them once with:
 uv run poe install-hooks
 ```
 
+After installation, Git automatically runs the configured hooks before each
+commit: `ruff check`, `ruff format --check` and `mypy`. The hooks do not run the
+test suite; run `uv run poe test` separately.
+
 ## Internationalization (i18n)
 
 InkSim uses message-ID based JSON catalogs under `src/inksim/locales/`. Each
@@ -197,10 +201,6 @@ priority list) → `LC_ALL` → `LANG` → `en`. Each locale also falls back to 
 base language (e.g. `pt-BR` → `pt`) before the next priority entry is tried.
 GitHub issues or pull requests; the JSON format is self-contained and diffs
 well.
-
-Before each commit the hooks run a quick `ruff check`, `ruff format --check`
-and `mypy`. The full test suite is intentionally not in the hook so commits
-stay fast.
 
 ## Rendering Architecture
 
