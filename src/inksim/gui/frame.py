@@ -3,15 +3,13 @@
 
 from __future__ import annotations
 
-import os
 import shutil
-import sys
 import time
 from collections.abc import Callable
 from pathlib import Path
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QObject, QProcess, QRect, QSignalBlocker, Qt, QTimer
+from PySide6.QtCore import QEvent, QObject, QRect, QSignalBlocker, Qt, QTimer, Signal
 from PySide6.QtGui import (
     QAction,
     QActionGroup,
@@ -85,13 +83,15 @@ from .viewer import EmbroideryViewerWidget
 class MainWindow(QMainWindow):
     """Main InkSim window coordinating the viewer and playback controls."""
 
+    closed = Signal(object)
+    quit_all_requested = Signal()
+    restart_requested = Signal(object)
+
     def __init__(
         self,
         fullscreen: bool = False,
         window_size: tuple[int, int] | None = None,
         window_position: tuple[int, int] | None = None,
-        server_mode: bool = False,
-        delete_input: bool = False,
         document_path: str | Path | None = None,
         snap_layout_key: str | None = None,
     ) -> None:
@@ -105,9 +105,6 @@ class MainWindow(QMainWindow):
         self.setAcceptDrops(True)
         self.is_fullscreen: bool = False
         self._fullscreen_was_maximized: bool = False
-        self.server_mode: bool = server_mode
-        self._delete_input: bool = delete_input
-        self._allow_close: bool = False
         self._startup_fullscreen: bool = fullscreen
         self._should_maximize_default: bool = not window_size and not fullscreen
         self.config: Config = Config()
@@ -449,7 +446,15 @@ class MainWindow(QMainWindow):
             file_menu, _("menu.file.rotate_right"), lambda checked: self.viewer.rotate_design(1)
         )
         self._add_separator(file_menu)
-        self._action(file_menu, _("menu.file.quit"), self.request_quit, "Ctrl+Q")
+        self._action(file_menu, _("dialog.export.close"), self.close_window, "Ctrl+W")
+        self._add_separator(file_menu)
+        # Qt treats a single "&" as a mnemonic marker, so it is escaped for display.
+        self._action(
+            file_menu,
+            _("menu.file.quit_all").replace("&", "&&"),
+            self.request_quit_all,
+            "Ctrl+Q",
+        )
         self._add_separator(file_menu)
         view_menu = self.menuBar().addMenu(_("menu.view"))
         self._action(view_menu, _("menu.view.actual_size"), self._set_one_to_one_slot, "1")
@@ -611,7 +616,7 @@ class MainWindow(QMainWindow):
                 "The language has been set to {language}. Restart InkSim now to apply it?",
             ).format(language=name)
         )
-        if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
+        if answer == QMessageBox.Yes:
             self._apply_language_change()
         else:
             set_active_locale(previous)
@@ -627,79 +632,35 @@ class MainWindow(QMainWindow):
                 "The system default language will be used. Restart InkSim now to apply it?",
             )
         )
-        if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
+        if answer == QMessageBox.Yes:
             self._apply_language_change()
         else:
             set_active_locale(previous)
             self._rebuild_menus()
 
     def _show_language_restart_prompt(self, message: str) -> int:
-        """Ask whether to restart now, with a clearer explanation in server mode.
-
-        In server mode a plain restart would reopen InkSim without the current
-        embroidery file (Inkscape provides it once via a temporary file), so the
-        user is asked to confirm closing the application. Cancelling reverts the
-        language change.
-        """
-        if self.server_mode:
-            return QMessageBox.question(
-                self,
-                _("dialog.language.title", "Language changed"),
-                _(
-                    "dialog.language.server_message",
-                    "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-                ),
-                QMessageBox.Ok | QMessageBox.Cancel,
-                QMessageBox.Ok,
-            )
+        """Ask whether to restart now; the restart closes all InkSim windows."""
         return QMessageBox.question(
             self,
             _("dialog.language.title", "Language changed"),
-            message,
+            f"{message}\n\n"
+            + _(
+                "dialog.language.windows_closed",
+                "All open InkSim windows will be closed and the current file reopened.",
+            ),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )
 
     def _apply_language_change(self) -> None:
-        """Restart in standalone mode or close in server mode.
-
-        In server mode the embroidery file is a temporary input provided once by
-        Inkscape, so a self-restart would reopen an empty window. Closing is the
-        only safe way to let the user restart from Inkscape with the new language.
-        """
-        if self.server_mode:
-            self._allow_close = True
-            self.close()
-        else:
-            self._restart_application()
+        """Ask the server to close all windows and relaunch with the current file."""
+        relaunch_args = [str(self.current_file_path)] if self.current_file_path else []
+        self.restart_requested.emit(relaunch_args)
 
     def _rebuild_menus(self) -> None:
         """Rebuild the menu bar so checkmarks reflect the active locale."""
         self.menuBar().clear()
         self._build_menus()
-
-    def _restart_application(self) -> None:
-        """Relaunch InkSim with the same arguments and quit this instance.
-
-        The ``-l/--lang/--language`` flag is dropped so the language stored in
-        config (just set by the menu) takes effect instead of the old CLI value.
-
-        The relaunch command mirrors how InkSim was originally started:
-
-        * Installed via ``.whl`` → ``sys.argv[0]`` is the ``inksim`` console
-          script, so it is relaunched directly.
-        * Run as ``python -m inksim`` → ``sys.argv[0]`` is ``__main__.py``,
-          which has no package context, so it is relaunched as ``-m inksim``.
-        """
-        program = sys.executable
-        args = self._args_without_language_flag(sys.argv[1:])
-        if Path(sys.argv[0]).name == "__main__.py":
-            launch = ["-m", "inksim", *args]
-        else:
-            launch = [sys.argv[0], *args]
-        QProcess.startDetached(program, launch)
-        self._allow_close = True
-        self.close()
 
     def _confirm_and_close(
         self, title_key: str, title_default: str, text_key: str, text_default: str
@@ -713,25 +674,7 @@ class MainWindow(QMainWindow):
             QMessageBox.Yes,
         )
         if answer == QMessageBox.Yes:
-            self._allow_close = True
             self.close()
-
-    @staticmethod
-    def _args_without_language_flag(argv: list[str]) -> list[str]:
-        """Return *argv* with any ``-l/--lang/--language`` flag and its value removed."""
-        result: list[str] = []
-        skip_next = False
-        for arg in argv:
-            if skip_next:
-                skip_next = False
-                continue
-            if arg in ("-l", "--lang", "--language"):
-                skip_next = True
-                continue
-            if arg.startswith("--lang=") or arg.startswith("--language="):
-                continue
-            result.append(arg)
-        return result
 
     def _show_config_editor_slot(self, checked: bool = False) -> None:
         show_config_editor(self, self.config)
@@ -1134,71 +1077,15 @@ class MainWindow(QMainWindow):
         if getattr(self, "clear_snap_action", None):
             self.clear_snap_action.setEnabled(enabled)
 
-    def request_quit(self, checked: bool = False) -> None:
-        """Close the application instead of hiding a server window."""
-        self._allow_close = True
+    def close_window(self, checked: bool = False) -> None:
+        """Close only this window; the server keeps running."""
         self.close()
 
-    @staticmethod
-    def _inkscape_running() -> bool:
-        """Return True when at least one Inkscape process is running.
-
-        Probing for a running process named ``inkscape`` is more reliable
-        than trusting the PID of the extension process, which exits as soon
-        as it has forwarded the design.
-        """
-        import subprocess
-
-        try:
-            if os.name == "nt":
-                # Suppress the console window that ``tasklist`` would
-                # otherwise flash on Windows.
-                creationflags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
-                result = subprocess.run(
-                    ["tasklist"],
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                    creationflags=creationflags,
-                )
-                lowered = result.stdout.lower()
-                return "inkscape.exe" in lowered or "inkscape.com" in lowered
-            result = subprocess.run(
-                ["pgrep", "-x", "inkscape"], capture_output=True, check=False, text=True
-            )
-            return result.returncode == 0
-        except OSError:
-            return False
-
-    def _save_current_layout(self) -> None:
-        """Persist whatever layout is currently active."""
-        if self.is_fullscreen or self.isMinimized():
-            return
-        if self._layout_state == "snapped":
-            self._save_snap_layout()
-        else:
-            self._save_window_layout()
+    def request_quit_all(self, checked: bool = False) -> None:
+        """Ask the server to close every window and shut down."""
+        self.quit_all_requested.emit()
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        if self.server_mode and not self._allow_close:
-            alive = self._inkscape_running()
-            if not alive:
-                answer = QMessageBox.question(
-                    self,
-                    "Close InkSim server",
-                    (
-                        "The Inkscape instance that started this server is no longer running.\n\n"
-                        "Do you want to close InkSim?"
-                    ),
-                )
-                if answer == QMessageBox.Yes:
-                    self._allow_close = True
-                    event.accept()
-                    return
-            self._save_current_layout()
-            self.setWindowState(self.windowState() | Qt.WindowMinimized)
-            event.ignore()
-            return
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
@@ -1208,10 +1095,8 @@ class MainWindow(QMainWindow):
             self.viewer._gl_widget.cleanup()
         except Exception:
             pass
-        interconnect = getattr(self, "interconnect", None)
-        if interconnect is not None:
-            interconnect.stop()
         event.accept()
+        self.closed.emit(self)
 
     def toggle_grid(self, checked: bool) -> None:
         self.viewer.show_grid = checked
@@ -1621,7 +1506,7 @@ class MainWindow(QMainWindow):
         self.refresh_command_panel()
         self.viewer.invalidate_cache()
         self.viewer.update()
-        if delete_after_load and self.server_mode:
+        if delete_after_load:
             try:
                 selected_path.unlink()
             except OSError:

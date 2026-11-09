@@ -111,9 +111,9 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Kalba nustatyta į {language}. Paleisk InkSim iš naujo dabar, kad pritaikytum?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Kalba pakeista. Uždaryk InkSim ir iš naujo atidaryk iš Inkscape, kad pritaikytum naują kalbą."
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Visi atvērtie InkSim logi tiks aizvērti, un pašreizējais fails tiks atvērts no jauna."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
@@ -191,9 +191,9 @@
         "source": "Open embroidery file",
         "translation": "Atidaryti siuvinėjimo failą"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Išeiti"
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Išeiti iš visų langų ir serverio"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",

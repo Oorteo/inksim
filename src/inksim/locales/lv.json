@@ -111,9 +111,9 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Valoda ir iestatīta uz {language}. Vai restartēt InkSim, lai to piemērotu?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Valoda ir mainīta. Aizver InkSim un atver to vēlreiz no Inkscape, lai piemērotu jauno valodu."
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Visi atvērtie InkSim logi tiks aizvērti un pašreizējais fails tiks atvērts no jauna."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
@@ -191,9 +191,9 @@
         "source": "Open embroidery file",
         "translation": "Atvērt izšūšanas failu"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Iziet"
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Iziet no visiem logiem un servera"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",

@@ -1,0 +1,124 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+from __future__ import annotations
+
+from PySide6.QtCore import QObject, Signal
+
+from inksim.constants import IPC_PROTOCOL_VERSION
+from inksim.server import InkSimServer
+
+
+class FakeWindow(QObject):
+    closed = Signal(object)
+    quit_all_requested = Signal()
+    restart_requested = Signal(object)
+
+    def __init__(self):
+        super().__init__()
+        self.document_path = None
+
+    def set_document_path(self, path):
+        self.document_path = path
+
+    def focus_window(self):
+        pass
+
+    def open_file(self, path, delete_after_load=False, autoplay=False):
+        return True
+
+    def close(self):
+        self.closed.emit(self)
+
+
+def _server(qapp, idle_timeout=0):
+    created = []
+
+    def create_window(options):
+        window = FakeWindow()
+        created.append(window)
+        return window
+
+    server = InkSimServer(qapp, create_window, idle_timeout, server_name="inksim-test-server")
+    return server, created
+
+
+def test_hello_reports_protocol_and_window_count(qapp):
+    server, _ = _server(qapp)
+    response = server._handle_request({"type": "hello"})
+    assert response["ok"] is True
+    assert response["protocol_version"] == IPC_PROTOCOL_VERSION
+    assert response["windows"] == 0
+
+
+def test_open_rejects_index_outside_window_list(qapp):
+    server, created = _server(qapp)
+    server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "new_window": True}
+    )
+    assert len(created) == 1
+
+    response = server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "index": 3, "path": "a.dst"}
+    )
+    assert response["ok"] is False
+    assert len(server.windows) == 1
+
+
+def test_closing_last_window_starts_idle_timer(qapp):
+    server, _ = _server(qapp, idle_timeout=300)
+    server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "new_window": True}
+    )
+    assert not server._idle_timer.isActive()
+
+    server.windows[0].close()
+
+    assert server.windows == []
+    assert server._idle_timer.isActive()
+
+
+def test_idle_timer_disabled_when_timeout_is_zero(qapp):
+    server, _ = _server(qapp, idle_timeout=0)
+    server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "new_window": True}
+    )
+    server.windows[0].close()
+
+    assert not server._idle_timer.isActive()
+
+
+def test_stale_code_fingerprint_replaces_running_server(monkeypatch):
+    from inksim import server as server_module
+
+    calls = []
+    hello = {
+        "ok": True,
+        "app_version": server_module.app_version(),
+        "code_fingerprint": "stale",
+        "protocol_version": IPC_PROTOCOL_VERSION,
+    }
+    monkeypatch.setattr(server_module, "_hello_or_none", lambda: hello)
+    monkeypatch.setattr(
+        server_module,
+        "send_request",
+        lambda request, **kwargs: calls.append(request) or {"ok": True},
+    )
+    monkeypatch.setattr(server_module, "_wait_until_stopped", lambda timeout: None)
+    monkeypatch.setattr(server_module, "spawn_detached", lambda args: calls.append("spawn"))
+
+    server_module.forward_request({"type": "status"})
+    assert calls[0] == {"type": "shutdown"}
+    assert "spawn" in calls
+
+
+def test_frozen_build_is_rejected_explicitly(monkeypatch):
+    import pytest
+
+    from inksim import server as server_module
+
+    server_module.code_fingerprint.cache_clear()
+    monkeypatch.setattr(server_module.sys, "frozen", True, raising=False)
+    with pytest.raises(NotImplementedError):
+        server_module.code_fingerprint()
+    server_module.code_fingerprint.cache_clear()

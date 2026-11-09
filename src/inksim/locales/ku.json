@@ -111,9 +111,9 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Ziman wek {language} hate danîn. Ma tu dixwazî niha InkSim ji nû ve dest pê bikî?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "زمان گۆڕدرا. بۆ جێبەجێکردنی زمانی نوێ، InkSim دابخە و لە Inkscape دووبارە بیکەرەوە."
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "هەموو پەنجەرە کراوەکانی InkSim دادەخرێن و فایلی ئێستا دووبارە دەکرێتەوە."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
@@ -191,9 +191,9 @@
         "source": "Open embroidery file",
         "translation": "Pelê dirûnê veke"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Derkeve"
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Hemû pencere û serverê derkeve"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",

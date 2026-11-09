@@ -111,9 +111,9 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Luuqadda waxaa lagu beddelay {language}. Dib u bilow InkSim hadda si ay u dhaqangasho?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Afka waa la beddelay. Xir InkSim oo dib uga fur Inkscape si aad u adeegsato afka cusub."
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Daaqadaha InkSim ee furan oo dhan waa la xidhi doonaa, faylka hadda jirana dib ayaa loo furi doonaa."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
@@ -191,9 +191,9 @@
         "source": "Open embroidery file",
         "translation": "Fur faylka daabacaadda"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Bax"
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Ka bax daaqadaha oo dhan iyo server-ka"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",

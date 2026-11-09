@@ -111,9 +111,9 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Tungumálið hefur verið stillt á {language}. Endurræsa InkSim núna til að beita því?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Tungumálinu hefur verið breytt. Lokaðu InkSim og enduropnaðu það úr Inkscape til að virkja nýja tungumálið."
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Öllum opnum InkSim-gluggum verður lokað og núverandi skrá opnuð aftur."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
@@ -191,9 +191,9 @@
         "source": "Open embroidery file",
         "translation": "Opna saumaskaparskrá"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Hætta"
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Hætta öllum gluggum og þjóni"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
