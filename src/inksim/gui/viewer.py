@@ -374,8 +374,15 @@ class EmbroideryViewerWidget(QWidget):
         self._gl_widget.setGeometry(self.rect())
         self.invalidate_cache()
         if self._pending_fit_to_screen and self.stitches_np.shape[0] > 0:
-            QTimer.singleShot(0, self._try_fit_to_screen)
+            self._schedule_fit_to_screen(0)
         super().resizeEvent(event)
+
+    def _schedule_fit_to_screen(self, delay_ms: int, retries: int = 20) -> None:
+        # A timer owned by this widget is destroyed with it, so it cannot fire on a deleted C++ object.
+        timer = QTimer(self)
+        timer.setSingleShot(True)
+        timer.timeout.connect(lambda: self._try_fit_to_screen(retries))
+        timer.start(delay_ms)
 
     def _try_fit_to_screen(self, retries: int = 20) -> None:
         """Fit the design once Qt has assigned a usable panel size."""
@@ -387,7 +394,7 @@ class EmbroideryViewerWidget(QWidget):
         # Retry shortly until layout stabilizes.
         if w < 120 or h < 120:
             if retries > 0:
-                QTimer.singleShot(30, self, lambda: self._try_fit_to_screen(retries - 1))
+                self._schedule_fit_to_screen(30, retries - 1)
             return
         self._pending_fit_to_screen = False
         self.fit_to_screen()
@@ -1205,8 +1212,7 @@ class EmbroideryViewerWidget(QWidget):
             self.color_count = len(self.color_boundaries)
             if fit_to_screen:
                 self._pending_fit_to_screen = True
-                QTimer.singleShot(0, self._try_fit_to_screen)
-        else:
+                self._schedule_fit_to_screen(0)
             if show_error_dialog:
                 QMessageBox.critical(
                     self,

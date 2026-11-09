@@ -244,10 +244,11 @@ def test_inkscape_dialog_shows_extension_directories(qtbot, monkeypatch):
     assert dialog.executable_label.text() == str(Path("/opt/inkscape/bin/inkscape").resolve())
     assert (
         dialog.user_extensions_label.text()
-        == "User extensions: /home/user/.config/inkscape/extensions"
+        == f"User extensions: {Path('/home/user/.config/inkscape/extensions')}"
     )
     assert (
-        dialog.system_extensions_label.text() == "System extensions: /usr/share/inkscape/extensions"
+        dialog.system_extensions_label.text()
+        == f"System extensions: {Path('/usr/share/inkscape/extensions')}"
     )
 
 
@@ -271,8 +272,8 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     _wait_for_probe(qtbot, dialog)
 
     assert dialog.executable_label.text() == str(Path("/custom/bin/inkscape").resolve())
-    assert dialog.user_extensions_label.text().endswith("/custom/user/extensions")
-    assert dialog.system_extensions_label.text().endswith("/custom/system/extensions")
+    assert dialog.user_extensions_label.text().endswith(str(Path("/custom/user/extensions")))
+    assert dialog.system_extensions_label.text().endswith(str(Path("/custom/system/extensions")))
 
 
 def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeypatch):
