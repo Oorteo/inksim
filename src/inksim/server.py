@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     from .gui.frame import MainWindow
 
 DEFAULT_IDLE_TIMEOUT_SECONDS = 300
-SERVER_START_TIMEOUT_SECONDS = 10.0
+SERVER_START_TIMEOUT_SECONDS = 30.0
 SERVER_STOP_TIMEOUT_SECONDS = 5.0
 SERVER_ARGS = ["-m", "inksim", "--server"]
 
@@ -64,7 +64,7 @@ def idle_timeout_seconds() -> int:
     return int(Config().get("server_idle_timeout", DEFAULT_IDLE_TIMEOUT_SECONDS))
 
 
-def spawn_detached(args: list[str]) -> None:
+def spawn_detached(args: list[str]) -> subprocess.Popen[bytes]:
     """Start ``sys.executable`` with *args* in a process that outlives the caller."""
     kwargs: dict[str, Any] = {
         "stdin": subprocess.DEVNULL,
@@ -84,7 +84,7 @@ def spawn_detached(args: list[str]) -> None:
         )
     else:
         kwargs["start_new_session"] = True
-    subprocess.Popen([executable, *args], **kwargs)
+    return subprocess.Popen([executable, *args], **kwargs)
 
 
 def _hello_or_none() -> Response | None:
@@ -120,13 +120,30 @@ def forward_request(request: Request) -> Response:
         _wait_until_stopped(SERVER_STOP_TIMEOUT_SECONDS)
         hello = None
     if hello is None:
-        spawn_detached(SERVER_ARGS)
-        deadline = time.monotonic() + SERVER_START_TIMEOUT_SECONDS
+        server_process = spawn_detached(SERVER_ARGS)
+        started_at = time.monotonic()
+        deadline = started_at + SERVER_START_TIMEOUT_SECONDS
+        logger.debug(
+            "Started InkSim server process %s; waiting up to %.1f seconds",
+            server_process.pid,
+            SERVER_START_TIMEOUT_SECONDS,
+        )
         while hello is None and time.monotonic() < deadline:
             time.sleep(0.05)
             hello = _hello_or_none()
         if hello is None:
-            raise IpcUnavailable("InkSim server did not start")
+            elapsed = time.monotonic() - started_at
+            return_code = server_process.poll()
+            process_status = (
+                "still running" if return_code is None else f"exited with code {return_code}"
+            )
+            message = (
+                f"InkSim server did not respond within {elapsed:.1f} seconds "
+                f"(process {server_process.pid} {process_status})."
+            )
+            logger.error(message)
+            raise IpcUnavailable(message)
+        logger.debug("InkSim server responded after %.2f seconds", time.monotonic() - started_at)
     return send_request(request)
 
 
