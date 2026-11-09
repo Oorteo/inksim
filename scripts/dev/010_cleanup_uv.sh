@@ -6,8 +6,13 @@
 set -euo pipefail
 
 usage() {
-    printf 'Usage: %s [--uv-venv|--uv] [-y|--yes]\n' "$0"
-    printf '  --uv-venv, --uv  Also remove .venv, uv.lock, and .python-version.\n'
+    printf 'Usage: %s [-h|--help] [-y|--yes] [--uv-venv|--uv]\n' "$0"
+    printf '  -h, --help     Show this help and exit.\n'
+    printf '  Interactive by default: choose 1, 2, or q.\n'
+    printf '  1              Remove generated artifacts outside .venv.\n'
+    printf '  2              Also remove .venv, uv.lock, and .python-version.\n'
+    printf '  -y, --yes      Skip the prompt and choose 1, or 2 with --uv.\n'
+    printf '  --uv-venv, --uv  Include UV files when using --yes.\n'
 }
 
 ASSUME_YES=false
@@ -43,10 +48,10 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." >/dev/null 2>&1 && pwd)"
     exit 1
 }
 
-declare -a TARGETS=()
+declare -a ARTIFACT_TARGETS=()
 # Find generated artifacts outside .venv; the virtual environment is opt-in.
 while IFS= read -r -d '' target; do
-    TARGETS+=("$target")
+    ARTIFACT_TARGETS+=("$target")
 done < <(
     find "$PROJECT_ROOT" \
         -path "$PROJECT_ROOT/.git" -prune -o \
@@ -69,31 +74,57 @@ done < <(
         \) -print0
 )
 
-if [[ "$INCLUDE_UV_VENV" == true ]]; then
-    for protected_path in .venv uv.lock .python-version; do
-        [[ -e "$PROJECT_ROOT/$protected_path" ]] && TARGETS+=("$PROJECT_ROOT/$protected_path")
+declare -a UV_TARGETS=()
+for protected_path in .venv uv.lock .python-version; do
+    [[ -e "$PROJECT_ROOT/$protected_path" ]] && UV_TARGETS+=("$PROJECT_ROOT/$protected_path")
+done
+
+print_targets() {
+    if (($# == 0)); then
+        printf '    (none)\n'
+        return 0
+    fi
+    local target
+    for target in "$@"; do
+        printf '    %s\n' "${target#"$PROJECT_ROOT"/}"
     done
-fi
+}
 
 printf '\nCleanup plan for: %s\n' "$PROJECT_ROOT"
-if ((${#TARGETS[@]} == 0)); then
-    printf '  Nothing to remove.\n'
-    exit 0
-fi
-printf '  The following generated paths will be removed:\n'
-for target in "${TARGETS[@]}"; do
-    printf '    %s\n' "${target#"$PROJECT_ROOT"/}"
-done
-printf '  Total: %d path(s)\n' "${#TARGETS[@]}"
+printf '  [1] Generated artifacts outside .venv (%d path(s)):\n' "${#ARTIFACT_TARGETS[@]}"
+print_targets ${ARTIFACT_TARGETS[@]+"${ARTIFACT_TARGETS[@]}"}
+printf '  [2] UV targets, removed together with [1] (%d path(s)):\n' "${#UV_TARGETS[@]}"
+print_targets ${UV_TARGETS[@]+"${UV_TARGETS[@]}"}
 
+choice=1
 if [[ "$ASSUME_YES" != true ]]; then
-    printf '\nContinue? [y/N] '
-    read -r answer
-    [[ "$answer" =~ ^[Yy]$ ]] || {
+    printf '\nRemove [1] artifacts only, [2] artifacts + UV targets, [q] quit? [1/2/q] '
+    read -r answer || answer=q
+    case "$answer" in
+    1 | 2) choice=$answer ;;
+    *)
         printf 'Cleanup cancelled.\n'
         exit 0
-    }
+        ;;
+    esac
+elif [[ "$INCLUDE_UV_VENV" == true ]]; then
+    choice=2
 fi
+
+declare -a TARGETS=()
+if ((${#ARTIFACT_TARGETS[@]} > 0)); then
+    TARGETS+=("${ARTIFACT_TARGETS[@]}")
+fi
+if [[ "$choice" == 2 ]] && ((${#UV_TARGETS[@]} > 0)); then
+    TARGETS+=("${UV_TARGETS[@]}")
+fi
+
+if ((${#TARGETS[@]} == 0)); then
+    printf '\nNothing to remove.\n'
+    exit 0
+fi
+
+printf '\nRemoving %d path(s) ...\n' "${#TARGETS[@]}"
 
 for target in "${TARGETS[@]}"; do
     rm -rf -- "$target"

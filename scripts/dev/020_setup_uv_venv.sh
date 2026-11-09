@@ -10,8 +10,19 @@ set -euo pipefail
 CLEAN_VENV=false
 PYTHON_VERSION_ARG=""
 
+usage() {
+    printf 'Usage: %s [-h|--help] [-y|--yes] [--python=VERSION]\n' "$0"
+    printf '  -h, --help      Show this help and exit.\n'
+    printf '  -y, --yes       Recreate the virtual environment without asking.\n'
+    printf '  --python=VER    Use the given Python version (default: env PYTHON_VERSION or 3.14).\n'
+}
+
 for arg in "$@"; do
     case "$arg" in
+    -h | --help)
+        usage
+        exit 0
+        ;;
     -y | --yes)
         CLEAN_VENV=true
         ;;
@@ -19,9 +30,7 @@ for arg in "$@"; do
         PYTHON_VERSION_ARG="${arg#*=}"
         ;;
     *)
-        echo "Usage: $0 [-y|--yes] [--python=VERSION]" >&2
-        echo "  -y, --yes       recreate the virtual environment without asking" >&2
-        echo "  --python=VER    use the given Python version (default: env PYTHON_VERSION or 3.14)" >&2
+        usage >&2
         exit 1
         ;;
     esac
