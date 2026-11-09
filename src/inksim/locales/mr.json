@@ -111,9 +111,9 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "भाषा {language} वर सेट केली आहे. ती लागू करण्यासाठी आता InkSim पुन्हा सुरू करायचं का?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "भाषा बदलली आहे. नवीन भाषा लागू करण्यासाठी InkSim बंद करा आणि Inkscape मधून पुन्हा उघडा."
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "सर्व उघडलेल्या InkSim विंडो बंद केल्या जातील आणि सध्याची फाइल पुन्हा उघडली जाईल."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
@@ -191,9 +191,9 @@
         "source": "Open embroidery file",
         "translation": "भरतकाम फाइल उघडा"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "बाहेर पडा"
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "सर्व विंडो आणि सर्व्हर बंद करा"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",

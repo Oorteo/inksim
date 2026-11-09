@@ -111,9 +111,9 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Jazyk byl nastaven na {language}. Restartovat InkSim nyní, aby se změna projevila?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Jazyk byl změněn. Zavři InkSim a znovu ho otevři z Inkscapu, aby se nový jazyk projevil."
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Všechna otevřená okna InkSimu se zavřou a aktuální soubor se znovu otevře."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
@@ -427,9 +427,9 @@
         "source": "Open...",
         "translation": "Otevřít..."
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Ukončit"
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Ukončit všechna okna a server"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",

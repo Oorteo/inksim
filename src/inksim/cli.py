@@ -6,7 +6,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import signal
 import sys
@@ -17,13 +16,14 @@ from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
-from .constants import APP_ORGANIZATION, APP_TITLE
-from .debug import configure_logging, logger
+from .constants import APP_TITLE
+from .debug import configure_logging
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
 from .i18n import active_locale, available_locales, set_runtime_locale
-from .interconnect import InterconnectServer, send_command
+from .ipc import IpcUnavailable, send_request
 from .runtime import runtime_info_lines
+from .server import InkSimServer, forward_request, idle_timeout_seconds
 
 
 def _parse_pair(value: str, name: str, separator: str) -> tuple[int, int]:
@@ -40,45 +40,115 @@ def _parse_pair(value: str, name: str, separator: str) -> tuple[int, int]:
     return first, second
 
 
-def _write_response_file(output_path: Path, response: dict[str, Any]) -> None:
-    """Write a JSON response to ``output_path`` for a GUI-subsystem caller."""
-    try:
-        output_path.write_text(json.dumps(response), encoding="utf-8")
-    except OSError as ex:
-        raise SystemExit(f"cannot write response to {output_path}: {ex}")
+_renderers_warmed = False
 
 
-def _send_command_and_exit(json_text: str, output_path: Path | None = None) -> None:
-    """Send a JSON command to a running server and print the response.
+def _warm_up_renderers(app: QApplication) -> None:
+    """Compile the Numba renderers once, keeping the splash responsive meanwhile."""
+    global _renderers_warmed
+    if _renderers_warmed:
+        return
+    warmup = RendererWarmupThread(app)
+    warmup.start()
+    while warmup.isRunning():
+        app.processEvents()
+        warmup.wait(20)
+    _renderers_warmed = True
 
-    When ``output_path`` is given the JSON response is written to that file
-    instead of stdout.  This lets a GUI-subsystem launcher (``inksim-gui`` on
-    Windows) report its result without needing an attached console.
-    """
-    try:
-        command = json.loads(json_text)
-    except json.JSONDecodeError as ex:
-        raise SystemExit(f"invalid JSON command: {ex}")
-    logger.debug("IPC probe creating QCoreApplication")
+
+def _create_server_window(options: dict[str, Any]) -> MainWindow:
+    """Create and show a viewer window for the server from client-supplied options."""
+    app = QApplication.instance()
+    splash: SplashScreen | None = None
+    if isinstance(app, QApplication):
+        splash = SplashScreen()
+        splash.show_centered()
+        splash.set_message("Preparing InkSim...")
+        app.processEvents()
+        _warm_up_renderers(app)
+    window_size = options.get("window_size")
+    window_position = options.get("window_position")
+    document_path = options.get("document_path")
+    window = MainWindow(
+        fullscreen=bool(options.get("fullscreen")),
+        window_size=tuple(window_size) if window_size else None,
+        window_position=tuple(window_position) if window_position else None,
+        document_path=Path(document_path) if document_path else None,
+        snap_layout_key=options.get("snap_layout_key"),
+    )
+    window.show_initial_window(False, None)
+    if splash is not None:
+        splash.close_after()
+    return window
+
+
+def _configure_application(app: QCoreApplication) -> None:
+    app.setApplicationName(APP_TITLE)
+    app.setOrganizationName(APP_TITLE)
+    if isinstance(app, QApplication):
+        app.setWindowIcon(QIcon(str(Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
+
+
+def _run_server(app: QApplication) -> None:
+    """Run the singleton server until its idle timeout or an explicit shutdown."""
+    app.setQuitOnLastWindowClosed(False)
+    server = InkSimServer(app, _create_server_window, idle_timeout_seconds())
+    if not server.start():
+        print("InkSim server is already running.", file=sys.stderr)
+        raise SystemExit(0)
+    signal.signal(signal.SIGINT, lambda signum, frame_info: app.quit())
+    raise SystemExit(app.exec())
+
+
+def _ensure_core_application() -> QCoreApplication:
+    """Return a non-GUI application so the client can use Qt local sockets."""
     app = QCoreApplication.instance()
     if app is None:
         app = QCoreApplication([])
         app.setApplicationName(APP_TITLE)
-        app.setOrganizationName(APP_ORGANIZATION)
-    logger.debug("IPC probe QCoreApplication ready")
+        app.setOrganizationName(APP_TITLE)
+    return app
+
+
+def _stop_server() -> None:
+    _ensure_core_application()
     try:
-        response = send_command(command)
-    except RuntimeError as ex:
-        if output_path is not None:
-            _write_response_file(output_path, {"ok": False, "error": str(ex)})
-        else:
-            print(str(ex), file=sys.stderr)
+        send_request({"type": "shutdown"})
+    except IpcUnavailable:
+        print("InkSim server is not running.")
+        raise SystemExit(0)
+    print("InkSim server is shutting down.")
+    raise SystemExit(0)
+
+
+def _forward_to_server(
+    parser: argparse.ArgumentParser, args: argparse.Namespace, input_paths: list[Path]
+) -> None:
+    """Ask the singleton server to show the first input, then exit the client."""
+    _ensure_core_application()
+    request: dict[str, Any] = {
+        "type": "open",
+        "index": args.index,
+        "new_window": args.new_window,
+        "path": str(input_paths[0]) if input_paths else None,
+        "autoplay": args.play,
+        "delete_after_load": args.delete_input,
+        "document_path": str(args.document_path) if args.document_path else None,
+        "window": {
+            "fullscreen": args.fullscreen,
+            "window_size": args.size,
+            "window_position": args.position,
+            "snap_layout_key": args.snap,
+        },
+    }
+    try:
+        response = forward_request(request)
+    except IpcUnavailable as ex:
+        parser.error(str(ex))
+    if not response.get("ok"):
+        print(response.get("error", "InkSim server request failed"), file=sys.stderr)
         raise SystemExit(1)
-    if output_path is not None:
-        _write_response_file(output_path, response)
-    else:
-        print(json.dumps(response))
-    raise SystemExit(0 if response.get("ok") else 1)
+    raise SystemExit(0)
 
 
 def _default_log_path(input_paths: list[Path]) -> Path:
@@ -134,29 +204,35 @@ def build_argument_parser() -> argparse.ArgumentParser:
         "-s",
         "--server",
         action="store_true",
-        help="Keep the GUI available for local interconnect commands",
+        help="Run the singleton InkSim server without a window; other inksim calls are forwarded to it",
+    )
+    parser.add_argument(
+        "--new-window",
+        action="store_true",
+        help="Ask the running server to open a new window for the input instead of reusing one",
+    )
+    parser.add_argument(
+        "--index",
+        type=int,
+        default=0,
+        metavar="N",
+        help="Index of the server window that receives the input (default: 0)",
+    )
+    parser.add_argument(
+        "--stop-server",
+        action="store_true",
+        help="Close all InkSim windows and stop the running server, then exit",
     )
     parser.add_argument(
         "--delete-input",
         action="store_true",
-        help="Delete the first input file after it has been loaded (server mode)",
+        help="Delete the input file after it has been loaded",
     )
     parser.add_argument(
         "--document-path",
         type=Path,
         metavar="FILE",
         help="Original document path used as the default directory for open/save dialogs",
-    )
-    parser.add_argument(
-        "--send-command",
-        metavar="JSON",
-        help="Send one JSON command to a running InkSim server and exit",
-    )
-    parser.add_argument(
-        "--output",
-        type=Path,
-        metavar="FILE",
-        help="Write the --send-command JSON response to FILE instead of stdout",
     )
     parser.add_argument(
         "--debug",
@@ -260,25 +336,25 @@ def main() -> None:
     if args.version:
         print("\n".join(runtime_info_lines()))
         return
-    if args.output is not None and not args.send_command:
-        parser.error("--output is only meaningful with --send-command")
-    if args.send_command:
-        debug_enabled = (
-            args.debug
-            or args.log is not None
-            or bool(os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG"))
-        )
-        log_path = (
-            args.log
-            or (Path(os.environ["INKSIM_LOG"]) if os.environ.get("INKSIM_LOG") else None)
-            or _default_log_path([])
-        )
-        if debug_enabled:
-            try:
-                configure_logging(True, log_path)
-            except OSError as ex:
-                parser.error(f"cannot create debug log {log_path}: {ex}")
-        _send_command_and_exit(args.send_command, args.output)
+    debug_enabled = (
+        args.debug
+        or args.log is not None
+        or bool(os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG"))
+    )
+    log_path = (
+        args.log
+        or (Path(os.environ["INKSIM_LOG"]) if os.environ.get("INKSIM_LOG") else None)
+        or _default_log_path([Path(value) for value in args.input_file])
+    )
+    if debug_enabled:
+        try:
+            configure_logging(True, log_path)
+        except OSError as ex:
+            parser.error(f"cannot create debug log {log_path}: {ex}")
+    if args.index < 0:
+        parser.error("--index must be zero or greater")
+    if args.stop_server:
+        _stop_server()
 
     export_values = [
         value
@@ -305,10 +381,8 @@ def main() -> None:
         parser.error(
             "an input embroidery file is required for export; use: inksim INPUT_FILE --simple-png=OUTPUT.png"
         )
-    if args.delete_input and not args.server:
-        parser.error("--delete-input is only meaningful with --server")
-    if args.send_command and (args.server or args.input_file or export_requested):
-        parser.error("--send-command cannot be combined with server, export or input files")
+    if export_requested and args.new_window:
+        parser.error("--new-window cannot be combined with export options")
     input_paths = [Path(value) for value in args.input_file]
     for input_path in input_paths:
         if not (input_path.is_file() or input_path.is_dir()):
@@ -385,73 +459,27 @@ def main() -> None:
     else:
         active_locale()  # resolves config or environment locale
 
-    debug_enabled = (
-        args.debug
-        or args.log is not None
-        or bool(os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG"))
-    )
-    log_path = (
-        args.log
-        or (Path(os.environ["INKSIM_LOG"]) if os.environ.get("INKSIM_LOG") else None)
-        or _default_log_path(input_paths)
-    )
-    if debug_enabled:
-        try:
-            configure_logging(True, log_path)
-        except OSError as ex:
-            parser.error(f"cannot create debug log {log_path}: {ex}")
-
     window_size: tuple[int, int] | None = args.size
     window_position: tuple[int, int] | None = args.position
     snap_layout_key: str | None = args.snap
-    app = QApplication.instance()
-    if app is None:
-        app = QApplication([])
-    app.setApplicationName(APP_TITLE)
-    app.setOrganizationName(APP_TITLE)
-    app.setWindowIcon(QIcon(str(Path(__file__).parent / "assets" / "app_icons" / "inksim.svg")))
-    first_input: Path | None = input_paths[0] if input_paths else None
     document_path: Path | None = args.document_path
+    if args.server:
+        existing_app = QApplication.instance()
+        gui_app = existing_app if isinstance(existing_app, QApplication) else QApplication([])
+        _configure_application(gui_app)
+        _run_server(gui_app)
+    if not export_requested:
+        _forward_to_server(parser, args, input_paths)
+    existing_app = QApplication.instance()
+    gui_app = existing_app if isinstance(existing_app, QApplication) else QApplication([])
+    _configure_application(gui_app)
     frame = MainWindow(
         fullscreen=args.fullscreen,
         window_size=window_size,
         window_position=window_position,
-        server_mode=args.server,
-        delete_input=args.delete_input,
         document_path=document_path,
         snap_layout_key=snap_layout_key,
     )
-    interconnect: InterconnectServer | None = None
-    if args.server:
-        try:
-            interconnect = InterconnectServer(frame)
-            if not interconnect.start():
-                print(
-                    "InkSim server is already running; forwarding command to the existing server.",
-                    file=sys.stderr,
-                )
-                open_command = "open_and_delete" if args.delete_input else "open"
-                command = (
-                    {"command": open_command, "path": str(first_input), "focus": True}
-                    if first_input is not None and first_input.is_file()
-                    else {"command": "show", "focus": True}
-                )
-                if snap_layout_key:
-                    command["snap"] = snap_layout_key
-                if document_path is not None and command["command"] == open_command:
-                    command["document_path"] = str(document_path)
-                if args.play and command["command"] == open_command:
-                    command["autoplay"] = True
-                response = send_command(command)
-                frame.close()
-                if not response.get("ok"):
-                    parser.error(response.get("error", "server command failed"))
-                raise SystemExit(0)
-        except RuntimeError as ex:
-            frame.close()
-            parser.error(str(ex))
-        frame.interconnect = interconnect
-        app.aboutToQuit.connect(interconnect.stop)
     if export_requested:
         success = True
         total_inputs = len(input_paths)
@@ -490,40 +518,6 @@ def main() -> None:
                 )
         frame.close()
         raise SystemExit(0 if success else 1)
-    splash: SplashScreen = SplashScreen()
-    splash.show_centered()
-    splash.set_message("Preparing InkSim...")
-    warmup: RendererWarmupThread = RendererWarmupThread(app)
-
-    def finish_startup() -> None:
-        frame.show_initial_window(
-            False,
-            str(first_input) if first_input and first_input.is_dir() else None,
-        )
-        if first_input is not None and first_input.is_file():
-            splash.set_message(f"Loading {first_input.name}...")
-            if not frame.open_file(
-                str(first_input),
-                delete_after_load=args.delete_input,
-                autoplay=args.play,
-            ):
-                splash.close_after()
-                frame.open_file_dialog()
-                return
-            if args.play:
-                frame.focus_window()
-                frame.viewer.toggle_auto_play(forward=True)
-        splash.set_message("Ready")
-        splash.close_after()
-
-    warmup.finished.connect(finish_startup)
-    warmup.start()
-
-    def handle_sigint(signum: int, frame_info: object) -> None:
-        app.quit()
-
-    signal.signal(signal.SIGINT, handle_sigint)
-    raise SystemExit(app.exec())
 
 
 if __name__ == "__main__":

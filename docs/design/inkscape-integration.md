@@ -52,9 +52,10 @@ sections of this document.
    from other Inkscape windows and from other InkSim sessions.
 
 2. **No local IPC in the new flow.**
-   The existing Qt `QLocalServer` interconnect stays for backward
-   compatibility, but the Inkscape integration must not depend on it. IPC is
-   replaced by a private session directory with request and response files.
+   The Inkscape integration must not depend on the InkSim singleton server
+   (see [interconnect.md](../interconnect.md)). The Qt `QLocalServer` used
+   by that server is a separate feature. IPC for this flow is replaced by a
+   private session directory with request and response files.
 
 3. **The data flow starts and ends in InkSim.**
    InkSim creates a session directory, sets environment variables, launches
@@ -403,8 +404,7 @@ Transport is deliberately only the file protocol:
 3. The extension writes `response-<id>.json` and `done-<id>` atomically.
 4. InkSim waits with a timeout, reads the response, and loads the CSV.
 
-No sockets, named pipes, or `inksim --send-command` calls are used by the new
-flow.
+No sockets, named pipes, or `inksim` server calls are used by the new flow.
 
 ### Selection preview
 

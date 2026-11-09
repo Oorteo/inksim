@@ -111,9 +111,9 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "زبان به {language} تنظیم شده است. همین حالا InkSim را دوباره راه‌اندازی کن تا اعمال شود؟"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "زبان عوض شده. InkSim رو ببند و از Inkscape دوباره باز کن تا زبان جدید اعمال بشه."
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "همه پنجره‌های باز InkSim بسته می‌شوند و فایل فعلی دوباره باز می‌شود."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
@@ -191,9 +191,9 @@
         "source": "Open embroidery file",
         "translation": "باز کردن فایل گلدوزی"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "خروج"
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "بستن همه پنجره‌ها و سرور"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",

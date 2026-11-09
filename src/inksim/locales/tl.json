@@ -111,9 +111,9 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Ang wika ay naitakda sa {language}. I-restart ang InkSim ngayon para mailapat ito?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Ang wika ay nabago. Isara ang InkSim at buksan muli ito mula sa Inkscape upang mailapat ang bagong wika."
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Ang lahat ng bukas na window ng InkSim ay isasara at muling bubuksan ang kasalukuyang file."
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
@@ -191,9 +191,9 @@
         "source": "Open embroidery file",
         "translation": "Buksan ang file ng burda"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Lumabas"
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Tapusin ang lahat ng window at server"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
