@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 from PySide6.QtCore import QObject, Signal
 
 from inksim.constants import IPC_PROTOCOL_VERSION
@@ -105,11 +107,39 @@ def test_stale_code_fingerprint_replaces_running_server(monkeypatch):
         lambda request, **kwargs: calls.append(request) or {"ok": True},
     )
     monkeypatch.setattr(server_module, "_wait_until_stopped", lambda timeout: None)
-    monkeypatch.setattr(server_module, "spawn_detached", lambda args: calls.append("spawn"))
+    monkeypatch.setattr(
+        server_module,
+        "spawn_detached",
+        lambda args: calls.append("spawn") or SimpleNamespace(pid=123, poll=lambda: None),
+    )
 
     server_module.forward_request({"type": "status"})
     assert calls[0] == {"type": "shutdown"}
     assert "spawn" in calls
+
+
+def test_server_start_timeout_reports_child_process_state(monkeypatch):
+    import pytest
+
+    from inksim import server as server_module
+    from inksim.ipc import IpcUnavailable
+
+    class ExitedProcess:
+        pid = 123
+
+        @staticmethod
+        def poll():
+            return 2
+
+    monkeypatch.setattr(server_module, "_hello_or_none", lambda: None)
+    monkeypatch.setattr(server_module, "spawn_detached", lambda args: ExitedProcess())
+    monkeypatch.setattr(server_module, "SERVER_START_TIMEOUT_SECONDS", 0)
+
+    with pytest.raises(
+        IpcUnavailable,
+        match=r"within .* seconds \(process 123 exited with code 2\)",
+    ):
+        server_module.forward_request({"type": "status"})
 
 
 def test_frozen_build_is_rejected_explicitly(monkeypatch):
