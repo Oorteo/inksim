@@ -5,13 +5,15 @@
 
 from __future__ import annotations
 
-import subprocess
+import sys
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QProcess, Qt, QTimer
 from PySide6.QtWidgets import (
+    QApplication,
     QComboBox,
     QDialog,
     QDialogButtonBox,
@@ -25,6 +27,15 @@ from PySide6.QtWidgets import (
 )
 
 from ..i18n import _
+
+# Cold starts of Inkscape on Windows (antivirus scans, profile setup) can exceed a few seconds.
+INKSCAPE_PROBE_TIMEOUT_S = 10
+_WINDOWS_CREATE_NO_WINDOW = 0x08000000
+_PROBE_OPTIONS = ("--user-data-directory", "--system-data-directory")
+
+
+def _hide_windows_console(arguments: Any) -> None:
+    arguments.flags |= _WINDOWS_CREATE_NO_WINDOW
 
 
 @dataclass(frozen=True)
@@ -52,6 +63,20 @@ class InkscapeIntegrationDialog(QDialog):
 
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
+
+        self.probe_status_label = QLabel(_("integration.inkscape.probing"), self)
+        self.probe_status_label.setAlignment(Qt.AlignCenter)
+        self.probe_status_label.setStyleSheet(
+            "background-color: rgba(0, 0, 0, 170); color: white; border-radius: 8px; padding: 12px;"
+        )
+        self.probe_status_label.setVisible(False)
+        layout.addWidget(self.probe_status_label)
+        self._probe_process: QProcess | None = None
+        self._probe_results: list[str] = []
+        self._probe_executable = ""
+        self._probe_timer = QTimer(self)
+        self._probe_timer.setSingleShot(True)
+        self._probe_timer.timeout.connect(self._on_probe_timeout)
 
         program_row = QHBoxLayout()
         program_row.addWidget(QLabel(_("integration.inkscape.label"), self))
@@ -85,7 +110,8 @@ class InkscapeIntegrationDialog(QDialog):
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
 
-        self._set_executable(executable)
+        # Probe after show so the status bubble is visible while Inkscape starts.
+        QTimer.singleShot(0, lambda: self._set_executable(executable))
 
     def _choose_executable(self) -> None:
         path, _selected_filter = QFileDialog.getOpenFileName(
@@ -111,17 +137,107 @@ class InkscapeIntegrationDialog(QDialog):
 
         executable_path = str(Path(executable).resolve())
         self.executable_label.setText(executable_path)
-        unavailable = _("integration.inkscape.directory_unavailable")
-        try:
-            user_path = self._extension_directory(executable_path, "--user-data-directory")
-            system_path = self._extension_directory(executable_path, "--system-data-directory")
-        except subprocess.TimeoutExpired:
+        self._start_probe(executable_path)
+
+    def done(self, result: int) -> None:
+        self._cancel_probe()
+        super().done(result)
+
+    def _start_probe(self, executable_path: str) -> None:
+        self._probe_executable = executable_path
+        self._probe_results = []
+        self._set_probing(True)
+        self._run_next_probe()
+
+    def _run_next_probe(self) -> None:
+        process = QProcess(self)
+        process.setProcessChannelMode(QProcess.ProcessChannelMode.SeparateChannels)
+        if sys.platform == "win32":
+            # Keeps the console-subsystem inkscape.com from flashing a terminal on Windows.
+            process.setCreateProcessArgumentsModifier(_hide_windows_console)
+        process.finished.connect(lambda *_, p=process: self._on_probe_step_done(p))
+        process.errorOccurred.connect(
+            lambda *_, p=process: self._on_probe_step_done(p, failed=True)
+        )
+        self._probe_process = process
+        self._probe_timer.start(int(INKSCAPE_PROBE_TIMEOUT_S * 1000))
+        process.start(self._probe_executable, [_PROBE_OPTIONS[len(self._probe_results)]])
+
+    def _on_probe_step_done(self, process: QProcess, failed: bool = False) -> None:
+        # Ignore late signals from a process that was already replaced, killed, or handled.
+        if process is not self._probe_process:
+            return
+        self._probe_process = None
+        self._probe_timer.stop()
+        output = ""
+        if (
+            not failed
+            and process.exitStatus() == QProcess.ExitStatus.NormalExit
+            and process.exitCode() == 0
+        ):
+            output = bytes(process.readAllStandardOutput().data()).decode(errors="replace").strip()
+        process.deleteLater()
+        self._probe_results.append(output)
+        if output and len(self._probe_results) < len(_PROBE_OPTIONS):
+            self._run_next_probe()
+        else:
+            # A failed query means this executable cannot answer the rest either, so do not run them.
+            self._probe_results.extend([""] * (len(_PROBE_OPTIONS) - len(self._probe_results)))
+            self._finish_probe(timed_out=False)
+
+    def _on_probe_timeout(self) -> None:
+        process = self._probe_process
+        if process is None:
+            return
+        self._probe_process = None
+        process.kill()
+        process.deleteLater()
+        self._finish_probe(timed_out=True)
+
+    def _finish_probe(self, timed_out: bool) -> None:
+        self._set_probing(False)
+        if timed_out:
+            # An unresponsive Inkscape will not answer the second query either, so do not wait twice.
+            user_path = system_path = _("integration.inkscape.directory_unavailable")
+        else:
+            user_path, system_path = (
+                self._extensions_directory(output) for output in self._probe_results
+            )
+        self._apply_extension_directories(user_path, system_path, timed_out)
+
+    def _cancel_probe(self) -> None:
+        process = self._probe_process
+        if process is None:
+            return
+        self._probe_process = None
+        self._probe_timer.stop()
+        process.kill()
+        process.deleteLater()
+        self._set_probing(False)
+
+    def _set_probing(self, active: bool) -> None:
+        self.probe_status_label.setVisible(active)
+        self.change_button.setEnabled(not active)
+        if active:
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+        else:
+            QApplication.restoreOverrideCursor()
+
+    @staticmethod
+    def _extensions_directory(data_directory: str) -> str:
+        if not data_directory:
+            return _("integration.inkscape.directory_unavailable")
+        return str(Path(data_directory).expanduser() / "extensions")
+
+    def _apply_extension_directories(
+        self, user_path: str, system_path: str, timed_out: bool
+    ) -> None:
+        if timed_out:
             QMessageBox.warning(
                 self,
                 _("integration.inkscape.title"),
-                _("integration.inkscape.timeout"),
+                _("integration.inkscape.timeout").format(seconds=INKSCAPE_PROBE_TIMEOUT_S),
             )
-            user_path = system_path = unavailable
         self.user_extensions_label.setText(
             _("integration.inkscape.user_extensions").format(path=user_path)
         )
@@ -198,23 +314,3 @@ class InkscapeIntegrationDialog(QDialog):
                         )
                         break
         return sorted(commands.values(), key=lambda item: str(item.resolved_path).casefold())
-
-    @staticmethod
-    def _extension_directory(executable: str, option: str) -> str:
-        try:
-            result = subprocess.run(
-                [executable, option],
-                check=True,
-                capture_output=True,
-                text=True,
-                timeout=3,
-            )
-        except subprocess.TimeoutExpired:
-            raise
-        except (OSError, subprocess.SubprocessError):
-            return _("integration.inkscape.directory_unavailable")
-
-        data_directory = result.stdout.strip()
-        if not data_directory:
-            return _("integration.inkscape.directory_unavailable")
-        return str(Path(data_directory).expanduser() / "extensions")
