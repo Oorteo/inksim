@@ -8,10 +8,12 @@ from __future__ import annotations
 import hashlib
 import os
 import subprocess
+import sys
 import uuid
 from collections.abc import Sequence
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from PySide6.QtCore import (
     QProcess,
@@ -64,6 +66,12 @@ KIND_OTHER = "other"
 
 _MAX_SVG_THUMBNAIL_BYTES = 20 * 1024 * 1024
 _CONVERSION_TIMEOUT_MS = 180_000
+_WINDOWS_CREATE_NO_WINDOW = 0x08000000
+
+
+def _hide_windows_console(arguments: Any) -> None:
+    """Keep console-subsystem Inkscape exports from opening a terminal window."""
+    arguments.flags |= _WINDOWS_CREATE_NO_WINDOW
 
 
 class OpenBrowserDialog(QDialog):
@@ -771,6 +779,8 @@ class OpenBrowserDialog(QDialog):
         self._conversion_stderr = bytearray()
         self._conversion_aborted = False
         process = QProcess(self)
+        if sys.platform == "win32":
+            process.setCreateProcessArgumentsModifier(_hide_windows_console)
         process.setProgram(argv[0])
         process.setArguments(argv[1:])
         process.setWorkingDirectory(str(path.parent))

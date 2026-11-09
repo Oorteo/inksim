@@ -3,7 +3,7 @@
 
 """Smoke tests that every menu action can be triggered without crashing."""
 
-import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -200,17 +200,46 @@ def test_locate_inkscape_reports_missing_executable(qtbot, monkeypatch):
     window.close()
 
 
+def _wait_for_probe(qtbot, dialog):
+    """Wait until the deferred extension probe has finished and hidden its status bubble."""
+    qtbot.waitUntil(
+        lambda: dialog.executable_label.text() != "" and dialog.probe_status_label.isHidden()
+    )
+
+
+def _fake_inkscape_probe(monkeypatch, data_directories=None, sleep_seconds=None):
+    """Run the Inkscape probe as a real Python child process that prints the given data directories."""
+    from PySide6.QtCore import QProcess
+
+    starts = []
+
+    class FakeInkscapeProbe(QProcess):
+        def start(self, program, arguments):
+            starts.append(arguments)
+            if sleep_seconds is None:
+                code = f"import sys; print({data_directories!r}[sys.argv[1]])"
+                super().start(sys.executable, ["-c", code, *arguments])
+            else:
+                super().start(sys.executable, ["-c", f"import time; time.sleep({sleep_seconds})"])
+
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QProcess", FakeInkscapeProbe)
+    return starts
+
+
 def test_inkscape_dialog_shows_extension_directories(qtbot, monkeypatch):
     """Display the extension directories reported by the selected executable."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
 
-    outputs = iter(("/home/user/.config/inkscape\n", "/usr/share/inkscape\n"))
-    monkeypatch.setattr(
-        "inksim.gui.inkscape_dialog.subprocess.run",
-        lambda *args, **kwargs: type("Result", (), {"stdout": next(outputs)})(),
+    _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": "/home/user/.config/inkscape",
+            "--system-data-directory": "/usr/share/inkscape",
+        },
     )
     dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
     qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
 
     assert dialog.executable_label.text() == str(Path("/opt/inkscape/bin/inkscape").resolve())
     assert (
@@ -226,11 +255,9 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     """Selecting another executable refreshes its extension directories."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
 
-    monkeypatch.setattr(
-        "inksim.gui.inkscape_dialog.subprocess.run",
-        lambda args, **kwargs: type(
-            "Result", (), {"stdout": f"/custom/{'user' if 'user' in args[1] else 'system'}\n"}
-        )(),
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
     )
     monkeypatch.setattr(
         "inksim.gui.inkscape_dialog.QFileDialog.getOpenFileName",
@@ -238,8 +265,10 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     )
     dialog = InkscapeIntegrationDialog(None, None)
     qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
 
     dialog.change_button.click()
+    _wait_for_probe(qtbot, dialog)
 
     assert dialog.executable_label.text() == str(Path("/custom/bin/inkscape").resolve())
     assert dialog.user_extensions_label.text().endswith("/custom/user/extensions")
@@ -271,13 +300,13 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     directory_inx = inx_path.parent / "inkstitch_directory_about.inx"
     directory_inx.mkdir()
 
-    def fake_run(args, **kwargs):
-        directory = user_data if args[1] == "--user-data-directory" else system_data
-        return type("Result", (), {"stdout": f"{directory}\n"})()
-
-    monkeypatch.setattr("inksim.gui.inkscape_dialog.subprocess.run", fake_run)
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
     dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
     qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
 
     expected_script = (inx_path.parent / "../inkstitch.py").resolve()
     assert dialog.inkstitch_combo.isHidden()
@@ -307,13 +336,13 @@ def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
             encoding="utf-8",
         )
 
-    def fake_run(args, **kwargs):
-        directory = user_data if args[1] == "--user-data-directory" else system_data
-        return type("Result", (), {"stdout": f"{directory}\n"})()
-
-    monkeypatch.setattr("inksim.gui.inkscape_dialog.subprocess.run", fake_run)
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
     dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
     qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
 
     assert not dialog.inkstitch_combo.isHidden()
     assert dialog.inkstitch_combo.count() == 2
@@ -323,25 +352,24 @@ def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
 
 
 def test_inkscape_dialog_reports_unresponsive_command(qtbot, monkeypatch):
-    """Report a stuck Inkscape probe promptly instead of silently retrying."""
+    """Show a status bubble while probing and report a stuck Inkscape once, without waiting twice."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
 
-    calls = []
     warnings = []
-
-    def timeout_run(args, **kwargs):
-        calls.append((args, kwargs))
-        raise subprocess.TimeoutExpired(args, kwargs["timeout"])
-
-    monkeypatch.setattr("inksim.gui.inkscape_dialog.subprocess.run", timeout_run)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_PROBE_TIMEOUT_S", 0.5)
+    starts = _fake_inkscape_probe(monkeypatch, sleep_seconds=30)
     monkeypatch.setattr(
         "inksim.gui.inkscape_dialog.QMessageBox.warning",
         lambda *args: warnings.append(args),
     )
     dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
     qtbot.addWidget(dialog)
+    qtbot.waitUntil(lambda: not dialog.probe_status_label.isHidden())
+    assert not dialog.change_button.isEnabled()
 
-    assert len(calls) == 1
-    assert calls[0][1]["timeout"] == 3
+    _wait_for_probe(qtbot, dialog)
+
+    assert len(starts) == 1
+    assert dialog.change_button.isEnabled()
     assert len(warnings) == 1
-    assert "3 seconds" in warnings[0][2]
+    assert "0.5 seconds" in warnings[0][2]
