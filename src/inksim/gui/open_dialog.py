@@ -779,7 +779,7 @@ class OpenBrowserDialog(QDialog):
         self._conversion_stderr = bytearray()
         self._conversion_aborted = False
         process = QProcess(self)
-        if sys.platform == "win32":
+        if sys.platform == "win32" and hasattr(process, "setCreateProcessArgumentsModifier"):
             process.setCreateProcessArgumentsModifier(_hide_windows_console)
         process.setProgram(argv[0])
         process.setArguments(argv[1:])

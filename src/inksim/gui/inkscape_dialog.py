@@ -152,7 +152,7 @@ class InkscapeIntegrationDialog(QDialog):
     def _run_next_probe(self) -> None:
         process = QProcess(self)
         process.setProcessChannelMode(QProcess.ProcessChannelMode.SeparateChannels)
-        if sys.platform == "win32":
+        if sys.platform == "win32" and hasattr(process, "setCreateProcessArgumentsModifier"):
             # Keeps the console-subsystem inkscape.com from flashing a terminal on Windows.
             process.setCreateProcessArgumentsModifier(_hide_windows_console)
         process.finished.connect(lambda *_, p=process: self._on_probe_step_done(p))
