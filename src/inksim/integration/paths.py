@@ -22,6 +22,7 @@ from pathlib import Path
 
 INKSCAPE_ENV = "INKSCAPE_EXE"
 INKSTITCH_ENV = "INKSTITCH_EXE"
+INKSCAPE_EXTENSION_STATUS_KEY = "inkscape_extension_status"
 
 _PYTHON_ENV_VARS = (
     "VIRTUAL_ENV",

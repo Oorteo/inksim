@@ -46,9 +46,11 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ..config import Config
 from ..formats import get_supported_input_extensions
 from ..i18n import _
 from ..integration.paths import (
+    INKSCAPE_EXTENSION_STATUS_KEY,
     ToolStatus,
     build_inkscape_export_arguments,
     clean_child_environment,
@@ -100,6 +102,7 @@ class OpenBrowserDialog(QDialog):
         self.current_directory = Path(initial_directory or Path.cwd()).resolve()
         self.initial_file: Path | None = Path(selected_file).resolve() if selected_file else None
         self.extensions = get_supported_input_extensions() | {"svg"}
+        self.config = Config()
         self.tool_status: ToolStatus = detect_tools()
         self._all_paths: list[Path] = []
         self._visible_paths: list[Path] = []
@@ -267,6 +270,7 @@ class OpenBrowserDialog(QDialog):
         self._update_actions()
 
     def _update_tool_status(self) -> None:
+        self.config.reload()
         self.tool_status = detect_tools()
         lines = []
         if self.tool_status.has_inkscape:
@@ -277,20 +281,36 @@ class OpenBrowserDialog(QDialog):
             )
         else:
             lines.append(_("dialog.open_browser.status.inkscape_missing", "Inkscape: not found."))
-        if self.tool_status.has_inkstitch:
+        extension_status = self._cached_inkstitch_extension_status()
+        if extension_status is None:
+            lines.append(
+                _("dialog.open_browser.status.inkstitch_unchecked")
+                if self.tool_status.has_inkscape
+                else _("dialog.open_browser.status.inkstitch_no_inkscape")
+            )
+        elif extension_status.get("status") == "found":
+            commands = extension_status.get("commands")
+            paths = (
+                [
+                    command["path"]
+                    for command in commands
+                    if isinstance(command, dict) and isinstance(command.get("path"), str)
+                ]
+                if isinstance(commands, list)
+                else []
+            )
             lines.append(
                 _(
-                    "dialog.open_browser.status.inkstitch",
-                    "Ink/Stitch on PATH: {path}",
-                ).format(path=self.tool_status.inkstitch.path)
+                    "dialog.open_browser.status.inkstitch_extension",
+                    "Ink/Stitch extension: {path}",
+                ).format(path=", ".join(paths))
+                if paths
+                else _("dialog.open_browser.status.inkstitch_missing")
             )
+        elif extension_status.get("status") == "not_found":
+            lines.append(_("dialog.open_browser.status.inkstitch_missing"))
         else:
-            lines.append(
-                _(
-                    "dialog.open_browser.status.inkstitch_missing",
-                    "Ink/Stitch: not detected on PATH (it may still be installed inside Inkscape).",
-                )
-            )
+            lines.append(_("dialog.open_browser.status.inkstitch_check_failed"))
         if self.tool_status.has_inkscape:
             lines.append(
                 _(
@@ -308,6 +328,20 @@ class OpenBrowserDialog(QDialog):
             )
         self.status_label.setText("\n".join(lines))
         self._update_actions()
+
+    def _cached_inkstitch_extension_status(self) -> dict[str, Any] | None:
+        if not self.tool_status.has_inkscape:
+            return None
+        result = self.config.get(INKSCAPE_EXTENSION_STATUS_KEY)
+        command = self.tool_status.inkscape.command
+        if not isinstance(result, dict) or not command:
+            return None
+        executable = result.get("executable")
+        if not isinstance(executable, str):
+            return None
+        current_path = os.path.normcase(str(Path(command[0]).expanduser().resolve()))
+        stored_path = os.path.normcase(str(Path(executable).expanduser().resolve()))
+        return result if current_path == stored_path else None
 
     def _refresh_tools(self, checked: bool = False) -> None:
         del checked

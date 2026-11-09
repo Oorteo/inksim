@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from inksim.gui.open_dialog import OpenBrowserDialog
-from inksim.integration.paths import ToolInfo, ToolStatus
+from inksim.integration.paths import INKSCAPE_EXTENSION_STATUS_KEY, ToolInfo, ToolStatus
 
 _SVG = """<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="80">
@@ -112,6 +112,51 @@ def test_svg_preview_and_edit_are_enabled_with_inkscape(qtbot, tmp_path, monkeyp
     assert dialog.open_button.isEnabled()
     assert dialog.edit_button.isEnabled()
     assert "/usr/bin/inkscape" in dialog.status_label.text()
+    dialog.reject()
+
+
+def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    inkscape = tmp_path / "inkscape"
+    inkscape.touch()
+    extension_script = tmp_path / "extensions" / "inkstitch" / "inkstitch.py"
+    extension_script.parent.mkdir(parents=True)
+    extension_script.touch()
+    config_path = tmp_path / "config.toml"
+    config = Config(config_path)
+    config.set(
+        INKSCAPE_EXTENSION_STATUS_KEY,
+        {
+            "executable": str(inkscape.resolve()),
+            "status": "found",
+            "commands": [{"path": str(extension_script.resolve())}],
+        },
+    )
+    dialog_config = Config(config_path)
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: dialog_config)
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape=str(inkscape)),
+    )
+
+    def unexpected_probe(*args, **kwargs):
+        raise AssertionError("Opening the dialog must not start an Inkscape probe.")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.QProcess", unexpected_probe)
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    assert f"Ink/Stitch extension: {extension_script.resolve()}" in dialog.status_label.text()
+    assert "PATH" not in dialog.status_label.text()
+    config.set(
+        INKSCAPE_EXTENSION_STATUS_KEY,
+        {"executable": str(inkscape.resolve()), "status": "not_found", "commands": []},
+    )
+    dialog.refresh_tools_button.click()
+    assert "not found in Inkscape" in dialog.status_label.text()
     dialog.reject()
 
 
