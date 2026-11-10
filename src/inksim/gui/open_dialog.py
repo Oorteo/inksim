@@ -15,6 +15,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 from PySide6.QtCore import (
     QProcess,
     QProcessEnvironment,
@@ -24,7 +25,7 @@ from PySide6.QtCore import (
     Qt,
     QTimer,
 )
-from PySide6.QtGui import QColor, QPainter, QPixmap, QResizeEvent
+from PySide6.QtGui import QImage, QPainter, QPixmap, QResizeEvent
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -39,6 +40,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QProgressBar,
     QPushButton,
+    QScrollArea,
     QSplitter,
     QStackedWidget,
     QStyle,
@@ -108,6 +110,7 @@ class OpenBrowserDialog(QDialog):
         self._visible_paths: list[Path] = []
         self._preview_loaded = False
         self._svg_source: QPixmap | None = None
+        self._svg_zoom = 1.0
         self._conversion_process: QProcess | None = None
         self._conversion_csv: Path | None = None
         self._conversion_source: Path | None = None
@@ -207,10 +210,35 @@ class OpenBrowserDialog(QDialog):
         self.svg_page = QWidget(self)
         svg_layout = QVBoxLayout(self.svg_page)
         svg_layout.setContentsMargins(0, 0, 0, 0)
-        self.svg_label = QLabel(self.svg_page)
+        self.svg_scroll = QScrollArea(self.svg_page)
+        self.svg_scroll.setWidgetResizable(False)
+        self.svg_scroll.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.svg_label = QLabel()
         self.svg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.svg_label.setMinimumSize(1, 1)
-        svg_layout.addWidget(self.svg_label, 1)
+        self.svg_scroll.setWidget(self.svg_label)
+        svg_layout.addWidget(self.svg_scroll, 1)
+        svg_zoom_row = QHBoxLayout()
+        self.svg_zoom_out_button = QPushButton("-", self.svg_page)
+        self.svg_zoom_out_button.setAccessibleName(
+            _("dialog.open_browser.svg_zoom_out", "Zoom out")
+        )
+        self.svg_zoom_out_button.clicked.connect(
+            lambda _checked=False: self._change_svg_zoom(1 / 1.25)
+        )
+        svg_zoom_row.addWidget(self.svg_zoom_out_button)
+        self.svg_zoom_label = QLabel(self.svg_page)
+        self.svg_zoom_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.svg_zoom_label.setMinimumWidth(56)
+        svg_zoom_row.addWidget(self.svg_zoom_label)
+        self.svg_zoom_in_button = QPushButton("+", self.svg_page)
+        self.svg_zoom_in_button.setAccessibleName(_("dialog.open_browser.svg_zoom_in", "Zoom in"))
+        self.svg_zoom_in_button.clicked.connect(lambda _checked=False: self._change_svg_zoom(1.25))
+        svg_zoom_row.addWidget(self.svg_zoom_in_button)
+        self.svg_fit_button = QPushButton(_("dialog.open_browser.svg_fit", "Fit"), self.svg_page)
+        self.svg_fit_button.clicked.connect(self._fit_svg)
+        svg_zoom_row.addWidget(self.svg_fit_button)
+        svg_zoom_row.addStretch(1)
+        svg_layout.addLayout(svg_zoom_row)
         self.svg_caption = QLabel(self.svg_page)
         self.svg_caption.setWordWrap(True)
         self.svg_caption.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -611,15 +639,42 @@ class OpenBrowserDialog(QDialog):
                 _("dialog.open_browser.svg_invalid", "The SVG could not be rendered.")
             )
             return
-        pixmap = QPixmap(900, 700)
-        pixmap.fill(QColor(255, 255, 255))
+        svg_size = renderer.defaultSize()
+        if svg_size.width() <= 0 or svg_size.height() <= 0:
+            view_box = renderer.viewBoxF()
+            svg_width, svg_height = view_box.width(), view_box.height()
+        else:
+            svg_width, svg_height = svg_size.width(), svg_size.height()
+        aspect_ratio = svg_width / svg_height if svg_width > 0 and svg_height > 0 else 1.0
+        if aspect_ratio >= 1.0:
+            pixmap_size = QSize(1800, max(1, round(1800 / aspect_ratio)))
+        else:
+            pixmap_size = QSize(max(1, round(1400 * aspect_ratio)), 1400)
+        pixmap = QPixmap(pixmap_size)
+        pixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(pixmap)
         try:
-            renderer.render(painter, QRectF(0.0, 0.0, 900.0, 700.0))
+            renderer.render(
+                painter,
+                QRectF(0.0, 0.0, float(pixmap.width()), float(pixmap.height())),
+            )
         finally:
             painter.end()
+        image = pixmap.toImage().convertToFormat(QImage.Format.Format_RGBA8888)
+        pixels = np.frombuffer(image.constBits(), dtype=np.uint8).reshape(
+            image.height(), image.bytesPerLine()
+        )
+        alpha = pixels[:, 3 : image.width() * 4 : 4]
+        content_rows = np.flatnonzero(alpha.any(axis=1))
+        content_columns = np.flatnonzero(alpha.any(axis=0))
+        if content_rows.size and content_columns.size:
+            left = max(0, int(content_columns[0]) - 4)
+            top = max(0, int(content_rows[0]) - 4)
+            right = min(image.width(), int(content_columns[-1]) + 5)
+            bottom = min(image.height(), int(content_rows[-1]) + 5)
+            pixmap = pixmap.copy(left, top, right - left, bottom - top)
         self._svg_source = pixmap
-        self._update_svg_display()
+        self._svg_zoom = 1.0
         if self.tool_status.has_inkscape:
             caption = _(
                 "dialog.open_browser.svg_caption_ready",
@@ -632,20 +687,42 @@ class OpenBrowserDialog(QDialog):
             )
         self.svg_caption.setText(caption)
         self.preview_stack.setCurrentWidget(self.svg_page)
+        self._update_svg_display()
 
     def _update_svg_display(self) -> None:
         if self._svg_source is None:
             return
-        target = self.svg_label.size()
+        target = self.svg_scroll.viewport().size()
         if target.width() <= 1 or target.height() <= 1:
             return
+        fit_scale = min(
+            target.width() / self._svg_source.width(),
+            target.height() / self._svg_source.height(),
+        )
+        display_size = QSize(
+            max(1, round(self._svg_source.width() * fit_scale * self._svg_zoom)),
+            max(1, round(self._svg_source.height() * fit_scale * self._svg_zoom)),
+        )
+        self.svg_label.setFixedSize(display_size)
         self.svg_label.setPixmap(
             self._svg_source.scaled(
-                target,
+                display_size,
                 Qt.AspectRatioMode.KeepAspectRatio,
                 Qt.TransformationMode.SmoothTransformation,
             )
         )
+        self.svg_zoom_label.setText(f"{self._svg_zoom:.0%}")
+        self.svg_zoom_out_button.setEnabled(self._svg_zoom > 0.2)
+        self.svg_zoom_in_button.setEnabled(self._svg_zoom < 8.0)
+
+    def _change_svg_zoom(self, factor: float) -> None:
+        self._svg_zoom = min(8.0, max(0.2, self._svg_zoom * factor))
+        self._update_svg_display()
+
+    def _fit_svg(self, checked: bool = False) -> None:
+        del checked
+        self._svg_zoom = 1.0
+        self._update_svg_display()
 
     def _load_embroidery_preview(self) -> None:
         path = self.selected_path
