@@ -320,12 +320,12 @@
         "translation": "Rozšíření Ink/Stitch: zatím neověřeno. Ověřte ho přes Nástroje..."
     },
     "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview uses Inkscape; Ink/Stitch must be installed as an Inkscape extension.",
-        "translation": "Náhled SVG používá Inkscape; Ink/Stitch musí být nainstalovaný jako rozšíření Inkscape."
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "Náhled SVG spouští přímo Ink/Stitch; Inkscape slouží pouze k úpravám."
     },
     "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview and editing need Inkscape. Use Tools... to locate it.",
-        "translation": "Náhled SVG a úpravy vyžadují Inkscape. Pomocí Nástroje... jej můžete najít."
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "Náhled SVG spouští přímo Ink/Stitch; úpravy vyžadují Inkscape."
     },
     "dialog.open_browser.svg_caption_ready": {
         "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
@@ -352,16 +352,16 @@
         "translation": "Otevřít vybraný soubor výšivky."
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
-        "translation": "Vygenerovat data stehů z tohoto SVG pomocí Inkscape/Ink/Stitch."
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Vygenerovat data stehů z tohoto SVG pomocí aktivní instalace Ink/Stitch."
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
         "translation": "Otevřít toto SVG v novém okně Inkscape."
     },
     "dialog.open_browser.inkscape_required": {
-        "source": "Inkscape is required for SVG preview.",
-        "translation": "Pro náhled SVG je potřeba Inkscape."
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Pro úpravu SVG souborů je potřeba Inkscape."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -369,23 +369,35 @@
     },
     "dialog.open_browser.converting": {
         "source": "Generating stitch preview...",
-        "translation": "Generuji náhled stehů..."
+        "translation": "Spouštím export CSV v Ink/Stitch..."
     },
     "dialog.open_browser.conversion_failed": {
-        "source": "Stitch preview failed.",
-        "translation": "Náhled stehů se nepodařil."
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Export CSV v Ink/Stitch selhal."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "Make sure Ink/Stitch is installed in Inkscape and can export CSV.",
-        "translation": "Zkontrolujte, že je v Inkscape nainstalovaný Ink/Stitch a umí exportovat CSV."
+        "source": "See output.err for the error details.",
+        "translation": "Podrobnosti chyby jsou v souboru output.err."
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",
         "translation": "Proces náhledu stehů selhal: {error}"
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Stitch preview timed out.",
-        "translation": "Časový limit pro náhled stehů vypršel."
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Časový limit exportu CSV v Ink/Stitch vypršel."
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Návratový kód procesu: {code}"
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "Pro náhled SVG je nutná nakonfigurovaná aktivní instalace Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Aktivní skript Ink/Stitch nebo jeho nastavený Python launcher nelze spustit."
     },
     "dialog.open_browser.cache_failed": {
         "source": "Cannot create the preview cache: {error}",

@@ -62,7 +62,7 @@ def test_missing_tools_are_reported(monkeypatch):
 
     assert not status.has_inkscape
     assert not status.has_inkstitch
-    assert not status.can_preview_svg
+    assert not status.can_edit_svg
 
 
 def test_existing_path_with_spaces_stays_one_argument(monkeypatch, tmp_path):
@@ -82,7 +82,7 @@ def test_inkscape_is_enough_to_attempt_svg_preview():
         inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
     )
 
-    assert status.can_preview_svg
+    assert status.can_edit_svg
 
 
 def test_build_export_arguments(tmp_path):

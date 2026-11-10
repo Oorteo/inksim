@@ -83,13 +83,12 @@ class ToolStatus:
         return self.inkstitch.found
 
     @property
-    def can_preview_svg(self) -> bool:
-        """Return True when the Inkscape export backend can be attempted.
+    def can_edit_svg(self) -> bool:
+        """Return True when SVG editing can be attempted through Inkscape.
 
         Ink/Stitch may be installed as an Inkscape extension without a
-        standalone ``inkstitch`` command, so the absence of the standalone
-        command does not disable the preview.  The conversion itself reports a
-        useful error when Ink/Stitch is missing inside Inkscape.
+        standalone ``inkstitch`` command. Direct Ink/Stitch preview uses the
+        active extension configuration instead.
         """
         return self.has_inkscape
 
