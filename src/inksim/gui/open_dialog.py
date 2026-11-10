@@ -17,6 +17,8 @@ from typing import Any
 
 import numpy as np
 from PySide6.QtCore import (
+    QPoint,
+    QPointF,
     QProcess,
     QProcessEnvironment,
     QRectF,
@@ -25,7 +27,7 @@ from PySide6.QtCore import (
     Qt,
     QTimer,
 )
-from PySide6.QtGui import QImage, QPainter, QPixmap, QResizeEvent
+from PySide6.QtGui import QImage, QMouseEvent, QPainter, QPaintEvent, QPixmap, QWheelEvent
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -40,7 +42,6 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QProgressBar,
     QPushButton,
-    QScrollArea,
     QSplitter,
     QStackedWidget,
     QStyle,
@@ -78,6 +79,123 @@ def _hide_windows_console(arguments: Any) -> None:
     arguments.flags |= _WINDOWS_CREATE_NO_WINDOW
 
 
+class SvgPreviewWidget(QWidget):
+    """Display an SVG preview with mouse-wheel zooming and drag panning."""
+
+    MIN_ZOOM = 0.2
+    MAX_ZOOM = 8.0
+
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._source: QPixmap | None = None
+        self.zoom = 1.0
+        self.pan = QPointF()
+        self._drag_start: QPointF | None = None
+        self._drag_pan = QPointF()
+        self.setCursor(Qt.CursorShape.OpenHandCursor)
+
+    def set_source(self, source: QPixmap) -> None:
+        self._source = source
+        self.fit_to_view()
+
+    def _fit_scale(self) -> float:
+        if self._source is None or self.width() <= 0 or self.height() <= 0:
+            return 0.0
+        return min(
+            self.width() / self._source.width(),
+            self.height() / self._source.height(),
+        )
+
+    def _image_rect(self, scale: float) -> QRectF:
+        if self._source is None:
+            return QRectF()
+        width = self._source.width() * scale
+        height = self._source.height() * scale
+        return QRectF(
+            (self.width() - width) / 2 + self.pan.x(),
+            (self.height() - height) / 2 + self.pan.y(),
+            width,
+            height,
+        )
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        del event
+        if self._source is None:
+            return
+        scale = self._fit_scale() * self.zoom
+        if scale <= 0:
+            return
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.drawPixmap(self._image_rect(scale), self._source, QRectF(self._source.rect()))
+
+    def zoom_by(self, factor: float, anchor: QPointF | None = None) -> None:
+        if self._source is None:
+            return
+        fit_scale = self._fit_scale()
+        if fit_scale <= 0:
+            return
+        anchor = anchor or QPointF(self.width() / 2, self.height() / 2)
+        old_scale = fit_scale * self.zoom
+        old_rect = self._image_rect(old_scale)
+        source_x = (anchor.x() - old_rect.left()) / old_scale
+        source_y = (anchor.y() - old_rect.top()) / old_scale
+        new_zoom = min(self.MAX_ZOOM, max(self.MIN_ZOOM, self.zoom * factor))
+        if new_zoom == self.zoom:
+            return
+        self.zoom = new_zoom
+        new_scale = fit_scale * self.zoom
+        self.pan = QPointF(
+            anchor.x()
+            - source_x * new_scale
+            - (self.width() - self._source.width() * new_scale) / 2,
+            anchor.y()
+            - source_y * new_scale
+            - (self.height() - self._source.height() * new_scale) / 2,
+        )
+        self.update()
+
+    def fit_to_view(self) -> None:
+        self.zoom = 1.0
+        self.pan = QPointF()
+        self.update()
+
+    def wheelEvent(self, event: QWheelEvent) -> None:
+        delta = event.angleDelta().y()
+        if delta == 0:
+            delta = event.pixelDelta().y()
+        if delta == 0:
+            event.ignore()
+            return
+        self.zoom_by(1.15 if delta > 0 else 1 / 1.15, event.position())
+        event.accept()
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if event.button() == Qt.MouseButton.LeftButton:
+            self._drag_start = event.position()
+            self._drag_pan = self.pan
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
+            event.accept()
+            return
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        if self._drag_start is not None and event.buttons() & Qt.MouseButton.LeftButton:
+            self.pan = self._drag_pan + event.position() - self._drag_start
+            self.update()
+            event.accept()
+            return
+        super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        if event.button() == Qt.MouseButton.LeftButton:
+            self._drag_start = None
+            self.setCursor(Qt.CursorShape.OpenHandCursor)
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
+
+
 class OpenBrowserDialog(QDialog):
     """Browse supported files, preview them, and guide the user to tools.
 
@@ -110,7 +228,6 @@ class OpenBrowserDialog(QDialog):
         self._visible_paths: list[Path] = []
         self._preview_loaded = False
         self._svg_source: QPixmap | None = None
-        self._svg_zoom = 1.0
         self._conversion_process: QProcess | None = None
         self._conversion_csv: Path | None = None
         self._conversion_source: Path | None = None
@@ -210,35 +327,8 @@ class OpenBrowserDialog(QDialog):
         self.svg_page = QWidget(self)
         svg_layout = QVBoxLayout(self.svg_page)
         svg_layout.setContentsMargins(0, 0, 0, 0)
-        self.svg_scroll = QScrollArea(self.svg_page)
-        self.svg_scroll.setWidgetResizable(False)
-        self.svg_scroll.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.svg_label = QLabel()
-        self.svg_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.svg_scroll.setWidget(self.svg_label)
-        svg_layout.addWidget(self.svg_scroll, 1)
-        svg_zoom_row = QHBoxLayout()
-        self.svg_zoom_out_button = QPushButton("-", self.svg_page)
-        self.svg_zoom_out_button.setAccessibleName(
-            _("dialog.open_browser.svg_zoom_out", "Zoom out")
-        )
-        self.svg_zoom_out_button.clicked.connect(
-            lambda _checked=False: self._change_svg_zoom(1 / 1.25)
-        )
-        svg_zoom_row.addWidget(self.svg_zoom_out_button)
-        self.svg_zoom_label = QLabel(self.svg_page)
-        self.svg_zoom_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.svg_zoom_label.setMinimumWidth(56)
-        svg_zoom_row.addWidget(self.svg_zoom_label)
-        self.svg_zoom_in_button = QPushButton("+", self.svg_page)
-        self.svg_zoom_in_button.setAccessibleName(_("dialog.open_browser.svg_zoom_in", "Zoom in"))
-        self.svg_zoom_in_button.clicked.connect(lambda _checked=False: self._change_svg_zoom(1.25))
-        svg_zoom_row.addWidget(self.svg_zoom_in_button)
-        self.svg_fit_button = QPushButton(_("dialog.open_browser.svg_fit", "Fit"), self.svg_page)
-        self.svg_fit_button.clicked.connect(self._fit_svg)
-        svg_zoom_row.addWidget(self.svg_fit_button)
-        svg_zoom_row.addStretch(1)
-        svg_layout.addLayout(svg_zoom_row)
+        self.svg_preview = SvgPreviewWidget(self.svg_page)
+        svg_layout.addWidget(self.svg_preview, 1)
         self.svg_caption = QLabel(self.svg_page)
         self.svg_caption.setWordWrap(True)
         self.svg_caption.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -256,9 +346,33 @@ class OpenBrowserDialog(QDialog):
         self.preview_stack.addWidget(self.svg_page)
         self.preview_stack.addWidget(self.message_page)
 
+        preview_panel = QWidget(self)
+        preview_panel_layout = QVBoxLayout(preview_panel)
+        preview_panel_layout.setContentsMargins(0, 0, 0, 0)
+        preview_panel_layout.addWidget(self.preview_stack, 1)
+        self.preview_controls = QWidget(preview_panel)
+        preview_controls_layout = QHBoxLayout(self.preview_controls)
+        preview_controls_layout.setContentsMargins(0, 0, 0, 0)
+        self.zoom_out_button = QPushButton("-", self.preview_controls)
+        self.zoom_out_button.setAccessibleName(_("dialog.open_browser.zoom_out", "Zoom out"))
+        self.zoom_out_button.clicked.connect(
+            lambda _checked=False: self._change_preview_zoom(1 / 1.25)
+        )
+        preview_controls_layout.addWidget(self.zoom_out_button)
+        self.zoom_in_button = QPushButton("+", self.preview_controls)
+        self.zoom_in_button.setAccessibleName(_("dialog.open_browser.zoom_in", "Zoom in"))
+        self.zoom_in_button.clicked.connect(lambda _checked=False: self._change_preview_zoom(1.25))
+        preview_controls_layout.addWidget(self.zoom_in_button)
+        self.fit_button = QPushButton(_("dialog.open_browser.fit", "Fit"), self.preview_controls)
+        self.fit_button.clicked.connect(self._fit_preview)
+        preview_controls_layout.addWidget(self.fit_button)
+        preview_controls_layout.addStretch(1)
+        self.preview_controls.setVisible(False)
+        preview_panel_layout.addWidget(self.preview_controls)
+
         splitter = QSplitter(Qt.Orientation.Horizontal, self)
         splitter.addWidget(self.file_list)
-        splitter.addWidget(self.preview_stack)
+        splitter.addWidget(preview_panel)
         splitter.setStretchFactor(1, 1)
         root.addWidget(splitter, 1)
 
@@ -562,6 +676,7 @@ class OpenBrowserDialog(QDialog):
 
         path = Path(current.data(Qt.ItemDataRole.UserRole))
         kind = self._kind_for_path(path)
+        self.preview_controls.setVisible(False)
         self.preview_csv_path = None
         self.document_path = None
         if kind == KIND_DIRECTORY:
@@ -610,6 +725,7 @@ class OpenBrowserDialog(QDialog):
         self._open_selected()
 
     def _show_message(self, message: str) -> None:
+        self.preview_controls.setVisible(False)
         self.message_label.setText(message)
         self.preview_stack.setCurrentWidget(self.message_page)
 
@@ -674,7 +790,7 @@ class OpenBrowserDialog(QDialog):
             bottom = min(image.height(), int(content_rows[-1]) + 5)
             pixmap = pixmap.copy(left, top, right - left, bottom - top)
         self._svg_source = pixmap
-        self._svg_zoom = 1.0
+        self.svg_preview.set_source(pixmap)
         if self.tool_status.has_inkscape:
             caption = _(
                 "dialog.open_browser.svg_caption_ready",
@@ -687,42 +803,24 @@ class OpenBrowserDialog(QDialog):
             )
         self.svg_caption.setText(caption)
         self.preview_stack.setCurrentWidget(self.svg_page)
-        self._update_svg_display()
+        self.preview_controls.setVisible(True)
 
-    def _update_svg_display(self) -> None:
-        if self._svg_source is None:
-            return
-        target = self.svg_scroll.viewport().size()
-        if target.width() <= 1 or target.height() <= 1:
-            return
-        fit_scale = min(
-            target.width() / self._svg_source.width(),
-            target.height() / self._svg_source.height(),
-        )
-        display_size = QSize(
-            max(1, round(self._svg_source.width() * fit_scale * self._svg_zoom)),
-            max(1, round(self._svg_source.height() * fit_scale * self._svg_zoom)),
-        )
-        self.svg_label.setFixedSize(display_size)
-        self.svg_label.setPixmap(
-            self._svg_source.scaled(
-                display_size,
-                Qt.AspectRatioMode.KeepAspectRatio,
-                Qt.TransformationMode.SmoothTransformation,
+    def _change_preview_zoom(self, factor: float) -> None:
+        if self.preview_stack.currentWidget() == self.svg_page:
+            self.svg_preview.zoom_by(factor)
+        elif self._preview_loaded:
+            self.preview.zoom_at(
+                QPoint(self.preview.width() // 2, self.preview.height() // 2),
+                factor,
             )
-        )
-        self.svg_zoom_label.setText(f"{self._svg_zoom:.0%}")
-        self.svg_zoom_out_button.setEnabled(self._svg_zoom > 0.2)
-        self.svg_zoom_in_button.setEnabled(self._svg_zoom < 8.0)
 
-    def _change_svg_zoom(self, factor: float) -> None:
-        self._svg_zoom = min(8.0, max(0.2, self._svg_zoom * factor))
-        self._update_svg_display()
-
-    def _fit_svg(self, checked: bool = False) -> None:
+    def _fit_preview(self, checked: bool = False) -> None:
         del checked
-        self._svg_zoom = 1.0
-        self._update_svg_display()
+        if self.preview_stack.currentWidget() == self.svg_page:
+            self.svg_preview.fit_to_view()
+        elif self._preview_loaded:
+            self.preview._pending_fit_to_screen = False
+            self.preview.fit_to_screen()
 
     def _load_embroidery_preview(self) -> None:
         path = self.selected_path
@@ -743,6 +841,8 @@ class OpenBrowserDialog(QDialog):
             self._show_message(
                 _("dialog.open_browser.not_embroidery", "Not a valid embroidery file")
             )
+        else:
+            self.preview_controls.setVisible(True)
         self._update_details(path, kind)
         self._update_actions()
 
@@ -1065,10 +1165,6 @@ class OpenBrowserDialog(QDialog):
         self.document_path = path
         self.result_action = "edit"
         self.accept()
-
-    def resizeEvent(self, event: QResizeEvent) -> None:
-        super().resizeEvent(event)
-        self._update_svg_display()
 
     def done(self, result: int) -> None:
         """Stop the conversion process and release preview GL resources."""

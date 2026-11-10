@@ -1641,11 +1641,22 @@ class EmbroideryViewerWidget(QWidget):
             e.accept()
             return
         position = e.position().toPoint()
-        mx, my = position.x(), position.y()
+        delta = e.angleDelta().y()
+        if delta == 0:
+            delta = e.pixelDelta().y()
+        if delta == 0:
+            e.accept()
+            return
+        self._trace_event("wheel zoom" if delta > 0 else "wheel zoom out")
+        self.zoom_at(position, 1.15 if delta > 0 else 1 / 1.15)
+
+    def zoom_at(self, position: QPoint, factor: float) -> None:
+        """Zoom around a screen position, preserving the point under it."""
         old = self.zoom
-        self.zoom *= 1.15 if e.angleDelta().y() > 0 else 1 / 1.15
-        self._trace_event("wheel zoom" if e.angleDelta().y() > 0 else "wheel zoom out")
-        self.zoom = max(self.minimum_zoom(), min(self.maximum_zoom(), self.zoom))
+        self.zoom = max(self.minimum_zoom(), min(self.maximum_zoom(), self.zoom * factor))
+        if self.zoom == old:
+            return
+        mx, my = position.x(), position.y()
         scale = self.zoom / old
         self.pan_x = float(mx - scale * (mx - self.pan_x))
         self.pan_y = float(my - scale * (my - self.pan_y))

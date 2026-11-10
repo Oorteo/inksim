@@ -134,13 +134,95 @@ def test_svg_preview_preserves_content_aspect_and_can_be_zoomed(qtbot, tmp_path,
 
     assert dialog._svg_source is not None
     assert dialog._svg_source.width() == dialog._svg_source.height()
-    initial_size = dialog.svg_label.pixmap().size()
-    dialog.svg_zoom_in_button.click()
-    assert dialog.svg_label.pixmap().width() > initial_size.width()
-    dialog.svg_zoom_out_button.click()
-    assert dialog._svg_zoom == 1.0
-    assert dialog.svg_zoom_label.text() == "100%"
+    assert dialog.preview_controls.isVisible()
+    dialog.zoom_in_button.click()
+    assert dialog.svg_preview.zoom > 1.0
+    dialog.zoom_out_button.click()
+    assert dialog.svg_preview.zoom == 1.0
+    dialog.zoom_in_button.click()
+    dialog.fit_button.click()
+    assert dialog.svg_preview.zoom == 1.0
 
+    dialog.reject()
+
+
+def test_svg_preview_mouse_wheel_zoom_and_drag_pan(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import QPoint, QPointF, Qt
+    from PySide6.QtGui import QMouseEvent, QWheelEvent
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    svg_path = tmp_path / "design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(50)
+    _select_file(dialog, "design.svg")
+    canvas = dialog.svg_preview
+    assert canvas.zoom == 1.0
+
+    wheel_event = QWheelEvent(
+        QPoint(100, 100),
+        QPoint(100, 100),
+        QPoint(0, 0),
+        QPoint(0, 120),
+        Qt.NoButton,
+        Qt.NoModifier,
+        Qt.ScrollPhase.ScrollUpdate,
+        False,
+    )
+    canvas.wheelEvent(wheel_event)
+    assert canvas.zoom > 1.0
+
+    start_pan = canvas.pan
+
+    def mouse_event(event_type, x, y, button, buttons):
+        local_position = QPointF(x, y)
+        global_position = QPointF(canvas.mapToGlobal(QPoint(x, y)))
+        return QMouseEvent(
+            event_type,
+            local_position,
+            local_position,
+            global_position,
+            button,
+            buttons,
+            Qt.KeyboardModifier.NoModifier,
+        )
+
+    canvas.mousePressEvent(
+        mouse_event(
+            QMouseEvent.Type.MouseButtonPress,
+            100,
+            100,
+            Qt.MouseButton.LeftButton,
+            Qt.MouseButton.LeftButton,
+        )
+    )
+    canvas.mouseMoveEvent(
+        mouse_event(
+            QMouseEvent.Type.MouseMove,
+            120,
+            130,
+            Qt.MouseButton.NoButton,
+            Qt.MouseButton.LeftButton,
+        )
+    )
+    canvas.mouseReleaseEvent(
+        mouse_event(
+            QMouseEvent.Type.MouseButtonRelease,
+            120,
+            130,
+            Qt.MouseButton.LeftButton,
+            Qt.MouseButton.NoButton,
+        )
+    )
+    assert canvas.pan.x() == start_pan.x() + 20
+    assert abs(canvas.pan.y() - (start_pan.y() + 30)) < 1e-6
+
+    dialog.fit_button.click()
+    assert canvas.zoom == 1.0
+    assert canvas.pan == QPointF()
     dialog.reject()
 
 
@@ -232,6 +314,12 @@ def test_open_embroidery_accepts_selected_file(qtbot, sample_design, monkeypatch
             break
 
     assert dialog._preview_loaded
+    assert dialog.preview_controls.isVisible()
+    fit_zoom = dialog.preview.zoom
+    dialog.zoom_in_button.click()
+    assert dialog.preview.zoom > fit_zoom
+    dialog.fit_button.click()
+    assert abs(dialog.preview.zoom - fit_zoom) < 0.001
     dialog.open_button.click()
 
     assert dialog.selected_path == sample_design.resolve()
