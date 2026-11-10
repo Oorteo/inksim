@@ -163,6 +163,10 @@
         "source": "The stitch preview process failed: {error}",
         "translation": "The stitch preview process failed: {error}"
     },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Could not create a temporary preview file: {error}"
+    },
     "dialog.open_browser.conversion_failed": {
         "source": "Ink/Stitch CSV export failed.",
         "translation": "Ink/Stitch CSV export failed."

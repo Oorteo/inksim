@@ -19,6 +19,7 @@ class FakeWindow(QObject):
     def __init__(self):
         super().__init__()
         self.document_path = None
+        self.open_file_args = None
 
     def set_document_path(self, path):
         self.document_path = path
@@ -26,7 +27,13 @@ class FakeWindow(QObject):
     def focus_window(self):
         pass
 
-    def open_file(self, path, delete_after_load=False, autoplay=False):
+    def open_file(self, path, delete_after_load=False, autoplay=False, temporary_input=False):
+        self.open_file_args = {
+            "path": path,
+            "delete_after_load": delete_after_load,
+            "autoplay": autoplay,
+            "temporary_input": temporary_input,
+        }
         return True
 
     def close(self):
@@ -65,6 +72,28 @@ def test_open_rejects_index_outside_window_list(qapp):
     )
     assert response["ok"] is False
     assert len(server.windows) == 1
+
+
+def test_open_forwards_temporary_input_ownership(qapp, tmp_path):
+    server, created = _server(qapp)
+    input_path = tmp_path / "preview.csv"
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+            "temporary_input": True,
+        }
+    )
+
+    assert response["ok"] is True
+    assert created[0].open_file_args == {
+        "path": str(input_path),
+        "delete_after_load": False,
+        "autoplay": False,
+        "temporary_input": True,
+    }
 
 
 def test_closing_last_window_starts_idle_timer(qapp):

@@ -18,6 +18,30 @@ def test_package_defines_standard_console_and_gui_commands():
     assert project["gui-scripts"]["inksim-gui"] == "inksim.cli:main"
 
 
+def test_hidden_temporary_input_option_is_forwarded_to_server(monkeypatch, tmp_path):
+    import pytest
+
+    from inksim import cli
+
+    parser = cli.build_argument_parser()
+    input_path = tmp_path / "preview.csv"
+    args = parser.parse_args(["--temporary-input", str(input_path)])
+    requests = []
+    monkeypatch.setattr(cli, "_ensure_core_application", lambda: None)
+    monkeypatch.setattr(
+        cli,
+        "forward_request",
+        lambda request: requests.append(request) or {"ok": True},
+    )
+
+    with pytest.raises(SystemExit) as exit_info:
+        cli._forward_to_server(parser, args, [input_path])
+
+    assert exit_info.value.code == 0
+    assert requests[0]["temporary_input"] is True
+    assert "--temporary-input" not in parser.format_help()
+
+
 def test_cli_exports_sample_with_simple_and_default_renderers(sample_design, tmp_path):
     environment = os.environ.copy()
     environment["QT_QPA_PLATFORM"] = "offscreen"
