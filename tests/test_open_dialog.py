@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from inksim.gui.open_dialog import OpenBrowserDialog
-from inksim.integration.paths import INKSCAPE_EXTENSION_STATUS_KEY, ToolInfo, ToolStatus
+from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
 
 _SVG = """<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="80">
@@ -237,11 +237,13 @@ def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_pa
     config_path = tmp_path / "config.toml"
     config = Config(config_path)
     config.set(
-        INKSCAPE_EXTENSION_STATUS_KEY,
+        INKSCAPE_CONFIG_KEY,
         {
             "executable": str(inkscape.resolve()),
             "status": "found",
-            "commands": [{"path": str(extension_script.resolve())}],
+            "inkstitch": [
+                {"extension_dir": str(extension_script.parent.resolve())},
+            ],
         },
     )
     dialog_config = Config(config_path)
@@ -260,11 +262,13 @@ def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_pa
     dialog.show()
     qtbot.wait(30)
 
-    assert f"Ink/Stitch extension: {extension_script.resolve()}" in dialog.status_label.text()
+    assert (
+        f"Ink/Stitch extension: {extension_script.parent.resolve()}" in dialog.status_label.text()
+    )
     assert "PATH" not in dialog.status_label.text()
     config.set(
-        INKSCAPE_EXTENSION_STATUS_KEY,
-        {"executable": str(inkscape.resolve()), "status": "not_found", "commands": []},
+        INKSCAPE_CONFIG_KEY,
+        {"executable": str(inkscape.resolve()), "status": "not_found", "inkstitch": []},
     )
     dialog.refresh_tools_button.click()
     assert "not found in Inkscape" in dialog.status_label.text()

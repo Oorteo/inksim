@@ -5,11 +5,18 @@
 
 from __future__ import annotations
 
+import os
+import re
+import shutil
 import sys
+import tempfile
 import xml.etree.ElementTree as ET
+from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+from xml.parsers import expat
+from xml.sax.saxutils import escape as escape_xml_attribute
 
 from filelock import Timeout
 from PySide6.QtCore import QProcess, Qt, QTimer
@@ -29,7 +36,7 @@ from PySide6.QtWidgets import (
 
 from ..config import Config
 from ..i18n import _
-from ..integration.paths import INKSCAPE_EXTENSION_STATUS_KEY
+from ..integration.paths import INKSCAPE_CONFIG_KEY
 
 # Cold starts of Inkscape on Windows (antivirus scans, profile setup) can exceed a few seconds.
 INKSCAPE_PROBE_TIMEOUT_S = 10
@@ -42,17 +49,22 @@ def _hide_windows_console(arguments: Any) -> None:
 
 
 @dataclass(frozen=True)
-class InkStitchCommand:
+class InkStitchInstallation:
     inx_path: Path
     command: str
-    interpreter: str
+    interpreter: str | None
     location: str
+
+    @property
+    def extension_dir(self) -> Path:
+        """Return the directory used to resolve an INX-relative command."""
+        return self.inx_path.parent
 
     @property
     def resolved_path(self) -> Path:
         command_path = Path(self.command).expanduser()
         if self.location == "inx" and not command_path.is_absolute():
-            command_path = self.inx_path.parent / command_path
+            command_path = self.extension_dir / command_path
         return command_path.resolve()
 
 
@@ -100,6 +112,11 @@ class InkscapeIntegrationDialog(QDialog):
             label.setWordWrap(True)
             label.setTextInteractionFlags(Qt.TextSelectableByMouse)
             layout.addWidget(label)
+        self.python_interpreter_label = QLabel(self)
+        self.python_interpreter_label.setWordWrap(True)
+        self.python_interpreter_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        layout.addWidget(self.python_interpreter_label)
+        self._show_python_interpreter(None)
 
         layout.addWidget(QLabel(_("integration.inkstitch.heading"), self))
         self.inkstitch_combo = QComboBox(self)
@@ -137,6 +154,7 @@ class InkscapeIntegrationDialog(QDialog):
             self.system_extensions_label.setText(
                 _("integration.inkscape.system_extensions").format(path=unavailable)
             )
+            self._show_python_interpreter(None)
             return
 
         executable_path = str(Path(executable).resolve())
@@ -270,16 +288,94 @@ class InkscapeIntegrationDialog(QDialog):
             if path != _("integration.inkscape.directory_unavailable")
         ]
         installations = (
-            [] if timed_out or error is not None else self._find_inkstitch_commands(extension_paths)
+            []
+            if timed_out or error is not None
+            else self._find_inkstitch_installations(extension_paths)
         )
+        config = Config()
+        previous_status = config.get(INKSCAPE_CONFIG_KEY)
+        previous_active = (
+            previous_status.get("active_inkstitch")
+            if isinstance(previous_status, dict)
+            and previous_status.get("executable") == self._probe_executable
+            else None
+        )
+        self.inkstitch_combo.blockSignals(True)
         self.inkstitch_combo.clear()
         for installation in installations:
             self.inkstitch_combo.addItem(str(installation.resolved_path), installation)
         self.inkstitch_combo.setVisible(len(installations) > 1)
+        active_index = next(
+            (
+                index
+                for index, installation in enumerate(installations)
+                if str(installation.extension_dir) == previous_active
+            ),
+            0,
+        )
+        self.inkstitch_combo.setCurrentIndex(active_index if installations else -1)
+        self.inkstitch_combo.blockSignals(False)
         if not installations:
             self.inkstitch_details_label.setText(_("integration.inkstitch.not_found"))
         else:
-            self._show_inkstitch_command(0)
+            self._show_inkstitch_command(active_index, persist=False)
+
+        preferences_file = None
+        python_interpreter = None
+        preferences_error = None
+        interpreter_updated = False
+        unavailable = _("integration.inkscape.directory_unavailable")
+        if user_path != unavailable:
+            preferences_file = (Path(user_path).parent / "preferences.xml").resolve()
+            try:
+                python_interpreter = self._read_python_interpreter(preferences_file)
+            except (OSError, ET.ParseError) as ex:
+                preferences_error = str(ex)
+                QMessageBox.warning(
+                    self,
+                    _("integration.inkscape.title"),
+                    _("integration.inkscape.preferences_read_failed").format(error=ex),
+                )
+            if preferences_error is None:
+                uvr_executable = self._find_uvr_executable(python_interpreter)
+                if uvr_executable is None:
+                    QMessageBox.warning(
+                        self,
+                        _("integration.inkscape.title"),
+                        _("integration.inkscape.uvr_missing").format(
+                            command="uvr-gui" if sys.platform == "win32" else "uvr"
+                        ),
+                    )
+                else:
+                    target_interpreter = str(uvr_executable)
+                    if python_interpreter != target_interpreter:
+                        try:
+                            self._write_python_interpreter(preferences_file, uvr_executable)
+                            python_interpreter = self._read_python_interpreter(preferences_file)
+                            if python_interpreter != target_interpreter:
+                                raise ValueError(
+                                    "Inkscape did not persist the requested Python interpreter."
+                                )
+                            interpreter_updated = True
+                        except (OSError, ET.ParseError, expat.ExpatError, ValueError) as ex:
+                            preferences_error = str(ex)
+                            QMessageBox.warning(
+                                self,
+                                _("integration.inkscape.title"),
+                                _("integration.inkscape.preferences_write_failed").format(error=ex),
+                            )
+        self._show_python_interpreter(python_interpreter, interpreter_updated)
+
+        installation_data = []
+        for installation in installations:
+            item = {
+                "extension_dir": str(installation.extension_dir),
+                "command": installation.command,
+                "location": installation.location,
+            }
+            if installation.interpreter is not None:
+                item["interpreter"] = installation.interpreter
+            installation_data.append(item)
         result = {
             "executable": self._probe_executable,
             "status": (
@@ -291,21 +387,20 @@ class InkscapeIntegrationDialog(QDialog):
             ),
             "user_extensions": user_path,
             "system_extensions": system_path,
-            "commands": [
-                {
-                    "path": str(installation.resolved_path),
-                    "inx_path": str(installation.inx_path),
-                    "command": installation.command,
-                    "interpreter": installation.interpreter,
-                    "location": installation.location,
-                }
-                for installation in installations
-            ],
+            "inkstitch": installation_data,
         }
+        if preferences_file is not None:
+            result["preferences_file"] = str(preferences_file)
+        if python_interpreter is not None:
+            result["python-interpretor"] = python_interpreter
+        if preferences_error is not None:
+            result["preferences_error"] = preferences_error
+        if installations:
+            result["active_inkstitch"] = str(installations[active_index].extension_dir)
         if error is not None:
             result["error"] = error
         try:
-            Config().set(INKSCAPE_EXTENSION_STATUS_KEY, result)
+            config.set(INKSCAPE_CONFIG_KEY, result)
         except (OSError, Timeout) as ex:
             QMessageBox.warning(
                 self,
@@ -313,9 +408,9 @@ class InkscapeIntegrationDialog(QDialog):
                 _("integration.inkscape.config_save_failed").format(error=ex),
             )
 
-    def _show_inkstitch_command(self, index: int) -> None:
+    def _show_inkstitch_command(self, index: int, persist: bool = True) -> None:
         installation = self.inkstitch_combo.itemData(index)
-        if not isinstance(installation, InkStitchCommand):
+        if not isinstance(installation, InkStitchInstallation):
             return
         self.inkstitch_details_label.setText(
             "\n".join(
@@ -329,10 +424,208 @@ class InkscapeIntegrationDialog(QDialog):
                 )
             )
         )
+        if persist:
+            extension_dir = str(installation.extension_dir)
+
+            def set_active_installation(status: Any) -> dict[str, Any]:
+                if (
+                    not isinstance(status, dict)
+                    or status.get("executable") != self._probe_executable
+                ):
+                    raise ValueError("The cached Inkscape installation status has changed.")
+                return {**status, "active_inkstitch": extension_dir}
+
+            try:
+                Config().update(INKSCAPE_CONFIG_KEY, set_active_installation)
+            except (OSError, Timeout, ValueError) as ex:
+                QMessageBox.warning(
+                    self,
+                    _("integration.inkscape.title"),
+                    _("integration.inkscape.config_save_failed").format(error=ex),
+                )
 
     @staticmethod
-    def _find_inkstitch_commands(extension_paths: list[Path]) -> list[InkStitchCommand]:
-        commands: dict[Path, InkStitchCommand] = {}
+    def _read_python_interpreter(preferences_file: Path) -> str | None:
+        try:
+            root = ET.parse(preferences_file).getroot()
+        except FileNotFoundError:
+            return None
+
+        for group in root.iter():
+            if (
+                not isinstance(group.tag, str)
+                or group.tag.rsplit("}", 1)[-1] != "group"
+                or group.get("id") != "extensions"
+            ):
+                continue
+            value = (group.get("python-interpreter") or "").strip()
+            if value:
+                return value
+            for parameter in group.iter():
+                if (
+                    parameter.tag.rsplit("}", 1)[-1] == "param"
+                    and parameter.get("name") == "python-interpreter"
+                ):
+                    value = (parameter.text or "").strip() or (parameter.get("value") or "").strip()
+                    return value or None
+        return None
+
+    @staticmethod
+    def _find_uvr_executable(current_interpreter: str | None) -> Path | None:
+        command = "uvr-gui" if sys.platform == "win32" else "uvr"
+        executable = shutil.which(command)
+        if executable is None:
+            local_bin = Path.home() / ".local" / "bin"
+            candidate_names = (command, f"{command}.exe", f"{command}.cmd")
+            executable = next(
+                (
+                    str(candidate)
+                    for name in candidate_names
+                    if (candidate := local_bin / name).is_file()
+                ),
+                None,
+            )
+        if executable is None and current_interpreter is not None:
+            configured_path = Path(current_interpreter).expanduser()
+            configured_names = {command, f"{command}.exe", f"{command}.cmd"}
+            if configured_path.name.lower() in configured_names and configured_path.is_file():
+                executable = str(configured_path)
+        if executable is None:
+            return None
+
+        executable_path = Path(executable).expanduser().absolute()
+        if not executable_path.is_file() or not os.access(executable_path, os.X_OK):
+            return None
+        return executable_path
+
+    @staticmethod
+    def _write_python_interpreter(preferences_file: Path, interpreter: Path) -> None:
+        original = preferences_file.read_bytes()
+        group_start = None
+        document_encoding = None
+        parser = expat.ParserCreate(namespace_separator="}")
+
+        def find_extensions_group(name: str, attributes: dict[str, str]) -> None:
+            nonlocal group_start
+            if (
+                group_start is None
+                and name.rsplit("}", 1)[-1] == "group"
+                and attributes.get("id") == "extensions"
+            ):
+                group_start = parser.CurrentByteIndex
+
+        def record_encoding(version: str, encoding: str | None, standalone: int) -> None:
+            nonlocal document_encoding
+            document_encoding = encoding
+
+        parser.StartElementHandler = find_extensions_group
+        parser.XmlDeclHandler = record_encoding
+        parser.Parse(original, True)
+        if document_encoding and document_encoding.lower().replace("_", "-") not in {
+            "utf-8",
+            "utf8",
+        }:
+            raise ValueError(
+                f"Cannot preserve the {document_encoding} encoding of {preferences_file}."
+            )
+        if group_start is None:
+            raise ValueError(f"Could not find the Inkscape extensions group in {preferences_file}.")
+
+        quote: int | None = None
+        tag_end = None
+        for offset in range(group_start, len(original)):
+            character = original[offset]
+            if quote is not None:
+                if character == quote:
+                    quote = None
+            elif character in (ord('"'), ord("'")):
+                quote = character
+            elif character == ord(">"):
+                tag_end = offset
+                break
+        if tag_end is None:
+            raise ValueError(
+                f"Could not find the end of the extensions group in {preferences_file}."
+            )
+
+        start_tag = original[group_start : tag_end + 1]
+        attribute_pattern = re.compile(
+            rb"(?P<space>[ \t\r\n]+)(?P<name>[^ \t\r\n=/>]+)"
+            rb"[ \t\r\n]*=[ \t\r\n]*(?P<quote>[\"'])(?P<value>.*?)(?P=quote)",
+            re.DOTALL,
+        )
+        attributes = list(attribute_pattern.finditer(start_tag))
+        interpreter_attribute = next(
+            (
+                attribute
+                for attribute in attributes
+                if attribute.group("name") == b"python-interpreter"
+            ),
+            None,
+        )
+        interpreter_value = str(interpreter)
+        if interpreter_attribute is not None:
+            quote_byte = interpreter_attribute.group("quote")
+            replacements = {'"': "&quot;"} if quote_byte == b'"' else {"'": "&apos;"}
+            escaped_value = escape_xml_attribute(interpreter_value, replacements).encode("utf-8")
+            updated_tag = (
+                start_tag[: interpreter_attribute.start("value")]
+                + escaped_value
+                + start_tag[interpreter_attribute.end("value") :]
+            )
+        else:
+            last_attribute = attributes[-1]
+            name_start = last_attribute.start("name")
+            line_start = start_tag.rfind(b"\n", 0, name_start) + 1
+            indentation = start_tag[line_start:name_start]
+            if b"\n" in start_tag[:name_start] and not indentation.strip(b" \t"):
+                newline = b"\r\n" if b"\r\n" in start_tag else b"\n"
+                separator = newline + indentation
+            else:
+                separator = b" "
+            addition = (
+                separator
+                + b'python-interpreter="'
+                + escape_xml_attribute(interpreter_value, {'"': "&quot;"}).encode("utf-8")
+                + b'"'
+            )
+            insert_at = last_attribute.end()
+            updated_tag = start_tag[:insert_at] + addition + start_tag[insert_at:]
+
+        updated = original[:group_start] + updated_tag + original[tag_end + 1 :]
+        verification_parser = expat.ParserCreate(namespace_separator="}")
+        verification_parser.Parse(updated, True)
+
+        original_mode = preferences_file.stat().st_mode & 0o777
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=preferences_file.name + ".",
+            suffix=".tmp",
+            dir=preferences_file.parent,
+        )
+        temporary_path = Path(temporary_name)
+        try:
+            with os.fdopen(descriptor, "wb") as temporary_file:
+                temporary_file.write(updated)
+            os.chmod(temporary_path, original_mode)
+            os.replace(temporary_path, preferences_file)
+        finally:
+            with suppress(OSError):
+                temporary_path.unlink(missing_ok=True)
+
+    def _show_python_interpreter(
+        self, interpreter: str | None, restart_required: bool = False
+    ) -> None:
+        value = interpreter or _("integration.inkscape.python_interpreter_unset")
+        label = _("integration.inkscape.python_interpreter").format(path=value)
+        if restart_required:
+            label += "\n" + _("integration.inkscape.python_interpreter_restart")
+        self.python_interpreter_label.setText(label)
+
+    @staticmethod
+    def _find_inkstitch_installations(
+        extension_paths: list[Path],
+    ) -> list[InkStitchInstallation]:
+        installations: dict[Path, InkStitchInstallation] = {}
         for extension_path in extension_paths:
             if not extension_path.is_dir():
                 continue
@@ -360,11 +653,14 @@ class InkscapeIntegrationDialog(QDialog):
                         if not command:
                             continue
                         resolved_inx_path = inx_path.resolve()
-                        commands[resolved_inx_path] = InkStitchCommand(
+                        installations[resolved_inx_path] = InkStitchInstallation(
                             inx_path=resolved_inx_path,
                             command=command,
-                            interpreter=element.get("interpreter", ""),
+                            interpreter=element.get("interpreter"),
                             location=element.get("location", ""),
                         )
                         break
-        return sorted(commands.values(), key=lambda item: str(item.resolved_path).casefold())
+        return sorted(
+            installations.values(),
+            key=lambda item: str(item.resolved_path).casefold(),
+        )
