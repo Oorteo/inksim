@@ -1036,6 +1036,7 @@ class OpenBrowserDialog(QDialog):
         arguments = ([str(script_path)] if python_path is not None else []) + [
             "--extension=output",
             "--format=csv",
+            "--skip_palette=true",
             str(path),
         ]
 
