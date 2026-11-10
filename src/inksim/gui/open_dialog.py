@@ -5,7 +5,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import os
 import subprocess
 import sys
@@ -23,7 +22,6 @@ from PySide6.QtCore import (
     QProcessEnvironment,
     QRectF,
     QSize,
-    QStandardPaths,
     Qt,
     QTimer,
 )
@@ -55,7 +53,6 @@ from ..i18n import _
 from ..integration.paths import (
     INKSCAPE_CONFIG_KEY,
     ToolStatus,
-    build_inkscape_export_arguments,
     clean_child_environment,
     detect_tools,
 )
@@ -230,8 +227,8 @@ class OpenBrowserDialog(QDialog):
         self._svg_source: QPixmap | None = None
         self._conversion_process: QProcess | None = None
         self._conversion_csv: Path | None = None
+        self._conversion_error: Path | None = None
         self._conversion_source: Path | None = None
-        self._conversion_stderr = bytearray()
         self._conversion_aborted = False
         self._closing = False
 
@@ -431,35 +428,7 @@ class OpenBrowserDialog(QDialog):
                 else _("dialog.open_browser.status.inkstitch_no_inkscape")
             )
         elif extension_status.get("status") == "found":
-            installations = extension_status.get("inkstitch")
-            installations = (
-                [
-                    installation
-                    for installation in installations
-                    if isinstance(installation, dict)
-                    and isinstance(installation.get("extension_dir"), str)
-                ]
-                if isinstance(installations, list)
-                else []
-            )
-            active_inkstitch = extension_status.get("active_inkstitch")
-            active_path = (
-                os.path.normcase(str(Path(active_inkstitch).expanduser().resolve()))
-                if isinstance(active_inkstitch, str)
-                else None
-            )
-            selected_installation = next(
-                (
-                    installation
-                    for installation in installations
-                    if active_path is not None
-                    and os.path.normcase(
-                        str(Path(installation["extension_dir"]).expanduser().resolve())
-                    )
-                    == active_path
-                ),
-                installations[0] if installations else None,
-            )
+            selected_installation = self._active_inkstitch_installation(extension_status)
             paths = (
                 [_sanitize_path(selected_installation["extension_dir"])]
                 if selected_installation is not None
@@ -481,26 +450,50 @@ class OpenBrowserDialog(QDialog):
             lines.append(
                 _(
                     "dialog.open_browser.status.svg_ready",
-                    "SVG preview uses Inkscape; Ink/Stitch must be installed "
-                    "as an Inkscape extension.",
+                    "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
                 )
             )
         else:
             lines.append(
                 _(
                     "dialog.open_browser.status.svg_needs_inkscape",
-                    "SVG preview and editing need Inkscape. Use Tools... to locate it.",
+                    "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
                 )
             )
         self.status_label.setText("\n".join(lines))
         self._update_actions()
 
-    def _cached_inkstitch_extension_status(self) -> dict[str, Any] | None:
-        if not self.tool_status.has_inkscape:
+    @staticmethod
+    def _active_inkstitch_installation(status: dict[str, Any]) -> dict[str, Any] | None:
+        installations = status.get("inkstitch")
+        if not isinstance(installations, list):
             return None
+        valid_installations = [
+            installation
+            for installation in installations
+            if isinstance(installation, dict) and isinstance(installation.get("extension_dir"), str)
+        ]
+        if not valid_installations:
+            return None
+        active_inkstitch = status.get("active_inkstitch")
+        if isinstance(active_inkstitch, str):
+            active_path = os.path.normcase(str(Path(active_inkstitch).expanduser().resolve()))
+            for installation in valid_installations:
+                extension_dir = os.path.normcase(
+                    str(Path(installation["extension_dir"]).expanduser().resolve())
+                )
+                if extension_dir == active_path:
+                    return installation
+        return valid_installations[0]
+
+    def _cached_inkstitch_extension_status(self) -> dict[str, Any] | None:
         result = self.config.get(INKSCAPE_CONFIG_KEY)
+        if not isinstance(result, dict):
+            return None
+        if not self.tool_status.has_inkscape:
+            return result if result.get("status") == "found" else None
         command = self.tool_status.inkscape.command
-        if not isinstance(result, dict) or not command:
+        if not command:
             return None
         executable = result.get("executable")
         if not isinstance(executable, str):
@@ -508,6 +501,52 @@ class OpenBrowserDialog(QDialog):
         current_path = os.path.normcase(str(Path(command[0]).expanduser().resolve()))
         stored_path = os.path.normcase(str(Path(executable).expanduser().resolve()))
         return result if current_path == stored_path else None
+
+    def _active_inkstitch_preview(self) -> tuple[Path, Path | None, Path] | None:
+        status = self._cached_inkstitch_extension_status()
+        installation = self._active_inkstitch_installation(status) if status else None
+        if installation is None:
+            return None
+        command = installation.get("command")
+        if not isinstance(command, str) or not command:
+            return None
+        script_path = Path(command).expanduser()
+        if installation.get("location") == "inx" and not script_path.is_absolute():
+            script_path = Path(installation["extension_dir"]).expanduser() / script_path
+        script_path = script_path.resolve()
+        if not script_path.is_file():
+            return None
+        extension_dir = Path(installation["extension_dir"]).expanduser().resolve()
+        if (
+            isinstance(installation.get("interpreter"), str)
+            and installation["interpreter"].lower() == "python"
+        ):
+            configured_python = status.get("python-interpretor") if status else None
+            if not isinstance(configured_python, str) or not configured_python:
+                return None
+            python_path = Path(configured_python).expanduser()
+            if not python_path.is_file():
+                return None
+            return script_path, python_path, extension_dir
+        return script_path, None, extension_dir
+
+    def _inkstitch_process_environment(self, extension_dir: Path) -> dict[str, str]:
+        environment = clean_child_environment()
+        environment["INKSTITCH_OFFLINE_SCRIPT"] = "True"
+        environment["INKEX_GETTEXT_DOMAIN"] = "inkstitch"
+        environment["DOCUMENT_PATH"] = ""
+
+        gettext_directory = extension_dir / "locale"
+        if gettext_directory.is_dir():
+            environment["INKEX_GETTEXT_DIRECTORY"] = str(gettext_directory)
+
+        status = self._cached_inkstitch_extension_status()
+        preferences_file = status.get("preferences_file") if status else None
+        if isinstance(preferences_file, str):
+            environment["INKSCAPE_PROFILE_DIR"] = str(
+                Path(preferences_file).expanduser().resolve().parent
+            )
+        return environment
 
     def _refresh_tools(self, checked: bool = False) -> None:
         del checked
@@ -929,8 +968,8 @@ class OpenBrowserDialog(QDialog):
             )
         elif kind == KIND_SVG:
             open_label = _("dialog.open_browser.preview", "Preview")
-            can_open = self.tool_status.can_preview_svg
-            can_edit = self.tool_status.can_preview_svg
+            can_open = self._active_inkstitch_preview() is not None
+            can_edit = self.tool_status.can_edit_svg
             open_tip = _(
                 "dialog.open_browser.preview_hint",
                 "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
@@ -939,12 +978,16 @@ class OpenBrowserDialog(QDialog):
                 "dialog.open_browser.edit_hint",
                 "Open this SVG in a new Inkscape window.",
             )
-            if not self.tool_status.has_inkscape:
+            if not can_open:
                 open_tip = _(
-                    "dialog.open_browser.inkscape_required",
-                    "Inkscape is required for SVG preview.",
+                    "dialog.open_browser.inkstitch_required",
+                    "A configured Ink/Stitch installation and Python launcher are required.",
                 )
-                edit_tip = open_tip
+            if not self.tool_status.has_inkscape:
+                edit_tip = _(
+                    "dialog.open_browser.inkscape_required",
+                    "Inkscape is required to edit SVG files.",
+                )
         elif kind == KIND_DIRECTORY:
             open_tip = _(
                 "dialog.open_browser.folder_open_hint",
@@ -980,58 +1023,45 @@ class OpenBrowserDialog(QDialog):
             self._start_svg_conversion(path)
 
     def _start_svg_conversion(self, path: Path) -> None:
-        command = self.tool_status.inkscape.command
-        if not command:
+        preview = self._active_inkstitch_preview()
+        if preview is None:
             QMessageBox.warning(
                 self,
                 _("dialog.open_browser.title", "Open file"),
-                _(
-                    "dialog.open_browser.inkscape_required",
-                    "Inkscape is required for SVG preview.",
-                ),
+                _("dialog.open_browser.preview_unavailable"),
             )
             return
-        try:
-            csv_path = self._preview_cache_path(path)
-        except OSError as ex:
-            QMessageBox.warning(
-                self,
-                _("dialog.open_browser.title", "Open file"),
-                _(
-                    "dialog.open_browser.cache_failed",
-                    "Cannot create the preview cache: {error}",
-                ).format(error=_sanitize_path_text(str(ex))),
-            )
-            return
-        try:
-            csv_path.unlink(missing_ok=True)
-        except OSError:
-            pass
+        script_path, python_path, extension_dir = preview
+        program = str(python_path) if python_path is not None else str(script_path)
+        arguments = ([str(script_path)] if python_path is not None else []) + [
+            "--extension=output",
+            "--format=csv",
+            str(path),
+        ]
 
-        argv = build_inkscape_export_arguments(command, path, csv_path)
+        csv_path = self.current_directory / "output.csv"
+        error_path = self.current_directory / "output.err"
         self._conversion_csv = csv_path
+        self._conversion_error = error_path
         self._conversion_source = path
-        self._conversion_stderr = bytearray()
         self._conversion_aborted = False
         process = QProcess(self)
         if sys.platform == "win32" and hasattr(process, "setCreateProcessArgumentsModifier"):
             process.setCreateProcessArgumentsModifier(_hide_windows_console)
-        process.setProgram(argv[0])
-        process.setArguments(argv[1:])
-        process.setWorkingDirectory(str(path.parent))
+        process.setProgram(program)
+        process.setArguments(arguments)
+        process.setWorkingDirectory(str(script_path.parent))
+        process.setStandardOutputFile(str(csv_path))
+        process.setStandardErrorFile(str(error_path))
         process_environment = QProcessEnvironment()
-        for key, value in clean_child_environment().items():
+        for key, value in self._inkstitch_process_environment(extension_dir).items():
             process_environment.insert(key, value)
         process.setProcessEnvironment(process_environment)
-        process.setProcessChannelMode(QProcess.ProcessChannelMode.SeparateChannels)
         process.finished.connect(self._on_conversion_finished)
         process.errorOccurred.connect(self._on_conversion_error)
-        process.readyReadStandardError.connect(self._collect_conversion_stderr)
         self._conversion_process = process
         self.progress.setVisible(True)
-        self.activity_label.setText(
-            _("dialog.open_browser.converting", "Generating stitch preview...")
-        )
+        self.activity_label.setText(_("dialog.open_browser.converting"))
         self.activity_label.setVisible(True)
         self._update_actions()
         process.start()
@@ -1049,27 +1079,6 @@ class OpenBrowserDialog(QDialog):
             return
         self._conversion_timer.start(_CONVERSION_TIMEOUT_MS)
 
-    def _preview_cache_path(self, svg_path: Path) -> Path:
-        cache_location = QStandardPaths.writableLocation(
-            QStandardPaths.StandardLocation.CacheLocation
-        )
-        cache_root = Path(cache_location or Path.home() / ".cache") / "inksim" / "previews"
-        cache_root.mkdir(parents=True, exist_ok=True)
-        stat = svg_path.stat()
-        key = f"{svg_path.resolve()}|{stat.st_mtime_ns}|{stat.st_size}"
-        digest = hashlib.sha1(key.encode("utf-8")).hexdigest()[:16]
-        safe_stem = "".join(
-            character if character.isalnum() or character in "-_" else "_"
-            for character in svg_path.stem
-        )
-        return cache_root / f"{safe_stem or 'design'}-{digest}.csv"
-
-    def _collect_conversion_stderr(self) -> None:
-        process = self._conversion_process
-        if process is None:
-            return
-        self._conversion_stderr.extend(process.readAllStandardError().data())
-
     def _on_conversion_finished(
         self,
         exit_code: int,
@@ -1079,6 +1088,7 @@ class OpenBrowserDialog(QDialog):
         if self._closing or self._conversion_aborted:
             return
         csv_path = self._conversion_csv
+        error_path = self._conversion_error
         source_path = self._conversion_source
         self._finish_conversion_ui()
         try:
@@ -1093,17 +1103,25 @@ class OpenBrowserDialog(QDialog):
             self.accept()
             return
 
-        stderr_text = self._conversion_stderr.decode("utf-8", "replace").strip()
+        try:
+            stderr_text = (
+                error_path.read_text(encoding="utf-8", errors="replace").strip()
+                if error_path is not None and error_path.is_file()
+                else ""
+            )
+        except OSError as ex:
+            stderr_text = str(ex)
         message = _(
             "dialog.open_browser.conversion_failed",
-            "Stitch preview failed.",
+            "Ink/Stitch CSV export failed.",
         )
         message += "\n\n" + _(
             "dialog.open_browser.conversion_hint",
-            "Make sure Ink/Stitch is installed in Inkscape and can export CSV.",
+            "See output.err for the error details.",
         )
         if stderr_text:
             message += "\n\n" + stderr_text[-1200:]
+        message += f"\n\n{_('dialog.open_browser.conversion_exit_code').format(code=exit_code)}"
         QMessageBox.warning(
             self,
             _("dialog.open_browser.title", "Open file"),
@@ -1149,6 +1167,7 @@ class OpenBrowserDialog(QDialog):
         self._conversion_process = None
         if process is not None:
             process.deleteLater()
+        self._conversion_error = None
         self._update_actions()
 
     def _edit_in_inkscape(self, checked: bool = False) -> None:

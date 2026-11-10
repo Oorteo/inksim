@@ -164,20 +164,32 @@
         "translation": "The stitch preview process failed: {error}"
     },
     "dialog.open_browser.conversion_failed": {
-        "source": "Stitch preview failed.",
-        "translation": "Stitch preview failed."
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV export failed."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "Make sure Ink/Stitch is installed in Inkscape and can export CSV.",
-        "translation": "Make sure Ink/Stitch is installed in Inkscape and can export CSV."
+        "source": "See output.err for the error details.",
+        "translation": "See output.err for the error details."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Stitch preview timed out.",
-        "translation": "Stitch preview timed out."
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Ink/Stitch CSV export timed out."
     },
     "dialog.open_browser.converting": {
-        "source": "Generating stitch preview...",
-        "translation": "Generating stitch preview..."
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Running Ink/Stitch CSV export..."
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Process exit code: {code}"
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "A configured active Ink/Stitch installation is required for SVG preview."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Cannot run the active Ink/Stitch script or its configured Python launcher."
     },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
@@ -236,8 +248,8 @@
         "translation": "Inkscape could not be started: {error}"
     },
     "dialog.open_browser.inkscape_required": {
-        "source": "Inkscape is required for SVG preview.",
-        "translation": "Inkscape is required for SVG preview."
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Inkscape is required to edit SVG files."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -264,8 +276,8 @@
         "translation": "Preview"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
-        "translation": "Generate stitch data from this SVG with Inkscape/Ink/Stitch."
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Generate stitch data from this SVG using the active Ink/Stitch installation."
     },
     "dialog.open_browser.read_failed": {
         "source": "Cannot read this folder: {error}",
@@ -324,12 +336,12 @@
         "translation": "Ink/Stitch extension: not checked yet. Use Tools... to check."
     },
     "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview and editing need Inkscape. Use Tools... to locate it.",
-        "translation": "SVG preview and editing need Inkscape. Use Tools... to locate it."
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape."
     },
     "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview uses Inkscape; Ink/Stitch must be installed as an Inkscape extension.",
-        "translation": "SVG preview uses Inkscape; Ink/Stitch must be installed as an Inkscape extension."
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
