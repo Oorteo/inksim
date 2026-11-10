@@ -5,10 +5,12 @@
 
 from __future__ import annotations
 
+import math
 import os
 import subprocess
 import sys
 import tempfile
+import time
 import uuid
 from collections.abc import Sequence
 from datetime import datetime
@@ -16,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from filelock import Timeout as FileLockTimeout
 from PySide6.QtCore import (
     QPoint,
     QPointF,
@@ -70,7 +73,33 @@ KIND_OTHER = "other"
 
 _MAX_SVG_THUMBNAIL_BYTES = 20 * 1024 * 1024
 _CONVERSION_TIMEOUT_MS = 180_000
+_CONVERSION_PROGRESS_INTERVAL_MS = 100
+_INITIAL_PREVIEW_ESTIMATE_SECONDS = 10.0
+_MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
+_PREVIEW_TIMING_CONFIG_KEY = "svg_preview_timing"
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
+
+
+def _preview_timing_stats(value: object) -> tuple[float, int] | None:
+    if not isinstance(value, dict):
+        return None
+    total_seconds = value.get("total_seconds")
+    count = value.get("count")
+    if (
+        isinstance(total_seconds, bool)
+        or not isinstance(total_seconds, (int, float))
+        or isinstance(count, bool)
+        or not isinstance(count, int)
+        or count < 0
+    ):
+        return None
+    try:
+        total_seconds = float(total_seconds)
+    except OverflowError:
+        return None
+    if not math.isfinite(total_seconds) or total_seconds < 0 or (count == 0 and total_seconds != 0):
+        return None
+    return total_seconds, count
 
 
 def _hide_windows_console(arguments: Any) -> None:
@@ -232,6 +261,8 @@ class OpenBrowserDialog(QDialog):
         self._conversion_error: Path | None = None
         self._conversion_source: Path | None = None
         self._conversion_aborted = False
+        self._conversion_started_at: float | None = None
+        self._conversion_estimate_seconds = _INITIAL_PREVIEW_ESTIMATE_SECONDS
         self._closing = False
 
         self._preview_timer = QTimer(self)
@@ -242,6 +273,10 @@ class OpenBrowserDialog(QDialog):
         self._conversion_timer = QTimer(self)
         self._conversion_timer.setSingleShot(True)
         self._conversion_timer.timeout.connect(self._on_conversion_timeout)
+
+        self._conversion_progress_timer = QTimer(self)
+        self._conversion_progress_timer.setInterval(_CONVERSION_PROGRESS_INTERVAL_MS)
+        self._conversion_progress_timer.timeout.connect(self._update_conversion_progress)
 
         self._folder_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_DirIcon)
         self._file_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon)
@@ -382,7 +417,8 @@ class OpenBrowserDialog(QDialog):
 
         button_row = QHBoxLayout()
         self.progress = QProgressBar(self)
-        self.progress.setRange(0, 0)
+        self.progress.setRange(0, 100)
+        self.progress.setValue(0)
         self.progress.setFixedWidth(160)
         self.progress.setVisible(False)
         button_row.addWidget(self.progress)
@@ -1064,6 +1100,8 @@ class OpenBrowserDialog(QDialog):
         self._conversion_error = error_path
         self._conversion_source = path
         self._conversion_aborted = False
+        self._conversion_estimate_seconds = self._get_conversion_estimate()
+        self._conversion_started_at = time.monotonic()
         process = QProcess(self)
         if sys.platform == "win32" and hasattr(process, "setCreateProcessArgumentsModifier"):
             process.setCreateProcessArgumentsModifier(_hide_windows_console)
@@ -1097,7 +1135,59 @@ class OpenBrowserDialog(QDialog):
                     ).format(error=_sanitize_path_text(process.errorString())),
                 )
             return
+        self._conversion_progress_timer.start()
         self._conversion_timer.start(_CONVERSION_TIMEOUT_MS)
+
+    def _get_conversion_estimate(self) -> float:
+        timing = self.config.get(_PREVIEW_TIMING_CONFIG_KEY)
+        if timing is None:
+            return _INITIAL_PREVIEW_ESTIMATE_SECONDS
+        stats = _preview_timing_stats(timing)
+        if stats is None:
+            logger.warning("Ignoring invalid SVG preview timing configuration")
+            return _INITIAL_PREVIEW_ESTIMATE_SECONDS
+        total_seconds, count = stats
+        if count == 0:
+            return _INITIAL_PREVIEW_ESTIMATE_SECONDS
+        return min(
+            _MAX_PREVIEW_ESTIMATE_SECONDS,
+            max(_INITIAL_PREVIEW_ESTIMATE_SECONDS, total_seconds / count),
+        )
+
+    def _update_conversion_progress(self) -> None:
+        if self._conversion_started_at is None:
+            return
+        elapsed = max(0.0, time.monotonic() - self._conversion_started_at)
+        fraction = elapsed / self._conversion_estimate_seconds
+        self.progress.setValue(min(99, int(fraction * 100)))
+
+    def _record_conversion_duration(self) -> None:
+        started_at = self._conversion_started_at
+        self._conversion_started_at = None
+        if started_at is None:
+            return
+        elapsed = time.monotonic() - started_at
+        if not math.isfinite(elapsed) or elapsed <= 0:
+            logger.warning("Skipping invalid SVG preview duration measurement")
+            return
+
+        def add_measurement(value: object) -> dict[str, float | int]:
+            stats = _preview_timing_stats(value)
+            if stats is None:
+                if value is not None:
+                    logger.warning("Resetting invalid SVG preview timing configuration")
+                total_seconds, count = 0.0, 0
+            else:
+                total_seconds, count = stats
+            return {
+                "total_seconds": total_seconds + elapsed,
+                "count": count + 1,
+            }
+
+        try:
+            self.config.update(_PREVIEW_TIMING_CONFIG_KEY, add_measurement)
+        except (FileLockTimeout, OSError, TypeError, ValueError) as ex:
+            logger.warning("Could not save SVG preview timing configuration: %s", ex)
 
     def _on_conversion_finished(
         self,
@@ -1108,6 +1198,8 @@ class OpenBrowserDialog(QDialog):
         if self._closing or self._conversion_aborted:
             self._discard_conversion_csv()
             return
+        self._record_conversion_duration()
+        self.progress.setValue(100)
         csv_path = self._conversion_csv
         error_path = self._conversion_error
         source_path = self._conversion_source
@@ -1190,6 +1282,8 @@ class OpenBrowserDialog(QDialog):
 
     def _finish_conversion_ui(self) -> None:
         self._conversion_timer.stop()
+        self._conversion_progress_timer.stop()
+        self._conversion_started_at = None
         self.progress.setVisible(False)
         self.activity_label.setVisible(False)
         process = self._conversion_process
@@ -1246,6 +1340,8 @@ class OpenBrowserDialog(QDialog):
         """Stop the conversion process and release preview GL resources."""
         self._closing = True
         self._conversion_timer.stop()
+        self._conversion_progress_timer.stop()
+        self._conversion_started_at = None
         process = self._conversion_process
         if process is not None:
             if process.state() == QProcess.ProcessState.Running:

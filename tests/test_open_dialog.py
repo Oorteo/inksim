@@ -342,8 +342,11 @@ def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
     dialog.open_button.click()
 
     assert dialog.progress.isVisible()
+    assert dialog.progress.value() == 0
+    assert dialog.progress.maximum() == 100
     assert dialog.activity_label.isVisible()
     qtbot.waitUntil(lambda: dialog.result_action == "preview", timeout=5000)
+    assert dialog.progress.value() == 100
     csv_path = dialog.preview_csv_path
     assert csv_path is not None
     assert csv_path.name.startswith("inksim-preview-")
@@ -369,6 +372,38 @@ def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
         },
     }
     csv_path.unlink()
+
+
+def test_svg_preview_progress_uses_bounded_average_and_records_runs(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    assert dialog._get_conversion_estimate() == 10.0
+    assert dialog.progress.minimum() == 0
+    assert dialog.progress.maximum() == 100
+
+    config.set("svg_preview_timing", {"total_seconds": 8.0, "count": 1})
+    assert dialog._get_conversion_estimate() == 10.0
+    config.set("svg_preview_timing", {"total_seconds": 200.0, "count": 2})
+    dialog._conversion_estimate_seconds = dialog._get_conversion_estimate()
+    assert dialog._conversion_estimate_seconds == 60.0
+
+    monkeypatch.setattr("inksim.gui.open_dialog.time.monotonic", lambda: 200.0)
+    dialog._conversion_started_at = 100.0
+    dialog._update_conversion_progress()
+    assert dialog.progress.value() == 99
+
+    monkeypatch.setattr("inksim.gui.open_dialog.time.monotonic", lambda: 112.0)
+    dialog._conversion_started_at = 100.0
+    dialog._record_conversion_duration()
+    assert config.get("svg_preview_timing") == {"total_seconds": 212.0, "count": 3}
+    assert dialog._get_conversion_estimate() == 60.0
+    dialog.reject()
 
 
 def test_temporary_preview_input_is_removed_on_replacement_or_close(qtbot, tmp_path, monkeypatch):
