@@ -118,6 +118,8 @@ class MainWindow(QMainWindow):
             self.set_document_path(document_path)
         self.recent_directories: list[str] = self._load_recent_directories()
         self.current_file_path: Path | None = None
+        self._temporary_input_path: Path | None = None
+        self._preserve_temporary_input_on_close = False
         self._source_mtime_ns: int | None = None
         self._last_source_check: float = 0.0
         self._source_check_interval_s: float = 0.4
@@ -654,7 +656,13 @@ class MainWindow(QMainWindow):
 
     def _apply_language_change(self) -> None:
         """Ask the server to close all windows and relaunch with the current file."""
-        relaunch_args = [str(self.current_file_path)] if self.current_file_path else []
+        relaunch_args: list[str] = []
+        if self.current_file_path is not None:
+            if self._temporary_input_path == self.current_file_path:
+                relaunch_args = ["--temporary-input", str(self.current_file_path)]
+                self._preserve_temporary_input_on_close = True
+            else:
+                relaunch_args = [str(self.current_file_path)]
         self.restart_requested.emit(relaunch_args)
 
     def _rebuild_menus(self) -> None:
@@ -1095,6 +1103,8 @@ class MainWindow(QMainWindow):
             self.viewer._gl_widget.cleanup()
         except Exception:
             pass
+        if not self._preserve_temporary_input_on_close:
+            self._discard_temporary_input()
         event.accept()
         self.closed.emit(self)
 
@@ -1169,7 +1179,11 @@ class MainWindow(QMainWindow):
             source_path = dialog.document_path or dialog.selected_path
             if source_path is not None:
                 self.set_document_path(source_path)
-            loaded = self.open_file(dialog.preview_csv_path, add_recent_directory=False)
+            loaded = self.open_file(
+                dialog.preview_csv_path,
+                add_recent_directory=False,
+                temporary_input=True,
+            )
             if loaded and source_path is not None:
                 self.set_document_path(source_path)
                 self.config.set("last_directory", _sanitize_path(self.last_directory))
@@ -1483,18 +1497,31 @@ class MainWindow(QMainWindow):
         delete_after_load: bool = False,
         autoplay: bool = False,
         add_recent_directory: bool = True,
+        temporary_input: bool = False,
     ) -> bool:
         selected_path = Path(path).resolve()
+        was_temporary_input = self._temporary_input_path == selected_path
+        retain_temporary_input = (temporary_input or was_temporary_input) and not delete_after_load
         if not self.viewer.load_design(
             str(selected_path),
             fit_to_screen=True,
             precompute_density=precompute_density,
             autoplay=autoplay,
         ):
+            if temporary_input and not was_temporary_input:
+                self._remove_temporary_file(selected_path)
             return False
+        previous_temporary_input = self._temporary_input_path
+        self._temporary_input_path = selected_path if retain_temporary_input else None
+        if (
+            previous_temporary_input is not None
+            and previous_temporary_input != self._temporary_input_path
+        ):
+            self._remove_temporary_file(previous_temporary_input)
+
         self.current_file_path = selected_path
         self._source_mtime_ns = self._capture_source_mtime(selected_path)
-        if not delete_after_load:
+        if not delete_after_load and not retain_temporary_input:
             self.last_directory = str(selected_path.parent)
             self.config.set("last_directory", _sanitize_path(self.last_directory))
             if add_recent_directory:
@@ -1516,6 +1543,22 @@ class MainWindow(QMainWindow):
                 # and the file may have been removed by other means.
                 pass
         return True
+
+    def _remove_temporary_file(self, path: Path) -> None:
+        try:
+            path.unlink(missing_ok=True)
+        except OSError as ex:
+            logger.warning(
+                "Could not remove temporary input file %s: %s",
+                _sanitize_path_text(str(path)),
+                _sanitize_path_text(str(ex)),
+            )
+
+    def _discard_temporary_input(self) -> None:
+        path = self._temporary_input_path
+        self._temporary_input_path = None
+        if path is not None:
+            self._remove_temporary_file(path)
 
     def show_command_panel(self) -> None:
         self.command_dock.show()
