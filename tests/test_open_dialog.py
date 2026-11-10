@@ -348,7 +348,12 @@ def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
     assert (tmp_path / "output.csv").read_text(encoding="utf-8") == "csv-data"
     process_details = json.loads((tmp_path / "output.err").read_text(encoding="utf-8"))
     assert process_details == {
-        "arguments": ["--extension=output", "--format=csv", str(svg_path)],
+        "arguments": [
+            "--extension=output",
+            "--format=csv",
+            "--skip_palette=true",
+            str(svg_path),
+        ],
         "cwd": str(script.parent),
         "environment": {
             "INKSTITCH_OFFLINE_SCRIPT": "True",
