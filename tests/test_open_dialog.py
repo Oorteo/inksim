@@ -243,7 +243,9 @@ def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_pa
             "status": "found",
             "inkstitch": [
                 {"extension_dir": str(extension_script.parent.resolve())},
+                {"extension_dir": str(tmp_path / "extensions" / "inkstitch-other")},
             ],
+            "active_inkstitch": str(extension_script.parent.resolve()),
         },
     )
     dialog_config = Config(config_path)
@@ -265,6 +267,7 @@ def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_pa
     assert (
         f"Ink/Stitch extension: {extension_script.parent.resolve()}" in dialog.status_label.text()
     )
+    assert str(tmp_path / "extensions" / "inkstitch-other") not in dialog.status_label.text()
     assert "PATH" not in dialog.status_label.text()
     config.set(
         INKSCAPE_CONFIG_KEY,
