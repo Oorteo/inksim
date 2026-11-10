@@ -344,8 +344,12 @@ def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
     assert dialog.progress.isVisible()
     assert dialog.activity_label.isVisible()
     qtbot.waitUntil(lambda: dialog.result_action == "preview", timeout=5000)
-    assert dialog.preview_csv_path == tmp_path / "output.csv"
-    assert (tmp_path / "output.csv").read_text(encoding="utf-8") == "csv-data"
+    csv_path = dialog.preview_csv_path
+    assert csv_path is not None
+    assert csv_path.name.startswith("inksim-preview-")
+    assert csv_path.suffix == ".csv"
+    assert csv_path.read_text(encoding="utf-8") == "csv-data"
+    assert not (tmp_path / "output.csv").exists()
     process_details = json.loads((tmp_path / "output.err").read_text(encoding="utf-8"))
     assert process_details == {
         "arguments": [
@@ -364,6 +368,62 @@ def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
             "PYTHONPATH": None,
         },
     }
+    csv_path.unlink()
+
+
+def test_temporary_preview_input_is_removed_on_replacement_or_close(qtbot, tmp_path, monkeypatch):
+    import numpy as np
+
+    from inksim.gui.frame import MainWindow
+
+    first_path = tmp_path / "first.csv"
+    second_path = tmp_path / "second.csv"
+    failed_path = tmp_path / "failed.csv"
+    for path in (first_path, second_path, failed_path):
+        path.write_text("csv-data", encoding="utf-8")
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    monkeypatch.setattr(window.viewer, "load_design", lambda *args, **kwargs: True)
+    monkeypatch.setattr(window.viewer, "stitches_np", np.empty((0, 2)), raising=False)
+    monkeypatch.setattr(window.viewer, "invalidate_cache", lambda: None)
+    monkeypatch.setattr(window.viewer, "update", lambda: None)
+    monkeypatch.setattr(window, "_design_size_text", lambda: "0 x 0")
+    monkeypatch.setattr(window, "refresh_command_panel", lambda: None)
+
+    assert window.open_file(first_path, temporary_input=True)
+    assert window._temporary_input_path == first_path.resolve()
+    assert window.open_file(second_path, temporary_input=True)
+    assert not first_path.exists()
+    assert second_path.exists()
+
+    monkeypatch.setattr(window.viewer, "load_design", lambda *args, **kwargs: False)
+    assert not window.open_file(failed_path, temporary_input=True)
+    assert not failed_path.exists()
+    assert second_path.exists()
+
+    window.close()
+    assert not second_path.exists()
+
+
+def test_temporary_preview_input_survives_language_restart(qtbot, tmp_path):
+    from inksim.gui.frame import MainWindow
+
+    input_path = tmp_path / "preview.csv"
+    input_path.write_text("csv-data", encoding="utf-8")
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.current_file_path = input_path.resolve()
+    window._temporary_input_path = input_path.resolve()
+    restart_arguments = []
+    window.restart_requested.connect(restart_arguments.append)
+
+    window._apply_language_change()
+
+    assert restart_arguments == [["--temporary-input", str(input_path.resolve())]]
+    window.close()
+    assert input_path.exists()
+    input_path.unlink()
 
 
 def test_edit_in_inkscape_launches_tagged_process(qtbot, tmp_path, monkeypatch):

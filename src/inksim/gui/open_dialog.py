@@ -8,6 +8,7 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import tempfile
 import uuid
 from collections.abc import Sequence
 from datetime import datetime
@@ -48,6 +49,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..config import Config
+from ..debug import logger
 from ..formats import get_supported_input_extensions
 from ..i18n import _
 from ..integration.paths import (
@@ -1040,7 +1042,23 @@ class OpenBrowserDialog(QDialog):
             str(path),
         ]
 
-        csv_path = self.current_directory / "output.csv"
+        try:
+            with tempfile.NamedTemporaryFile(
+                prefix="inksim-preview-",
+                suffix=".csv",
+                delete=False,
+            ) as temporary_csv:
+                csv_path = Path(temporary_csv.name)
+        except OSError as ex:
+            QMessageBox.warning(
+                self,
+                _("dialog.open_browser.title", "Open file"),
+                _("dialog.open_browser.temp_file_failed").format(
+                    error=_sanitize_path_text(str(ex))
+                ),
+            )
+            return
+
         error_path = self.current_directory / "output.err"
         self._conversion_csv = csv_path
         self._conversion_error = error_path
@@ -1067,6 +1085,7 @@ class OpenBrowserDialog(QDialog):
         self._update_actions()
         process.start()
         if not process.waitForStarted(3000):
+            self._discard_conversion_csv()
             if not self._conversion_aborted:
                 self._finish_conversion_ui()
                 QMessageBox.warning(
@@ -1087,6 +1106,7 @@ class OpenBrowserDialog(QDialog):
     ) -> None:
         del exit_status
         if self._closing or self._conversion_aborted:
+            self._discard_conversion_csv()
             return
         csv_path = self._conversion_csv
         error_path = self._conversion_error
@@ -1098,6 +1118,7 @@ class OpenBrowserDialog(QDialog):
             has_output = False
         if exit_code == 0 and has_output:
             self.preview_csv_path = csv_path
+            self._conversion_csv = None
             self.document_path = source_path
             self.selected_path = source_path
             self.result_action = "preview"
@@ -1112,6 +1133,7 @@ class OpenBrowserDialog(QDialog):
             )
         except OSError as ex:
             stderr_text = str(ex)
+        self._discard_conversion_csv()
         message = _(
             "dialog.open_browser.conversion_failed",
             "Ink/Stitch CSV export failed.",
@@ -1133,6 +1155,11 @@ class OpenBrowserDialog(QDialog):
         if self._closing or self._conversion_aborted:
             return
         self._conversion_aborted = True
+        process = self._conversion_process
+        if process is not None and process.state() == QProcess.ProcessState.Running:
+            process.kill()
+            process.waitForFinished(2000)
+        self._discard_conversion_csv()
         self._finish_conversion_ui()
         QMessageBox.warning(
             self,
@@ -1149,6 +1176,7 @@ class OpenBrowserDialog(QDialog):
         if process is not None:
             process.kill()
             process.waitForFinished(2000)
+        self._discard_conversion_csv()
         self._finish_conversion_ui()
         if not self._closing:
             QMessageBox.warning(
@@ -1225,8 +1253,23 @@ class OpenBrowserDialog(QDialog):
                 process.waitForFinished(2000)
             process.deleteLater()
             self._conversion_process = None
+        self._discard_conversion_csv()
         self.preview._gl_widget.cleanup()
         super().done(result)
+
+    def _discard_conversion_csv(self) -> None:
+        csv_path = self._conversion_csv
+        self._conversion_csv = None
+        if csv_path is None:
+            return
+        try:
+            csv_path.unlink(missing_ok=True)
+        except OSError as ex:
+            logger.warning(
+                "Could not remove temporary preview CSV %s: %s",
+                _sanitize_path_text(str(csv_path)),
+                _sanitize_path_text(str(ex)),
+            )
 
     @property
     def background_color(self) -> tuple[int, int, int]:

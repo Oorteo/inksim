@@ -249,6 +249,7 @@ class InkSimServer(QObject):
             path,
             delete_after_load=bool(request.get("delete_after_load")),
             autoplay=autoplay,
+            temporary_input=bool(request.get("temporary_input")),
         ):
             return {"ok": False, "error": f"cannot open {path}"}
         if autoplay:

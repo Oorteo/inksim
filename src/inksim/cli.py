@@ -133,6 +133,7 @@ def _forward_to_server(
         "path": str(input_paths[0]) if input_paths else None,
         "autoplay": args.play,
         "delete_after_load": args.delete_input,
+        "temporary_input": args.temporary_input,
         "document_path": str(args.document_path) if args.document_path else None,
         "window": {
             "fullscreen": args.fullscreen,
@@ -227,6 +228,11 @@ def build_argument_parser() -> argparse.ArgumentParser:
         "--delete-input",
         action="store_true",
         help="Delete the input file after it has been loaded",
+    )
+    parser.add_argument(
+        "--temporary-input",
+        action="store_true",
+        help=argparse.SUPPRESS,
     )
     parser.add_argument(
         "--document-path",

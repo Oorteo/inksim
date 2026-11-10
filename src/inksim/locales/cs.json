@@ -383,6 +383,10 @@
         "source": "The stitch preview process failed: {error}",
         "translation": "Proces náhledu stehů selhal: {error}"
     },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Nepodařilo se vytvořit dočasný soubor náhledu: {error}"
+    },
     "dialog.open_browser.conversion_timeout": {
         "source": "Ink/Stitch CSV export timed out.",
         "translation": "Časový limit exportu CSV v Ink/Stitch vypršel."
