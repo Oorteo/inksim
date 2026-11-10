@@ -432,14 +432,37 @@ class OpenBrowserDialog(QDialog):
             )
         elif extension_status.get("status") == "found":
             installations = extension_status.get("inkstitch")
-            paths = (
+            installations = (
                 [
-                    installation["extension_dir"]
+                    installation
                     for installation in installations
                     if isinstance(installation, dict)
                     and isinstance(installation.get("extension_dir"), str)
                 ]
                 if isinstance(installations, list)
+                else []
+            )
+            active_inkstitch = extension_status.get("active_inkstitch")
+            active_path = (
+                os.path.normcase(str(Path(active_inkstitch).expanduser().resolve()))
+                if isinstance(active_inkstitch, str)
+                else None
+            )
+            selected_installation = next(
+                (
+                    installation
+                    for installation in installations
+                    if active_path is not None
+                    and os.path.normcase(
+                        str(Path(installation["extension_dir"]).expanduser().resolve())
+                    )
+                    == active_path
+                ),
+                installations[0] if installations else None,
+            )
+            paths = (
+                [_sanitize_path(selected_installation["extension_dir"])]
+                if selected_installation is not None
                 else []
             )
             lines.append(

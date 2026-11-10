@@ -12,7 +12,7 @@ from typing import Any
 
 def _sanitize_path(path: str | Path) -> str:
     """Return a path string with the user's home directory replaced by '~'."""
-    resolved = Path(path).resolve()
+    resolved = Path(path).expanduser().resolve()
     home = Path.home()
     try:
         relative = resolved.relative_to(home)
