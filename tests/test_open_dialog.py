@@ -115,6 +115,35 @@ def test_svg_preview_and_edit_are_enabled_with_inkscape(qtbot, tmp_path, monkeyp
     dialog.reject()
 
 
+def test_svg_preview_preserves_content_aspect_and_can_be_zoomed(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    svg_path = tmp_path / "sparse.svg"
+    svg_path.write_text(
+        """<svg xmlns="http://www.w3.org/2000/svg" width="300" height="100"
+             viewBox="0 0 300 100">
+          <rect x="10" y="10" width="40" height="40" fill="#d04a4a"/>
+        </svg>""",
+        encoding="utf-8",
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(50)
+    _select_file(dialog, "sparse.svg")
+
+    assert dialog._svg_source is not None
+    assert dialog._svg_source.width() == dialog._svg_source.height()
+    initial_size = dialog.svg_label.pixmap().size()
+    dialog.svg_zoom_in_button.click()
+    assert dialog.svg_label.pixmap().width() > initial_size.width()
+    dialog.svg_zoom_out_button.click()
+    assert dialog._svg_zoom == 1.0
+    assert dialog.svg_zoom_label.text() == "100%"
+
+    dialog.reject()
+
+
 def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_path, monkeypatch):
     from inksim.config import Config
 
