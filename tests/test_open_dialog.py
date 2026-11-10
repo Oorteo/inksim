@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import json
+import sys
 from pathlib import Path
 
 from inksim.gui.open_dialog import OpenBrowserDialog
@@ -96,7 +98,7 @@ def test_svg_preview_is_disabled_without_inkscape(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
-def test_svg_preview_and_edit_are_enabled_with_inkscape(qtbot, tmp_path, monkeypatch):
+def test_svg_edit_is_enabled_with_inkscape_without_active_inkstitch(qtbot, tmp_path, monkeypatch):
     monkeypatch.setattr(
         "inksim.gui.open_dialog.detect_tools",
         lambda: _tool_status(inkscape="/usr/bin/inkscape"),
@@ -109,7 +111,7 @@ def test_svg_preview_and_edit_are_enabled_with_inkscape(qtbot, tmp_path, monkeyp
     qtbot.wait(50)
     _select_file(dialog, "design.svg")
 
-    assert dialog.open_button.isEnabled()
+    assert not dialog.open_button.isEnabled()
     assert dialog.edit_button.isEnabled()
     assert "/usr/bin/inkscape" in dialog.status_label.text()
     dialog.reject()
@@ -276,6 +278,87 @@ def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_pa
     dialog.refresh_tools_button.click()
     assert "not found in Inkscape" in dialog.status_label.text()
     dialog.reject()
+
+
+def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
+    qtbot, tmp_path, monkeypatch
+):
+    from inksim.config import Config
+
+    script = tmp_path / "extensions" / "inkstitch" / "inkstitch.py"
+    script.parent.mkdir(parents=True)
+    script.write_text(
+        "import json, os, sys, time\n"
+        "time.sleep(0.2)\n"
+        "sys.stdout.write('csv-data')\n"
+        "sys.stderr.write(json.dumps({\n"
+        "  'arguments': sys.argv[1:],\n"
+        "  'cwd': os.getcwd(),\n"
+        "  'environment': {key: os.environ.get(key) for key in (\n"
+        "    'INKSTITCH_OFFLINE_SCRIPT', 'INKEX_GETTEXT_DOMAIN',\n"
+        "    'INKEX_GETTEXT_DIRECTORY', 'INKSCAPE_PROFILE_DIR',\n"
+        "    'DOCUMENT_PATH', 'PYTHONPATH',\n"
+        "  )},\n"
+        "}))\n",
+        encoding="utf-8",
+    )
+    inx_directory = script.parent / "inx"
+    inx_directory.mkdir()
+    locale_directory = inx_directory / "locale"
+    locale_directory.mkdir()
+    profile_directory = tmp_path / "inkscape-profile"
+    profile_directory.mkdir()
+    preferences_file = profile_directory / "preferences.xml"
+    svg_path = tmp_path / "input design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+    config_path = tmp_path / "config.toml"
+    config = Config(config_path)
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "status": "found",
+            "active_inkstitch": str(inx_directory),
+            "preferences_file": str(preferences_file),
+            "inkstitch": [
+                {
+                    "extension_dir": str(inx_directory),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                    "interpreter": "python",
+                }
+            ],
+            "python-interpretor": sys.executable,
+        },
+    )
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: Config(config_path))
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, svg_path.name)
+
+    assert dialog.open_button.isEnabled()
+    dialog.open_button.click()
+
+    assert dialog.progress.isVisible()
+    assert dialog.activity_label.isVisible()
+    qtbot.waitUntil(lambda: dialog.result_action == "preview", timeout=5000)
+    assert dialog.preview_csv_path == tmp_path / "output.csv"
+    assert (tmp_path / "output.csv").read_text(encoding="utf-8") == "csv-data"
+    process_details = json.loads((tmp_path / "output.err").read_text(encoding="utf-8"))
+    assert process_details == {
+        "arguments": ["--extension=output", "--format=csv", str(svg_path)],
+        "cwd": str(script.parent),
+        "environment": {
+            "INKSTITCH_OFFLINE_SCRIPT": "True",
+            "INKEX_GETTEXT_DOMAIN": "inkstitch",
+            "INKEX_GETTEXT_DIRECTORY": str(locale_directory),
+            "INKSCAPE_PROFILE_DIR": str(profile_directory),
+            "DOCUMENT_PATH": "",
+            "PYTHONPATH": None,
+        },
+    }
 
 
 def test_edit_in_inkscape_launches_tagged_process(qtbot, tmp_path, monkeypatch):
