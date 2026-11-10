@@ -31,6 +31,10 @@ The preview reads the saved `.svg` from disk. Unsaved changes in Inkscape are
 not included. Use **Edit in Inkscape**, save the document, and preview again.
 Dropping an `.svg` on the main window opens the same browser.
 
+SVG, embroidery, and CSV previews share the same controls: use the mouse wheel
+to zoom around the cursor, left-drag to pan, or use the preview toolbar's
+**−**, **+**, and **Fit** buttons.
+
 ## Mouse and Window
 
 | Action                     | Function                     |
