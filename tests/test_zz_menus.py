@@ -230,6 +230,8 @@ def test_inkscape_dialog_shows_extension_directories(qtbot, monkeypatch):
     """Display the extension directories reported by the selected executable."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
 
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
     _fake_inkscape_probe(
         monkeypatch,
         {
@@ -256,6 +258,8 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     """Selecting another executable refreshes its extension directories."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
 
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
     _fake_inkscape_probe(
         monkeypatch,
         {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
@@ -278,14 +282,40 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
 
 def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeypatch):
     """Read Ink/Stitch command metadata from its about INX file."""
+    import xml.etree.ElementTree as ET
+
     from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
-    from inksim.integration.paths import INKSCAPE_EXTENSION_STATUS_KEY
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
 
     config = Config(tmp_path / "config.toml")
     monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    uvr_executable = tmp_path / "uv-tool-bin" / "uvr"
+    uvr_executable.parent.mkdir()
+    uvr_executable.touch()
+    uvr_executable.chmod(0o755)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda command: str(uvr_executable) if command == "uvr" else None,
+    )
     user_data = tmp_path / "user-data"
     system_data = tmp_path / "system-data"
+    preferences_file = user_data / "preferences.xml"
+    user_data.mkdir(parents=True)
+    preferences_file.write_text(
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        "<inkscape>\n"
+        "  <!--preserve comment-->\n"
+        "  <group\n"
+        '     id="extensions"\n'
+        '     python-interpreter="python3"\n'
+        '     keep="yes">\n'
+        '    <param name="untouched">value</param>\n'
+        "  </group>\n"
+        "</inkscape>\n",
+        encoding="utf-8",
+    )
+    original_preferences = preferences_file.read_bytes()
     inx_path = user_data / "extensions" / "inkstitch" / "inx" / "inkstitch_about.inx"
     inx_path.parent.mkdir(parents=True)
     inx_path.write_text(
@@ -321,26 +351,148 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert "Interpreter: python" in dialog.inkstitch_details_label.text()
     assert "Command: ../inkstitch.py" in dialog.inkstitch_details_label.text()
     assert f"Path: {expected_script}" in dialog.inkstitch_details_label.text()
-    status = config.get(INKSCAPE_EXTENSION_STATUS_KEY)
+    status = config.get(INKSCAPE_CONFIG_KEY)
     assert status["status"] == "found"
     assert status["executable"] == str(Path("/opt/inkscape/bin/inkscape").resolve())
-    assert status["commands"][0]["path"] == str(expected_script)
+    assert status["preferences_file"] == str(preferences_file.resolve())
+    assert status["python-interpretor"] == str(uvr_executable.resolve())
+    assert status["active_inkstitch"] == str(inx_path.parent.resolve())
+    assert str(uvr_executable.resolve()) in dialog.python_interpreter_label.text()
+    assert "\n" in dialog.python_interpreter_label.text()
+    assert "<!--preserve comment-->" in preferences_file.read_text(encoding="utf-8")
+    preferences_root = ET.parse(preferences_file).getroot()
+    preferences_group = next(
+        element for element in preferences_root.iter() if element.get("id") == "extensions"
+    )
+    assert preferences_group.get("python-interpreter") == str(uvr_executable.resolve())
+    assert preferences_group.get("keep") == "yes"
+    assert preferences_group.find("param").text == "value"
+    expected_preferences = original_preferences.replace(
+        b'python-interpreter="python3"',
+        f'python-interpreter="{uvr_executable.resolve()}"'.encode(),
+        1,
+    )
+    assert preferences_file.read_bytes() == expected_preferences
+    assert status["inkstitch"] == [
+        {
+            "extension_dir": str(inx_path.parent.resolve()),
+            "command": "../inkstitch.py",
+            "location": "inx",
+            "interpreter": "python",
+        }
+    ]
+    assert "commands" not in status
+    assert "[inkscape]" in config.as_text()
+    assert "[[inkscape.inkstitch]]" in config.as_text()
+    assert f'python-interpretor = "{uvr_executable.resolve()}"' in config.as_text()
+    assert "inkscape_extension_status" not in config.as_text()
+
+
+def test_python_interpreter_is_inserted_on_its_own_line(tmp_path):
+    """Insert the preference without reformatting the rest of the XML file."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_bytes(
+        b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        b"<inkscape>\n"
+        b"  <group\n"
+        b'     id="extensions"\n'
+        b'     python-interpreter_old="/old/uvr"\n'
+        b'     keep="yes">\n'
+        b"  </group>\n"
+        b"</inkscape>\n"
+    )
+    original_preferences = preferences_file.read_bytes()
+    interpreter = Path("/new/uvr")
+    expected_preferences = original_preferences.replace(
+        b'     keep="yes">',
+        b'     keep="yes"\n     python-interpreter="/new/uvr">',
+        1,
+    )
+
+    InkscapeIntegrationDialog._write_python_interpreter(preferences_file, interpreter)
+
+    assert preferences_file.read_bytes() == expected_preferences
+
+
+def test_missing_uvr_warns_without_modifying_preferences(tmp_path, qtbot, monkeypatch):
+    """Recommend installing uvr but never install it or replace a different interpreter."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    warnings = []
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QMessageBox.warning",
+        lambda *args: warnings.append(args),
+    )
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    preferences_file = user_data / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert len(warnings) == 1
+    assert "uv tool install uvr" in warnings[0][2]
+    assert "python3" in dialog.python_interpreter_label.text()
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == "python3"
+    assert config.get(INKSCAPE_CONFIG_KEY)["python-interpretor"] == "python3"
+
+
+def test_windows_uses_uvr_gui_launcher(tmp_path, monkeypatch):
+    """Choose uvr-gui on Windows to avoid opening a console for GUI extensions."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    uvr_gui = tmp_path / "uvr-gui.exe"
+    uvr_gui.touch()
+    uvr_gui.chmod(0o755)
+    commands = []
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.sys.platform", "win32")
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda command: commands.append(command) or str(uvr_gui),
+    )
+
+    assert InkscapeIntegrationDialog._find_uvr_executable(None) == uvr_gui.resolve()
+    assert commands == ["uvr-gui"]
 
 
 def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
     """Show a combo box and update details when multiple INX files are found."""
+    from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
 
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
     user_data = tmp_path / "user-data"
     system_data = tmp_path / "system-data"
     inx_paths = (
         user_data / "extensions" / "inkstitch-user" / "inx" / "inkstitch_about.inx",
         system_data / "extensions" / "inkstitch-system" / "inx" / "inkstitch_alt_about.inx",
     )
-    for inx_path in inx_paths:
+    for index, inx_path in enumerate(inx_paths):
         inx_path.parent.mkdir(parents=True)
+        interpreter = ' interpreter="python"' if index == 0 else ""
         inx_path.write_text(
-            '<inkscape-extension><command location="inx" interpreter="python">'
+            f'<inkscape-extension><command location="inx"{interpreter}>'
             "../inkstitch.py</command></inkscape-extension>",
             encoding="utf-8",
         )
@@ -355,16 +507,24 @@ def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
 
     assert not dialog.inkstitch_combo.isHidden()
     assert dialog.inkstitch_combo.count() == 2
+    default_installation = dialog.inkstitch_combo.itemData(0)
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["active_inkstitch"] == str(default_installation.extension_dir)
+    selected_installation = dialog.inkstitch_combo.itemData(1)
     dialog.inkstitch_combo.setCurrentIndex(1)
     selected_path = dialog.inkstitch_combo.currentText()
     assert f"Path: {selected_path}" in dialog.inkstitch_details_label.text()
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["active_inkstitch"] == str(selected_installation.extension_dir)
+    installation_records = {record["extension_dir"]: record for record in status["inkstitch"]}
+    assert "interpreter" not in installation_records[str(inx_paths[1].parent.resolve())]
 
 
 def test_inkscape_dialog_reports_unresponsive_command(qtbot, monkeypatch):
     """Show a status bubble while probing and report a stuck Inkscape once, without waiting twice."""
     from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
-    from inksim.integration.paths import INKSCAPE_EXTENSION_STATUS_KEY
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
 
     config = Config()
     monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
@@ -386,4 +546,4 @@ def test_inkscape_dialog_reports_unresponsive_command(qtbot, monkeypatch):
     assert dialog.change_button.isEnabled()
     assert len(warnings) == 1
     assert "0.5 seconds" in warnings[0][2]
-    assert config.get(INKSCAPE_EXTENSION_STATUS_KEY)["status"] == "error"
+    assert config.get(INKSCAPE_CONFIG_KEY)["status"] == "error"
