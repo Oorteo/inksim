@@ -543,6 +543,102 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Čekání na odpověď Inkscape…"
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Aplikace Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extension paths and Python",
+        "translation": "Cesty rozšíření a Python"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch installations",
+        "translation": "Instalace Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Checks and changes",
+        "translation": "Kontrola a provedené změny"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Vyberte spustitelný soubor Inkscape ke kontrole."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape nebyl nalezen. Vyberte jeho spustitelný soubor ke kontrole nastavení."
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Kontroluji Inkscape: {path}"
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Zkontrolovaný spustitelný soubor Inkscape: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape neodpověděl do {seconds} sekund."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape se nepodařilo zkontrolovat: {error}"
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Uživatelská rozšíření: {path}"
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Systémová rozšíření: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Instalace Ink/Stitch nebyla nalezena."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Nalezené instalace Ink/Stitch: {count}"
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Zkontrolované nastavení Inkscape: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Nastavení Python interpretu se nepodařilo zkontrolovat nebo upravit: {error}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "Požadovaný spouštěč '{command}' nebyl nalezen; nastavení zůstalo beze změny."
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Aktualizovaný Python interpret: {path}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Aby se změněný interpret použil, restartujte Inkscape."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Python interpretér je již správně nastaven: {path}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Nastavení Python interpretu nebylo zkontrolováno, protože adresář uživatelských rozšíření není dostupný."
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Zjištěné nastavení bylo uloženo do konfigurace InkSim."
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Konfiguraci InkSim se nepodařilo uložit: {error}"
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Aktivní instalace Ink/Stitch byla změněna: {path}"
+    },
     "integration.inkstitch.heading": {
         "source": "Ink/Stitch installations:",
         "translation": "Instalace Ink/Stitch:"

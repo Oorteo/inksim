@@ -19,7 +19,7 @@ from PySide6.QtWidgets import (
 
 from ..config import Config
 from ..i18n import _
-from ..runtime import _sanitize_path
+from ..paths import _sanitize_path, _sanitize_path_text
 
 
 def show_config_editor(parent: QWidget | None, config: Config) -> None:
@@ -75,20 +75,22 @@ class ConfigEditorDialog(QDialog):
             self.config.reload()
             self._editor.setPlainText(self.config.as_text())
         except Exception as ex:  # noqa: BLE001
-            self._editor.setPlainText(f"# Could not read config: {ex}\n")
+            self._editor.setPlainText(f"# Could not read config: {_sanitize_path_text(str(ex))}\n")
 
     def _save(self) -> None:
         text = self._editor.toPlainText()
         try:
             self.config.load_text(text)
         except ValueError as ex:
-            QMessageBox.critical(self, _("dialog.config.invalid_toml"), str(ex))
+            QMessageBox.critical(
+                self, _("dialog.config.invalid_toml"), _sanitize_path_text(str(ex))
+            )
             return
         except Exception as ex:  # noqa: BLE001
             QMessageBox.critical(
                 self,
                 _("dialog.config.save_error.title"),
-                _("dialog.config.save_error.message").format(error=ex),
+                _("dialog.config.save_error.message").format(error=_sanitize_path_text(str(ex))),
             )
             return
         self.accept()

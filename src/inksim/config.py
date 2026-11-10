@@ -20,6 +20,8 @@ from typing import Any
 import tomli_w
 from filelock import FileLock
 
+from .paths import _sanitize_config_value
+
 
 def _default_config_dir() -> Path:
     """Return the per-user configuration directory.
@@ -53,20 +55,26 @@ class Config:
         self._lock_path = Path(str(self.path) + ".lock")
         self._lock = FileLock(str(self._lock_path))
         self._data: dict[str, Any] = {}
-        self._load()
+        if self._load():
+            with self._lock.acquire(timeout=5.0):
+                self._load()
+                self._save_locked()
 
-    def _load(self) -> None:
-        """Read the TOML file from disk, creating defaults if missing."""
+    def _load(self) -> bool:
+        """Read the TOML file, returning whether home paths need migration."""
         if not self.path.is_file():
             self._data = {}
-            return
+            return False
         import tomllib
 
         try:
             with self.path.open("rb") as f:
-                self._data = tomllib.load(f)
+                loaded = tomllib.load(f)
+                self._data = _sanitize_config_value(loaded)
+                return self._data != loaded
         except Exception:  # noqa: BLE001 - corrupt config is not fatal
             self._data = {}
+            return False
 
     def reload(self) -> None:
         """Reload the on-disk TOML file into this instance."""
@@ -74,6 +82,7 @@ class Config:
 
     def _save_locked(self) -> None:
         """Write the in-memory data atomically to ``self.path``."""
+        self._data = _sanitize_config_value(self._data)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         fd, tmp_name = tempfile.mkstemp(
             suffix=".tmp",
@@ -148,7 +157,7 @@ class Config:
 
     def as_text(self) -> str:
         """Return the current data as a TOML-formatted string."""
-        return tomli_w.dumps(self._data)
+        return tomli_w.dumps(_sanitize_config_value(self._data))
 
     def load_text(self, text: str) -> None:
         """Replace the in-memory data with *text* and persist it.
@@ -162,7 +171,7 @@ class Config:
         import tomllib
 
         try:
-            self._data = tomllib.loads(text)
+            self._data = _sanitize_config_value(tomllib.loads(text))
         except Exception as exc:
             raise ValueError(f"Invalid TOML: {exc}") from exc
         with self._lock.acquire(timeout=5.0):

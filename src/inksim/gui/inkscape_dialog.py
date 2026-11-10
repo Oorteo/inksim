@@ -26,10 +26,13 @@ from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QFileDialog,
+    QGroupBox,
     QHBoxLayout,
     QLabel,
     QMessageBox,
+    QPlainTextEdit,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -37,6 +40,7 @@ from PySide6.QtWidgets import (
 from ..config import Config
 from ..i18n import _
 from ..integration.paths import INKSCAPE_CONFIG_KEY
+from ..paths import _sanitize_path_text
 
 # Cold starts of Inkscape on Windows (antivirus scans, profile setup) can exceed a few seconds.
 INKSCAPE_PROBE_TIMEOUT_S = 10
@@ -74,16 +78,30 @@ class InkscapeIntegrationDialog(QDialog):
     def __init__(self, parent: QWidget | None, executable: str | None) -> None:
         super().__init__(parent)
         self.setWindowTitle(_("integration.inkscape.title"))
-        self.setMinimumWidth(620)
+        self.resize(860, 800)
+        self.setMinimumSize(720, 640)
 
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(18, 18, 18, 14)
         layout.setSpacing(12)
 
+        def create_section(title_key: str, object_name: str) -> tuple[QGroupBox, QVBoxLayout]:
+            title = _(title_key)
+            group = QGroupBox(self)
+            group.setObjectName(object_name)
+            group.setAccessibleName(title)
+            section_layout = QVBoxLayout(group)
+            heading = QLabel(title, group)
+            heading.setObjectName(f"{object_name}Title")
+            heading_font = heading.font()
+            heading_font.setBold(True)
+            heading.setFont(heading_font)
+            section_layout.addWidget(heading)
+            return group, section_layout
+
         self.probe_status_label = QLabel(_("integration.inkscape.probing"), self)
-        self.probe_status_label.setAlignment(Qt.AlignCenter)
-        self.probe_status_label.setStyleSheet(
-            "background-color: rgba(0, 0, 0, 170); color: white; border-radius: 8px; padding: 12px;"
-        )
+        self.probe_status_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.probe_status_label.setStyleSheet("padding: 6px 8px;")
         self.probe_status_label.setVisible(False)
         layout.addWidget(self.probe_status_label)
         self._probe_process: QProcess | None = None
@@ -93,9 +111,12 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_timer = QTimer(self)
         self._probe_timer.setSingleShot(True)
         self._probe_timer.timeout.connect(self._on_probe_timeout)
+        self._report_entries: list[str] = []
 
+        application_group, application_layout = create_section(
+            "integration.inkscape.section.application", "applicationSection"
+        )
         program_row = QHBoxLayout()
-        program_row.addWidget(QLabel(_("integration.inkscape.label"), self))
         self.executable_label = QLabel(self)
         self.executable_label.setWordWrap(True)
         self.executable_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -103,29 +124,51 @@ class InkscapeIntegrationDialog(QDialog):
         self.change_button = QPushButton(_("integration.inkscape.change"), self)
         self.change_button.clicked.connect(self._choose_executable)
         program_row.addWidget(self.change_button)
-        layout.addLayout(program_row)
+        program_details = QHBoxLayout()
+        program_details.addWidget(QLabel(_("integration.inkscape.label"), self))
+        program_details.addLayout(program_row, 1)
+        application_layout.addLayout(program_details)
+        layout.addWidget(application_group)
 
-        layout.addWidget(QLabel(_("integration.inkscape.extensions"), self))
+        extensions_group, extensions_layout = create_section(
+            "integration.inkscape.section.extensions", "extensionsSection"
+        )
         self.user_extensions_label = QLabel(self)
         self.system_extensions_label = QLabel(self)
         for label in (self.user_extensions_label, self.system_extensions_label):
             label.setWordWrap(True)
             label.setTextInteractionFlags(Qt.TextSelectableByMouse)
-            layout.addWidget(label)
+            extensions_layout.addWidget(label)
         self.python_interpreter_label = QLabel(self)
         self.python_interpreter_label.setWordWrap(True)
         self.python_interpreter_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        layout.addWidget(self.python_interpreter_label)
+        extensions_layout.addWidget(self.python_interpreter_label)
         self._show_python_interpreter(None)
+        layout.addWidget(extensions_group)
 
-        layout.addWidget(QLabel(_("integration.inkstitch.heading"), self))
+        inkstitch_group, inkstitch_layout = create_section(
+            "integration.inkscape.section.inkstitch", "inkstitchSection"
+        )
         self.inkstitch_combo = QComboBox(self)
         self.inkstitch_combo.currentIndexChanged.connect(self._show_inkstitch_command)
-        layout.addWidget(self.inkstitch_combo)
+        inkstitch_layout.addWidget(self.inkstitch_combo)
         self.inkstitch_details_label = QLabel(self)
         self.inkstitch_details_label.setWordWrap(True)
         self.inkstitch_details_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        layout.addWidget(self.inkstitch_details_label)
+        inkstitch_layout.addWidget(self.inkstitch_details_label)
+        layout.addWidget(inkstitch_group)
+
+        report_group, report_layout = create_section(
+            "integration.inkscape.section.report", "reportSection"
+        )
+        self.info_panel = QPlainTextEdit(self)
+        self.info_panel.setObjectName("integrationReport")
+        self.info_panel.setReadOnly(True)
+        self.info_panel.setMinimumHeight(120)
+        self.info_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.info_panel.setPlainText(_("integration.inkscape.report.waiting"))
+        report_layout.addWidget(self.info_panel, 1)
+        layout.addWidget(report_group, 1)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Close, self)
         buttons.rejected.connect(self.reject)
@@ -155,10 +198,11 @@ class InkscapeIntegrationDialog(QDialog):
                 _("integration.inkscape.system_extensions").format(path=unavailable)
             )
             self._show_python_interpreter(None)
+            self._set_report([_("integration.inkscape.report.not_found")])
             return
 
         executable_path = str(Path(executable).resolve())
-        self.executable_label.setText(executable_path)
+        self.executable_label.setText(_sanitize_path_text(executable_path))
         self._start_probe(executable_path)
 
     def done(self, result: int) -> None:
@@ -169,6 +213,13 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_executable = executable_path
         self._probe_results = []
         self._probe_error = None
+        self._set_report(
+            [
+                _("integration.inkscape.report.checking").format(
+                    path=_sanitize_path_text(executable_path)
+                )
+            ]
+        )
         self._set_probing(True)
         self._run_next_probe()
 
@@ -264,24 +315,50 @@ class InkscapeIntegrationDialog(QDialog):
     def _apply_extension_directories(
         self, user_path: str, system_path: str, timed_out: bool, error: str | None = None
     ) -> None:
+        report_entries = [
+            _("integration.inkscape.report.executable").format(
+                path=_sanitize_path_text(self._probe_executable)
+            )
+        ]
         if timed_out:
+            report_entries.append(
+                _("integration.inkscape.report.timeout").format(seconds=INKSCAPE_PROBE_TIMEOUT_S)
+            )
             QMessageBox.warning(
                 self,
                 _("integration.inkscape.title"),
                 _("integration.inkscape.timeout").format(seconds=INKSCAPE_PROBE_TIMEOUT_S),
             )
         elif error is not None:
+            report_entries.append(
+                _("integration.inkscape.report.probe_failed").format(
+                    error=_sanitize_path_text(error)
+                )
+            )
             QMessageBox.warning(
                 self,
                 _("integration.inkscape.title"),
-                _("integration.inkscape.probe_failed").format(error=error),
+                _("integration.inkscape.probe_failed").format(error=_sanitize_path_text(error)),
             )
         self.user_extensions_label.setText(
-            _("integration.inkscape.user_extensions").format(path=user_path)
+            _("integration.inkscape.user_extensions").format(path=_sanitize_path_text(user_path))
         )
         self.system_extensions_label.setText(
-            _("integration.inkscape.system_extensions").format(path=system_path)
+            _("integration.inkscape.system_extensions").format(
+                path=_sanitize_path_text(system_path)
+            )
         )
+        if not timed_out and error is None:
+            report_entries.extend(
+                (
+                    _("integration.inkscape.report.user_extensions").format(
+                        path=_sanitize_path_text(user_path)
+                    ),
+                    _("integration.inkscape.report.system_extensions").format(
+                        path=_sanitize_path_text(system_path)
+                    ),
+                )
+            )
         extension_paths = [
             Path(path)
             for path in (user_path, system_path)
@@ -294,16 +371,26 @@ class InkscapeIntegrationDialog(QDialog):
         )
         config = Config()
         previous_status = config.get(INKSCAPE_CONFIG_KEY)
-        previous_active = (
-            previous_status.get("active_inkstitch")
+        current_executable = os.path.normcase(str(Path(self._probe_executable).resolve()))
+        stored_executable = (
+            os.path.normcase(str(Path(previous_status["executable"]).expanduser().resolve()))
             if isinstance(previous_status, dict)
-            and previous_status.get("executable") == self._probe_executable
+            and isinstance(previous_status.get("executable"), str)
             else None
         )
+        previous_active = (
+            previous_status.get("active_inkstitch")
+            if isinstance(previous_status, dict) and stored_executable == current_executable
+            else None
+        )
+        if isinstance(previous_active, str):
+            previous_active = str(Path(previous_active).expanduser().resolve())
         self.inkstitch_combo.blockSignals(True)
         self.inkstitch_combo.clear()
         for installation in installations:
-            self.inkstitch_combo.addItem(str(installation.resolved_path), installation)
+            self.inkstitch_combo.addItem(
+                _sanitize_path_text(str(installation.resolved_path)), installation
+            )
         self.inkstitch_combo.setVisible(len(installations) > 1)
         active_index = next(
             (
@@ -317,8 +404,12 @@ class InkscapeIntegrationDialog(QDialog):
         self.inkstitch_combo.blockSignals(False)
         if not installations:
             self.inkstitch_details_label.setText(_("integration.inkstitch.not_found"))
+            report_entries.append(_("integration.inkscape.report.inkstitch_none"))
         else:
             self._show_inkstitch_command(active_index, persist=False)
+            report_entries.append(
+                _("integration.inkscape.report.inkstitch_found").format(count=len(installations))
+            )
 
         preferences_file = None
         python_interpreter = None
@@ -327,18 +418,35 @@ class InkscapeIntegrationDialog(QDialog):
         unavailable = _("integration.inkscape.directory_unavailable")
         if user_path != unavailable:
             preferences_file = (Path(user_path).parent / "preferences.xml").resolve()
+            report_entries.append(
+                _("integration.inkscape.report.preferences").format(
+                    path=_sanitize_path_text(str(preferences_file))
+                )
+            )
             try:
                 python_interpreter = self._read_python_interpreter(preferences_file)
             except (OSError, ET.ParseError) as ex:
                 preferences_error = str(ex)
+                report_entries.append(
+                    _("integration.inkscape.report.preferences_error").format(
+                        error=_sanitize_path_text(str(ex))
+                    )
+                )
                 QMessageBox.warning(
                     self,
                     _("integration.inkscape.title"),
-                    _("integration.inkscape.preferences_read_failed").format(error=ex),
+                    _("integration.inkscape.preferences_read_failed").format(
+                        error=_sanitize_path_text(str(ex))
+                    ),
                 )
             if preferences_error is None:
                 uvr_executable = self._find_uvr_executable(python_interpreter)
                 if uvr_executable is None:
+                    report_entries.append(
+                        _("integration.inkscape.report.launcher_missing").format(
+                            command="uvr-gui" if sys.platform == "win32" else "uvr"
+                        )
+                    )
                     QMessageBox.warning(
                         self,
                         _("integration.inkscape.title"),
@@ -357,13 +465,34 @@ class InkscapeIntegrationDialog(QDialog):
                                     "Inkscape did not persist the requested Python interpreter."
                                 )
                             interpreter_updated = True
+                            report_entries.append(
+                                _("integration.inkscape.report.interpreter_updated").format(
+                                    path=_sanitize_path_text(python_interpreter)
+                                )
+                            )
+                            report_entries.append(_("integration.inkscape.report.restart"))
                         except (OSError, ET.ParseError, expat.ExpatError, ValueError) as ex:
                             preferences_error = str(ex)
+                            report_entries.append(
+                                _("integration.inkscape.report.preferences_error").format(
+                                    error=_sanitize_path_text(str(ex))
+                                )
+                            )
                             QMessageBox.warning(
                                 self,
                                 _("integration.inkscape.title"),
-                                _("integration.inkscape.preferences_write_failed").format(error=ex),
+                                _("integration.inkscape.preferences_write_failed").format(
+                                    error=_sanitize_path_text(str(ex))
+                                ),
                             )
+                    else:
+                        report_entries.append(
+                            _("integration.inkscape.report.interpreter_unchanged").format(
+                                path=_sanitize_path_text(python_interpreter)
+                            )
+                        )
+        else:
+            report_entries.append(_("integration.inkscape.report.preferences_skipped"))
         self._show_python_interpreter(python_interpreter, interpreter_updated)
 
         installation_data = []
@@ -401,12 +530,29 @@ class InkscapeIntegrationDialog(QDialog):
             result["error"] = error
         try:
             config.set(INKSCAPE_CONFIG_KEY, result)
+            report_entries.append(_("integration.inkscape.report.config_saved"))
         except (OSError, Timeout) as ex:
+            report_entries.append(
+                _("integration.inkscape.report.config_save_failed").format(
+                    error=_sanitize_path_text(str(ex))
+                )
+            )
             QMessageBox.warning(
                 self,
                 _("integration.inkscape.title"),
-                _("integration.inkscape.config_save_failed").format(error=ex),
+                _("integration.inkscape.config_save_failed").format(
+                    error=_sanitize_path_text(str(ex))
+                ),
             )
+        self._set_report(report_entries)
+
+    def _set_report(self, entries: list[str]) -> None:
+        self._report_entries = entries
+        self.info_panel.setPlainText("\n".join(entries))
+
+    def _append_report(self, entry: str) -> None:
+        self._report_entries.append(entry)
+        self.info_panel.setPlainText("\n".join(self._report_entries))
 
     def _show_inkstitch_command(self, index: int, persist: bool = True) -> None:
         installation = self.inkstitch_combo.itemData(index)
@@ -416,10 +562,14 @@ class InkscapeIntegrationDialog(QDialog):
             "\n".join(
                 (
                     _("integration.inkstitch.location").format(value=installation.location),
-                    _("integration.inkstitch.interpreter").format(value=installation.interpreter),
-                    _("integration.inkstitch.command").format(value=installation.command),
+                    _("integration.inkstitch.interpreter").format(
+                        value=_sanitize_path_text(installation.interpreter or "")
+                    ),
+                    _("integration.inkstitch.command").format(
+                        value=_sanitize_path_text(installation.command)
+                    ),
                     _("integration.inkstitch.resolved_path").format(
-                        path=installation.resolved_path
+                        path=_sanitize_path_text(str(installation.resolved_path))
                     ),
                 )
             )
@@ -428,20 +578,36 @@ class InkscapeIntegrationDialog(QDialog):
             extension_dir = str(installation.extension_dir)
 
             def set_active_installation(status: Any) -> dict[str, Any]:
-                if (
-                    not isinstance(status, dict)
-                    or status.get("executable") != self._probe_executable
-                ):
+                stored_executable = (
+                    str(Path(status["executable"]).expanduser().resolve())
+                    if isinstance(status, dict) and isinstance(status.get("executable"), str)
+                    else None
+                )
+                if not isinstance(status, dict) or os.path.normcase(
+                    stored_executable or ""
+                ) != os.path.normcase(str(Path(self._probe_executable).resolve())):
                     raise ValueError("The cached Inkscape installation status has changed.")
                 return {**status, "active_inkstitch": extension_dir}
 
             try:
                 Config().update(INKSCAPE_CONFIG_KEY, set_active_installation)
+                self._append_report(
+                    _("integration.inkscape.report.active_inkstitch_updated").format(
+                        path=_sanitize_path_text(extension_dir)
+                    )
+                )
             except (OSError, Timeout, ValueError) as ex:
+                self._append_report(
+                    _("integration.inkscape.report.config_save_failed").format(
+                        error=_sanitize_path_text(str(ex))
+                    )
+                )
                 QMessageBox.warning(
                     self,
                     _("integration.inkscape.title"),
-                    _("integration.inkscape.config_save_failed").format(error=ex),
+                    _("integration.inkscape.config_save_failed").format(
+                        error=_sanitize_path_text(str(ex))
+                    ),
                 )
 
     @staticmethod
@@ -616,7 +782,7 @@ class InkscapeIntegrationDialog(QDialog):
         self, interpreter: str | None, restart_required: bool = False
     ) -> None:
         value = interpreter or _("integration.inkscape.python_interpreter_unset")
-        label = _("integration.inkscape.python_interpreter").format(path=value)
+        label = _("integration.inkscape.python_interpreter").format(path=_sanitize_path_text(value))
         if restart_required:
             label += "\n" + _("integration.inkscape.python_interpreter_restart")
         self.python_interpreter_label.setText(label)

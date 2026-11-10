@@ -439,6 +439,102 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Waiting for Inkscape to respond…"
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape application"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extension paths and Python",
+        "translation": "Extension paths and Python"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch installations",
+        "translation": "Ink/Stitch installations"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Checks and changes",
+        "translation": "Checks and changes"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Choose an Inkscape executable to inspect."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape was not found. Choose its executable to inspect the setup."
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Checking Inkscape: {path}"
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Checked Inkscape executable: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape did not respond within {seconds} seconds."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Could not inspect Inkscape: {error}"
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "User extensions: {path}"
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "System extensions: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "No Ink/Stitch installation was found."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Ink/Stitch installations found: {count}"
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Checked Inkscape preferences: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Could not check or update the Python interpreter: {error}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "Required launcher '{command}' was not found; the preference was left unchanged."
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Updated Python interpreter: {path}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Restart Inkscape to apply the updated interpreter."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Python interpreter is already configured: {path}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Python interpreter preference was not checked because the user extensions directory is unavailable."
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Saved the detected setup to the InkSim configuration."
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Could not save the InkSim configuration: {error}"
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Active Ink/Stitch installation updated: {path}"
+    },
     "integration.inkscape.extensions": {
         "source": "Extension directories:",
         "translation": "Extension directories:"

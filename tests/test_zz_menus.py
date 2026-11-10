@@ -386,6 +386,12 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert "[[inkscape.inkstitch]]" in config.as_text()
     assert f'python-interpretor = "{uvr_executable.resolve()}"' in config.as_text()
     assert "inkscape_extension_status" not in config.as_text()
+    report = dialog.info_panel.toPlainText()
+    assert "Checked Inkscape executable:" in report
+    assert "User extensions:" in report
+    assert "Updated Python interpreter:" in report
+    assert "Restart Inkscape" in report
+    assert "Saved the detected setup to the InkSim configuration." in report
 
 
 def test_python_interpreter_is_inserted_on_its_own_line(tmp_path):
@@ -416,6 +422,42 @@ def test_python_interpreter_is_inserted_on_its_own_line(tmp_path):
     assert preferences_file.read_bytes() == expected_preferences
 
 
+def test_integration_sections_are_bold_and_report_expands(qtbot):
+    """Make section headings obvious and let the report use the dialog's free height."""
+    from PySide6.QtWidgets import QLabel
+
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    for object_name in (
+        "applicationSectionTitle",
+        "extensionsSectionTitle",
+        "inkstitchSectionTitle",
+        "reportSectionTitle",
+    ):
+        heading = dialog.findChild(QLabel, object_name)
+        assert heading is not None
+        assert heading.font().bold()
+
+    dialog.show()
+    qtbot.waitUntil(lambda: dialog.info_panel.height() > 170)
+
+
+def test_python_interpreter_dialog_path_is_anonymized(qtbot):
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    qtbot.wait(1)
+
+    interpreter_path = Path.home() / ".local" / "bin" / "uvr"
+    dialog._show_python_interpreter(str(interpreter_path))
+
+    assert str(Path.home()) not in dialog.python_interpreter_label.text()
+    assert "~/.local/bin/uvr" in dialog.python_interpreter_label.text()
+
+
 def test_missing_uvr_warns_without_modifying_preferences(tmp_path, qtbot, monkeypatch):
     """Recommend installing uvr but never install it or replace a different interpreter."""
     from inksim.config import Config
@@ -425,6 +467,11 @@ def test_missing_uvr_warns_without_modifying_preferences(tmp_path, qtbot, monkey
     config = Config(tmp_path / "config.toml")
     monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
     monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr(
+        InkscapeIntegrationDialog,
+        "_find_uvr_executable",
+        staticmethod(lambda _: None),
+    )
     warnings = []
     monkeypatch.setattr(
         "inksim.gui.inkscape_dialog.QMessageBox.warning",
@@ -450,6 +497,7 @@ def test_missing_uvr_warns_without_modifying_preferences(tmp_path, qtbot, monkey
     assert len(warnings) == 1
     assert "uv tool install uvr" in warnings[0][2]
     assert "python3" in dialog.python_interpreter_label.text()
+    assert "the preference was left unchanged" in dialog.info_panel.toPlainText()
     assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == "python3"
     assert config.get(INKSCAPE_CONFIG_KEY)["python-interpretor"] == "python3"
 
