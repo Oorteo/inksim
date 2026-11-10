@@ -24,6 +24,7 @@ from PySide6.QtWidgets import (
 )
 
 from ..i18n import _
+from ..paths import _sanitize_path_text
 
 
 class _PreviewWidget(QWidget):
@@ -308,7 +309,9 @@ class ExportPreviewDialog(QDialog):
             QMessageBox.critical(
                 self,
                 _("dialog.export.save_error.title"),
-                _("dialog.export.save_error.message").format(path=selected_path),
+                _("dialog.export.save_error.message").format(
+                    path=_sanitize_path_text(str(selected_path))
+                ),
             )
             return
         self._selected_path = selected_path
