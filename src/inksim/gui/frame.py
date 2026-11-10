@@ -56,8 +56,8 @@ from ..i18n import (
     get_language_name,
     set_active_locale,
 )
+from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
 from ..render import render_export_image
-from ..runtime import _sanitize_path, _unsanitize_path
 from ..update_check import (
     UpdateCheckThread,
     current_version,
@@ -1306,7 +1306,9 @@ class MainWindow(QMainWindow):
             emb.write(pattern, str(path))
         except (OSError, RuntimeError, ValueError) as error:
             QMessageBox.critical(
-                self, "Save embroidery", _("message.save_error.message").format(error=error)
+                self,
+                "Save embroidery",
+                _("message.save_error.message").format(error=_sanitize_path_text(str(error))),
             )
             return False
         self.statusBar().showMessage(f"Saved {path}", 3000)

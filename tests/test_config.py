@@ -3,7 +3,9 @@
 
 """Tests for the TOML-backed Config module."""
 
+import json
 import threading
+from pathlib import Path
 
 import pytest
 
@@ -57,6 +59,30 @@ def test_config_as_text_and_load_text(tmp_path):
 
     config.load_text("answer = 7\n")
     assert config.get("answer") == 7
+
+
+def test_config_anonymizes_home_paths_in_nested_values(tmp_path):
+    path = tmp_path / "config.toml"
+    home_path = Path.home() / "tools" / "uvr"
+    path.write_text(f"legacy_path = {json.dumps(str(home_path))}\n", encoding="utf-8")
+    config = Config(path)
+    portable_path = f"~/{home_path.relative_to(Path.home()).as_posix()}"
+    assert config.get("legacy_path") == portable_path
+    assert str(Path.home()) not in path.read_text(encoding="utf-8")
+
+    config.set(
+        "integration",
+        {
+            "interpreter": str(home_path),
+            "error": f"Could not load {home_path}",
+        },
+    )
+
+    expected = {"interpreter": portable_path, "error": f"Could not load {portable_path}"}
+    assert config.get("integration") == expected
+    assert Config(path).get("integration") == expected
+    assert str(Path.home()) not in path.read_text(encoding="utf-8")
+    assert str(Path.home()) not in config.as_text()
 
 
 def test_config_load_text_rejects_invalid_toml(tmp_path):

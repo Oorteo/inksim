@@ -59,7 +59,7 @@ from ..integration.paths import (
     clean_child_environment,
     detect_tools,
 )
-from ..runtime import _sanitize_path, _unsanitize_path
+from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
 from .inkscape_dialog import InkscapeIntegrationDialog
 from .viewer import EmbroideryViewerWidget
 
@@ -418,7 +418,7 @@ class OpenBrowserDialog(QDialog):
         if self.tool_status.has_inkscape:
             lines.append(
                 _("dialog.open_browser.status.inkscape", "Inkscape: {path}").format(
-                    path=self.tool_status.inkscape.path
+                    path=_sanitize_path_text(self.tool_status.inkscape.path or "")
                 )
             )
         else:
@@ -570,7 +570,7 @@ class OpenBrowserDialog(QDialog):
             label = f"{path.name}/" if kind == KIND_DIRECTORY else path.name
             item = QListWidgetItem(icon, label)
             item.setData(Qt.ItemDataRole.UserRole, str(path))
-            item.setToolTip(str(path))
+            item.setToolTip(_sanitize_path_text(str(path)))
             self.file_list.addItem(item)
         self.file_list.blockSignals(False)
 
@@ -727,7 +727,7 @@ class OpenBrowserDialog(QDialog):
 
     def _show_message(self, message: str) -> None:
         self.preview_controls.setVisible(False)
-        self.message_label.setText(message)
+        self.message_label.setText(_sanitize_path_text(message))
         self.preview_stack.setCurrentWidget(self.message_page)
 
     def _show_svg_preview(self, path: Path) -> None:
@@ -977,7 +977,7 @@ class OpenBrowserDialog(QDialog):
                 _(
                     "dialog.open_browser.cache_failed",
                     "Cannot create the preview cache: {error}",
-                ).format(error=ex),
+                ).format(error=_sanitize_path_text(str(ex))),
             )
             return
         try:
@@ -1021,7 +1021,7 @@ class OpenBrowserDialog(QDialog):
                     _(
                         "dialog.open_browser.inkscape_launch_failed",
                         "Inkscape could not be started: {error}",
-                    ).format(error=process.errorString()),
+                    ).format(error=_sanitize_path_text(process.errorString())),
                 )
             return
         self._conversion_timer.start(_CONVERSION_TIMEOUT_MS)
@@ -1081,7 +1081,11 @@ class OpenBrowserDialog(QDialog):
         )
         if stderr_text:
             message += "\n\n" + stderr_text[-1200:]
-        QMessageBox.warning(self, _("dialog.open_browser.title", "Open file"), message)
+        QMessageBox.warning(
+            self,
+            _("dialog.open_browser.title", "Open file"),
+            _sanitize_path_text(message),
+        )
 
     def _on_conversion_error(self, error: QProcess.ProcessError) -> None:
         if self._closing or self._conversion_aborted:
@@ -1094,7 +1098,7 @@ class OpenBrowserDialog(QDialog):
             _(
                 "dialog.open_browser.conversion_error",
                 "The stitch preview process failed: {error}",
-            ).format(error=str(error)),
+            ).format(error=_sanitize_path_text(str(error))),
         )
 
     def _on_conversion_timeout(self) -> None:
@@ -1159,7 +1163,7 @@ class OpenBrowserDialog(QDialog):
                 _(
                     "dialog.open_browser.inkscape_launch_failed",
                     "Inkscape could not be started: {error}",
-                ).format(error=ex),
+                ).format(error=_sanitize_path_text(str(ex))),
             )
             return
         self.selected_path = path

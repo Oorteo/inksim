@@ -29,7 +29,7 @@ from PySide6.QtWidgets import (
 
 from ..formats import get_supported_input_extensions
 from ..i18n import _
-from ..runtime import _sanitize_path
+from ..paths import _sanitize_path
 from .viewer import EmbroideryViewerWidget, density_debug
 
 if TYPE_CHECKING:
