@@ -53,7 +53,7 @@ from ..config import Config
 from ..formats import get_supported_input_extensions
 from ..i18n import _
 from ..integration.paths import (
-    INKSCAPE_EXTENSION_STATUS_KEY,
+    INKSCAPE_CONFIG_KEY,
     ToolStatus,
     build_inkscape_export_arguments,
     clean_child_environment,
@@ -431,14 +431,15 @@ class OpenBrowserDialog(QDialog):
                 else _("dialog.open_browser.status.inkstitch_no_inkscape")
             )
         elif extension_status.get("status") == "found":
-            commands = extension_status.get("commands")
+            installations = extension_status.get("inkstitch")
             paths = (
                 [
-                    command["path"]
-                    for command in commands
-                    if isinstance(command, dict) and isinstance(command.get("path"), str)
+                    installation["extension_dir"]
+                    for installation in installations
+                    if isinstance(installation, dict)
+                    and isinstance(installation.get("extension_dir"), str)
                 ]
-                if isinstance(commands, list)
+                if isinstance(installations, list)
                 else []
             )
             lines.append(
@@ -474,7 +475,7 @@ class OpenBrowserDialog(QDialog):
     def _cached_inkstitch_extension_status(self) -> dict[str, Any] | None:
         if not self.tool_status.has_inkscape:
             return None
-        result = self.config.get(INKSCAPE_EXTENSION_STATUS_KEY)
+        result = self.config.get(INKSCAPE_CONFIG_KEY)
         command = self.tool_status.inkscape.command
         if not isinstance(result, dict) or not command:
             return None

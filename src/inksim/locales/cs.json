@@ -515,6 +515,30 @@
         "source": "Could not save the Inkscape extension status: {error}",
         "translation": "Nepodařilo se uložit stav rozšíření Inkscape: {error}"
     },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Nepodařilo se načíst nastavení Inkscape: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Nepodařilo se aktualizovat nastavení Inkscape: {error}"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python interpretér: {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "nenastavený"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Aby se nový Python interpretér použil, restartujte Inkscape."
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "Požadovaný spouštěč '{command}' nebyl nalezen. Nainstalujte si nástroj uvr příkazem `uv tool install uvr` a poté znovu spusťte konfiguraci. InkSim jej nenainstaluje."
+    },
     "integration.inkscape.probing": {
         "source": "Waiting for Inkscape to respond…",
         "translation": "Čekání na odpověď Inkscape…"
