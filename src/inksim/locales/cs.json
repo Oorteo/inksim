@@ -515,6 +515,18 @@
         "source": "None",
         "translation": "Nic"
     },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Verze Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "nedostupná"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Verze Inkscape: {version}"
+    },
     "integration.inkscape.label": {
         "source": "Inkscape:",
         "translation": "Inkscape:"
