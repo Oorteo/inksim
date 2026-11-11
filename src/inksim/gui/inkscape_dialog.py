@@ -190,7 +190,11 @@ class InkscapeIntegrationDialog(QDialog):
         self.inksim_extensions_list = QPlainTextEdit(self)
         self.inksim_extensions_list.setObjectName("inksimExtensionDirectories")
         self.inksim_extensions_list.setReadOnly(True)
-        self.inksim_extensions_list.setMaximumHeight(110)
+        self.inksim_extensions_list.setFixedHeight(
+            self.inksim_extensions_list.fontMetrics().lineSpacing() * 3
+            + round(2 * self.inksim_extensions_list.document().documentMargin())
+            + 2 * self.inksim_extensions_list.frameWidth()
+        )
         inksim_layout.addWidget(self.inksim_extensions_list)
         inksim_buttons = QHBoxLayout()
         self.install_extensions_button = QPushButton(
@@ -682,38 +686,67 @@ class InkscapeIntegrationDialog(QDialog):
             return
 
         self._installed_inksim_extensions = installations
-        if not installations:
-            self.inksim_extensions_list.setPlainText(_("integration.inkscape.inksim_none"))
-        else:
-            current_target = (
-                (self._user_extensions_directory / INSTALL_DIRECTORY).resolve()
-                if self._user_extensions_directory is not None
-                else None
-            )
-            lines = []
-            for installation in installations:
-                is_current_target = (
-                    installation.user_install and installation.path == current_target
-                )
-                if is_current_target:
-                    key = "integration.inkscape.inksim_user_current"
-                elif installation.user_install:
-                    key = "integration.inkscape.inksim_user_other"
-                else:
-                    key = "integration.inkscape.inksim_system"
-                lines.append(_(key).format(path=_sanitize_path_text(str(installation.path))))
-            self.inksim_extensions_list.setPlainText("\n".join(lines))
-
         current_target = (
             (self._user_extensions_directory / INSTALL_DIRECTORY).resolve()
             if self._user_extensions_directory is not None
             else None
         )
+        lines = []
+        if self._user_extensions_directory is not None:
+            lines.append(
+                _("integration.inkscape.inksim_user_current").format(
+                    path=_sanitize_path_text(str(current_target)),
+                    status=self._current_inksim_update_status(),
+                )
+            )
+        for installation in installations:
+            is_current_target = installation.user_install and installation.path == current_target
+            if is_current_target:
+                continue
+            key = (
+                "integration.inkscape.inksim_user_other"
+                if installation.user_install
+                else "integration.inkscape.inksim_system"
+            )
+            lines.append(_(key).format(path=_sanitize_path_text(str(installation.path))))
+        self.inksim_extensions_list.setPlainText(
+            "\n".join(lines) if lines else _("integration.inkscape.inksim_none")
+        )
+
         has_old_user_installations = any(
             installation.user_install and installation.path != current_target
             for installation in installations
         )
         self.remove_old_extensions_button.setEnabled(has_old_user_installations)
+
+    def _current_inksim_update_status(self) -> str:
+        extension_root = self._user_extensions_directory
+        if extension_root is None:
+            return _("integration.inkscape.inksim_status_unavailable").format(
+                error=_("integration.inkscape.directory_unavailable")
+            )
+        try:
+            plan = prepare_install(extension_root, resolve_inksim_launcher())
+        except (InstallSafetyError, OSError, ValueError) as error:
+            return _("integration.inkscape.inksim_status_unavailable").format(
+                error=_sanitize_path_text(str(error))
+            )
+
+        if not plan.destination.is_dir():
+            return _("integration.inkscape.inksim_status_install")
+        if not plan.update_required:
+            return _("integration.inkscape.inksim_status_current")
+
+        details = []
+        if plan.update_files:
+            details.append(
+                _("integration.inkscape.inksim_status_changed_files").format(
+                    files=", ".join(plan.update_files)
+                )
+            )
+        if plan.command_changed:
+            details.append(_("integration.inkscape.inksim_status_changed_command"))
+        return _("integration.inkscape.inksim_status_update").format(details="; ".join(details))
 
     def _remove_old_inksim_extensions(self) -> None:
         user_extension_root = self._user_extensions_directory

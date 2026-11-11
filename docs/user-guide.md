@@ -34,7 +34,8 @@ after installation or update to load the extensions. The **InkSim extensions**
 section lists recognized user and system copies. **Remove old InkSim copies**
 shows the exact files and asks for confirmation before deleting duplicate user
 folders; the current install target is protected, and system copies must be
-removed manually.
+removed manually. The current install target also shows whether installation or
+an update is needed, including changed files or a changed Preview command.
 
 The preview reads the saved `.svg` from disk. Unsaved changes in Inkscape are
 not included. Use **Edit in Inkscape**, save the document, and preview again.

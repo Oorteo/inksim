@@ -47,11 +47,17 @@ class InstallPlan:
     replace_files: tuple[str, ...]
     newly_discovered_files: tuple[str, ...]
     preserved_files: tuple[str, ...]
+    update_files: tuple[str, ...]
+    command_changed: bool
     state: tuple[tuple[str, str], ...]
 
     @property
     def requires_confirmation(self) -> bool:
         return bool(self.replace_files or self.newly_discovered_files)
+
+    @property
+    def update_required(self) -> bool:
+        return bool(self.update_files or self.command_changed)
 
 
 def find_installed_inksim_extensions(
@@ -205,15 +211,29 @@ def prepare_install(extension_directory: Path, launcher: Path) -> InstallPlan:
         old_preserved = set(stored_preserved)
 
     replace_files: list[str] = []
+    update_files: list[str] = []
+    command_changed = False
     for name, content in files.items():
         path = destination / name
         _reject_symlink_parents(destination, path)
         if not path.exists():
+            update_files.append(name)
             continue
         if path.is_symlink() or not path.is_file():
             raise InstallSafetyError(f"Refusing to replace a non-regular file: {path}")
-        current_hash = _managed_hash(name, path.read_bytes())
+        current_content = path.read_bytes()
+        current_hash = _managed_hash(name, current_content)
         expected_hash = _managed_hash(name, content)
+        if current_hash != expected_hash:
+            update_files.append(name)
+        if name == "preview.inx":
+            actual_command = _preview_command(current_content)
+            expected_command = _preview_command(content)
+            command_changed = (
+                actual_command is not None
+                and expected_command is not None
+                and actual_command != expected_command
+            )
         if current_hash == expected_hash:
             continue
         if current_hash != old_hashes.get(name):
@@ -229,6 +249,8 @@ def prepare_install(extension_directory: Path, launcher: Path) -> InstallPlan:
         replace_files=tuple(sorted(replace_files)),
         newly_discovered_files=newly_discovered_files,
         preserved_files=preserved_files,
+        update_files=tuple(sorted(update_files)),
+        command_changed=command_changed,
         state=actual_state,
     )
 
@@ -319,6 +341,17 @@ def _managed_hash(name: str, content: bytes) -> str:
                 commands[0].text = _LAUNCHER_TOKEN
                 content = ET.tostring(root, encoding="utf-8")
     return hashlib.sha256(content).hexdigest()
+
+
+def _preview_command(content: bytes) -> str | None:
+    try:
+        root = ET.fromstring(content)
+    except ET.ParseError:
+        return None
+    commands = [node for node in root.iter() if node.tag.rsplit("}", 1)[-1] == "command"]
+    if len(commands) != 1:
+        return None
+    return commands[0].text
 
 
 def _tree_state(directory: Path) -> tuple[tuple[str, str], ...]:
