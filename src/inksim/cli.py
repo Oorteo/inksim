@@ -121,6 +121,12 @@ def _stop_server() -> None:
     raise SystemExit(0)
 
 
+def _is_inkscape_extension_invocation(arguments: list[str]) -> bool:
+    return any(
+        argument == "--extension" or argument.startswith("--extension=") for argument in arguments
+    )
+
+
 def _forward_to_server(
     parser: argparse.ArgumentParser, args: argparse.Namespace, input_paths: list[Path]
 ) -> None:
@@ -134,6 +140,7 @@ def _forward_to_server(
         "autoplay": args.play,
         "delete_after_load": args.delete_input,
         "temporary_input": args.temporary_input,
+        "command_line": sys.argv.copy(),
         "document_path": str(args.document_path) if args.document_path else None,
         "window": {
             "fullscreen": args.fullscreen,
@@ -338,7 +345,11 @@ def build_argument_parser() -> argparse.ArgumentParser:
 def main() -> None:
     """Run the InkSim command line application."""
     parser = build_argument_parser()
-    args = parser.parse_args()
+    command_line = sys.argv[1:]
+    if _is_inkscape_extension_invocation(command_line):
+        _forward_to_server(parser, parser.parse_args([]), [])
+        return
+    args = parser.parse_args(command_line)
     if args.version:
         print("\n".join(runtime_info_lines()))
         return
