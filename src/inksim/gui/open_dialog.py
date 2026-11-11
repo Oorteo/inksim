@@ -55,6 +55,11 @@ from ..config import Config
 from ..debug import logger
 from ..formats import get_supported_input_extensions
 from ..i18n import _
+from ..integration.inkstitch import (
+    active_inkstitch_installation,
+    inkstitch_process_environment,
+    resolve_inkstitch_preview,
+)
 from ..integration.paths import (
     INKSCAPE_CONFIG_KEY,
     ToolStatus,
@@ -503,26 +508,7 @@ class OpenBrowserDialog(QDialog):
 
     @staticmethod
     def _active_inkstitch_installation(status: dict[str, Any]) -> dict[str, Any] | None:
-        installations = status.get("inkstitch")
-        if not isinstance(installations, list):
-            return None
-        valid_installations = [
-            installation
-            for installation in installations
-            if isinstance(installation, dict) and isinstance(installation.get("extension_dir"), str)
-        ]
-        if not valid_installations:
-            return None
-        active_inkstitch = status.get("active_inkstitch")
-        if isinstance(active_inkstitch, str):
-            active_path = os.path.normcase(str(Path(active_inkstitch).expanduser().resolve()))
-            for installation in valid_installations:
-                extension_dir = os.path.normcase(
-                    str(Path(installation["extension_dir"]).expanduser().resolve())
-                )
-                if extension_dir == active_path:
-                    return installation
-        return valid_installations[0]
+        return active_inkstitch_installation(status)
 
     def _cached_inkstitch_extension_status(self) -> dict[str, Any] | None:
         result = self.config.get(INKSCAPE_CONFIG_KEY)
@@ -542,49 +528,11 @@ class OpenBrowserDialog(QDialog):
 
     def _active_inkstitch_preview(self) -> tuple[Path, Path | None, Path] | None:
         status = self._cached_inkstitch_extension_status()
-        installation = self._active_inkstitch_installation(status) if status else None
-        if installation is None:
-            return None
-        command = installation.get("command")
-        if not isinstance(command, str) or not command:
-            return None
-        script_path = Path(command).expanduser()
-        if installation.get("location") == "inx" and not script_path.is_absolute():
-            script_path = Path(installation["extension_dir"]).expanduser() / script_path
-        script_path = script_path.resolve()
-        if not script_path.is_file():
-            return None
-        extension_dir = Path(installation["extension_dir"]).expanduser().resolve()
-        if (
-            isinstance(installation.get("interpreter"), str)
-            and installation["interpreter"].lower() == "python"
-        ):
-            configured_python = status.get("python-interpretor") if status else None
-            if not isinstance(configured_python, str) or not configured_python:
-                return None
-            python_path = Path(configured_python).expanduser()
-            if not python_path.is_file():
-                return None
-            return script_path, python_path, extension_dir
-        return script_path, None, extension_dir
+        return resolve_inkstitch_preview(status) if status else None
 
     def _inkstitch_process_environment(self, extension_dir: Path) -> dict[str, str]:
-        environment = clean_child_environment()
-        environment["INKSTITCH_OFFLINE_SCRIPT"] = "True"
-        environment["INKEX_GETTEXT_DOMAIN"] = "inkstitch"
-        environment["DOCUMENT_PATH"] = ""
-
-        gettext_directory = extension_dir / "locale"
-        if gettext_directory.is_dir():
-            environment["INKEX_GETTEXT_DIRECTORY"] = str(gettext_directory)
-
         status = self._cached_inkstitch_extension_status()
-        preferences_file = status.get("preferences_file") if status else None
-        if isinstance(preferences_file, str):
-            environment["INKSCAPE_PROFILE_DIR"] = str(
-                Path(preferences_file).expanduser().resolve().parent
-            )
-        return environment
+        return inkstitch_process_environment(extension_dir, status)
 
     def _refresh_tools(self, checked: bool = False) -> None:
         del checked
