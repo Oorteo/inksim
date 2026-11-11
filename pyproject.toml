@@ -25,9 +25,13 @@ dependencies = [
 module-name = "inksim"
 source = "src/inksim"
 
+# uv add --dev github-copilot-sdk
+# uvr python -m copilot download-runtime
+
 [dependency-groups]
 dev = [
     "bandit",
+    "github-copilot-sdk>=1.0.31",
     "mypy",
     "pillow",
     "poethepoet",
