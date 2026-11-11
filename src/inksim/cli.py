@@ -8,7 +8,9 @@ from __future__ import annotations
 import argparse
 import os
 import signal
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -16,11 +18,14 @@ from PySide6.QtCore import QCoreApplication
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
+from .config import Config
 from .constants import APP_TITLE
 from .debug import configure_logging
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
 from .i18n import active_locale, available_locales, set_runtime_locale
+from .integration.inkstitch import inkstitch_process_environment, resolve_inkstitch_preview
+from .integration.paths import INKSCAPE_CONFIG_KEY
 from .ipc import IpcUnavailable, send_request
 from .runtime import runtime_info_lines
 from .server import InkSimServer, forward_request, idle_timeout_seconds
@@ -127,8 +132,152 @@ def _is_inkscape_extension_invocation(arguments: list[str]) -> bool:
     )
 
 
+def _extension_name(arguments: list[str]) -> str | None:
+    for index, argument in enumerate(arguments):
+        if argument == "--extension":
+            return arguments[index + 1] if index + 1 < len(arguments) else None
+        if argument.startswith("--extension="):
+            return argument.partition("=")[2]
+    return None
+
+
+def _inkstitch_preview_arguments(arguments: list[str]) -> list[str]:
+    """Translate InkSim's preview extension arguments into Ink/Stitch output arguments."""
+    result: list[str] = []
+    preview_extension_found = False
+    index = 0
+    while index < len(arguments):
+        argument = arguments[index]
+        if argument == "--extension":
+            if index + 1 >= len(arguments):
+                raise ValueError("The --extension argument requires a value.")
+            if arguments[index + 1] != "preview":
+                raise ValueError("InkSim preview can only forward --extension=preview.")
+            result.append("--extension=output")
+            preview_extension_found = True
+            index += 2
+        elif argument.startswith("--extension="):
+            if argument.partition("=")[2] != "preview":
+                raise ValueError("InkSim preview can only forward --extension=preview.")
+            result.append("--extension=output")
+            preview_extension_found = True
+            index += 1
+        elif argument == "--format" or argument.startswith("--format="):
+            index += (
+                2
+                if argument == "--format"
+                and index + 1 < len(arguments)
+                and not arguments[index + 1].startswith("--")
+                else 1
+            )
+        elif argument == "--skip_palette" or argument.startswith("--skip_palette="):
+            index += (
+                2
+                if argument == "--skip_palette"
+                and index + 1 < len(arguments)
+                and not arguments[index + 1].startswith("--")
+                else 1
+            )
+        else:
+            result.append(argument)
+            index += 1
+
+    if not preview_extension_found:
+        raise ValueError("Missing --extension=preview argument.")
+    extension_index = result.index("--extension=output")
+    result[extension_index + 1 : extension_index + 1] = [
+        "--format=csv",
+        "--skip_palette=true",
+    ]
+    return result
+
+
+def _remove_temporary_csv(path: Path) -> None:
+    try:
+        path.unlink(missing_ok=True)
+    except OSError as error:
+        print(f"Warning: could not remove temporary Ink/Stitch CSV: {error}", file=sys.stderr)
+
+
+def _run_inkscape_preview(
+    parser: argparse.ArgumentParser,
+    args: argparse.Namespace,
+    extension_arguments: list[str],
+) -> None:
+    """Wait for Ink/Stitch to export Inkscape's temporary SVG, then display its CSV."""
+    try:
+        output_arguments = _inkstitch_preview_arguments(extension_arguments)
+    except ValueError as error:
+        parser.error(str(error))
+
+    status = Config().get(INKSCAPE_CONFIG_KEY)
+    preview = resolve_inkstitch_preview(status) if isinstance(status, dict) else None
+    if preview is None:
+        parser.error("The active Ink/Stitch extension or its Python interpreter was not found.")
+    script_path, python_path, extension_dir = preview
+    command = [str(python_path), str(script_path)] if python_path else [str(script_path)]
+
+    try:
+        with tempfile.NamedTemporaryFile(
+            prefix="inksim-preview-",
+            suffix=".csv",
+            delete=False,
+        ) as temporary_csv:
+            csv_path = Path(temporary_csv.name)
+    except OSError as error:
+        parser.error(f"Could not create a temporary Ink/Stitch CSV: {error}")
+
+    retained = False
+    try:
+        try:
+            with csv_path.open("wb") as csv_file:
+                result = subprocess.run(
+                    [*command, *output_arguments],
+                    cwd=script_path.parent,
+                    env=inkstitch_process_environment(extension_dir, status),
+                    stdout=csv_file,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    timeout=180,
+                    check=False,
+                )
+            has_output = csv_path.is_file() and csv_path.stat().st_size > 0
+        except subprocess.TimeoutExpired as error:
+            print("Ink/Stitch CSV export timed out.", file=sys.stderr)
+            if error.stderr:
+                stderr_text = (
+                    error.stderr.decode("utf-8", "replace")
+                    if isinstance(error.stderr, bytes)
+                    else error.stderr
+                )
+                print(stderr_text.rstrip(), file=sys.stderr)
+            raise SystemExit(1) from None
+        except OSError as error:
+            print(f"Could not run Ink/Stitch CSV export: {error}", file=sys.stderr)
+            raise SystemExit(1) from error
+
+        if result.returncode != 0 or not has_output:
+            print("Ink/Stitch CSV export failed.", file=sys.stderr)
+            if result.stderr:
+                print(result.stderr.rstrip(), file=sys.stderr)
+            raise SystemExit(1)
+
+        try:
+            _forward_to_server(parser, args, [csv_path], temporary_input=True)
+        except SystemExit as error:
+            retained = error.code == 0
+            raise
+    finally:
+        if not retained:
+            _remove_temporary_csv(csv_path)
+
+
 def _forward_to_server(
-    parser: argparse.ArgumentParser, args: argparse.Namespace, input_paths: list[Path]
+    parser: argparse.ArgumentParser,
+    args: argparse.Namespace,
+    input_paths: list[Path],
+    *,
+    temporary_input: bool | None = None,
 ) -> None:
     """Ask the singleton server to show the first input, then exit the client."""
     _ensure_core_application()
@@ -139,7 +288,7 @@ def _forward_to_server(
         "path": str(input_paths[0]) if input_paths else None,
         "autoplay": args.play,
         "delete_after_load": args.delete_input,
-        "temporary_input": args.temporary_input,
+        "temporary_input": (args.temporary_input if temporary_input is None else temporary_input),
         "command_line": sys.argv.copy(),
         "document_path": str(args.document_path) if args.document_path else None,
         "window": {
@@ -347,7 +496,10 @@ def main() -> None:
     parser = build_argument_parser()
     command_line = sys.argv[1:]
     if _is_inkscape_extension_invocation(command_line):
-        _forward_to_server(parser, parser.parse_args([]), [])
+        args = parser.parse_args([])
+        if _extension_name(command_line) == "preview":
+            _run_inkscape_preview(parser, args, command_line)
+        _forward_to_server(parser, args, [])
         return
     args = parser.parse_args(command_line)
     if args.version:
