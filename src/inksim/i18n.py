@@ -273,7 +273,7 @@ def gettext(message_id: str, default: str | None = None) -> str:
     """
     for candidate in _active_priority_list():
         result = _catalog(candidate).lookup(message_id)
-        if result is not None:
+        if isinstance(result, str) and result.strip() and result != message_id:
             return result
     return default if default is not None else message_id
 

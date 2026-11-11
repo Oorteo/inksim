@@ -4,7 +4,12 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
+
+import pytest
+
+from inksim import i18n
 
 ROOT = Path(__file__).resolve().parents[1]
 EXTRACT_PATH = ROOT / "scripts" / "i18n" / "_extract.py"
@@ -59,3 +64,39 @@ def test_all_locale_catalogs_are_complete_and_translated() -> None:
                 f"{path.name}: missing translation for {message_id}"
             )
             assert translation != message_id, f"{path.name}: placeholder for {message_id}"
+
+
+@pytest.mark.parametrize("placeholder", ["", "   ", "test.untranslated"])
+def test_gettext_falls_back_to_english_for_untranslated_entry(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    placeholder: str,
+) -> None:
+    message_id = "test.untranslated"
+    english_text = "Readable English fallback"
+    (tmp_path / "id.json").write_text(
+        json.dumps(
+            {
+                "_meta": {"language": "id", "name": "Indonesian"},
+                message_id: {"source": english_text, "translation": placeholder},
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "en.json").write_text(
+        json.dumps(
+            {
+                "_meta": {"language": "en", "name": "English"},
+                message_id: {"source": english_text, "translation": english_text},
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(i18n, "LOCALES_DIR", tmp_path)
+    monkeypatch.setattr(i18n, "_active_priority_list", lambda: ["id", "en"])
+    i18n._catalog.cache_clear()
+
+    try:
+        assert i18n.gettext(message_id) == english_text
+    finally:
+        i18n._catalog.cache_clear()
