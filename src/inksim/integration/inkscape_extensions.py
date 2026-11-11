@@ -8,10 +8,12 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import stat
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from xml.sax.saxutils import escape as escape_xml_text
@@ -25,6 +27,14 @@ _ASSET_DIRECTORY = Path(__file__).resolve().parents[1] / "assets" / "inkscape"
 
 class InstallSafetyError(RuntimeError):
     """Raised when an existing extension directory cannot be safely updated."""
+
+
+@dataclass(frozen=True)
+class InstalledInkSimExtension:
+    """A discovered InkSim extension directory and whether it is user-managed."""
+
+    path: Path
+    user_install: bool
 
 
 @dataclass(frozen=True)
@@ -42,6 +52,82 @@ class InstallPlan:
     @property
     def requires_confirmation(self) -> bool:
         return bool(self.replace_files or self.newly_discovered_files)
+
+
+def find_installed_inksim_extensions(
+    extension_roots: Sequence[tuple[Path, bool]],
+) -> tuple[InstalledInkSimExtension, ...]:
+    """Find InkSim extension directories in Inkscape's user and system roots."""
+    found: dict[Path, bool] = {}
+    for extension_root, user_install in extension_roots:
+        root = extension_root.expanduser().resolve()
+        if not root.exists():
+            continue
+        if not root.is_dir():
+            raise InstallSafetyError(f"Extension root is not a directory: {root}")
+        try:
+            children = sorted(root.iterdir())
+        except OSError as error:
+            raise InstallSafetyError(
+                f"Could not inspect extension directory {root}: {error}"
+            ) from error
+        for child in children:
+            if child.is_symlink() or not child.is_dir() or not _is_inksim_extension(child):
+                continue
+            resolved = child.resolve()
+            found[resolved] = found.get(resolved, False) or user_install
+    return tuple(
+        InstalledInkSimExtension(path, found[path])
+        for path in sorted(found, key=lambda item: os.path.normcase(str(item)))
+    )
+
+
+def list_inksim_extension_files(directory: Path) -> tuple[str, ...]:
+    """List regular files and symbolic links contained in an extension folder."""
+    if directory.is_symlink() or not directory.is_dir():
+        raise InstallSafetyError(f"Not a safe InkSim extension directory: {directory}")
+    entries: list[str] = []
+    for root, dirs, files in os.walk(directory, followlinks=False):
+        root_path = Path(root)
+        for name in list(dirs):
+            path = root_path / name
+            if path.is_symlink():
+                dirs.remove(name)
+                entries.append(f"{path.relative_to(directory).as_posix()} [symbolic link]")
+        for name in files:
+            path = root_path / name
+            suffix = " [symbolic link]" if path.is_symlink() else ""
+            entries.append(f"{path.relative_to(directory).as_posix()}{suffix}")
+    return tuple(sorted(entries))
+
+
+def remove_old_inksim_extension(
+    directory: Path,
+    user_extension_root: Path,
+    *,
+    confirmed: bool = False,
+) -> None:
+    """Remove a confirmed non-canonical InkSim folder inside the user extension root."""
+    if not confirmed:
+        raise InstallSafetyError("Removing an old extension folder requires user confirmation.")
+    if directory.is_symlink():
+        raise InstallSafetyError(f"Refusing to remove a symbolic link: {directory}")
+
+    root = user_extension_root.expanduser().resolve(strict=True)
+    target = directory.expanduser().resolve(strict=True)
+    if target.parent != root:
+        raise InstallSafetyError(
+            f"Refusing to remove a folder outside the user extension root: {target}"
+        )
+    canonical = (root / INSTALL_DIRECTORY).resolve()
+    if target == canonical:
+        raise InstallSafetyError(
+            f"Refusing to remove the current InkSim extension folder: {target}"
+        )
+    if not _is_inksim_extension(target):
+        raise InstallSafetyError(f"Folder is not a recognized InkSim extension: {target}")
+
+    shutil.rmtree(target)
 
 
 def resolve_inksim_launcher() -> Path:
@@ -198,6 +284,27 @@ def _load_assets(launcher: Path) -> dict[str, bytes]:
     if _LAUNCHER_TOKEN.encode("ascii") in assets[preview_name]:
         raise InstallSafetyError("The preview.inx launcher placeholder was not replaced.")
     return dict(sorted(assets.items()))
+
+
+def _is_inksim_extension(directory: Path) -> bool:
+    manifest_path = directory / MANIFEST_NAME
+    if manifest_path.is_file() and not manifest_path.is_symlink():
+        return True
+
+    inx_files = list(directory.glob("*.inx")) + list((directory / "inx").glob("*.inx"))
+    for inx_path in inx_files:
+        if inx_path.is_symlink() or not inx_path.is_file():
+            continue
+        try:
+            root = ET.parse(inx_path).getroot()
+        except (OSError, ET.ParseError):
+            continue
+        for node in root.iter():
+            if node.tag.rsplit("}", 1)[-1] == "id" and node.text:
+                extension_id = node.text.strip().lower()
+                if extension_id.startswith(("oorteo.inksim.", "org.inksim.")):
+                    return True
+    return False
 
 
 def _managed_hash(name: str, content: bytes) -> str:
