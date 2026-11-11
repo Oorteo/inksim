@@ -40,10 +40,15 @@ from PySide6.QtWidgets import (
 from ..config import Config
 from ..i18n import _
 from ..integration.inkscape_extensions import (
+    INSTALL_DIRECTORY,
+    InstalledInkSimExtension,
     InstallPlan,
     InstallSafetyError,
+    find_installed_inksim_extensions,
     install_extension,
+    list_inksim_extension_files,
     prepare_install,
+    remove_old_inksim_extension,
     resolve_inksim_launcher,
 )
 from ..integration.paths import INKSCAPE_CONFIG_KEY
@@ -117,6 +122,8 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_version: str | None = None
         self._probe_executable = ""
         self._probe_error: str | None = None
+        self._inkscape_extension_roots: tuple[tuple[Path, bool], ...] = ()
+        self._installed_inksim_extensions: tuple[InstalledInkSimExtension, ...] = ()
         self._probe_timer = QTimer(self)
         self._probe_timer.setSingleShot(True)
         self._probe_timer.timeout.connect(self._on_probe_timeout)
@@ -158,12 +165,6 @@ class InkscapeIntegrationDialog(QDialog):
             label.setWordWrap(True)
             label.setTextInteractionFlags(Qt.TextSelectableByMouse)
             extensions_layout.addWidget(label)
-        self.install_extensions_button = QPushButton(
-            _("integration.inkscape.install_extensions"), self
-        )
-        self.install_extensions_button.setObjectName("installInkscapeExtensions")
-        self.install_extensions_button.setEnabled(False)
-        self.install_extensions_button.clicked.connect(self._install_inkscape_extensions)
         self.python_interpreter_label = QLabel(self)
         self.python_interpreter_label.setWordWrap(True)
         self.python_interpreter_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -182,7 +183,32 @@ class InkscapeIntegrationDialog(QDialog):
         self.inkstitch_details_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         inkstitch_layout.addWidget(self.inkstitch_details_label)
         layout.addWidget(inkstitch_group)
-        layout.addWidget(self.install_extensions_button)
+
+        inksim_group, inksim_layout = create_section(
+            "integration.inkscape.section.inksim", "inksimSection"
+        )
+        self.inksim_extensions_list = QPlainTextEdit(self)
+        self.inksim_extensions_list.setObjectName("inksimExtensionDirectories")
+        self.inksim_extensions_list.setReadOnly(True)
+        self.inksim_extensions_list.setMaximumHeight(110)
+        inksim_layout.addWidget(self.inksim_extensions_list)
+        inksim_buttons = QHBoxLayout()
+        self.install_extensions_button = QPushButton(
+            _("integration.inkscape.install_extensions"), self
+        )
+        self.install_extensions_button.setObjectName("installInkscapeExtensions")
+        self.install_extensions_button.setEnabled(False)
+        self.install_extensions_button.clicked.connect(self._install_inkscape_extensions)
+        inksim_buttons.addWidget(self.install_extensions_button)
+        self.remove_old_extensions_button = QPushButton(
+            _("integration.inkscape.remove_old_extensions"), self
+        )
+        self.remove_old_extensions_button.setObjectName("removeOldInkscapeExtensions")
+        self.remove_old_extensions_button.setEnabled(False)
+        self.remove_old_extensions_button.clicked.connect(self._remove_old_inksim_extensions)
+        inksim_buttons.addWidget(self.remove_old_extensions_button)
+        inksim_layout.addLayout(inksim_buttons)
+        layout.addWidget(inksim_group)
 
         report_group, report_layout = create_section(
             "integration.inkscape.section.report", "reportSection"
@@ -215,6 +241,8 @@ class InkscapeIntegrationDialog(QDialog):
 
     def _set_executable(self, executable: str | None) -> None:
         self._user_extensions_directory = None
+        self._inkscape_extension_roots = ()
+        self._refresh_inksim_extensions()
         self.install_extensions_button.setEnabled(False)
         if not executable:
             self.executable_label.setText(_("integration.inkscape.not_found"))
@@ -422,6 +450,11 @@ class InkscapeIntegrationDialog(QDialog):
         ):
             self._user_extensions_directory = Path(user_path)
             self.install_extensions_button.setEnabled(True)
+        self._inkscape_extension_roots = tuple(
+            (Path(path), user_install)
+            for path, user_install in ((user_path, True), (system_path, False))
+            if path != _("integration.inkscape.directory_unavailable")
+        )
         if not timed_out and error is None:
             report_entries.extend(
                 (
@@ -621,6 +654,128 @@ class InkscapeIntegrationDialog(QDialog):
                 ),
             )
         self._set_report(report_entries)
+        self._refresh_inksim_extensions()
+
+    def _refresh_inksim_extensions(self) -> None:
+        try:
+            installations = find_installed_inksim_extensions(self._inkscape_extension_roots)
+        except (InstallSafetyError, OSError) as error:
+            self._installed_inksim_extensions = ()
+            self.inksim_extensions_list.setPlainText(
+                _("integration.inkscape.inksim_scan_failed").format(
+                    error=_sanitize_path_text(str(error))
+                )
+            )
+            self.remove_old_extensions_button.setEnabled(False)
+            self._append_report(
+                _("integration.inkscape.report.inksim_scan_failed").format(
+                    error=_sanitize_path_text(str(error))
+                )
+            )
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _("integration.inkscape.inksim_scan_failed").format(
+                    error=_sanitize_path_text(str(error))
+                ),
+            )
+            return
+
+        self._installed_inksim_extensions = installations
+        if not installations:
+            self.inksim_extensions_list.setPlainText(_("integration.inkscape.inksim_none"))
+        else:
+            current_target = (
+                (self._user_extensions_directory / INSTALL_DIRECTORY).resolve()
+                if self._user_extensions_directory is not None
+                else None
+            )
+            lines = []
+            for installation in installations:
+                is_current_target = (
+                    installation.user_install and installation.path == current_target
+                )
+                if is_current_target:
+                    key = "integration.inkscape.inksim_user_current"
+                elif installation.user_install:
+                    key = "integration.inkscape.inksim_user_other"
+                else:
+                    key = "integration.inkscape.inksim_system"
+                lines.append(_(key).format(path=_sanitize_path_text(str(installation.path))))
+            self.inksim_extensions_list.setPlainText("\n".join(lines))
+
+        current_target = (
+            (self._user_extensions_directory / INSTALL_DIRECTORY).resolve()
+            if self._user_extensions_directory is not None
+            else None
+        )
+        has_old_user_installations = any(
+            installation.user_install and installation.path != current_target
+            for installation in installations
+        )
+        self.remove_old_extensions_button.setEnabled(has_old_user_installations)
+
+    def _remove_old_inksim_extensions(self) -> None:
+        user_extension_root = self._user_extensions_directory
+        if user_extension_root is None:
+            return
+        current_target = (user_extension_root / INSTALL_DIRECTORY).resolve()
+        old_installations = tuple(
+            installation
+            for installation in self._installed_inksim_extensions
+            if installation.user_install and installation.path != current_target
+        )
+        if not old_installations:
+            return
+
+        directory_details = []
+        try:
+            for installation in old_installations:
+                files = list_inksim_extension_files(installation.path)
+                file_list = "\n".join(f"  - {name}" for name in files)
+                directory_details.append(
+                    f"{_sanitize_path_text(str(installation.path))}\n{file_list}"
+                )
+        except (InstallSafetyError, OSError) as error:
+            self._show_remove_old_extensions_error(error)
+            self._refresh_inksim_extensions()
+            return
+
+        answer = QMessageBox.question(
+            self,
+            _("integration.inkscape.remove_old_extensions"),
+            _("integration.inkscape.remove_old_extensions_confirm").format(
+                directories="\n\n".join(directory_details)
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if answer != QMessageBox.Yes:
+            return
+
+        try:
+            for installation in old_installations:
+                remove_old_inksim_extension(
+                    installation.path,
+                    user_extension_root,
+                    confirmed=True,
+                )
+        except (InstallSafetyError, OSError) as error:
+            self._show_remove_old_extensions_error(error)
+            self._refresh_inksim_extensions()
+            return
+
+        message = _("integration.inkscape.remove_old_extensions_success")
+        self._append_report(message)
+        self._refresh_inksim_extensions()
+        QMessageBox.information(self, _("integration.inkscape.title"), message)
+
+    def _show_remove_old_extensions_error(self, error: Exception) -> None:
+        message = _("integration.inkscape.remove_old_extensions_failed").format(
+            error=_sanitize_path_text(str(error))
+        )
+        self._append_report(message)
+        QMessageBox.critical(self, _("integration.inkscape.title"), message)
 
     def _install_inkscape_extensions(self) -> None:
         extension_directory = self._user_extensions_directory
@@ -647,6 +802,7 @@ class InkscapeIntegrationDialog(QDialog):
             path=_sanitize_path_text(str(destination))
         )
         self._append_report(message)
+        self._refresh_inksim_extensions()
         QMessageBox.information(self, _("integration.inkscape.title"), message)
 
     def _confirm_extension_install(self, plan: InstallPlan) -> bool:

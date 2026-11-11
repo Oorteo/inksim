@@ -515,6 +515,42 @@
         "source": "None",
         "translation": "Nic"
     },
+    "integration.inkscape.inksim_none": {
+        "source": "Nebyly nalezeny žádné složky rozšíření InkSim.",
+        "translation": "Nebyly nalezeny žádné složky rozšíření InkSim."
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Aktuální uživatelské rozšíření (cíl instalace/aktualizace): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension (can be removed): {path}",
+        "translation": "Další uživatelské rozšíření (lze odstranit): {path}"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension (manual removal required): {path}",
+        "translation": "Systémové rozšíření (nutné odstranit ručně): {path}"
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Nepodařilo se prohledat složky rozšíření Inkscape: {error}"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Odstranit staré kopie InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "Uvedené uživatelské složky rozšíření a všechny soubory v nich budou trvale smazány. Aktuální cíl instalace/aktualizace ani systémové složky rozšíření odstraněny nebudou.\n\n{directories}\n\nPokračovat?",
+        "translation": "Uvedené uživatelské složky rozšíření a všechny soubory v nich budou trvale smazány. Aktuální cíl instalace/aktualizace ani systémové složky rozšíření odstraněny nebudou.\n\n{directories}\n\nPokračovat?"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Staré složky rozšíření InkSim byly odstraněny. Restartujte Inkscape, aby se obnovil seznam rozšíření."
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Nepodařilo se odstranit starou složku rozšíření InkSim: {error}"
+    },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",
         "translation": "Verze Inkscape: {version}"
@@ -602,6 +638,10 @@
     "integration.inkscape.section.inkstitch": {
         "source": "Ink/Stitch installations",
         "translation": "Instalace Ink/Stitch"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "Rozšíření InkSim",
+        "translation": "Rozšíření InkSim"
     },
     "integration.inkscape.section.report": {
         "source": "Checks and changes",

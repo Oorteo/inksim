@@ -467,6 +467,10 @@
         "source": "Ink/Stitch installations",
         "translation": "Ink/Stitch installations"
     },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim extensions",
+        "translation": "InkSim extensions"
+    },
     "integration.inkscape.section.report": {
         "source": "Checks and changes",
         "translation": "Checks and changes"
@@ -590,6 +594,42 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "None"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "No InkSim extension folders were found."
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Current user extension (install/update target): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension (can be removed): {path}",
+        "translation": "Other user extension (can be removed): {path}"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension (manual removal required): {path}",
+        "translation": "System extension (manual removal required): {path}"
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Could not inspect Inkscape extension folders: {error}"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Remove old InkSim copies"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list."
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Could not remove the old InkSim extension folder: {error}"
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",
