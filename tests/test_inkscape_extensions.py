@@ -8,8 +8,11 @@ import pytest
 
 from inksim.integration.inkscape_extensions import (
     InstallSafetyError,
+    find_installed_inksim_extensions,
     install_extension,
+    list_inksim_extension_files,
     prepare_install,
+    remove_old_inksim_extension,
 )
 
 
@@ -103,3 +106,48 @@ def test_install_refuses_symbolic_link_target(tmp_path):
 
     with pytest.raises(InstallSafetyError, match="symbolic link"):
         prepare_install(extension_directory, launcher)
+
+
+def test_find_and_remove_only_confirmed_old_inksim_extension(tmp_path):
+    user_root = tmp_path / "user" / "extensions"
+    system_root = tmp_path / "system" / "extensions"
+    current = user_root / "inksim"
+    old_copy = user_root / "inksim-old"
+    system_copy = system_root / "inksim"
+    unrelated = user_root / "my-extensions"
+    for directory in (current, old_copy, system_copy, unrelated):
+        directory.mkdir(parents=True)
+
+    marker = current / ".inksim-install.json"
+    marker.write_text('{"format": 1}', encoding="utf-8")
+    (old_copy / "preview.inx").write_text(
+        "<inkscape-extension><id>oorteo.inksim.preview</id></inkscape-extension>",
+        encoding="utf-8",
+    )
+    (system_copy / "about.inx").write_text(
+        "<inkscape-extension><id>org.inksim.about</id></inkscape-extension>",
+        encoding="utf-8",
+    )
+    (unrelated / "about.inx").write_text(
+        "<inkscape-extension><id>example.other.about</id></inkscape-extension>",
+        encoding="utf-8",
+    )
+
+    installations = find_installed_inksim_extensions([(user_root, True), (system_root, False)])
+
+    assert {item.path: item.user_install for item in installations} == {
+        current.resolve(): True,
+        old_copy.resolve(): True,
+        system_copy.resolve(): False,
+    }
+    assert list_inksim_extension_files(old_copy) == ("preview.inx",)
+    with pytest.raises(InstallSafetyError, match="user confirmation"):
+        remove_old_inksim_extension(old_copy, user_root)
+    with pytest.raises(InstallSafetyError, match="current InkSim"):
+        remove_old_inksim_extension(current, user_root, confirmed=True)
+
+    remove_old_inksim_extension(old_copy, user_root, confirmed=True)
+
+    assert not old_copy.exists()
+    assert current.exists()
+    assert system_copy.exists()

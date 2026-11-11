@@ -30,7 +30,11 @@ For an `.svg` source:
 In **Tools → Config**, use **Install / Update InkSim extensions** to add the
 Preview and About commands to Inkscape's user extensions folder. InkSim asks
 before replacing changed files and preserves unrelated files. Restart Inkscape
-after installation or update to load the extensions.
+after installation or update to load the extensions. The **InkSim extensions**
+section lists recognized user and system copies. **Remove old InkSim copies**
+shows the exact files and asks for confirmation before deleting duplicate user
+folders; the current install target is protected, and system copies must be
+removed manually.
 
 The preview reads the saved `.svg` from disk. Unsaved changes in Inkscape are
 not included. Use **Edit in Inkscape**, save the document, and preview again.

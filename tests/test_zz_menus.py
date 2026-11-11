@@ -290,6 +290,60 @@ def test_inkscape_version_probe_failure_keeps_detected_directories(tmp_path, qtb
     assert "version" not in config.get(INKSCAPE_CONFIG_KEY)
 
 
+def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbot, monkeypatch):
+    """Show duplicate extension folders and remove only the confirmed old user copy."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.information", lambda *args: None)
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    extension_root = user_data / "extensions"
+    current_copy = extension_root / "inksim"
+    old_copy = extension_root / "inksim-old"
+    current_copy.mkdir(parents=True)
+    old_copy.mkdir()
+    (current_copy / ".inksim-install.json").write_text('{"format": 1}', encoding="utf-8")
+    (old_copy / "preview.inx").write_text(
+        "<inkscape-extension><id>oorteo.inksim.preview</id></inkscape-extension>",
+        encoding="utf-8",
+    )
+    confirmation = []
+
+    def confirm(parent, title, message, *_args):
+        confirmation.append(message)
+        return QMessageBox.Yes
+
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.question", confirm)
+    _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": str(user_data),
+            "--system-data-directory": str(system_data),
+        },
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert str(current_copy) in dialog.inksim_extensions_list.toPlainText()
+    assert str(old_copy) in dialog.inksim_extensions_list.toPlainText()
+    assert dialog.remove_old_extensions_button.isEnabled()
+    dialog.remove_old_extensions_button.click()
+
+    assert not old_copy.exists()
+    assert current_copy.exists()
+    assert "preview.inx" in confirmation[0]
+    assert not dialog.remove_old_extensions_button.isEnabled()
+
+
 def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     """Selecting another executable refreshes its extension directories."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
@@ -471,26 +525,31 @@ def test_integration_sections_are_bold_and_report_expands(qtbot):
     main_layout = dialog.layout()
     assert main_layout is not None
     inkstitch_group = dialog.findChild(QWidget, "inkstitchSection")
+    inksim_group = dialog.findChild(QWidget, "inksimSection")
     report_group = dialog.findChild(QWidget, "reportSection")
     assert inkstitch_group is not None
+    assert inksim_group is not None
     assert report_group is not None
     assert (
         main_layout.indexOf(inkstitch_group)
-        < main_layout.indexOf(dialog.install_extensions_button)
+        < main_layout.indexOf(inksim_group)
         < main_layout.indexOf(report_group)
     )
-    assert dialog.install_extensions_button.parentWidget() is dialog
+    assert dialog.install_extensions_button.parentWidget() is inksim_group
+    assert dialog.remove_old_extensions_button.parentWidget() is inksim_group
 
     for object_name in (
         "applicationSectionTitle",
         "extensionsSectionTitle",
         "inkstitchSectionTitle",
+        "inksimSectionTitle",
         "reportSectionTitle",
     ):
         heading = dialog.findChild(QLabel, object_name)
         assert heading is not None
         assert heading.font().bold()
 
+    dialog.resize(860, 900)
     dialog.show()
     qtbot.waitUntil(lambda: dialog.info_panel.height() > 170)
 
