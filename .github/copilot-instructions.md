@@ -6,6 +6,7 @@
 - Do not search for or invoke system `python` or `python3` when working on this project.
 - The project supports Python 3.12 or newer, as specified by `pyproject.toml`. The local setup script currently defaults to Python 3.14.
 - Run the application with `uvr inksim` or `uvr python -m inksim`.
+- Never add `Co-authored-by` trailers to commit messages for this repository.
 - Before changing code, inspect the relevant source and existing project conventions.
 - Keep code and comments in English.
 
