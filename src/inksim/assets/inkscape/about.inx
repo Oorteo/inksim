@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+    <name>About InkSim</name>
+    <id>oorteo.inksim.about</id>
+    <param name="tab" type="notebook">
+        <page name="about" gui-text="About">
+            <label xml:space="preserve">InkSim is an embroidery stitch simulator for designs created with Ink/Stitch.
+
+Preview stitch order, thread colors, jumps, trims, and machine commands.
+
+This dialog is part of the Inkscape extension. It does not start or require the InkSim application.</label>
+            <label>Project:</label>
+            <label appearance="url">https://github.com/Oorteo/inksim</label>
+        </page>
+        <page name="install" gui-text="Install / Repair">
+            <label xml:space="preserve">Install InkSim:
+uv tool install inksim
+
+Update InkSim:
+uv tool upgrade inksim
+
+Clean reinstall:
+1. uv tool uninstall inksim
+2. uv tool install inksim</label>
+            <label>InkSim package on PyPI:</label>
+            <label appearance="url">https://pypi.org/project/inksim/</label>
+            <label>Installation guide and project documentation:</label>
+            <label appearance="url">https://github.com/Oorteo/inksim/blob/main/docs/index.md</label>
+            <label>Install uv:</label>
+            <label appearance="url">https://docs.astral.sh/uv/getting-started/installation/</label>
+            <label>After installing or reinstalling, restart Inkscape or rescan its extensions.</label>
+        </page>
+    </param>
+    <effect>
+        <object-type>all</object-type>
+        <icon>icons/about.svg</icon>
+        <effects-menu>
+            <submenu name="Inksim" translatable="no" />
+        </effects-menu>
+    </effect>
+    <script>
+        <command location="inx" interpreter="python">scripts/about.py</command>
+    </script>
+</inkscape-extension>
