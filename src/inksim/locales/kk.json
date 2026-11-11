@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Тіл {language} болып орнатылды. Оны қолдану үшін InkSim-ді қазір қайта іске қосыңыз ба?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "Ашық InkSim терезелерінің барлығы жабылып, ағымдағы файл қайта ашылады."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Жүйенің әдепкі тілі қолданылады. Оны қолдану үшін InkSim-ді қазір қайта іске қосыңыз ба?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "Тіл өзгертілді"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Ашық InkSim терезелерінің барлығы жабылып, ағымдағы файл қайта ашылады."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "Кестелеу файлын ашу"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Шолу..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Болдырмау"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Буманы таңдау"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Тігістерді алдын ала қарау процесі сәтсіз аяқталды: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Процестің шығу коды: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV экспорты сәтсіз аяқталды."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "Қате туралы мәліметті output.err файлынан қараңыз."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Ink/Stitch CSV экспортының уақыты аяқталды."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch CSV экспорты орындалып жатыр..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Өлшемі: {width:.1f} x {height:.1f} мм"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Бұл SVG файлын жаңа Inkscape терезесінде ашу."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Inkscape-та өңдеу"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Бұл бумада қолдау көрсетілетін файлдар жоқ."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Бұл файлды оқу мүмкін емес: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Көрсету"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Қолдау көрсетілетіндердің барлығы"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV тігіс деректері"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Кестелеу"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG бастапқы файлы"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Сыйдыру"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Бума"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Файлдарын шолу үшін буманы екі рет басыңыз."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Файлдарын шолу үшін буманы екі рет басыңыз."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape іске қосылмады: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG файлдарын өңдеу үшін Inkscape қажет."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "SVG файлын алдын ала қарау үшін белсенді Ink/Stitch орнатылымы бапталған болуы керек."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Бұл бумаға қол жеткізу мүмкін емес."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Өзгертілген: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Жарамды кестелеу файлы емес"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Ашу"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Таңдалған кестелеу файлын ашу."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Алдын ала қарау"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Белсенді Ink/Stitch орнатылымын пайдаланып, осы SVG файлынан тігіс деректерін жасау."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Белсенді Ink/Stitch скриптін немесе бапталған Python іске қосқышын іске қосу мүмкін емес."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Бұл буманы оқу мүмкін емес: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Жуырда ашылғандар:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— буманы таңдау —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Жаңарту"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Файлдарды іздеу"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Ашу үшін файл таңдаңыз."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Өлшемі: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: табылмады."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch кеңейтімі: тексеру мүмкін болмады. Қайталау үшін «Құралдар...» мәзірін пайдаланыңыз."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch кеңейтімі: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch кеңейтімі: Inkscape кеңейтім бумаларынан табылмады."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch кеңейтімі: Inkscape бапталғанша тексеру мүмкін емес."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch кеңейтімі: әлі тексерілмеді. Тексеру үшін «Құралдар...» мәзірін пайдаланыңыз."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "SVG файлын алдын ала қарау Ink/Stitch арқылы тікелей орындалады; өңдеу үшін Inkscape қажет."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "SVG файлын алдын ала қарау Ink/Stitch арқылы тікелей орындалады; Inkscape тек өңдеу үшін қолданылады."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Тігістер: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG бастапқы файлы. Тігістерді алдын ала қарау үшін Inkscape қажет."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG бастапқы файлы. Inkscape/Ink/Stitch арқылы тігіс деректерін жасау үшін «Алдын ала қарау» түймесін таңдаңыз."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG файлын көрсету мүмкін болмады."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Бұл SVG файлы мұнда алдын ала қарау үшін тым үлкен."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Алдын ала қарау үшін уақытша файл жасау мүмкін болмады: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Файлды ашу"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Құралдар..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV тігіс деректері"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Бума"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Кестелеу"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Қолдау көрсетілмейді"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG бастапқы файлы"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Бұл файл түрін InkSim-де ашу мүмкін емес."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Жоғары"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Үлкейту"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Кішірейту"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Тігіс рендерерін таңдау"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Өзгерту"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape кеңейтімінің күйін сақтау мүмкін болмады: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Қолжетімсіз"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim кеңейтім бумалары табылмады."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape кеңейтім бумаларын тексеру мүмкін болмады: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Алдын ала қарау пәрмені өзгертілді"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "өзгертілген файлдар: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Жаңартылған"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Орнату қажет"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Күйі қолжетімсіз: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Жаңарту қажет ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Ағымдағы пайдаланушы кеңейтімі (орнату/жаңарту орны): {path} | Күйі: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim кеңейтімдерін орнату / жаңарту"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim кеңейтім бумасында кейбір файлдар бар. Ауыстыруға белгіленген файлдарда пайдаланушы енгізген өзгерістер болуы мүмкін. Тізімдегі басқа файлдар сақталады және ешқашан жойылмайды.\n\nАуыстырылатын файлдар:\n{replace_files}\n\nСақталатын файлдар:\n{preserve_files}\n\nЖалғастыру керек пе?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSim-нің Inkscape кеңейтімдерін орнату мүмкін болмады: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim-нің Inkscape кеңейтімдері {path} бумасына орнатылды немесе жаңартылды. Оларды жүктеу үшін Inkscape-ті қайта іске қосыңыз."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Ешқайсысы"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape жүйенің іздеу жолынан табылмады."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscape баптауларын оқу мүмкін болмады: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscape баптауларын жаңарту мүмкін болмады: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscape кеңейтім бумаларын оқу мүмкін болмады: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape жауап беруін күту…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python интерпретаторы: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Жаңа Python интерпретаторын қолдану үшін Inkscape-ті қайта іске қосыңыз."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "орнатылмаған"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Ескі InkSim көшірмелерін жою"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Тізімдегі пайдаланушы кеңейтім бумалары және олардың ішіндегі барлық файлдар біржола жойылады. Ағымдағы орнату/жаңарту орны мен жүйелік кеңейтім бумалары жойылмайды.\n\n{directories}\n\nЖалғастыру керек пе?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Ескі InkSim кеңейтім бумасын жою мүмкін болмады: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Ескі InkSim кеңейтім бумалары жойылды. Кеңейтімдер тізімін жаңарту үшін Inkscape-ті қайта іске қосыңыз."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Белсенді Ink/Stitch орнатылымы жаңартылды: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape тексеріліп жатыр: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim баптауларын сақтау мүмкін болмады: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Анықталған конфигурация InkSim баптауларына сақталды."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Тексерілген Inkscape орындалатын файлы: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape кеңейтім бумаларын тексеру мүмкін болмады: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Табылған Ink/Stitch орнатылымдары: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch орнатылымы табылмады."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Python интерпретаторы бұрыннан бапталған: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python интерпретаторы жаңартылды: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "Қажетті «{command}» іске қосқышы табылмады; баптау өзгеріссіз қалдырылды."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape табылмады. Орнатылымды тексеру үшін оның орындалатын файлын таңдаңыз."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Inkscape баптаулары тексерілді: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python интерпретаторын тексеру немесе жаңарту мүмкін болмады: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Пайдаланушы кеңейтімдер бумасы қолжетімсіз болғандықтан, Python интерпретаторының баптауы тексерілмеді."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape-ті тексеру мүмкін болмады: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Жаңартылған интерпретаторды қолдану үшін Inkscape-ті қайта іске қосыңыз."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Жүйелік кеңейтімдер: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape {seconds} секунд ішінде жауап бермеді."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Пайдаланушы кеңейтімдері: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape нұсқасы: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Тексеру үшін Inkscape-тің орындалатын файлын таңдаңыз."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Жүйелік кеңейтімдер: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape {seconds} секунд ішінде жауап бермеді. Басқа Inkscape данасы немесе кеңейтім байланысқа кедергі келтіруі мүмкін. Басқа Inkscape даналарын жабыңыз немесе кедергі келтіретін кеңейтімді өшіріп, қайта көріңіз."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Пайдаланушы кеңейтімдері: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "Қажетті «{command}» іске қосқышы табылмады. uvr құралын `uv tool install uvr` пәрменімен өзіңіз орнатып, осы конфигурацияны қайта іске қосыңыз. InkSim оны орнатпайды."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape нұсқасы: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Қолжетімсіз"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Пәрмен: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Интерпретатор: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Орналасқан жері: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch орнатылымы табылмады."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Жол: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "Кестелеу файлын ашу"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Ашу..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "Оқиғаларды қадағалау"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Құралдар"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "Конфигурация"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Тіл"
+        "source": "&Language",
+        "translation": "&Тіл"
     },
     "menu.language.system_default": {
         "source": "System default",

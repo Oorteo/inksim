@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "השפה הוגדרה ל-{language}. להפעיל מחדש את InkSim כדי להחיל?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "כל חלונות InkSim הפתוחים ייסגרו והקובץ הנוכחי ייפתח מחדש."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "שפת ברירת המחדל של המערכת תהיה בשימוש. להפעיל מחדש את InkSim כדי להחיל?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "השפה שונתה"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "כל חלונות InkSim הפתוחים ייסגרו והקובץ הנוכחי ייפתח מחדש."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "פתח קובץ רקמה"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "עיון..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "ביטול"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "בחירת תיקייה"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "תהליך התצוגה המקדימה של התפרים נכשל: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "קוד יציאה של התהליך: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "ייצוא CSV של Ink/Stitch נכשל."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "לפרטי השגיאה, יש לעיין בקובץ output.err."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "תם הזמן שהוקצב לייצוא CSV של Ink/Stitch."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "מייצא CSV של Ink/Stitch..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "מידות: {width:.1f} x {height:.1f} מ״מ"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "פתיחת קובץ SVG זה בחלון Inkscape חדש."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "עריכה ב-Inkscape"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "אין בתיקייה קבצים נתמכים."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "אי אפשר לקרוא את הקובץ הזה: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "הצגה"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "כל הקבצים הנתמכים"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "נתוני תפר CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "רקמה"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "קובץ מקור SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "התאמה"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "תיקייה"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "לחיצה כפולה על התיקייה תציג את הקבצים שבה."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "לחיצה כפולה על התיקייה תציג את הקבצים שבה."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "לא ניתן להפעיל את Inkscape: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "צריך את Inkscape כדי לערוך קובצי SVG."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "צריך התקנה פעילה ומוגדרת של Ink/Stitch כדי להציג תצוגה מקדימה של SVG."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "אין גישה לתיקייה הזו."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "שונה: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "זה לא קובץ רקמה תקין"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "פתיחה"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "פתיחת קובץ הרקמה שנבחר."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "תצוגה מקדימה"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "יצירת נתוני תפרים מקובץ ה-SVG בעזרת התקנת Ink/Stitch הפעילה."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "אי אפשר להפעיל את הסקריפט הפעיל של Ink/Stitch או את מפעיל Python שהוגדר."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "אי אפשר לקרוא את התיקייה הזו: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "אחרונים:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— בחירת תיקייה —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "רענון"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "חיפוש קבצים"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "יש לבחור קובץ לפתיחה."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "גודל: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: לא נמצא."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "תוסף Ink/Stitch: הבדיקה נכשלה. אפשר לנסות שוב דרך כלים..."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "תוסף Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "תוסף Ink/Stitch: לא נמצא בתיקיות התוספים של Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "תוסף Ink/Stitch: אי אפשר לבדוק לפני שמגדירים את Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "תוסף Ink/Stitch: עדיין לא נבדק. אפשר לבדוק דרך כלים..."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "תצוגה מקדימה של SVG מופקת ישירות דרך Ink/Stitch; לעריכה צריך את Inkscape."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "תצוגה מקדימה של SVG מופקת ישירות דרך Ink/Stitch; Inkscape משמש רק לעריכה."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "תפרים: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "קובץ מקור SVG. צריך את Inkscape כדי להציג תצוגה מקדימה של התפרים."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "קובץ מקור SVG. בחירה ב״תצוגה מקדימה״ תיצור נתוני תפרים בעזרת Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "אי אפשר להציג את קובץ ה-SVG."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "קובץ ה-SVG גדול מדי לתצוגה מקדימה כאן."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "לא ניתן ליצור קובץ זמני לתצוגה מקדימה: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "פתיחת קובץ"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "כלים..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "נתוני תפר CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "תיקייה"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "רקמה"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "לא נתמך"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "קובץ מקור SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "אי אפשר לפתוח את סוג הקובץ הזה ב-InkSim."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "למעלה"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "הגדלה"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "הקטנה"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "בחר מנוע עיבוד תפרים"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "שינוי"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "לא ניתן לשמור את מצב התוסף של Inkscape: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "לא זמין"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "לא נמצאו תיקיות תוספים של InkSim."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "לא ניתן לבדוק את תיקיות התוספים של Inkscape: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "פקודת התצוגה המקדימה השתנתה"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "קבצים שהשתנו: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "מעודכן"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "נדרשת התקנה"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "המצב אינו זמין: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "נדרש עדכון ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "תוסף המשתמש הנוכחי (יעד להתקנה/עדכון): {path} | מצב: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "התקנה / עדכון של תוספי InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "יש קבצים שכבר נמצאים בתיקיית התוספים של InkSim. ייתכן שיש שינויים שלך בקבצים שמופיעים להחלפה. הקבצים האחרים שמופיעים יישמרו ולא יימחקו לעולם.\n\nקבצים להחלפה:\n{replace_files}\n\nקבצים לשימור:\n{preserve_files}\n\nלהמשיך?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "לא ניתן להתקין את תוספי Inkscape של InkSim: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "תוספי Inkscape של InkSim הותקנו או עודכנו ב-{path}. יש להפעיל מחדש את Inkscape כדי לטעון אותם."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "אין"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape לא נמצא בנתיב המערכת."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "לא ניתן לקרוא את ההעדפות של Inkscape: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "לא ניתן לעדכן את ההעדפות של Inkscape: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "לא ניתן לקרוא את תיקיות התוספים של Inkscape: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "ממתין לתגובה מ-Inkscape…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "מפרש Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "יש להפעיל מחדש את Inkscape כדי להחיל את מפרש Python החדש."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "לא מוגדר"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "הסרת עותקים ישנים של InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "תיקיות תוספי המשתמש שמופיעות ברשימה וכל הקבצים שבתוכן יימחקו לצמיתות. יעד ההתקנה/עדכון הנוכחי ותיקיות התוספים של המערכת לא יוסרו.\n\n{directories}\n\nלהמשיך?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "לא ניתן להסיר את תיקיית התוספים הישנה של InkSim: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "תיקיות תוספי InkSim הישנות הוסרו. יש להפעיל מחדש את Inkscape כדי לרענן את רשימת התוספים."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "התקנת Ink/Stitch הפעילה עודכנה: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "בודק את Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "לא ניתן לשמור את התצורה של InkSim: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "ההגדרות שזוהו נשמרו בתצורה של InkSim."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "נבדק קובץ ההפעלה של Inkscape: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "לא ניתן לבדוק את תיקיות התוספים של InkSim."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "נמצאו התקנות Ink/Stitch: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "לא נמצאה התקנת Ink/Stitch."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "מפרש Python כבר מוגדר: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "מפרש Python עודכן: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "מפעיל נדרש '{command}' לא נמצא; ההעדפה לא שונתה."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape לא נמצא. יש לבחור את קובץ ההפעלה שלו כדי לבדוק את ההגדרות."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "נבדקו ההעדפות של Inkscape: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "לא ניתן לבדוק או לעדכן את מפרש Python: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "ההעדפה של מפרש Python לא נבדקה כי תיקיית תוספי המשתמש אינה זמינה."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "לא ניתן לבדוק את Inkscape: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "יש להפעיל מחדש את Inkscape כדי להחיל את מפרש Python המעודכן."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "תוספי מערכת: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape לא הגיב בתוך {seconds} שניות."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "תוספי משתמש: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "גרסת Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "יש לבחור קובץ הפעלה של Inkscape כדי לבדוק."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "תוספי מערכת: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape לא הגיב בתוך {seconds} שניות. ייתכן שמופע אחר של Inkscape או תוסף חוסמים את התקשורת. יש לסגור מופעים אחרים של Inkscape או להשבית את התוסף החוסם, ואז לנסות שוב."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "תוספי משתמש: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "מפעיל נדרש '{command}' לא נמצא. יש להתקין את הכלי uvr בעצמך בעזרת `uv tool install uvr`, ואז להריץ שוב את ההגדרה הזו. InkSim לא יתקין אותו."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "גרסת Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "לא זמין"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "פקודה: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "מפרש: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "מיקום: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "לא נמצאה התקנת Ink/Stitch."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "נתיב: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "פתח קובץ רקמה"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "פתיחה..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "אירועי מעקב"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&כלים"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "הגדרה"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "שפה"
+        "source": "&Language",
+        "translation": "&שפה"
     },
     "menu.language.system_default": {
         "source": "System default",

@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "言語を{language}に設定したよ。今すぐInkSimを再起動して適用する？"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "開いているすべてのInkSimウィンドウを閉じ、現在のファイルを再度開きます。"
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "システムのデフォルト言語を使うよ。今すぐInkSimを再起動して適用する？"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "言語が変更されました"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "開いているすべてのInkSimウィンドウを閉じ、現在のファイルを再度開きます。"
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "刺繍ファイルを開く"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "参照..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "キャンセル"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "フォルダーを選択"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "ステッチプレビューの処理に失敗しました: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "プロセスの終了コード: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch の CSV エクスポートに失敗しました。"
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "エラーの詳細は output.err を確認してください。"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Ink/Stitch の CSV エクスポートがタイムアウトしました。"
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch の CSV をエクスポートしています..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "サイズ: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "この SVG を新しい Inkscape ウィンドウで開きます。"
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Inkscape で編集"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "このフォルダーに対応ファイルはありません。"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "このファイルを読み込めません: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "表示"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "すべての対応ファイル"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV ステッチデータ"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "刺しゅう"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG ソース"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "全体表示"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "フォルダー"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "フォルダーをダブルクリックして中のファイルを表示します。"
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "フォルダーをダブルクリックして中のファイルを表示します。"
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape を起動できませんでした: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG ファイルを編集するには Inkscape が必要です。"
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "SVG をプレビューするには、設定済みの有効な Ink/Stitch が必要です。"
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "このフォルダーにアクセスできません。"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "更新日時: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "有効な刺しゅうファイルではありません"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "開く"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "選択した刺しゅうファイルを開きます。"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "プレビュー"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "有効な Ink/Stitch を使って、この SVG からステッチデータを生成します。"
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "有効な Ink/Stitch スクリプト、または設定済みの Python 起動ツールを実行できません。"
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "このフォルダーを読み込めません: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "最近使ったフォルダー:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— フォルダーを選択 —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "更新"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "ファイルを検索"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "開くファイルを選択してください。"
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "サイズ: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: 見つかりません。"
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch 拡張機能: 確認できませんでした。「ツール...」から再試行してください。"
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch 拡張機能: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch 拡張機能: Inkscape の拡張機能フォルダーに見つかりません。"
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch 拡張機能: Inkscape が設定されるまで確認できません。"
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch 拡張機能: まだ確認していません。「ツール...」から確認してください。"
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "SVG のプレビューは Ink/Stitch で直接実行します。編集には Inkscape が必要です。"
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "SVG のプレビューは Ink/Stitch で直接実行します。Inkscape は編集にのみ使用します。"
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "ステッチ数: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG ソース。ステッチをプレビューするには Inkscape が必要です。"
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG ソース。「プレビュー」を選ぶと Inkscape/Ink/Stitch でステッチデータを生成します。"
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG をレンダリングできませんでした。"
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "この SVG は大きすぎるため、ここではプレビューできません。"
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "プレビュー用の一時ファイルを作成できませんでした: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "ファイルを開く"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "ツール..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV ステッチデータ"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "フォルダー"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "刺しゅう"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "非対応"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG ソース"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "このファイル形式は InkSim で開けません。"
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "上へ"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "拡大"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "縮小"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "ステッチレンダラーを選択"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "変更"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape 拡張機能の状態を保存できませんでした: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "利用できません"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim 拡張機能フォルダーが見つかりません。"
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape 拡張機能フォルダーを確認できませんでした: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "プレビューコマンドが変更されています"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "変更されたファイル: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "最新です"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "インストールが必要です"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "状態を確認できません: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "更新が必要です（{details}）"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "現在のユーザー拡張機能（インストール/更新先）: {path} | 状態: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim 拡張機能をインストール / 更新"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim 拡張機能フォルダーに既存のファイルがあります。置き換え対象のファイルにはユーザーによる変更が含まれている場合があります。一覧にあるその他のファイルはそのまま残り、削除されることはありません。\n\n置き換えるファイル:\n{replace_files}\n\n保持するファイル:\n{preserve_files}\n\n続行しますか？"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSim の Inkscape 拡張機能をインストールできませんでした: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim の Inkscape 拡張機能を {path} にインストールまたは更新しました。読み込むには Inkscape を再起動してください。"
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "なし"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "システムの PATH に Inkscape が見つかりません。"
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscape の設定を読み込めませんでした: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscape の設定を更新できませんでした: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscape の拡張機能フォルダーを読み込めませんでした: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape の応答を待っています…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python インタープリター: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "新しい Python インタープリターを適用するには Inkscape を再起動してください。"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "未設定"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "古い InkSim のコピーを削除"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "一覧にあるユーザー拡張機能フォルダーと、その中のすべてのファイルを完全に削除します。現在のインストール/更新先とシステム拡張機能フォルダーは削除されません。\n\n{directories}\n\n続行しますか？"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "古い InkSim 拡張機能フォルダーを削除できませんでした: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "古い InkSim 拡張機能フォルダーを削除しました。拡張機能一覧を更新するには Inkscape を再起動してください。"
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "有効な Ink/Stitch を更新しました: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape を確認しています: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim の設定を保存できませんでした: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "検出した設定を InkSim の設定に保存しました。"
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "確認した Inkscape 実行ファイル: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape 拡張機能フォルダーを確認できませんでした。"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Ink/Stitch のインストール数: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch が見つかりませんでした。"
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Python インタープリターはすでに設定されています: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python インタープリターを更新しました: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "必要な起動ツール「{command}」が見つからなかったため、設定は変更しませんでした。"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape が見つかりません。セットアップを確認するには実行ファイルを選択してください。"
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "確認した Inkscape の設定: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python インタープリターを確認または更新できませんでした: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "ユーザー拡張機能フォルダーを利用できないため、Python インタープリターの設定は確認しませんでした。"
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape を確認できませんでした: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "更新したインタープリターを適用するには Inkscape を再起動してください。"
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "システム拡張機能: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape が {seconds} 秒以内に応答しませんでした。"
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "ユーザー拡張機能: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape のバージョン: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "確認する Inkscape の実行ファイルを選択してください。"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "システム拡張機能: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape が {seconds} 秒以内に応答しませんでした。別の Inkscape インスタンスまたは拡張機能が通信を妨げている可能性があります。他の Inkscape インスタンスを閉じるか、通信を妨げている拡張機能を無効にしてから、もう一度お試しください。"
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "ユーザー拡張機能: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "必要な起動ツール「{command}」が見つかりません。uvr は `uv tool install uvr` でご自身でインストールしてから、この設定をもう一度実行してください。InkSim がインストールすることはありません。"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape のバージョン: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "利用できません"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "コマンド: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "インタープリター: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "場所: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch が見つかりません。"
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "パス: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "刺繍ファイルを開く"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "開く..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "トレースイベント"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&ツール"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "設定"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "言語"
+        "source": "&Language",
+        "translation": "&言語"
     },
     "menu.language.system_default": {
         "source": "System default",

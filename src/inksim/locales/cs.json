@@ -176,8 +176,8 @@
         "translation": "Časový limit exportu CSV v Ink/Stitch vypršel."
     },
     "dialog.open_browser.converting": {
-        "source": "Generating stitch preview...",
-        "translation": "Spouštím export CSV v Ink/Stitch..."
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Probíhá export CSV z Ink/Stitchu..."
     },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
@@ -218,6 +218,10 @@
     "dialog.open_browser.filter.svg": {
         "source": "SVG source",
         "translation": "SVG zdroj"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Přizpůsobit"
     },
     "dialog.open_browser.folder": {
         "source": "Folder",
@@ -399,6 +403,14 @@
         "source": "Up",
         "translation": "Nahoru"
     },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Přiblížit"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Oddálit"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Vyberte vykreslovač stehů"
@@ -416,7 +428,7 @@
         "translation": "Nedostupné"
     },
     "integration.inkscape.inksim_none": {
-        "source": "Nebyly nalezeny žádné složky rozšíření InkSim.",
+        "source": "No InkSim extension folders were found.",
         "translation": "Nebyly nalezeny žádné složky rozšíření InkSim."
     },
     "integration.inkscape.inksim_scan_failed": {
@@ -456,8 +468,8 @@
         "translation": "Nainstalovat / aktualizovat rozšíření InkSim"
     },
     "integration.inkscape.install_extensions_confirm": {
-        "source": "Ve složce rozšíření InkSim již některé soubory existují. U souborů určených k nahrazení mohou být uživatelské změny. Ostatní uvedené soubory zůstanou zachovány a nebudou smazány.\n\nSoubory k nahrazení:\n{replace_files}\n\nZachované soubory:\n{preserve_files}\n\nPokračovat?",
-        "translation": "Ve složce rozšíření InkSim již některé soubory existují. U souborů určených k nahrazení mohou být uživatelské změny. Ostatní uvedené soubory zůstanou zachovány a nebudou smazány.\n\nSoubory k nahrazení:\n{replace_files}\n\nZachované soubory:\n{preserve_files}\n\nPokračovat?"
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Některé soubory už ve složce rozšíření InkSim existují. Soubory uvedené k nahrazení mohou obsahovat uživatelské změny. Ostatní uvedené soubory budou zachovány a nikdy nebudou odstraněny.\n\nSoubory k nahrazení:\n{replace_files}\n\nSoubory k zachování:\n{preserve_files}\n\nPokračovat?"
     },
     "integration.inkscape.install_extensions_failed": {
         "source": "Could not install InkSim's Inkscape extensions: {error}",
@@ -512,8 +524,8 @@
         "translation": "Odstranit staré kopie InkSim"
     },
     "integration.inkscape.remove_old_extensions_confirm": {
-        "source": "Uvedené uživatelské složky rozšíření a všechny soubory v nich budou trvale smazány. Aktuální cíl instalace/aktualizace ani systémové složky rozšíření odstraněny nebudou.\n\n{directories}\n\nPokračovat?",
-        "translation": "Uvedené uživatelské složky rozšíření a všechny soubory v nich budou trvale smazány. Aktuální cíl instalace/aktualizace ani systémové složky rozšíření odstraněny nebudou.\n\n{directories}\n\nPokračovat?"
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Uvedené složky uživatelských rozšíření a všechny soubory v nich budou trvale odstraněny. Aktuální cíl instalace nebo aktualizace ani systémové složky rozšíření nebudou odstraněny.\n\n{directories}\n\nPokračovat?"
     },
     "integration.inkscape.remove_old_extensions_failed": {
         "source": "Could not remove the old InkSim extension folder: {error}",
@@ -542,6 +554,10 @@
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Zkontrolovaný spustitelný soubor Inkscape: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Skenování InkSimu se nezdařilo."
     },
     "integration.inkscape.report.inkstitch_found": {
         "source": "Ink/Stitch installations found: {count}",

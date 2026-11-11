@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "语言已设置为 {language}。现在重启 InkSim 以应用吗？"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "所有已打开的 InkSim 窗口将被关闭，并重新打开当前文件。"
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "将使用系统默认语言。现在重启 InkSim 以应用吗？"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "语言已更改"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "所有已打开的 InkSim 窗口将被关闭，并重新打开当前文件。"
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "打开刺绣文件"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "浏览..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "取消"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "选择目录"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "生成针迹预览失败：{error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "进程退出代码：{code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV 导出失败。"
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "查看 output.err 了解错误详情。"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Ink/Stitch CSV 导出超时。"
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "正在运行 Ink/Stitch CSV 导出..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "尺寸：{width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "在新的 Inkscape 窗口中打开此 SVG。"
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "在 Inkscape 中编辑"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "此文件夹中没有受支持的文件。"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "无法读取此文件：{error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "显示"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "所有受支持的文件"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV 针迹数据"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "刺绣文件"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG 源文件"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "适合窗口"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "文件夹"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "双击文件夹以浏览其中的文件。"
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "双击文件夹以浏览其中的文件。"
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "无法启动 Inkscape：{error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "编辑 SVG 文件需要 Inkscape。"
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "预览 SVG 需要已配置并启用的 Ink/Stitch 安装。"
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "无法访问此文件夹。"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "修改时间：{time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "不是有效的刺绣文件"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "打开"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "打开选中的刺绣文件。"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "预览"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "使用当前启用的 Ink/Stitch 安装从此 SVG 生成针迹数据。"
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "无法运行当前启用的 Ink/Stitch 脚本或其配置的 Python 启动器。"
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "无法读取此文件夹：{error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "最近使用："
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— 选择目录 —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "刷新"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "搜索文件"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "选择要打开的文件。"
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "大小：{size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape：{path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape：未找到。"
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch 扩展：检查失败。使用“工具...”重试。"
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch 扩展：{path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch 扩展：在 Inkscape 的扩展目录中未找到。"
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch 扩展：配置 Inkscape 后才能检查。"
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch 扩展：尚未检查。使用“工具...”进行检查。"
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "SVG 预览直接通过 Ink/Stitch 运行；编辑则需要 Inkscape。"
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "SVG 预览直接通过 Ink/Stitch 运行；Inkscape 仅用于编辑。"
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "针迹数：{count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG 源文件。针迹预览需要 Inkscape。"
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG 源文件。选择“预览”以使用 Inkscape/Ink/Stitch 生成针迹数据。"
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "无法渲染此 SVG。"
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "此 SVG 太大，无法在此处预览。"
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "无法创建临时预览文件：{error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "打开文件"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "工具..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV 针迹数据"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "文件夹"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "刺绣文件"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "不受支持"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG 源文件"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "InkSim 无法打开此文件类型。"
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "上一级"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "放大"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "缩小"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "选择针迹渲染器"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "更改"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "无法保存 Inkscape 扩展状态：{error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "不可用"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "未找到 InkSim 扩展文件夹。"
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "无法检查 Inkscape 扩展文件夹：{error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "预览命令已更改"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "已更改的文件：{files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "已是最新"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "需要安装"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "状态不可用：{error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "需要更新（{details}）"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "当前用户扩展（安装/更新目标）：{path} | 状态：{status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "安装/更新 InkSim 扩展"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim 扩展文件夹中已有一些文件。列出的待替换文件可能包含你的更改。其他列出的文件会保留，绝不会删除。\n\n将替换的文件：\n{replace_files}\n\n将保留的文件：\n{preserve_files}\n\n继续吗？"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "无法安装 InkSim 的 Inkscape 扩展：{error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim 的 Inkscape 扩展已安装或更新到 {path}。重启 Inkscape 以加载它们。"
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "无"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape："
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "在系统路径中找不到 Inkscape。"
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "无法读取 Inkscape 首选项：{error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "无法更新 Inkscape 首选项：{error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "无法读取 Inkscape 扩展目录：{error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "正在等待 Inkscape 响应…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python 解释器：{path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "重启 Inkscape 以应用新的 Python 解释器。"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "未设置"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "移除旧版 InkSim 副本"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "将永久删除列出的用户扩展文件夹及其中的所有文件。当前安装/更新目标和系统扩展文件夹不会被删除。\n\n{directories}\n\n继续吗？"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "无法移除旧版 InkSim 扩展文件夹：{error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "旧版 InkSim 扩展文件夹已移除。重启 Inkscape 以刷新扩展列表。"
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "当前使用的 Ink/Stitch 安装已更新：{path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "正在检查 Inkscape：{path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "无法保存 InkSim 配置：{error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "已将检测到的设置保存到 InkSim 配置中。"
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "已检查 Inkscape 可执行文件：{path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "无法检查 InkSim 扩展文件夹：{error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "找到的 Ink/Stitch 安装：{count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "未找到 Ink/Stitch 安装。"
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Python 解释器已配置：{path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "已更新 Python 解释器：{path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "未找到必需的启动器“{command}”；首选项未作更改。"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "未找到 Inkscape。选择其可执行文件以检查设置。"
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "已检查 Inkscape 首选项：{path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "无法检查或更新 Python 解释器：{error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "用户扩展目录不可用，因此未检查 Python 解释器首选项。"
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "无法检查 Inkscape：{error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "重启 Inkscape 以应用更新后的解释器。"
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "系统扩展：{path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape 在 {seconds} 秒内未响应。"
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "用户扩展：{path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape 版本：{version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "选择 Inkscape 可执行文件以进行检查。"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "系统扩展：{path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape 在 {seconds} 秒内未响应。另一个 Inkscape 实例或某个扩展可能阻塞了通信。关闭其他 Inkscape 实例或禁用造成阻塞的扩展，然后重试。"
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "用户扩展：{path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "未找到必需的启动器“{command}”。请自行使用 `uv tool install uvr` 安装 uvr 工具，然后重新运行此配置。InkSim 不会替你安装它。"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape 版本：{version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "不可用"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "命令：{value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "解释器：{value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "位置：{value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "未找到 Ink/Stitch 安装。"
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "路径：{path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "打开刺绣文件"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "打开..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "跟踪事件"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&工具"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "配置"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "语言"
+        "source": "&Language",
+        "translation": "&语言"
     },
     "menu.language.system_default": {
         "source": "System default",

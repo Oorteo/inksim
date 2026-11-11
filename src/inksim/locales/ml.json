@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "ഭാഷ {language} ആയി സജ്ജീകരിച്ചു. ഇത് ബാധകമാക്കാൻ ഇപ്പോൾ InkSim വീണ്ടും തുടങ്ങണോ?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "വർത്തമാന ഫയൽ വീണ്ടും തുറക്കുകയും തുറന്നിരിക്കുന്ന എല്ലാ InkSim വിൻഡോകളും അടയ്ക്കുകയും ചെയ്യും."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "സിസ്റ്റത്തിന്റെ സ്ഥിര ഭാഷ ഉപയോഗിക്കും. ഇത് ബാധകമാക്കാൻ ഇപ്പോൾ InkSim വീണ്ടും തുടങ്ങണോ?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "ഭാഷ മാറ്റി"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "വർത്തമാന ഫയൽ വീണ്ടും തുറക്കുകയും തുറന്നിരിക്കുന്ന എല്ലാ InkSim വിൻഡോകളും അടയ്ക്കുകയും ചെയ്യും."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "എംബ്രോയ്ഡറി ഫയൽ തുറക്കുക"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "ബ്രൗസ് ചെയ്യുക..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "റദ്ദാക്കുക"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "ഡയറക്ടറി തിരഞ്ഞെടുക്കുക"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "സ്റ്റിച്ച് പ്രിവ്യൂ പ്രക്രിയ പരാജയപ്പെട്ടു: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "പ്രക്രിയയുടെ എക്സിറ്റ് കോഡ്: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV എക്സ്പോർട്ട് പരാജയപ്പെട്ടു."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "പിശകിന്റെ വിശദാംശങ്ങൾക്ക് output.err കാണുക."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Ink/Stitch CSV എക്സ്പോർട്ടിന് സമയപരിധി കഴിഞ്ഞു."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch CSV എക്സ്പോർട്ട് പ്രവർത്തിക്കുന്നു..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "വലുപ്പം: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "ഈ SVG പുതിയ Inkscape വിൻഡോയിൽ തുറക്കുക."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Inkscape-ൽ എഡിറ്റ് ചെയ്യുക"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "ഈ ഫോൾഡറിൽ പിന്തുണയ്ക്കുന്ന ഫയലുകളൊന്നുമില്ല."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "ഈ ഫയൽ വായിക്കാനാകില്ല: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "കാണിക്കുക"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "പിന്തുണയ്ക്കുന്ന എല്ലാം"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV സ്റ്റിച്ച് ഡാറ്റ"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "എംബ്രോയ്ഡറി"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG ഉറവിടം"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "ഒതുക്കുക"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "ഫോൾഡർ"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "ഫയലുകൾ ബ്രൗസ് ചെയ്യാൻ ഫോൾഡറിൽ ഡബിൾ ക്ലിക്ക് ചെയ്യുക."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "ഫയലുകൾ ബ്രൗസ് ചെയ്യാൻ ഫോൾഡറിൽ ഡബിൾ ക്ലിക്ക് ചെയ്യുക."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape ആരംഭിക്കാനായില്ല: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG ഫയലുകൾ എഡിറ്റ് ചെയ്യാൻ Inkscape ആവശ്യമാണ്."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "SVG പ്രിവ്യൂവിന് ക്രമീകരിച്ച സജീവ Ink/Stitch ഇൻസ്റ്റാളേഷൻ ആവശ്യമാണ്."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "ഈ ഫോൾഡർ ആക്സസ് ചെയ്യാനാകില്ല."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "മാറ്റിയത്: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "സാധുവായ എംബ്രോയ്ഡറി ഫയലല്ല"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "തുറക്കുക"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "തിരഞ്ഞെടുത്ത എംബ്രോയ്ഡറി ഫയൽ തുറക്കുക."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "പ്രിവ്യൂ"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "സജീവ Ink/Stitch ഇൻസ്റ്റാളേഷൻ ഉപയോഗിച്ച് ഈ SVG-യിൽ നിന്ന് സ്റ്റിച്ച് ഡാറ്റ സൃഷ്ടിക്കുക."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "സജീവ Ink/Stitch സ്ക്രിപ്റ്റോ അതിനായി ക്രമീകരിച്ച Python ലോഞ്ചറോ പ്രവർത്തിപ്പിക്കാനാകില്ല."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "ഈ ഫോൾഡർ വായിക്കാനാകില്ല: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "സമീപകാലത്ത്:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— ഡയറക്ടറി തിരഞ്ഞെടുക്കുക —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "പുതുക്കുക"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "ഫയലുകൾ തിരയുക"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "തുറക്കാൻ ഒരു ഫയൽ തിരഞ്ഞെടുക്കുക."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "വലുപ്പം: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: കണ്ടെത്തിയില്ല."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch എക്സ്റ്റൻഷൻ: പരിശോധിക്കാനായില്ല. വീണ്ടും ശ്രമിക്കാൻ Tools... ഉപയോഗിക്കുക."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch എക്സ്റ്റൻഷൻ: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch എക്സ്റ്റൻഷൻ: Inkscape-ന്റെ എക്സ്റ്റൻഷൻ ഡയറക്ടറികളിൽ കണ്ടെത്തിയില്ല."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch എക്സ്റ്റൻഷൻ: Inkscape ക്രമീകരിക്കുന്നതുവരെ പരിശോധിക്കാനാവില്ല."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch എക്സ്റ്റൻഷൻ: ഇതുവരെ പരിശോധിച്ചിട്ടില്ല. പരിശോധിക്കാൻ Tools... ഉപയോഗിക്കുക."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "SVG പ്രിവ്യൂ നേരിട്ട് Ink/Stitch വഴിയാണ് പ്രവർത്തിക്കുന്നത്; എഡിറ്റിംഗിന് Inkscape ആവശ്യമാണ്."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "SVG പ്രിവ്യൂ നേരിട്ട് Ink/Stitch വഴിയാണ് പ്രവർത്തിക്കുന്നത്; എഡിറ്റിംഗിന് മാത്രമാണ് Inkscape ഉപയോഗിക്കുന്നത്."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "സ്റ്റിച്ചുകൾ: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG ഉറവിടം. സ്റ്റിച്ച് പ്രിവ്യൂവിന് Inkscape ആവശ്യമാണ്."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG ഉറവിടം. Inkscape/Ink/Stitch ഉപയോഗിച്ച് സ്റ്റിച്ച് ഡാറ്റ സൃഷ്ടിക്കാൻ Preview തിരഞ്ഞെടുക്കുക."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG റെൻഡർ ചെയ്യാനായില്ല."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "ഈ SVG ഇവിടെ പ്രിവ്യൂ ചെയ്യാൻ വളരെ വലുതാണ്."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "താൽക്കാലിക പ്രിവ്യൂ ഫയൽ സൃഷ്ടിക്കാനായില്ല: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "ഫയൽ തുറക്കുക"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "ഉപകരണങ്ങൾ..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV സ്റ്റിച്ച് ഡാറ്റ"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "ഫോൾഡർ"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "എംബ്രോയ്ഡറി"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "പിന്തുണയ്ക്കാത്തത്"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG ഉറവിടം"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "ഈ ഫയൽ തരം InkSim-ൽ തുറക്കാനാകില്ല."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "മുകളിലേക്ക്"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "വലുതാക്കുക"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "ചെറുതാക്കുക"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "സ്റ്റിച്ച് റെൻഡറർ തിരഞ്ഞെടുക്കുക"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "മാറ്റുക"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape എക്സ്റ്റൻഷൻ നില സംരക്ഷിക്കാനായില്ല: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "ലഭ്യമല്ല"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim എക്സ്റ്റൻഷൻ ഫോൾഡറുകളൊന്നും കണ്ടെത്തിയില്ല."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape എക്സ്റ്റൻഷൻ ഫോൾഡറുകൾ പരിശോധിക്കാനായില്ല: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "പ്രിവ്യൂ കമാൻഡ് മാറിയിരിക്കുന്നു"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "മാറിയ ഫയലുകൾ: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "പുതുക്കിയ നിലയിലാണ്"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "ഇൻസ്റ്റാളേഷൻ ആവശ്യമാണ്"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "നില ലഭ്യമല്ല: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "പുതുക്കൽ ആവശ്യമാണ് ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "നിലവിലെ ഉപയോക്തൃ എക്സ്റ്റൻഷൻ (ഇൻസ്റ്റാൾ/പുതുക്കൽ ലക്ഷ്യം): {path} | നില: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim എക്സ്റ്റൻഷനുകൾ ഇൻസ്റ്റാൾ ചെയ്യുക / പുതുക്കുക"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim എക്സ്റ്റൻഷൻ ഫോൾഡറിൽ ചില ഫയലുകൾ ഇതിനകം ഉണ്ട്. മാറ്റിസ്ഥാപിക്കാൻ പട്ടികപ്പെടുത്തിയിരിക്കുന്ന ഫയലുകളിൽ ഉപയോക്താവ് വരുത്തിയ മാറ്റങ്ങൾ ഉണ്ടാകാം. പട്ടികപ്പെടുത്തിയിരിക്കുന്ന മറ്റ് ഫയലുകൾ നിലനിർത്തും; അവ ഒരിക്കലും ഇല്ലാതാക്കില്ല.\n\nമാറ്റിസ്ഥാപിക്കേണ്ട ഫയലുകൾ:\n{replace_files}\n\nനിലനിർത്തേണ്ട ഫയലുകൾ:\n{preserve_files}\n\nതുടരണോ?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSim-ന്റെ Inkscape എക്സ്റ്റൻഷനുകൾ ഇൻസ്റ്റാൾ ചെയ്യാനായില്ല: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim-ന്റെ Inkscape എക്സ്റ്റൻഷനുകൾ {path}-ൽ ഇൻസ്റ്റാൾ ചെയ്യുകയോ പുതുക്കുകയോ ചെയ്തു. അവ ലോഡ് ചെയ്യാൻ Inkscape പുനരാരംഭിക്കുക."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "ഒന്നുമില്ല"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "സിസ്റ്റം പാത്തിൽ Inkscape കണ്ടെത്തിയില്ല."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscape മുൻഗണനകൾ വായിക്കാനായില്ല: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscape മുൻഗണനകൾ പുതുക്കാനായില്ല: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscape എക്സ്റ്റൻഷൻ ഡയറക്ടറികൾ വായിക്കാനായില്ല: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape പ്രതികരിക്കാൻ കാത്തിരിക്കുന്നു…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python ഇന്റർപ്രിറ്റർ: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "പുതിയ Python ഇന്റർപ്രിറ്റർ പ്രയോഗിക്കാൻ Inkscape പുനരാരംഭിക്കുക."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "സജ്ജമാക്കിയിട്ടില്ല"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "പഴയ InkSim പകർപ്പുകൾ നീക്കം ചെയ്യുക"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "പട്ടികപ്പെടുത്തിയിരിക്കുന്ന ഉപയോക്തൃ എക്സ്റ്റൻഷൻ ഫോൾഡറുകളും അവയ്ക്കുള്ളിലെ എല്ലാ ഫയലുകളും ശാശ്വതമായി ഇല്ലാതാക്കും. നിലവിലെ ഇൻസ്റ്റാൾ/പുതുക്കൽ ലക്ഷ്യവും സിസ്റ്റം എക്സ്റ്റൻഷൻ ഫോൾഡറുകളും നീക്കം ചെയ്യില്ല.\n\n{directories}\n\nതുടരണോ?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "പഴയ InkSim എക്സ്റ്റൻഷൻ ഫോൾഡർ നീക്കം ചെയ്യാനായില്ല: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "പഴയ InkSim എക്സ്റ്റൻഷൻ ഫോൾഡറുകൾ നീക്കം ചെയ്തു. എക്സ്റ്റൻഷൻ പട്ടിക പുതുക്കാൻ Inkscape പുനരാരംഭിക്കുക."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "സജീവ Ink/Stitch ഇൻസ്റ്റാളേഷൻ പുതുക്കി: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape പരിശോധിക്കുന്നു: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim ക്രമീകരണം സംരക്ഷിക്കാനായില്ല: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "കണ്ടെത്തിയ സജ്ജീകരണം InkSim ക്രമീകരണത്തിൽ സംരക്ഷിച്ചു."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "പരിശോധിച്ച Inkscape എക്സിക്യൂട്ടബിൾ: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape എക്സ്റ്റൻഷൻ ഫോൾഡറുകൾ പരിശോധിക്കാനായില്ല: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "കണ്ടെത്തിയ Ink/Stitch ഇൻസ്റ്റാളേഷനുകൾ: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch ഇൻസ്റ്റാളേഷനൊന്നും കണ്ടെത്തിയില്ല."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Python ഇന്റർപ്രിറ്റർ ഇതിനകം ക്രമീകരിച്ചിട്ടുണ്ട്: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python ഇന്റർപ്രിറ്റർ പുതുക്കി: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "ആവശ്യമായ '{command}' ലോഞ്ചർ കണ്ടെത്തിയില്ല; മുൻഗണന മാറ്റമില്ലാതെ നിലനിർത്തി."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape കണ്ടെത്തിയില്ല. സജ്ജീകരണം പരിശോധിക്കാൻ അതിന്റെ എക്സിക്യൂട്ടബിൾ തിരഞ്ഞെടുക്കുക."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Inkscape മുൻഗണനകൾ പരിശോധിച്ചു: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python ഇന്റർപ്രിറ്റർ പരിശോധിക്കാനോ പുതുക്കാനോ കഴിഞ്ഞില്ല: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "ഉപയോക്തൃ എക്സ്റ്റൻഷൻ ഡയറക്ടറി ലഭ്യമല്ലാത്തതിനാൽ Python ഇന്റർപ്രിറ്റർ മുൻഗണന പരിശോധിച്ചില്ല."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape പരിശോധിക്കാനായില്ല: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "പുതുക്കിയ ഇന്റർപ്രിറ്റർ പ്രയോഗിക്കാൻ Inkscape പുനരാരംഭിക്കുക."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "സിസ്റ്റം എക്സ്റ്റൻഷനുകൾ: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "{seconds} സെക്കൻഡിനുള്ളിൽ Inkscape പ്രതികരിച്ചില്ല."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "ഉപയോക്തൃ എക്സ്റ്റൻഷനുകൾ: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape പതിപ്പ്: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "പരിശോധിക്കാൻ ഒരു Inkscape എക്സിക്യൂട്ടബിൾ തിരഞ്ഞെടുക്കുക."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "സിസ്റ്റം എക്സ്റ്റൻഷനുകൾ: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "{seconds} സെക്കൻഡിനുള്ളിൽ Inkscape പ്രതികരിച്ചില്ല. മറ്റൊരു Inkscape ഇൻസ്റ്റൻസ് അല്ലെങ്കിൽ എക്സ്റ്റൻഷൻ ആശയവിനിമയം തടയുന്നുണ്ടാകാം. മറ്റ് Inkscape ഇൻസ്റ്റൻസുകൾ അടയ്ക്കുകയോ തടസ്സമുണ്ടാക്കുന്ന എക്സ്റ്റൻഷൻ പ്രവർത്തനരഹിതമാക്കുകയോ ചെയ്തശേഷം വീണ്ടും ശ്രമിക്കുക."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "ഉപയോക്തൃ എക്സ്റ്റൻഷനുകൾ: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "ആവശ്യമായ '{command}' ലോഞ്ചർ കണ്ടെത്തിയില്ല. `uv tool install uvr` ഉപയോഗിച്ച് uvr ടൂൾ സ്വയം ഇൻസ്റ്റാൾ ചെയ്തശേഷം ഈ ക്രമീകരണം വീണ്ടും പ്രവർത്തിപ്പിക്കുക. InkSim അത് ഇൻസ്റ്റാൾ ചെയ്യില്ല."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape പതിപ്പ്: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "ലഭ്യമല്ല"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "കമാൻഡ്: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "ഇന്റർപ്രിറ്റർ: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "സ്ഥാനം: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch ഇൻസ്റ്റാളേഷനൊന്നും കണ്ടെത്തിയില്ല."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "പാത്ത്: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "എംബ്രോയ്ഡറി ഫയൽ തുറക്കുക"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "തുറക്കുക..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,8 +771,16 @@
         "source": "Trace events",
         "translation": "ട്രേസ് ഇവന്റുകൾ"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "ഉപകരണങ്ങൾ"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "ക്രമീകരണം"
+    },
     "menu.language": {
-        "source": "Language",
+        "source": "&Language",
         "translation": "ഭാഷ"
     },
     "menu.language.system_default": {

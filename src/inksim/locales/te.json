@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "భాష {language} కి సెట్ చేయబడింది. దీన్ని అన్వయించడానికి ఇప్పుడు InkSim ని రీస్టార్ట్ చేయాలా?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "తెరిచి ఉన్న అన్ని InkSim విండోలు మూసివేయబడతాయి, ప్రస్తుత ఫైల్ మళ్ళీ తెరవబడుతుంది."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "సిస్టమ్ డిఫాల్ట్ భాష ఉపయోగించబడుతుంది. దీన్ని అన్వయించడానికి ఇప్పుడు InkSim ని రీస్టార్ట్ చేయాలా?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "భాష మారింది"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "తెరిచి ఉన్న అన్ని InkSim విండోలు మూసివేయబడతాయి, ప్రస్తుత ఫైల్ మళ్ళీ తెరవబడుతుంది."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "ఎంబ్రాయిడరీ ఫైల్ను తెరవండి"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "బ్రౌజ్ చేయి..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "రద్దు చేయి"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "డైరెక్టరీని ఎంచుకోండి"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "స్టిచ్ ప్రివ్యూ ప్రక్రియ విఫలమైంది: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "ప్రక్రియ నిష్క్రమణ కోడ్: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV ఎగుమతి విఫలమైంది."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "లోపం వివరాల కోసం output.err చూడండి."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Ink/Stitch CSV ఎగుమతి సమయం ముగిసింది."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch CSV ఎగుమతి నడుస్తోంది..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "కొలతలు: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "ఈ SVGని కొత్త Inkscape విండోలో తెరవండి."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Inkscapeలో సవరించండి"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "ఈ ఫోల్డర్‌లో మద్దతు ఉన్న ఫైళ్లు లేవు."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "ఈ ఫైల్‌ను చదవలేకపోయాం: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "చూపించు"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "మద్దతు ఉన్నవన్నీ"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV స్టిచ్ డేటా"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "ఎంబ్రాయిడరీ"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG మూల ఫైల్"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "సరిపడు"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "ఫోల్డర్"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "ఫైళ్లను చూడటానికి ఫోల్డర్‌పై రెండుసార్లు క్లిక్ చేయండి."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "ఫైళ్లను చూడటానికి ఫోల్డర్‌పై రెండుసార్లు క్లిక్ చేయండి."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscapeను ప్రారంభించలేకపోయాం: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG ఫైళ్లను సవరించడానికి Inkscape అవసరం."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "SVG ప్రివ్యూ కోసం సక్రియంగా కాన్ఫిగర్ చేసిన Ink/Stitch ఇన్‌స్టాలేషన్ అవసరం."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "ఈ ఫోల్డర్‌ను యాక్సెస్ చేయలేము."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "మార్చిన సమయం: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "చెల్లుబాటు అయ్యే ఎంబ్రాయిడరీ ఫైల్ కాదు"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "తెరువు"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "ఎంచుకున్న ఎంబ్రాయిడరీ ఫైల్‌ను తెరవండి."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "ప్రివ్యూ"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "సక్రియ Ink/Stitch ఇన్‌స్టాలేషన్‌తో ఈ SVG నుంచి స్టిచ్ డేటాను రూపొందించండి."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "సక్రియ Ink/Stitch స్క్రిప్ట్‌ను లేదా దాని కాన్ఫిగర్ చేసిన Python లాంచర్‌ను అమలు చేయలేము."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "ఈ ఫోల్డర్‌ను చదవలేకపోయాం: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "ఇటీవలివి:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— డైరెక్టరీని ఎంచుకోండి —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "రిఫ్రెష్ చేయి"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "ఫైళ్లను వెతకండి"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "తెరవడానికి ఫైల్‌ను ఎంచుకోండి."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "పరిమాణం: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: కనుగొనబడలేదు."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch పొడిగింపు: తనిఖీ చేయలేకపోయాం. మళ్లీ ప్రయత్నించడానికి Tools... ఉపయోగించండి."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch పొడిగింపు: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch పొడిగింపు: Inkscape పొడిగింపు డైరెక్టరీల్లో కనుగొనబడలేదు."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch పొడిగింపు: Inkscapeను కాన్ఫిగర్ చేసే వరకు తనిఖీ చేయలేము."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch పొడిగింపు: ఇంకా తనిఖీ చేయలేదు. తనిఖీ చేయడానికి Tools... ఉపయోగించండి."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "SVG ప్రివ్యూ నేరుగా Ink/Stitch ద్వారా నడుస్తుంది; సవరించడానికి Inkscape అవసరం."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "SVG ప్రివ్యూ నేరుగా Ink/Stitch ద్వారా నడుస్తుంది; సవరించడానికి మాత్రమే Inkscape ఉపయోగించబడుతుంది."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "స్టిచ్‌లు: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG మూల ఫైల్. స్టిచ్ ప్రివ్యూ కోసం Inkscape అవసరం."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG మూల ఫైల్. Inkscape/Ink/Stitchతో స్టిచ్ డేటాను రూపొందించడానికి ప్రివ్యూ ఎంచుకోండి."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVGను రెండర్ చేయలేకపోయాం."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "ఈ SVG ఇక్కడ ప్రివ్యూ చేయడానికి చాలా పెద్దది."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "తాత్కాలిక ప్రివ్యూ ఫైల్‌ను సృష్టించలేకపోయాం: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "ఫైల్ తెరువు"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "పరికరాలు..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV స్టిచ్ డేటా"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "ఫోల్డర్"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "ఎంబ్రాయిడరీ"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "మద్దతు లేనిది"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG మూల ఫైల్"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "ఈ ఫైల్ రకాన్ని InkSimలో తెరవలేము."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "పైకి"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "జూమ్ పెంచు"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "జూమ్ తగ్గించు"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "కుట్టు రెండరర్ను ఎంచుకోండి"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "మార్చు"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape పొడిగింపు స్థితిని సేవ్ చేయలేకపోయాం: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "అందుబాటులో లేదు"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim పొడిగింపు ఫోల్డర్‌లు ఏవీ కనుగొనబడలేదు."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape పొడిగింపు ఫోల్డర్‌లను పరిశీలించలేకపోయాం: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "ప్రివ్యూ కమాండ్ మారింది"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "మారిన ఫైళ్లు: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "తాజాగా ఉంది"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "ఇన్‌స్టాల్ చేయాలి"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "స్థితి అందుబాటులో లేదు: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "నవీకరణ అవసరం ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "ప్రస్తుత వినియోగదారు పొడిగింపు (ఇన్‌స్టాల్/నవీకరణ లక్ష్యం): {path} | స్థితి: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim పొడిగింపులను ఇన్‌స్టాల్ చేయి / నవీకరించు"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim పొడిగింపు ఫోల్డర్‌లో కొన్ని ఫైళ్లు ఇప్పటికే ఉన్నాయి. భర్తీ చేయాల్సినవిగా జాబితా చేసిన ఫైళ్లలో మీ మార్పులు ఉండవచ్చు. మిగతా జాబితా చేసిన ఫైళ్లు అలాగే ఉంటాయి; వాటిని ఎప్పటికీ తొలగించము.\n\nభర్తీ చేయాల్సిన ఫైళ్లు:\n{replace_files}\n\nఉంచాల్సిన ఫైళ్లు:\n{preserve_files}\n\nకొనసాగించాలా?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSim Inkscape పొడిగింపులను ఇన్‌స్టాల్ చేయలేకపోయాం: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim Inkscape పొడిగింపులు {path}లో ఇన్‌స్టాల్ చేయబడ్డాయి లేదా నవీకరించబడ్డాయి. వాటిని లోడ్ చేయడానికి Inkscapeను మళ్లీ ప్రారంభించండి."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "ఏవీ లేవు"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "సిస్టమ్ పాత్‌లో Inkscape కనుగొనబడలేదు."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscape ప్రాధాన్యతలను చదవలేకపోయాం: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscape ప్రాధాన్యతలను నవీకరించలేకపోయాం: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscape పొడిగింపు డైరెక్టరీలను చదవలేకపోయాం: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape స్పందించే వరకు వేచి ఉంది…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python ఇంటర్‌ప్రెటర్: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "కొత్త Python ఇంటర్‌ప్రెటర్‌ను వర్తింపజేయడానికి Inkscapeను మళ్లీ ప్రారంభించండి."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "సెట్ చేయలేదు"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "పాత InkSim కాపీలను తొలగించు"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "జాబితాలోని వినియోగదారు పొడిగింపు ఫోల్డర్‌లు, వాటిలోని అన్ని ఫైళ్లతో సహా, శాశ్వతంగా తొలగించబడతాయి. ప్రస్తుత ఇన్‌స్టాల్/నవీకరణ లక్ష్యాన్ని, సిస్టమ్ పొడిగింపు ఫోల్డర్‌లను తొలగించము.\n\n{directories}\n\nకొనసాగించాలా?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "పాత InkSim పొడిగింపు ఫోల్డర్‌ను తొలగించలేకపోయాం: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "పాత InkSim పొడిగింపు ఫోల్డర్‌లు తొలగించబడ్డాయి. పొడిగింపుల జాబితాను రిఫ్రెష్ చేయడానికి Inkscapeను మళ్లీ ప్రారంభించండి."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "సక్రియ Ink/Stitch ఇన్‌స్టాలేషన్ నవీకరించబడింది: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscapeను తనిఖీ చేస్తోంది: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim కాన్ఫిగరేషన్‌ను సేవ్ చేయలేకపోయాం: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "గుర్తించిన సెటప్‌ను InkSim కాన్ఫిగరేషన్‌లో సేవ్ చేశాం."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "తనిఖీ చేసిన Inkscape ఎక్జిక్యూటబుల్: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "InkSim పొడిగింపు ఫోల్డర్‌లను పరిశీలించలేకపోయాం."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Ink/Stitch ఇన్‌స్టాలేషన్‌లు కనుగొనబడ్డాయి: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch ఇన్‌స్టాలేషన్ ఏదీ కనుగొనబడలేదు."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Python ఇంటర్‌ప్రెటర్ ఇప్పటికే కాన్ఫిగర్ చేయబడింది: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python ఇంటర్‌ప్రెటర్ నవీకరించబడింది: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "అవసరమైన లాంచర్ '{command}' కనుగొనబడలేదు; ప్రాధాన్యతను మార్చలేదు."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape కనుగొనబడలేదు. సెటప్‌ను పరిశీలించడానికి దాని ఎక్జిక్యూటబుల్‌ను ఎంచుకోండి."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Inkscape ప్రాధాన్యతలు తనిఖీ చేయబడ్డాయి: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python ఇంటర్‌ప్రెటర్‌ను తనిఖీ చేయలేకపోయాం లేదా నవీకరించలేకపోయాం: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "వినియోగదారు పొడిగింపు డైరెక్టరీ అందుబాటులో లేనందున Python ఇంటర్‌ప్రెటర్ ప్రాధాన్యతను తనిఖీ చేయలేదు."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscapeను పరిశీలించలేకపోయాం: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "నవీకరించిన ఇంటర్‌ప్రెటర్‌ను వర్తింపజేయడానికి Inkscapeను మళ్లీ ప్రారంభించండి."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "సిస్టమ్ పొడిగింపులు: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape {seconds} సెకన్లలో స్పందించలేదు."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "వినియోగదారు పొడిగింపులు: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape వెర్షన్: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "పరిశీలించడానికి Inkscape ఎక్జిక్యూటబుల్‌ను ఎంచుకోండి."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "సిస్టమ్ పొడిగింపులు: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape {seconds} సెకన్లలో స్పందించలేదు. మరో Inkscape ఇన్‌స్టాన్స్ లేదా పొడిగింపు కమ్యూనికేషన్‌ను అడ్డుకుంటూ ఉండవచ్చు. ఇతర Inkscape ఇన్‌స్టాన్స్‌లను మూసివేయండి లేదా అడ్డుకుంటున్న పొడిగింపును నిలిపివేసి, మళ్లీ ప్రయత్నించండి."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "వినియోగదారు పొడిగింపులు: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "అవసరమైన లాంచర్ '{command}' కనుగొనబడలేదు. `uv tool install uvr`తో uvr సాధనాన్ని మీరే ఇన్‌స్టాల్ చేసి, ఈ కాన్ఫిగరేషన్‌ను మళ్లీ అమలు చేయండి. InkSim దీన్ని ఇన్‌స్టాల్ చేయదు."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape వెర్షన్: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "అందుబాటులో లేదు"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "కమాండ్: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "ఇంటర్‌ప్రెటర్: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "స్థానం: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch ఇన్‌స్టాలేషన్ ఏదీ కనుగొనబడలేదు."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "పాత్: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "ఎంబ్రాయిడరీ ఫైల్ను తెరవండి"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "తెరువు..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "ట్రేస్ ఈవెంట్లు"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&పరికరాలు"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "కాన్ఫిగర్ చేయి"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "భాష"
+        "source": "&Language",
+        "translation": "&భాష"
     },
     "menu.language.system_default": {
         "source": "System default",
