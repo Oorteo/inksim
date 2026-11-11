@@ -571,6 +571,26 @@
         "source": "Inkscape",
         "translation": "Inkscape"
     },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Install / Update InkSim extensions"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them."
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Could not install InkSim's Inkscape extensions: {error}"
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "None"
+    },
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "User extensions: {path}"

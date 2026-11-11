@@ -495,6 +495,26 @@
         "source": "Inkscape",
         "translation": "Inkscape"
     },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Nainstalovat / aktualizovat rozšíření InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Ve složce rozšíření InkSim již některé soubory existují. U souborů určených k nahrazení mohou být uživatelské změny. Ostatní uvedené soubory zůstanou zachovány a nebudou smazány.\n\nSoubory k nahrazení:\n{replace_files}\n\nZachované soubory:\n{preserve_files}\n\nPokračovat?",
+        "translation": "Ve složce rozšíření InkSim již některé soubory existují. U souborů určených k nahrazení mohou být uživatelské změny. Ostatní uvedené soubory zůstanou zachovány a nebudou smazány.\n\nSoubory k nahrazení:\n{replace_files}\n\nZachované soubory:\n{preserve_files}\n\nPokračovat?"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Rozšíření InkSim pro Inkscape byla nainstalována nebo aktualizována v umístění {path}. Aby se načetla, restartujte Inkscape."
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Rozšíření InkSim pro Inkscape se nepodařilo nainstalovat: {error}"
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Nic"
+    },
     "integration.inkscape.label": {
         "source": "Inkscape:",
         "translation": "Inkscape:"
