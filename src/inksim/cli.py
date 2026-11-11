@@ -263,7 +263,13 @@ def _run_inkscape_preview(
             raise SystemExit(1)
 
         try:
-            _forward_to_server(parser, args, [csv_path], temporary_input=True)
+            _forward_to_server(
+                parser,
+                args,
+                [csv_path],
+                temporary_input=True,
+                autoplay=True,
+            )
         except SystemExit as error:
             retained = error.code == 0
             raise
@@ -278,6 +284,7 @@ def _forward_to_server(
     input_paths: list[Path],
     *,
     temporary_input: bool | None = None,
+    autoplay: bool | None = None,
 ) -> None:
     """Ask the singleton server to show the first input, then exit the client."""
     _ensure_core_application()
@@ -286,7 +293,7 @@ def _forward_to_server(
         "index": args.index,
         "new_window": args.new_window,
         "path": str(input_paths[0]) if input_paths else None,
-        "autoplay": args.play,
+        "autoplay": args.play if autoplay is None else autoplay,
         "delete_after_load": args.delete_input,
         "temporary_input": (args.temporary_input if temporary_input is None else temporary_input),
         "command_line": sys.argv.copy(),
