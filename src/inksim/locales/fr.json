@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "La langue a été réglée sur {language}. Redémarrer InkSim maintenant pour l'appliquer ?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "Toutes les fenêtres ouvertes d'InkSim seront fermées et le fichier actuel sera rouvert."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "La langue par défaut du système sera utilisée. Redémarrer InkSim maintenant pour l'appliquer ?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "Langue modifiée"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Toutes les fenêtres ouvertes d'InkSim seront fermées et le fichier actuel sera rouvert."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "Ouvrir un fichier de broderie"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Parcourir..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Annuler"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Choisir un dossier"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Échec du processus d’aperçu des points : {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Code de sortie du processus : {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "L’export CSV d’Ink/Stitch a échoué."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "Consultez output.err pour connaître les détails de l’erreur."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Délai d’attente dépassé lors de l’export CSV d’Ink/Stitch."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Export CSV d’Ink/Stitch en cours..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Dimensions : {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Ouvrir ce fichier SVG dans une nouvelle fenêtre Inkscape."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Modifier dans Inkscape"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Aucun fichier compatible dans ce dossier."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Impossible de lire ce fichier : {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Afficher"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Tous les fichiers compatibles"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "Données de points CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Broderie"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "Fichier source SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Ajuster"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Dossier"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Double-cliquez sur le dossier pour parcourir ses fichiers."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Double-cliquez sur le dossier pour parcourir ses fichiers."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Impossible de démarrer Inkscape : {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Inkscape est nécessaire pour modifier les fichiers SVG."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "Une installation active et configurée d’Ink/Stitch est nécessaire pour prévisualiser les fichiers SVG."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Ce dossier n’est pas accessible."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Modifié : {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Fichier de broderie non valide"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Ouvrir"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Ouvrir le fichier de broderie sélectionné."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Aperçu"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Générer les données de points à partir de ce SVG avec l’installation active d’Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Impossible d’exécuter le script Ink/Stitch actif ou son lanceur Python configuré."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Impossible de lire ce dossier : {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Récents :"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— choisir un dossier —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Actualiser"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Rechercher des fichiers"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Sélectionnez un fichier à ouvrir."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Taille : {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape : {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape : introuvable."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Extension Ink/Stitch : vérification impossible. Utilisez Outils... pour réessayer."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Extension Ink/Stitch : {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Extension Ink/Stitch : introuvable dans les dossiers d’extensions d’Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Extension Ink/Stitch : impossible de vérifier tant qu’Inkscape n’est pas configuré."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Extension Ink/Stitch : pas encore vérifiée. Utilisez Outils... pour vérifier."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "L’aperçu SVG utilise directement Ink/Stitch ; la modification nécessite Inkscape."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "L’aperçu SVG utilise directement Ink/Stitch ; Inkscape sert uniquement à la modification."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Points : {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "Fichier source SVG. Inkscape est nécessaire pour prévisualiser les points."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "Fichier source SVG. Choisissez Aperçu pour générer les données de points avec Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "Impossible d’afficher le SVG."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Ce SVG est trop volumineux pour être prévisualisé ici."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Impossible de créer un fichier d’aperçu temporaire : {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Ouvrir un fichier"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Outils..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "Données de points CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Dossier"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Broderie"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Non pris en charge"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "Fichier source SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Ce type de fichier ne peut pas être ouvert dans InkSim."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Remonter"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Zoom avant"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Zoom arrière"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Choisir le moteur de rendu des points"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Modifier"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Impossible d’enregistrer l’état de l’extension Inkscape : {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Indisponible"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Aucun dossier d’extension InkSim trouvé."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Impossible d’examiner les dossiers d’extension Inkscape : {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "La commande d’aperçu a changé"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "Fichiers modifiés : {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "À jour"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Installation nécessaire"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "État indisponible : {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Mise à jour nécessaire ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Extension de l’utilisateur actuel (cible d’installation/mise à jour) : {path} | État : {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Installer / mettre à jour les extensions InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Certains fichiers existent déjà dans le dossier d’extension InkSim. Les fichiers indiqués pour remplacement peuvent contenir des modifications personnelles. Les autres fichiers listés seront conservés et ne seront jamais supprimés.\n\nFichiers à remplacer :\n{replace_files}\n\nFichiers à conserver :\n{preserve_files}\n\nContinuer ?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Impossible d’installer les extensions Inkscape d’InkSim : {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Les extensions Inkscape d’InkSim ont été installées ou mises à jour dans {path}. Redémarrez Inkscape pour les charger."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Aucune"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape :"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape est introuvable dans le chemin système."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Impossible de lire les préférences d’Inkscape : {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Impossible de mettre à jour les préférences d’Inkscape : {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Impossible de lire les dossiers d’extension Inkscape : {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "En attente de la réponse d’Inkscape…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Interpréteur Python : {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Redémarrez Inkscape pour appliquer le nouvel interpréteur Python."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "non défini"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Supprimer les anciennes copies d’InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Les dossiers d’extension utilisateur listés et tous leurs fichiers seront définitivement supprimés. La cible actuelle d’installation/mise à jour et les dossiers d’extension système ne seront pas supprimés.\n\n{directories}\n\nContinuer ?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Impossible de supprimer l’ancien dossier d’extension InkSim : {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Les anciens dossiers d’extension InkSim ont été supprimés. Redémarrez Inkscape pour actualiser la liste de ses extensions."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Installation Ink/Stitch active mise à jour : {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Vérification d’Inkscape : {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Impossible d’enregistrer la configuration d’InkSim : {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Configuration détectée enregistrée dans la configuration d’InkSim."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Exécutable Inkscape vérifié : {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Impossible d’examiner les extensions InkSim."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Installations Ink/Stitch trouvées : {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Aucune installation d’Ink/Stitch trouvée."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "L’interpréteur Python est déjà configuré : {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Interpréteur Python mis à jour : {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "Le lanceur requis « {command} » est introuvable ; la préférence n’a pas été modifiée."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape est introuvable. Choisissez son exécutable pour examiner la configuration."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Préférences d’Inkscape vérifiées : {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Impossible de vérifier ou de mettre à jour l’interpréteur Python : {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "La préférence de l’interpréteur Python n’a pas été vérifiée, car le dossier des extensions utilisateur est indisponible."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Impossible d’examiner Inkscape : {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Redémarrez Inkscape pour appliquer la mise à jour de l’interpréteur."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Extensions système : {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape n’a pas répondu dans les {seconds} secondes."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Extensions utilisateur : {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Version d’Inkscape : {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Choisissez un exécutable Inkscape à examiner."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Extensions système : {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape n’a pas répondu dans les {seconds} secondes. Une autre instance d’Inkscape ou une extension bloque peut-être la communication. Fermez les autres instances d’Inkscape ou désactivez l’extension bloquante, puis réessayez."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Extensions utilisateur : {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "Le lanceur requis « {command} » est introuvable. Installez vous-même l’outil uvr avec `uv tool install uvr`, puis relancez cette configuration. InkSim ne l’installera pas."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Version d’Inkscape : {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Indisponible"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Commande : {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Interpréteur : {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Emplacement : {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Aucune installation d’Ink/Stitch trouvée."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Chemin : {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "Ouvrir un fichier de broderie"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Ouvrir..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "Événements de trace"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Outils"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "Configurer"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Langue"
+        "source": "&Language",
+        "translation": "&Langue"
     },
     "menu.language.system_default": {
         "source": "System default",

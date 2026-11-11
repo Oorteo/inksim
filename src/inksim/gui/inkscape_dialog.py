@@ -672,9 +672,10 @@ class InkscapeIntegrationDialog(QDialog):
             )
             self.remove_old_extensions_button.setEnabled(False)
             self._append_report(
-                _("integration.inkscape.report.inksim_scan_failed").format(
-                    error=_sanitize_path_text(str(error))
-                )
+                _(
+                    "integration.inkscape.report.inksim_scan_failed",
+                    "Could not inspect Inkscape extension folders: {error}",
+                ).format(error=_sanitize_path_text(str(error)))
             )
             QMessageBox.warning(
                 self,

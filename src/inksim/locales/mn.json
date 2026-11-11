@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Хэл {language} болсон. Хэрэгжихийн тулд InkSim-ийг дахин эхлүүлэх үү?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "Бүх нээлттэй InkSim цонхууд хаагдаж, одоогийн файл дахин нээгдэнэ."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Системийн үндсэн хэл ашиглагдана. Хэрэгжихийн тулд InkSim-ийг дахин эхлүүлэх үү?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "Хэл өөрчлөгдсөн"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Бүх нээлттэй InkSim цонхууд хаагдаж, одоогийн файл дахин нээгдэнэ."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "Хатгамал файл нээх"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Үзэх..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Цуцлах"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Хавтас сонгох"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Оёдлын урьдчилан харах боловсруулалт амжилтгүй боллоо: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Процессын гарах код: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV экспорт амжилтгүй боллоо."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "Алдааны дэлгэрэнгүйг output.err файлаас үзнэ үү."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Ink/Stitch CSV экспортын хугацаа хэтэрлээ."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch CSV экспорт хийж байна..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Хэмжээ: {width:.1f} x {height:.1f} мм"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Энэ SVG-г Inkscape-ийн шинэ цонхонд нээх."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Inkscape дээр засах"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Энэ хавтсанд дэмжигдэх файл алга."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Энэ файлыг уншиж чадсангүй: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Харуулах"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Дэмжигдэх бүх файл"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV оёдлын өгөгдөл"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Хатгамал"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG эх файл"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Багтаах"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Хавтас"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Файлуудыг үзэхийн тулд хавтас дээр давхар товшино уу."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Файлуудыг үзэхийн тулд хавтас дээр давхар товшино уу."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape-г эхлүүлж чадсангүй: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG файл засахад Inkscape шаардлагатай."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "SVG-г урьдчилан харахын тулд тохируулсан, идэвхтэй Ink/Stitch суулгалт шаардлагатай."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Энэ хавтас руу хандах боломжгүй."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Өөрчилсөн: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Хатгамлын файл буруу байна"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Нээх"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Сонгосон хатгамлын файлыг нээх."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Урьдчилан харах"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Идэвхтэй Ink/Stitch суулгалтыг ашиглан энэ SVG-ээс оёдлын өгөгдөл үүсгэх."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Идэвхтэй Ink/Stitch скрипт эсвэл тохируулсан Python эхлүүлэгчийг ажиллуулж чадсангүй."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Энэ хавтсыг уншиж чадсангүй: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Сүүлд ашигласан:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— хавтас сонгох —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Шинэчлэх"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Файл хайх"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Нээх файлаа сонгоно уу."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Хэмжээ: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: олдсонгүй."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch өргөтгөл: шалгаж чадсангүй. Дахин оролдохын тулд Tools... хэсгийг ашиглана уу."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch өргөтгөл: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch өргөтгөл: Inkscape-ийн өргөтгөлийн хавтаснуудад олдсонгүй."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch өргөтгөл: Inkscape тохируулагдаагүй тул шалгах боломжгүй."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch өргөтгөл: хараахан шалгаагүй. Шалгахын тулд Tools... хэсгийг ашиглана уу."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "SVG-г урьдчилан харахад Ink/Stitch-г шууд ашиглана; засахад Inkscape шаардлагатай."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "SVG-г урьдчилан харахад Ink/Stitch-г шууд ашиглана; Inkscape зөвхөн засахад хэрэглэгдэнэ."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Оёдол: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG эх файл. Оёдлыг урьдчилан харахад Inkscape шаардлагатай."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG эх файл. Оёдлын өгөгдөл үүсгэхийн тулд Урьдчилан харахыг сонгоно уу."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG-г дүрсэлж чадсангүй."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Энэ SVG энд урьдчилан харахад хэтэрхий том байна."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Урьдчилан харах түр файл үүсгэж чадсангүй: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Файл нээх"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Хэрэгслүүд..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV оёдлын өгөгдөл"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Хавтас"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Хатгамал"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Дэмжигдэхгүй"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG эх файл"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Энэ төрлийн файлыг InkSim дээр нээх боломжгүй."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Дээш"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Томруулах"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Жижигрүүлэх"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Оёдолын рендерер сонгох"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Өөрчлөх"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape өргөтгөлийн төлөвийг хадгалж чадсангүй: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Боломжгүй"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim-ийн өргөтгөлийн хавтас олдсонгүй."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape-ийн өргөтгөлийн хавтаснуудыг шалгаж чадсангүй: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Урьдчилан харах команд өөрчлөгдсөн"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "өөрчлөгдсөн файлууд: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Шинэчлэгдсэн"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Суулгах шаардлагатай"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Төлөв тодорхойгүй: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Шинэчлэх шаардлагатай ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Одоогийн хэрэглэгчийн өргөтгөл (суулгах/шинэчлэх байршил): {path} | Төлөв: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim өргөтгөлүүдийг суулгах / шинэчлэх"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim-ийн өргөтгөлийн хавтсанд зарим файл аль хэдийн байна. Солихоор жагсаасан файлуудад хэрэглэгчийн өөрчлөлт байж болзошгүй. Бусад жагсаасан файлыг хэвээр үлдээх бөгөөд устгахгүй.\n\nСолих файлууд:\n{replace_files}\n\nХэвээр үлдээх файлууд:\n{preserve_files}\n\nҮргэлжлүүлэх үү?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSim-ийн Inkscape өргөтгөлүүдийг суулгаж чадсангүй: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim-ийн Inkscape өргөтгөлүүдийг {path} байршилд суулгалаа эсвэл шинэчиллээ. Ачаалахын тулд Inkscape-г дахин эхлүүлнэ үү."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Байхгүй"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape системийн замаас олдсонгүй."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscape-ийн тохиргоог уншиж чадсангүй: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscape-ийн тохиргоог шинэчилж чадсангүй: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscape-ийн өргөтгөлийн хавтаснуудыг уншиж чадсангүй: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape хариу өгөхийг хүлээж байна…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python тайлбарлагч: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Шинэ Python тайлбарлагчийг ашиглахын тулд Inkscape-г дахин эхлүүлнэ үү."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "тохируулаагүй"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Хуучин InkSim хуулбаруудыг устгах"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Жагсаасан хэрэглэгчийн өргөтгөлийн хавтас болон доторх бүх файл бүрмөсөн устна. Одоогийн суулгах/шинэчлэх байршил болон системийн өргөтгөлийн хавтас устахгүй.\n\n{directories}\n\nҮргэлжлүүлэх үү?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Хуучин InkSim өргөтгөлийн хавтсыг устгаж чадсангүй: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Хуучин InkSim өргөтгөлийн хавтаснуудыг устгалаа. Өргөтгөлийн жагсаалтыг шинэчлэхийн тулд Inkscape-г дахин эхлүүлнэ үү."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Идэвхтэй Ink/Stitch суулгалтыг шинэчиллээ: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape-г шалгаж байна: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim-ийн тохиргоог хадгалж чадсангүй: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Илрүүлсэн тохиргоог InkSim-ийн тохиргоонд хадгаллаа."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Шалгасан Inkscape ажиллуулах файл: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape-ийн өргөтгөлийн хавтаснуудыг шалгаж чадсангүй: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Олдсон Ink/Stitch суулгалт: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch суулгалт олдсонгүй."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Python тайлбарлагч аль хэдийн тохируулагдсан байна: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python тайлбарлагчийг шинэчиллээ: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "Шаардлагатай '{command}' эхлүүлэгч олдсонгүй; тохиргоог өөрчлөлгүй үлдээлээ."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape олдсонгүй. Тохиргоог шалгахын тулд ажиллуулах файлыг нь сонгоно уу."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Шалгасан Inkscape тохиргоо: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python тайлбарлагчийг шалгаж эсвэл шинэчилж чадсангүй: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Хэрэглэгчийн өргөтгөлийн хавтас боломжгүй тул Python тайлбарлагчийн тохиргоог шалгасангүй."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape-г шалгаж чадсангүй: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Шинэчилсэн тайлбарлагчийг ашиглахын тулд Inkscape-г дахин эхлүүлнэ үү."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Системийн өргөтгөлүүд: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape {seconds} секундын дотор хариу өгсөнгүй."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Хэрэглэгчийн өргөтгөлүүд: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape хувилбар: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Тохиргоог шалгахын тулд Inkscape ажиллуулах файлыг сонгоно уу."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Системийн өргөтгөлүүд: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape {seconds} секундын дотор хариу өгсөнгүй. Өөр Inkscape процесс эсвэл өргөтгөл холболтыг саатуулж байж магадгүй. Бусад Inkscape процессыг хаах эсвэл саатуулж буй өргөтгөлийг идэвхгүй болгоод дахин оролдоно уу."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Хэрэглэгчийн өргөтгөлүүд: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "Шаардлагатай '{command}' эхлүүлэгч олдсонгүй. `uv tool install uvr` командаар uvr хэрэгслийг өөрөө суулгаад энэ тохиргоог дахин ажиллуулна уу. InkSim үүнийг суулгахгүй."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape хувилбар: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Боломжгүй"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Команд: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Тайлбарлагч: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Байршил: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch суулгалт олдсонгүй."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Зам: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "Хатгамал файл нээх"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Нээх..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "Үйл явдлыг мөрдөх"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Хэрэгслүүд"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "Тохиргоо"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Хэл"
+        "source": "&Language",
+        "translation": "&Хэл"
     },
     "menu.language.system_default": {
         "source": "System default",

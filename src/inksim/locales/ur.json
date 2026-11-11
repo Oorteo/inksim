@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "زبان {language} پر سیٹ ہو گئی ہے۔ کیا اب انک سِم کو دوبارہ شروع کریں تاکہ لاگو ہو؟"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "تمام کھلی InkSim ونڈوز بند ہو جائیں گی اور موجودہ فائل دوبارہ کھولی جائے گی۔"
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "سسٹم ڈیفالٹ زبان استعمال ہوگی۔ کیا اب انک سِم کو دوبارہ شروع کریں تاکہ لاگو ہو؟"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "زبان تبدیل ہو گئی"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "تمام کھلی InkSim ونڈوز بند ہو جائیں گی اور موجودہ فائل دوبارہ کھولی جائے گی۔"
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "کڑھائی فائل کھولیں"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "براؤز کریں..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "منسوخ کریں"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "ڈائریکٹری منتخب کریں"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "اسٹچ پری ویو کا عمل ناکام ہو گیا: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "عمل کا اختتامی کوڈ: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV ایکسپورٹ ناکام ہو گیا۔"
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "غلطی کی تفصیلات کے لیے output.err دیکھیں۔"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Ink/Stitch CSV ایکسپورٹ کا وقت ختم ہو گیا۔"
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch CSV ایکسپورٹ چل رہا ہے..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "سائز: {width:.1f} x {height:.1f} ملی میٹر"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "اس SVG کو Inkscape کی نئی ونڈو میں کھولیں۔"
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Inkscape میں ترمیم کریں"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "اس فولڈر میں کوئی معاون فائل نہیں ہے۔"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "یہ فائل نہیں پڑھی جا سکتی: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "دکھائیں"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "تمام معاون فائلیں"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV اسٹچ ڈیٹا"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "کڑھائی"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG ماخذ"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "فٹ کریں"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "فولڈر"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "اس کی فائلیں براؤز کرنے کے لیے فولڈر پر ڈبل کلک کریں۔"
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "اس کی فائلیں براؤز کرنے کے لیے فولڈر پر ڈبل کلک کریں۔"
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape شروع نہیں ہو سکا: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG فائلوں میں ترمیم کے لیے Inkscape درکار ہے۔"
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "SVG پری ویو کے لیے فعال اور ترتیب شدہ Ink/Stitch انسٹالیشن درکار ہے۔"
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "اس فولڈر تک رسائی ممکن نہیں۔"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "ترمیم شدہ: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "یہ کڑھائی کی درست فائل نہیں ہے"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "کھولیں"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "منتخب کڑھائی کی فائل کھولیں۔"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "پری ویو"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "فعال Ink/Stitch انسٹالیشن استعمال کرکے اس SVG سے اسٹچ ڈیٹا بنائیں۔"
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "فعال Ink/Stitch اسکرپٹ یا اس کا ترتیب شدہ Python لانچر نہیں چلایا جا سکتا۔"
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "یہ فولڈر نہیں پڑھا جا سکتا: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "حالیہ:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— ڈائریکٹری منتخب کریں —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "تازہ کریں"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "فائلیں تلاش کریں"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "کھولنے کے لیے فائل منتخب کریں۔"
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "سائز: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: نہیں ملا۔"
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch ایکسٹینشن: جانچ نہیں ہو سکی۔ دوبارہ کوشش کے لیے Tools... استعمال کریں۔"
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch ایکسٹینشن: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch ایکسٹینشن: Inkscape کی ایکسٹینشن ڈائریکٹریز میں نہیں ملی۔"
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch ایکسٹینشن: Inkscape ترتیب دیے بغیر جانچ نہیں ہو سکتی۔"
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch ایکسٹینشن: ابھی جانچی نہیں گئی۔ جانچنے کے لیے Tools... استعمال کریں۔"
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "SVG پری ویو براہِ راست Ink/Stitch کے ذریعے چلتا ہے؛ ترمیم کے لیے Inkscape درکار ہے۔"
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "SVG پری ویو براہِ راست Ink/Stitch کے ذریعے چلتا ہے؛ Inkscape صرف ترمیم کے لیے استعمال ہوتا ہے۔"
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "اسٹچز: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG ماخذ۔ اسٹچ پری ویو کے لیے Inkscape درکار ہے۔"
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG ماخذ۔ Inkscape/Ink/Stitch سے اسٹچ ڈیٹا بنانے کے لیے Preview منتخب کریں۔"
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG رینڈر نہیں کیا جا سکا۔"
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "یہ SVG یہاں پری ویو کرنے کے لیے بہت بڑی ہے۔"
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "عارضی پری ویو فائل نہیں بنائی جا سکی: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "فائل کھولیں"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Tools..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV اسٹچ ڈیٹا"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "فولڈر"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "کڑھائی"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "غیر معاون"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG ماخذ"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "یہ فائل قسم InkSim میں نہیں کھل سکتی۔"
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "اوپر"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "زوم اِن"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "زوم آؤٹ"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "ٹانکا رینڈرر منتخب کریں"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "تبدیل کریں"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape ایکسٹینشن کی حالت محفوظ نہیں ہو سکی: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "دستیاب نہیں"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim کا کوئی ایکسٹینشن فولڈر نہیں ملا۔"
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape کے ایکسٹینشن فولڈرز کی جانچ نہیں ہو سکی: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "پری ویو کمانڈ تبدیل ہو گئی"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "تبدیل شدہ فائلیں: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "تازہ ترین"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "انسٹالیشن درکار ہے"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "حالت دستیاب نہیں: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "اپ ڈیٹ درکار ہے ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "موجودہ صارف ایکسٹینشن (انسٹال/اپ ڈیٹ کا ہدف): {path} | حالت: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim ایکسٹینشنز انسٹال / اپ ڈیٹ کریں"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim ایکسٹینشن فولڈر میں کچھ فائلیں پہلے سے موجود ہیں۔ جن فائلوں کو بدلنے کے لیے درج کیا گیا ہے ان میں صارف کی تبدیلیاں ہو سکتی ہیں۔ فہرست میں شامل باقی فائلیں برقرار رہیں گی اور کبھی حذف نہیں ہوں گی۔\n\nبدلنے والی فائلیں:\n{replace_files}\n\nبرقرار رہنے والی فائلیں:\n{preserve_files}\n\nجاری رکھیں؟"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSim کی Inkscape ایکسٹینشنز انسٹال نہیں ہو سکیں: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim کی Inkscape ایکسٹینشنز {path} میں انسٹال یا اپ ڈیٹ ہو گئیں۔ انہیں لوڈ کرنے کے لیے Inkscape دوبارہ شروع کریں۔"
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "کوئی نہیں"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape سسٹم پاتھ میں نہیں ملا۔"
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscape کی ترجیحات پڑھی نہیں جا سکیں: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscape کی ترجیحات اپ ڈیٹ نہیں ہو سکیں: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscape کی ایکسٹینشن ڈائریکٹریز پڑھی نہیں جا سکیں: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape کے جواب کا انتظار ہے…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python انٹرپریٹر: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "نیا Python انٹرپریٹر لاگو کرنے کے لیے Inkscape دوبارہ شروع کریں۔"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "ترتیب نہیں دیا گیا"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "InkSim کی پرانی نقول ہٹائیں"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "درج کردہ صارف ایکسٹینشن فولڈرز اور ان کے اندر موجود تمام فائلیں مستقل طور پر حذف ہو جائیں گی۔ موجودہ انسٹال/اپ ڈیٹ کا ہدف اور سسٹم ایکسٹینشن فولڈرز حذف نہیں ہوں گے۔\n\n{directories}\n\nجاری رکھیں؟"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "InkSim کا پرانا ایکسٹینشن فولڈر ہٹایا نہیں جا سکا: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "InkSim کے پرانے ایکسٹینشن فولڈرز ہٹا دیے گئے۔ ایکسٹینشنز کی فہرست تازہ کرنے کے لیے Inkscape دوبارہ شروع کریں۔"
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "فعال Ink/Stitch انسٹالیشن اپ ڈیٹ ہو گئی: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape کی جانچ ہو رہی ہے: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim کی ترتیب محفوظ نہیں ہو سکی: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "دریافت شدہ سیٹ اپ InkSim کی ترتیب میں محفوظ کر دیا گیا۔"
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Inkscape کے قابلِ اجرا پروگرام کی جانچ کی: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape کے ایکسٹینشن فولڈرز کی جانچ نہیں ہو سکی: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Ink/Stitch کی انسٹالیشنز ملیں: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch کی کوئی انسٹالیشن نہیں ملی۔"
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Python انٹرپریٹر پہلے ہی ترتیب دیا گیا ہے: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python انٹرپریٹر اپ ڈیٹ کر دیا گیا: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "درکار لانچر '{command}' نہیں ملا؛ ترجیح میں کوئی تبدیلی نہیں کی گئی۔"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape نہیں ملا۔ سیٹ اپ کی جانچ کے لیے اس کا قابلِ اجرا پروگرام منتخب کریں۔"
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Inkscape کی ترجیحات کی جانچ کی: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python انٹرپریٹر کی جانچ یا اپ ڈیٹ نہیں ہو سکی: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Python انٹرپریٹر کی ترجیح نہیں جانچی گئی کیونکہ صارف کی ایکسٹینشن ڈائریکٹری دستیاب نہیں ہے۔"
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape کی جانچ نہیں ہو سکی: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "اپ ڈیٹ شدہ انٹرپریٹر لاگو کرنے کے لیے Inkscape دوبارہ شروع کریں۔"
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "سسٹم ایکسٹینشنز: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape نے {seconds} سیکنڈ میں جواب نہیں دیا۔"
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "صارف کی ایکسٹینشنز: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape ورژن: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "جانچ کے لیے Inkscape کا قابلِ اجرا پروگرام منتخب کریں۔"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "سسٹم ایکسٹینشنز: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape نے {seconds} سیکنڈ میں جواب نہیں دیا۔ ممکن ہے کوئی دوسرا Inkscape سیشن یا ایکسٹینشن رابطے میں رکاوٹ ڈال رہا ہو۔ دوسرے Inkscape سیشن بند کریں یا رکاوٹ ڈالنے والی ایکسٹینشن غیر فعال کریں، پھر دوبارہ کوشش کریں۔"
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "صارف کی ایکسٹینشنز: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "درکار لانچر '{command}' نہیں ملا۔ uvr ٹول خود `uv tool install uvr` سے انسٹال کریں، پھر یہ ترتیب دوبارہ چلائیں۔ InkSim اسے انسٹال نہیں کرے گا۔"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape ورژن: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "دستیاب نہیں"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "کمانڈ: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "انٹرپریٹر: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "مقام: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch کی کوئی انسٹالیشن نہیں ملی۔"
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "پاتھ: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "کڑھائی فائل کھولیں"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "کھولیں..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "ٹریس ایونٹس"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&ٹولز"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "ترتیب"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "زبان"
+        "source": "&Language",
+        "translation": "&زبان"
     },
     "menu.language.system_default": {
         "source": "System default",

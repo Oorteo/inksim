@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Ngôn ngữ đã được đặt thành {language}. Khởi động lại InkSim ngay để áp dụng không?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "Tất cả cửa sổ InkSim đang mở sẽ được đóng và tệp hiện tại sẽ được mở lại."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Ngôn ngữ mặc định của hệ thống sẽ được sử dụng. Khởi động lại InkSim ngay để áp dụng không?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "Đã thay đổi ngôn ngữ"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Tất cả cửa sổ InkSim đang mở sẽ được đóng và tệp hiện tại sẽ được mở lại."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "Mở tệp thêu"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Duyệt..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Hủy"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Chọn thư mục"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Quá trình xem trước đường thêu thất bại: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Mã thoát của tiến trình: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Không thể xuất CSV từ Ink/Stitch."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "Xem output.err để biết chi tiết lỗi."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Quá thời gian xuất CSV từ Ink/Stitch."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Đang xuất CSV từ Ink/Stitch..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Kích thước: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Mở SVG này trong một cửa sổ Inkscape mới."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Chỉnh sửa bằng Inkscape"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Không có tệp nào được hỗ trợ trong thư mục này."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Không thể đọc tệp này: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Hiển thị"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Tất cả định dạng được hỗ trợ"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "Dữ liệu đường thêu CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Tệp thêu"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "Tệp SVG nguồn"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Vừa khung"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Thư mục"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Nhấp đúp vào thư mục để duyệt các tệp bên trong."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Nhấp đúp vào thư mục để duyệt các tệp bên trong."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Không thể khởi chạy Inkscape: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Cần có Inkscape để chỉnh sửa tệp SVG."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "Cần có bản cài đặt Ink/Stitch đang hoạt động và đã cấu hình để xem trước SVG."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Không thể truy cập thư mục này."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Đã sửa đổi: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Không phải tệp thêu hợp lệ"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Mở"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Mở tệp thêu đã chọn."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Xem trước"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Dùng bản cài đặt Ink/Stitch đang hoạt động để tạo dữ liệu đường thêu từ SVG này."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Không thể chạy tập lệnh Ink/Stitch đang hoạt động hoặc trình khởi chạy Python đã cấu hình."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Không thể đọc thư mục này: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Gần đây:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— chọn thư mục —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Làm mới"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Tìm tệp"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Chọn tệp để mở."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Kích thước: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: không tìm thấy."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Tiện ích mở rộng Ink/Stitch: không thể kiểm tra. Dùng Công cụ... để thử lại."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Tiện ích mở rộng Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Tiện ích mở rộng Ink/Stitch: không tìm thấy trong các thư mục tiện ích mở rộng của Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Tiện ích mở rộng Ink/Stitch: không thể kiểm tra cho đến khi cấu hình Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Tiện ích mở rộng Ink/Stitch: chưa được kiểm tra. Dùng Công cụ... để kiểm tra."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "Xem trước SVG chạy trực tiếp qua Ink/Stitch; cần Inkscape để chỉnh sửa."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "Xem trước SVG chạy trực tiếp qua Ink/Stitch; chỉ cần Inkscape để chỉnh sửa."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Số mũi thêu: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "Tệp SVG nguồn. Cần Inkscape để xem trước đường thêu."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "Tệp SVG nguồn. Chọn Xem trước để tạo dữ liệu đường thêu bằng Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "Không thể kết xuất SVG này."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "SVG này quá lớn để xem trước tại đây."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Không thể tạo tệp xem trước tạm thời: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Mở tệp"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Công cụ..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "Dữ liệu đường thêu CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Thư mục"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Tệp thêu"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Không được hỗ trợ"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "Tệp SVG nguồn"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "InkSim không thể mở loại tệp này."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Lên"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Phóng to"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Thu nhỏ"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Chọn trình kết xuất mũi may"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Thay đổi"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Không thể lưu trạng thái tiện ích mở rộng Inkscape: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Không khả dụng"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Không tìm thấy thư mục tiện ích mở rộng InkSim nào."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Không thể kiểm tra các thư mục tiện ích mở rộng của Inkscape: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Lệnh xem trước đã thay đổi"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "các tệp đã thay đổi: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Đã cập nhật"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Cần cài đặt"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Trạng thái không khả dụng: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Cần cập nhật ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Tiện ích mở rộng của người dùng hiện tại (đích cài đặt/cập nhật): {path} | Trạng thái: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Cài đặt / Cập nhật tiện ích mở rộng InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Một số tệp đã có trong thư mục tiện ích mở rộng InkSim. Các tệp được liệt kê để thay thế có thể chứa thay đổi của bạn. Những tệp khác trong danh sách sẽ được giữ nguyên và không bao giờ bị xóa.\n\nCác tệp cần thay thế:\n{replace_files}\n\nCác tệp cần giữ lại:\n{preserve_files}\n\nTiếp tục?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Không thể cài đặt tiện ích mở rộng Inkscape của InkSim: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Đã cài đặt hoặc cập nhật tiện ích mở rộng Inkscape của InkSim tại {path}. Hãy khởi động lại Inkscape để tải chúng."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Không có"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Không tìm thấy Inkscape trong đường dẫn hệ thống."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Không thể đọc tùy chọn Inkscape: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Không thể cập nhật tùy chọn Inkscape: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Không thể đọc các thư mục tiện ích mở rộng của Inkscape: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Đang chờ Inkscape phản hồi…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Trình thông dịch Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Khởi động lại Inkscape để áp dụng trình thông dịch Python mới."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "chưa đặt"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Xóa các bản InkSim cũ"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Các thư mục tiện ích mở rộng của người dùng được liệt kê cùng toàn bộ tệp bên trong sẽ bị xóa vĩnh viễn. Đích cài đặt/cập nhật hiện tại và các thư mục tiện ích mở rộng hệ thống sẽ không bị xóa.\n\n{directories}\n\nTiếp tục?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Không thể xóa thư mục tiện ích mở rộng InkSim cũ: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Đã xóa các thư mục tiện ích mở rộng InkSim cũ. Hãy khởi động lại Inkscape để làm mới danh sách tiện ích mở rộng."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Đã cập nhật bản cài đặt Ink/Stitch đang hoạt động: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Đang kiểm tra Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Không thể lưu cấu hình InkSim: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Đã lưu thiết lập được phát hiện vào cấu hình InkSim."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Đã kiểm tra tệp thực thi Inkscape: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Không thể kiểm tra các thư mục tiện ích mở rộng InkSim."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Số bản cài đặt Ink/Stitch được tìm thấy: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Không tìm thấy bản cài đặt Ink/Stitch nào."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Trình thông dịch Python đã được cấu hình: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Đã cập nhật trình thông dịch Python: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "Không tìm thấy trình khởi chạy bắt buộc '{command}'; tùy chọn được giữ nguyên."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Không tìm thấy Inkscape. Chọn tệp thực thi của Inkscape để kiểm tra thiết lập."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Đã kiểm tra tùy chọn Inkscape: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Không thể kiểm tra hoặc cập nhật trình thông dịch Python: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Không kiểm tra tùy chọn trình thông dịch Python vì thư mục tiện ích mở rộng của người dùng không khả dụng."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Không thể kiểm tra Inkscape: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Khởi động lại Inkscape để áp dụng trình thông dịch đã cập nhật."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Tiện ích mở rộng hệ thống: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape không phản hồi trong vòng {seconds} giây."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Tiện ích mở rộng của người dùng: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Phiên bản Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Chọn tệp thực thi Inkscape để kiểm tra."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Tiện ích mở rộng hệ thống: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape không phản hồi trong vòng {seconds} giây. Một phiên bản Inkscape khác hoặc một tiện ích mở rộng có thể đang chặn giao tiếp. Đóng các phiên bản Inkscape khác hoặc tắt tiện ích mở rộng gây chặn, rồi thử lại."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Tiện ích mở rộng của người dùng: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "Không tìm thấy trình khởi chạy bắt buộc '{command}'. Hãy tự cài đặt công cụ uvr bằng `uv tool install uvr`, rồi chạy lại cấu hình này. InkSim sẽ không cài đặt công cụ này."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Phiên bản Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Không khả dụng"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Lệnh: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Trình thông dịch: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Vị trí: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Không tìm thấy bản cài đặt Ink/Stitch nào."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Đường dẫn: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "Mở tệp thêu"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Mở..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "Sự kiện theo dõi"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Công cụ"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "Cấu hình"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Ngôn ngữ"
+        "source": "&Language",
+        "translation": "&Ngôn ngữ"
     },
     "menu.language.system_default": {
         "source": "System default",

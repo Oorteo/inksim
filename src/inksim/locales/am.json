@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "ቋንቋው ወደ {language} ተቀይሯል። ተግባራዊ ለማድረግ ኢንክሲምን አሁን እንደገና ያስጀምሩ?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "ሁሉም ክፍት የInkSim መስኮቶች ይዘጋሉ እና የአሁኑ ፋይል እንደገና ይከፈታል።"
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "የስርዓቱ ነባሪ ቋንቋ ጥቅም ላይ ይውላል። ተግባራዊ ለማድረግ ኢንክሲምን አሁን እንደገና ያስጀምሩ?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "ቋንቋ ተቀይሯል"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "ሁሉም ክፍት የInkSim መስኮቶች ይዘጋሉ እና የአሁኑ ፋይል እንደገና ይከፈታል።"
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "የጥልፍ ፋይል ክፈት"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "አስስ..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "ይቅር"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "ማውጫ ምረጥ"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "የስፌት ቅድመ እይታ ሂደቱ አልተሳካም፦ {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "የሂደቱ መውጫ ኮድ፦ {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "የInk/Stitch CSV ማውጣት አልተሳካም።"
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "የስህተቱን ዝርዝር ለማየት output.err ይመልከቱ።"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "የInk/Stitch CSV ማውጣት ጊዜው አልቋል።"
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "የInk/Stitch CSV ማውጣት በሂደት ላይ ነው..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "መጠን፦ {width:.1f} x {height:.1f} ሚሜ"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "ይህን SVG በአዲስ የInkscape መስኮት ይክፈቱ።"
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "በInkscape አርትዕ አድርግ"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "በዚህ አቃፊ ውስጥ የሚደገፉ ፋይሎች የሉም።"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "ይህን ፋይል ማንበብ አልተቻለም፦ {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "አሳይ"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "ሁሉም የሚደገፉ"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "የCSV ስፌት ውሂብ"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "ጥልፍ"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "የSVG ምንጭ"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "አስማማ"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "አቃፊ"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "ፋይሎቹን ለማሰስ አቃፊውን ሁለት ጊዜ ጠቅ ያድርጉ።"
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "ፋይሎቹን ለማሰስ አቃፊውን ሁለት ጊዜ ጠቅ ያድርጉ።"
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape ማስጀመር አልተቻለም፦ {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG ፋይሎችን ለማርትዕ Inkscape ያስፈልጋል።"
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "የSVG ቅድመ እይታን ለማየት የተዋቀረ እና ንቁ የInk/Stitch ጭነት ያስፈልጋል።"
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "ይህ አቃፊ ሊደረስበት አይችልም።"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "የተቀየረበት ጊዜ፦ {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "ትክክለኛ የጥልፍ ፋይል አይደለም"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "ክፈት"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "የተመረጠውን የጥልፍ ፋይል ክፈት።"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "ቅድመ እይታ"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "ንቁውን የInk/Stitch ጭነት በመጠቀም ከዚህ SVG የስፌት ውሂብ ፍጠር።"
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "ንቁውን የInk/Stitch ስክሪፕት ወይም የተዋቀረውን የPython ማስነሻ ማስኬድ አይቻልም።"
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "ይህን አቃፊ ማንበብ አልተቻለም፦ {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "የቅርብ ጊዜ፦"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— ማውጫ ምረጥ —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "አድስ"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "ፋይሎችን ፈልግ"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "ለመክፈት ፋይል ምረጥ።"
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "መጠን፦ {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape፦ {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape፦ አልተገኘም።"
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "የInk/Stitch ቅጥያ፦ ማረጋገጥ አልተቻለም። እንደገና ለመሞከር መሣሪያዎች...ን ይጠቀሙ።"
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "የInk/Stitch ቅጥያ፦ {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "የInk/Stitch ቅጥያ፦ በInkscape ቅጥያ ማውጫዎች ውስጥ አልተገኘም።"
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "የInk/Stitch ቅጥያ፦ Inkscape እስኪዋቀር ድረስ ማረጋገጥ አይቻልም።"
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "የInk/Stitch ቅጥያ፦ ገና አልተመረመረም። ለማረጋገጥ መሣሪያዎች...ን ይጠቀሙ።"
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "የSVG ቅድመ እይታ በቀጥታ በInk/Stitch ይሰራል፤ ለማርትዕ Inkscape ያስፈልጋል።"
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "የSVG ቅድመ እይታ በቀጥታ በInk/Stitch ይሰራል፤ Inkscape ለማርትዕ ብቻ ይጠቅማል።"
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "ስፌቶች፦ {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "የSVG ምንጭ። የስፌት ቅድመ እይታን ለማየት Inkscape ያስፈልጋል።"
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "የSVG ምንጭ። በInkscape/Ink/Stitch የስፌት ውሂብ ለማመንጨት ቅድመ እይታን ይምረጡ።"
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG ን ማሳየት አልተቻለም።"
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "ይህ SVG እዚህ ለቅድመ እይታ ከመጠን በላይ ትልቅ ነው።"
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "ጊዜያዊ የቅድመ እይታ ፋይል መፍጠር አልተቻለም፦ {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "ፋይል ክፈት"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "መሣሪያዎች..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "የCSV ስፌት ውሂብ"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "አቃፊ"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "ጥልፍ"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "የማይደገፍ"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "የSVG ምንጭ"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "ይህን የፋይል አይነት በInkSim መክፈት አይቻልም።"
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "ወደ ላይ"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "አጉላ"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "አሳንስ"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "የጥልፍ አቅራቢ ይምረጡ"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "ቀይር"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "የInkscape ቅጥያ ሁኔታን ማስቀመጥ አልተቻለም፦ {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "አይገኝም"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "ምንም የInkSim ቅጥያ አቃፊ አልተገኘም።"
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "የInkscape ቅጥያ አቃፊዎችን መመርመር አልተቻለም።"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "የቅድመ እይታ ትእዛዙ ተቀይሯል"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "የተቀየሩ ፋይሎች፦ {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "ወቅታዊ ነው"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "መጫን ያስፈልጋል"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "ሁኔታው አይገኝም፦ {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "ማዘመን ያስፈልጋል ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "የአሁኑ የተጠቃሚ ቅጥያ (የመጫኛ/ማዘመኛ ዒላማ)፦ {path} | ሁኔታ፦ {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "የInkSim ቅጥያዎችን ጫን / አዘምን"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "በInkSim ቅጥያ አቃፊ ውስጥ አንዳንድ ፋይሎች አስቀድመው አሉ። ለመተካት የተዘረዘሩት ፋይሎች የተጠቃሚ ለውጦችን ሊይዙ ይችላሉ። ሌሎቹ የተዘረዘሩ ፋይሎች ይጠበቃሉ እና ፈጽሞ አይሰረዙም።\n\nለመተካት የታቀዱ ፋይሎች፦\n{replace_files}\n\nለመጠበቅ የታቀዱ ፋይሎች፦\n{preserve_files}\n\nይቀጥሉ?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "የInkSim የInkscape ቅጥያዎችን መጫን አልተቻለም፦ {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "የInkSim የInkscape ቅጥያዎች በ{path} ተጭነዋል ወይም ታድሰዋል። እንዲጫኑ Inkscapeን እንደገና ያስጀምሩ።"
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "ምንም"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape፦"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape በስርዓቱ PATH ውስጥ አልተገኘም።"
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "የInkscape ምርጫዎችን ማንበብ አልተቻለም፦ {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "የInkscape ምርጫዎችን ማዘመን አልተቻለም፦ {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "የInkscape ቅጥያ ማውጫዎችን ማንበብ አልተቻለም፦ {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape ምላሽ እስኪሰጥ በመጠበቅ ላይ…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "የPython አስተርጓሚ፦ {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "አዲሱን የPython አስተርጓሚ ለመተግበር Inkscapeን እንደገና ያስጀምሩ።"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "አልተዋቀረም"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "የድሮ የInkSim ቅጂዎችን አስወግድ"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "የተዘረዘሩት የተጠቃሚ ቅጥያ አቃፊዎችና በውስጣቸው ያሉ ሁሉም ፋይሎች ለዘላለም ይሰረዛሉ። የአሁኑ የመጫኛ/ማዘመኛ ዒላማና የስርዓት ቅጥያ አቃፊዎች አይወገዱም።\n\n{directories}\n\nይቀጥሉ?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "የድሮውን የInkSim ቅጥያ አቃፊ ማስወገድ አልተቻለም፦ {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "የድሮ የInkSim ቅጥያ አቃፊዎች ተወግደዋል። የቅጥያዎቹን ዝርዝር ለማደስ Inkscapeን እንደገና ያስጀምሩ።"
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "ንቁው የInk/Stitch ጭነት ታድሷል፦ {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscapeን በመፈተሽ ላይ፦ {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "የInkSim ውቅረትን ማስቀመጥ አልተቻለም፦ {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "የተገኘው ማዋቀር በInkSim ውቅር ውስጥ ተቀምጧል።"
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "የተፈተሸው የInkscape ፈጻሚ ፋይል፦ {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "የInkSim ቅጥያ አቃፊዎችን መመርመር አልተቻለም።"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "የInk/Stitch ጭነቶች ተገኝተዋል፦ {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "ምንም የInk/Stitch ጭነት አልተገኘም።"
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "የPython አስተርጓሚው አስቀድሞ ተዋቅሯል፦ {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "የPython አስተርጓሚው ታድሷል፦ {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "የሚያስፈልገው ማስነሻ '{command}' አልተገኘም፤ ምርጫው እንዳለ ተትቷል።"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape አልተገኘም። ማዋቀሩን ለመፈተሽ ፈጻሚ ፋይሉን ይምረጡ።"
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "የInkscape ምርጫዎች ተፈትሸዋል፦ {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "የPython አስተርጓሚውን መፈተሽ ወይም ማዘመን አልተቻለም፦ {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "የተጠቃሚው ቅጥያ ማውጫ ስለማይገኝ የPython አስተርጓሚ ምርጫው አልተፈተሸም።"
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscapeን መመርመር አልተቻለም፦ {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "የተዘመነውን አስተርጓሚ ለመተግበር Inkscapeን እንደገና ያስጀምሩ።"
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "የስርዓት ቅጥያዎች፦ {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape በ{seconds} ሰከንድ ውስጥ ምላሽ አልሰጠም።"
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "የተጠቃሚ ቅጥያዎች፦ {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "የInkscape ስሪት፦ {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "ለመፈተሽ የInkscape ፈጻሚ ፋይል ይምረጡ።"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "የስርዓት ቅጥያዎች፦ {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape በ{seconds} ሰከንድ ውስጥ ምላሽ አልሰጠም። ሌላ የInkscape ክፍለ ጊዜ ወይም ቅጥያ ግንኙነቱን እየከለከለ ሊሆን ይችላል። ሌሎችን የInkscape ክፍለ ጊዜዎች ይዝጉ ወይም ግንኙነቱን የሚያግደውን ቅጥያ ያቦዝኑ፣ ከዚያ እንደገና ይሞክሩ።"
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "የተጠቃሚ ቅጥያዎች፦ {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "የሚያስፈልገው ማስነሻ '{command}' አልተገኘም። የuvr መሣሪያውን እራስዎ `uv tool install uvr` በማስኬድ ይጫኑ፣ ከዚያ ይህን ማዋቀር እንደገና ያስኪዱ። InkSim አይጭነውም።"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "የInkscape ስሪት፦ {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "አይገኝም"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "ትእዛዝ፦ {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "አስተርጓሚ፦ {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "አካባቢ፦ {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "ምንም የInk/Stitch ጭነት አልተገኘም።"
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "ዱካ፦ {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "የጥልፍ ፋይል ክፈት"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "ክፈት..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "ክስተቶችን ይከታተሉ"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&መሣሪያዎች"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "ውቅር"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "ቋንቋ"
+        "source": "&Language",
+        "translation": "&ቋንቋ"
     },
     "menu.language.system_default": {
         "source": "System default",
