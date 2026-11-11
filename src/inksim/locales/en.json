@@ -556,8 +556,8 @@
         "translation": "Checked Inkscape executable: {path}"
     },
     "integration.inkscape.report.inksim_scan_failed": {
-        "source": "integration.inkscape.report.inksim_scan_failed",
-        "translation": "integration.inkscape.report.inksim_scan_failed"
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Could not inspect Inkscape extension folders: {error}"
     },
     "integration.inkscape.report.inkstitch_found": {
         "source": "Ink/Stitch installations found: {count}",

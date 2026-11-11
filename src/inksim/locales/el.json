@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Η γλώσσα έχει οριστεί σε {language}. Επανεκκίνησε το InkSim τώρα για να εφαρμοστεί;"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "Όλα τα ανοιχτά παράθυρα του InkSim θα κλείσουν και το τρέχον αρχείο θα ανοίξει ξανά."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Θα χρησιμοποιηθεί η προεπιλεγμένη γλώσσα συστήματος. Επανεκκίνησε το InkSim τώρα για να εφαρμοστεί;"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "Η γλώσσα άλλαξε"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Όλα τα ανοιχτά παράθυρα του InkSim θα κλείσουν και το τρέχον αρχείο θα ανοίξει ξανά."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "Άνοιγμα αρχείου κεντήματος"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Αναζήτηση..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Άκυρο"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Επιλογή φακέλου"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Η διαδικασία προεπισκόπησης βελονιών απέτυχε: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Κωδικός εξόδου διαδικασίας: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Η εξαγωγή CSV του Ink/Stitch απέτυχε."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "Δες το output.err για λεπτομέρειες του σφάλματος."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Έληξε το χρονικό όριο για την εξαγωγή CSV του Ink/Stitch."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Εκτελείται η εξαγωγή CSV του Ink/Stitch..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Μέγεθος: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Άνοιγμα αυτού του SVG σε νέο παράθυρο του Inkscape."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Επεξεργασία στο Inkscape"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Δεν υπάρχουν υποστηριζόμενα αρχεία σε αυτόν τον φάκελο."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Δεν είναι δυνατή η ανάγνωση αυτού του αρχείου: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Εμφάνιση"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Όλα τα υποστηριζόμενα"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "Δεδομένα βελονιών CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Κέντημα"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "Πηγαίο SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Προσαρμογή"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Φάκελος"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Κάνε διπλό κλικ στον φάκελο για να δεις τα αρχεία του."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Κάνε διπλό κλικ στον φάκελο για να δεις τα αρχεία του."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Δεν ήταν δυνατή η εκκίνηση του Inkscape: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Απαιτείται το Inkscape για την επεξεργασία αρχείων SVG."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "Απαιτείται μια ενεργή, ρυθμισμένη εγκατάσταση του Ink/Stitch για την προεπισκόπηση SVG."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Δεν είναι δυνατή η πρόσβαση σε αυτόν τον φάκελο."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Τροποποιήθηκε: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Δεν είναι έγκυρο αρχείο κεντήματος"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Άνοιγμα"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Άνοιγμα του επιλεγμένου αρχείου κεντήματος."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Προεπισκόπηση"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Δημιουργία δεδομένων βελονιών από αυτό το SVG με την ενεργή εγκατάσταση του Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Δεν είναι δυνατή η εκτέλεση του ενεργού script του Ink/Stitch ή του ρυθμισμένου εκκινητή Python."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Δεν είναι δυνατή η ανάγνωση αυτού του φακέλου: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Πρόσφατοι:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— επιλογή φακέλου —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Ανανέωση"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Αναζήτηση αρχείων"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Επίλεξε ένα αρχείο για άνοιγμα."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Μέγεθος: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: δεν βρέθηκε."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Επέκταση Ink/Stitch: ο έλεγχος απέτυχε. Χρησιμοποίησε το Εργαλεία... για να δοκιμάσεις ξανά."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Επέκταση Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Επέκταση Ink/Stitch: δεν βρέθηκε στους φακέλους επεκτάσεων του Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Επέκταση Ink/Stitch: δεν είναι δυνατός ο έλεγχος μέχρι να ρυθμιστεί το Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Επέκταση Ink/Stitch: δεν έχει ελεγχθεί ακόμα. Χρησιμοποίησε το Εργαλεία... για έλεγχο."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "Η προεπισκόπηση SVG εκτελείται απευθείας μέσω του Ink/Stitch· για επεξεργασία απαιτείται το Inkscape."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "Η προεπισκόπηση SVG εκτελείται απευθείας μέσω του Ink/Stitch· το Inkscape χρησιμοποιείται μόνο για επεξεργασία."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Βελονιές: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "Πηγαίο SVG. Απαιτείται το Inkscape για την προεπισκόπηση βελονιών."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "Πηγαίο SVG. Επίλεξε Προεπισκόπηση για να δημιουργήσεις δεδομένα βελονιών με το Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "Δεν ήταν δυνατή η απόδοση του SVG."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Αυτό το SVG είναι πολύ μεγάλο για προεπισκόπηση εδώ."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Δεν ήταν δυνατή η δημιουργία προσωρινού αρχείου προεπισκόπησης: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Άνοιγμα αρχείου"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Εργαλεία..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "Δεδομένα βελονιών CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Φάκελος"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Κέντημα"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Μη υποστηριζόμενο"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "Πηγαίο SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Δεν είναι δυνατό το άνοιγμα αυτού του τύπου αρχείου στο InkSim."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Πάνω"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Μεγέθυνση"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Σμίκρυνση"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Επιλογή απόδοσης βελονιάς"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Αλλαγή"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Δεν ήταν δυνατή η αποθήκευση της κατάστασης της επέκτασης Inkscape: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Μη διαθέσιμο"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Δεν βρέθηκαν φάκελοι επεκτάσεων InkSim."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Δεν ήταν δυνατός ο έλεγχος των φακέλων επεκτάσεων του Inkscape: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Η εντολή προεπισκόπησης άλλαξε"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "αρχεία που άλλαξαν: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Ενημερωμένο"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Απαιτείται εγκατάσταση"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Η κατάσταση δεν είναι διαθέσιμη: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Απαιτείται ενημέρωση ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Επέκταση τρέχοντος χρήστη (στόχος εγκατάστασης/ενημέρωσης): {path} | Κατάσταση: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Εγκατάσταση / ενημέρωση επεκτάσεων InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Υπάρχουν ήδη ορισμένα αρχεία στον φάκελο επεκτάσεων InkSim. Τα αρχεία που αναφέρονται για αντικατάσταση μπορεί να περιέχουν αλλαγές σου. Τα υπόλοιπα αρχεία της λίστας θα διατηρηθούν και δεν θα διαγραφούν ποτέ.\n\nΑρχεία προς αντικατάσταση:\n{replace_files}\n\nΑρχεία προς διατήρηση:\n{preserve_files}\n\nΣυνέχεια;"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Δεν ήταν δυνατή η εγκατάσταση των επεκτάσεων Inkscape του InkSim: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Οι επεκτάσεις Inkscape του InkSim εγκαταστάθηκαν ή ενημερώθηκαν στο {path}. Επανεκκίνησε το Inkscape για να φορτωθούν."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Καμία"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Δεν βρέθηκε το Inkscape στη διαδρομή συστήματος."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Δεν ήταν δυνατή η ανάγνωση των προτιμήσεων του Inkscape: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Δεν ήταν δυνατή η ενημέρωση των προτιμήσεων του Inkscape: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Δεν ήταν δυνατή η ανάγνωση των φακέλων επεκτάσεων του Inkscape: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Αναμονή για απάντηση από το Inkscape…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Διερμηνευτής Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Επανεκκίνησε το Inkscape για να εφαρμοστεί ο νέος διερμηνευτής Python."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "δεν έχει οριστεί"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Αφαίρεση παλιών αντιγράφων InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Οι αναφερόμενοι φάκελοι επεκτάσεων χρήστη και όλα τα αρχεία μέσα τους θα διαγραφούν οριστικά. Ο τρέχων φάκελος εγκατάστασης/ενημέρωσης και οι φάκελοι επεκτάσεων συστήματος δεν θα αφαιρεθούν.\n\n{directories}\n\nΣυνέχεια;"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Δεν ήταν δυνατή η αφαίρεση του παλιού φακέλου επεκτάσεων InkSim: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Οι παλιοί φάκελοι επεκτάσεων InkSim αφαιρέθηκαν. Επανεκκίνησε το Inkscape για να ανανεωθεί η λίστα επεκτάσεων."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Η ενεργή εγκατάσταση Ink/Stitch ενημερώθηκε: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Έλεγχος Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Δεν ήταν δυνατή η αποθήκευση των ρυθμίσεων του InkSim: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Η ρύθμιση που εντοπίστηκε αποθηκεύτηκε στις ρυθμίσεις του InkSim."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Εκτελέσιμο Inkscape που ελέγχθηκε: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Δεν ήταν δυνατός ο έλεγχος των φακέλων επεκτάσεων του InkSim: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Εγκαταστάσεις Ink/Stitch που βρέθηκαν: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Δεν βρέθηκε εγκατάσταση Ink/Stitch."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Ο διερμηνευτής Python είναι ήδη ρυθμισμένος: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Ο διερμηνευτής Python ενημερώθηκε: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "Δεν βρέθηκε ο απαιτούμενος εκκινητής '{command}'. Η προτίμηση δεν άλλαξε."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Δεν βρέθηκε το Inkscape. Επίλεξε το εκτελέσιμό του για να ελέγξεις τη ρύθμιση."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Προτιμήσεις Inkscape που ελέγχθηκαν: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Δεν ήταν δυνατός ο έλεγχος ή η ενημέρωση του διερμηνευτή Python: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Η προτίμηση διερμηνευτή Python δεν ελέγχθηκε, επειδή ο φάκελος επεκτάσεων χρήστη δεν είναι διαθέσιμος."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Δεν ήταν δυνατός ο έλεγχος του Inkscape: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Επανεκκίνησε το Inkscape για να εφαρμοστεί ο ενημερωμένος διερμηνευτής."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Επεκτάσεις συστήματος: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Το Inkscape δεν απάντησε μέσα σε {seconds} δευτερόλεπτα."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Επεκτάσεις χρήστη: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Έκδοση Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Επίλεξε ένα εκτελέσιμο Inkscape για να ελέγξεις τη ρύθμιση."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Επεκτάσεις συστήματος: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Το Inkscape δεν απάντησε μέσα σε {seconds} δευτερόλεπτα. Κάποια άλλη παρουσία του Inkscape ή μια επέκταση μπορεί να εμποδίζει την επικοινωνία. Κλείσε τις άλλες παρουσίες του Inkscape ή απενεργοποίησε την επέκταση που εμποδίζει την επικοινωνία και δοκίμασε ξανά."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Επεκτάσεις χρήστη: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "Δεν βρέθηκε ο απαιτούμενος εκκινητής '{command}'. Εγκατάστησε μόνος/η σου το εργαλείο uvr με `uv tool install uvr` και έπειτα εκτέλεσε ξανά αυτή τη ρύθμιση. Το InkSim δεν θα το εγκαταστήσει."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Έκδοση Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Μη διαθέσιμη"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Εντολή: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Διερμηνευτής: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Τοποθεσία: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Δεν βρέθηκε εγκατάσταση Ink/Stitch."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Διαδρομή: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "Άνοιγμα αρχείου κεντήματος"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Άνοιγμα..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "Καταγραφή συμβάντων"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Εργαλεία"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "Ρύθμιση"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Γλώσσα"
+        "source": "&Language",
+        "translation": "&Γλώσσα"
     },
     "menu.language.system_default": {
         "source": "System default",

@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Lugha imewekwa kuwa {language}. Anzisha InkSim upya sasa ili itumike?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "Windows zote za InkSim zilizo wazi zitafungwa na faili ya sasa itafunguliwa upya."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Lugha ya mfumo itatumika. Anzisha InkSim upya sasa ili itumike?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "Lugha imebadilishwa"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Windows zote za InkSim zilizo wazi zitafungwa na faili ya sasa itafunguliwa upya."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "Fungua faili la embroidery"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Vinjari..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Ghairi"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Chagua saraka"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Mchakato wa kuhakiki mishono umeshindwa: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Msimbo wa kutoka wa mchakato: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Uhamishaji wa CSV wa Ink/Stitch umeshindwa."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "Tazama output.err kwa maelezo ya hitilafu."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Muda wa uhamishaji wa CSV wa Ink/Stitch umekwisha."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Uhamishaji wa CSV wa Ink/Stitch unaendelea..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Vipimo: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Fungua SVG hii kwenye dirisha jipya la Inkscape."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Hariri katika Inkscape"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Hakuna faili zinazotumika kwenye folda hii."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Haiwezi kusoma faili hii: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Onyesha"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Faili zote zinazotumika"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "Data za mishono za CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Embroidery"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "Chanzo cha SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Tosheleza"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Folda"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Bofya folda mara mbili ili kuvinjari faili zake."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Bofya folda mara mbili ili kuvinjari faili zake."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape haikuweza kuanzishwa: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Inkscape inahitajika ili kuhariri faili za SVG."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "Usakinishaji wa Ink/Stitch ulioamilishwa na kusanidiwa unahitajika ili kuhakiki SVG."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Folda hii haipatikani."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Ilirekebishwa: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Hii si faili halali ya embroidery"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Fungua"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Fungua faili ya embroidery iliyochaguliwa."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Hakiki"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Tengeneza data za mishono kutoka kwa SVG hii kwa kutumia usakinishaji hai wa Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Haiwezi kuendesha hati hai ya Ink/Stitch au kizindua chake cha Python kilichosanidiwa."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Haiwezi kusoma folda hii: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Zilizotumika hivi karibuni:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— chagua saraka —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Onyesha upya"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Tafuta faili"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Chagua faili ya kufungua."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Ukubwa: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: haikupatikana."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Kiendelezi cha Ink/Stitch: hakikuweza kukaguliwa. Tumia Zana... kujaribu tena."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Kiendelezi cha Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Kiendelezi cha Ink/Stitch: hakikupatikana kwenye saraka za viendelezi za Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Kiendelezi cha Ink/Stitch: hakiwezi kukaguliwa hadi Inkscape isanidiwe."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Kiendelezi cha Ink/Stitch: bado hakijakaguliwa. Tumia Zana... kukikagua."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "Hakikisho la SVG huendeshwa moja kwa moja kupitia Ink/Stitch; kuhariri kunahitaji Inkscape."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "Hakikisho la SVG huendeshwa moja kwa moja kupitia Ink/Stitch; Inkscape hutumika kuhariri pekee."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Mishono: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "Chanzo cha SVG. Inkscape inahitajika ili kuhakiki mishono."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "Chanzo cha SVG. Chagua Hakiki ili kutengeneza data za mishono kwa kutumia Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG haikuweza kuchorwa."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "SVG hii ni kubwa mno kuweza kuhakikiwa hapa."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Imeshindwa kuunda faili ya muda ya hakikisho: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Fungua faili"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Zana..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "Data za mishono za CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Folda"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Embroidery"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Isiyotumika"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "Chanzo cha SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Aina hii ya faili haiwezi kufunguliwa katika InkSim."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Juu"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Kuza"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Punguza"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Chagua kionyeshi cha mishono"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Badilisha"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Imeshindwa kuhifadhi hali ya kiendelezi cha Inkscape: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Haipatikani"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Hakuna folda za viendelezi vya InkSim zilizopatikana."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Imeshindwa kukagua folda za viendelezi vya Inkscape: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Amri ya hakikisho imebadilika"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "faili zilizobadilika: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Imesasishwa"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Usakinishaji unahitajika"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Hali haipatikani: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Usasishaji unahitajika ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Kiendelezi cha mtumiaji kinachotumika (mahali pa kusakinisha/kusasisha): {path} | Hali: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Sakinisha / Sasisha viendelezi vya InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Baadhi ya faili tayari zipo kwenye folda ya viendelezi vya InkSim. Faili zilizoorodheshwa kubadilishwa huenda zina mabadiliko yako. Faili nyingine zilizoorodheshwa zitahifadhiwa na hazitafutwa kamwe.\n\nFaili za kubadilishwa:\n{replace_files}\n\nFaili za kuhifadhi:\n{preserve_files}\n\nUendelee?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Imeshindwa kusakinisha viendelezi vya InkSim vya Inkscape: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Viendelezi vya InkSim vya Inkscape vimesakinishwa au kusasishwa katika {path}. Anzisha upya Inkscape ili vipakie."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Hakuna"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape haikupatikana kwenye njia ya mfumo."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Imeshindwa kusoma mapendeleo ya Inkscape: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Imeshindwa kusasisha mapendeleo ya Inkscape: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Imeshindwa kusoma saraka za viendelezi vya Inkscape: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inasubiri Inkscape ijibu…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Kikalimani cha Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Anzisha upya Inkscape ili kutumia kikalimani kipya cha Python."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "hakijawekwa"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Ondoa nakala za zamani za InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Folda za viendelezi vya mtumiaji zilizoorodheshwa na faili zote zilizomo zitafutwa kabisa. Mahali pa sasa pa kusakinisha/kusasisha na folda za viendelezi vya mfumo hazitaondolewa.\n\n{directories}\n\nUendelee?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Imeshindwa kuondoa folda ya zamani ya kiendelezi cha InkSim: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Folda za zamani za viendelezi vya InkSim zimeondolewa. Anzisha upya Inkscape ili kuonyesha upya orodha yake ya viendelezi."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Usakinishaji hai wa Ink/Stitch umesasishwa: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inakagua Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Imeshindwa kuhifadhi usanidi wa InkSim: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Usanidi uliotambuliwa umehifadhiwa kwenye usanidi wa InkSim."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Imekagua programu ya Inkscape: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Imeshindwa kukagua folda za viendelezi vya InkSim."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Usakinishaji wa Ink/Stitch uliopatikana: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Hakuna usakinishaji wa Ink/Stitch uliopatikana."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Kikalimani cha Python tayari kimesanidiwa: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Kikalimani cha Python kimesasishwa: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "Kizindua kinachohitajika '{command}' hakikupatikana; mapendeleo hayakubadilishwa."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape haikupatikana. Chagua programu yake ili ukague usanidi."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Imekagua mapendeleo ya Inkscape: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Imeshindwa kukagua au kusasisha kikalimani cha Python: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Mapendeleo ya kikalimani cha Python hayakukaguliwa kwa sababu saraka ya viendelezi vya mtumiaji haipatikani."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Imeshindwa kukagua Inkscape: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Anzisha upya Inkscape ili kutumia kikalimani kilichosasishwa."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Viendelezi vya mfumo: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape haikujibu ndani ya sekunde {seconds}."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Viendelezi vya mtumiaji: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Toleo la Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Chagua programu ya Inkscape ili ukague."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Viendelezi vya mfumo: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape haikujibu ndani ya sekunde {seconds}. Huenda mawasiliano yanazuiwa na kikao kingine cha Inkscape au kiendelezi. Funga vikao vingine vya Inkscape au zima kiendelezi kinachozuia mawasiliano, kisha ujaribu tena."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Viendelezi vya mtumiaji: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "Kizindua kinachohitajika '{command}' hakikupatikana. Sakinisha zana ya uvr mwenyewe kwa kutumia `uv tool install uvr`, kisha endesha usanidi huu tena. InkSim haitaisakinisha."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Toleo la Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Halipatikani"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Amri: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Kikalimani: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Mahali: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Hakuna usakinishaji wa Ink/Stitch uliopatikana."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Njia: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "Fungua faili la embroidery"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Fungua..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "Fuatilia matukio"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Zana"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "Sanidi"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Lugha"
+        "source": "&Language",
+        "translation": "&Lugha"
     },
     "menu.language.system_default": {
         "source": "System default",

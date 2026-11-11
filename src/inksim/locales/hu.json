@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "A nyelv beállítva: {language}. Indítsd újra az InkSimet, hogy érvénybe lépjen?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "Az összes nyitott InkSim-ablak bezárul, és az aktuális fájl újra megnyílik."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "A rendszer alapértelmezett nyelve lesz használva. Indítsd újra az InkSimet, hogy érvénybe lépjen?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "Nyelv megváltozott"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Az összes nyitott InkSim-ablak bezárul, és az aktuális fájl újra megnyílik."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "Hímzésfájl megnyitása"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Tallózás..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Mégse"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Könyvtár kiválasztása"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "A hímzésöltés-előnézet készítése nem sikerült: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Folyamat kilépési kódja: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Az Ink/Stitch CSV-exportálása nem sikerült."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "A hiba részletei az output.err fájlban találhatók."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Az Ink/Stitch CSV-exportálása időtúllépés miatt leállt."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch CSV-exportálása folyamatban..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Méret: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "SVG megnyitása egy új Inkscape-ablakban."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Szerkesztés az Inkscape-ben"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Ebben a mappában nincsenek támogatott fájlok."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "A fájl nem olvasható: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Megjelenítés"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Minden támogatott"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV öltésadat"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Hímzés"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG-forrás"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Illesztés"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Mappa"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Kattints duplán a mappára a benne lévő fájlok böngészéséhez."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Kattints duplán a mappára a benne lévő fájlok böngészéséhez."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Az Inkscape nem indítható el: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Az SVG-fájlok szerkesztéséhez Inkscape szükséges."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "Az SVG-előnézethez beállított, aktív Ink/Stitch-telepítés szükséges."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Ez a mappa nem érhető el."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Módosítva: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Nem érvényes hímzésfájl"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Megnyitás"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "A kijelölt hímzésfájl megnyitása."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Előnézet"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Öltésadatok készítése ehhez az SVG-hez az aktív Ink/Stitch használatával."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Az aktív Ink/Stitch-szkript vagy a hozzá beállított Python-indító nem futtatható."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "A mappa nem olvasható: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Legutóbbiak:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— könyvtár kiválasztása —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Frissítés"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Fájlok keresése"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Válassz ki egy megnyitandó fájlt."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Méret: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: nem található."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch-bővítmény: az ellenőrzés nem sikerült. Újrapróbálkozáshoz használd az Eszközök... menüpontot."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch-bővítmény: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch-bővítmény: nem található az Inkscape bővítménymappáiban."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch-bővítmény: az Inkscape beállításáig nem ellenőrizhető."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch-bővítmény: még nincs ellenőrizve. Az ellenőrzéshez használd az Eszközök... menüpontot."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "Az SVG-előnézet közvetlenül az Ink/Stitch segítségével készül; a szerkesztéshez Inkscape szükséges."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "Az SVG-előnézet közvetlenül az Ink/Stitch segítségével készül; az Inkscape csak a szerkesztéshez kell."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Öltések: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG-forrás. Az öltéselőnézethez Inkscape szükséges."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG-forrás. Válaszd az Előnézet lehetőséget az öltésadatok Inkscape/Ink/Stitch segítségével történő elkészítéséhez."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "Az SVG megjelenítése nem sikerült."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Ez az SVG túl nagy az itteni előnézethez."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Nem sikerült létrehozni az ideiglenes előnézeti fájlt: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Fájl megnyitása"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Eszközök..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV öltésadat"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Mappa"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Hímzés"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Nem támogatott"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG-forrás"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Ez a fájltípus nem nyitható meg az InkSimben."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Fel"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Nagyítás"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Kicsinyítés"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Öltés-megjelenítő kiválasztása"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Módosítás"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Nem sikerült menteni az Inkscape-bővítmény állapotát: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Nem érhető el"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Nem található InkSim-bővítménymappa."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Nem sikerült átvizsgálni az Inkscape bővítménymappáit: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Az előnézeti parancs megváltozott"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "megváltozott fájlok: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Naprakész"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Telepítés szükséges"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Az állapot nem érhető el: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Frissítés szükséges ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Jelenlegi felhasználói bővítmény (telepítési/frissítési cél): {path} | Állapot: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim-bővítmények telepítése / frissítése"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Néhány fájl már létezik az InkSim bővítménymappájában. A cserére kijelölt fájlok felhasználói módosításokat tartalmazhatnak. A többi felsorolt fájl megmarad, és soha nem törlődik.\n\nCserélendő fájlok:\n{replace_files}\n\nMegőrzendő fájlok:\n{preserve_files}\n\nFolytatod?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Nem sikerült telepíteni az InkSim Inkscape-bővítményeit: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Az InkSim Inkscape-bővítményei települtek vagy frissültek itt: {path}. A betöltésükhöz indítsd újra az Inkscape-et."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Nincs"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Az Inkscape nem található a rendszer elérési útján."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Nem sikerült beolvasni az Inkscape beállításait: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Nem sikerült frissíteni az Inkscape beállításait: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Nem sikerült beolvasni az Inkscape bővítménymappáit: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Várakozás az Inkscape válaszára…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python-értelmező: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Az új Python-értelmező alkalmazásához indítsd újra az Inkscape-et."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "nincs beállítva"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Régi InkSim-példányok eltávolítása"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "A felsorolt felhasználói bővítménymappák és a bennük lévő összes fájl véglegesen törlődik. A jelenlegi telepítési/frissítési cél és a rendszer bővítménymappái nem kerülnek eltávolításra.\n\n{directories}\n\nFolytatod?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Nem sikerült eltávolítani a régi InkSim-bővítménymappát: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "A régi InkSim-bővítménymappák eltávolítva. A bővítménylista frissítéséhez indítsd újra az Inkscape-et."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Aktív Ink/Stitch-telepítés frissítve: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape ellenőrzése: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Nem sikerült menteni az InkSim beállításait: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Az észlelt beállítás mentve az InkSim konfigurációjába."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Ellenőrzött Inkscape-futtatható fájl: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Nem sikerült átvizsgálni az InkSim-bővítményeket."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Talált Ink/Stitch-telepítések: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Nem található Ink/Stitch-telepítés."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "A Python-értelmező már be van állítva: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python-értelmező frissítve: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "A szükséges „{command}” indító nem található; a beállítás változatlan maradt."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Az Inkscape nem található. Válaszd ki a futtatható fájlját a beállítás ellenőrzéséhez."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Ellenőrzött Inkscape-beállítások: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Nem sikerült ellenőrizni vagy frissíteni a Python-értelmezőt: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "A Python-értelmező beállítását nem ellenőriztük, mert a felhasználói bővítménymappa nem érhető el."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Nem sikerült megvizsgálni az Inkscape-et: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "A frissített értelmező alkalmazásához indítsd újra az Inkscape-et."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Rendszerbővítmények: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Az Inkscape nem válaszolt {seconds} másodpercen belül."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Felhasználói bővítmények: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape-verzió: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Válassz ki egy Inkscape-futtatható fájlt az ellenőrzéshez."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Rendszerbővítmények: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Az Inkscape nem válaszolt {seconds} másodpercen belül. Egy másik Inkscape-példány vagy egy bővítmény akadályozhatja a kommunikációt. Zárd be a többi Inkscape-példányt, vagy tiltsd le a kommunikációt akadályozó bővítményt, majd próbáld újra."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Felhasználói bővítmények: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "A szükséges „{command}” indító nem található. Telepítsd az uvr eszközt a `uv tool install uvr` paranccsal, majd futtasd újra ezt a konfigurációt. Az InkSim nem telepíti az eszközt."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape-verzió: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Nem érhető el"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Parancs: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Értelmező: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Hely: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Nem található Ink/Stitch-telepítés."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Elérési út: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "Hímzésfájl megnyitása"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Megnyitás..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "Események nyomkövetése"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Eszközök"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "Beállítás"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Nyelv"
+        "source": "&Language",
+        "translation": "&Nyelv"
     },
     "menu.language.system_default": {
         "source": "System default",

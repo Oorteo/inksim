@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Ang wika ay naitakda sa {language}. I-restart ang InkSim ngayon para mailapat ito?"
     },
-    "dialog.language.windows_closed": {
-        "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "Ang lahat ng bukas na window ng InkSim ay isasara at muling bubuksan ang kasalukuyang file."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Gagamitin ang default na wika ng system. I-restart ang InkSim ngayon para mailapat ito?"
@@ -122,6 +118,10 @@
     "dialog.language.title": {
         "source": "Language changed",
         "translation": "Binago ang wika"
+    },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Ang lahat ng bukas na window ng InkSim ay isasara at muling bubuksan ang kasalukuyang file."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -143,9 +143,533 @@
         "source": "Open embroidery file",
         "translation": "Buksan ang file ng burda"
     },
+    "dialog.open_browser.browse": {
+        "source": "Browse...",
+        "translation": "Mag-browse..."
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Kanselahin"
+    },
+    "dialog.open_browser.choose_directory": {
+        "source": "Choose directory",
+        "translation": "Pumili ng direktoryo"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Nabigo ang proseso ng pag-preview ng tahi: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Exit code ng proseso: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Nabigo ang pag-export ng CSV ng Ink/Stitch."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "See output.err for the error details.",
+        "translation": "Tingnan ang output.err para sa mga detalye ng error."
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Ink/Stitch CSV export timed out.",
+        "translation": "Nag-time out ang pag-export ng CSV ng Ink/Stitch."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Isinasagawa ang pag-export ng CSV ng Ink/Stitch..."
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Sukat: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Buksan ang SVG na ito sa bagong window ng Inkscape."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "I-edit sa Inkscape"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Walang suportadong file sa folder na ito."
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Hindi mabasa ang file na ito: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Ipakita"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Lahat ng suportado"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "Data ng tahi na CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Burda"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "Pinagmulan ng SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Iakma"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Folder"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "I-double-click ang folder para makita ang mga file nito."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "I-double-click ang folder para makita ang mga file nito."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Hindi masimulan ang Inkscape: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Kailangan ang Inkscape para mag-edit ng mga SVG file."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
+        "translation": "Kailangan ng naka-configure at aktibong instalasyon ng Ink/Stitch para mag-preview ng SVG."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Hindi ma-access ang folder na ito."
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Binago: {time}"
+    },
+    "dialog.open_browser.not_embroidery": {
+        "source": "Not a valid embroidery file",
+        "translation": "Hindi wastong embroidery file"
+    },
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Buksan"
+    },
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Buksan ang napiling embroidery file."
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "I-preview"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
+        "translation": "Gumawa ng data ng tahi mula sa SVG na ito gamit ang aktibong instalasyon ng Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Hindi mapatakbo ang aktibong Ink/Stitch script o ang naka-configure nitong Python launcher."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Hindi mabasa ang folder na ito: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Kamakailan:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— pumili ng direktoryo —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "I-refresh"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Maghanap ng mga file"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Pumili ng file na bubuksan."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Laki: {size}"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: hindi makita."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Extension ng Ink/Stitch: hindi masuri. Gamitin ang Tools... para subukan ulit."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Extension ng Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Extension ng Ink/Stitch: hindi makita sa mga extension directory ng Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Extension ng Ink/Stitch: hindi masusuri hangga't hindi naka-configure ang Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Extension ng Ink/Stitch: hindi pa nasusuri. Gamitin ang Tools... para suriin."
+    },
+    "dialog.open_browser.status.svg_needs_inkscape": {
+        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
+        "translation": "Direktang pinapatakbo ang preview ng SVG sa Ink/Stitch; kailangan ang Inkscape para mag-edit."
+    },
+    "dialog.open_browser.status.svg_ready": {
+        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
+        "translation": "Direktang pinapatakbo ang preview ng SVG sa Ink/Stitch; Inkscape ay ginagamit lang sa pag-edit."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Mga tahi: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "Pinagmulan ng SVG. Kailangan ang Inkscape para sa preview ng tahi."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "Pinagmulan ng SVG. Piliin ang I-preview para gumawa ng data ng tahi gamit ang Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "Hindi ma-render ang SVG."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Masyadong malaki ang SVG na ito para i-preview dito."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Hindi makagawa ng pansamantalang preview file: {error}"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Magbukas ng file"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Tools..."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "Data ng tahi na CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Folder"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Burda"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Hindi suportado"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "Pinagmulan ng SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Hindi mabubuksan sa InkSim ang ganitong uri ng file."
+    },
+    "dialog.open_browser.up": {
+        "source": "Up",
+        "translation": "Pataas"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Mag-zoom in"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Mag-zoom out"
+    },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Pumili ng stitch renderer"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Baguhin"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Hindi na-save ang status ng extension ng Inkscape: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Hindi available"
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Walang nakitang folder ng extension ng InkSim."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Hindi masuri ang mga folder ng extension ng Inkscape: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Nagbago ang preview command"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "mga binagong file: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Napapanahon"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Kailangang i-install"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Hindi available ang status: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Kailangang i-update ({details})"
+    },
+    "integration.inkscape.inksim_user_current": {
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Kasalukuyang user extension (target ng pag-install/pag-update): {path} | Status: {status}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "I-install / I-update ang mga extension ng InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "May ilang file nang nasa folder ng extension ng InkSim. Maaaring may mga pagbabago ng user ang mga file na nakalistang papalitan. Papanatilihin ang iba pang nakalistang file at hindi kailanman buburahin.\n\nMga file na papalitan:\n{replace_files}\n\nMga file na papanatilihin:\n{preserve_files}\n\nMagpatuloy?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Hindi ma-install ang mga extension ng InkSim para sa Inkscape: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Na-install o na-update ang mga extension ng InkSim para sa Inkscape sa {path}. I-restart ang Inkscape para ma-load ang mga ito."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Wala"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Hindi makita ang Inkscape sa system path."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Hindi mabasa ang mga preference ng Inkscape: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Hindi ma-update ang mga preference ng Inkscape: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Hindi mabasa ang mga directory ng extension ng Inkscape: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Naghihintay ng tugon mula sa Inkscape…"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python interpreter: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "I-restart ang Inkscape para magamit ang bagong Python interpreter."
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "hindi nakatakda"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Alisin ang mga lumang kopya ng InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Permanenteng buburahin ang mga nakalistang folder ng user extension at lahat ng file sa mga ito. Hindi aalisin ang kasalukuyang target ng pag-install/pag-update at ang mga system extension folder.\n\n{directories}\n\nMagpatuloy?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Hindi maalis ang lumang folder ng extension ng InkSim: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Naalis na ang mga lumang folder ng extension ng InkSim. I-restart ang Inkscape para i-refresh ang listahan ng mga extension nito."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Na-update ang aktibong instalasyon ng Ink/Stitch: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Sinusuri ang Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Hindi na-save ang configuration ng InkSim: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Na-save sa configuration ng InkSim ang natukoy na setup."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Sinuri ang executable ng Inkscape: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Hindi masuri ang mga folder ng extension ng InkSim: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Mga nakitang instalasyon ng Ink/Stitch: {count}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Walang nakitang instalasyon ng Ink/Stitch."
+    },
+    "integration.inkscape.report.interpreter_unchanged": {
+        "source": "Python interpreter is already configured: {path}",
+        "translation": "Naka-configure na ang Python interpreter: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Na-update ang Python interpreter: {path}"
+    },
+    "integration.inkscape.report.launcher_missing": {
+        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
+        "translation": "Hindi makita ang kinakailangang launcher na '{command}'; hindi binago ang preference."
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Hindi makita ang Inkscape. Piliin ang executable nito para suriin ang setup."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Sinuri ang mga preference ng Inkscape: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Hindi masuri o ma-update ang Python interpreter: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Hindi nasuri ang preference ng Python interpreter dahil hindi available ang directory ng user extensions."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Hindi masuri ang Inkscape: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "I-restart ang Inkscape para magamit ang na-update na interpreter."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Mga system extension: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Hindi tumugon ang Inkscape sa loob ng {seconds} segundo."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Mga user extension: {path}"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Bersyon ng Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Pumili ng Inkscape executable para suriin."
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Mga system extension: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Hindi tumugon ang Inkscape sa loob ng {seconds} segundo. Maaaring hinaharangan ang komunikasyon ng isa pang instance ng Inkscape o ng isang extension. Isara ang iba pang instance ng Inkscape o i-disable ang extension na humaharang, pagkatapos ay subukan ulit."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Mga user extension: {path}"
+    },
+    "integration.inkscape.uvr_missing": {
+        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
+        "translation": "Hindi makita ang kinakailangang launcher na '{command}'. Ikaw mismo ang mag-install ng uvr gamit ang `uv tool install uvr`, pagkatapos ay patakbuhin ulit ang configuration na ito. Hindi ito i-i-install ng InkSim."
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Bersyon ng Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Hindi available"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Command: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Interpreter: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Lokasyon: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Walang nakitang instalasyon ng Ink/Stitch."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Path: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -190,6 +714,10 @@
     "menu.file.open": {
         "source": "Open embroidery file",
         "translation": "Buksan ang file ng burda"
+    },
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Buksan..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
@@ -243,9 +771,17 @@
         "source": "Trace events",
         "translation": "Trace events"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Mga Tool"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Config",
+        "translation": "I-configure"
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Wika"
+        "source": "&Language",
+        "translation": "&Wika"
     },
     "menu.language.system_default": {
         "source": "System default",
