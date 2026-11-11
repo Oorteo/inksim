@@ -520,8 +520,8 @@
         "translation": "Nebyly nalezeny žádné složky rozšíření InkSim."
     },
     "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path}",
-        "translation": "Aktuální uživatelské rozšíření (cíl instalace/aktualizace): {path}"
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Aktuální uživatelské rozšíření (cíl instalace/aktualizace): {path} | Stav: {status}"
     },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension (can be removed): {path}",
@@ -530,6 +530,30 @@
     "integration.inkscape.inksim_system": {
         "source": "System extension (manual removal required): {path}",
         "translation": "Systémové rozšíření (nutné odstranit ručně): {path}"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Je nutná instalace"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Je nutná aktualizace ({details})"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Aktuální"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Stav nelze zjistit: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "změněné soubory: {files}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Změnil se příkaz Preview"
     },
     "integration.inkscape.inksim_scan_failed": {
         "source": "Could not inspect Inkscape extension folders: {error}",

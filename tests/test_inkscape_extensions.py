@@ -29,6 +29,7 @@ def test_install_renders_active_launcher_and_installs_assets(tmp_path):
     extension_directory = tmp_path / "extensions"
 
     plan = prepare_install(extension_directory, launcher)
+    assert plan.update_required
     destination = install_extension(plan)
     preview = (destination / "preview.inx").read_text(encoding="utf-8")
     root = ET.fromstring(preview)
@@ -52,6 +53,9 @@ def test_launcher_change_does_not_count_as_user_edit(tmp_path):
     plan = prepare_install(extension_directory, second_launcher)
 
     assert not plan.requires_confirmation
+    assert plan.update_required
+    assert not plan.update_files
+    assert plan.command_changed
     install_extension(plan)
     root = ET.parse(plan.destination / "preview.inx").getroot()
     command = next(node for node in root.iter() if node.tag.rsplit("}", 1)[-1] == "command")
@@ -69,6 +73,8 @@ def test_modified_managed_file_requires_confirmation(tmp_path):
 
     assert plan.replace_files == ("about.inx",)
     assert plan.requires_confirmation
+    assert plan.update_required
+    assert plan.update_files == ("about.inx",)
     with pytest.raises(InstallSafetyError, match="explicit user confirmation"):
         install_extension(plan)
     install_extension(plan, confirmed=True)

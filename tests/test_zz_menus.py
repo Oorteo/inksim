@@ -296,6 +296,7 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
 
     from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.inkscape_extensions import install_extension, prepare_install
 
     config = Config(tmp_path / "config.toml")
     monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
@@ -307,12 +308,18 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
     extension_root = user_data / "extensions"
     current_copy = extension_root / "inksim"
     old_copy = extension_root / "inksim-old"
-    current_copy.mkdir(parents=True)
+    launcher = tmp_path / "inksim"
+    launcher.write_text("#!/bin/sh\n", encoding="utf-8")
+    launcher.chmod(0o755)
+    install_extension(prepare_install(extension_root, launcher))
     old_copy.mkdir()
-    (current_copy / ".inksim-install.json").write_text('{"format": 1}', encoding="utf-8")
     (old_copy / "preview.inx").write_text(
         "<inkscape-extension><id>oorteo.inksim.preview</id></inkscape-extension>",
         encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.resolve_inksim_launcher",
+        lambda: launcher,
     )
     confirmation = []
 
@@ -334,8 +341,32 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
     _wait_for_probe(qtbot, dialog)
 
     assert str(current_copy) in dialog.inksim_extensions_list.toPlainText()
+    assert "Up to date" in dialog.inksim_extensions_list.toPlainText()
     assert str(old_copy) in dialog.inksim_extensions_list.toPlainText()
+    expected_height = (
+        dialog.inksim_extensions_list.fontMetrics().lineSpacing() * 3
+        + round(2 * dialog.inksim_extensions_list.document().documentMargin())
+        + 2 * dialog.inksim_extensions_list.frameWidth()
+    )
+    assert dialog.inksim_extensions_list.height() == expected_height
     assert dialog.remove_old_extensions_button.isEnabled()
+
+    about_file = current_copy / "about.inx"
+    about_file.write_text(
+        about_file.read_text(encoding="utf-8") + "\n",
+        encoding="utf-8",
+    )
+    assert "changed files: about.inx" in dialog._current_inksim_update_status()
+
+    replacement_launcher = tmp_path / "inksim-updated"
+    replacement_launcher.write_text("#!/bin/sh\n", encoding="utf-8")
+    replacement_launcher.chmod(0o755)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.resolve_inksim_launcher",
+        lambda: replacement_launcher,
+    )
+    assert "Preview command changed" in dialog._current_inksim_update_status()
+
     dialog.remove_old_extensions_button.click()
 
     assert not old_copy.exists()

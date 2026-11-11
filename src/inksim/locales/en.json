@@ -600,8 +600,8 @@
         "translation": "No InkSim extension folders were found."
     },
     "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path}",
-        "translation": "Current user extension (install/update target): {path}"
+        "source": "Current user extension (install/update target): {path} | Status: {status}",
+        "translation": "Current user extension (install/update target): {path} | Status: {status}"
     },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension (can be removed): {path}",
@@ -610,6 +610,30 @@
     "integration.inkscape.inksim_system": {
         "source": "System extension (manual removal required): {path}",
         "translation": "System extension (manual removal required): {path}"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Installation required"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Update required ({details})"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Up to date"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Status unavailable: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "changed files: {files}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Preview command changed"
     },
     "integration.inkscape.inksim_scan_failed": {
         "source": "Could not inspect Inkscape extension folders: {error}",
