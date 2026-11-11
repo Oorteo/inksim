@@ -39,6 +39,13 @@ from PySide6.QtWidgets import (
 
 from ..config import Config
 from ..i18n import _
+from ..integration.inkscape_extensions import (
+    InstallPlan,
+    InstallSafetyError,
+    install_extension,
+    prepare_install,
+    resolve_inksim_launcher,
+)
 from ..integration.paths import INKSCAPE_CONFIG_KEY
 from ..paths import _sanitize_path_text
 
@@ -133,12 +140,20 @@ class InkscapeIntegrationDialog(QDialog):
         extensions_group, extensions_layout = create_section(
             "integration.inkscape.section.extensions", "extensionsSection"
         )
+        self._user_extensions_directory: Path | None = None
         self.user_extensions_label = QLabel(self)
         self.system_extensions_label = QLabel(self)
         for label in (self.user_extensions_label, self.system_extensions_label):
             label.setWordWrap(True)
             label.setTextInteractionFlags(Qt.TextSelectableByMouse)
             extensions_layout.addWidget(label)
+        self.install_extensions_button = QPushButton(
+            _("integration.inkscape.install_extensions"), self
+        )
+        self.install_extensions_button.setObjectName("installInkscapeExtensions")
+        self.install_extensions_button.setEnabled(False)
+        self.install_extensions_button.clicked.connect(self._install_inkscape_extensions)
+        extensions_layout.addWidget(self.install_extensions_button)
         self.python_interpreter_label = QLabel(self)
         self.python_interpreter_label.setWordWrap(True)
         self.python_interpreter_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -188,6 +203,8 @@ class InkscapeIntegrationDialog(QDialog):
             self._set_executable(path)
 
     def _set_executable(self, executable: str | None) -> None:
+        self._user_extensions_directory = None
+        self.install_extensions_button.setEnabled(False)
         if not executable:
             self.executable_label.setText(_("integration.inkscape.not_found"))
             unavailable = _("integration.inkscape.directory_unavailable")
@@ -348,6 +365,13 @@ class InkscapeIntegrationDialog(QDialog):
                 path=_sanitize_path_text(system_path)
             )
         )
+        if (
+            not timed_out
+            and error is None
+            and user_path != _("integration.inkscape.directory_unavailable")
+        ):
+            self._user_extensions_directory = Path(user_path)
+            self.install_extensions_button.setEnabled(True)
         if not timed_out and error is None:
             report_entries.extend(
                 (
@@ -545,6 +569,56 @@ class InkscapeIntegrationDialog(QDialog):
                 ),
             )
         self._set_report(report_entries)
+
+    def _install_inkscape_extensions(self) -> None:
+        extension_directory = self._user_extensions_directory
+        if extension_directory is None:
+            return
+
+        try:
+            launcher = resolve_inksim_launcher()
+            plan = prepare_install(extension_directory, launcher)
+        except (InstallSafetyError, OSError, ValueError) as error:
+            self._show_extension_install_error(error)
+            return
+
+        if plan.requires_confirmation and not self._confirm_extension_install(plan):
+            return
+
+        try:
+            destination = install_extension(plan, confirmed=True)
+        except (InstallSafetyError, OSError, ValueError) as error:
+            self._show_extension_install_error(error)
+            return
+
+        message = _("integration.inkscape.install_extensions_success").format(
+            path=_sanitize_path_text(str(destination))
+        )
+        self._append_report(message)
+        QMessageBox.information(self, _("integration.inkscape.title"), message)
+
+    def _confirm_extension_install(self, plan: InstallPlan) -> bool:
+        replace_files = "\n".join(plan.replace_files) or _("integration.inkscape.install_none")
+        preserve_files = "\n".join(plan.preserved_files) or _("integration.inkscape.install_none")
+        message = _("integration.inkscape.install_extensions_confirm").format(
+            replace_files=replace_files,
+            preserve_files=preserve_files,
+        )
+        answer = QMessageBox.question(
+            self,
+            _("integration.inkscape.install_extensions"),
+            message,
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        return answer == QMessageBox.Yes
+
+    def _show_extension_install_error(self, error: Exception) -> None:
+        message = _("integration.inkscape.install_extensions_failed").format(
+            error=_sanitize_path_text(str(error))
+        )
+        self._append_report(message)
+        QMessageBox.critical(self, _("integration.inkscape.title"), message)
 
     def _set_report(self, entries: list[str]) -> None:
         self._report_entries = entries

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension translationdomain="inkstitch" xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+    <name>Preview</name>
+    <id>oorteo.inksim.preview</id>
+    <param name="extension" type="string" gui-hidden="true">preview</param>
+    <effect implements-custom-gui="true">
+        <object-type>all</object-type>
+        <icon>icons/inksim.svg</icon>
+        <effects-menu>
+            <submenu name="Inksim" translatable="no">
+            </submenu>
+        </effects-menu>
+    </effect>
+    <script>
+        <command location="absolute">__INKSIM_EXECUTABLE__</command>
+    </script>
+</inkscape-extension>

@@ -252,6 +252,7 @@ def test_inkscape_dialog_shows_extension_directories(qtbot, monkeypatch):
         dialog.system_extensions_label.text()
         == f"System extensions: {Path('/usr/share/inkscape/extensions')}"
     )
+    assert dialog.install_extensions_button.isEnabled()
 
 
 def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
