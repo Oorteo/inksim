@@ -2,17 +2,17 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Incrementally translate missing or stale strings using a local LLM.
+"""Incrementally translate missing or stale strings using Copilot or Ollama.
 
 The script compares a target locale catalog (e.g. ``cs.json``) against the
-English source catalog and asks an Ollama model to translate only the strings
-that are missing or whose English source has changed.  Translated strings are
-merged back into the target catalog.
+English source catalog and asks a model to translate only the strings that are
+missing or whose English source has changed. Translated strings are merged back
+into the target catalog.
 
 Example usage:
 
-    uvr python scripts/i18n/_translate.py --lang cs --model deepseek-v4-flash:cloud
-    uvr python scripts/i18n/_translate.py --lang sk --model deepseek-v4-flash:cloud
+    uvr python scripts/i18n/_translate.py --lang cs
+    uvr python scripts/i18n/_translate.py --lang sk --provider ollama
 
 Set ``OLLAMA_HOST`` if the Ollama server is not on ``http://localhost:11434``.
 """
@@ -20,6 +20,7 @@ Set ``OLLAMA_HOST`` if the Ollama server is not on ``http://localhost:11434``.
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 import os
 import subprocess
@@ -30,7 +31,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 LOCALES_DIR = ROOT / "src" / "inksim" / "locales"
 EN_CATALOG = LOCALES_DIR / "en.json"
-DEFAULT_MODEL = "deepseek-v4-flash:cloud"
+DEFAULT_PROVIDER = "copilot"
+DEFAULT_COPILOT_MODEL = "GPT-6 Luna"
+DEFAULT_OLLAMA_MODEL = "deepseek-v4-flash:cloud"
 
 
 def load_catalog(path: Path) -> tuple[dict[str, Any], dict[str, dict[str, str]]]:
@@ -80,11 +83,63 @@ def build_llm_prompt(work: dict[str, str], language_name: str, locale: str) -> s
         f"Translate the following UI strings for an embroidery simulator called InkSim into {language_name} ({locale})."
     ]
     lines.append("Return a single JSON object mapping each message ID to its translation.")
+    lines.append("Do not wrap the JSON in Markdown fences or include text outside the JSON object.")
     lines.append("Keep technical terms consistent and use an informal tone where appropriate.")
     lines.append("")
     for msg_id, source in work.items():
         lines.append(f"{msg_id}: {source}")
     return "\n".join(lines)
+
+
+def parse_copilot_response(raw: str, model: str) -> dict[str, str]:
+    try:
+        response = json.loads(raw)
+    except json.JSONDecodeError as ex:
+        raise RuntimeError(f"{model} did not return valid JSON: {ex}") from ex
+    if not isinstance(response, dict):
+        raise RuntimeError(f"{model} response is not a JSON object")
+    return {str(key): str(value) for key, value in response.items()}
+
+
+def call_copilot(prompt: str, model_name: str) -> dict[str, str]:
+    """Ask the signed-in Copilot account for translations and parse its JSON reply."""
+    try:
+        from copilot import CopilotClient
+        from copilot.session_events import AssistantMessageData
+    except ImportError as ex:
+        raise RuntimeError(
+            "Copilot translations require the dev dependency 'github-copilot-sdk'. "
+            "Install it with 'uv sync --group dev'."
+        ) from ex
+
+    async def request_translation() -> dict[str, str]:
+        async with CopilotClient() as client:
+            models = await client.list_models()
+            model = next(
+                (
+                    item
+                    for item in models
+                    if model_name.casefold() in (item.id.casefold(), item.name.casefold())
+                ),
+                None,
+            )
+            if model is None:
+                available = ", ".join(item.name for item in models)
+                raise RuntimeError(
+                    f"Copilot model '{model_name}' is unavailable. Available models: {available}"
+                )
+
+            async with await client.create_session(
+                model=model.id,
+                available_tools=[],
+            ) as session:
+                response = await session.send_and_wait(prompt, timeout=300)
+
+        if response is None or not isinstance(response.data, AssistantMessageData):
+            raise RuntimeError(f"Copilot model '{model_name}' returned no assistant message")
+        return parse_copilot_response(response.data.content, model_name)
+
+    return asyncio.run(request_translation())
 
 
 def call_ollama(prompt: str, model: str) -> dict[str, str]:
@@ -144,7 +199,12 @@ def _normalize_locale_tag(value: str) -> str:
     return "-".join(parts)
 
 
-def translate_locale(locale: str, model: str, dry_run: bool = False) -> int:
+def translate_locale(
+    locale: str,
+    provider: str,
+    model: str,
+    dry_run: bool = False,
+) -> int:
     """Translate missing/stale strings for *locale* and update its catalog."""
     locale = _normalize_locale_tag(locale)
     en_meta, en_messages = load_catalog(EN_CATALOG)
@@ -156,7 +216,7 @@ def translate_locale(locale: str, model: str, dry_run: bool = False) -> int:
         print(f"No missing or stale translations for {locale}.")
         return 0
 
-    print(f"Translating {len(work)} string(s) for {locale} using {model}...")
+    print(f"Translating {len(work)} string(s) for {locale} using {provider} ({model})...")
     language_name = target_meta.get("name", locale)
     prompt = build_llm_prompt(work, language_name, locale)
 
@@ -165,7 +225,9 @@ def translate_locale(locale: str, model: str, dry_run: bool = False) -> int:
         print(prompt)
         return 0
 
-    translated = call_ollama(prompt, model)
+    translated = (
+        call_copilot(prompt, model) if provider == "copilot" else call_ollama(prompt, model)
+    )
 
     for msg_id, en_source in work.items():
         translation = translated.get(msg_id, "")
@@ -186,11 +248,18 @@ def translate_locale(locale: str, model: str, dry_run: bool = False) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Incrementally translate InkSim locale files via Ollama"
+        description="Incrementally translate InkSim locale files via Copilot or Ollama"
     )
     parser.add_argument("--lang", required=True, help="Target locale code (e.g. cs, sk)")
     parser.add_argument(
-        "--model", default=DEFAULT_MODEL, help=f"Ollama model to use (default: {DEFAULT_MODEL})"
+        "--provider",
+        choices=("copilot", "ollama"),
+        default=DEFAULT_PROVIDER,
+        help="Translation backend (default: copilot)",
+    )
+    parser.add_argument(
+        "--model",
+        help="Model name or ID (default: GPT-6 Luna for Copilot, DeepSeek for Ollama)",
     )
     parser.add_argument(
         "--dry-run", action="store_true", help="Print the prompt without calling the model"
@@ -201,8 +270,12 @@ def main(argv: list[str] | None = None) -> int:
     if locale.split("-")[0] == "en":
         parser.error("cannot translate into the source language 'en'")
 
+    model = args.model or (
+        DEFAULT_COPILOT_MODEL if args.provider == "copilot" else DEFAULT_OLLAMA_MODEL
+    )
+
     try:
-        return 0 if translate_locale(locale, args.model, args.dry_run) >= 0 else 1
+        return 0 if translate_locale(locale, args.provider, model, args.dry_run) >= 0 else 1
     except Exception as ex:
         print(f"Translation failed: {ex}", file=sys.stderr)
         return 1
