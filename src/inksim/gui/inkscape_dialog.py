@@ -53,6 +53,7 @@ from ..paths import _sanitize_path_text
 INKSCAPE_PROBE_TIMEOUT_S = 10
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
 _PROBE_OPTIONS = ("--user-data-directory", "--system-data-directory")
+_VERSION_PROBE_OPTION = "--version"
 
 
 def _hide_windows_console(arguments: Any) -> None:
@@ -113,6 +114,7 @@ class InkscapeIntegrationDialog(QDialog):
         layout.addWidget(self.probe_status_label)
         self._probe_process: QProcess | None = None
         self._probe_results: list[str] = []
+        self._probe_version: str | None = None
         self._probe_executable = ""
         self._probe_error: str | None = None
         self._probe_timer = QTimer(self)
@@ -135,6 +137,15 @@ class InkscapeIntegrationDialog(QDialog):
         program_details.addWidget(QLabel(_("integration.inkscape.label"), self))
         program_details.addLayout(program_row, 1)
         application_layout.addLayout(program_details)
+        self.version_label = QLabel(
+            _("integration.inkscape.version").format(
+                version=_("integration.inkscape.version_unavailable")
+            ),
+            self,
+        )
+        self.version_label.setWordWrap(True)
+        self.version_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        application_layout.addWidget(self.version_label)
         layout.addWidget(application_group)
 
         extensions_group, extensions_layout = create_section(
@@ -153,7 +164,6 @@ class InkscapeIntegrationDialog(QDialog):
         self.install_extensions_button.setObjectName("installInkscapeExtensions")
         self.install_extensions_button.setEnabled(False)
         self.install_extensions_button.clicked.connect(self._install_inkscape_extensions)
-        extensions_layout.addWidget(self.install_extensions_button)
         self.python_interpreter_label = QLabel(self)
         self.python_interpreter_label.setWordWrap(True)
         self.python_interpreter_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -172,6 +182,7 @@ class InkscapeIntegrationDialog(QDialog):
         self.inkstitch_details_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         inkstitch_layout.addWidget(self.inkstitch_details_label)
         layout.addWidget(inkstitch_group)
+        layout.addWidget(self.install_extensions_button)
 
         report_group, report_layout = create_section(
             "integration.inkscape.section.report", "reportSection"
@@ -207,6 +218,11 @@ class InkscapeIntegrationDialog(QDialog):
         self.install_extensions_button.setEnabled(False)
         if not executable:
             self.executable_label.setText(_("integration.inkscape.not_found"))
+            self.version_label.setText(
+                _("integration.inkscape.version").format(
+                    version=_("integration.inkscape.version_unavailable")
+                )
+            )
             unavailable = _("integration.inkscape.directory_unavailable")
             self.user_extensions_label.setText(
                 _("integration.inkscape.user_extensions").format(path=unavailable)
@@ -229,7 +245,13 @@ class InkscapeIntegrationDialog(QDialog):
     def _start_probe(self, executable_path: str) -> None:
         self._probe_executable = executable_path
         self._probe_results = []
+        self._probe_version = None
         self._probe_error = None
+        self.version_label.setText(
+            _("integration.inkscape.version").format(
+                version=_("integration.inkscape.version_unavailable")
+            )
+        )
         self._set_report(
             [
                 _("integration.inkscape.report.checking").format(
@@ -252,7 +274,9 @@ class InkscapeIntegrationDialog(QDialog):
         )
         self._probe_process = process
         self._probe_timer.start(int(INKSCAPE_PROBE_TIMEOUT_S * 1000))
-        process.start(self._probe_executable, [_PROBE_OPTIONS[len(self._probe_results)]])
+        step = len(self._probe_results)
+        option = _PROBE_OPTIONS[step] if step < len(_PROBE_OPTIONS) else _VERSION_PROBE_OPTION
+        process.start(self._probe_executable, [option])
 
     def _on_probe_step_done(self, process: QProcess, failed: bool = False) -> None:
         # Ignore late signals from a process that was already replaced, killed, or handled.
@@ -260,27 +284,37 @@ class InkscapeIntegrationDialog(QDialog):
             return
         self._probe_process = None
         self._probe_timer.stop()
+        is_version_probe = len(self._probe_results) >= len(_PROBE_OPTIONS)
         output = ""
+        step_error = None
         if failed:
-            self._probe_error = process.errorString()
+            step_error = process.errorString()
         elif (
             not failed
             and process.exitStatus() == QProcess.ExitStatus.NormalExit
             and process.exitCode() == 0
         ):
             output = bytes(process.readAllStandardOutput().data()).decode(errors="replace").strip()
-            if not output:
-                self._probe_error = "Inkscape returned no extension directory."
+            if not output and not is_version_probe:
+                step_error = "Inkscape returned no extension directory."
         elif process.exitStatus() == QProcess.ExitStatus.CrashExit:
-            self._probe_error = "Inkscape terminated unexpectedly."
+            step_error = "Inkscape terminated unexpectedly."
         else:
-            self._probe_error = f"Inkscape exited with code {process.exitCode()}."
+            step_error = f"Inkscape exited with code {process.exitCode()}."
         process.deleteLater()
+        if is_version_probe:
+            self._probe_version = (
+                output.splitlines()[0].strip() if not step_error and output else None
+            )
+            self._probe_results.append("")
+            self._finish_probe(timed_out=False)
+            return
+        self._probe_error = step_error
         self._probe_results.append(output)
         if self._probe_error is not None:
             self._probe_results.extend([""] * (len(_PROBE_OPTIONS) - len(self._probe_results)))
             self._finish_probe(timed_out=False, error=self._probe_error)
-        elif len(self._probe_results) < len(_PROBE_OPTIONS):
+        elif len(self._probe_results) < len(_PROBE_OPTIONS) + 1:
             self._run_next_probe()
         else:
             self._finish_probe(timed_out=False)
@@ -292,6 +326,11 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_process = None
         process.kill()
         process.deleteLater()
+        if len(self._probe_results) >= len(_PROBE_OPTIONS):
+            self._probe_version = None
+            self._probe_results.append("")
+            self._finish_probe(timed_out=False)
+            return
         self._finish_probe(timed_out=True)
 
     def _finish_probe(self, timed_out: bool, error: str | None = None) -> None:
@@ -301,7 +340,8 @@ class InkscapeIntegrationDialog(QDialog):
             user_path = system_path = _("integration.inkscape.directory_unavailable")
         else:
             user_path, system_path = (
-                self._extensions_directory(output) for output in self._probe_results
+                self._extensions_directory(output)
+                for output in self._probe_results[: len(_PROBE_OPTIONS)]
             )
         self._apply_extension_directories(user_path, system_path, timed_out, error)
 
@@ -337,6 +377,16 @@ class InkscapeIntegrationDialog(QDialog):
                 path=_sanitize_path_text(self._probe_executable)
             )
         ]
+        version = self._probe_version or _("integration.inkscape.version_unavailable")
+        self.version_label.setText(
+            _("integration.inkscape.version").format(version=_sanitize_path_text(version))
+        )
+        if self._probe_version is not None:
+            report_entries.append(
+                _("integration.inkscape.report.version").format(
+                    version=_sanitize_path_text(self._probe_version)
+                )
+            )
         if timed_out:
             report_entries.append(
                 _("integration.inkscape.report.timeout").format(seconds=INKSCAPE_PROBE_TIMEOUT_S)
@@ -542,6 +592,8 @@ class InkscapeIntegrationDialog(QDialog):
             "system_extensions": system_path,
             "inkstitch": installation_data,
         }
+        if self._probe_version is not None:
+            result["version"] = self._probe_version
         if preferences_file is not None:
             result["preferences_file"] = str(preferences_file)
         if python_interpreter is not None:

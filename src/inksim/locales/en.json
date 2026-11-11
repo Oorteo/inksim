@@ -591,6 +591,18 @@
         "source": "None",
         "translation": "None"
     },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape version: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Unavailable"
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape version: {version}"
+    },
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "User extensions: {path}"

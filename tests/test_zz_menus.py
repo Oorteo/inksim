@@ -217,7 +217,11 @@ def _fake_inkscape_probe(monkeypatch, data_directories=None, sleep_seconds=None)
         def start(self, program, arguments):
             starts.append(arguments)
             if sleep_seconds is None:
-                code = f"import sys; print({data_directories!r}[sys.argv[1]])"
+                outputs = {"--version": "Inkscape 1.4.2", **data_directories}
+                code = (
+                    f"import sys; value = {outputs!r}[sys.argv[1]]; "
+                    "sys.exit(1) if value is None else print(value)"
+                )
                 super().start(sys.executable, ["-c", code, *arguments])
             else:
                 super().start(sys.executable, ["-c", f"import time; time.sleep({sleep_seconds})"])
@@ -252,7 +256,38 @@ def test_inkscape_dialog_shows_extension_directories(qtbot, monkeypatch):
         dialog.system_extensions_label.text()
         == f"System extensions: {Path('/usr/share/inkscape/extensions')}"
     )
+    assert dialog.version_label.text() == "Inkscape version: Inkscape 1.4.2"
     assert dialog.install_extensions_button.isEnabled()
+
+
+def test_inkscape_version_probe_failure_keeps_detected_directories(tmp_path, qtbot, monkeypatch):
+    """Keep useful extension paths when an Inkscape build cannot report its version."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": str(user_data),
+            "--system-data-directory": str(system_data),
+            "--version": None,
+        },
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert dialog.user_extensions_label.text().endswith(str(user_data / "extensions"))
+    assert dialog.version_label.text() == "Inkscape version: Unavailable"
+    assert "version" not in config.get(INKSCAPE_CONFIG_KEY)
 
 
 def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
@@ -355,6 +390,7 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     status = config.get(INKSCAPE_CONFIG_KEY)
     assert status["status"] == "found"
     assert status["executable"] == str(Path("/opt/inkscape/bin/inkscape").resolve())
+    assert status["version"] == "Inkscape 1.4.2"
     assert status["preferences_file"] == str(preferences_file.resolve())
     assert status["python-interpretor"] == str(uvr_executable.resolve())
     assert status["active_inkstitch"] == str(inx_path.parent.resolve())
@@ -389,6 +425,7 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert "inkscape_extension_status" not in config.as_text()
     report = dialog.info_panel.toPlainText()
     assert "Checked Inkscape executable:" in report
+    assert "Inkscape version: Inkscape 1.4.2" in report
     assert "User extensions:" in report
     assert "Updated Python interpreter:" in report
     assert "Restart Inkscape" in report
@@ -425,12 +462,25 @@ def test_python_interpreter_is_inserted_on_its_own_line(tmp_path):
 
 def test_integration_sections_are_bold_and_report_expands(qtbot):
     """Make section headings obvious and let the report use the dialog's free height."""
-    from PySide6.QtWidgets import QLabel
+    from PySide6.QtWidgets import QLabel, QWidget
 
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
 
     dialog = InkscapeIntegrationDialog(None, None)
     qtbot.addWidget(dialog)
+    main_layout = dialog.layout()
+    assert main_layout is not None
+    inkstitch_group = dialog.findChild(QWidget, "inkstitchSection")
+    report_group = dialog.findChild(QWidget, "reportSection")
+    assert inkstitch_group is not None
+    assert report_group is not None
+    assert (
+        main_layout.indexOf(inkstitch_group)
+        < main_layout.indexOf(dialog.install_extensions_button)
+        < main_layout.indexOf(report_group)
+    )
+    assert dialog.install_extensions_button.parentWidget() is dialog
+
     for object_name in (
         "applicationSectionTitle",
         "extensionsSectionTitle",
