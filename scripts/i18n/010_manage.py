@@ -17,8 +17,9 @@ Examples:
     ./scripts/i18n/010_manage.py list
     ./scripts/i18n/010_manage.py add fr
     ./scripts/i18n/010_manage.py sync
-    ./scripts/i18n/010_manage.py translate fr --model deepseek-v4-flash:cloud
-    ./scripts/i18n/010_manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
+    ./scripts/i18n/010_manage.py translate fr
+    ./scripts/i18n/010_manage.py translate-all --tier 2
+    ./scripts/i18n/010_manage.py translate fr --provider ollama
 
 The ``sync`` command refreshes ``src/inksim/locales/en.json`` from source and removes
 orphaned keys from other locale catalogs. It does not call a translation model.
@@ -37,6 +38,27 @@ ROOT = Path(__file__).resolve().parents[2]
 LOCALES_DIR = ROOT / "src" / "inksim" / "locales"
 ROADMAP = Path(__file__).with_suffix("").parent / "locales.json"
 TRANSLATE = Path(__file__).with_suffix("").parent / "_translate.py"
+
+
+def _translation_command(
+    code: str,
+    provider: str,
+    model: str | None,
+    dry_run: bool,
+) -> list[str]:
+    command = [
+        sys.executable,
+        str(TRANSLATE),
+        "--lang",
+        code,
+        "--provider",
+        provider,
+    ]
+    if model:
+        command.extend(["--model", model])
+    if dry_run:
+        command.append("--dry-run")
+    return command
 
 
 def load_roadmap() -> list[dict[str, Any]]:
@@ -189,16 +211,21 @@ def cmd_sync(argv: list[str] | None = None) -> int:
 
 
 def cmd_translate(argv: list[str] | None = None) -> int:
-    """Translate a single locale using translate.py."""
+    """Translate a single locale using the selected provider."""
     parser = argparse.ArgumentParser(description="Translate a single locale")
     parser.add_argument("code", help="Locale code to translate")
-    parser.add_argument("--model", default="deepseek-v4-flash:cloud", help="Ollama model")
+    parser.add_argument(
+        "--provider",
+        choices=("copilot", "ollama"),
+        default="copilot",
+        help="Translation backend (default: copilot)",
+    )
+    parser.add_argument("--model", help="Model name or ID (defaults based on provider)")
     parser.add_argument("--dry-run", action="store_true", help="Preview prompt only")
     args = parser.parse_args(argv or [])
 
     return subprocess.run(
-        [sys.executable, str(TRANSLATE), "--lang", args.code, "--model", args.model]
-        + (["--dry-run"] if args.dry_run else []),
+        _translation_command(args.code, args.provider, args.model, args.dry_run),
         check=False,
     ).returncode
 
@@ -209,7 +236,13 @@ def cmd_translate_all(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--tier", type=int, default=2, help="Maximum tier to translate (default: 2)"
     )
-    parser.add_argument("--model", default="deepseek-v4-flash:cloud", help="Ollama model")
+    parser.add_argument(
+        "--provider",
+        choices=("copilot", "ollama"),
+        default="copilot",
+        help="Translation backend (default: copilot)",
+    )
+    parser.add_argument("--model", help="Model name or ID (defaults based on provider)")
     parser.add_argument("--dry-run", action="store_true", help="Preview prompts only")
     args = parser.parse_args(argv or [])
 
@@ -227,8 +260,7 @@ def cmd_translate_all(argv: list[str] | None = None) -> int:
                 failures += 1
                 continue
         rc = subprocess.run(
-            [sys.executable, str(TRANSLATE), "--lang", code, "--model", args.model]
-            + (["--dry-run"] if args.dry_run else []),
+            _translation_command(code, args.provider, args.model, args.dry_run),
             check=False,
         ).returncode
         if rc != 0:
@@ -245,8 +277,8 @@ def main(argv: list[str] | None = None) -> int:
         print("  add         <code>")
         print("  sync        Refresh en.json from source and remove orphaned keys")
         print("              from locale catalogs (does not auto-translate).")
-        print("  translate   <code> [--model MODEL] [--dry-run]")
-        print("  translate-all [--tier N] [--model MODEL] [--dry-run]")
+        print("  translate   <code> [--provider copilot|ollama] [--model MODEL] [--dry-run]")
+        print("  translate-all [--tier N] [--provider copilot|ollama] [--model MODEL] [--dry-run]")
         return 0 if argv and argv[0] in ("-h", "--help") else 1
 
     command, rest = argv[0], argv[1:]
