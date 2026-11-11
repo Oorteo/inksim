@@ -42,6 +42,35 @@ def test_hidden_temporary_input_option_is_forwarded_to_server(monkeypatch, tmp_p
     assert "--temporary-input" not in parser.format_help()
 
 
+def test_inkscape_extension_invocation_opens_inksim_despite_extension_arguments(
+    monkeypatch,
+):
+    import pytest
+
+    from inksim import cli
+
+    requests = []
+    monkeypatch.setattr(cli.sys, "argv", ["inksim", "--extension=preview", "--id=selection"])
+    monkeypatch.setattr(cli, "_ensure_core_application", lambda: None)
+    monkeypatch.setattr(
+        cli,
+        "forward_request",
+        lambda request: requests.append(request) or {"ok": True},
+    )
+
+    with pytest.raises(SystemExit) as exit_info:
+        cli.main()
+
+    assert exit_info.value.code == 0
+    assert requests[0]["type"] == "open"
+    assert requests[0]["path"] is None
+    assert requests[0]["command_line"] == [
+        "inksim",
+        "--extension=preview",
+        "--id=selection",
+    ]
+
+
 def test_cli_exports_sample_with_simple_and_default_renderers(sample_design, tmp_path):
     environment = os.environ.copy()
     environment["QT_QPA_PLATFORM"] = "offscreen"

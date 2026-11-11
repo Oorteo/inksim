@@ -20,9 +20,13 @@ class FakeWindow(QObject):
         super().__init__()
         self.document_path = None
         self.open_file_args = None
+        self.command_line_args = None
 
     def set_document_path(self, path):
         self.document_path = path
+
+    def set_command_line_args(self, arguments):
+        self.command_line_args = arguments.copy()
 
     def focus_window(self):
         pass
@@ -86,7 +90,6 @@ def test_open_forwards_temporary_input_ownership(qapp, tmp_path):
             "temporary_input": True,
         }
     )
-
     assert response["ok"] is True
     assert created[0].open_file_args == {
         "path": str(input_path),
@@ -94,6 +97,21 @@ def test_open_forwards_temporary_input_ownership(qapp, tmp_path):
         "autoplay": False,
         "temporary_input": True,
     }
+
+
+def test_open_forwards_command_line_to_window(qapp):
+    server, created = _server(qapp)
+    command_line = ["inksim", "--extension=preview", "--id=selection"]
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "command_line": command_line,
+        }
+    )
+    assert response["ok"] is True
+    assert created[0].command_line_args == command_line
 
 
 def test_closing_last_window_starts_idle_timer(qapp):

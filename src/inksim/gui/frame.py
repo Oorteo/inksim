@@ -131,6 +131,7 @@ class MainWindow(QMainWindow):
         self._snapped_geometry: QRect | None = None
         self._last_geometry: QRect = self.geometry()
         self._base_title: str = APP_TITLE
+        self.command_line_args: list[str] = []
         self._update_thread: UpdateCheckThread | None = None
         self._update_suffix: str = self._resolve_update_suffix(last_result(self.config))
         self._update_window_title()
@@ -688,7 +689,7 @@ class MainWindow(QMainWindow):
         show_config_editor(self, self.config)
 
     def _show_command_line_help_slot(self, checked: bool = False) -> None:
-        show_command_line_help(self)
+        show_command_line_help(self, self.command_line_args)
 
     def _show_about_slot(self, checked: bool = False) -> None:
         show_about(self)
@@ -1215,6 +1216,10 @@ class MainWindow(QMainWindow):
         path = Path(document_path).resolve()
         self.document_path = path
         self.last_directory = str(path.parent)
+
+    def set_command_line_args(self, arguments: list[str]) -> None:
+        """Store the arguments from the most recent client invocation."""
+        self.command_line_args = arguments.copy()
 
     def _preferred_source_path(self) -> Path | None:
         """Return the authoritative source path for output defaults."""

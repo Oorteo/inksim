@@ -232,6 +232,12 @@ class InkSimServer(QObject):
         else:
             return {"ok": False, "error": f"no InkSim window with index {index}"}
 
+        command_line = request.get("command_line")
+        if isinstance(command_line, list) and all(
+            isinstance(argument, str) for argument in command_line
+        ):
+            window.set_command_line_args(command_line)
+
         document_path = request.get("document_path")
         if document_path:
             window.set_document_path(Path(document_path))

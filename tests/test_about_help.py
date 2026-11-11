@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QApplication
 
 from inksim.gui.about import show_about
 from inksim.gui.frame import MainWindow
-from inksim.gui.help import show_help
+from inksim.gui.help import _command_line_help_text, show_help
 from inksim.gui.settings import show_settings
 
 
@@ -39,3 +39,15 @@ def test_settings_dialog_opens(qtbot):
     show_settings(window.viewer)
     assert window.viewer.settings_dialog is not None
     window.viewer.settings_dialog.close()
+
+
+def test_command_line_help_shows_invocation_before_current_options():
+    command_line = ["inksim", "--extension=preview", "--id=selection"]
+    help_text = _command_line_help_text(command_line)
+    separator_index = help_text.index("-" * 80)
+
+    assert help_text.splitlines()[0] == (
+        'Current command line: ["inksim", "--extension=preview", "--id=selection"]'
+    )
+    assert separator_index > 0
+    assert help_text.index("usage:") > separator_index
