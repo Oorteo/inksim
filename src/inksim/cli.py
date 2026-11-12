@@ -20,10 +20,11 @@ from PySide6.QtWidgets import QApplication
 
 from .config import Config
 from .constants import APP_TITLE
-from .debug import configure_logging
+from .debug import configure_logging, logger
 from .gui.frame import MainWindow
 from .gui.splash import RendererWarmupThread, SplashScreen
 from .i18n import active_locale, available_locales, set_runtime_locale
+from .integration.inkscape_extensions import resolve_inksim_launcher
 from .integration.inkstitch import inkstitch_process_environment, resolve_inkstitch_preview
 from .integration.paths import INKSCAPE_CONFIG_KEY
 from .ipc import IpcUnavailable, send_request
@@ -285,6 +286,7 @@ def _forward_to_server(
     *,
     temporary_input: bool | None = None,
     autoplay: bool | None = None,
+    check_inkscape_extension: bool = False,
 ) -> None:
     """Ask the singleton server to show the first input, then exit the client."""
     _ensure_core_application()
@@ -305,6 +307,11 @@ def _forward_to_server(
             "snap_layout_key": args.snap,
         },
     }
+    if check_inkscape_extension:
+        try:
+            request["inksim_launcher"] = str(resolve_inksim_launcher())
+        except (OSError, ValueError) as error:
+            logger.warning("Could not check the installed Inkscape extension: %s", error)
     try:
         response = forward_request(request)
     except IpcUnavailable as ex:
@@ -645,7 +652,7 @@ def main() -> None:
         _configure_application(gui_app)
         _run_server(gui_app)
     if not export_requested:
-        _forward_to_server(parser, args, input_paths)
+        _forward_to_server(parser, args, input_paths, check_inkscape_extension=True)
     existing_app = QApplication.instance()
     gui_app = existing_app if isinstance(existing_app, QApplication) else QApplication([])
     _configure_application(gui_app)

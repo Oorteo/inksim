@@ -56,6 +56,12 @@ from ..i18n import (
     get_language_name,
     set_active_locale,
 )
+from ..integration.inkscape_extensions import (
+    INSTALL_DIRECTORY,
+    InstallSafetyError,
+    prepare_install,
+)
+from ..integration.paths import INKSCAPE_CONFIG_KEY
 from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
 from ..render import render_export_image
 from ..update_check import (
@@ -132,6 +138,7 @@ class MainWindow(QMainWindow):
         self._base_title: str = APP_TITLE
         self.command_line_args: list[str] = []
         self._update_thread: UpdateCheckThread | None = None
+        self._startup_inkscape_check_done = False
         self._update_suffix: str = self._resolve_update_suffix(last_result(self.config))
         self._update_window_title()
 
@@ -574,6 +581,41 @@ class MainWindow(QMainWindow):
     def _locate_inkscape_slot(self, checked: bool = False) -> None:
         executable = shutil.which("inkscape")
         dialog = InkscapeIntegrationDialog(self, executable)
+        dialog.exec()
+
+    def check_inkscape_extension(self, launcher_path: str) -> None:
+        """Open Inkscape setup when its current-user extension targets another launcher."""
+        if self._startup_inkscape_check_done:
+            return
+        self._startup_inkscape_check_done = True
+        self.config.reload()
+        status = self.config.get(INKSCAPE_CONFIG_KEY)
+        if not isinstance(status, dict):
+            return
+        extension_root_value = status.get("user_extensions")
+        if not isinstance(extension_root_value, str):
+            return
+        extension_root = Path(extension_root_value).expanduser()
+        if not (extension_root / INSTALL_DIRECTORY).is_dir():
+            return
+
+        try:
+            plan = prepare_install(extension_root, Path(launcher_path))
+        except (InstallSafetyError, OSError, ValueError) as error:
+            logger.warning("Could not check the installed Inkscape extension: %s", error)
+            return
+        if not plan.command_changed:
+            return
+
+        executable = status.get("executable")
+        if not isinstance(executable, str):
+            executable = shutil.which("inkscape")
+        dialog = InkscapeIntegrationDialog(
+            self,
+            executable,
+            inksim_launcher=Path(launcher_path),
+            highlight_inksim_update=True,
+        )
         dialog.exec()
 
     def _center_needle_slot(self, checked: bool = False) -> None:

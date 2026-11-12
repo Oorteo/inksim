@@ -238,16 +238,27 @@ class InkSimServer(QObject):
         ):
             window.set_command_line_args(command_line)
 
+        launcher_path = request.get("inksim_launcher")
+
+        def schedule_inkscape_extension_check() -> None:
+            if isinstance(launcher_path, str):
+                QTimer.singleShot(
+                    0,
+                    lambda: window.check_inkscape_extension(launcher_path),
+                )
+
         document_path = request.get("document_path")
         if document_path:
             window.set_document_path(Path(document_path))
         path = request.get("path")
         if path is None:
             window.focus_window()
+            schedule_inkscape_extension_check()
             return {"ok": True, "index": self.windows.index(window)}
         if Path(path).is_dir():
             window.last_directory = str(Path(path).resolve())
             window.focus_window()
+            schedule_inkscape_extension_check()
             QTimer.singleShot(0, window.open_browser_dialog)
             return {"ok": True, "index": self.windows.index(window)}
         autoplay = bool(request.get("autoplay"))
@@ -261,6 +272,7 @@ class InkSimServer(QObject):
         if autoplay:
             window.viewer.toggle_auto_play(forward=True)
         window.focus_window()
+        schedule_inkscape_extension_check()
         return {"ok": True, "index": self.windows.index(window)}
 
     def _adopt(self, window: MainWindow) -> None:
