@@ -431,13 +431,13 @@
         "source": "Update required ({details})",
         "translation": "Je nutná aktualizace ({details})"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Aktuální uživatelské rozšíření (cíl instalace/aktualizace): {path}"
+    },
     "integration.inkscape.inksim_system": {
         "source": "System extension: {path}",
         "translation": "Systémové rozšíření: {path}"
-    },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Aktuální uživatelské rozšíření (cíl instalace/aktualizace): {path} | Stav: {status}"
     },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",

@@ -356,13 +356,27 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
         },
     )
 
-    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    dialog = InkscapeIntegrationDialog(
+        None,
+        "/opt/inkscape/bin/inkscape",
+        highlight_inksim_update=True,
+    )
     qtbot.addWidget(dialog)
     _wait_for_probe(qtbot, dialog)
 
-    assert str(current_copy) in dialog.inksim_extensions_list.toPlainText()
-    assert "Up to date" in dialog.inksim_extensions_list.toPlainText()
-    assert str(old_copy) in dialog.inksim_extensions_list.toPlainText()
+    assert str(current_copy) in dialog.current_inksim_extension_label.text()
+    assert dialog.inksim_status_icon.text() == "✓"
+    assert (
+        dialog.current_inksim_extension_label.parentWidget()
+        is dialog.inksim_status_icon.parentWidget()
+    )
+    assert not dialog.inksim_status_icon.isHidden()
+    assert dialog.inksim_status_container.isHidden()
+    assert dialog.inksim_status_icon.toolTip() == "Up to date"
+    extension_lines = dialog.inksim_extensions_list.toPlainText().splitlines()
+    assert not any(line.endswith(str(current_copy)) for line in extension_lines)
+    assert any(line.endswith(str(old_copy)) for line in extension_lines)
+    assert not dialog.inksim_extensions_list.isHidden()
     expected_height = (
         dialog.inksim_extensions_list.fontMetrics().lineSpacing() * 3
         + round(2 * dialog.inksim_extensions_list.document().documentMargin())
@@ -376,7 +390,14 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
         about_file.read_text(encoding="utf-8") + "\n",
         encoding="utf-8",
     )
-    assert "changed files: about.inx" in dialog._current_inksim_update_status()
+    status, is_current = dialog._current_inksim_update_status()
+    assert "changed files: about.inx" in status
+    assert not is_current
+    dialog._show_inksim_update_status(status, is_current)
+    assert dialog.inksim_warning_icon.text() == "⚠"
+    assert dialog.inksim_status_icon.isHidden()
+    assert not dialog.inksim_status_container.isHidden()
+    assert "changed files: about.inx" in dialog.inksim_status_text.text()
 
     replacement_launcher = tmp_path / "inksim-updated"
     replacement_launcher.write_text("#!/bin/sh\n", encoding="utf-8")
@@ -385,9 +406,11 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
         "inksim.gui.inkscape_dialog.resolve_inksim_launcher",
         lambda: replacement_launcher,
     )
-    dialog._highlight_inksim_update = True
-    assert "Preview command changed" in dialog._current_inksim_update_status()
-    assert "background-color: #fff3cd" in dialog.inksim_extensions_list.styleSheet()
+    status, is_current = dialog._current_inksim_update_status()
+    assert "Preview command changed" in status
+    assert not is_current
+    dialog._show_inksim_update_status(status, is_current)
+    assert "background-color: #fff3cd" in dialog.inksim_status_container.styleSheet()
 
     dialog.remove_old_extensions_button.click()
 
@@ -395,6 +418,8 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
     assert current_copy.exists()
     assert "preview.inx" in confirmation[0]
     assert not dialog.remove_old_extensions_button.isEnabled()
+    assert dialog.inksim_extensions_list.toPlainText() == ""
+    assert dialog.inksim_extensions_list.isHidden()
 
 
 def test_startup_warns_and_opens_inkscape_setup_for_stale_extension(tmp_path, qtbot, monkeypatch):

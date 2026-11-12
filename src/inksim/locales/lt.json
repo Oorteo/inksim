@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Sistemos plėtinys: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Dabartinis naudotojo plėtinys (diegimo / atnaujinimo vieta): {path} | Būsena: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Kito naudotojo plėtinys: {path}"

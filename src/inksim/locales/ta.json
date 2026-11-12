@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "கணினி நீட்டிப்பு: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "தற்போதைய பயனர் நீட்டிப்பு (நிறுவல்/புதுப்பிப்பு இலக்கு): {path} | நிலை: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "வேறொரு பயனரின் நீட்டிப்பு: {path}"

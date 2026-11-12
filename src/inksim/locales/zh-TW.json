@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "系統擴充功能：{path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "目前使用者擴充功能（安裝/更新目標）：{path} | 狀態：{status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "其他使用者的擴充功能：{path}"

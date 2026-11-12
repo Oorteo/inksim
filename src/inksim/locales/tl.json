@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Extension ng system: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Kasalukuyang user extension (target ng pag-install/pag-update): {path} | Status: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Extension ng ibang user: {path}"
