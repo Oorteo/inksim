@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Igna rangi"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Oddiy ko'rinish"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Bu yaroqli kashta fayli emas."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Haqiqiy ko'rinish"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Kashta faylini ochish"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Ko‘rib chiqish..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— papkani tanlang —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Yangilash"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Fayllarni qidirish"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch kengaytmasi: hali tekshirilmagan. Tekshirish uchun Asboblar... tugmasini bosing."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG faylni oldindan ko‘rish bevosita Ink/Stitch orqali ishlaydi; tahrirlash uchun Inkscape kerak."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG faylni oldindan ko‘rish bevosita Ink/Stitch orqali ishlaydi; Inkscape faqat tahrirlash uchun ishlatiladi."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU teksturali render"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Kashta faylini ochish"
     },
     "menu.file.open_file": {
         "source": "Open...",

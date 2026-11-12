@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Nålefarve"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normal forhåndsvisning"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Ikke en gyldig broderifil"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Reel forhåndsvisning"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Åbn broderifil"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Gennemse..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— vælg mappe —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Opdater"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Søg efter filer"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch-udvidelse: endnu ikke kontrolleret. Brug Værktøjer... for at kontrollere."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG-forhåndsvisning køres direkte gennem Ink/Stitch; redigering kræver Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG-forhåndsvisning køres direkte gennem Ink/Stitch; Inkscape bruges kun til redigering."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU-tekstureret render"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Åbn broderifil"
     },
     "menu.file.open_file": {
         "source": "Open...",

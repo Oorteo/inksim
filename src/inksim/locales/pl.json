@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Kolor igły"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normalny podgląd"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Nieprawidłowy plik haftu."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Rzeczywisty podgląd"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Otwórz plik haftu"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Przeglądaj..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— wybierz katalog —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Odśwież"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Szukaj plików"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Rozszerzenie Ink/Stitch: jeszcze nie sprawdzono. Użyj Narzędzia..., aby sprawdzić."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Podgląd SVG jest generowany bezpośrednio przez Ink/Stitch; do edycji wymagany jest Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Podgląd SVG jest generowany bezpośrednio przez Ink/Stitch; Inkscape służy tylko do edycji."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Renderowanie tekstur GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Otwórz plik haftu"
     },
     "menu.file.open_file": {
         "source": "Open...",

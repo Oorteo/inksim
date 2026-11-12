@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Warna jarum"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Pratinjau normal"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "File bordir tidak valid"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Pratinjau nyata"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Buka berkas bordir"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Telusuri..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— pilih direktori —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Muat ulang"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Cari file"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ekstensi Ink/Stitch: belum diperiksa. Gunakan Alat... untuk memeriksa."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Pratinjau SVG dijalankan langsung melalui Ink/Stitch; pengeditan memerlukan Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Pratinjau SVG dijalankan langsung melalui Ink/Stitch; Inkscape hanya digunakan untuk mengedit."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Render bertekstur GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Buka berkas bordir"
     },
     "menu.file.open_file": {
         "source": "Open...",

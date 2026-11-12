@@ -521,7 +521,7 @@ class MainWindow(QMainWindow):
         integration_menu = self.menuBar().addMenu(integration_title)
         self._action(
             integration_menu,
-            _("menu.integration.locate_inkscape"),
+            _("menu.integration.locate_inkscape", "Inkscape Setup..."),
             self._locate_inkscape_slot,
         )
         language_menu = self.menuBar().addMenu(language_title)

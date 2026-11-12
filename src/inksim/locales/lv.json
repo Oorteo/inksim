@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Adatas krāsa"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Parastais priekšskatījums"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Nav derīgs izšūšanas fails"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Reālais priekšskatījums"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Atvērt izšūšanas failu"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Pārlūkot..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— izvēlēties mapi —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Atsvaidzināt"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Meklēt failus"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch paplašinājums: vēl nav pārbaudīts. Lai pārbaudītu, izmanto “Rīki...”."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG priekšskatījums tiek veidots tieši ar Ink/Stitch; rediģēšanai nepieciešams Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG priekšskatījums tiek veidots tieši ar Ink/Stitch; Inkscape izmanto tikai rediģēšanai."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU teksturēts renderējums"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Atvērt izšūšanas failu"
     },
     "menu.file.open_file": {
         "source": "Open...",

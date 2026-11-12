@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "ਸੂਈ ਦਾ ਰੰਗ"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "ਆਮ ਪ੍ਰੀਵਿਊ"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "ਇਹ ਵੈਧ ਕਢਾਈ ਫਾਈਲ ਨਹੀਂ ਹੈ"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "ਅਸਲ ਪ੍ਰੀਵਿਊ"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "ਕਢਾਈ ਫਾਈਲ ਖੋਲ੍ਹੋ"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "ਚੁਣੋ..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— ਡਾਇਰੈਕਟਰੀ ਚੁਣੋ —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "ਤਾਜ਼ਾ ਕਰੋ"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ਫ਼ਾਈਲਾਂ ਖੋਜੋ"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch ਐਕਸਟੈਂਸ਼ਨ: ਹਾਲੇ ਜਾਂਚਿਆ ਨਹੀਂ ਗਿਆ। ਜਾਂਚਣ ਲਈ Tools... ਵਰਤੋ।"
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG ਪ੍ਰੀਵਿਊ ਸਿੱਧਾ Ink/Stitch ਰਾਹੀਂ ਚੱਲਦਾ ਹੈ; ਸੋਧਣ ਲਈ Inkscape ਲੋੜੀਂਦਾ ਹੈ।"
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG ਪ੍ਰੀਵਿਊ ਸਿੱਧਾ Ink/Stitch ਰਾਹੀਂ ਚੱਲਦਾ ਹੈ; Inkscape ਸਿਰਫ਼ ਸੋਧਣ ਲਈ ਵਰਤਿਆ ਜਾਂਦਾ ਹੈ।"
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU ਟੈਕਸਚਰਡ ਰੈਂਡਰ"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "ਕਢਾਈ ਫਾਈਲ ਖੋਲ੍ਹੋ"
     },
     "menu.file.open_file": {
         "source": "Open...",

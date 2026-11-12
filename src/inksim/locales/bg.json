@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Цвят на иглата"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Нормален преглед"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Това не е валиден файл за бродиране."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Реален преглед"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Отвори файл за бродерия"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Разглеждане..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— избери папка —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Опресни"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Търси файлове"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Разширение Ink/Stitch: все още не е проверено. Използвай Инструменти..., за да провериш."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG визуализацията се изпълнява директно чрез Ink/Stitch; за редактиране е необходим Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG визуализацията се изпълнява директно чрез Ink/Stitch; Inkscape се използва само за редактиране."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU текстуриран рендер"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Отвори файл за бродерия"
     },
     "menu.file.open_file": {
         "source": "Open...",

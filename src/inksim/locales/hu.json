@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Tű színe"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normál előnézet"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Nem érvényes hímzésfájl"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Valós előnézet"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Hímzésfájl megnyitása"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Tallózás..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— könyvtár kiválasztása —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Frissítés"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Fájlok keresése"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch-bővítmény: még nincs ellenőrizve. Az ellenőrzéshez használd az Eszközök... menüpontot."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Az SVG-előnézet közvetlenül az Ink/Stitch segítségével készül; a szerkesztéshez Inkscape szükséges."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Az SVG-előnézet közvetlenül az Ink/Stitch segítségével készül; az Inkscape csak a szerkesztéshez kell."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU textúrázott megjelenítés"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Hímzésfájl megnyitása"
     },
     "menu.file.open_file": {
         "source": "Open...",

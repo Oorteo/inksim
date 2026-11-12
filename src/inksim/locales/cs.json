@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Barva jehly"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normální náhled"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Toto není platný soubor pro vyšívání."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Skutečný náhled"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Otevřít soubor výšivky"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Procházet..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— vyberte složku —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Obnovit"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Hledat soubory"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Rozšíření Ink/Stitch: zatím neověřeno. Ověřte ho přes Nástroje..."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Náhled SVG spouští přímo Ink/Stitch; úpravy vyžadují Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Náhled SVG spouští přímo Ink/Stitch; Inkscape slouží pouze k úpravám."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -739,10 +711,6 @@
         "source": "GPU textured render",
         "translation": "GPU texturované vykreslování"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Otevřít soubor výšivky"
-    },
     "menu.file.open_file": {
         "source": "Open...",
         "translation": "Otevřít..."
@@ -804,8 +772,8 @@
         "translation": "Nás&troje"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Konfigurace"
+        "source": "Inkscape Setup...",
+        "translation": "Nastavení Inkscape..."
     },
     "menu.language": {
         "source": "&Language",

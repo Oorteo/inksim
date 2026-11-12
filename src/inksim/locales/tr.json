@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "İğne rengi"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normal önizleme"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Geçerli bir nakış dosyası değil."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Gerçek önizleme"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Nakış dosyası aç"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Göz at..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— dizin seç —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Yenile"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Dosyalarda ara"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch uzantısı: henüz kontrol edilmedi. Kontrol etmek için Araçlar... menüsünü kullan."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG önizlemesi doğrudan Ink/Stitch üzerinden alınır; düzenleme için Inkscape gerekir."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG önizlemesi doğrudan Ink/Stitch üzerinden alınır; Inkscape yalnızca düzenleme için kullanılır."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU dokulu işleme"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Nakış dosyası aç"
     },
     "menu.file.open_file": {
         "source": "Open...",

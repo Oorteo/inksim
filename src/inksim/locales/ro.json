@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Culoarea acului"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Previzualizare normală"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Nu este un fișier de broderie valid"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Previzualizare reală"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Deschide fișier de broderie"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Răsfoiește..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— alege un director —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Reîmprospătează"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Caută fișiere"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Extensia Ink/Stitch: încă neverificată. Folosește Instrumente... pentru verificare."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Previzualizarea SVG rulează direct prin Ink/Stitch; editarea necesită Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Previzualizarea SVG rulează direct prin Ink/Stitch; Inkscape este folosit doar pentru editare."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Randare texturată GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Deschide fișier de broderie"
     },
     "menu.file.open_file": {
         "source": "Open...",

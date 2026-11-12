@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "సూది రంగు"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "సాధారణ ప్రివ్యూ"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "సరైన ఎంబ్రాయిడరీ ఫైల్ కాదు"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "వాస్తవ ప్రివ్యూ"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "ఎంబ్రాయిడరీ ఫైల్ను తెరవండి"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "బ్రౌజ్ చేయి..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— డైరెక్టరీని ఎంచుకోండి —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "రిఫ్రెష్ చేయి"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ఫైళ్లను వెతకండి"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch పొడిగింపు: ఇంకా తనిఖీ చేయలేదు. తనిఖీ చేయడానికి Tools... ఉపయోగించండి."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG ప్రివ్యూ నేరుగా Ink/Stitch ద్వారా నడుస్తుంది; సవరించడానికి Inkscape అవసరం."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG ప్రివ్యూ నేరుగా Ink/Stitch ద్వారా నడుస్తుంది; సవరించడానికి మాత్రమే Inkscape ఉపయోగించబడుతుంది."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU టెక్స్చర్డ్ రెండర్"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "ఎంబ్రాయిడరీ ఫైల్ను తెరవండి"
     },
     "menu.file.open_file": {
         "source": "Open...",

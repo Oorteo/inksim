@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Nõela värv"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Tavaline eelvaade"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "See ei ole kehtiv tikkimisfail."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Päris eelvaade"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Ava tikkimisfail"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Sirvi..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— vali kaust —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Värskenda"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Otsi faile"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitchi laiendus: pole veel kontrollitud. Kontrollimiseks kasuta menüüd Tööriistad..."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG eelvaade luuakse otse Ink/Stitchiga; muutmiseks on vaja Inkscape'i."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG eelvaade luuakse otse Ink/Stitchiga; Inkscape'i kasutatakse ainult muutmiseks."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU tekstuuriga renderdus"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Ava tikkimisfail"
     },
     "menu.file.open_file": {
         "source": "Open...",

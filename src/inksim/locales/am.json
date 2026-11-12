@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "የመርፌ ቀለም"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "መደበኛ ቅድመ-እይታ"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "ትክክለኛ የጌጥ ስፌት ፋይል አይደለም"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "እውነተኛ ቅድመ-እይታ"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "የጥልፍ ፋይል ክፈት"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "አስስ..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— ማውጫ ምረጥ —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "አድስ"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ፋይሎችን ፈልግ"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "የInk/Stitch ቅጥያ፦ ገና አልተመረመረም። ለማረጋገጥ መሣሪያዎች...ን ይጠቀሙ።"
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "የSVG ቅድመ እይታ በቀጥታ በInk/Stitch ይሰራል፤ ለማርትዕ Inkscape ያስፈልጋል።"
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "የSVG ቅድመ እይታ በቀጥታ በInk/Stitch ይሰራል፤ Inkscape ለማርትዕ ብቻ ይጠቅማል።"
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU ቴክስቸር አቅራቢ"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "የጥልፍ ፋይል ክፈት"
     },
     "menu.file.open_file": {
         "source": "Open...",

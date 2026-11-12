@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "针颜色"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "普通预览"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "不是有效的刺绣文件"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "真实预览"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "打开刺绣文件"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "浏览..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— 选择目录 —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "刷新"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "搜索文件"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch 扩展：尚未检查。使用“工具...”进行检查。"
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG 预览直接通过 Ink/Stitch 运行；编辑则需要 Inkscape。"
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG 预览直接通过 Ink/Stitch 运行；Inkscape 仅用于编辑。"
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU 纹理渲染"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "打开刺绣文件"
     },
     "menu.file.open_file": {
         "source": "Open...",

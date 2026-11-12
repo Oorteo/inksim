@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "ಸೂಜಿ ಬಣ್ಣ"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "ಸಾಮಾನ್ಯ ಪೂರ್ವವೀಕ್ಷಣೆ"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "ಇದು ಸರಿಯಾದ ಎಂಬ್ರಾಯ್ಡರಿ ಫೈಲ್ ಅಲ್ಲ"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "ನೈಜ ಪೂರ್ವವೀಕ್ಷಣೆ"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "ಕಸೂತಿ ಫೈಲ್ ತೆರೆಯಿರಿ"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "ಬ್ರೌಸ್ ಮಾಡಿ..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— ಫೋಲ್ಡರ್ ಆಯ್ಕೆಮಾಡಿ —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "ರಿಫ್ರೆಶ್ ಮಾಡಿ"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ಫೈಲ್‌ಗಳನ್ನು ಹುಡುಕಿ"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch ವಿಸ್ತರಣೆ: ಇನ್ನೂ ಪರಿಶೀಲಿಸಿಲ್ಲ. ಪರಿಶೀಲಿಸಲು Tools... ಬಳಸಿ."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG ಪೂರ್ವವೀಕ್ಷಣೆ Ink/Stitch ಮೂಲಕ ನೇರವಾಗಿ ನಡೆಯುತ್ತದೆ; ಸಂಪಾದಿಸಲು Inkscape ಅಗತ್ಯವಿದೆ."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG ಪೂರ್ವವೀಕ್ಷಣೆ Ink/Stitch ಮೂಲಕ ನೇರವಾಗಿ ನಡೆಯುತ್ತದೆ; ಸಂಪಾದಿಸಲು ಮಾತ್ರ Inkscape ಬಳಸಲಾಗುತ್ತದೆ."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU ಟೆಕ್ಸ್ಚರ್ಡ್ ರೆಂಡರ್"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "ಕಸೂತಿ ಫೈಲ್ ತೆರೆಯಿರಿ"
     },
     "menu.file.open_file": {
         "source": "Open...",

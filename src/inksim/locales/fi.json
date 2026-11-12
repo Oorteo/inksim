@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Neulan väri"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normaali esikatselu"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Ei kelvollinen kirjontatiedosto"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Todellinen esikatselu"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Avaa brodeeraustiedosto"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Selaa..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— valitse kansio —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Päivitä"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Etsi tiedostoja"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch-laajennus: ei vielä tarkistettu. Tarkista kohdasta Työkalut..."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG-esikatselu toimii suoraan Ink/Stitchillä; muokkaamiseen tarvitaan Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG-esikatselu toimii suoraan Ink/Stitchillä; Inkscapea käytetään vain muokkaamiseen."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU-teksturoitu renderöinti"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Avaa brodeeraustiedosto"
     },
     "menu.file.open_file": {
         "source": "Open...",

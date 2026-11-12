@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Warna jarum"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Pratonton biasa"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Bukan fail sulaman yang sah."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Pratonton sebenar"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Buka fail sulaman"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Semak imbas..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— pilih direktori —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Muat semula"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Cari fail"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Sambungan Ink/Stitch: belum diperiksa. Gunakan Alat... untuk memeriksa."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Pratonton SVG dijalankan terus melalui Ink/Stitch; pengeditan memerlukan Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Pratonton SVG dijalankan terus melalui Ink/Stitch; Inkscape hanya digunakan untuk pengeditan."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Pemaparan bertekstur GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Buka fail sulaman"
     },
     "menu.file.open_file": {
         "source": "Open...",

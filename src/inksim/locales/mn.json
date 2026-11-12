@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Зүүний өнгө"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Энгийн урьдчилсан харагдац"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Зөв хээ файл биш."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Бодит урьдчилсан харагдац"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Хатгамал файл нээх"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Үзэх..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— хавтас сонгох —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Шинэчлэх"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Файл хайх"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch өргөтгөл: хараахан шалгаагүй. Шалгахын тулд Tools... хэсгийг ашиглана уу."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG-г урьдчилан харахад Ink/Stitch-г шууд ашиглана; засахад Inkscape шаардлагатай."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG-г урьдчилан харахад Ink/Stitch-г шууд ашиглана; Inkscape зөвхөн засахад хэрэглэгдэнэ."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU бүтэцтэй рендер"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Хатгамал файл нээх"
     },
     "menu.file.open_file": {
         "source": "Open...",

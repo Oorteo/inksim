@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "د سوزن رنګ"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "عادي مخکتنه"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "د ګلدوزۍ معتبر فایل نه دی."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "ریښتینې مخکتنه"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "د ګلدوزۍ فایل پرانیستل"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "لټون..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— پوښۍ وټاکئ —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "تازه کول"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "فایلونه لټول"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "د Ink/Stitch غځونه: لا یې کتنه نه ده شوې. د کتنې لپاره Tools... وکاروئ."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "د SVG مخکتنه په مستقیم ډول د Ink/Stitch له لارې کېږي؛ د سمون لپاره Inkscape اړین دی."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "د SVG مخکتنه په مستقیم ډول د Ink/Stitch له لارې کېږي؛ Inkscape یوازې د سمون لپاره کارېږي."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU ټیکسچر رینډر"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "د ګلدوزۍ فایل پرانیستل"
     },
     "menu.file.open_file": {
         "source": "Open...",

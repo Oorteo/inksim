@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Kulur tal-labra"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Preview normali"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Mhux fajl ta' rakkmu validu"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Preview reali"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Iftaħ fajl tar-rakkmu"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Fittex..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— agħżel direttorju —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Aġġorna"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Fittex fajls"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Estensjoni ta' Ink/Stitch: għadha ma ġietx iċċekkjata. Uża Għodod... biex tiċċekkja."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Il-previżjoni tal-SVG issir direttament permezz ta' Ink/Stitch; biex teditja hemm bżonn Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Il-previżjoni tal-SVG issir direttament permezz ta' Ink/Stitch; Inkscape jintuża biss għall-editjar."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Render b'tessut GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Iftaħ fajl tar-rakkmu"
     },
     "menu.file.open_file": {
         "source": "Open...",
