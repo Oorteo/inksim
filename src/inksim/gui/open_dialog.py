@@ -261,6 +261,7 @@ class OpenBrowserDialog(QDialog):
         self.preview_csv_path: Path | None = None
         self.document_path: Path | None = None
         self.result_action: str | None = None
+        self.launch_directory = Path.cwd().resolve()
         self.current_directory = Path(initial_directory or Path.cwd()).resolve()
         self._directory_return_path: Path | None = None
         self.initial_file: Path | None = Path(selected_file).resolve() if selected_file else None
@@ -319,16 +320,6 @@ class OpenBrowserDialog(QDialog):
 
         directory_row = QHBoxLayout()
         directory_row.addWidget(QLabel(_("dialog.open_browser.folder", "Folder"), self))
-        self.directory_combo = QComboBox(self)
-        self.directory_combo.setEditable(True)
-        directory_row.addWidget(self.directory_combo, 1)
-        self.add_favorite_button = QPushButton(
-            _("dialog.open_browser.add_favorite", "Add to places"), self
-        )
-        self.add_favorite_button.clicked.connect(self._add_current_favorite)
-        directory_row.addWidget(self.add_favorite_button)
-        root.addLayout(directory_row)
-
         self.breadcrumb_scroll = QScrollArea(self)
         self.breadcrumb_scroll.setWidgetResizable(True)
         self.breadcrumb_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
@@ -343,7 +334,32 @@ class OpenBrowserDialog(QDialog):
             + 2 * self.breadcrumb_layout.contentsMargins().top()
             + 12
         )
-        root.addWidget(self.breadcrumb_scroll)
+
+        self.path_stack = QStackedWidget(self)
+        self.path_stack.addWidget(self.breadcrumb_scroll)
+        self.path_editor_page = QWidget(self.path_stack)
+        path_editor_layout = QHBoxLayout(self.path_editor_page)
+        path_editor_layout.setContentsMargins(0, 0, 0, 0)
+        self.path_entry = QLineEdit(self.path_editor_page)
+        self.path_entry.setPlaceholderText(
+            _("dialog.open_browser.path_placeholder", "Enter or paste a folder path")
+        )
+        self.path_entry.returnPressed.connect(self._apply_path_entry)
+        path_editor_layout.addWidget(self.path_entry, 1)
+        self.path_go_button = QPushButton(_("dialog.open_browser.go", "Go"), self.path_editor_page)
+        self.path_go_button.clicked.connect(self._apply_path_entry)
+        path_editor_layout.addWidget(self.path_go_button)
+        self.path_stack.addWidget(self.path_editor_page)
+        directory_row.addWidget(self.path_stack, 1)
+        self.edit_path_button = QPushButton(_("dialog.open_browser.edit_path", "Edit path"), self)
+        self.edit_path_button.clicked.connect(self._toggle_path_edit)
+        directory_row.addWidget(self.edit_path_button)
+        self.add_favorite_button = QPushButton(
+            _("dialog.open_browser.add_favorite", "Add to places"), self
+        )
+        self.add_favorite_button.clicked.connect(self._add_current_favorite)
+        directory_row.addWidget(self.add_favorite_button)
+        root.addLayout(directory_row)
 
         recent_row = QHBoxLayout()
         recent_row.addWidget(QLabel(_("dialog.open_browser.recent", "Recent:"), self))
@@ -489,10 +505,6 @@ class OpenBrowserDialog(QDialog):
         button_row.addWidget(self.open_button)
         root.addLayout(button_row)
 
-        self.directory_combo.currentIndexChanged.connect(self._on_directory_selected)
-        line_edit = self.directory_combo.lineEdit()
-        if line_edit is not None:
-            line_edit.returnPressed.connect(self.change_directory)
         self._update_actions()
 
     def _load_favorite_directories(self) -> list[Path]:
@@ -509,6 +521,9 @@ class OpenBrowserDialog(QDialog):
         return favorites
 
     def _refresh_places(self) -> None:
+        selected = self.places_list.currentItem()
+        selected_path = selected.data(_PLACE_PATH_ROLE) if selected is not None else None
+        self.places_list.blockSignals(True)
         self.places_list.clear()
         self._place_items = []
         locations = [
@@ -547,10 +562,27 @@ class OpenBrowserDialog(QDialog):
                 seen.add(path)
                 self._add_place_item(_sanitize_path_text(str(path)), path)
 
+        self._add_place_item(
+            _sanitize_path_text(self.launch_directory.name or str(self.launch_directory)),
+            self.launch_directory,
+        )
         self._add_place_heading(_("dialog.open_browser.favorites", "Favorites"))
         for path in self.favorite_directories:
             self._add_place_item(path.name or str(path), path, favorite=True)
-        self.remove_favorite_button.setEnabled(False)
+        selected_item = next(
+            (
+                self._place_items[index]
+                for index in range(len(self._place_items))
+                if self._place_items[index].data(_PLACE_PATH_ROLE) == selected_path
+            ),
+            None,
+        )
+        if selected_item is not None:
+            self.places_list.setCurrentItem(selected_item)
+        self.places_list.blockSignals(False)
+        self.remove_favorite_button.setEnabled(
+            bool(selected_item and selected_item.data(_PLACE_FAVORITE_ROLE))
+        )
 
     def _add_place_heading(self, label: str) -> None:
         item = QListWidgetItem(label)
@@ -756,19 +788,9 @@ class OpenBrowserDialog(QDialog):
             key=lambda path: path.name.casefold(),
         )
         self._all_paths = [*parent_entry, *directories, *files]
-        self._refresh_directory_combo(directories)
         self._refresh_breadcrumbs()
         self.add_favorite_button.setEnabled(self.current_directory not in self.favorite_directories)
         self._apply_filter()
-
-    def _refresh_directory_combo(self, directories: Sequence[Path]) -> None:
-        self.directory_combo.blockSignals(True)
-        self.directory_combo.clear()
-        self.directory_combo.addItem(_sanitize_path(self.current_directory))
-        for path in directories:
-            self.directory_combo.addItem(_sanitize_path(path))
-        self.directory_combo.setCurrentText(_sanitize_path(self.current_directory))
-        self.directory_combo.blockSignals(False)
 
     def _apply_filter(self, *_args: object) -> None:
         query = self.search_edit.text().strip().casefold()
@@ -837,15 +859,28 @@ class OpenBrowserDialog(QDialog):
         self.recent_combo.setCurrentIndex(0)
         self.set_directory(directory)
 
-    def _on_directory_selected(self, index: int) -> None:
-        if index < 0:
+    def _toggle_path_edit(self, checked: bool = False) -> None:
+        del checked
+        if self.path_stack.currentWidget() == self.path_editor_page:
+            self.path_stack.setCurrentWidget(self.breadcrumb_scroll)
+            self.edit_path_button.setText(_("dialog.open_browser.edit_path", "Edit path"))
             return
-        text = self.directory_combo.itemText(index)
-        if text:
-            self.set_directory(_unsanitize_path(text))
+        self.path_entry.setText(_sanitize_path(self.current_directory))
+        self.path_stack.setCurrentWidget(self.path_editor_page)
+        self.edit_path_button.setText(_("dialog.open_browser.cancel", "Cancel"))
+        self.path_entry.setFocus()
+        self.path_entry.selectAll()
 
-    def change_directory(self) -> None:
-        self.set_directory(_unsanitize_path(self.directory_combo.currentText()))
+    def _apply_path_entry(self) -> None:
+        path = Path(_unsanitize_path(self.path_entry.text())).expanduser().resolve()
+        if not path.is_dir():
+            self._show_message(
+                _("dialog.open_browser.invalid_folder", "This folder is not accessible.")
+            )
+            return
+        self.set_directory(path)
+        self.path_stack.setCurrentWidget(self.breadcrumb_scroll)
+        self.edit_path_button.setText(_("dialog.open_browser.edit_path", "Edit path"))
 
     def set_directory(self, directory: str | Path) -> None:
         path = Path(_unsanitize_path(str(directory))).expanduser().resolve()
@@ -855,10 +890,14 @@ class OpenBrowserDialog(QDialog):
             )
             return
         if path == self.current_directory:
+            self.path_stack.setCurrentWidget(self.breadcrumb_scroll)
+            self.edit_path_button.setText(_("dialog.open_browser.edit_path", "Edit path"))
             return
         self._directory_return_path = self.current_directory
         self.current_directory = path
         self.initial_file = None
+        self.path_stack.setCurrentWidget(self.breadcrumb_scroll)
+        self.edit_path_button.setText(_("dialog.open_browser.edit_path", "Edit path"))
         self.refresh_files()
         self.add_favorite_button.setEnabled(path not in self.favorite_directories)
 

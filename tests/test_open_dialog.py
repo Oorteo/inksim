@@ -102,6 +102,35 @@ def test_browser_dialog_navigates_directories_with_arrow_keys(qtbot, tmp_path, m
     dialog.reject()
 
 
+def test_path_editor_navigates_to_typed_directory(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import Qt
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    target = tmp_path / "custom location"
+    target.mkdir()
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    assert not hasattr(dialog, "directory_combo")
+    dialog.edit_path_button.click()
+    assert dialog.path_stack.currentWidget() is dialog.path_editor_page
+    dialog.path_entry.setText(str(target))
+    qtbot.keyClick(dialog.path_entry, Qt.Key.Key_Return)
+    assert dialog.current_directory == target
+    assert dialog.path_stack.currentWidget() is dialog.breadcrumb_scroll
+
+    dialog.edit_path_button.click()
+    dialog.path_entry.setText(str(tmp_path / "missing"))
+    dialog.path_go_button.click()
+    assert dialog.current_directory == target
+    assert dialog.path_stack.currentWidget() is dialog.path_editor_page
+    dialog.edit_path_button.click()
+    assert dialog.path_stack.currentWidget() is dialog.breadcrumb_scroll
+    dialog.reject()
+
+
 def test_places_breadcrumbs_and_favorite_directories(qtbot, tmp_path, monkeypatch):
     from PySide6.QtCore import Qt
     from PySide6.QtWidgets import QPushButton
@@ -116,11 +145,25 @@ def test_places_breadcrumbs_and_favorite_directories(qtbot, tmp_path, monkeypatc
     monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
 
+    launch_directory = Path.cwd().resolve()
     dialog = OpenBrowserDialog(None, tmp_path)
     qtbot.addWidget(dialog)
+    launch_place = next(
+        dialog.places_list.item(index)
+        for index in range(dialog.places_list.count())
+        if dialog.places_list.item(index).data(Qt.ItemDataRole.UserRole) == str(launch_directory)
+    )
+    assert launch_place.text() == launch_directory.name or launch_place.text() == str(
+        launch_directory
+    )
     dialog.show()
     dialog.set_directory(nested)
     qtbot.wait(10)
+    assert any(
+        dialog.places_list.item(index).data(Qt.ItemDataRole.UserRole) == str(launch_directory)
+        and dialog.places_list.item(index).text() == launch_place.text()
+        for index in range(dialog.places_list.count())
+    )
 
     buttons = {
         button.text(): button for button in dialog.breadcrumb_widget.findChildren(QPushButton)

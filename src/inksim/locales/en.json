@@ -183,6 +183,10 @@
         "source": "Edit in Inkscape",
         "translation": "Edit in Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Edit path"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "No supported files in this folder."
@@ -231,6 +235,10 @@
         "source": "Double-click the folder to browse its files.",
         "translation": "Double-click the folder to browse its files."
     },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Go"
+    },
     "dialog.open_browser.home": {
         "source": "Home",
         "translation": "Home"
@@ -266,6 +274,10 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Open the selected embroidery file."
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Enter or paste a folder path"
     },
     "dialog.open_browser.places": {
         "source": "Places",
