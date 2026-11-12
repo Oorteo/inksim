@@ -172,8 +172,8 @@
         "translation": "د تېروتنې د جزیاتو لپاره output.err وګورئ."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "د Ink/Stitch د CSV صادرولو وخت پای ته ورسېد."
+        "source": "Stitch preview timed out.",
+        "translation": "د ګنډلو مخکتنه په ټاکلي وخت کې بشپړه نه شوه."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "د SVG فایلونو د سمون لپاره Inkscape اړین دی."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "د SVG مخکتنې لپاره د Ink/Stitch فعاله او تنظیم شوې لګونه اړینه ده."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "د Ink/Stitch سمبال شوی نصب او د Python لانچر اړین دي."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "مخکتنه"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "د فعال Ink/Stitch په کارولو له دې SVG څخه د ګنډلو معلومات جوړ کړئ."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "له دې SVG څخه د Inkscape/Ink/Stitch په مرسته د ګنډلو معلومات جوړ کړئ."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "تازه کول اړین دي ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "د سیسټم پراختیا: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "د اوسني کارن غځونه (د لګولو/تازه کولو موخه): {path} | حالت: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "د بل کارن پراختیا: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

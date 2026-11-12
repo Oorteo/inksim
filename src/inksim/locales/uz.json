@@ -172,8 +172,8 @@
         "translation": "Xato tafsilotlari uchun output.err faylini ko‘ring."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Ink/Stitch CSV eksporti vaqti tugadi."
+        "source": "Stitch preview timed out.",
+        "translation": "Tikuvlarni oldindan ko‘rish vaqti tugadi."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "SVG fayllarni tahrirlash uchun Inkscape kerak."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "SVG faylni oldindan ko‘rish uchun faol Ink/Stitch o‘rnatmasi sozlangan bo‘lishi kerak."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Sozlangan Ink/Stitch o‘rnatmasi va Python ishga tushirgichi kerak."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Oldindan ko‘rish"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Faol Ink/Stitch o‘rnatmasi yordamida bu SVG fayldan tikuv ma’lumotlarini yaratish."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Ushbu SVG fayldan Inkscape/Ink/Stitch yordamida tikuv ma’lumotlarini yarating."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Yangilash kerak ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Tizim kengaytmasi: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Joriy foydalanuvchining kengaytmasi (o‘rnatish/yangilash manzili): {path} | Holati: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Boshqa foydalanuvchining kengaytmasi: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

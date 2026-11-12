@@ -172,8 +172,8 @@
         "translation": "راجع output.err لمعرفة تفاصيل الخطأ."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "انتهت مهلة تصدير CSV من Ink/Stitch."
+        "source": "Stitch preview timed out.",
+        "translation": "انتهت مهلة معاينة الغرز."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "يلزم Inkscape لتحرير ملفات SVG."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "يلزم تثبيت Ink/Stitch نشط ومُعدّ لمعاينة ملفات SVG."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "يلزم وجود تثبيت مُعَدّ لـ Ink/Stitch ومشغّل Python."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "معاينة"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "أنشئ بيانات الغرز من ملف SVG هذا باستخدام تثبيت Ink/Stitch النشط."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "أنشئ بيانات الغرز من ملف SVG هذا باستخدام Inkscape/Ink/Stitch."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "التحديث مطلوب ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "إضافة النظام: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "امتداد المستخدم الحالي (هدف التثبيت/التحديث): {path} | الحالة: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "إضافة مستخدم آخر: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

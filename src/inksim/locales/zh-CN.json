@@ -172,8 +172,8 @@
         "translation": "查看 output.err 了解错误详情。"
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Ink/Stitch CSV 导出超时。"
+        "source": "Stitch preview timed out.",
+        "translation": "生成针迹预览超时。"
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "编辑 SVG 文件需要 Inkscape。"
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "预览 SVG 需要已配置并启用的 Ink/Stitch 安装。"
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "需要已配置的 Ink/Stitch 安装和 Python 启动器。"
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "预览"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "使用当前启用的 Ink/Stitch 安装从此 SVG 生成针迹数据。"
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "使用 Inkscape/Ink/Stitch 从此 SVG 生成针迹数据。"
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "需要更新（{details}）"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "系统扩展：{path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "当前用户扩展（安装/更新目标）：{path} | 状态：{status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "其他用户扩展：{path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

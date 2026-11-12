@@ -172,8 +172,8 @@
         "translation": "Xem output.err để biết chi tiết lỗi."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Quá thời gian xuất CSV từ Ink/Stitch."
+        "source": "Stitch preview timed out.",
+        "translation": "Đã hết thời gian chờ tạo bản xem trước đường thêu."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "Cần có Inkscape để chỉnh sửa tệp SVG."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "Cần có bản cài đặt Ink/Stitch đang hoạt động và đã cấu hình để xem trước SVG."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Cần cài đặt Ink/Stitch đã cấu hình và trình khởi chạy Python."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Xem trước"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Dùng bản cài đặt Ink/Stitch đang hoạt động để tạo dữ liệu đường thêu từ SVG này."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Tạo dữ liệu đường thêu từ SVG này bằng Inkscape/Ink/Stitch."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Cần cập nhật ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Phần mở rộng hệ thống: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Tiện ích mở rộng của người dùng hiện tại (đích cài đặt/cập nhật): {path} | Trạng thái: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Phần mở rộng của người dùng khác: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

@@ -172,8 +172,8 @@
         "translation": "Tingnan ang output.err para sa mga detalye ng error."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Nag-time out ang pag-export ng CSV ng Ink/Stitch."
+        "source": "Stitch preview timed out.",
+        "translation": "Nag-time out ang preview ng tahi."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "Kailangan ang Inkscape para mag-edit ng mga SVG file."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "Kailangan ng naka-configure at aktibong instalasyon ng Ink/Stitch para mag-preview ng SVG."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Kailangan ang naka-configure na instalasyon ng Ink/Stitch at Python launcher."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "I-preview"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Gumawa ng data ng tahi mula sa SVG na ito gamit ang aktibong instalasyon ng Ink/Stitch."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Gumawa ng datos ng tahi mula sa SVG na ito gamit ang Inkscape/Ink/Stitch."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Kailangang i-update ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Extension ng system: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Kasalukuyang user extension (target ng pag-install/pag-update): {path} | Status: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Extension ng ibang user: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

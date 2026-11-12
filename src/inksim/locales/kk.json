@@ -172,8 +172,8 @@
         "translation": "Қате туралы мәліметті output.err файлынан қараңыз."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Ink/Stitch CSV экспортының уақыты аяқталды."
+        "source": "Stitch preview timed out.",
+        "translation": "Тігісті алдын ала қарау уақыты аяқталды."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "SVG файлдарын өңдеу үшін Inkscape қажет."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "SVG файлын алдын ала қарау үшін белсенді Ink/Stitch орнатылымы бапталған болуы керек."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Бапталған Ink/Stitch орнатылымы мен Python іске қосқышы қажет."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Алдын ала қарау"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Белсенді Ink/Stitch орнатылымын пайдаланып, осы SVG файлынан тігіс деректерін жасау."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Осы SVG файлынан Inkscape/Ink/Stitch арқылы тігіс деректерін жаса."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Жаңарту қажет ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Жүйелік кеңейтім: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Ағымдағы пайдаланушы кеңейтімі (орнату/жаңарту орны): {path} | Күйі: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Басқа пайдаланушының кеңейтімі: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

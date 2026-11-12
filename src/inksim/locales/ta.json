@@ -172,8 +172,8 @@
         "translation": "பிழை விவரங்களுக்கு output.err-ஐப் பார்க்கவும்."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Ink/Stitch CSV ஏற்றுமதிக்கான நேரம் முடிந்தது."
+        "source": "Stitch preview timed out.",
+        "translation": "தையல் முன்னோட்டத்துக்கான நேரம் முடிந்துவிட்டது."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "SVG கோப்புகளைத் திருத்த Inkscape தேவை."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "SVG முன்னோட்டத்திற்கு அமைக்கப்பட்ட செயலில் உள்ள Ink/Stitch நிறுவல் தேவை."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "கட்டமைக்கப்பட்ட Ink/Stitch நிறுவலும் Python துவக்கியும் தேவை."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "முன்னோட்டம்"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "செயலில் உள்ள Ink/Stitch நிறுவலைப் பயன்படுத்தி இந்த SVG-யிலிருந்து தையல் தரவை உருவாக்கு."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "இந்த SVG-யிலிருந்து Inkscape/Ink/Stitch மூலம் தையல் தரவை உருவாக்கவும்."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "புதுப்பிப்பு தேவை ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "கணினி நீட்டிப்பு: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "தற்போதைய பயனர் நீட்டிப்பு (நிறுவல்/புதுப்பிப்பு இலக்கு): {path} | நிலை: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "வேறொரு பயனரின் நீட்டிப்பு: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

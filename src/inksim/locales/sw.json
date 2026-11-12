@@ -172,8 +172,8 @@
         "translation": "Tazama output.err kwa maelezo ya hitilafu."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Muda wa uhamishaji wa CSV wa Ink/Stitch umekwisha."
+        "source": "Stitch preview timed out.",
+        "translation": "Muda wa kusubiri kuona mshono umeisha."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "Inkscape inahitajika ili kuhariri faili za SVG."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "Usakinishaji wa Ink/Stitch ulioamilishwa na kusanidiwa unahitajika ili kuhakiki SVG."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Usakinishaji wa Ink/Stitch uliosanidiwa na kizindua cha Python vinahitajika."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Hakiki"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Tengeneza data za mishono kutoka kwa SVG hii kwa kutumia usakinishaji hai wa Ink/Stitch."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Tengeneza data ya mishono kutoka kwenye SVG hii ukitumia Inkscape/Ink/Stitch."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Usasishaji unahitajika ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Kiendelezi cha mfumo: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Kiendelezi cha mtumiaji kinachotumika (mahali pa kusakinisha/kusasisha): {path} | Hali: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Kiendelezi cha mtumiaji mwingine: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

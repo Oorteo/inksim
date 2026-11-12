@@ -172,8 +172,8 @@
         "translation": "Sjá output.err fyrir nánari upplýsingar um villuna."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Tímamörk við útflutning Ink/Stitch í CSV runnu út."
+        "source": "Stitch preview timed out.",
+        "translation": "Tímamörk fyrir forskoðun sauma runnu út."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "Inkscape þarf til að breyta SVG-skrám."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "Virk og stillt uppsetning Ink/Stitch þarf til að forskoða SVG."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Stillt uppsetning á Ink/Stitch og Python-ræsiforrit eru nauðsynleg."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Forskoða"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Búa til saumagögn úr þessu SVG með virkri Ink/Stitch-uppsetningu."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Búðu til saumagögn úr þessu SVG-skjali með Inkscape/Ink/Stitch."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Uppfærslu er þörf ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Kerfisviðbót: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Núverandi notandaviðbót (markmið uppsetningar/uppfærslu): {path} | Staða: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Viðbót annars notanda: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

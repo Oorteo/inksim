@@ -172,8 +172,8 @@
         "translation": "오류 세부 정보는 output.err를 확인해."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Ink/Stitch CSV 내보내기 시간이 초과됐어."
+        "source": "Stitch preview timed out.",
+        "translation": "스티치 미리보기 시간이 초과됐어."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "SVG 파일을 편집하려면 Inkscape가 필요해."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "SVG를 미리 보려면 활성 Ink/Stitch 설치를 설정해야 해."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "설정된 Ink/Stitch 설치와 Python 실행기가 필요해."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "미리보기"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "활성 Ink/Stitch 설치를 사용해 이 SVG에서 스티치 데이터를 만들어."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Inkscape/Ink/Stitch로 이 SVG의 스티치 데이터를 생성해."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "업데이트 필요 ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "시스템 확장 프로그램: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "현재 사용자 확장 기능(설치/업데이트 대상): {path} | 상태: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "다른 사용자 확장 프로그램: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

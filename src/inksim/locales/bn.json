@@ -172,8 +172,8 @@
         "translation": "ত্রুটির বিবরণ দেখতে output.err দেখুন।"
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Ink/Stitch CSV এক্সপোর্টের সময়সীমা পেরিয়ে গেছে।"
+        "source": "Stitch preview timed out.",
+        "translation": "সেলাইয়ের প্রিভিউ তৈরি করতে সময়সীমা পেরিয়ে গেছে।"
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "SVG ফাইল সম্পাদনা করতে Inkscape প্রয়োজন।"
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "SVG প্রিভিউয়ের জন্য কনফিগার করা সক্রিয় Ink/Stitch ইনস্টলেশন প্রয়োজন।"
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "কনফিগার করা Ink/Stitch ইনস্টলেশন এবং Python লঞ্চার দরকার।"
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "প্রিভিউ"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "সক্রিয় Ink/Stitch ইনস্টলেশন ব্যবহার করে এই SVG থেকে স্টিচ ডেটা তৈরি করুন।"
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Inkscape/Ink/Stitch দিয়ে এই SVG থেকে সেলাইয়ের ডেটা তৈরি করো।"
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "আপডেট প্রয়োজন ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "সিস্টেম এক্সটেনশন: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "বর্তমান ব্যবহারকারীর এক্সটেনশন (ইনস্টল/আপডেটের লক্ষ্য): {path} | অবস্থা: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "অন্য ব্যবহারকারীর এক্সটেনশন: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
