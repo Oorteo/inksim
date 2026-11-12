@@ -1526,6 +1526,7 @@ class MainWindow(QMainWindow):
         autoplay: bool = False,
         add_recent_directory: bool = True,
         temporary_input: bool = False,
+        show_error_dialog: bool = True,
     ) -> bool:
         selected_path = Path(path).resolve()
         was_temporary_input = self._temporary_input_path == selected_path
@@ -1535,6 +1536,7 @@ class MainWindow(QMainWindow):
             fit_to_screen=True,
             precompute_density=precompute_density,
             autoplay=autoplay,
+            show_error_dialog=show_error_dialog,
         ):
             if temporary_input and not was_temporary_input:
                 self._remove_temporary_file(selected_path)
@@ -1633,7 +1635,8 @@ class MainWindow(QMainWindow):
             event.acceptProposedAction()
             return
         if dropped_path.suffix.lower() == ".svg":
-            self.open_browser_dialog(selected_file=dropped_path)
+            if not self.open_file(dropped_path, show_error_dialog=False):
+                self.open_browser_dialog(selected_file=dropped_path)
             event.acceptProposedAction()
             return
         self.open_file(dropped_path)
