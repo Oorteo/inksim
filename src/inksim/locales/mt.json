@@ -371,10 +371,6 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Dan it-tip ta' fajl ma jistax jinfetaħ f'InkSim."
     },
-    "dialog.open_browser.up": {
-        "source": "Up",
-        "translation": "Lura"
-    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Kabbar"

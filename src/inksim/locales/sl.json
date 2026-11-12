@@ -371,10 +371,6 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Te vrste datoteke v InkSim ni mogoče odpreti."
     },
-    "dialog.open_browser.up": {
-        "source": "Up",
-        "translation": "Navzgor"
-    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Povečaj"

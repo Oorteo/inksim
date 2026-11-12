@@ -371,10 +371,6 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "This file type cannot be opened in InkSim."
     },
-    "dialog.open_browser.up": {
-        "source": "Up",
-        "translation": "Up"
-    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Zoom in"

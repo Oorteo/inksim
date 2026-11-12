@@ -371,10 +371,6 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Hindi mabubuksan sa InkSim ang ganitong uri ng file."
     },
-    "dialog.open_browser.up": {
-        "source": "Up",
-        "translation": "Pataas"
-    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Mag-zoom in"

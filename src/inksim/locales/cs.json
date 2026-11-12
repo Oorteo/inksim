@@ -371,10 +371,6 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Tento typ souboru nelze v InkSim otevřít."
     },
-    "dialog.open_browser.up": {
-        "source": "Up",
-        "translation": "Nahoru"
-    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Přiblížit"
@@ -431,13 +427,13 @@
         "source": "Update required ({details})",
         "translation": "Je nutná aktualizace ({details})"
     },
-    "integration.inkscape.inksim_user_current_path": {
-        "source": "Current user extension (install/update target): {path}",
-        "translation": "Aktuální uživatelské rozšíření (cíl instalace/aktualizace): {path}"
-    },
     "integration.inkscape.inksim_system": {
         "source": "System extension: {path}",
         "translation": "Systémové rozšíření: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Aktuální uživatelské rozšíření (cíl instalace/aktualizace): {path}"
     },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
