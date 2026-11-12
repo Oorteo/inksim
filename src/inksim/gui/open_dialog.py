@@ -1253,7 +1253,7 @@ class OpenBrowserDialog(QDialog):
                 _("dialog.open_browser.title", "Open file"),
                 _(
                     "dialog.open_browser.inkscape_required",
-                    "Inkscape is required for SVG preview.",
+                    "Inkscape is required to edit SVG files.",
                 ),
             )
             return

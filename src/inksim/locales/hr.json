@@ -172,8 +172,8 @@
         "translation": "Pogledaj output.err za pojedinosti o pogrešci."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Isteklo je vrijeme za izvoz CSV-a iz Ink/Stitcha."
+        "source": "Stitch preview timed out.",
+        "translation": "Isteklo je vrijeme čekanja za pregled uboda."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "Za uređivanje SVG datoteka potreban je Inkscape."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "Za pregled SVG-a potrebna je konfigurirana i aktivna instalacija Ink/Stitcha."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Potrebna je konfigurirana instalacija Ink/Stitcha i pokretač za Python."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Pregled"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Generiraj podatke o šavovima iz ovog SVG-a pomoću aktivne instalacije Ink/Stitcha."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Generiraj podatke o ubodima iz ovog SVG-a pomoću Inkscapea/Ink/Stitcha."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Potrebno je ažuriranje ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Sistemsko proširenje: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Proširenje trenutačnog korisnika (odredište instalacije/ažuriranja): {path} | Status: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Proširenje drugog korisnika: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

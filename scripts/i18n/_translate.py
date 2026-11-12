@@ -25,6 +25,7 @@ import json
 import os
 import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -34,6 +35,16 @@ EN_CATALOG = LOCALES_DIR / "en.json"
 DEFAULT_PROVIDER = "copilot"
 DEFAULT_COPILOT_MODEL = "GPT-6 Luna"
 DEFAULT_OLLAMA_MODEL = "deepseek-v4-flash:cloud"
+
+
+@dataclass
+class TranslationJob:
+    locale: str
+    target_path: Path
+    target_meta: dict[str, Any]
+    target_messages: dict[str, dict[str, str]]
+    work: dict[str, str]
+    prompt: str
 
 
 def load_catalog(path: Path) -> tuple[dict[str, Any], dict[str, dict[str, str]]]:
@@ -73,7 +84,11 @@ def find_translation_work(
         if target_entry is None:
             work[msg_id] = en_source
             continue
-        if target_entry.get("source") != en_source:
+        if (
+            target_entry.get("source") != en_source
+            or not target_entry.get("translation")
+            or target_entry.get("translation") == msg_id
+        ):
             work[msg_id] = en_source
     return work
 
@@ -101,8 +116,10 @@ def parse_copilot_response(raw: str, model: str) -> dict[str, str]:
     return {str(key): str(value) for key, value in response.items()}
 
 
-def call_copilot(prompt: str, model_name: str) -> dict[str, str]:
-    """Ask the signed-in Copilot account for translations and parse its JSON reply."""
+def call_copilot_batch(
+    prompts: dict[str, str], model_name: str
+) -> tuple[dict[str, dict[str, str]], dict[str, str]]:
+    """Translate locale prompts with one client and an isolated session per locale."""
     try:
         from copilot import CopilotClient
         from copilot.session_events import AssistantMessageData
@@ -129,17 +146,34 @@ def call_copilot(prompt: str, model_name: str) -> dict[str, str]:
                     f"Copilot model '{model_name}' is unavailable. Available models: {available}"
                 )
 
-            async with await client.create_session(
-                model=model.id,
-                available_tools=[],
-            ) as session:
-                response = await session.send_and_wait(prompt, timeout=300)
+            translations: dict[str, dict[str, str]] = {}
+            failures: dict[str, str] = {}
+            for locale, prompt in prompts.items():
+                try:
+                    async with await client.create_session(
+                        model=model.id,
+                        available_tools=[],
+                    ) as session:
+                        response = await session.send_and_wait(prompt, timeout=300)
 
-        if response is None or not isinstance(response.data, AssistantMessageData):
-            raise RuntimeError(f"Copilot model '{model_name}' returned no assistant message")
-        return parse_copilot_response(response.data.content, model_name)
+                    if response is None or not isinstance(response.data, AssistantMessageData):
+                        raise RuntimeError(
+                            f"Copilot model '{model_name}' returned no assistant message"
+                        )
+                    translations[locale] = parse_copilot_response(response.data.content, model_name)
+                except Exception as ex:
+                    failures[locale] = str(ex)
+            return translations, failures
 
     return asyncio.run(request_translation())
+
+
+def call_copilot(prompt: str, model_name: str) -> dict[str, str]:
+    """Ask the signed-in Copilot account for one translation prompt."""
+    translations, failures = call_copilot_batch({"": prompt}, model_name)
+    if failures:
+        raise RuntimeError(failures[""])
+    return translations[""]
 
 
 def call_ollama(prompt: str, model: str) -> dict[str, str]:
@@ -199,58 +233,108 @@ def _normalize_locale_tag(value: str) -> str:
     return "-".join(parts)
 
 
+def translate_locales(
+    locales: list[str],
+    provider: str,
+    model: str,
+    dry_run: bool = False,
+) -> int:
+    """Translate missing/stale strings for each locale and update its catalog."""
+    _, en_messages = load_catalog(EN_CATALOG)
+    jobs: list[TranslationJob] = []
+    for locale in locales:
+        locale = _normalize_locale_tag(locale)
+        if locale.split("-")[0] == "en":
+            raise ValueError("cannot translate into the source language 'en'")
+
+        target_path = LOCALES_DIR / f"{locale}.json"
+        target_meta, target_messages = load_catalog(target_path)
+        work = find_translation_work(en_messages, target_messages)
+        if not work:
+            print(f"No missing or stale translations for {locale}.")
+            continue
+
+        print(f"Translating {len(work)} string(s) for {locale} using {provider} ({model})...")
+        language_name = target_meta.get("name", locale)
+        jobs.append(
+            TranslationJob(
+                locale=locale,
+                target_path=target_path,
+                target_meta=target_meta,
+                target_messages=target_messages,
+                work=work,
+                prompt=build_llm_prompt(work, language_name, locale),
+            )
+        )
+
+    if dry_run:
+        for job in jobs:
+            print(f"Dry run; would send this prompt for {job.locale}:")
+            print(job.prompt)
+        return 0
+    if not jobs:
+        return 0
+
+    translations: dict[str, dict[str, str]] = {}
+    failures: dict[str, str] = {}
+    if provider == "copilot":
+        translations, failures = call_copilot_batch({job.locale: job.prompt for job in jobs}, model)
+    else:
+        for job in jobs:
+            try:
+                translations[job.locale] = call_ollama(job.prompt, model)
+            except Exception as ex:
+                failures[job.locale] = str(ex)
+
+    total_translated = 0
+    for job in jobs:
+        if job.locale in failures:
+            print(
+                f"Translation failed for {job.locale}: {failures[job.locale]}",
+                file=sys.stderr,
+            )
+            continue
+
+        translated = translations[job.locale]
+        for msg_id, en_source in job.work.items():
+            translation = translated.get(msg_id, "")
+            if not translation.strip():
+                print(f"Warning: model returned empty translation for {msg_id}")
+                continue
+            job.target_messages[msg_id] = {
+                "source": en_source,
+                "translation": translation,
+            }
+            total_translated += 1
+
+        job.target_meta.setdefault("language", job.locale)
+        job.target_meta.setdefault("name", job.locale)
+        save_catalog(job.target_path, job.target_meta, job.target_messages)
+        print(f"Updated {job.target_path} with {len(translated)} translation(s).")
+
+    return -1 if failures else total_translated
+
+
 def translate_locale(
     locale: str,
     provider: str,
     model: str,
     dry_run: bool = False,
 ) -> int:
-    """Translate missing/stale strings for *locale* and update its catalog."""
-    locale = _normalize_locale_tag(locale)
-    en_meta, en_messages = load_catalog(EN_CATALOG)
-    target_path = LOCALES_DIR / f"{locale}.json"
-    target_meta, target_messages = load_catalog(target_path)
-
-    work = find_translation_work(en_messages, target_messages)
-    if not work:
-        print(f"No missing or stale translations for {locale}.")
-        return 0
-
-    print(f"Translating {len(work)} string(s) for {locale} using {provider} ({model})...")
-    language_name = target_meta.get("name", locale)
-    prompt = build_llm_prompt(work, language_name, locale)
-
-    if dry_run:
-        print("Dry run; would send this prompt:")
-        print(prompt)
-        return 0
-
-    translated = (
-        call_copilot(prompt, model) if provider == "copilot" else call_ollama(prompt, model)
-    )
-
-    for msg_id, en_source in work.items():
-        translation = translated.get(msg_id, "")
-        if not translation.strip():
-            print(f"Warning: model returned empty translation for {msg_id}")
-            continue
-        target_messages[msg_id] = {
-            "source": en_source,
-            "translation": translation,
-        }
-
-    target_meta.setdefault("language", locale)
-    target_meta.setdefault("name", language_name)
-    save_catalog(target_path, target_meta, target_messages)
-    print(f"Updated {target_path} with {len(translated)} translation(s).")
-    return len(translated)
+    """Translate missing/stale strings for one locale."""
+    return translate_locales([locale], provider, model, dry_run)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Incrementally translate InkSim locale files via Copilot or Ollama"
     )
-    parser.add_argument("--lang", required=True, help="Target locale code (e.g. cs, sk)")
+    parser.add_argument(
+        "--lang",
+        nargs="+",
+        required=True,
+        help="Target locale code(s) (e.g. cs or cs sk)",
+    )
     parser.add_argument(
         "--provider",
         choices=("copilot", "ollama"),
@@ -266,8 +350,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    locale = _normalize_locale_tag(args.lang)
-    if locale.split("-")[0] == "en":
+    locales = [_normalize_locale_tag(locale) for locale in args.lang]
+    if any(locale.split("-")[0] == "en" for locale in locales):
         parser.error("cannot translate into the source language 'en'")
 
     model = args.model or (
@@ -275,7 +359,7 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     try:
-        return 0 if translate_locale(locale, args.provider, model, args.dry_run) >= 0 else 1
+        return 0 if translate_locales(locales, args.provider, model, args.dry_run) >= 0 else 1
     except Exception as ex:
         print(f"Translation failed: {ex}", file=sys.stderr)
         return 1

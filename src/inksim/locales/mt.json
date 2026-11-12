@@ -172,8 +172,8 @@
         "translation": "Ara output.err għad-dettalji tal-iżball."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "L-esportazzjoni CSV ta' Ink/Stitch qabżet il-limitu taż-żmien."
+        "source": "Stitch preview timed out.",
+        "translation": "Il-previżjoni tal-ponti qabżet il-limitu taż-żmien."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "Inkscape huwa meħtieġ biex teditja fajls SVG."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "Hija meħtieġa installazzjoni attiva u kkonfigurata ta' Ink/Stitch biex turi previżjoni tal-SVG."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Huma meħtieġa installazzjoni kkonfigurata ta’ Ink/Stitch u llanċjatur ta’ Python."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Previżjoni"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Iġġenera dejta tal-ponti minn dan l-SVG billi tuża l-installazzjoni attiva ta' Ink/Stitch."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Iġġenera d-dejta tal-ponti minn dan l-SVG b’Inkscape/Ink/Stitch."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Jeħtieġ aġġornament ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Estensjoni tas-sistema: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Estensjoni tal-utent attwali (destinazzjoni tal-installazzjoni/aġġornament): {path} | Status: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Estensjoni ta’ utent ieħor: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

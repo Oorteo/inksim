@@ -172,8 +172,8 @@
         "translation": "Daugiau informacijos apie klaidą žr. faile output.err."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Baigėsi CSV eksporto naudojant „Ink/Stitch“ laikas."
+        "source": "Stitch preview timed out.",
+        "translation": "Baigėsi dygsnių peržiūros laukimo laikas."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "SVG failams redaguoti reikia „Inkscape“."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "SVG peržiūrai reikia sukonfigūruoto aktyvaus „Ink/Stitch“ dieginio."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Būtina sukonfigūruota „Ink/Stitch“ instaliacija ir „Python“ paleidimo priemonė."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Peržiūra"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Sugeneruoti dygsnių duomenis iš šio SVG naudojant aktyvų „Ink/Stitch“ dieginį."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Sugeneruok dygsnių duomenis iš šio SVG naudodamas „Inkscape“ / „Ink/Stitch“."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Reikia atnaujinti ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Sistemos plėtinys: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Dabartinis naudotojo plėtinys (diegimo / atnaujinimo vieta): {path} | Būsena: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Kito naudotojo plėtinys: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
