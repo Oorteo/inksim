@@ -14,12 +14,12 @@ The roadmap lives in ``locales.json`` and defines tiers:
 
 Examples:
 
-    ./scripts/i18n/010_manage.py list
-    ./scripts/i18n/010_manage.py add fr
-    ./scripts/i18n/010_manage.py sync
-    ./scripts/i18n/010_manage.py translate fr
-    ./scripts/i18n/010_manage.py translate-all --tier 2
-    ./scripts/i18n/010_manage.py translate fr --provider ollama
+    ./scripts/i18n/010_manage_locales.py list
+    ./scripts/i18n/010_manage_locales.py add fr
+    ./scripts/i18n/010_manage_locales.py sync
+    ./scripts/i18n/010_manage_locales.py translate fr
+    ./scripts/i18n/010_manage_locales.py translate-all --tier 2
+    ./scripts/i18n/010_manage_locales.py translate fr --provider ollama
 
 The ``sync`` command refreshes ``src/inksim/locales/en.json`` from source and removes
 orphaned keys from other locale catalogs. It does not call a translation model.
@@ -272,7 +272,7 @@ def cmd_translate_all(argv: list[str] | None = None) -> int:
 def main(argv: list[str] | None = None) -> int:
     argv = list(argv) if argv is not None else sys.argv[1:]
     if not argv or argv[0] in ("-h", "--help"):
-        print("Usage: manage.py {list|add|sync|translate|translate-all} [options]")
+        print("Usage: 010_manage_locales.py {list|add|sync|translate|translate-all} [options]")
         print("  list        --tier N")
         print("  add         <code>")
         print("  sync        Refresh en.json from source and remove orphaned keys")

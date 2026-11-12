@@ -50,26 +50,29 @@ InkSim ships with a small interactive task menu in the project root:
 ./run.py
 ```
 
-The menu uses numbers so there is no risk of typos. The most common quick
-checks are first, the slow test suite is on `0`, and one-off setup tasks are
-at the end:
+The menu puts the most common quick checks first, the slow test suite on `0`,
+and one-off setup tasks at the end. Translation tasks use the `i` prefix:
 
 ```text
-1: lint + typecheck      -> uv run poe check
-2: run linter            -> uv run poe lint
-3: run type checker      -> uv run poe typecheck
-4: preview format changes -> uv run ruff format . --diff
-5: format source files   -> uv run poe format
-6: preview auto-fixes    -> uv run ruff check . --diff
-7: auto-fix lint issues  -> uv run poe fix
-8: install git hooks     -> uv run poe install-hooks
-9: install dev env       -> uv sync --all-groups
-0: run tests             -> uv run poe test
+1: lint + typecheck                 -> uv run poe check
+2: run linter                       -> uv run poe lint
+3: run type checker                 -> uv run poe typecheck
+4: preview format changes           -> uv run ruff format . --diff
+5: format source files              -> uv run poe format
+6: preview auto-fixes               -> uv run ruff check . --diff
+7: auto-fix lint issues             -> uv run poe fix
+8: install git pre-commit hooks      -> uv run poe install-hooks
+9: install dev environment          -> uv sync --all-groups
+0: run tests                        -> uv run poe test
+i1: sync translation strings        -> uv run python scripts/i18n/010_manage_locales.py sync
+i2: list translation status         -> uv run python scripts/i18n/010_manage_locales.py list
+i3: test translations               -> uv run pytest tests/test_i18n.py
 q: quit
 ```
 
-You can also run tasks directly with `uv run poe <task>`. Available tasks are
-`test`, `lint`, `format`, `typecheck`, `fix`, `check` and `install-hooks`.
+You can also run a menu task directly with `./run.py <key>`, for example
+`./run.py i3`. Poe tasks can be run with `uv run poe <task>`; available tasks
+are `test`, `lint`, `format`, `typecheck`, `fix`, `check` and `install-hooks`.
 
 ### Linting and formatting
 
@@ -146,33 +149,36 @@ language.
    button = QPushButton(_("status.slider.width"))
    ```
 
-2. Run the extractor to update the English catalog:
+2. Synchronize the catalogs through the locale manager:
 
    ```bash
-   uv run python scripts/i18n/_extract.py
+   uv run python scripts/i18n/010_manage_locales.py sync
    ```
 
-   This scans the source for `_()` calls, adds new IDs to `en.json` with the
-   source text, and preserves existing translations in the other locale files.
+   This scans the source for `_()` calls and refreshes `en.json`. It also
+   removes keys from locale catalogs that no longer exist in the English
+   source. It does not translate strings.
 
-### Translating locales via Ollama
+### Managing locales and translations
 
-The translator sends only **missing or stale** strings to a local Ollama model,
-so repeated runs are cheap:
+Use `010_manage_locales.py` to view locale coverage, create a catalog for a locale
+listed in `scripts/i18n/locales.json`, and translate missing or stale strings:
 
 ```bash
-# Translate a single locale
-uv run python scripts/i18n/_translate.py --lang cs --model deepseek-v4-flash:cloud
+# List locale status (optionally limit to a roadmap tier)
+uv run python scripts/i18n/010_manage_locales.py list --tier 2
 
-# Regional variant, e.g. Brazilian Portuguese
-uv run python scripts/i18n/_translate.py --lang pt-BR --model deepseek-v4-flash:cloud
+# Create an empty catalog for a locale in the roadmap
+uv run python scripts/i18n/010_manage_locales.py add fr
 
-# Translate every roadmap locale up to a tier
-uv run python scripts/i18n/010_manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
+# Translate one locale, or all locales up to a roadmap tier
+uv run python scripts/i18n/010_manage_locales.py translate fr
+uv run python scripts/i18n/010_manage_locales.py translate-all --tier 2
 ```
 
-The script accepts both `pt-BR` and `pt_BR.UTF-8` style tags. Use `--dry-run`
-to preview the prompt without calling the model.
+Copilot is the default provider. To use Ollama instead, pass
+`--provider ollama`; `--model` selects a specific model. Both translation
+commands accept `--dry-run` to preview prompts without calling a model.
 
 ### Running the application in another language
 
@@ -375,6 +381,18 @@ install a candidate directly from the release page:
 pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksim-0.5.4rc1-py3-none-any.whl
 ```
 
+The PyPI build script can also build from an RC tag for local inspection, but
+the upload script rejects every pre-release. RCs are distributed through the
+GitHub pre-release only. To build a local copy, check out the RC tag and run:
+
+```bash
+git switch --detach v0.5.4-rc.1
+./scripts/pypi/010_build.sh
+```
+
+The script requires the tag to point at `HEAD`; it fails rather than guessing
+an RC version from an untagged checkout.
+
 ### Publishing a final release
 
 Once the work is merged, tag the default branch. The version in
@@ -395,9 +413,20 @@ move it. It prints both commits and offers three options: leave the tag alone,
 move it deliberately with `git tag -fa`, or release a different version. Silently
 retagging would change what an already published release contains.
 
-The PyPI upload stays a separate, manual step: run
-`./scripts/pypi/010_build.sh`, verify the wheel, then
-`./scripts/pypi/030_send_pypi.sh`.
+The PyPI upload stays a separate, manual step. Both scripts require the
+corresponding release tag to point at `HEAD`; the build derives its package
+version from that tag, and the upload script accepts only matching stable
+artifacts:
+
+```bash
+./scripts/pypi/010_build.sh --yes
+./scripts/pypi/030_send_pypi.sh
+```
+
+`010_build.sh` builds from a temporary archive of the tag, so it does not
+rewrite the working tree's `pyproject.toml` or README. Use `uv build` directly
+for an untagged development build; it is not eligible for the guarded PyPI
+upload script.
 
 ### Pruning old pre-releases
 
