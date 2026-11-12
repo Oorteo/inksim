@@ -42,6 +42,30 @@ def test_hidden_temporary_input_option_is_forwarded_to_server(monkeypatch, tmp_p
     assert "--temporary-input" not in parser.format_help()
 
 
+def test_manual_launch_passes_current_inksim_launcher_for_extension_check(monkeypatch, tmp_path):
+    import pytest
+
+    from inksim import cli
+
+    parser = cli.build_argument_parser()
+    launcher = tmp_path / "inksim"
+    launcher.touch()
+    requests = []
+    monkeypatch.setattr(cli, "_ensure_core_application", lambda: None)
+    monkeypatch.setattr(cli, "resolve_inksim_launcher", lambda: launcher)
+    monkeypatch.setattr(
+        cli,
+        "forward_request",
+        lambda request: requests.append(request) or {"ok": True},
+    )
+
+    with pytest.raises(SystemExit) as exit_info:
+        cli._forward_to_server(parser, parser.parse_args([]), [], check_inkscape_extension=True)
+
+    assert exit_info.value.code == 0
+    assert requests[0]["inksim_launcher"] == str(launcher)
+
+
 def test_inkscape_extension_invocation_opens_inksim_despite_extension_arguments(
     monkeypatch,
 ):
@@ -69,6 +93,7 @@ def test_inkscape_extension_invocation_opens_inksim_despite_extension_arguments(
         "--extension=about",
         "--id=selection",
     ]
+    assert "inksim_launcher" not in requests[0]
 
 
 def test_inkstitch_preview_arguments_preserve_ids_and_set_csv_options():

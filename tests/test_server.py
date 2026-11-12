@@ -21,9 +21,13 @@ class FakeWindow(QObject):
         self.document_path = None
         self.open_file_args = None
         self.command_line_args = None
+        self.inksim_launcher = None
 
     def set_document_path(self, path):
         self.document_path = path
+
+    def check_inkscape_extension(self, launcher_path):
+        self.inksim_launcher = launcher_path
 
     def set_command_line_args(self, arguments):
         self.command_line_args = arguments.copy()
@@ -112,6 +116,22 @@ def test_open_forwards_command_line_to_window(qapp):
     )
     assert response["ok"] is True
     assert created[0].command_line_args == command_line
+
+
+def test_open_schedules_inkscape_extension_check(qapp):
+    server, created = _server(qapp)
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "inksim_launcher": "/opt/inksim/bin/inksim",
+        }
+    )
+    qapp.processEvents()
+
+    assert response["ok"] is True
+    assert created[0].inksim_launcher == "/opt/inksim/bin/inksim"
 
 
 def test_closing_last_window_starts_idle_timer(qapp):
