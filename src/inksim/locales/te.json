@@ -127,17 +127,9 @@
         "source": "Needle color",
         "translation": "సూది రంగు"
     },
-    "dialog.open_browser.browse": {
-        "source": "Browse...",
-        "translation": "బ్రౌజ్ చేయి..."
-    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "రద్దు చేయి"
-    },
-    "dialog.open_browser.choose_directory": {
-        "source": "Choose directory",
-        "translation": "డైరెక్టరీని ఎంచుకోండి"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",

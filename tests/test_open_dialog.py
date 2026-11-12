@@ -102,6 +102,48 @@ def test_browser_dialog_navigates_directories_with_arrow_keys(qtbot, tmp_path, m
     dialog.reject()
 
 
+def test_places_breadcrumbs_and_favorite_directories(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QPushButton
+
+    from inksim.config import Config
+
+    favorite = tmp_path / "favorite"
+    favorite.mkdir()
+    nested = favorite / "nested"
+    nested.mkdir()
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.set_directory(nested)
+
+    breadcrumb = next(
+        button
+        for button in dialog.breadcrumb_widget.findChildren(QPushButton)
+        if button.text() == "favorite"
+    )
+    breadcrumb.click()
+    assert dialog.current_directory == favorite
+
+    dialog.set_directory(nested)
+    dialog.add_favorite_button.click()
+    assert config.get("favorite_directories") == [str(nested)]
+    favorite_item = next(
+        item
+        for index in range(dialog.places_list.count())
+        if (item := dialog.places_list.item(index)).data(Qt.ItemDataRole.UserRole + 1)
+    )
+    dialog.places_list.setCurrentItem(favorite_item)
+    assert dialog.current_directory == nested
+    dialog.remove_favorite_button.click()
+    assert config.get("favorite_directories") == []
+    assert dialog.remove_favorite_button.isEnabled() is False
+    dialog.reject()
+
+
 def test_embroidery_preview_waits_for_selection_to_settle(qtbot, tmp_path, monkeypatch):
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
     for name in ("first.pes", "second.pes", "third.pes"):

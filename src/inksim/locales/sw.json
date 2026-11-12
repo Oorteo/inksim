@@ -127,17 +127,9 @@
         "source": "Needle color",
         "translation": "Rangi ya sindano"
     },
-    "dialog.open_browser.browse": {
-        "source": "Browse...",
-        "translation": "Vinjari..."
-    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Ghairi"
-    },
-    "dialog.open_browser.choose_directory": {
-        "source": "Choose directory",
-        "translation": "Chagua saraka"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",

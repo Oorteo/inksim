@@ -127,17 +127,9 @@
         "source": "Needle color",
         "translation": "Naaldkleur"
     },
-    "dialog.open_browser.browse": {
-        "source": "Browse...",
-        "translation": "Bladeren..."
-    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Annuleren"
-    },
-    "dialog.open_browser.choose_directory": {
-        "source": "Choose directory",
-        "translation": "Map kiezen"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",

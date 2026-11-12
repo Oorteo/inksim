@@ -127,17 +127,9 @@
         "source": "Needle color",
         "translation": "Nadelfarbe"
     },
-    "dialog.open_browser.browse": {
-        "source": "Browse...",
-        "translation": "Durchsuchen..."
-    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Abbrechen"
-    },
-    "dialog.open_browser.choose_directory": {
-        "source": "Choose directory",
-        "translation": "Verzeichnis auswählen"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",

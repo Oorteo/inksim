@@ -127,17 +127,9 @@
         "source": "Needle color",
         "translation": "सुईचा रंग"
     },
-    "dialog.open_browser.browse": {
-        "source": "Browse...",
-        "translation": "ब्राउझ करा..."
-    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "रद्द करा"
-    },
-    "dialog.open_browser.choose_directory": {
-        "source": "Choose directory",
-        "translation": "फोल्डर निवडा"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",

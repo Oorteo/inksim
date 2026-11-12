@@ -20,6 +20,7 @@ from typing import Any
 import numpy as np
 from filelock import Timeout as FileLockTimeout
 from PySide6.QtCore import (
+    QDir,
     QEvent,
     QObject,
     QPoint,
@@ -28,6 +29,7 @@ from PySide6.QtCore import (
     QProcessEnvironment,
     QRectF,
     QSize,
+    QStandardPaths,
     Qt,
     QTimer,
 )
@@ -37,7 +39,6 @@ from PySide6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
     QDialog,
-    QFileDialog,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -46,6 +47,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QProgressBar,
     QPushButton,
+    QScrollArea,
     QSplitter,
     QStackedWidget,
     QStyle,
@@ -85,7 +87,10 @@ _SELECTION_PREVIEW_DEBOUNCE_MS = 250
 _INITIAL_PREVIEW_ESTIMATE_SECONDS = 10.0
 _MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
 _PREVIEW_TIMING_CONFIG_KEY = "svg_preview_timing"
+_FAVORITE_DIRECTORIES_CONFIG_KEY = "favorite_directories"
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
+_PLACE_PATH_ROLE = Qt.ItemDataRole.UserRole
+_PLACE_FAVORITE_ROLE = Qt.ItemDataRole.UserRole + 1
 
 
 def _preview_timing_stats(value: object) -> tuple[float, int] | None:
@@ -260,6 +265,7 @@ class OpenBrowserDialog(QDialog):
         self.initial_file: Path | None = Path(selected_file).resolve() if selected_file else None
         self.extensions = get_supported_input_extensions() | {"svg"}
         self.config = Config()
+        self.favorite_directories = self._load_favorite_directories()
         self.tool_status: ToolStatus = detect_tools()
         self._all_paths: list[Path] = []
         self._visible_paths: list[Path] = []
@@ -289,8 +295,10 @@ class OpenBrowserDialog(QDialog):
 
         self._folder_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_DirIcon)
         self._file_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon)
+        self._place_items: list[QListWidgetItem] = []
 
         self._build_ui(recent_directories or [])
+        self._refresh_places()
         self._update_tool_status()
         self.refresh_files()
         QTimer.singleShot(0, self.file_list.setFocus)
@@ -313,10 +321,28 @@ class OpenBrowserDialog(QDialog):
         self.directory_combo = QComboBox(self)
         self.directory_combo.setEditable(True)
         directory_row.addWidget(self.directory_combo, 1)
-        self.browse_button = QPushButton(_("dialog.open_browser.browse", "Browse..."), self)
-        self.browse_button.clicked.connect(self.browse_directory)
-        directory_row.addWidget(self.browse_button)
+        self.add_favorite_button = QPushButton(
+            _("dialog.open_browser.add_favorite", "Add to places"), self
+        )
+        self.add_favorite_button.clicked.connect(self._add_current_favorite)
+        directory_row.addWidget(self.add_favorite_button)
         root.addLayout(directory_row)
+
+        self.breadcrumb_scroll = QScrollArea(self)
+        self.breadcrumb_scroll.setWidgetResizable(True)
+        self.breadcrumb_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.breadcrumb_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.breadcrumb_widget = QWidget(self.breadcrumb_scroll)
+        self.breadcrumb_layout = QHBoxLayout(self.breadcrumb_widget)
+        self.breadcrumb_layout.setContentsMargins(0, 0, 0, 0)
+        self.breadcrumb_layout.setSpacing(2)
+        self.breadcrumb_scroll.setWidget(self.breadcrumb_widget)
+        self.breadcrumb_scroll.setFixedHeight(
+            self.breadcrumb_widget.fontMetrics().height()
+            + 2 * self.breadcrumb_layout.contentsMargins().top()
+            + 12
+        )
+        root.addWidget(self.breadcrumb_scroll)
 
         recent_row = QHBoxLayout()
         recent_row.addWidget(QLabel(_("dialog.open_browser.recent", "Recent:"), self))
@@ -353,6 +379,10 @@ class OpenBrowserDialog(QDialog):
         self.file_list.setIconSize(self.file_list.iconSize().expandedTo(QSize(22, 22)))
         self.file_list.currentItemChanged.connect(self._on_current_item_changed)
         self.file_list.itemDoubleClicked.connect(self._on_item_double_clicked)
+        self.places_list = QListWidget(self)
+        self.places_list.setObjectName("openPlaces")
+        self.places_list.setMaximumWidth(190)
+        self.places_list.currentItemChanged.connect(self._on_place_selected)
 
         self.preview_container = QWidget(self)
         preview_layout = QVBoxLayout(self.preview_container)
@@ -408,9 +438,23 @@ class OpenBrowserDialog(QDialog):
         self.preview_controls.setVisible(False)
         preview_panel_layout.addWidget(self.preview_controls)
 
+        file_preview_splitter = QSplitter(Qt.Orientation.Horizontal, self)
+        file_preview_splitter.addWidget(self.file_list)
+        file_preview_splitter.addWidget(preview_panel)
+        file_preview_splitter.setStretchFactor(1, 1)
+        places_panel = QWidget(self)
+        places_layout = QVBoxLayout(places_panel)
+        places_layout.setContentsMargins(0, 0, 0, 0)
+        places_layout.addWidget(QLabel(_("dialog.open_browser.places", "Places"), places_panel))
+        places_layout.addWidget(self.places_list, 1)
+        self.remove_favorite_button = QPushButton(
+            _("dialog.open_browser.remove_favorite", "Remove favorite"), places_panel
+        )
+        self.remove_favorite_button.clicked.connect(self._remove_selected_favorite)
+        places_layout.addWidget(self.remove_favorite_button)
         splitter = QSplitter(Qt.Orientation.Horizontal, self)
-        splitter.addWidget(self.file_list)
-        splitter.addWidget(preview_panel)
+        splitter.addWidget(places_panel)
+        splitter.addWidget(file_preview_splitter)
         splitter.setStretchFactor(1, 1)
         root.addWidget(splitter, 1)
 
@@ -449,6 +493,147 @@ class OpenBrowserDialog(QDialog):
         if line_edit is not None:
             line_edit.returnPressed.connect(self.change_directory)
         self._update_actions()
+
+    def _load_favorite_directories(self) -> list[Path]:
+        values = self.config.get(_FAVORITE_DIRECTORIES_CONFIG_KEY, [])
+        if not isinstance(values, list):
+            return []
+        favorites: list[Path] = []
+        for value in values:
+            if not isinstance(value, str):
+                continue
+            path = Path(_unsanitize_path(value)).expanduser().resolve()
+            if path not in favorites:
+                favorites.append(path)
+        return favorites
+
+    def _refresh_places(self) -> None:
+        self.places_list.clear()
+        self._place_items = []
+        locations = [
+            (
+                _("dialog.open_browser.home", "Home"),
+                Path.home(),
+            ),
+            *(
+                (label, Path(QStandardPaths.writableLocation(location)))
+                for location, label in (
+                    (
+                        QStandardPaths.StandardLocation.DesktopLocation,
+                        _("dialog.open_browser.desktop", "Desktop"),
+                    ),
+                    (
+                        QStandardPaths.StandardLocation.DocumentsLocation,
+                        _("dialog.open_browser.documents", "Documents"),
+                    ),
+                    (
+                        QStandardPaths.StandardLocation.DownloadLocation,
+                        _("dialog.open_browser.downloads", "Downloads"),
+                    ),
+                )
+                if QStandardPaths.writableLocation(location)
+            ),
+        ]
+        seen: set[Path] = set()
+        for label, path in locations:
+            path = path.resolve()
+            if path.is_dir() and path not in seen:
+                seen.add(path)
+                self._add_place_item(label, path)
+        for drive in QDir.drives():
+            path = Path(drive.absoluteFilePath()).resolve()
+            if path.is_dir() and path not in seen:
+                seen.add(path)
+                self._add_place_item(_sanitize_path_text(str(path)), path)
+
+        self._add_place_heading(_("dialog.open_browser.favorites", "Favorites"))
+        for path in self.favorite_directories:
+            self._add_place_item(path.name or str(path), path, favorite=True)
+        self.remove_favorite_button.setEnabled(False)
+
+    def _add_place_heading(self, label: str) -> None:
+        item = QListWidgetItem(label)
+        item.setFlags(Qt.ItemFlag.NoItemFlags)
+        self.places_list.addItem(item)
+
+    def _add_place_item(self, label: str, path: Path, favorite: bool = False) -> None:
+        item = QListWidgetItem(self._folder_icon, label)
+        item.setData(_PLACE_PATH_ROLE, str(path))
+        item.setData(_PLACE_FAVORITE_ROLE, favorite)
+        item.setToolTip(_sanitize_path_text(str(path)))
+        self.places_list.addItem(item)
+        self._place_items.append(item)
+
+    def _on_place_selected(
+        self, current: QListWidgetItem | None, _previous: QListWidgetItem | None
+    ) -> None:
+        if current is None:
+            self.remove_favorite_button.setEnabled(False)
+            return
+        path_text = current.data(_PLACE_PATH_ROLE)
+        self.remove_favorite_button.setEnabled(bool(current.data(_PLACE_FAVORITE_ROLE)))
+        if isinstance(path_text, str):
+            self.set_directory(path_text)
+
+    def _add_current_favorite(self, checked: bool = False) -> None:
+        del checked
+        path = self.current_directory.resolve()
+        if path not in self.favorite_directories:
+            self.favorite_directories.append(path)
+            self._save_favorite_directories()
+            self._refresh_places()
+        self.add_favorite_button.setEnabled(False)
+
+    def _remove_selected_favorite(self, checked: bool = False) -> None:
+        del checked
+        item = self.places_list.currentItem()
+        if item is None or not item.data(_PLACE_FAVORITE_ROLE):
+            return
+        path_text = item.data(_PLACE_PATH_ROLE)
+        if not isinstance(path_text, str):
+            return
+        path = Path(path_text)
+        self.favorite_directories = [
+            favorite for favorite in self.favorite_directories if favorite != path
+        ]
+        self._save_favorite_directories()
+        self._refresh_places()
+
+    def _save_favorite_directories(self) -> None:
+        self.config.set(
+            _FAVORITE_DIRECTORIES_CONFIG_KEY,
+            [_sanitize_path(str(path)) for path in self.favorite_directories],
+        )
+
+    def _refresh_breadcrumbs(self) -> None:
+        while self.breadcrumb_layout.count():
+            item = self.breadcrumb_layout.takeAt(0)
+            if item is None:
+                continue
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+
+        current = Path(self.current_directory.anchor)
+        parts = self.current_directory.parts
+        for index, part in enumerate(parts):
+            if index == 0:
+                current = Path(part)
+                label = part
+            else:
+                current /= part
+                label = part
+            button = QPushButton(_sanitize_path_text(label), self.breadcrumb_widget)
+            button.setFlat(True)
+            button.setToolTip(_sanitize_path_text(str(current)))
+            button.clicked.connect(lambda _checked=False, path=current: self.set_directory(path))
+            self.breadcrumb_layout.addWidget(button)
+            if index < len(parts) - 1:
+                self.breadcrumb_layout.addWidget(QLabel("›", self.breadcrumb_widget))
+        self.breadcrumb_layout.addStretch(1)
+        self.breadcrumb_scroll.horizontalScrollBar().setValue(
+            self.breadcrumb_scroll.horizontalScrollBar().maximum()
+        )
 
     def _update_tool_status(self) -> None:
         self.config.reload()
@@ -569,6 +754,8 @@ class OpenBrowserDialog(QDialog):
         )
         self._all_paths = [*parent_entry, *directories, *files]
         self._refresh_directory_combo(directories)
+        self._refresh_breadcrumbs()
+        self.add_favorite_button.setEnabled(self.current_directory not in self.favorite_directories)
         self._apply_filter()
 
     def _refresh_directory_combo(self, directories: Sequence[Path]) -> None:
@@ -659,25 +846,22 @@ class OpenBrowserDialog(QDialog):
 
     def set_directory(self, directory: str | Path) -> None:
         path = Path(_unsanitize_path(str(directory))).expanduser().resolve()
-        if path.is_dir() and path != self.current_directory:
-            self._directory_return_path = self.current_directory
-            self.current_directory = path
-            self.initial_file = None
-            self.refresh_files()
+        if not path.is_dir():
+            self._show_message(
+                _("dialog.open_browser.invalid_folder", "This folder is not accessible.")
+            )
+            return
+        if path == self.current_directory:
+            return
+        self._directory_return_path = self.current_directory
+        self.current_directory = path
+        self.initial_file = None
+        self.refresh_files()
+        self.add_favorite_button.setEnabled(path not in self.favorite_directories)
 
     def go_to_parent_directory(self, checked: bool = False) -> None:
         del checked
         self.set_directory(self.current_directory.parent)
-
-    def browse_directory(self, checked: bool = False) -> None:
-        del checked
-        directory = QFileDialog.getExistingDirectory(
-            self,
-            _("dialog.open_browser.choose_directory", "Choose directory"),
-            str(self.current_directory),
-        )
-        if directory:
-            self.set_directory(directory)
 
     def _current_path(self) -> Path | None:
         item = self.file_list.currentItem()
