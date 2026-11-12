@@ -51,7 +51,7 @@ from ..integration.inkscape_extensions import (
     remove_old_inksim_extension,
     resolve_inksim_launcher,
 )
-from ..integration.paths import INKSCAPE_CONFIG_KEY
+from ..integration.paths import INKSCAPE_CONFIG_KEY, detect_tools
 from ..paths import _sanitize_path_text
 
 # Cold starts of Inkscape on Windows (antivirus scans, profile setup) can exceed a few seconds.
@@ -63,6 +63,47 @@ _VERSION_PROBE_OPTION = "--version"
 
 def _hide_windows_console(arguments: Any) -> None:
     arguments.flags |= _WINDOWS_CREATE_NO_WINDOW
+
+
+def _windows_inkscape_candidates(current_executable: str) -> list[str]:
+    if sys.platform != "win32":
+        return []
+
+    current_path = Path(current_executable)
+    candidates = [
+        current_path.with_name("inkscape.com"),
+        current_path.with_name("inkscape.exe"),
+    ]
+    path_candidate = shutil.which("inkscape.com")
+    if path_candidate:
+        candidates.append(Path(path_candidate))
+
+    install_roots = [
+        Path(value)
+        for variable in ("ProgramFiles", "ProgramFiles(x86)")
+        if (value := os.environ.get(variable))
+    ]
+    local_app_data = os.environ.get("LOCALAPPDATA")
+    if local_app_data:
+        install_roots.append(Path(local_app_data) / "Programs")
+
+    for root in install_roots:
+        for install_directory in (root / "Inkscape", root / "inkscape"):
+            for directory in (install_directory / "bin", install_directory):
+                candidates.extend((directory / "inkscape.com", directory / "inkscape.exe"))
+
+    current_key = os.path.normcase(str(current_path.resolve()))
+    seen = {current_key}
+    result = []
+    for candidate in candidates:
+        if not candidate.is_file():
+            continue
+        resolved = candidate.resolve()
+        key = os.path.normcase(str(resolved))
+        if key not in seen:
+            seen.add(key)
+            result.append(str(resolved))
+    return result
 
 
 @dataclass(frozen=True)
@@ -127,6 +168,8 @@ class InkscapeIntegrationDialog(QDialog):
         layout.addWidget(self.probe_status_label)
         self._probe_process: QProcess | None = None
         self._probe_results: list[str] = []
+        self._probe_candidates: list[str] = []
+        self._probe_candidate_index = 0
         self._probe_version: str | None = None
         self._probe_executable = ""
         self._probe_error: str | None = None
@@ -319,6 +362,23 @@ class InkscapeIntegrationDialog(QDialog):
         super().done(result)
 
     def _start_probe(self, executable_path: str) -> None:
+        detected_path = detect_tools().inkscape.path
+        candidates = [executable_path]
+        if detected_path:
+            candidates.append(detected_path)
+        candidates.extend(_windows_inkscape_candidates(executable_path))
+        self._probe_candidates = []
+        seen: set[str] = set()
+        for candidate in candidates:
+            resolved = str(Path(candidate).resolve())
+            key = os.path.normcase(resolved)
+            if key not in seen:
+                seen.add(key)
+                self._probe_candidates.append(resolved)
+        self._probe_candidate_index = 0
+        self._start_probe_candidate(self._probe_candidates[0])
+
+    def _start_probe_candidate(self, executable_path: str) -> None:
         self._probe_executable = executable_path
         self._probe_results = []
         self._probe_version = None
@@ -337,6 +397,17 @@ class InkscapeIntegrationDialog(QDialog):
         )
         self._set_probing(True)
         self._run_next_probe()
+
+    def _retry_next_windows_candidate(self) -> bool:
+        if sys.platform != "win32" or self._probe_candidate_index + 1 >= len(
+            self._probe_candidates
+        ):
+            return False
+        self._probe_candidate_index += 1
+        executable_path = self._probe_candidates[self._probe_candidate_index]
+        self.executable_label.setText(_sanitize_path_text(executable_path))
+        self._start_probe_candidate(executable_path)
+        return True
 
     def _run_next_probe(self) -> None:
         process = QProcess(self)
@@ -388,6 +459,8 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_error = step_error
         self._probe_results.append(output)
         if self._probe_error is not None:
+            if self._retry_next_windows_candidate():
+                return
             self._probe_results.extend([""] * (len(_PROBE_OPTIONS) - len(self._probe_results)))
             self._finish_probe(timed_out=False, error=self._probe_error)
         elif len(self._probe_results) < len(_PROBE_OPTIONS) + 1:
@@ -406,6 +479,8 @@ class InkscapeIntegrationDialog(QDialog):
             self._probe_version = None
             self._probe_results.append("")
             self._finish_probe(timed_out=False)
+            return
+        if self._retry_next_windows_candidate():
             return
         self._finish_probe(timed_out=True)
 
@@ -685,22 +760,25 @@ class InkscapeIntegrationDialog(QDialog):
             result["active_inkstitch"] = str(installations[active_index].extension_dir)
         if error is not None:
             result["error"] = error
-        try:
-            config.set(INKSCAPE_CONFIG_KEY, result)
-            report_entries.append(_("integration.inkscape.report.config_saved"))
-        except (OSError, Timeout) as ex:
-            report_entries.append(
-                _("integration.inkscape.report.config_save_failed").format(
-                    error=_sanitize_path_text(str(ex))
+        if timed_out or error is not None:
+            report_entries.append(_("integration.inkscape.report.config_unchanged"))
+        else:
+            try:
+                config.set(INKSCAPE_CONFIG_KEY, result)
+                report_entries.append(_("integration.inkscape.report.config_saved"))
+            except (OSError, Timeout) as ex:
+                report_entries.append(
+                    _("integration.inkscape.report.config_save_failed").format(
+                        error=_sanitize_path_text(str(ex))
+                    )
                 )
-            )
-            QMessageBox.warning(
-                self,
-                _("integration.inkscape.title"),
-                _("integration.inkscape.config_save_failed").format(
-                    error=_sanitize_path_text(str(ex))
-                ),
-            )
+                QMessageBox.warning(
+                    self,
+                    _("integration.inkscape.title"),
+                    _("integration.inkscape.config_save_failed").format(
+                        error=_sanitize_path_text(str(ex))
+                    ),
+                )
         self._set_report(report_entries)
         self._refresh_inksim_extensions()
 

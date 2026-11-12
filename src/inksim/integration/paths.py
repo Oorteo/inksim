@@ -114,9 +114,7 @@ def detect_tools() -> ToolStatus:
 
 
 def prefer_saved_inkscape(configured_status: object, detected: ToolInfo) -> ToolInfo:
-    """Prefer the saved Inkscape executable unless an environment override is set."""
-    if detected.source == "environment":
-        return detected
+    """Prefer an explicitly saved Inkscape executable over automatic detection."""
     if isinstance(configured_status, dict):
         executable = configured_status.get("executable")
         if isinstance(executable, str) and executable.strip():

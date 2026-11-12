@@ -563,6 +563,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Saved the detected setup to the InkSim configuration."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "The configuration was left unchanged because Inkscape could not be inspected."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Checked Inkscape executable: {path}"
