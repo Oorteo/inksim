@@ -118,13 +118,15 @@ def test_places_breadcrumbs_and_favorite_directories(qtbot, tmp_path, monkeypatc
 
     dialog = OpenBrowserDialog(None, tmp_path)
     qtbot.addWidget(dialog)
+    dialog.show()
     dialog.set_directory(nested)
+    qtbot.wait(10)
 
-    breadcrumb = next(
-        button
-        for button in dialog.breadcrumb_widget.findChildren(QPushButton)
-        if button.text() == "favorite"
-    )
+    buttons = {
+        button.text(): button for button in dialog.breadcrumb_widget.findChildren(QPushButton)
+    }
+    breadcrumb = buttons["favorite"]
+    assert buttons["favorite"].width() > buttons["nested"].width()
     breadcrumb.click()
     assert dialog.current_directory == favorite
 
