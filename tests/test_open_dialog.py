@@ -623,6 +623,14 @@ def test_svg_drop_opens_new_browser(qtbot, tmp_path, monkeypatch):
     window = MainWindow(window_size=(320, 240))
     qtbot.addWidget(window)
     calls = []
+    open_calls = []
+    monkeypatch.setattr(
+        window,
+        "open_file",
+        lambda path, show_error_dialog=True: (
+            open_calls.append((Path(path), show_error_dialog)) or False
+        ),
+    )
 
     class RecordingBrowserDialog:
         def __init__(self, parent, initial_directory, selected_file=None, recent_directories=None):
@@ -645,6 +653,7 @@ def test_svg_drop_opens_new_browser(qtbot, tmp_path, monkeypatch):
     window.dropEvent(drop_event)
 
     assert calls == [(tmp_path, svg_path)]
+    assert open_calls == [(svg_path, False)]
     window.close()
 
 

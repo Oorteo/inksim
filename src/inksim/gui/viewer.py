@@ -78,6 +78,7 @@ from ..constants import (
     MIN_VISIBLE_DESIGN_PIXELS,
 )
 from ..debug import is_enabled, logger
+from ..formats import read_embroidery_file
 from ..render import (
     RENDERERS_BY_KEY,
     VECTOR_RENDERERS,
@@ -1060,7 +1061,7 @@ class EmbroideryViewerWidget(QWidget):
             f"load start path={path!r} precompute_density={precompute_density} autoplay={autoplay}"
         )
         try:
-            pattern = emb.read(path)
+            pattern = read_embroidery_file(path)
         except Exception as ex:
             if show_error_dialog:
                 QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")

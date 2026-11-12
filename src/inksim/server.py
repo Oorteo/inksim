@@ -262,18 +262,27 @@ class InkSimServer(QObject):
             QTimer.singleShot(0, window.open_browser_dialog)
             return {"ok": True, "index": self.windows.index(window)}
         selected_path = Path(path)
-        if selected_path.suffix.lower() == ".svg" and selected_path.is_file():
+        autoplay = bool(request.get("autoplay"))
+        delete_after_load = bool(request.get("delete_after_load"))
+        temporary_input = bool(request.get("temporary_input"))
+        is_svg = (
+            selected_path.suffix.lower() == ".svg"
+            and selected_path.is_file()
+            and not temporary_input
+        )
+        loaded = window.open_file(
+            path,
+            delete_after_load=delete_after_load,
+            autoplay=autoplay,
+            temporary_input=temporary_input,
+            show_error_dialog=not is_svg,
+        )
+        if not loaded and is_svg:
             window.open_browser_dialog(selected_file=selected_path.resolve())
             window.focus_window()
             schedule_inkscape_extension_check()
             return {"ok": True, "index": self.windows.index(window)}
-        autoplay = bool(request.get("autoplay"))
-        if not window.open_file(
-            path,
-            delete_after_load=bool(request.get("delete_after_load")),
-            autoplay=autoplay,
-            temporary_input=bool(request.get("temporary_input")),
-        ):
+        if not loaded:
             return {"ok": False, "error": f"cannot open {path}"}
         if autoplay:
             window.viewer.toggle_auto_play(forward=True)

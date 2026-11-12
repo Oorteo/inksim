@@ -5,9 +5,109 @@
 
 from __future__ import annotations
 
+import math
+import re
+import xml.etree.ElementTree as ET
+from pathlib import Path
 from typing import Any
 
 import pystitch as emb
+
+_SVG_NAMESPACE = "http://www.w3.org/2000/svg"
+_SVG_ROOT_TAG = f"{{{_SVG_NAMESPACE}}}svg"
+_SVG_PATH_TAG = f"{{{_SVG_NAMESPACE}}}path"
+_SVG_HEX_COLOR = re.compile(r"#[0-9a-fA-F]{6}\Z")
+
+
+def read_embroidery_file(path: str | Path) -> Any | None:
+    """Read embroidery, including stitch-block SVGs written by PyStitch."""
+    if Path(path).suffix.lower() == ".svg":
+        pattern = _read_pystitch_svg(path)
+        if pattern is not None:
+            return pattern
+    return emb.read(path)
+
+
+def _read_pystitch_svg(path: str | Path) -> Any | None:
+    try:
+        root = ET.parse(path).getroot()
+    except (OSError, ET.ParseError):
+        return None
+    if root.tag != _SVG_ROOT_TAG or set(root.attrib) != {"version", "width", "height", "viewBox"}:
+        return None
+    if root.get("version") != "1.1":
+        return None
+    try:
+        width = float(root.attrib["width"])
+        height = float(root.attrib["height"])
+        view_box = tuple(float(value) for value in root.attrib["viewBox"].split())
+    except ValueError:
+        return None
+    if (
+        len(view_box) != 4
+        or not all(math.isfinite(value) for value in (width, height, *view_box))
+        or width <= 0
+        or height <= 0
+        or view_box[2] <= 0
+        or view_box[3] <= 0
+        or not math.isclose(width, view_box[2])
+        or not math.isclose(height, view_box[3])
+    ):
+        return None
+
+    elements = list(root)
+    if not elements:
+        return None
+
+    pattern = emb.EmbPattern()
+    previous_color = None
+    stitch_count = 0
+    for element in elements:
+        if (
+            element.tag != _SVG_PATH_TAG
+            or set(element.attrib) != {"d", "fill", "stroke", "stroke-width"}
+            or element.get("fill") != "none"
+            or element.get("stroke-width") != "3"
+        ):
+            return None
+        color = element.get("stroke", "")
+        if not _SVG_HEX_COLOR.fullmatch(color):
+            return None
+        points = _parse_pystitch_svg_points(element.get("d", ""))
+        if points is None:
+            return None
+
+        if previous_color is None:
+            pattern.add_thread(color)
+        elif color.lower() != previous_color.lower():
+            pattern.color_change()
+            pattern.add_thread(color)
+        pattern.move_abs(*points[0])
+        for point in points[1:]:
+            pattern.stitch_abs(*point)
+        stitch_count += len(points) - 1
+        previous_color = color
+
+    return pattern if stitch_count > 0 else None
+
+
+def _parse_pystitch_svg_points(data: str) -> list[tuple[float, float]] | None:
+    tokens = data.split()
+    if len(tokens) < 3 or tokens[0] != "M":
+        return None
+    points = []
+    for token in tokens[1:]:
+        coordinates = token.split(",")
+        if len(coordinates) != 2:
+            return None
+        try:
+            x, y = (float(value) for value in coordinates)
+        except ValueError:
+            return None
+        if not math.isfinite(x) or not math.isfinite(y):
+            return None
+        points.append((x, y))
+    return points
 
 
 def get_supported_input_wildcard() -> str:

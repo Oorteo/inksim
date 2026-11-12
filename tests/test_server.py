@@ -23,6 +23,7 @@ class FakeWindow(QObject):
         self.browser_dialog_args = None
         self.command_line_args = None
         self.inksim_launcher = None
+        self.open_file_result = True
 
     def set_document_path(self, path):
         self.document_path = path
@@ -42,24 +43,33 @@ class FakeWindow(QObject):
             "initial_directory": initial_directory,
         }
 
-    def open_file(self, path, delete_after_load=False, autoplay=False, temporary_input=False):
+    def open_file(
+        self,
+        path,
+        delete_after_load=False,
+        autoplay=False,
+        temporary_input=False,
+        show_error_dialog=True,
+    ):
         self.open_file_args = {
             "path": path,
             "delete_after_load": delete_after_load,
             "autoplay": autoplay,
             "temporary_input": temporary_input,
+            "show_error_dialog": show_error_dialog,
         }
-        return True
+        return self.open_file_result
 
     def close(self):
         self.closed.emit(self)
 
 
-def _server(qapp, idle_timeout=0):
+def _server(qapp, idle_timeout=0, open_file_result=True):
     created = []
 
     def create_window(options):
         window = FakeWindow()
+        window.open_file_result = open_file_result
         created.append(window)
         return window
 
@@ -107,11 +117,37 @@ def test_open_forwards_temporary_input_ownership(qapp, tmp_path):
         "delete_after_load": False,
         "autoplay": False,
         "temporary_input": True,
+        "show_error_dialog": True,
     }
 
 
-def test_open_routes_svg_to_browser_dialog(qapp, tmp_path):
+def test_open_loads_svg_before_showing_browser_dialog(qapp, tmp_path):
     server, created = _server(qapp)
+    input_path = tmp_path / "design.svg"
+    input_path.write_text("<svg/>", encoding="utf-8")
+
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+        }
+    )
+
+    assert response["ok"] is True
+    assert created[0].open_file_args == {
+        "path": str(input_path),
+        "delete_after_load": False,
+        "autoplay": False,
+        "temporary_input": False,
+        "show_error_dialog": False,
+    }
+    assert created[0].browser_dialog_args is None
+
+
+def test_open_routes_svg_to_browser_if_loading_fails(qapp, tmp_path):
+    server, created = _server(qapp, open_file_result=False)
     input_path = tmp_path / "design.svg"
     input_path.write_text("<svg/>", encoding="utf-8")
 
@@ -129,7 +165,8 @@ def test_open_routes_svg_to_browser_dialog(qapp, tmp_path):
         "selected_file": input_path.resolve(),
         "initial_directory": None,
     }
-    assert created[0].open_file_args is None
+    assert created[0].open_file_args is not None
+    assert created[0].open_file_args["show_error_dialog"] is False
 
 
 def test_open_forwards_command_line_to_window(qapp):
