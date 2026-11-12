@@ -189,6 +189,42 @@ def test_places_breadcrumbs_and_favorite_directories(qtbot, tmp_path, monkeypatc
     dialog.reject()
 
 
+def test_clicking_selected_place_navigates_back_to_it(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import Qt
+
+    from inksim.config import Config
+
+    favorite = tmp_path / "favorite"
+    favorite.mkdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    config = Config(tmp_path / "config.toml")
+    config.set("favorite_directories", [str(favorite)])
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    favorite_item = next(
+        dialog.places_list.item(index)
+        for index in range(dialog.places_list.count())
+        if dialog.places_list.item(index).data(Qt.ItemDataRole.UserRole + 1)
+    )
+
+    dialog.places_list.setCurrentItem(favorite_item)
+    assert dialog.current_directory == favorite
+    dialog.set_directory(elsewhere)
+    assert dialog.current_directory == elsewhere
+    qtbot.mouseClick(
+        dialog.places_list.viewport(),
+        Qt.MouseButton.LeftButton,
+        pos=dialog.places_list.visualItemRect(favorite_item).center(),
+    )
+    assert dialog.current_directory == favorite
+    dialog.reject()
+
+
 def test_embroidery_preview_waits_for_selection_to_settle(qtbot, tmp_path, monkeypatch):
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
     for name in ("first.pes", "second.pes", "third.pes"):
