@@ -250,7 +250,7 @@ def test_locate_inkscape_prefers_saved_executable(qtbot, tmp_path, monkeypatch):
         def exec(self):
             return 0
 
-    monkeypatch.delenv("INKSCAPE_EXE", raising=False)
+    monkeypatch.setenv("INKSCAPE_EXE", "C:/ProgramData/chocolatey/inkscape.exe")
     monkeypatch.setattr(
         "inksim.integration.paths.shutil.which",
         lambda name: "C:/ProgramData/chocolatey/inkscape.exe",
@@ -270,7 +270,9 @@ def _wait_for_probe(qtbot, dialog):
     )
 
 
-def _fake_inkscape_probe(monkeypatch, data_directories=None, sleep_seconds=None):
+def _fake_inkscape_probe(
+    monkeypatch, data_directories=None, sleep_seconds=None, silent_programs=()
+):
     """Run the Inkscape probe as a real Python child process that prints the given data directories."""
     from PySide6.QtCore import QProcess
 
@@ -278,19 +280,94 @@ def _fake_inkscape_probe(monkeypatch, data_directories=None, sleep_seconds=None)
 
     class FakeInkscapeProbe(QProcess):
         def start(self, program, arguments):
-            starts.append(arguments)
+            starts.append((program, arguments))
             if sleep_seconds is None:
-                outputs = {"--version": "Inkscape 1.4.2", **data_directories}
-                code = (
-                    f"import sys; value = {outputs!r}[sys.argv[1]]; "
-                    "sys.exit(1) if value is None else print(value)"
-                )
+                if program in silent_programs:
+                    code = "pass"
+                else:
+                    outputs = {"--version": "Inkscape 1.4.2", **data_directories}
+                    code = (
+                        f"import sys; value = {outputs!r}[sys.argv[1]]; "
+                        "sys.exit(1) if value is None else print(value)"
+                    )
                 super().start(sys.executable, ["-c", code, *arguments])
             else:
                 super().start(sys.executable, ["-c", f"import time; time.sleep({sleep_seconds})"])
 
     monkeypatch.setattr("inksim.gui.inkscape_dialog.QProcess", FakeInkscapeProbe)
     return starts
+
+
+def test_windows_keeps_functional_saved_inkscape_over_detected_wrapper(
+    qtbot, tmp_path, monkeypatch
+):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
+
+    saved = str(tmp_path / "Program Files" / "Inkscape" / "bin" / "inkscape.com")
+    detected = "C:/ProgramData/chocolatey/bin/inkscape.exe"
+    config = Config(tmp_path / "config.toml")
+    config.set(INKSCAPE_CONFIG_KEY, {"executable": saved})
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.detect_tools",
+        lambda: ToolStatus(
+            inkscape=ToolInfo("Inkscape", detected, "PATH"),
+            inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+        ),
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.sys.platform", "win32")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    starts = _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
+    )
+    dialog = InkscapeIntegrationDialog(None, saved)
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts
+    assert all(program == str(Path(saved).resolve()) for program, _args in starts)
+    assert config.get(INKSCAPE_CONFIG_KEY)["executable"] == str(Path(saved).resolve())
+
+
+def test_windows_probe_falls_back_to_program_files_cli_inkscape(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    wrapper = tmp_path / "chocolatey" / "inkscape.exe"
+    wrapper.parent.mkdir()
+    wrapper.touch()
+    program_files = tmp_path / "Program Files"
+    cli_executable = program_files / "Inkscape" / "bin" / "inkscape.com"
+    cli_executable.parent.mkdir(parents=True)
+    cli_executable.touch()
+    config = Config(tmp_path / "config.toml")
+    config.set(INKSCAPE_CONFIG_KEY, {"executable": str(wrapper)})
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setenv("ProgramFiles", str(program_files))
+    monkeypatch.setenv("INKSCAPE_EXE", str(wrapper))
+    monkeypatch.delenv("ProgramFiles(x86)", raising=False)
+    monkeypatch.delenv("LOCALAPPDATA", raising=False)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.sys.platform", "win32")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    starts = _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
+        silent_programs={str(wrapper.resolve())},
+    )
+    dialog = InkscapeIntegrationDialog(None, str(wrapper))
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts[0][0] == str(wrapper.resolve())
+    assert starts[1][0] == str(cli_executable.resolve())
+    assert dialog.executable_label.text() == str(cli_executable.resolve())
+    assert config.get(INKSCAPE_CONFIG_KEY)["executable"] == str(cli_executable.resolve())
 
 
 def test_inkscape_dialog_shows_extension_directories(qtbot, monkeypatch):
@@ -848,14 +925,24 @@ def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
     assert "interpreter" not in installation_records[str(inx_paths[1].parent.resolve())]
 
 
-def test_inkscape_dialog_reports_unresponsive_command(qtbot, monkeypatch):
+def test_inkscape_dialog_reports_unresponsive_command(qtbot, tmp_path, monkeypatch):
     """Show a status bubble while probing and report a stuck Inkscape once, without waiting twice."""
     from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
-    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+    from inksim.i18n import _
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
 
-    config = Config()
+    config = Config(tmp_path / "config.toml")
+    saved_status = {"executable": "/working/inkscape"}
+    config.set(INKSCAPE_CONFIG_KEY, saved_status)
     monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.detect_tools",
+        lambda: ToolStatus(
+            inkscape=ToolInfo("Inkscape", None, "missing"),
+            inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+        ),
+    )
     warnings = []
     monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_PROBE_TIMEOUT_S", 0.5)
     starts = _fake_inkscape_probe(monkeypatch, sleep_seconds=30)
@@ -874,4 +961,5 @@ def test_inkscape_dialog_reports_unresponsive_command(qtbot, monkeypatch):
     assert dialog.change_button.isEnabled()
     assert len(warnings) == 1
     assert "0.5 seconds" in warnings[0][2]
-    assert config.get(INKSCAPE_CONFIG_KEY)["status"] == "error"
+    assert config.get(INKSCAPE_CONFIG_KEY) == saved_status
+    assert _("integration.inkscape.report.config_unchanged") in dialog.info_panel.toPlainText()
