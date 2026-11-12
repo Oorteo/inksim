@@ -4,10 +4,9 @@
 """Locate the external tools used by the Inkscape/InkStitch integration.
 
 The resolvers are deliberately small and side-effect free so they can be used
-from the GUI, from tests, and later from a background worker.  Configuration
-and version probing will be added in a later step; this module currently
-supports the environment overrides and executable lookup needed by the new
-open dialog.
+from the GUI, from tests, and later from a background worker. Environment
+overrides and PATH lookup are handled here; GUI callers can apply the saved
+Inkscape executable without changing the environment-based detection.
 """
 
 from __future__ import annotations
@@ -112,6 +111,17 @@ def detect_tools() -> ToolStatus:
         "Ink/Stitch", "inkstitch"
     )
     return ToolStatus(inkscape=inkscape, inkstitch=inkstitch)
+
+
+def prefer_saved_inkscape(configured_status: object, detected: ToolInfo) -> ToolInfo:
+    """Prefer the saved Inkscape executable unless an environment override is set."""
+    if detected.source == "environment":
+        return detected
+    if isinstance(configured_status, dict):
+        executable = configured_status.get("executable")
+        if isinstance(executable, str) and executable.strip():
+            return ToolInfo(name="Inkscape", path=executable, source="configuration")
+    return detected
 
 
 def build_inkscape_export_arguments(
