@@ -400,6 +400,7 @@ class OpenBrowserDialog(QDialog):
         self.places_list.setObjectName("openPlaces")
         self.places_list.setMaximumWidth(190)
         self.places_list.currentItemChanged.connect(self._on_place_selected)
+        self.places_list.itemClicked.connect(self._on_place_clicked)
 
         self.preview_container = QWidget(self)
         preview_layout = QVBoxLayout(self.preview_container)
@@ -605,6 +606,11 @@ class OpenBrowserDialog(QDialog):
             return
         path_text = current.data(_PLACE_PATH_ROLE)
         self.remove_favorite_button.setEnabled(bool(current.data(_PLACE_FAVORITE_ROLE)))
+        if isinstance(path_text, str):
+            self.set_directory(path_text)
+
+    def _on_place_clicked(self, item: QListWidgetItem) -> None:
+        path_text = item.data(_PLACE_PATH_ROLE)
         if isinstance(path_text, str):
             self.set_directory(path_text)
 
