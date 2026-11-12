@@ -303,9 +303,6 @@ class OpenBrowserDialog(QDialog):
         self.status_label.setWordWrap(True)
         self.status_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         status_row.addWidget(self.status_label, 1)
-        self.refresh_tools_button = QPushButton(_("dialog.open_browser.refresh", "Refresh"), self)
-        self.refresh_tools_button.clicked.connect(self._refresh_tools)
-        status_row.addWidget(self.refresh_tools_button)
         self.tools_button = QPushButton(_("dialog.open_browser.tools", "Tools..."), self)
         self.tools_button.clicked.connect(self._open_tools_dialog)
         status_row.addWidget(self.tools_button)
@@ -494,20 +491,6 @@ class OpenBrowserDialog(QDialog):
             lines.append(_("dialog.open_browser.status.inkstitch_missing"))
         else:
             lines.append(_("dialog.open_browser.status.inkstitch_check_failed"))
-        if self.tool_status.has_inkscape:
-            lines.append(
-                _(
-                    "dialog.open_browser.status.svg_ready",
-                    "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-                )
-            )
-        else:
-            lines.append(
-                _(
-                    "dialog.open_browser.status.svg_needs_inkscape",
-                    "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-                )
-            )
         self.status_label.setText("\n".join(lines))
         self._update_actions()
 
