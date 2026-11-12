@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Síneadh córais: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Síneadh reatha an úsáideora (sprioc suiteála/nuashonraithe): {path} | Stádas: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Síneadh úsáideora eile: {path}"

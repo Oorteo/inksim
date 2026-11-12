@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Estensjoni tas-sistema: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Estensjoni tal-utent attwali (destinazzjoni tal-installazzjoni/aġġornament): {path} | Status: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Estensjoni ta’ utent ieħor: {path}"

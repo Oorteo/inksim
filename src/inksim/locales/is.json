@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Kerfisviðbót: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Núverandi notandaviðbót (markmið uppsetningar/uppfærslu): {path} | Staða: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Viðbót annars notanda: {path}"

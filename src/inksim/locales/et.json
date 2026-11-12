@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Süsteemilaiendus: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Praeguse kasutaja laiendus (paigaldamise/uuendamise sihtkaust): {path} | Olek: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Teise kasutaja laiendus: {path}"

@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Systemtillägg: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Aktuellt användartillägg (mål för installation/uppdatering): {path} | Status: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Tillägg för en annan användare: {path}"

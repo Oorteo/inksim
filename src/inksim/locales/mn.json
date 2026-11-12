@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Системийн өргөтгөл: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Одоогийн хэрэглэгчийн өргөтгөл (суулгах/шинэчлэх байршил): {path} | Төлөв: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Бусад хэрэглэгчийн өргөтгөл: {path}"

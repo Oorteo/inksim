@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Tizim kengaytmasi: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Joriy foydalanuvchining kengaytmasi (o‘rnatish/yangilash manzili): {path} | Holati: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Boshqa foydalanuvchining kengaytmasi: {path}"

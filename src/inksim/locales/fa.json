@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "افزونهٔ سیستمی: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "افزونهٔ کاربر فعلی (محل نصب/به‌روزرسانی): {path} | وضعیت: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "افزونهٔ کاربر دیگر: {path}"

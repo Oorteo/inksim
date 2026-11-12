@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "시스템 확장 프로그램: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "현재 사용자 확장 기능(설치/업데이트 대상): {path} | 상태: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "다른 사용자 확장 프로그램: {path}"

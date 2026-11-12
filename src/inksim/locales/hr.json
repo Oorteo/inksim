@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Sistemsko proširenje: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Proširenje trenutačnog korisnika (odredište instalacije/ažuriranja): {path} | Status: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Proširenje drugog korisnika: {path}"

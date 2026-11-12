@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "پاشکۆی سیستەم: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Pêvekera bikarhêner ya heyî (armanca sazkirin/nûkirinê): {path} | Rewş: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "پاشکۆی بەکارهێنەرێکی تر: {path}"
