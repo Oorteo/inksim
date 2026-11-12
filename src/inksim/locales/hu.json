@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "Válassz ki egy Inkscape-futtatható fájlt az ellenőrzéshez."
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape alkalmazás"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Bővítmények"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Jelentés"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "Rendszerbővítmények: {path}"

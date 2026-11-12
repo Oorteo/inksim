@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "పరిశీలించడానికి Inkscape ఎక్జిక్యూటబుల్‌ను ఎంచుకోండి."
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape అప్లికేషన్"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "ఎక్స్‌టెన్షన్‌లు"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "నివేదిక"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "సిస్టమ్ పొడిగింపులు: {path}"

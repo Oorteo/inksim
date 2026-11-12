@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "Tekshirish uchun Inkscape bajariluvchi faylini tanlang."
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape ilovasi"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Kengaytmalar"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Hisobot"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "Tizim kengaytmalari: {path}"

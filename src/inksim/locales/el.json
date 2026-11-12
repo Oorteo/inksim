@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "Επίλεξε ένα εκτελέσιμο Inkscape για να ελέγξεις τη ρύθμιση."
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Εφαρμογή Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Επεκτάσεις"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Αναφορά"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "Επεκτάσεις συστήματος: {path}"

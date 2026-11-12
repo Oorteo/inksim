@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "Elige un ejecutable de Inkscape para revisar la configuración."
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Aplicación de Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Extensiones"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Reporte"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "Extensiones del sistema: {path}"

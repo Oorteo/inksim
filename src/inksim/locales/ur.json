@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "جانچ کے لیے Inkscape کا قابلِ اجرا پروگرام منتخب کریں۔"
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape ایپلیکیشن"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "ایکسٹینشنز"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "رپورٹ"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "سسٹم ایکسٹینشنز: {path}"

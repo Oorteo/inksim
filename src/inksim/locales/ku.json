@@ -121,7 +121,7 @@
     },
     "dialog.language.windows_closed": {
         "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "هەموو پەنجەرە کراوەکانی InkSim دادەخرێن و فایلی ئێستا دووبارە دەکرێتەوە."
+        "translation": "Hemû paceyên vekirî yên InkSimê dê bêne girtin û pelê niha dê ji nû ve were vekirin."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
@@ -622,6 +622,26 @@
     "integration.inkscape.report.waiting": {
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "Ji bo kontrolkirinê pelê xebatê yê Inkscape hilbijêre."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Sepana Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Pêveker"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Raport"
     },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",

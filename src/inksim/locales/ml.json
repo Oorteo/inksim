@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "പരിശോധിക്കാൻ ഒരു Inkscape എക്സിക്യൂട്ടബിൾ തിരഞ്ഞെടുക്കുക."
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape ആപ്ലിക്കേഷൻ"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "വിപുലീകരണങ്ങൾ"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "റിപ്പോർട്ട്"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "സിസ്റ്റം എക്സ്റ്റൻഷനുകൾ: {path}"

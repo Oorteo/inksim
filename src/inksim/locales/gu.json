@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "તપાસવા માટે Inkscape એક્ઝિક્યુટેબલ પસંદ કરો."
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape એપ્લિકેશન"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "એક્સ્ટેન્શન્સ"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "અહેવાલ"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "સિસ્ટમ એક્સ્ટેન્શન્સ: {path}"
