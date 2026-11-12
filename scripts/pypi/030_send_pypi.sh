@@ -40,16 +40,47 @@ done
 cd "$project_root"
 pwd
 
+git rev-parse --git-dir >/dev/null 2>&1 || {
+    echo "$project_root is not a Git repository." >&2
+    exit 1
+}
+
+mapfile -t release_tags < <(git tag --points-at HEAD --list 'v*')
+if ((${#release_tags[@]} != 1)); then
+    echo "PyPI upload requires exactly one v* release tag pointing at HEAD." >&2
+    exit 1
+fi
+tag="${release_tags[0]}"
+if [[ "$tag" =~ ^v([0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?)$ ]]; then
+    release_version="${BASH_REMATCH[1]}"
+else
+    printf 'PyPI upload is only allowed from a stable release tag; refusing %s.\n' "$tag" >&2
+    echo "Pre-releases are distributed through GitHub Releases, not PyPI." >&2
+    exit 1
+fi
+
 # install twine: uv tool install twine
 # upload to pypi  (check you have valid token, ~/.pypirc
 shopt -s nullglob
-artifacts=("$project_root"/dist/*)
+artifacts=("$project_root"/dist/*.whl "$project_root"/dist/*.tar.gz)
 if ((${#artifacts[@]} == 0)); then
     echo "No distributions found in $project_root/dist; run scripts/pypi/010_build.sh first." >&2
     exit 1
 fi
+for artifact in "${artifacts[@]}"; do
+    filename="${artifact##*/}"
+    case "$filename" in
+    "inksim-$release_version-"*.whl | "inksim-$release_version.tar.gz") ;;
+    *)
+        printf 'Artifact %s does not match stable release tag %s; refusing upload.\n' \
+            "$filename" "$tag" >&2
+        exit 1
+        ;;
+    esac
+done
 
 printf '\nUpload plan for: %s\n' "$project_root"
+printf '  Stable tag: %s\n' "$tag"
 printf '  Upload the following distribution(s) to PyPI:\n'
 for artifact in "${artifacts[@]}"; do
     printf '    %s\n' "${artifact#"$project_root"/}"

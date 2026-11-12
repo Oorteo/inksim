@@ -50,9 +50,23 @@ On Windows, `inksim-gui design.pes` starts without a console window.
 
 ## Update
 
+For an installation made with `uv`, update from PyPI with:
+
 ```bash
 uv tool upgrade inksim
 ```
+
+uv prefers stable releases by default. If `0.5.6` is the latest stable version
+and `0.6.0rc1` is available as a pre-release, `uv tool upgrade inksim` keeps
+users on the stable release unless they explicitly opt in to pre-releases.
+
+In the GUI, **Help → Check for updates** checks the newest stable version on
+PyPI and reports whether an update is available; it does not install anything.
+It also checks automatically once per day by default. InkSim release
+candidates are published on GitHub, not PyPI, and are not offered by this
+regular update check. Install a candidate directly from its GitHub release page
+if you want to test it. Once the matching final release is published (e.g.
+`0.6.0` after `0.6.0rc1`), the update check offers it.
 
 ## Alternative installers
 

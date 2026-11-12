@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Prepare the README for PyPI and build the project package.
+# Build release distributions from the exact version tag.
 set -euo pipefail
 
 assume_yes=false
@@ -39,24 +39,44 @@ done
 cd "$project_root"
 pwd
 
-# Build packages for PyPI
-# clean dist
-rm -rf dist/
-rm -rf build/
+git rev-parse --git-dir >/dev/null 2>&1 || {
+    echo "$project_root is not a Git repository." >&2
+    exit 1
+}
 
-# PyPI renders the README outside the repository, so relative documentation
-# links do not work there. Build it with links to the current Git ref while
-# keeping the checked-out README unchanged. Set INKSIM_DOCS_REF to a tag or
-# another stable ref when building a release.
-docs_ref="${INKSIM_DOCS_REF:-$(git branch --show-current)}"
-if [[ -z "$docs_ref" ]]; then
-    docs_ref="$(git rev-parse --short HEAD)"
+mapfile -t release_tags < <(git tag --points-at HEAD --list 'v*')
+if ((${#release_tags[@]} != 1)); then
+    echo "Expected exactly one v* release tag pointing at HEAD." >&2
+    if ((${#release_tags[@]} == 0)); then
+        echo "Create or check out a release tag before building." >&2
+    else
+        printf 'Found multiple tags: %s\n' "${release_tags[*]}" >&2
+    fi
+    exit 1
+fi
+tag="${release_tags[0]}"
+
+if [[ "$tag" =~ ^v([0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?)-rc\.([0-9]+)$ ]]; then
+    release_version="${BASH_REMATCH[1]}"
+    distribution_version="${release_version}rc${BASH_REMATCH[3]}"
+    is_prerelease=true
+elif [[ "$tag" =~ ^v([0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?)$ ]]; then
+    distribution_version="${BASH_REMATCH[1]}"
+    is_prerelease=false
+else
+    printf 'Unsupported release tag format: %s\n' "$tag" >&2
+    exit 1
 fi
 
 printf '\nBuild plan for: %s\n' "$project_root"
+printf '  Tag:          %s\n' "$tag"
+printf '  Version:      %s\n' "$distribution_version"
+printf '  Channel:      %s\n' "$(if [[ "$is_prerelease" == true ]]; then echo "pre-release"; else echo "stable"; fi)"
 printf '  Remove existing dist/ and build/ directories.\n'
-printf '  Prepare README links for PyPI temporarily.\n'
-printf '  Build the package with uv.\n'
+printf '  Build from the tagged source in a temporary directory.\n'
+if [[ "$is_prerelease" == true ]]; then
+    printf '  PyPI upload:  blocked; use the GitHub pre-release instead.\n'
+fi
 if [[ "$assume_yes" != true ]]; then
     printf 'Continue? [y/N] '
     read -r answer
@@ -66,12 +86,14 @@ if [[ "$assume_yes" != true ]]; then
     }
 fi
 
-set -x
-readme_backup="$(mktemp)"
-cp "$project_root/README.md" "$readme_backup"
-trap 'cp "$readme_backup" "$project_root/README.md"; rm -f "$readme_backup"' EXIT
+rm -rf "$project_root/dist" "$project_root/build"
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+build_root="$tmp_dir/source"
+mkdir -p "$build_root"
+git archive "$tag" | tar -xf - -C "$build_root"
 
-uv run python - "$project_root/README.md" "$docs_ref" <<'PY'
+uv run python - "$build_root/README.md" "$tag" <<'PY'
 import re
 import sys
 from pathlib import Path
@@ -117,4 +139,21 @@ text = source_pattern.sub(replace_html_source, text)
 readme_path.write_text(text)
 PY
 
-uv build
+(
+    cd "$build_root"
+    uv version "$distribution_version" --no-sync
+    uv build
+)
+
+shopt -s nullglob
+built_artifacts=("$build_root"/dist/*.whl "$build_root"/dist/*.tar.gz)
+if ((${#built_artifacts[@]} == 0)); then
+    echo "The tagged source did not produce any distributions." >&2
+    exit 1
+fi
+mkdir -p "$project_root/dist"
+cp "${built_artifacts[@]}" "$project_root/dist/"
+printf '\nBuilt distributions from %s:\n' "$tag"
+for artifact in "${built_artifacts[@]}"; do
+    printf '  dist/%s\n' "${artifact##*/}"
+done
