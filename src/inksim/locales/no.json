@@ -172,8 +172,8 @@
         "translation": "Se output.err for detaljer om feilen."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Tidsavbrudd under eksport av Ink/Stitch-CSV."
+        "source": "Stitch preview timed out.",
+        "translation": "Tidsavbrudd under forhåndsvisning av sting."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "Inkscape kreves for å redigere SVG-filer."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "En konfigurert, aktiv Ink/Stitch-installasjon kreves for SVG-forhåndsvisning."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "En konfigurert Ink/Stitch-installasjon og en Python-starter er nødvendig."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Forhåndsvis"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Generer tråddata fra denne SVG-filen med den aktive Ink/Stitch-installasjonen."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Generer stingdata fra denne SVG-filen med Inkscape/Ink/Stitch."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Oppdatering kreves ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Systemutvidelse: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Gjeldende brukertillegg (mål for installasjon/oppdatering): {path} | Status: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "En annen brukers utvidelse: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
