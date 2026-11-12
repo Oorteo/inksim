@@ -141,23 +141,42 @@ language.
 
 ### Adding or changing a UI string
 
-1. Use the imported `_` helper in source code:
+Use the imported `_` helper with a stable, namespaced message ID and a
+human-readable English fallback:
 
-   ```python
-   from ..i18n import _
+```python
+from ..i18n import _
 
-   button = QPushButton(_("status.slider.width"))
-   ```
+button = QPushButton(_("menu.file.open_file", "Open file"))
+```
 
-2. Synchronize the catalogs through the locale manager:
+The first argument is the message ID; keep it stable if the English wording
+changes. The second argument is the English source text and the runtime
+fallback when no translation is available. Use named placeholders for
+interpolated values, and format the translated string afterwards:
 
-   ```bash
-   uv run python scripts/i18n/010_manage_locales.py sync
-   ```
+```python
+message = _("message.save_error", "Failed to save {path}").format(path=path)
+```
 
-   This scans the source for `_()` calls and refreshes `en.json`. It also
-   removes keys from locale catalogs that no longer exist in the English
-   source. It does not translate strings.
+Do not use the English sentence as the only argument, such as
+`_("Open file")`: it is treated as the message ID, not as source text. The
+one-argument form `_("menu.file.open_file")` remains valid for existing
+messages whose English source is already maintained in `en.json`, but new
+messages should include both arguments.
+
+Synchronize the catalogs through the locale manager:
+
+```bash
+uv run python scripts/i18n/010_manage_locales.py sync
+```
+
+The extractor recognizes literal IDs and fallback strings. For a new ID, it
+uses the fallback as the English source in `en.json`; without a literal
+fallback, the ID itself is only a placeholder source. It also removes keys
+from locale catalogs that no longer exist in the source. It does not translate
+strings. If you change the English wording of an existing message, update its
+source in `en.json` as well, then translate the affected locales.
 
 ### Managing locales and translations
 
@@ -341,9 +360,13 @@ test fixtures, or pytest dependencies.
 
 Releases are cut from Git tags. The `Release wheel` workflow builds and tests
 the project whenever a `v*` tag is pushed, attaches the wheel and the source
-distribution to a GitHub release. It does not publish to PyPI. Artifacts uploaded by the
-`PR check` workflow are not releases: they require a GitHub login and expire
-after a few days, so they are only meant for CI verification.
+distribution to a GitHub release. It does not publish to PyPI.
+
+Test wheels:
+
+- **PR check:** wheel in the Actions run's **Artifacts**; expires after 7 days.
+- **RC tag:** `Release wheel` attaches the tested wheel and source archive to
+  the GitHub pre-release. No PyPI upload.
 
 ### The tag is the source of truth
 
@@ -375,11 +398,13 @@ Tag the current commit and push the tag; no commit is created:
 ./scripts/release/010_pre_release.sh
 ```
 
-The script reads the version from `pyproject.toml`, counts the existing
-`v<version>-rc.*` tags and creates the next candidate, so repeated runs produce
-`rc.1`, `rc.2`, `rc.3`. It refuses to run with a dirty working tree, because a
-tag points at a commit and uncommitted work would not be released. Testers can
-install a candidate directly from the release page:
+- Reads `pyproject.toml`; creates the next `v<version>-rc.N` tag.
+- Refuses a dirty worktree; does not change `pyproject.toml` or build locally.
+- Pushing the tag starts `Release wheel`: tests, then `.whl` + source archive
+  attached to the GitHub pre-release.
+- `--no-push` creates a local tag only; push it manually to start the workflow.
+
+After the workflow succeeds, testers install the wheel from the release page:
 
 ```bash
 pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksim-0.5.4rc1-py3-none-any.whl
