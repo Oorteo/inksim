@@ -127,17 +127,9 @@
         "source": "Needle color",
         "translation": "ஊசி நிறம்"
     },
-    "dialog.open_browser.browse": {
-        "source": "Browse...",
-        "translation": "உலாவு..."
-    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "ரத்து செய்"
-    },
-    "dialog.open_browser.choose_directory": {
-        "source": "Choose directory",
-        "translation": "கோப்பகத்தைத் தேர்ந்தெடு"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",
