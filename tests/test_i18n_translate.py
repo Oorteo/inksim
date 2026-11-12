@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import importlib.util
 import json
 import sys
@@ -87,8 +88,11 @@ def test_translation_cli_accepts_multiple_locales(
 
 def test_copilot_batch_reuses_client_with_one_session_per_locale(
     monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     clients = []
+    completed_locales = []
+    monkeypatch.setattr(_translate, "COPILOT_PROGRESS_INTERVAL_SECONDS", 0.005)
 
     class AssistantMessageData:
         def __init__(self, content: str) -> None:
@@ -106,6 +110,7 @@ def test_copilot_batch_reuses_client_with_one_session_per_locale(
 
         async def send_and_wait(self, prompt: str, timeout: int):
             self.prompts.append((prompt, timeout))
+            await asyncio.sleep(0.02)
             return SimpleNamespace(data=AssistantMessageData(json.dumps({"hello": "translated"})))
 
     class FakeClient:
@@ -140,6 +145,7 @@ def test_copilot_batch_reuses_client_with_one_session_per_locale(
     translations, failures = _translate.call_copilot_batch(
         {"cs": "Translate into Czech", "sk": "Translate into Slovak"},
         "GPT-6 Luna",
+        on_translation=lambda locale, _translation: completed_locales.append(locale),
     )
 
     assert failures == {}
@@ -152,6 +158,11 @@ def test_copilot_batch_reuses_client_with_one_session_per_locale(
     assert len(clients[0].sessions) == 2
     assert clients[0].sessions[0].prompts == [("Translate into Czech", 300)]
     assert clients[0].sessions[1].prompts == [("Translate into Slovak", 300)]
+    assert completed_locales == ["cs", "sk"]
+    output = capsys.readouterr().out
+    assert "Waiting for Copilot response for cs" in output
+    assert "Completed cs in" in output
+    assert "Estimated remaining:" in output
 
 
 def test_locale_list_counts_stale_and_untranslated_entries(
