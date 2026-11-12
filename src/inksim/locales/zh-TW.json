@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "針色"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "普通預覽"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "不是有效的刺繡檔案"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "真實預覽"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "開啟刺繡檔案"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "瀏覽..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— 選擇資料夾 —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "重新整理"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "搜尋檔案"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch 擴充功能：尚未檢查。使用「工具...」進行檢查。"
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG 預覽會直接透過 Ink/Stitch 執行；編輯則需要 Inkscape。"
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG 預覽會直接透過 Ink/Stitch 執行；只有編輯時才會用到 Inkscape。"
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU 紋理渲染"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "開啟刺繡檔案"
     },
     "menu.file.open_file": {
         "source": "Open...",

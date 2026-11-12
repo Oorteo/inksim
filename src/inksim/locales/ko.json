@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "바늘 색상"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "일반 미리보기"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "유효한 자수 파일이 아니야."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "실제 미리보기"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "자수 파일 열기"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "찾아보기..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— 폴더 선택 —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "새로고침"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "파일 검색"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch 확장 기능: 아직 확인하지 않았어. 확인하려면 도구...를 사용해."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG 미리보기는 Ink/Stitch로 바로 실행돼. 편집하려면 Inkscape가 필요해."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG 미리보기는 Ink/Stitch로 바로 실행돼. Inkscape는 편집할 때만 사용해."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU 텍스처 렌더링"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "자수 파일 열기"
     },
     "menu.file.open_file": {
         "source": "Open...",

@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Color acus"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Praevisio ordinaria"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Fasciculus intertexturae acu pictae non valet"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Praevisio realistica"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Fasciculum intertexturae acu pictae aperi"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Perquire..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— elige indicem —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Renova"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Fasciculos quaere"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Extensio Ink/Stitch: nondum explorata. Instrumentis... utere ad explorandum."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Praevisio SVG directe per Ink/Stitch fit; ad emendandum Inkscape requiritur."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Praevisio SVG directe per Ink/Stitch fit; Inkscape tantum ad emendandum adhibetur."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Reddere texturatum GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Fasciculum intertexturae acu pictae aperi"
     },
     "menu.file.open_file": {
         "source": "Open...",

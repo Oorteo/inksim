@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "針の色"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "通常プレビュー"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "有効な刺繍ファイルではありません。"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "リアルプレビュー"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "刺繍ファイルを開く"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "参照..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— フォルダーを選択 —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "更新"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ファイルを検索"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch 拡張機能: まだ確認していません。「ツール...」から確認してください。"
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG のプレビューは Ink/Stitch で直接実行します。編集には Inkscape が必要です。"
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG のプレビューは Ink/Stitch で直接実行します。Inkscape は編集にのみ使用します。"
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPUテクスチャレンダリング"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "刺繍ファイルを開く"
     },
     "menu.file.open_file": {
         "source": "Open...",

@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Χρώμα βελόνας"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Κανονική προεπισκόπηση"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Δεν είναι έγκυρο αρχείο κεντήματος"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Ρεαλιστική προεπισκόπηση"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Άνοιγμα αρχείου κεντήματος"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Αναζήτηση..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— επιλογή φακέλου —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Ανανέωση"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Αναζήτηση αρχείων"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Επέκταση Ink/Stitch: δεν έχει ελεγχθεί ακόμα. Χρησιμοποίησε το Εργαλεία... για έλεγχο."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Η προεπισκόπηση SVG εκτελείται απευθείας μέσω του Ink/Stitch· για επεξεργασία απαιτείται το Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Η προεπισκόπηση SVG εκτελείται απευθείας μέσω του Ink/Stitch· το Inkscape χρησιμοποιείται μόνο για επεξεργασία."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Απόδοση με υφή GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Άνοιγμα αρχείου κεντήματος"
     },
     "menu.file.open_file": {
         "source": "Open...",

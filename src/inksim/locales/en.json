@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Needle color"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normal preview"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Not a valid embroidery file"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Real preview"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Open embroidery file"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Browse..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— choose directory —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Refresh"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Search files"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch extension: not checked yet. Use Tools... to check."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -739,10 +711,6 @@
         "source": "GPU textured render",
         "translation": "GPU textured render"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Open embroidery file"
-    },
     "menu.file.open_file": {
         "source": "Open...",
         "translation": "Open..."
@@ -804,8 +772,8 @@
         "translation": "&Tools"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Config"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape Setup..."
     },
     "menu.language": {
         "source": "&Language",

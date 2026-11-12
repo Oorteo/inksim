@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "सुई का रंग"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "सामान्य पूर्वावलोकन"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "यह मान्य कढ़ाई फ़ाइल नहीं है।"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "वास्तविक पूर्वावलोकन"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "कढ़ाई फ़ाइल खोलें"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "ब्राउज़ करें..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— डायरेक्टरी चुनें —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "रीफ़्रेश करें"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "फ़ाइलें खोजें"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch एक्सटेंशन: अभी तक जाँचा नहीं गया। जाँचने के लिए Tools... इस्तेमाल करें।"
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG प्रीव्यू सीधे Ink/Stitch से चलता है; संपादन के लिए Inkscape ज़रूरी है।"
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG प्रीव्यू सीधे Ink/Stitch से चलता है; Inkscape का इस्तेमाल सिर्फ़ संपादन के लिए होता है।"
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU बनावट रेंडर"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "कढ़ाई फ़ाइल खोलें"
     },
     "menu.file.open_file": {
         "source": "Open...",

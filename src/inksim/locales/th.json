@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "สีเข็ม"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "ตัวอย่างปกติ"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "ไฟล์นี้ไม่ใช่ไฟล์งานปักที่ถูกต้องนะ"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "ตัวอย่างจริง"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "เปิดไฟล์ปัก"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "เรียกดู..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— เลือกโฟลเดอร์ —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "รีเฟรช"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ค้นหาไฟล์"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "ส่วนขยาย Ink/Stitch: ยังไม่ได้ตรวจสอบ ใช้เครื่องมือ... เพื่อตรวจสอบ"
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "แสดงตัวอย่าง SVG ผ่าน Ink/Stitch โดยตรง ส่วนการแก้ไขต้องใช้ Inkscape"
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "แสดงตัวอย่าง SVG ผ่าน Ink/Stitch โดยตรง ใช้ Inkscape สำหรับแก้ไขเท่านั้น"
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "เรนเดอร์พื้นผิวด้วย GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "เปิดไฟล์ปัก"
     },
     "menu.file.open_file": {
         "source": "Open...",

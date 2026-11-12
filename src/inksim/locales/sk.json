@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Farba ihly"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normálny náhľad"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Nie je platný výšivkový súbor"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Reálny náhľad"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Otvoriť súbor výšivky"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Prehľadávať..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— vyberte priečinok —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Obnoviť"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Hľadať súbory"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Rozšírenie Ink/Stitch: zatiaľ neskontrolované. Skontrolujte ho cez Nástroje..."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Náhľad SVG sa vytvára priamo cez Ink/Stitch; na úpravy je potrebný Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Náhľad SVG sa vytvára priamo cez Ink/Stitch; Inkscape slúži iba na úpravy."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU textúrované vykresľovanie"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Otvoriť súbor výšivky"
     },
     "menu.file.open_file": {
         "source": "Open...",

@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Nadelfarbe"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normale Vorschau"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Keine gültige Stickdatei."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Echte Vorschau"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Stickdatei öffnen"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Durchsuchen..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— Verzeichnis auswählen —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Aktualisieren"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Dateien suchen"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch-Erweiterung: noch nicht geprüft. Verwende „Werkzeuge...“, um sie zu prüfen."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Die SVG-Vorschau läuft direkt über Ink/Stitch; zum Bearbeiten ist Inkscape erforderlich."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Die SVG-Vorschau läuft direkt über Ink/Stitch; Inkscape wird nur zum Bearbeiten verwendet."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU-texturiertes Rendering"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Stickdatei öffnen"
     },
     "menu.file.open_file": {
         "source": "Open...",
