@@ -48,6 +48,7 @@ from PySide6.QtWidgets import (
     QProgressBar,
     QPushButton,
     QScrollArea,
+    QSizePolicy,
     QSplitter,
     QStackedWidget,
     QStyle,
@@ -625,6 +626,8 @@ class OpenBrowserDialog(QDialog):
                 label = part
             button = QPushButton(_sanitize_path_text(label), self.breadcrumb_widget)
             button.setFlat(True)
+            button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+            button.setFixedWidth(button.fontMetrics().horizontalAdvance(button.text()) + 16)
             button.setToolTip(_sanitize_path_text(str(current)))
             button.clicked.connect(lambda _checked=False, path=current: self.set_directory(path))
             self.breadcrumb_layout.addWidget(button)
