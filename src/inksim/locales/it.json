@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Colore ago"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Anteprima normale"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Non è un file di ricamo valido."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Anteprima reale"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Apri file di ricamo"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Sfoglia..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— scegli cartella —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Aggiorna"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Cerca file"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Estensione Ink/Stitch: non ancora verificata. Usa Strumenti... per controllare."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "L'anteprima SVG viene generata direttamente con Ink/Stitch; per modificare serve Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "L'anteprima SVG viene generata direttamente con Ink/Stitch; Inkscape serve solo per modificare."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Rendering con texture GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Apri file di ricamo"
     },
     "menu.file.open_file": {
         "source": "Open...",

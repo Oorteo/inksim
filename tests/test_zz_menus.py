@@ -61,6 +61,18 @@ def test_file_menu_has_only_one_open_action(qtbot, monkeypatch):
     window.close()
 
 
+def test_inkscape_setup_menu_action_has_descriptive_label(qtbot, monkeypatch):
+    monkeypatch.setattr("inksim.i18n._current_locale", "en")
+    monkeypatch.setattr(MainWindow, "_maybe_auto_check_updates", lambda self: None)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    labels = [action.text() for action in _all_frame_actions(window)]
+
+    assert "Inkscape Setup..." in labels
+    window.close()
+
+
 def _patch_blocking_dialogs(monkeypatch):
     """Replace modal dialogs so the test does not block on user interaction."""
 

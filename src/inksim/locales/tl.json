@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Kulay ng karayom"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normal na preview"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Hindi valid na embroidery file"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Real na preview"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Buksan ang file ng burda"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Mag-browse..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— pumili ng direktoryo —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "I-refresh"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Maghanap ng mga file"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Extension ng Ink/Stitch: hindi pa nasusuri. Gamitin ang Tools... para suriin."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Direktang pinapatakbo ang preview ng SVG sa Ink/Stitch; kailangan ang Inkscape para mag-edit."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Direktang pinapatakbo ang preview ng SVG sa Ink/Stitch; Inkscape ay ginagamit lang sa pag-edit."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU textured render"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Buksan ang file ng burda"
     },
     "menu.file.open_file": {
         "source": "Open...",

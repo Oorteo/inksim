@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Barva igle"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Navaden predogled"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Ni veljavna datoteka za vezenje"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Pravi predogled"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Odpri datoteko vezenja"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Prebrskaj..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— izberi mapo —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Osveži"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Išči datoteke"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Razširitev Ink/Stitch: še ni preverjena. Za preverjanje uporabi Orodja..."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Predogled SVG-ja se ustvari neposredno z Ink/Stitch; za urejanje je potreben Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Predogled SVG-ja se ustvari neposredno z Ink/Stitch; Inkscape se uporablja samo za urejanje."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU teksturirano upodabljanje"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Odpri datoteko vezenja"
     },
     "menu.file.open_file": {
         "source": "Open...",

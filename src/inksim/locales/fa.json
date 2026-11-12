@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "رنگ سوزن"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "پیشنمایش عادی"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "فایل گلدوزی معتبر نیست."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "پیشنمایش واقعی"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "باز کردن فایل گلدوزی"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "مرور..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— انتخاب پوشه —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "بازآوری"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "جست‌وجوی فایل‌ها"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "افزونهٔ Ink/Stitch: هنوز بررسی نشده. برای بررسی از ابزارها... استفاده کنید."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "پیش‌نمایش SVG مستقیماً با Ink/Stitch انجام می‌شود؛ برای ویرایش به Inkscape نیاز است."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "پیش‌نمایش SVG مستقیماً با Ink/Stitch انجام می‌شود؛ Inkscape فقط برای ویرایش استفاده می‌شود."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "رندر بافتدار GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "باز کردن فایل گلدوزی"
     },
     "menu.file.open_file": {
         "source": "Open...",

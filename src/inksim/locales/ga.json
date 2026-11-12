@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Dath an tsnáthaid"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Réamhamharc gnáth"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Ní comhad bróidnéireachta bailí é"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Réamhamharc fíor"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Oscail comhad bróidnéireachta"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Brabhsáil..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— roghnaigh fillteán —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Athnuaigh"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Cuardaigh comhaid"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Síneadh Ink/Stitch: níor seiceáladh fós é. Úsáid Uirlisí... chun é a sheiceáil."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Ritheann réamhamharc SVG go díreach trí Ink/Stitch; tá Inkscape riachtanach chun é a chur in eagar."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Ritheann réamhamharc SVG go díreach trí Ink/Stitch; ní úsáidtear Inkscape ach chun é a chur in eagar."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Rindreáil uigeachta GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Oscail comhad bróidnéireachta"
     },
     "menu.file.open_file": {
         "source": "Open...",

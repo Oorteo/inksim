@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "ஊசி நிறம்"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "சாதாரண முன்னோட்டம்"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "சரியான எம்பிராய்டரி கோப்பு இல்லை"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "உண்மையான முன்னோட்டம்"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "எம்பிராய்டரி கோப்பை திற"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "உலாவு..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— கோப்பகத்தைத் தேர்ந்தெடு —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "புதுப்பி"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "கோப்புகளைத் தேடு"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch நீட்டிப்பு: இன்னும் சரிபார்க்கப்படவில்லை. சரிபார்க்க Tools... என்பதைப் பயன்படுத்து."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG முன்னோட்டம் Ink/Stitch வழியாக நேரடியாக இயங்கும்; திருத்த Inkscape தேவை."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG முன்னோட்டம் Ink/Stitch வழியாக நேரடியாக இயங்கும்; திருத்துவதற்கு மட்டும் Inkscape பயன்படும்."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU அமைப்பு ரெண்டர்"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "எம்பிராய்டரி கோப்பை திற"
     },
     "menu.file.open_file": {
         "source": "Open...",

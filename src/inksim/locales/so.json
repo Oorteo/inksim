@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Midabka cirbadda"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Horudhac caadi ah"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Ma aha fayl gobo oo ansax ah"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Horudhac dhab ah"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Fur faylka daabacaadda"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Baadh..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— dooro gal —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Cusboonaysii"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Raadi faylal"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Kordhinta Ink/Stitch: weli lama hubin. Isticmaal Qalab... si aad u hubiso."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Horudhaca SVG si toos ah ayuu ugu shaqeeyaa Ink/Stitch; tafatirka wuxuu u baahan yahay Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Horudhaca SVG si toos ah ayuu ugu shaqeeyaa Ink/Stitch; Inkscape waxaa loo adeegsadaa tafatirka oo keliya."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU render-ka qaabka (textured)"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Fur faylka daabacaadda"
     },
     "menu.file.open_file": {
         "source": "Open...",

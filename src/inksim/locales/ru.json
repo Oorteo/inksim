@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Цвет иглы"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Обычный предпросмотр"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Недопустимый файл вышивки"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Реальный предпросмотр"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Открыть файл вышивки"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Обзор..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— выбрать папку —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Обновить"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Поиск файлов"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Расширение Ink/Stitch: ещё не проверено. Используйте «Инструменты...», чтобы проверить."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Предпросмотр SVG выполняется напрямую через Ink/Stitch; для редактирования нужен Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Предпросмотр SVG выполняется напрямую через Ink/Stitch; Inkscape нужен только для редактирования."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Текстурный рендер GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Открыть файл вышивки"
     },
     "menu.file.open_file": {
         "source": "Open...",

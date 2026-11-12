@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Litur nálar"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Venjuleg forskoðun"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Ekki gilt útsaumsskrá"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Raunveruleg forskoðun"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Opna saumaskaparskrá"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Fletta..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— veldu möppu —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Endurlesa"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Leita að skrám"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch-viðbót: hefur ekki verið könnuð enn. Notaðu Tools... til að kanna."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG-forskoðun keyrir beint í Ink/Stitch; Inkscape þarf aðeins til að breyta."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG-forskoðun keyrir beint í Ink/Stitch; Inkscape er aðeins notað til að breyta."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU áferðateikning"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Opna saumaskaparskrá"
     },
     "menu.file.open_file": {
         "source": "Open...",

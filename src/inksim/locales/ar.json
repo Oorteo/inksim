@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "لون الإبرة"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "معاينة عادية"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "ليس ملف تطريز صالحًا"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "معاينة حقيقية"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "فتح ملف تطريز"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "استعراض..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— اختر مجلدًا —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "تحديث"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "البحث عن ملفات"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "امتداد Ink/Stitch: لم يتم التحقق بعد. استخدم «أدوات...» للتحقق."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "تتم معاينة SVG مباشرةً عبر Ink/Stitch؛ ويتطلب التحرير Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "تتم معاينة SVG مباشرةً عبر Ink/Stitch؛ ويُستخدم Inkscape للتحرير فقط."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "عرض محكم بواسطة GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "فتح ملف تطريز"
     },
     "menu.file.open_file": {
         "source": "Open...",

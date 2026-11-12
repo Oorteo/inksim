@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "সুইয়ের রং"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "সাধারণ প্রিভিউ"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "বৈধ এমব্রয়ডারি ফাইল নয়"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "বাস্তব প্রিভিউ"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "এমব্রয়ডারি ফাইল খুলুন"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "ব্রাউজ..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— ফোল্ডার বেছে নিন —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "রিফ্রেশ"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ফাইল খুঁজুন"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch এক্সটেনশন: এখনো পরীক্ষা করা হয়নি। পরীক্ষা করতে Tools... ব্যবহার করুন।"
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG প্রিভিউ সরাসরি Ink/Stitch দিয়ে চলে; সম্পাদনার জন্য Inkscape প্রয়োজন।"
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG প্রিভিউ সরাসরি Ink/Stitch দিয়ে চলে; Inkscape শুধু সম্পাদনার জন্য ব্যবহৃত হয়।"
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU টেক্সচার্ড রেন্ডার"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "এমব্রয়ডারি ফাইল খুলুন"
     },
     "menu.file.open_file": {
         "source": "Open...",

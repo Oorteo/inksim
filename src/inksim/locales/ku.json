@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Rengê derziyê"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Pêşdîtina normal"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Ev ne pelgeyek embroidery ya derbasdar e."
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Pêşdîtina rastîn"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Pelê dirûnê veke"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Bigere..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— peldankê hilbijêre —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Nû bike"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Li pelan bigere"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Pêvekera Ink/Stitch: hîn nehatiye kontrolkirin. Ji bo kontrolkirinê Amûr... bikar bîne."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Pêşdîtina SVG rasterast bi Ink/Stitch tê meşandin; ji bo sererastkirinê Inkscape pêwîst e."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Pêşdîtina SVG rasterast bi Ink/Stitch tê meşandin; Inkscape tenê ji bo sererastkirinê tê bikaranîn."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Rendera bi tekstura GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Pelê dirûnê veke"
     },
     "menu.file.open_file": {
         "source": "Open...",

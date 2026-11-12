@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Rangi ya sindano"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Onyesho la kawaida"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Sio faili halali ya ushonaji"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Onyesho halisi"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Fungua faili la embroidery"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Vinjari..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— chagua saraka —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Onyesha upya"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Tafuta faili"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Kiendelezi cha Ink/Stitch: bado hakijakaguliwa. Tumia Zana... kukikagua."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Hakikisho la SVG huendeshwa moja kwa moja kupitia Ink/Stitch; kuhariri kunahitaji Inkscape."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Hakikisho la SVG huendeshwa moja kwa moja kupitia Ink/Stitch; Inkscape hutumika kuhariri pekee."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Utoaji wa GPU wenye texture"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Fungua faili la embroidery"
     },
     "menu.file.open_file": {
         "source": "Open...",

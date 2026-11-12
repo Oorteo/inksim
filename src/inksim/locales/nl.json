@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Naaldkleur"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normale voorbeeldweergave"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Geen geldig borduurwerkbestand"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Echte voorbeeldweergave"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Borduurwerkbestand openen"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Bladeren..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— map kiezen —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Vernieuwen"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Bestanden zoeken"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Ink/Stitch-extensie: nog niet gecontroleerd. Gebruik Extra... om te controleren."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "SVG-voorbeelden worden rechtstreeks via Ink/Stitch gemaakt; voor bewerken is Inkscape nodig."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "SVG-voorbeelden worden rechtstreeks via Ink/Stitch gemaakt; Inkscape wordt alleen gebruikt om te bewerken."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU-getextureerde weergave"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Borduurwerkbestand openen"
     },
     "menu.file.open_file": {
         "source": "Open...",

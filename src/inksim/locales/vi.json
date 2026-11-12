@@ -127,22 +127,6 @@
         "source": "Needle color",
         "translation": "Màu kim"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Xem trước bình thường"
-    },
-    "dialog.open.not_embroidery": {
-        "source": "Not a valid embroidery file",
-        "translation": "Không phải tệp thêu hợp lệ"
-    },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Xem trước thực tế"
-    },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Mở tệp thêu"
-    },
     "dialog.open_browser.browse": {
         "source": "Browse...",
         "translation": "Duyệt..."
@@ -291,10 +275,6 @@
         "source": "— choose directory —",
         "translation": "— chọn thư mục —"
     },
-    "dialog.open_browser.refresh": {
-        "source": "Refresh",
-        "translation": "Làm mới"
-    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Tìm tệp"
@@ -334,14 +314,6 @@
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
         "translation": "Tiện ích mở rộng Ink/Stitch: chưa được kiểm tra. Dùng Công cụ... để kiểm tra."
-    },
-    "dialog.open_browser.status.svg_needs_inkscape": {
-        "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "Xem trước SVG chạy trực tiếp qua Ink/Stitch; cần Inkscape để chỉnh sửa."
-    },
-    "dialog.open_browser.status.svg_ready": {
-        "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "Xem trước SVG chạy trực tiếp qua Ink/Stitch; chỉ cần Inkscape để chỉnh sửa."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
@@ -738,10 +710,6 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Kết xuất kết cấu GPU"
-    },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Mở tệp thêu"
     },
     "menu.file.open_file": {
         "source": "Open...",
