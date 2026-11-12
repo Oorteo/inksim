@@ -222,8 +222,7 @@ def test_empty_embroidery_file_shows_error_in_open_dialog(qtbot, tmp_path, monke
     qtbot.addWidget(dialog)
     dialog.show()
 
-    # Wait for the row change / preview to populate
-    qtbot.wait(50)
+    qtbot.waitUntil(lambda: dialog.preview_error_label.isVisible())
 
     assert dialog.selected_path == empty_file
     assert dialog.preview_error_label.isVisible()
@@ -281,15 +280,93 @@ def test_open_dialog_preview_survives_invalid_json(qtbot, tmp_path):
     dialog = EmbroideryOpenDialog(None, tmp_path)
     qtbot.addWidget(dialog)
     dialog.show()
-    qtbot.wait(50)
 
     # Selecting the invalid json triggers a preview load.
-    dialog.file_list.setCurrentRow(0)
+    dialog.file_list.setCurrentRow(dialog.file_paths.index(bad_json))
+    qtbot.waitUntil(lambda: dialog.preview_error_label.isVisible())
 
     assert dialog.selected_path == bad_json
     assert dialog.preview.pattern is None
     assert dialog.preview_error_label.isVisible()
     assert "Not a valid embroidery file" in dialog.preview_error_label.text()
+    dialog.reject()
+
+
+def test_open_dialog_debounces_preview_while_selection_moves(qtbot, tmp_path, monkeypatch):
+    from inksim.gui.dialogs import EmbroideryOpenDialog
+
+    for name in ("first.pes", "second.pes", "third.pes"):
+        (tmp_path / name).touch()
+
+    dialog = EmbroideryOpenDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    loaded_paths = []
+    monkeypatch.setattr(
+        dialog.preview,
+        "load_design",
+        lambda path, **_kwargs: loaded_paths.append(path) or True,
+    )
+
+    dialog.file_list.setCurrentRow(2)
+    dialog.file_list.setCurrentRow(3)
+    assert dialog.selected_path == tmp_path / "third.pes"
+
+    qtbot.wait(100)
+    assert loaded_paths == []
+    qtbot.waitUntil(lambda: len(loaded_paths) == 1)
+    assert loaded_paths == [str(tmp_path / "third.pes")]
+    dialog.reject()
+
+
+def test_open_dialog_navigates_directories_with_arrow_keys(qtbot, tmp_path):
+    from PySide6.QtCore import Qt
+
+    from inksim.gui.dialogs import EmbroideryOpenDialog
+
+    subdirectory = tmp_path / "designs"
+    subdirectory.mkdir()
+    (subdirectory / "nested.pes").touch()
+    (tmp_path / "top.pes").touch()
+
+    dialog = EmbroideryOpenDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    folder_row = next(
+        row
+        for row in range(dialog.file_list.count())
+        if dialog.file_list.item(row).text() == "designs/"
+    )
+    dialog.file_list.setCurrentRow(folder_row)
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Return)
+
+    assert dialog.current_directory == tmp_path
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
+    assert dialog.current_directory == subdirectory
+    assert dialog.file_list.item(0).text() == ".."
+    assert dialog.file_list.currentRow() == 0
+    assert dialog.selected_path is None
+
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
+    assert dialog.current_directory == tmp_path
+    assert dialog.file_list.item(dialog.file_list.currentRow()).text() == "designs/"
+
+    dialog.file_list.setCurrentRow(
+        next(
+            row
+            for row in range(dialog.file_list.count())
+            if dialog.file_list.item(row).text() == "designs/"
+        )
+    )
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
+    assert dialog.current_directory == subdirectory
+    assert dialog.file_list.currentRow() == 0
+
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Left)
+
+    assert dialog.current_directory == tmp_path
+    assert dialog.file_list.item(dialog.file_list.currentRow()).text() == "designs/"
+    assert dialog.selected_path is None
     dialog.reject()
 
 
