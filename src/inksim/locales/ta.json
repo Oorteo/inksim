@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "ஆய்வு செய்ய Inkscape செயல்படுத்தக்கூடிய கோப்பைத் தேர்ந்தெடு."
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape செயலி"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "விரிவாக்கங்கள்"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "அறிக்கை"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "கணினி நீட்டிப்புகள்: {path}"

@@ -43,6 +43,22 @@ def test_english_catalog_contains_all_extracted_strings() -> None:
         assert catalog_entry["translation"] == extracted_entry["translation"]
 
 
+def test_inkscape_section_titles_are_extracted_to_english_catalog() -> None:
+    expected = {
+        "integration.inkscape.section.application": "Inkscape application",
+        "integration.inkscape.section.extensions": "Extensions",
+        "integration.inkscape.section.inkstitch": "Ink/Stitch",
+        "integration.inkscape.section.inksim": "InkSim",
+        "integration.inkscape.section.report": "Report",
+    }
+    extracted = scan_source(SRC_DIR)
+    catalog = load_catalog(EN_CATALOG)
+
+    for message_id, source in expected.items():
+        assert extracted[message_id]["source"] == source
+        assert catalog[message_id]["source"] == source
+
+
 def test_all_locale_catalogs_are_complete_and_translated() -> None:
     english = load_catalog(EN_CATALOG)
     english_ids = _message_ids(english)

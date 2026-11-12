@@ -623,6 +623,26 @@
         "source": "Choose an Inkscape executable to inspect.",
         "translation": "পরীক্ষা করার জন্য একটি Inkscape এক্সিকিউটেবল বেছে নিন।"
     },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape অ্যাপ্লিকেশন"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "এক্সটেনশন"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "প্রতিবেদন"
+    },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
         "translation": "সিস্টেম এক্সটেনশন: {path}"
