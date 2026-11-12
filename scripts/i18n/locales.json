@@ -312,33 +312,9 @@
         "tier": 3
     },
     {
-        "code": "ar-SA",
-        "name": "Arabic (Saudi Arabia)",
+        "code": "la",
+        "name": "Classical Latin",
         "tier": 4,
-        "base": "ar"
-    },
-    {
-        "code": "ar-EG",
-        "name": "Arabic (Egypt)",
-        "tier": 4,
-        "base": "ar"
-    },
-    {
-        "code": "ar-DZ",
-        "name": "Arabic (Algeria)",
-        "tier": 4,
-        "base": "ar"
-    },
-    {
-        "code": "ar-MA",
-        "name": "Arabic (Morocco)",
-        "tier": 4,
-        "base": "ar"
-    },
-    {
-        "code": "ar-IQ",
-        "name": "Arabic (Iraq)",
-        "tier": 4,
-        "base": "ar"
+        "note": "Historical language; classical style"
     }
 ]

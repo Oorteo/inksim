@@ -10,7 +10,7 @@ The roadmap lives in ``locales.json`` and defines tiers:
   1  core community languages (de, cs, sk)
   2  major world / European languages
   3  regional variants and large Asian languages
-  4  dialects / slang / humorous variants
+  4  experimental, historical, or novelty locales
 
 Examples:
 

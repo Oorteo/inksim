@@ -1,7 +1,7 @@
 {
     "_meta": {
-        "language": "ar-SA",
-        "name": "Arabic (Saudi Arabia)"
+        "language": "la",
+        "name": "Classical Latin"
     },
     "app.title": {
         "source": "InkSim",
@@ -9,303 +9,303 @@
     },
     "dialog.about.body": {
         "source": "Explore stitch order, thread colors, jumps, trims, and machine commands before production. Preview the design stitch by stitch, switch rendering styles, and export what you see.",
-        "translation": "استكشف ترتيب الغرز، ألوان الخيوط، القفزات، القصاصات، وأوامر الماكينة قبل الإنتاج. اعاين التصميم غرزة بغرزة، بدّل أنماط العرض، وصَدِّر ما تراه."
+        "translation": "Ordinem punctorum, colores fili, saltus, sectiones fili atque imperata machinae ante confectionem explora. Formam punctum post punctum praevide, modos reddendi commuta atque ea quae vides exporta."
     },
     "dialog.about.last_update_check": {
         "source": "Last update check: {when}",
-        "translation": "آخر فحص للتحديثات: {when}"
+        "translation": "Ultima quaestio de renovationibus: {when}"
     },
     "dialog.about.tagline": {
         "source": "Interactive embroidery simulation, inspection, and export.",
-        "translation": "محاكاة تفاعلية للتطريز، فحص، وتصدير."
+        "translation": "Simulatio, inspectio atque exportatio intertexturae acu pictae."
     },
     "dialog.about.title": {
         "source": "About {app_title}",
-        "translation": "حول {app_title}"
+        "translation": "De {app_title}"
     },
     "dialog.calibrate.bar_length": {
         "source": "Bar length:",
-        "translation": "طول الشريط:"
+        "translation": "Longitudo regulae:"
     },
     "dialog.calibrate.info": {
         "source": "Hold a ruler against the screen and drag the slider until the bar below is exactly 100 mm long, then press OK.",
-        "translation": "أمسك مسطرة أمام الشاشة واسحب المؤشر حتى يصبح الشريط بالأسفل طوله 100 مم تمامًا، ثم اضغط موافق."
+        "translation": "Regulam adhibe ad imaginem in velo et labrum trahe, donec regula infra prorsus 100 mm longa sit; deinde OK preme."
     },
     "dialog.calibrate.physical_length": {
         "source": "Physical length of the bar (mm):",
-        "translation": "الطول الفعلي للشريط (مم):"
+        "translation": "Longitudo vera regulae (mm):"
     },
     "dialog.calibrate.title": {
         "source": "Calibrate display size",
-        "translation": "معايرة حجم الشاشة"
+        "translation": "Magnitudinem imaginis in velo calibra"
     },
     "dialog.config.invalid_toml": {
         "source": "Invalid TOML",
-        "translation": "TOML غير صالح"
+        "translation": "TOML vitiosum"
     },
     "dialog.config.save_error.message": {
         "source": "Failed to save config: {error}",
-        "translation": "فشل حفظ الإعدادات: {error}"
+        "translation": "Configuratio servari non potuit: {error}"
     },
     "dialog.config.save_error.title": {
         "source": "Error",
-        "translation": "خطأ"
+        "translation": "Error"
     },
     "dialog.config.title": {
         "source": "Configuration file",
-        "translation": "ملف الإعدادات"
+        "translation": "Fasciculus configurationis"
     },
     "dialog.export.close": {
         "source": "Close",
-        "translation": "إغلاق"
+        "translation": "Claude"
     },
     "dialog.export.copied": {
         "source": "Copied!",
-        "translation": "تم النسخ!"
+        "translation": "Exscriptum!"
     },
     "dialog.export.copy": {
         "source": "Copy to clipboard",
-        "translation": "نسخ إلى الحافظة"
+        "translation": "In tabulam communicationis exscribe"
     },
     "dialog.export.copy.tooltip": {
         "source": "Copy the full-resolution image to the clipboard",
-        "translation": "انسخ الصورة كاملة الدقة إلى الحافظة"
+        "translation": "Imaginem plenae resolutionis in tabulam communicationis exscribe"
     },
     "dialog.export.format": {
         "source": "Format:",
-        "translation": "الصيغة:"
+        "translation": "Forma:"
     },
     "dialog.export.quality": {
         "source": "Quality:",
-        "translation": "الجودة:"
+        "translation": "Qualitas:"
     },
     "dialog.export.save": {
         "source": "Save...",
-        "translation": "حفظ..."
+        "translation": "Serva..."
     },
     "dialog.export.save.tooltip": {
         "source": "Save the image to a file",
-        "translation": "احفظ الصورة إلى ملف"
+        "translation": "Imaginem in fasciculum serva"
     },
     "dialog.export.save_error.message": {
         "source": "Failed to save {path}",
-        "translation": "فشل حفظ {path}"
+        "translation": "{path} servari non potuit"
     },
     "dialog.export.save_error.title": {
         "source": "Save image",
-        "translation": "حفظ الصورة"
+        "translation": "Imaginem serva"
     },
     "dialog.export.saved": {
         "source": "Saved!",
-        "translation": "تم الحفظ!"
+        "translation": "Servatum!"
     },
     "dialog.export.scale": {
         "source": "Scale:",
-        "translation": "المقياس:"
+        "translation": "Magnitudo:"
     },
     "dialog.export.transparent_bg": {
         "source": "Transparent background",
-        "translation": "خلفية شفافة"
+        "translation": "Fundus pellucidus"
     },
     "dialog.language.restart_message": {
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
-        "translation": "تم تعيين اللغة إلى {language}. إعادة تشغيل InkSim الآن لتطبيقها؟"
+        "translation": "Lingua in {language} mutata est. Nuncne InkSim iterum incipias, ut mutatio valeat?"
     },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
-        "translation": "سيتم استخدام اللغة الافتراضية للنظام. إعادة تشغيل InkSim الآن لتطبيقها؟"
+        "translation": "Lingua quae in systemate praescripta est adhibebitur. Nuncne InkSim iterum incipias, ut mutatio valeat?"
     },
     "dialog.language.title": {
         "source": "Language changed",
-        "translation": "تم تغيير اللغة"
+        "translation": "Lingua mutata"
     },
     "dialog.language.windows_closed": {
         "source": "All open InkSim windows will be closed and the current file reopened.",
-        "translation": "سيتم إغلاق جميع نوافذ InkSim المفتوحة وإعادة فتح الملف الحالي."
+        "translation": "Omnes fenestrae InkSim apertae claudentur et fasciculus praesens denuo aperietur."
     },
     "dialog.needle_color.title": {
         "source": "Needle color",
-        "translation": "لون الإبرة"
+        "translation": "Color acus"
     },
     "dialog.open.normal_preview": {
         "source": "Normal preview",
-        "translation": "معاينة عادية"
+        "translation": "Praevisio ordinaria"
     },
     "dialog.open.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "ليس ملف تطريز صالحًا"
+        "translation": "Fasciculus intertexturae acu pictae non valet"
     },
     "dialog.open.real_preview": {
         "source": "Real preview",
-        "translation": "معاينة حقيقية"
+        "translation": "Praevisio realistica"
     },
     "dialog.open.title": {
         "source": "Open embroidery file",
-        "translation": "فتح ملف تطريز"
+        "translation": "Fasciculum intertexturae acu pictae aperi"
     },
     "dialog.open_browser.browse": {
         "source": "Browse...",
-        "translation": "استعراض..."
+        "translation": "Perquire..."
     },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
-        "translation": "إلغاء"
+        "translation": "Dimitte"
     },
     "dialog.open_browser.choose_directory": {
         "source": "Choose directory",
-        "translation": "اختيار مجلد"
+        "translation": "Elige indicem"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",
-        "translation": "فشلت عملية معاينة الغرز: {error}"
+        "translation": "Praevisio punctorum defecit: {error}"
     },
     "dialog.open_browser.conversion_exit_code": {
         "source": "Process exit code: {code}",
-        "translation": "رمز خروج العملية: {code}"
+        "translation": "Exitus processus: {code}"
     },
     "dialog.open_browser.conversion_failed": {
         "source": "Ink/Stitch CSV export failed.",
-        "translation": "فشل تصدير CSV من Ink/Stitch."
+        "translation": "Exportatio CSV ab Ink/Stitch defecit."
     },
     "dialog.open_browser.conversion_hint": {
         "source": "See output.err for the error details.",
-        "translation": "راجع output.err للاطلاع على تفاصيل الخطأ."
+        "translation": "Vide output.err ut causam erroris cognoscas."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "انتهت مهلة تصدير CSV من Ink/Stitch."
+        "source": "Stitch preview timed out.",
+        "translation": "Praevisio punctorum tempus explevit."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
-        "translation": "جارٍ تصدير CSV من Ink/Stitch..."
+        "translation": "Exportatio CSV ab Ink/Stitch fit..."
     },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
-        "translation": "الحجم: {width:.1f} × {height:.1f} مم"
+        "translation": "Magnitudo: {width:.1f} x {height:.1f} mm"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
-        "translation": "افتح ملف SVG هذا في نافذة Inkscape جديدة."
+        "translation": "Hoc SVG in nova fenestra Inkscape aperi."
     },
     "dialog.open_browser.edit_inkscape": {
         "source": "Edit in Inkscape",
-        "translation": "تحرير في Inkscape"
+        "translation": "In Inkscape emenda"
     },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
-        "translation": "ما فيه ملفات مدعومة في هذا المجلد."
+        "translation": "Nulli fasciculi apti in hoc indice."
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
-        "translation": "تعذّرت قراءة هذا الملف: {error}"
+        "translation": "Hic fasciculus legi non potest: {error}"
     },
     "dialog.open_browser.filter": {
         "source": "Show",
-        "translation": "عرض"
+        "translation": "Ostende"
     },
     "dialog.open_browser.filter.all": {
         "source": "All supported",
-        "translation": "كل الملفات المدعومة"
+        "translation": "Omnes apti"
     },
     "dialog.open_browser.filter.csv": {
         "source": "CSV stitch data",
-        "translation": "بيانات الغرز CSV"
+        "translation": "Data punctorum CSV"
     },
     "dialog.open_browser.filter.embroidery": {
         "source": "Embroidery",
-        "translation": "التطريز"
+        "translation": "Intertextura acu picta"
     },
     "dialog.open_browser.filter.svg": {
         "source": "SVG source",
-        "translation": "مصدر SVG"
+        "translation": "Fons SVG"
     },
     "dialog.open_browser.fit": {
         "source": "Fit",
-        "translation": "ملاءمة"
+        "translation": "Ad magnitudinem fenestrae apta"
     },
     "dialog.open_browser.folder": {
         "source": "Folder",
-        "translation": "مجلد"
+        "translation": "Index"
     },
     "dialog.open_browser.folder_hint": {
         "source": "Double-click the folder to browse its files.",
-        "translation": "انقر نقرتين على المجلد لاستعراض ملفاته."
+        "translation": "Indicem duplici ictu aperi, ut fasciculos eius perlustres."
     },
     "dialog.open_browser.folder_open_hint": {
         "source": "Double-click the folder to browse its files.",
-        "translation": "انقر نقرتين على المجلد لاستعراض ملفاته."
+        "translation": "Indicem duplici ictu aperi, ut fasciculos eius perlustres."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
-        "translation": "تعذّر تشغيل Inkscape: {error}"
+        "translation": "Inkscape incipere non potuit: {error}"
     },
     "dialog.open_browser.inkscape_required": {
         "source": "Inkscape is required to edit SVG files.",
-        "translation": "يلزم Inkscape لتحرير ملفات SVG."
+        "translation": "Inkscape requiritur ad fasciculos SVG emendandos."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "يلزم تثبيت Ink/Stitch نشط ومُعدّ لمعاينة ملفات SVG."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Institutio Ink/Stitch configurata et programma Python requiruntur."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
-        "translation": "ما نقدر نوصل لهذا المجلد."
+        "translation": "Hic index adiri non potest."
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
-        "translation": "آخر تعديل: {time}"
+        "translation": "Mutatus: {time}"
     },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "ملف تطريز غير صالح"
+        "translation": "Fasciculus intertexturae acu pictae non valet"
     },
     "dialog.open_browser.open": {
         "source": "Open",
-        "translation": "فتح"
+        "translation": "Aperi"
     },
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
-        "translation": "افتح ملف التطريز المحدد."
+        "translation": "Fasciculum intertexturae acu pictae delectum aperi."
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
-        "translation": "معاينة"
+        "translation": "Praevide"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "أنشئ بيانات الغرز من ملف SVG هذا باستخدام تثبيت Ink/Stitch النشط."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Ex hoc SVG data punctorum per Inkscape/Ink/Stitch crea."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
-        "translation": "تعذّر تشغيل سكربت Ink/Stitch النشط أو مشغّل Python المُعدّ له."
+        "translation": "Scriptum Ink/Stitch activum aut programma Python configuratum currere non potest."
     },
     "dialog.open_browser.read_failed": {
         "source": "Cannot read this folder: {error}",
-        "translation": "تعذّرت قراءة هذا المجلد: {error}"
+        "translation": "Hic index legi non potest: {error}"
     },
     "dialog.open_browser.recent": {
         "source": "Recent:",
-        "translation": "الأخيرة:"
+        "translation": "Recentia:"
     },
     "dialog.open_browser.recent_placeholder": {
         "source": "— choose directory —",
-        "translation": "— اختر مجلدًا —"
+        "translation": "— elige indicem —"
     },
     "dialog.open_browser.refresh": {
         "source": "Refresh",
-        "translation": "تحديث"
+        "translation": "Renova"
     },
     "dialog.open_browser.search": {
         "source": "Search files",
-        "translation": "البحث عن ملفات"
+        "translation": "Fasciculos quaere"
     },
     "dialog.open_browser.select_file": {
         "source": "Select a file to open.",
-        "translation": "اختر ملفًا لفتحه."
+        "translation": "Elige fasciculum aperiendum."
     },
     "dialog.open_browser.size": {
         "source": "Size: {size}",
-        "translation": "الحجم: {size}"
+        "translation": "Magnitudo: {size}"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -313,175 +313,183 @@
     },
     "dialog.open_browser.status.inkscape_missing": {
         "source": "Inkscape: not found.",
-        "translation": "Inkscape: غير موجود."
+        "translation": "Inkscape: non inventum."
     },
     "dialog.open_browser.status.inkstitch_check_failed": {
         "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
-        "translation": "إضافة Ink/Stitch: تعذّر التحقق. استخدم «أدوات...» لإعادة المحاولة."
+        "translation": "Extensio Ink/Stitch: explorari non potuit. Instrumentis... utere ut iterum temptes."
     },
     "dialog.open_browser.status.inkstitch_extension": {
         "source": "Ink/Stitch extension: {path}",
-        "translation": "إضافة Ink/Stitch: {path}"
+        "translation": "Extensio Ink/Stitch: {path}"
     },
     "dialog.open_browser.status.inkstitch_missing": {
         "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
-        "translation": "إضافة Ink/Stitch: غير موجودة في مجلدات إضافات Inkscape."
+        "translation": "Extensio Ink/Stitch: in indicibus extensionum Inkscape non inventa."
     },
     "dialog.open_browser.status.inkstitch_no_inkscape": {
         "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
-        "translation": "إضافة Ink/Stitch: ما نقدر نتحقق قبل إعداد Inkscape."
+        "translation": "Extensio Ink/Stitch: explorari non potest antequam Inkscape configuretur."
     },
     "dialog.open_browser.status.inkstitch_unchecked": {
         "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
-        "translation": "إضافة Ink/Stitch: لم يتم التحقق منها بعد. استخدم «أدوات...» للتحقق."
+        "translation": "Extensio Ink/Stitch: nondum explorata. Instrumentis... utere ad explorandum."
     },
     "dialog.open_browser.status.svg_needs_inkscape": {
         "source": "SVG preview runs directly through Ink/Stitch; editing requires Inkscape.",
-        "translation": "تتم معاينة SVG مباشرةً عبر Ink/Stitch؛ ويتطلب التحرير Inkscape."
+        "translation": "Praevisio SVG directe per Ink/Stitch fit; ad emendandum Inkscape requiritur."
     },
     "dialog.open_browser.status.svg_ready": {
         "source": "SVG preview runs directly through Ink/Stitch; Inkscape is used only for editing.",
-        "translation": "تتم معاينة SVG مباشرةً عبر Ink/Stitch؛ ويُستخدم Inkscape للتحرير فقط."
+        "translation": "Praevisio SVG directe per Ink/Stitch fit; Inkscape tantum ad emendandum adhibetur."
     },
     "dialog.open_browser.stitches": {
         "source": "Stitches: {count}",
-        "translation": "الغرز: {count}"
+        "translation": "Puncta: {count}"
     },
     "dialog.open_browser.svg_caption_needs_inkscape": {
         "source": "SVG source. Inkscape is required for stitch preview.",
-        "translation": "مصدر SVG. يلزم Inkscape لمعاينة الغرز."
+        "translation": "Fons SVG. Inkscape ad praevisionem punctorum requiritur."
     },
     "dialog.open_browser.svg_caption_ready": {
         "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
-        "translation": "مصدر SVG. اختر «معاينة» لإنشاء بيانات الغرز باستخدام Inkscape/Ink/Stitch."
+        "translation": "Fons SVG. Elige Praevide ut data punctorum per Inkscape/Ink/Stitch crees."
     },
     "dialog.open_browser.svg_invalid": {
         "source": "The SVG could not be rendered.",
-        "translation": "تعذّر عرض ملف SVG."
+        "translation": "SVG reddi non potuit."
     },
     "dialog.open_browser.svg_too_large": {
         "source": "This SVG is too large to preview here.",
-        "translation": "ملف SVG هذا كبير جدًا لمعاينته هنا."
+        "translation": "Hoc SVG praevideri non potest, quia nimis magnum est."
     },
     "dialog.open_browser.temp_file_failed": {
         "source": "Could not create a temporary preview file: {error}",
-        "translation": "تعذّر إنشاء ملف معاينة مؤقت: {error}"
+        "translation": "Fasciculus temporarius praevisionis creari non potuit: {error}"
     },
     "dialog.open_browser.title": {
         "source": "Open file",
-        "translation": "فتح ملف"
+        "translation": "Fasciculum aperi"
     },
     "dialog.open_browser.tools": {
         "source": "Tools...",
-        "translation": "أدوات..."
+        "translation": "Instrumenta..."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
-        "translation": "بيانات الغرز CSV"
+        "translation": "Data punctorum CSV"
     },
     "dialog.open_browser.type.directory": {
         "source": "Folder",
-        "translation": "مجلد"
+        "translation": "Index"
     },
     "dialog.open_browser.type.embroidery": {
         "source": "Embroidery",
-        "translation": "تطريز"
+        "translation": "Intertextura acu picta"
     },
     "dialog.open_browser.type.other": {
         "source": "Unsupported",
-        "translation": "غير مدعوم"
+        "translation": "Non aptum"
     },
     "dialog.open_browser.type.svg": {
         "source": "SVG source",
-        "translation": "مصدر SVG"
+        "translation": "Fons SVG"
     },
     "dialog.open_browser.unsupported": {
         "source": "This file type cannot be opened in InkSim.",
-        "translation": "ما نقدر نفتح هذا النوع من الملفات في InkSim."
+        "translation": "Hoc genus fasciculi in InkSim aperiri non potest."
     },
     "dialog.open_browser.up": {
         "source": "Up",
-        "translation": "للأعلى"
+        "translation": "Ad superiorem indicem"
     },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
-        "translation": "تكبير"
+        "translation": "Amplifica"
     },
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
-        "translation": "تصغير"
+        "translation": "Minue"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
-        "translation": "اختر عارض الغرز"
+        "translation": "Elige rationem reddendi punctorum"
     },
     "integration.inkscape.change": {
         "source": "Change",
-        "translation": "تغيير"
+        "translation": "Muta"
     },
     "integration.inkscape.config_save_failed": {
         "source": "Could not save the Inkscape extension status: {error}",
-        "translation": "تعذّر حفظ حالة إضافة Inkscape: {error}"
+        "translation": "Status extensionis Inkscape servari non potuit: {error}"
     },
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
-        "translation": "غير متاح"
+        "translation": "Inaccessibilis"
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
-        "translation": "ما لقينا أي مجلدات لإضافة InkSim."
+        "translation": "Nulli indices extensionum InkSim inventi sunt."
     },
     "integration.inkscape.inksim_scan_failed": {
         "source": "Could not inspect Inkscape extension folders: {error}",
-        "translation": "تعذّر فحص مجلدات إضافات Inkscape: {error}"
+        "translation": "Indices extensionum Inkscape explorari non potuerunt: {error}"
     },
     "integration.inkscape.inksim_status_changed_command": {
         "source": "Preview command changed",
-        "translation": "تغيّر أمر المعاينة"
+        "translation": "Imperatum praevisionis mutatum"
     },
     "integration.inkscape.inksim_status_changed_files": {
         "source": "changed files: {files}",
-        "translation": "الملفات التي تغيّرت: {files}"
+        "translation": "fasciculi mutati: {files}"
     },
     "integration.inkscape.inksim_status_current": {
         "source": "Up to date",
-        "translation": "محدّث"
+        "translation": "Recens"
     },
     "integration.inkscape.inksim_status_install": {
         "source": "Installation required",
-        "translation": "يلزم التثبيت"
+        "translation": "Institutio requiritur"
     },
     "integration.inkscape.inksim_status_unavailable": {
         "source": "Status unavailable: {error}",
-        "translation": "الحالة غير متاحة: {error}"
+        "translation": "Status inaccessibilis: {error}"
     },
     "integration.inkscape.inksim_status_update": {
         "source": "Update required ({details})",
-        "translation": "يلزم التحديث ({details})"
+        "translation": "Renovatio requiritur ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Extensio systematis: {path}"
     },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "إضافة المستخدم الحالية (هدف التثبيت/التحديث): {path} | الحالة: {status}"
+        "translation": "Extensio usoris praesens (locus instituendi/renovandi): {path} | Status: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Alia extensio usoris: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
-        "translation": "تثبيت / تحديث إضافات InkSim"
+        "translation": "Extensiones InkSim institue / renova"
     },
     "integration.inkscape.install_extensions_confirm": {
         "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
-        "translation": "توجد بعض الملفات مسبقًا في مجلد إضافات InkSim. قد تحتوي الملفات المحددة للاستبدال على تغييرات أجراها المستخدم. ستُحفظ الملفات الأخرى المدرجة ولن تُحذف أبدًا.\n\nالملفات التي ستُستبدل:\n{replace_files}\n\nالملفات التي ستُحفظ:\n{preserve_files}\n\nهل تريد المتابعة؟"
+        "translation": "Quaedam fasciculi iam in indice extensionum InkSim exstant. Fasciculi substituendi fortasse mutationes ab usuario factas continent. Ceteri fasciculi infra enumerati servabuntur neque umquam delebuntur.\n\nFasciculi substituendi:\n{replace_files}\n\nFasciculi servandi:\n{preserve_files}\n\nPerge?"
     },
     "integration.inkscape.install_extensions_failed": {
         "source": "Could not install InkSim's Inkscape extensions: {error}",
-        "translation": "تعذّر تثبيت إضافات InkSim في Inkscape: {error}"
+        "translation": "Extensiones InkSim pro Inkscape institui non potuerunt: {error}"
     },
     "integration.inkscape.install_extensions_success": {
         "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
-        "translation": "تم تثبيت إضافات InkSim في Inkscape أو تحديثها في {path}. أعد تشغيل Inkscape لتحميلها."
+        "translation": "Extensiones InkSim in {path} institutae aut renovatae sunt. Inkscape iterum incipe ut eas oneretur."
     },
     "integration.inkscape.install_none": {
         "source": "None",
-        "translation": "لا شيء"
+        "translation": "Nulla"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -489,147 +497,147 @@
     },
     "integration.inkscape.not_found": {
         "source": "Inkscape was not found on the system path.",
-        "translation": "ما لقينا Inkscape في مسار النظام."
+        "translation": "Inkscape in via systematis non inventum est."
     },
     "integration.inkscape.preferences_read_failed": {
         "source": "Could not read Inkscape preferences: {error}",
-        "translation": "تعذّرت قراءة تفضيلات Inkscape: {error}"
+        "translation": "Praeferentiae Inkscape legi non potuerunt: {error}"
     },
     "integration.inkscape.preferences_write_failed": {
         "source": "Could not update Inkscape preferences: {error}",
-        "translation": "تعذّر تحديث تفضيلات Inkscape: {error}"
+        "translation": "Praeferentiae Inkscape mutari non potuerunt: {error}"
     },
     "integration.inkscape.probe_failed": {
         "source": "Could not read Inkscape extension directories: {error}",
-        "translation": "تعذّرت قراءة مجلدات إضافات Inkscape: {error}"
+        "translation": "Indices extensionum Inkscape legi non potuerunt: {error}"
     },
     "integration.inkscape.probing": {
         "source": "Waiting for Inkscape to respond…",
-        "translation": "بانتظار استجابة Inkscape…"
+        "translation": "Responsum Inkscape exspectatur…"
     },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
-        "translation": "مفسّر Python: {path}"
+        "translation": "Interpretator Python: {path}"
     },
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
-        "translation": "أعد تشغيل Inkscape لتطبيق مفسّر Python الجديد."
+        "translation": "Inkscape iterum incipe ut novus interpretator Python valeat."
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
-        "translation": "غير محدد"
+        "translation": "non definitus"
     },
     "integration.inkscape.remove_old_extensions": {
         "source": "Remove old InkSim copies",
-        "translation": "إزالة نسخ InkSim القديمة"
+        "translation": "Exemplaria vetera InkSim remove"
     },
     "integration.inkscape.remove_old_extensions_confirm": {
         "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
-        "translation": "سيتم حذف مجلدات إضافات المستخدم المدرجة وكل الملفات الموجودة فيها نهائيًا. لن تتم إزالة هدف التثبيت/التحديث الحالي ولا مجلدات إضافات النظام.\n\n{directories}\n\nهل تريد المتابعة؟"
+        "translation": "Indici usoris enumerati omnesque fasciculi in iis perpetuo delebuntur. Locus institutionis/renovationis praesens et indices extensionum systematis non removebuntur.\n\n{directories}\n\nPerge?"
     },
     "integration.inkscape.remove_old_extensions_failed": {
         "source": "Could not remove the old InkSim extension folder: {error}",
-        "translation": "تعذّرت إزالة مجلد إضافة InkSim القديم: {error}"
+        "translation": "Index vetus extensionum InkSim removeri non potuit: {error}"
     },
     "integration.inkscape.remove_old_extensions_success": {
         "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
-        "translation": "تمت إزالة مجلدات إضافات InkSim القديمة. أعد تشغيل Inkscape لتحديث قائمة الإضافات."
+        "translation": "Indices veteres extensionum InkSim remoti sunt. Inkscape iterum incipe ut indicem extensionum renovet."
     },
     "integration.inkscape.report.active_inkstitch_updated": {
         "source": "Active Ink/Stitch installation updated: {path}",
-        "translation": "تم تحديث تثبيت Ink/Stitch النشط: {path}"
+        "translation": "Institutio Ink/Stitch activa renovata: {path}"
     },
     "integration.inkscape.report.checking": {
         "source": "Checking Inkscape: {path}",
-        "translation": "جارٍ التحقق من Inkscape: {path}"
+        "translation": "Inkscape exploratur: {path}"
     },
     "integration.inkscape.report.config_save_failed": {
         "source": "Could not save the InkSim configuration: {error}",
-        "translation": "تعذّر حفظ إعدادات InkSim: {error}"
+        "translation": "Configuratio InkSim servari non potuit: {error}"
     },
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
-        "translation": "تم حفظ الإعدادات التي تم اكتشافها في إعدادات InkSim."
+        "translation": "Configuratio InkSim ex institutione detecta servata est."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
-        "translation": "تم التحقق من الملف التنفيذي لـ Inkscape: {path}"
+        "translation": "Programma Inkscape exploratum: {path}"
     },
     "integration.inkscape.report.inksim_scan_failed": {
         "source": "Could not inspect Inkscape extension folders: {error}",
-        "translation": "تعذّر فحص مجلدات إضافات InkSim: {error}"
+        "translation": "Indices extensionum Inkscape explorari non potuerunt: {error}"
     },
     "integration.inkscape.report.inkstitch_found": {
         "source": "Ink/Stitch installations found: {count}",
-        "translation": "تثبيتات Ink/Stitch التي تم العثور عليها: {count}"
+        "translation": "Institutiones Ink/Stitch inventae: {count}"
     },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
-        "translation": "ما لقينا أي تثبيت لـ Ink/Stitch."
+        "translation": "Nulla institutio Ink/Stitch inventa est."
     },
     "integration.inkscape.report.interpreter_unchanged": {
         "source": "Python interpreter is already configured: {path}",
-        "translation": "مفسّر Python مُعدّ مسبقًا: {path}"
+        "translation": "Interpretator Python iam configuratus est: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
-        "translation": "تم تحديث مفسّر Python: {path}"
+        "translation": "Interpretator Python renovatus: {path}"
     },
     "integration.inkscape.report.launcher_missing": {
         "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
-        "translation": "ما لقينا المشغّل المطلوب '{command}'؛ لذلك ما تغيّر التفضيل."
+        "translation": "Programma necessarium '{command}' non inventum est; praeferentia immutata est."
     },
     "integration.inkscape.report.not_found": {
         "source": "Inkscape was not found. Choose its executable to inspect the setup.",
-        "translation": "ما لقينا Inkscape. اختر ملفه التنفيذي لفحص الإعدادات."
+        "translation": "Inkscape non inventum est. Elige eius programma ut configurationem explores."
     },
     "integration.inkscape.report.preferences": {
         "source": "Checked Inkscape preferences: {path}",
-        "translation": "تم التحقق من تفضيلات Inkscape: {path}"
+        "translation": "Praeferentiae Inkscape exploratae: {path}"
     },
     "integration.inkscape.report.preferences_error": {
         "source": "Could not check or update the Python interpreter: {error}",
-        "translation": "تعذّر التحقق من مفسّر Python أو تحديثه: {error}"
+        "translation": "Interpretator Python explorari aut mutari non potuit: {error}"
     },
     "integration.inkscape.report.preferences_skipped": {
         "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
-        "translation": "لم يتم التحقق من تفضيل مفسّر Python لأن مجلد إضافات المستخدم غير متاح."
+        "translation": "Praeferentia interpretatoris Python non explorata est, quia index extensionum usoris inaccessibilis est."
     },
     "integration.inkscape.report.probe_failed": {
         "source": "Could not inspect Inkscape: {error}",
-        "translation": "تعذّر فحص Inkscape: {error}"
+        "translation": "Inkscape explorari non potuit: {error}"
     },
     "integration.inkscape.report.restart": {
         "source": "Restart Inkscape to apply the updated interpreter.",
-        "translation": "أعد تشغيل Inkscape لتطبيق مفسّر Python المحدّث."
+        "translation": "Inkscape iterum incipe ut interpretator renovatus valeat."
     },
     "integration.inkscape.report.system_extensions": {
         "source": "System extensions: {path}",
-        "translation": "إضافات النظام: {path}"
+        "translation": "Extensiones systematis: {path}"
     },
     "integration.inkscape.report.timeout": {
         "source": "Inkscape did not respond within {seconds} seconds.",
-        "translation": "ما استجاب Inkscape خلال {seconds} ثانية."
+        "translation": "Inkscape intra {seconds} secundas non respondit."
     },
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
-        "translation": "إضافات المستخدم: {path}"
+        "translation": "Extensiones usoris: {path}"
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
-        "translation": "إصدار Inkscape: {version}"
+        "translation": "Versio Inkscape: {version}"
     },
     "integration.inkscape.report.waiting": {
         "source": "Choose an Inkscape executable to inspect.",
-        "translation": "اختر الملف التنفيذي لـ Inkscape للفحص."
+        "translation": "Elige programma Inkscape ut configurationem explores."
     },
     "integration.inkscape.section.application": {
         "source": "Inkscape application",
-        "translation": "تطبيق Inkscape"
+        "translation": "Programma Inkscape"
     },
     "integration.inkscape.section.extensions": {
         "source": "Extensions",
-        "translation": "الإضافات"
+        "translation": "Extensiones"
     },
     "integration.inkscape.section.inksim": {
         "source": "InkSim",
@@ -641,15 +649,15 @@
     },
     "integration.inkscape.section.report": {
         "source": "Report",
-        "translation": "التقرير"
+        "translation": "Relatio"
     },
     "integration.inkscape.system_extensions": {
         "source": "System extensions: {path}",
-        "translation": "إضافات النظام: {path}"
+        "translation": "Extensiones systematis: {path}"
     },
     "integration.inkscape.timeout": {
         "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
-        "translation": "ما استجاب Inkscape خلال {seconds} ثانية. يمكن أن تكون نسخة أخرى من Inkscape أو إحدى الإضافات تعرقل الاتصال. أغلق نوافذ Inkscape الأخرى أو عطّل الإضافة التي تعرقل الاتصال، ثم حاول مرة ثانية."
+        "translation": "Inkscape intra {seconds} secundas non respondit. Alia Inkscape exemplaria vel extensio communicatio prohibere potest. Claude alia Inkscape exemplaria aut extensionem impedientem destrue, deinde iterum tenta."
     },
     "integration.inkscape.title": {
         "source": "Inkscape",
@@ -657,306 +665,306 @@
     },
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
-        "translation": "إضافات المستخدم: {path}"
+        "translation": "Extensiones usoris: {path}"
     },
     "integration.inkscape.uvr_missing": {
         "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
-        "translation": "ما لقينا المشغّل المطلوب '{command}'. ثبّت أداة uvr بنفسك باستخدام `uv tool install uvr`، ثم شغّل هذا الإعداد مرة ثانية. InkSim ما راح يثبتها."
+        "translation": "Programma necessarium '{command}' non inventum est. Instrue ipse instrumentum uvr per `uv tool install uvr`, deinde hanc configurationem iterum fac. InkSim illud non instituet."
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",
-        "translation": "إصدار Inkscape: {version}"
+        "translation": "Versio Inkscape: {version}"
     },
     "integration.inkscape.version_unavailable": {
         "source": "Unavailable",
-        "translation": "غير متاح"
+        "translation": "Inaccessibilis"
     },
     "integration.inkstitch.command": {
         "source": "Command: {value}",
-        "translation": "الأمر: {value}"
+        "translation": "Imperatum: {value}"
     },
     "integration.inkstitch.interpreter": {
         "source": "Interpreter: {value}",
-        "translation": "مفسّر Python: {value}"
+        "translation": "Interpretator: {value}"
     },
     "integration.inkstitch.location": {
         "source": "Location: {value}",
-        "translation": "الموقع: {value}"
+        "translation": "Locus: {value}"
     },
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
-        "translation": "ما لقينا أي تثبيت لـ Ink/Stitch."
+        "translation": "Nulla institutio Ink/Stitch inventa est."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",
-        "translation": "المسار: {path}"
+        "translation": "Via: {path}"
     },
     "menu.file": {
         "source": "&File",
-        "translation": "ملف"
+        "translation": "&Fasciculus"
     },
     "menu.file.calibrate": {
         "source": "Calibrate display size...",
-        "translation": "معايرة حجم الشاشة..."
+        "translation": "Magnitudinem imaginis in velo calibra..."
     },
     "menu.file.center_needle": {
         "source": "Center needle",
-        "translation": "تمركز الإبرة"
+        "translation": "Acum in centrum pone"
     },
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
-        "translation": "اختيار عارض الغرز..."
+        "translation": "Elige rationem reddendi punctorum..."
     },
     "menu.file.export": {
         "source": "Export",
-        "translation": "تصدير"
+        "translation": "Exporta"
     },
     "menu.file.export.icon": {
         "source": "Icon/Thumbnail...",
-        "translation": "أيقونة/صورة مصغرة..."
+        "translation": "Iconem/vocabulum imaginis..."
     },
     "menu.file.export.shaded_print": {
         "source": "Shaded print...",
-        "translation": "طباعة مظللة..."
+        "translation": "Imprime cum umbris..."
     },
     "menu.file.export.simple_print": {
         "source": "Simple print...",
-        "translation": "طباعة بسيطة..."
+        "translation": "Imprime simpliciter..."
     },
     "menu.file.fit_design": {
         "source": "Fit design to window",
-        "translation": "ملاءمة التصميم مع النافذة"
+        "translation": "Formam fenestrae apta"
     },
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
-        "translation": "عرض نسيجي بواسطة وحدة معالجة الرسوميات"
+        "translation": "Reddere texturatum GPU"
     },
     "menu.file.open": {
         "source": "Open embroidery file",
-        "translation": "فتح ملف تطريز"
+        "translation": "Fasciculum intertexturae acu pictae aperi"
     },
     "menu.file.open_file": {
         "source": "Open...",
-        "translation": "فتح..."
+        "translation": "Aperi..."
     },
     "menu.file.quit_all": {
         "source": "Quit all windows & server",
-        "translation": "إنهاء جميع النوافذ والخادم"
+        "translation": "Omnes fenestras et servitium claude"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
-        "translation": "تدوير يسار 90 درجة"
+        "translation": "90 gradus ad sinistram verte"
     },
     "menu.file.rotate_right": {
         "source": "Rotate right 90 deg",
-        "translation": "تدوير يمين 90 درجة"
+        "translation": "90 gradus ad dextram verte"
     },
     "menu.file.save_as": {
         "source": "Save as embroidery...",
-        "translation": "حفظ كملف تطريز..."
+        "translation": "Ut intertexturam acu pictam serva..."
     },
     "menu.file.show_grid": {
         "source": "Show measurement grid",
-        "translation": "إظهار شبكة القياس"
+        "translation": "Reticulum mensurae ostende"
     },
     "menu.help": {
         "source": "&Help",
-        "translation": "مساعدة"
+        "translation": "&Auxilium"
     },
     "menu.help.about": {
         "source": "About {app_title}",
-        "translation": "حول {app_title}"
+        "translation": "De {app_title}"
     },
     "menu.help.check_updates": {
         "source": "Check for updates",
-        "translation": "التحقق من التحديثات"
+        "translation": "Renovationes quaere"
     },
     "menu.help.cli_options": {
         "source": "Command line options...",
-        "translation": "خيارات سطر الأوامر..."
+        "translation": "Optiones imperatorum..."
     },
     "menu.help.config": {
         "source": "Config",
-        "translation": "الإعدادات"
+        "translation": "Configuratio"
     },
     "menu.help.help": {
         "source": "Help",
-        "translation": "مساعدة"
+        "translation": "Auxilium"
     },
     "menu.help.status": {
         "source": "Status",
-        "translation": "الحالة"
+        "translation": "Status"
     },
     "menu.help.trace_events": {
         "source": "Trace events",
-        "translation": "تتبع الأحداث"
+        "translation": "Eventus investiga"
     },
     "menu.integration": {
         "source": "&Tools",
-        "translation": "&أدوات"
+        "translation": "&Instrumenta"
     },
     "menu.integration.locate_inkscape": {
         "source": "Config",
-        "translation": "إعداد"
+        "translation": "Configura"
     },
     "menu.language": {
         "source": "&Language",
-        "translation": "&اللغة"
+        "translation": "&Lingua"
     },
     "menu.language.system_default": {
         "source": "System default",
-        "translation": "الافتراضي للنظام"
+        "translation": "Lingua systematis"
     },
     "menu.playback": {
         "source": "&Playback",
-        "translation": "تشغيل"
+        "translation": "&Reproductio"
     },
     "menu.playback.next_color": {
         "source": "Next color",
-        "translation": "اللون التالي"
+        "translation": "Color proximus"
     },
     "menu.playback.next_command": {
         "source": "Next command",
-        "translation": "الأمر التالي"
+        "translation": "Imperatum proximum"
     },
     "menu.playback.play_pause": {
         "source": "Play/Pause",
-        "translation": "تشغيل/إيقاف"
+        "translation": "Reproduce/pausa"
     },
     "menu.playback.prev_color": {
         "source": "Prev color",
-        "translation": "اللون السابق"
+        "translation": "Color prior"
     },
     "menu.playback.prev_command": {
         "source": "Prev command",
-        "translation": "الأمر السابق"
+        "translation": "Imperatum prius"
     },
     "menu.view": {
         "source": "&View",
-        "translation": "عرض"
+        "translation": "&Aspectus"
     },
     "menu.view.actual_size": {
         "source": "Actual size (1:1)",
-        "translation": "الحجم الفعلي (1:1)"
+        "translation": "Magnitudo vera (1:1)"
     },
     "menu.view.clear_snap": {
         "source": "Clear saved snap position",
-        "translation": "مسح موضع اللقط المحفوظ"
+        "translation": "Locum captum servatum dele"
     },
     "menu.view.command_list": {
         "source": "Command list",
-        "translation": "قائمة الأوامر"
+        "translation": "Index imperatorum"
     },
     "menu.view.cycle_bg": {
         "source": "Cycle background",
-        "translation": "تبديل الخلفية"
+        "translation": "Fundum commuta"
     },
     "menu.view.fullscreen": {
         "source": "Fullscreen",
-        "translation": "ملء الشاشة"
+        "translation": "Plenus velum"
     },
     "menu.view.save_snap": {
         "source": "Save current snap position",
-        "translation": "حفظ موضع اللقط الحالي"
+        "translation": "Locum captum praesentem serva"
     },
     "menu.view.show_hide_all": {
         "source": "Show/hide all",
-        "translation": "إظهار/إخفاء الكل"
+        "translation": "Omnia ostende/occlude"
     },
     "menu.view.show_needle": {
         "source": "Show needle",
-        "translation": "إظهار الإبرة"
+        "translation": "Acum ostende"
     },
     "menu.view.snap_layout": {
         "source": "Snap window layout",
-        "translation": "لقط تخطيط النافذة"
+        "translation": "Ordinem fenestrarum captum"
     },
     "message.no_file_to_export": {
         "source": "No embroidery file is loaded to export.",
-        "translation": "لا يوجد ملف تطريز محمّل للتصدير."
+        "translation": "Nullus fasciculus intertexturae acu pictae exportandus oneratus est."
     },
     "message.no_file_to_save": {
         "source": "No embroidery file is loaded.",
-        "translation": "لا يوجد ملف تطريز محمّل."
+        "translation": "Nullus fasciculus intertexturae acu pictae servandus oneratus est."
     },
     "message.reload.title": {
         "source": "Reloading",
-        "translation": "إعادة التحميل"
+        "translation": "Rursus oneratur"
     },
     "message.save_error.message": {
         "source": "Failed to save file: {error}",
-        "translation": "فشل حفظ الملف: {error}"
+        "translation": "Fasciculus servari non potuit: {error}"
     },
     "splash.loading": {
         "source": "Loading...",
-        "translation": "جارٍ التحميل..."
+        "translation": "Oneratur..."
     },
     "status.line_settings.reset": {
         "source": "Reset line width and shading factors",
-        "translation": "إعادة تعيين عرض الخط وعوامل التظليل"
+        "translation": "Latitudinem lineae et factores umbrarum restitue"
     },
     "status.line_settings.tooltip": {
         "source": "Click to adjust dark factor, light factor and line width",
-        "translation": "انقر لضبط عامل الغامق، عامل الفاتح، وعرض الخط"
+        "translation": "Clicca ut factorem obscurum, factorem lucidum et latitudinem lineae componas"
     },
     "status.mode.background": {
         "source": "Cycle background: black, white, configured",
-        "translation": "تبديل الخلفية: أسود، أبيض، مُهيأ"
+        "translation": "Fundum commuta: niger, albus, configuratus"
     },
     "status.mode.bottom_view": {
         "source": "Bottom view (draw later stitches under earlier ones)",
-        "translation": "عرض سفلي (رسم الغرز اللاحقة فوق الأقدم)"
+        "translation": "Aspectus inferior (puncta posteriora sub prioribus ducuntur)"
     },
     "status.mode.density": {
         "source": "Toggle stitch density overlay",
-        "translation": "تبديل تراكب كثافة الغرز"
+        "translation": "Superpositionem densitatis punctorum commuta"
     },
     "status.mode.gpu_textured": {
         "source": "Toggle GPU textured rendering",
-        "translation": "تبديل العرض النسيجي بوحدة معالجة الرسوميات"
+        "translation": "Redditionem texturatam GPU commuta"
     },
     "status.mode.jump": {
         "source": "Cycle jump display: off, all, risky only",
-        "translation": "تبديل عرض القفزات: إيقاف، الكل، الخطرة فقط"
+        "translation": "Ostensionem saltus commuta: nulla, omnes, periculosi tantum"
     },
     "status.mode.visibility": {
         "source": "Toggle stitch visibility",
-        "translation": "تبديل رؤية الغرز"
+        "translation": "Visibilitatem punctorum commuta"
     },
     "status.needle.reset": {
         "source": "Reset needle settings",
-        "translation": "إعادة تعيين إعدادات الإبرة"
+        "translation": "Optiones acus restitue"
     },
     "status.needle.settings": {
         "source": "Needle crosshair settings",
-        "translation": "إعدادات تقاطع الإبرة"
+        "translation": "Optiones crucis acus"
     },
     "status.slider.color": {
         "source": "Color…",
-        "translation": "لون..."
+        "translation": "Color…"
     },
     "status.slider.dark_factor": {
         "source": "DF",
-        "translation": "DF"
+        "translation": "FO"
     },
     "status.slider.fullscreen": {
         "source": "Full screen",
-        "translation": "ملء الشاشة"
+        "translation": "Plenus velum"
     },
     "status.slider.light_factor": {
         "source": "LF",
-        "translation": "LF"
+        "translation": "FL"
     },
     "status.slider.line_width": {
         "source": "LW",
-        "translation": "LW"
+        "translation": "LL"
     },
     "status.slider.radius": {
         "source": "Radius",
-        "translation": "نصف القطر"
+        "translation": "Radius"
     },
     "status.slider.width": {
         "source": "Width",
-        "translation": "العرض"
+        "translation": "Latitudo"
     }
 }
