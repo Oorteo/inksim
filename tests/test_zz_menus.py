@@ -46,15 +46,23 @@ def _all_frame_actions(window):
     return unique
 
 
+def test_file_menu_has_only_one_open_action(qtbot, monkeypatch):
+    monkeypatch.setattr(MainWindow, "_maybe_auto_check_updates", lambda self: None)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    open_shortcuts = [
+        action.shortcut().toString()
+        for action in _all_frame_actions(window)
+        if action.shortcut().toString() in {"Ctrl+O", "Ctrl+Shift+O"}
+    ]
+
+    assert open_shortcuts == ["Ctrl+O"]
+    window.close()
+
+
 def _patch_blocking_dialogs(monkeypatch):
     """Replace modal dialogs so the test does not block on user interaction."""
-    from inksim.gui.dialogs import EmbroideryOpenDialog as RealOpenDialog
-
-    class NoopOpenDialog(RealOpenDialog):
-        def exec(self):
-            return 0  # QDialog.Rejected
-
-    monkeypatch.setattr("inksim.gui.frame.EmbroideryOpenDialog", NoopOpenDialog)
 
     class NoopBrowserDialog:
         def __init__(self, *args, **kwargs):
