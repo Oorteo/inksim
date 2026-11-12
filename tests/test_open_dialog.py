@@ -52,7 +52,53 @@ def test_lists_supported_files_and_folders(qtbot, tmp_path, monkeypatch):
     ]
     assert "design.svg" in labels
     assert "subfolder" in labels
+    assert ".." in labels
     assert "notes.txt" not in labels
+    dialog.reject()
+
+
+def test_browser_dialog_navigates_directories_with_arrow_keys(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import Qt
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    subdirectory = tmp_path / "designs"
+    subdirectory.mkdir()
+    (subdirectory / "nested.svg").write_text(_SVG, encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    folder_row = next(
+        row
+        for row in range(dialog.file_list.count())
+        if dialog.file_list.item(row).text() == "designs/"
+    )
+    dialog.file_list.setCurrentRow(folder_row)
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Return)
+    assert dialog.current_directory == tmp_path
+
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
+    assert dialog.current_directory == subdirectory
+    assert dialog.file_list.item(dialog.file_list.currentRow()).text() == ".."
+    parent_row = next(
+        row for row in range(dialog.file_list.count()) if dialog.file_list.item(row).text() == ".."
+    )
+    assert dialog.file_list.currentRow() == parent_row
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
+    assert dialog.current_directory == tmp_path
+    assert dialog.file_list.item(dialog.file_list.currentRow()).text() == "designs/"
+
+    folder_row = next(
+        row
+        for row in range(dialog.file_list.count())
+        if dialog.file_list.item(row).text() == "designs/"
+    )
+    dialog.file_list.setCurrentRow(folder_row)
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
+    assert dialog.current_directory == subdirectory
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Left)
+    assert dialog.current_directory == tmp_path
     dialog.reject()
 
 
@@ -74,7 +120,7 @@ def test_filter_limits_files_to_svg(qtbot, tmp_path, monkeypatch):
     labels = [
         dialog.file_list.item(row).text().rstrip("/") for row in range(dialog.file_list.count())
     ]
-    assert labels == ["design.svg"]
+    assert labels == ["..", "design.svg"]
     dialog.reject()
 
 

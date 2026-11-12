@@ -20,6 +20,8 @@ from typing import Any
 import numpy as np
 from filelock import Timeout as FileLockTimeout
 from PySide6.QtCore import (
+    QEvent,
+    QObject,
     QPoint,
     QPointF,
     QProcess,
@@ -253,6 +255,7 @@ class OpenBrowserDialog(QDialog):
         self.document_path: Path | None = None
         self.result_action: str | None = None
         self.current_directory = Path(initial_directory or Path.cwd()).resolve()
+        self._directory_return_path: Path | None = None
         self.initial_file: Path | None = Path(selected_file).resolve() if selected_file else None
         self.extensions = get_supported_input_extensions() | {"svg"}
         self.config = Config()
@@ -350,6 +353,7 @@ class OpenBrowserDialog(QDialog):
         root.addLayout(search_row)
 
         self.file_list = QListWidget(self)
+        self.file_list.installEventFilter(self)
         self.file_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.file_list.setIconSize(self.file_list.iconSize().expandedTo(QSize(22, 22)))
         self.file_list.currentItemChanged.connect(self._on_current_item_changed)
@@ -572,6 +576,8 @@ class OpenBrowserDialog(QDialog):
         directories = sorted(
             (path for path in entries if path.is_dir()), key=lambda path: path.name.casefold()
         )
+        parent_directory = self.current_directory.parent
+        parent_entry = [parent_directory] if parent_directory != self.current_directory else []
         files = sorted(
             (
                 path
@@ -580,7 +586,7 @@ class OpenBrowserDialog(QDialog):
             ),
             key=lambda path: path.name.casefold(),
         )
-        self._all_paths = [*directories, *files]
+        self._all_paths = [*parent_entry, *directories, *files]
         self._refresh_directory_combo(directories)
         self._apply_filter()
 
@@ -598,9 +604,11 @@ class OpenBrowserDialog(QDialog):
         selected_filter = self.filter_combo.currentData() or "all"
         current_path = self._current_path()
         visible: list[Path] = []
+        parent_directory = self.current_directory.parent
         for path in self._all_paths:
             kind = self._kind_for_path(path)
-            if query and query not in path.name.casefold():
+            is_parent_entry = path == parent_directory and path != self.current_directory
+            if query and query not in path.name.casefold() and not is_parent_entry:
                 continue
             if kind == KIND_DIRECTORY:
                 visible.append(path)
@@ -615,7 +623,13 @@ class OpenBrowserDialog(QDialog):
         for path in visible:
             kind = self._kind_for_path(path)
             icon = self._folder_icon if kind == KIND_DIRECTORY else self._file_icon
-            label = f"{path.name}/" if kind == KIND_DIRECTORY else path.name
+            label = (
+                ".."
+                if path == parent_directory and path != self.current_directory
+                else f"{path.name}/"
+                if kind == KIND_DIRECTORY
+                else path.name
+            )
             item = QListWidgetItem(icon, label)
             item.setData(Qt.ItemDataRole.UserRole, str(path))
             item.setToolTip(_sanitize_path_text(str(path)))
@@ -631,7 +645,9 @@ class OpenBrowserDialog(QDialog):
             return
 
         target_row = 0
-        if current_path in visible:
+        if self._directory_return_path in visible:
+            target_row = visible.index(self._directory_return_path)
+        elif current_path in visible:
             target_row = visible.index(current_path)
         elif self.initial_file is not None and self.initial_file in visible:
             target_row = visible.index(self.initial_file)
@@ -640,6 +656,7 @@ class OpenBrowserDialog(QDialog):
                 if self._kind_for_path(path) != KIND_DIRECTORY:
                     target_row = index
                     break
+        self._directory_return_path = None
         self.file_list.setCurrentRow(target_row)
 
     def _on_recent_selected(self, index: int) -> None:
@@ -662,6 +679,7 @@ class OpenBrowserDialog(QDialog):
     def set_directory(self, directory: str | Path) -> None:
         path = Path(_unsanitize_path(str(directory))).expanduser().resolve()
         if path.is_dir() and path != self.current_directory:
+            self._directory_return_path = self.current_directory
             self.current_directory = path
             self.initial_file = None
             self.refresh_files()
@@ -772,6 +790,18 @@ class OpenBrowserDialog(QDialog):
             self.set_directory(path)
             return
         self._open_selected()
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if watched is self.file_list and event.type() == QEvent.Type.KeyPress:
+            if event.key() == Qt.Key.Key_Left:
+                self.go_to_parent_directory()
+                return True
+            if event.key() == Qt.Key.Key_Right:
+                path = self._current_path()
+                if path is not None and self._kind_for_path(path) == KIND_DIRECTORY:
+                    self.set_directory(path)
+                    return True
+        return super().eventFilter(watched, event)
 
     def _show_message(self, message: str) -> None:
         self.preview_controls.setVisible(False)

@@ -8,7 +8,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import QEvent, QObject, Qt, QTimer
 from PySide6.QtGui import QColor, QPainter, QPaintEvent, QPen, QResizeEvent
 from PySide6.QtWidgets import (
     QComboBox,
@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QListWidget,
+    QListWidgetItem,
     QPushButton,
     QSlider,
     QSplitter,
@@ -34,6 +35,9 @@ from .viewer import EmbroideryViewerWidget, density_debug
 
 if TYPE_CHECKING:
     pass
+
+
+_PREVIEW_DEBOUNCE_MS = 250
 
 
 class CalibrationDialog(QDialog):
@@ -156,9 +160,14 @@ class EmbroideryOpenDialog(QDialog):
         self.resize(1100, 720)
         self.selected_path: Path | None = None
         self.current_directory = Path(initial_directory or Path.cwd()).resolve()
+        self._directory_return_path: Path | None = None
         self.initial_file: Path | None = Path(selected_file).resolve() if selected_file else None
         self.extensions = get_supported_input_extensions()
         self.file_paths: list[Path] = []
+        self._preview_timer = QTimer(self)
+        self._preview_timer.setSingleShot(True)
+        self._preview_timer.setInterval(_PREVIEW_DEBOUNCE_MS)
+        self._preview_timer.timeout.connect(self._load_selected_preview)
         root_layout = QVBoxLayout(self)
         directory_layout = QHBoxLayout()
         self.directory_text = QComboBox(self)
@@ -179,6 +188,7 @@ class EmbroideryOpenDialog(QDialog):
         recent_layout.addWidget(self.recent_combo, 1)
         root_layout.addLayout(recent_layout)
         self.file_list = QListWidget(self)
+        self.file_list.installEventFilter(self)
         preview_container = QWidget(self)
         self.preview_container = preview_container
         preview_layout = QVBoxLayout()
@@ -234,7 +244,7 @@ class EmbroideryOpenDialog(QDialog):
         button_layout.addWidget(ok_button)
         root_layout.addLayout(button_layout)
         self.file_list.currentRowChanged.connect(self._on_row_changed)
-        self.file_list.itemDoubleClicked.connect(self.open_selected)
+        self.file_list.itemDoubleClicked.connect(self._on_item_double_clicked)
         line_edit = self.directory_text.lineEdit()
         if line_edit is not None:
             line_edit.returnPressed.connect(self.change_directory)
@@ -278,6 +288,7 @@ class EmbroideryOpenDialog(QDialog):
 
     def done(self, result: int) -> None:
         """Release the preview's GL objects before the dialog is hidden."""
+        self._preview_timer.stop()
         self.preview._gl_widget.cleanup()
         super().done(result)
 
@@ -293,6 +304,9 @@ class EmbroideryOpenDialog(QDialog):
             (path for path in self.current_directory.iterdir() if path.is_dir()),
             key=lambda path: path.name.lower(),
         )
+        parent_directory = self.current_directory.parent
+        directory_entries = [parent_directory] if parent_directory != self.current_directory else []
+        directory_entries.extend(directories)
         self.directory_text.blockSignals(True)
         self.directory_text.clear()
         self.directory_text.addItems(
@@ -311,16 +325,36 @@ class EmbroideryOpenDialog(QDialog):
             ),
             key=lambda path: path.name.lower(),
         )
-        self.file_paths = files
+        self.file_paths = [*directory_entries, *files]
         self.file_list.clear()
-        self.file_list.addItems([path.name for path in files])
-        self._resize_file_list(files)
+        self.file_list.addItems(
+            [
+                ".."
+                if path == parent_directory and path.is_dir()
+                else f"{path.name}/"
+                if path.is_dir()
+                else path.name
+                for path in self.file_paths
+            ]
+        )
+        self._resize_file_list(self.file_paths)
         self.selected_path = None
-        if files:
+        return_index = (
+            self.file_paths.index(self._directory_return_path)
+            if self._directory_return_path in self.file_paths
+            else None
+        )
+        self._directory_return_path = None
+        if return_index is not None:
+            self.file_list.setCurrentRow(return_index)
+        elif files:
             selected_index = next(
-                (index for index, path in enumerate(files) if path == self.initial_file), 0
+                (index for index, path in enumerate(self.file_paths) if path == self.initial_file),
+                self.file_paths.index(files[0]),
             )
             self.file_list.setCurrentRow(selected_index)
+        elif self.file_paths:
+            self.file_list.setCurrentRow(0)
 
     def _resize_file_list(self, files: list[Path]) -> None:
         widest = max(
@@ -330,18 +364,55 @@ class EmbroideryOpenDialog(QDialog):
 
     def _on_row_changed(self, row: int) -> None:
         if row < 0 or row >= len(self.file_paths):
+            self._preview_timer.stop()
             return
-        self.selected_path = self.file_paths[row]
+        path = self.file_paths[row]
+        if path.is_dir():
+            self._preview_timer.stop()
+            self.selected_path = None
+            return
+        self.selected_path = path
         density_debug(f"dialog row changed row={row} path={self.selected_path!s}")
+        self._preview_timer.start()
+
+    def _on_item_double_clicked(self, item: QListWidgetItem) -> None:
+        row = self.file_list.row(item)
+        if row < 0 or row >= len(self.file_paths):
+            return
+        path = self.file_paths[row]
+        if path.is_dir():
+            self.set_directory(path)
+        else:
+            self.open_selected()
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if watched is self.file_list and event.type() == QEvent.Type.KeyPress:
+            if event.key() == Qt.Key.Key_Left:
+                self.go_to_parent_directory()
+                return True
+            if event.key() == Qt.Key.Key_Right:
+                row = self.file_list.currentRow()
+                if 0 <= row < len(self.file_paths) and self.file_paths[row].is_dir():
+                    self.set_directory(self.file_paths[row])
+                    return True
+        return super().eventFilter(watched, event)
+
+    def _load_selected_preview(self) -> None:
+        row = self.file_list.currentRow()
+        if row < 0 or row >= len(self.file_paths):
+            return
+        path = self.file_paths[row]
+        if path != self.selected_path:
+            return
         started_at = time.perf_counter()
         loaded = self.preview.load_design(
-            str(self.selected_path),
+            str(path),
             fit_to_screen=True,
             precompute_density=False,
             show_error_dialog=False,
         )
         if not loaded:
-            density_debug(f"dialog preview load failed row={row} path={self.selected_path!s}")
+            density_debug(f"dialog preview load failed row={row} path={path!s}")
         self.preview_error_label.setVisible(not loaded)
         if not loaded:
             self.preview_error_overlay.raise_()
@@ -364,9 +435,10 @@ class EmbroideryOpenDialog(QDialog):
     def change_directory(self) -> None:
         self.set_directory(self.directory_text.currentText())
 
-    def set_directory(self, directory: str) -> None:
+    def set_directory(self, directory: str | Path) -> None:
         path = Path(directory).expanduser().resolve()
         if path.is_dir() and path != self.current_directory:
+            self._directory_return_path = self.current_directory
             self.current_directory = path
             self.initial_file = None
             self.refresh_files()
