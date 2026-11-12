@@ -261,6 +261,12 @@ class InkSimServer(QObject):
             schedule_inkscape_extension_check()
             QTimer.singleShot(0, window.open_browser_dialog)
             return {"ok": True, "index": self.windows.index(window)}
+        selected_path = Path(path)
+        if selected_path.suffix.lower() == ".svg" and selected_path.is_file():
+            window.open_browser_dialog(selected_file=selected_path.resolve())
+            window.focus_window()
+            schedule_inkscape_extension_check()
+            return {"ok": True, "index": self.windows.index(window)}
         autoplay = bool(request.get("autoplay"))
         if not window.open_file(
             path,

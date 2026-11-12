@@ -20,6 +20,7 @@ class FakeWindow(QObject):
         super().__init__()
         self.document_path = None
         self.open_file_args = None
+        self.browser_dialog_args = None
         self.command_line_args = None
         self.inksim_launcher = None
 
@@ -34,6 +35,12 @@ class FakeWindow(QObject):
 
     def focus_window(self):
         pass
+
+    def open_browser_dialog(self, selected_file=None, initial_directory=None):
+        self.browser_dialog_args = {
+            "selected_file": selected_file,
+            "initial_directory": initial_directory,
+        }
 
     def open_file(self, path, delete_after_load=False, autoplay=False, temporary_input=False):
         self.open_file_args = {
@@ -101,6 +108,28 @@ def test_open_forwards_temporary_input_ownership(qapp, tmp_path):
         "autoplay": False,
         "temporary_input": True,
     }
+
+
+def test_open_routes_svg_to_browser_dialog(qapp, tmp_path):
+    server, created = _server(qapp)
+    input_path = tmp_path / "design.svg"
+    input_path.write_text("<svg/>", encoding="utf-8")
+
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+        }
+    )
+
+    assert response["ok"] is True
+    assert created[0].browser_dialog_args == {
+        "selected_file": input_path.resolve(),
+        "initial_directory": None,
+    }
+    assert created[0].open_file_args is None
 
 
 def test_open_forwards_command_line_to_window(qapp):
