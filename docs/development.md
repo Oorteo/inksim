@@ -179,6 +179,9 @@ uv run python scripts/i18n/010_manage_locales.py translate-all --tier 2
 Copilot is the default provider. To use Ollama instead, pass
 `--provider ollama`; `--model` selects a specific model. Both translation
 commands accept `--dry-run` to preview prompts without calling a model.
+When using Copilot, `translate-all` reuses one client and starts a separate
+session for each locale, keeping translation context isolated without reconnecting
+for every language.
 
 ### Running the application in another language
 
@@ -337,7 +340,7 @@ test fixtures, or pytest dependencies.
 
 Releases are cut from Git tags. The `Release wheel` workflow builds and tests
 the project whenever a `v*` tag is pushed, attaches the wheel and the source
-distribution to a GitHub release, and publishes it. Artifacts uploaded by the
+distribution to a GitHub release. It does not publish to PyPI. Artifacts uploaded by the
 `PR check` workflow are not releases: they require a GitHub login and expire
 after a few days, so they are only meant for CI verification.
 
@@ -380,6 +383,11 @@ install a candidate directly from the release page:
 ```bash
 pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksim-0.5.4rc1-py3-none-any.whl
 ```
+
+Pushing the `v<version>-rc.<number>` tag starts the GitHub Actions `Release
+wheel` workflow. It runs the test suite, builds the wheel and source
+distribution, and attaches them to a GitHub pre-release marked as not latest.
+This does not upload anything to PyPI.
 
 The PyPI build script can also build from an RC tag for local inspection, but
 the upload script rejects every pre-release. RCs are distributed through the

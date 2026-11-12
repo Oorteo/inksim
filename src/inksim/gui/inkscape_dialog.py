@@ -708,12 +708,17 @@ class InkscapeIntegrationDialog(QDialog):
             is_current_target = installation.user_install and installation.path == current_target
             if is_current_target:
                 continue
-            key = (
-                "integration.inkscape.inksim_user_other"
-                if installation.user_install
-                else "integration.inkscape.inksim_system"
-            )
-            lines.append(_(key).format(path=_sanitize_path_text(str(installation.path))))
+            if installation.user_install:
+                label = _(
+                    "integration.inkscape.inksim_user_other",
+                    "Other user extension: {path}",
+                )
+            else:
+                label = _(
+                    "integration.inkscape.inksim_system",
+                    "System extension: {path}",
+                )
+            lines.append(label.format(path=_sanitize_path_text(str(installation.path))))
         self.inksim_extensions_list.setPlainText(
             "\n".join(lines) if lines else _("integration.inkscape.inksim_none")
         )
