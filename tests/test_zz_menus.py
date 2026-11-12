@@ -148,10 +148,10 @@ def test_menu_mnemonics_are_omitted_for_other_locales(qtbot, monkeypatch):
     menu_labels = [action.text() for action in window.menuBar().actions()]
     plain_labels = [label.replace("&", "") for label in menu_labels]
 
-    assert "Tools" in plain_labels
+    assert "Outils" in plain_labels
     assert "Langue" in plain_labels
     assert all(
-        "&" not in label for label in menu_labels if label.replace("&", "") in {"Tools", "Langue"}
+        "&" not in label for label in menu_labels if label.replace("&", "") in {"Outils", "Langue"}
     )
     window.close()
 

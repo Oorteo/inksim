@@ -219,7 +219,7 @@ def test_svg_preview_mouse_wheel_zoom_and_drag_pan(qtbot, tmp_path, monkeypatch)
             Qt.MouseButton.NoButton,
         )
     )
-    assert canvas.pan.x() == start_pan.x() + 20
+    assert abs(canvas.pan.x() - (start_pan.x() + 20)) < 1e-6
     assert abs(canvas.pan.y() - (start_pan.y() + 30)) < 1e-6
 
     dialog.fit_button.click()

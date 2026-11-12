@@ -41,7 +41,7 @@ TRANSLATE = Path(__file__).with_suffix("").parent / "_translate.py"
 
 
 def _translation_command(
-    code: str,
+    codes: list[str],
     provider: str,
     model: str | None,
     dry_run: bool,
@@ -50,7 +50,7 @@ def _translation_command(
         sys.executable,
         str(TRANSLATE),
         "--lang",
-        code,
+        *codes,
         "--provider",
         provider,
     ]
@@ -84,29 +84,39 @@ def _count_missing(code: str, en_data: dict[str, Any]) -> int:
     return sum(1 for msg_id in message_ids if msg_id not in target)
 
 
-def _count_untranslated(code: str, en_data: dict[str, Any]) -> int:
+def _count_needs_update(code: str, en_data: dict[str, Any]) -> int:
     if code == "en":
         return 0
     message_ids = [key for key in en_data if not key.startswith("_")]
     target = load_catalog(LOCALES_DIR / f"{code}.json")
-    return sum(
-        1
-        for msg_id in message_ids
-        if msg_id in target
-        and (
-            not isinstance(target[msg_id], dict)
-            or not target[msg_id].get("translation")
-            or target[msg_id]["translation"] == msg_id
+
+    def needs_update(msg_id: str) -> bool:
+        target_entry = target[msg_id]
+        if isinstance(target_entry, dict):
+            target_source = target_entry.get("source")
+            translation = target_entry.get("translation")
+        elif isinstance(target_entry, str):
+            target_source = translation = target_entry
+        else:
+            return True
+
+        english_entry = en_data[msg_id]
+        english_source = (
+            english_entry.get("source", msg_id)
+            if isinstance(english_entry, dict)
+            else english_entry
         )
-    )
+        return not translation or translation == msg_id or target_source != english_source
+
+    return sum(1 for msg_id in message_ids if msg_id in target and needs_update(msg_id))
 
 
-def _status(code: str, exists: bool, missing: int, untranslated: int) -> str:
+def _status(code: str, exists: bool, missing: int, needs_update: int) -> str:
     if code == "en":
         return "source"
     if not exists:
         return "missing"
-    return "ready" if missing == 0 and untranslated == 0 else "incomplete"
+    return "ready" if missing == 0 and needs_update == 0 else "incomplete"
 
 
 def cmd_list(argv: list[str] | None = None) -> int:
@@ -120,7 +130,7 @@ def cmd_list(argv: list[str] | None = None) -> int:
     en_data = load_catalog(en_path)
     en_count = sum(1 for key in en_data if not key.startswith("_"))
 
-    print(f"{'code':<10} {'tier':<5} {'status':<12} {'missing':<8} {'untranslated':<14} name")
+    print(f"{'code':<10} {'tier':<5} {'status':<12} {'missing':<8} {'needs update':<14} name")
     print("-" * 78)
     for entry in roadmap:
         if args.tier is not None and entry["tier"] > args.tier:
@@ -129,13 +139,13 @@ def cmd_list(argv: list[str] | None = None) -> int:
         path = LOCALES_DIR / f"{code}.json"
         exists = path.exists()
         missing = _count_missing(code, en_data)
-        untranslated = _count_untranslated(code, en_data)
-        status = _status(code, exists, missing, untranslated)
+        needs_update = _count_needs_update(code, en_data)
+        status = _status(code, exists, missing, needs_update)
         missing_str = "-" if code == "en" else str(missing)
-        untranslated_str = "-" if code == "en" else str(untranslated)
+        needs_update_str = "-" if code == "en" else str(needs_update)
         print(
             f"{code:<10} {entry['tier']:<5} {status:<12} {missing_str:<8} "
-            f"{untranslated_str:<14} {entry['name']}"
+            f"{needs_update_str:<14} {entry['name']}"
         )
     print(f"\nSource catalog 'en' has {en_count} message(s).")
     return 0
@@ -225,7 +235,7 @@ def cmd_translate(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv or [])
 
     return subprocess.run(
-        _translation_command(args.code, args.provider, args.model, args.dry_run),
+        _translation_command([args.code], args.provider, args.model, args.dry_run),
         check=False,
     ).returncode
 
@@ -248,19 +258,23 @@ def cmd_translate_all(argv: list[str] | None = None) -> int:
 
     roadmap = load_roadmap()
     failures = 0
+    codes = []
     for entry in roadmap:
         code = entry["code"]
         if code == "en":
             continue
         if entry["tier"] > args.tier:
             continue
-        print(f"\n=== {code} ({entry['name']}) ===")
+        print(f"\n=== {code} ({entry['name']}) ===", flush=True)
         if not (LOCALES_DIR / f"{code}.json").exists():
             if cmd_add([code]) != 0:
                 failures += 1
                 continue
+        codes.append(code)
+
+    if codes:
         rc = subprocess.run(
-            _translation_command(code, args.provider, args.model, args.dry_run),
+            _translation_command(codes, args.provider, args.model, args.dry_run),
             check=False,
         ).returncode
         if rc != 0:

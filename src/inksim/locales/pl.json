@@ -172,8 +172,8 @@
         "translation": "Szczegóły błędu znajdziesz w pliku output.err."
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Przekroczono limit czasu eksportu CSV z Ink/Stitch."
+        "source": "Stitch preview timed out.",
+        "translation": "Przekroczenie limitu czasu podglądu ściegów."
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "Do edycji plików SVG wymagany jest Inkscape."
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "Do wyświetlenia podglądu SVG wymagana jest skonfigurowana, aktywna instalacja Ink/Stitch."
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Wymagana jest skonfigurowana instalacja Ink/Stitch i program uruchamiający Python."
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "Podgląd"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "Wygeneruj dane ściegów z tego pliku SVG za pomocą aktywnej instalacji Ink/Stitch."
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Wygeneruj dane ściegów z tego pliku SVG za pomocą Inkscape/Ink/Stitch."
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "Wymagana aktualizacja ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Rozszerzenie systemowe: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "Rozszerzenie bieżącego użytkownika (cel instalacji/aktualizacji): {path} | Stan: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Rozszerzenie innego użytkownika: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
