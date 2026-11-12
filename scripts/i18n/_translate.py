@@ -25,9 +25,11 @@ import json
 import os
 import subprocess
 import sys
+import time
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, TypeVar
 
 ROOT = Path(__file__).resolve().parents[2]
 LOCALES_DIR = ROOT / "src" / "inksim" / "locales"
@@ -35,6 +37,10 @@ EN_CATALOG = LOCALES_DIR / "en.json"
 DEFAULT_PROVIDER = "copilot"
 DEFAULT_COPILOT_MODEL = "GPT-6 Luna"
 DEFAULT_OLLAMA_MODEL = "deepseek-v4-flash:cloud"
+COPILOT_REQUEST_TIMEOUT_SECONDS = 300
+COPILOT_PROGRESS_INTERVAL_SECONDS = 15
+
+_T = TypeVar("_T")
 
 
 @dataclass
@@ -45,6 +51,27 @@ class TranslationJob:
     target_messages: dict[str, dict[str, str]]
     work: dict[str, str]
     prompt: str
+
+
+async def _await_with_progress(
+    awaitable: Awaitable[_T],
+    progress_message: str,
+) -> tuple[_T, float]:
+    task = asyncio.ensure_future(awaitable)
+    started_at = time.monotonic()
+    while not task.done():
+        completed, _ = await asyncio.wait(
+            {task},
+            timeout=COPILOT_PROGRESS_INTERVAL_SECONDS,
+        )
+        if not completed:
+            elapsed = time.monotonic() - started_at
+            print(
+                f"{progress_message} Still waiting ({elapsed:.0f}s elapsed; "
+                f"request timeout is {COPILOT_REQUEST_TIMEOUT_SECONDS}s).",
+                flush=True,
+            )
+    return await task, time.monotonic() - started_at
 
 
 def load_catalog(path: Path) -> tuple[dict[str, Any], dict[str, dict[str, str]]]:
@@ -117,7 +144,9 @@ def parse_copilot_response(raw: str, model: str) -> dict[str, str]:
 
 
 def call_copilot_batch(
-    prompts: dict[str, str], model_name: str
+    prompts: dict[str, str],
+    model_name: str,
+    on_translation: Callable[[str, dict[str, str]], None] | None = None,
 ) -> tuple[dict[str, dict[str, str]], dict[str, str]]:
     """Translate locale prompts with one client and an isolated session per locale."""
     try:
@@ -129,9 +158,20 @@ def call_copilot_batch(
             "Install it with 'uv sync --group dev'."
         ) from ex
 
-    async def request_translation() -> dict[str, str]:
+    if not prompts:
+        return {}, {}
+
+    async def request_translation() -> tuple[dict[str, dict[str, str]], dict[str, str]]:
+        print(
+            f"Connecting to Copilot and loading model '{model_name}' "
+            f"for {len(prompts)} locale(s)...",
+            flush=True,
+        )
         async with CopilotClient() as client:
-            models = await client.list_models()
+            models, _ = await _await_with_progress(
+                client.list_models(),
+                "Loading available Copilot models.",
+            )
             model = next(
                 (
                     item
@@ -146,23 +186,62 @@ def call_copilot_batch(
                     f"Copilot model '{model_name}' is unavailable. Available models: {available}"
                 )
 
+            print(
+                f"Copilot is ready; translating {len(prompts)} locale(s) with {model.name}.",
+                flush=True,
+            )
             translations: dict[str, dict[str, str]] = {}
             failures: dict[str, str] = {}
-            for locale, prompt in prompts.items():
+            total_elapsed = 0.0
+            total = len(prompts)
+            for index, (locale, prompt) in enumerate(prompts.items(), start=1):
+                print(
+                    f"[{index}/{total}] Starting Copilot translation for {locale}.",
+                    flush=True,
+                )
+                started_at = time.monotonic()
                 try:
                     async with await client.create_session(
                         model=model.id,
                         available_tools=[],
                     ) as session:
-                        response = await session.send_and_wait(prompt, timeout=300)
+                        response, _ = await _await_with_progress(
+                            session.send_and_wait(
+                                prompt,
+                                timeout=COPILOT_REQUEST_TIMEOUT_SECONDS,
+                            ),
+                            f"[{index}/{total}] Waiting for Copilot response for {locale}.",
+                        )
 
                     if response is None or not isinstance(response.data, AssistantMessageData):
                         raise RuntimeError(
                             f"Copilot model '{model_name}' returned no assistant message"
                         )
                     translations[locale] = parse_copilot_response(response.data.content, model_name)
+                    if on_translation is not None:
+                        on_translation(locale, translations[locale])
                 except Exception as ex:
                     failures[locale] = str(ex)
+                    elapsed = time.monotonic() - started_at
+                    total_elapsed += elapsed
+                    remaining = (total_elapsed / index) * (total - index)
+                    print(
+                        f"[{index}/{total}] Copilot translation for {locale} failed "
+                        f"after {elapsed:.1f}s: {ex}. "
+                        f"Estimated remaining: {remaining / 60:.1f} min.",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                    continue
+
+                elapsed = time.monotonic() - started_at
+                total_elapsed += elapsed
+                remaining = (total_elapsed / index) * (total - index)
+                print(
+                    f"[{index}/{total}] Completed {locale} in {elapsed:.1f}s. "
+                    f"Estimated remaining: {remaining / 60:.1f} min.",
+                    flush=True,
+                )
             return translations, failures
 
     return asyncio.run(request_translation())
@@ -251,10 +330,9 @@ def translate_locales(
         target_meta, target_messages = load_catalog(target_path)
         work = find_translation_work(en_messages, target_messages)
         if not work:
-            print(f"No missing or stale translations for {locale}.")
+            print(f"No missing or stale translations for {locale}.", flush=True)
             continue
 
-        print(f"Translating {len(work)} string(s) for {locale} using {provider} ({model})...")
         language_name = target_meta.get("name", locale)
         jobs.append(
             TranslationJob(
@@ -269,48 +347,78 @@ def translate_locales(
 
     if dry_run:
         for job in jobs:
+            print(
+                f"Would translate {len(job.work)} string(s) for {job.locale} "
+                f"using {provider} ({model})."
+            )
             print(f"Dry run; would send this prompt for {job.locale}:")
             print(job.prompt)
         return 0
     if not jobs:
         return 0
 
-    translations: dict[str, dict[str, str]] = {}
-    failures: dict[str, str] = {}
-    if provider == "copilot":
-        translations, failures = call_copilot_batch({job.locale: job.prompt for job in jobs}, model)
-    else:
-        for job in jobs:
-            try:
-                translations[job.locale] = call_ollama(job.prompt, model)
-            except Exception as ex:
-                failures[job.locale] = str(ex)
+    total_work = sum(len(job.work) for job in jobs)
+    print(
+        f"Prepared {len(jobs)} locale(s) and {total_work} string(s) using {provider} ({model}).",
+        flush=True,
+    )
 
+    jobs_by_locale = {job.locale: job for job in jobs}
     total_translated = 0
-    for job in jobs:
-        if job.locale in failures:
-            print(
-                f"Translation failed for {job.locale}: {failures[job.locale]}",
-                file=sys.stderr,
-            )
-            continue
 
-        translated = translations[job.locale]
+    def save_translation(locale: str, translated: dict[str, str]) -> None:
+        nonlocal total_translated
+        job = jobs_by_locale[locale]
+        saved = 0
         for msg_id, en_source in job.work.items():
             translation = translated.get(msg_id, "")
             if not translation.strip():
-                print(f"Warning: model returned empty translation for {msg_id}")
+                print(f"Warning: model returned empty translation for {msg_id}", flush=True)
                 continue
             job.target_messages[msg_id] = {
                 "source": en_source,
                 "translation": translation,
             }
-            total_translated += 1
+            saved += 1
 
         job.target_meta.setdefault("language", job.locale)
         job.target_meta.setdefault("name", job.locale)
         save_catalog(job.target_path, job.target_meta, job.target_messages)
-        print(f"Updated {job.target_path} with {len(translated)} translation(s).")
+        total_translated += saved
+        print(f"Updated {job.target_path} with {saved} translation(s).", flush=True)
+
+    failures: dict[str, str] = {}
+    if provider == "copilot":
+        _, failures = call_copilot_batch(
+            {job.locale: job.prompt for job in jobs},
+            model,
+            on_translation=save_translation,
+        )
+    else:
+        for index, job in enumerate(jobs, start=1):
+            started_at = time.monotonic()
+            print(
+                f"[{index}/{len(jobs)}] Starting Ollama translation for {job.locale}.",
+                flush=True,
+            )
+            try:
+                translated = call_ollama(job.prompt, model)
+                save_translation(job.locale, translated)
+            except Exception as ex:
+                failures[job.locale] = str(ex)
+                print(
+                    f"[{index}/{len(jobs)}] Ollama translation for {job.locale} failed "
+                    f"after {time.monotonic() - started_at:.1f}s: {ex}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                continue
+
+            print(
+                f"[{index}/{len(jobs)}] Completed {job.locale} in "
+                f"{time.monotonic() - started_at:.1f}s.",
+                flush=True,
+            )
 
     return -1 if failures else total_translated
 

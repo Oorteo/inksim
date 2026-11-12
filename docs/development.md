@@ -181,7 +181,8 @@ Copilot is the default provider. To use Ollama instead, pass
 commands accept `--dry-run` to preview prompts without calling a model.
 When using Copilot, `translate-all` reuses one client and starts a separate
 session for each locale, keeping translation context isolated without reconnecting
-for every language.
+for every language. It reports per-locale progress and saves each completed
+catalog immediately.
 
 ### Running the application in another language
 
