@@ -435,10 +435,6 @@
         "source": "System extension: {path}",
         "translation": "Kiendelezi cha mfumo: {path}"
     },
-    "integration.inkscape.inksim_user_current": {
-        "source": "Current user extension (install/update target): {path} | Status: {status}",
-        "translation": "Kiendelezi cha mtumiaji kinachotumika (mahali pa kusakinisha/kusasisha): {path} | Hali: {status}"
-    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Kiendelezi cha mtumiaji mwingine: {path}"
