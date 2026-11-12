@@ -127,17 +127,13 @@
         "source": "Needle color",
         "translation": "Barva jehly"
     },
-    "dialog.open_browser.browse": {
-        "source": "Browse...",
-        "translation": "Procházet..."
-    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Zrušit"
     },
-    "dialog.open_browser.choose_directory": {
-        "source": "Choose directory",
-        "translation": "Vybrat složku"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Přidat mezi oblíbené"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",
@@ -163,9 +159,21 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Probíhá export CSV z Ink/Stitchu..."
     },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Plocha"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Velikost: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Dokumenty"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Stažené soubory"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -203,6 +211,10 @@
         "source": "SVG source",
         "translation": "SVG zdroj"
     },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Oblíbené"
+    },
     "dialog.open_browser.fit": {
         "source": "Fit",
         "translation": "Přizpůsobit"
@@ -235,6 +247,10 @@
         "source": "This folder is not accessible.",
         "translation": "Tato složka není dostupná."
     },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Domů"
+    },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
         "translation": "Změněno: {time}"
@@ -250,6 +266,10 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Otevřít vybraný soubor výšivky."
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Místa"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -274,6 +294,10 @@
     "dialog.open_browser.recent_placeholder": {
         "source": "— choose directory —",
         "translation": "— vyberte složku —"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Odebrat z oblíbených"
     },
     "dialog.open_browser.search": {
         "source": "Search files",

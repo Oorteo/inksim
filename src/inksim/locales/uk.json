@@ -127,17 +127,9 @@
         "source": "Needle color",
         "translation": "Колір голки"
     },
-    "dialog.open_browser.browse": {
-        "source": "Browse...",
-        "translation": "Огляд..."
-    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Скасувати"
-    },
-    "dialog.open_browser.choose_directory": {
-        "source": "Choose directory",
-        "translation": "Вибрати папку"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",
