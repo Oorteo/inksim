@@ -19,9 +19,13 @@ fetch=true
 usage() {
     printf 'Usage: %s [-y|--yes] [-n|--dry-run] [--no-push] [--no-fetch]\n' "${0##*/}"
     printf '\n'
-    printf 'Creates a pre-release tag for the current commit. The version comes\n'
-    printf 'from pyproject.toml, the candidate counter is incremented from the\n'
-    printf 'existing tags. pyproject.toml is never modified.\n'
+    printf 'Creates the next pre-release tag for the current commit.\n'
+    printf '  Version:    from pyproject.toml (unchanged)\n'
+    printf '  Tag:        next v<version>-rc.N\n'
+    printf '  Push:       starts GitHub Actions "Release wheel"\n'
+    printf '  On success: test wheel + source archive attached to GitHub pre-release\n'
+    printf '  PyPI:       never\n'
+    printf '  --no-push:  local tag only; push it to start the workflow\n'
     printf '\n'
     printf 'Options:\n'
     printf '  -y, --yes      Do not ask for confirmation.\n'
@@ -145,8 +149,12 @@ if [[ "$push" == true ]]; then
 fi
 set +x
 
-printf '\nPre-release %s is building. Testers install it with:\n' "$tag"
-printf '  pip install https://github.com/<owner>/<repo>/releases/download/%s/inksim-%s-py3-none-any.whl\n' \
-    "$tag" "$dist_version"
+if [[ "$push" == true ]]; then
+    printf '\nTag %s pushed; install the test wheel after Actions succeeds:\n' "$tag"
+    printf '  pip install https://github.com/<owner>/<repo>/releases/download/%s/inksim-%s-py3-none-any.whl\n' \
+        "$tag" "$dist_version"
+else
+    printf '\nLocal tag only; push to start the test build:\n  git push origin %s\n' "$tag"
+fi
 printf '\nWhen the candidate is accepted, merge the work and tag the release:\n'
 printf '  ./scripts/release/030_final_release.sh\n'
