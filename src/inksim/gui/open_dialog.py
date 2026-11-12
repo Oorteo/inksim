@@ -70,6 +70,7 @@ from ..integration.paths import (
     ToolStatus,
     clean_child_environment,
     detect_tools,
+    prefer_saved_inkscape,
 )
 from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
 from .inkscape_dialog import InkscapeIntegrationDialog
@@ -268,7 +269,7 @@ class OpenBrowserDialog(QDialog):
         self.extensions = get_supported_input_extensions() | {"svg"}
         self.config = Config()
         self.favorite_directories = self._load_favorite_directories()
-        self.tool_status: ToolStatus = detect_tools()
+        self.tool_status: ToolStatus = self._detect_tools()
         self._all_paths: list[Path] = []
         self._visible_paths: list[Path] = []
         self._preview_loaded = False
@@ -678,7 +679,7 @@ class OpenBrowserDialog(QDialog):
 
     def _update_tool_status(self) -> None:
         self.config.reload()
-        self.tool_status = detect_tools()
+        self.tool_status = self._detect_tools()
         lines = []
         if self.tool_status.has_inkscape:
             lines.append(
@@ -716,6 +717,11 @@ class OpenBrowserDialog(QDialog):
             lines.append(_("dialog.open_browser.status.inkstitch_check_failed"))
         self.status_label.setText("\n".join(lines))
         self._update_actions()
+
+    def _detect_tools(self) -> ToolStatus:
+        detected = detect_tools()
+        inkscape = prefer_saved_inkscape(self.config.get(INKSCAPE_CONFIG_KEY), detected.inkscape)
+        return ToolStatus(inkscape=inkscape, inkstitch=detected.inkstitch)
 
     @staticmethod
     def _active_inkstitch_installation(status: dict[str, Any]) -> dict[str, Any] | None:

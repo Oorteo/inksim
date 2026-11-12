@@ -61,7 +61,7 @@ from ..integration.inkscape_extensions import (
     InstallSafetyError,
     prepare_install,
 )
-from ..integration.paths import INKSCAPE_CONFIG_KEY
+from ..integration.paths import INKSCAPE_CONFIG_KEY, detect_tools, prefer_saved_inkscape
 from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
 from ..render import render_export_image
 from ..update_check import (
@@ -579,7 +579,10 @@ class MainWindow(QMainWindow):
         self._action(help_menu, _("menu.help.check_updates"), self._check_for_updates)
 
     def _locate_inkscape_slot(self, checked: bool = False) -> None:
-        executable = shutil.which("inkscape")
+        self.config.reload()
+        executable = prefer_saved_inkscape(
+            self.config.get(INKSCAPE_CONFIG_KEY), detect_tools().inkscape
+        ).path
         dialog = InkscapeIntegrationDialog(self, executable)
         dialog.exec()
 

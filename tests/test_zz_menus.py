@@ -176,10 +176,13 @@ def test_menu_mnemonics_are_omitted_for_other_locales(qtbot, monkeypatch):
     window.close()
 
 
-def test_locate_inkscape_shows_resolved_path(qtbot, monkeypatch):
+def test_locate_inkscape_shows_resolved_path(qtbot, tmp_path, monkeypatch):
     """Open the integration dialog with the executable found on PATH."""
+    from inksim.config import Config
+
     window = MainWindow(window_size=(320, 240))
     qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
     executables = []
 
     class RecordingDialog:
@@ -189,7 +192,10 @@ def test_locate_inkscape_shows_resolved_path(qtbot, monkeypatch):
         def exec(self):
             return 0
 
-    monkeypatch.setattr("inksim.gui.frame.shutil.which", lambda name: "/opt/inkscape/bin/inkscape")
+    monkeypatch.delenv("INKSCAPE_EXE", raising=False)
+    monkeypatch.setattr(
+        "inksim.integration.paths.shutil.which", lambda name: "/opt/inkscape/bin/inkscape"
+    )
     monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
 
     window._locate_inkscape_slot()
@@ -198,10 +204,13 @@ def test_locate_inkscape_shows_resolved_path(qtbot, monkeypatch):
     window.close()
 
 
-def test_locate_inkscape_reports_missing_executable(qtbot, monkeypatch):
+def test_locate_inkscape_reports_missing_executable(qtbot, tmp_path, monkeypatch):
     """Open the integration dialog with no executable selected when missing."""
+    from inksim.config import Config
+
     window = MainWindow(window_size=(320, 240))
     qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
     executables = []
 
     class RecordingDialog:
@@ -211,12 +220,46 @@ def test_locate_inkscape_reports_missing_executable(qtbot, monkeypatch):
         def exec(self):
             return 0
 
-    monkeypatch.setattr("inksim.gui.frame.shutil.which", lambda name: None)
+    monkeypatch.delenv("INKSCAPE_EXE", raising=False)
+    monkeypatch.setattr("inksim.integration.paths.shutil.which", lambda name: None)
     monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
 
     window._locate_inkscape_slot()
 
     assert executables == [None]
+    window.close()
+
+
+def test_locate_inkscape_prefers_saved_executable(qtbot, tmp_path, monkeypatch):
+    """Reopen setup with the Inkscape executable previously selected by the user."""
+    from inksim.config import Config
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    selected = str(tmp_path / "selected" / "inkscape.exe")
+    config.set(INKSCAPE_CONFIG_KEY, {"executable": selected})
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = config
+    executables = []
+
+    class RecordingDialog:
+        def __init__(self, parent, executable):
+            executables.append(executable)
+
+        def exec(self):
+            return 0
+
+    monkeypatch.delenv("INKSCAPE_EXE", raising=False)
+    monkeypatch.setattr(
+        "inksim.integration.paths.shutil.which",
+        lambda name: "C:/ProgramData/chocolatey/inkscape.exe",
+    )
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
+
+    window._locate_inkscape_slot()
+
+    assert executables == [selected]
     window.close()
 
 

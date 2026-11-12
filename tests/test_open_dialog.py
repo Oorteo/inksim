@@ -499,6 +499,25 @@ def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_pa
     dialog.reject()
 
 
+def test_open_dialog_prefers_saved_inkscape_over_path_detection(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    selected = str(tmp_path / "selected-inkscape.exe")
+    config = Config(tmp_path / "config.toml")
+    config.set(INKSCAPE_CONFIG_KEY, {"executable": selected})
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape="C:/ProgramData/chocolatey/inkscape.exe"),
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+
+    assert dialog.tool_status.inkscape.path == selected
+    dialog.reject()
+
+
 def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
     qtbot, tmp_path, monkeypatch
 ):
