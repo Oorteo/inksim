@@ -385,7 +385,9 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
         "inksim.gui.inkscape_dialog.resolve_inksim_launcher",
         lambda: replacement_launcher,
     )
+    dialog._highlight_inksim_update = True
     assert "Preview command changed" in dialog._current_inksim_update_status()
+    assert "background-color: #fff3cd" in dialog.inksim_extensions_list.styleSheet()
 
     dialog.remove_old_extensions_button.click()
 
@@ -393,6 +395,55 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
     assert current_copy.exists()
     assert "preview.inx" in confirmation[0]
     assert not dialog.remove_old_extensions_button.isEnabled()
+
+
+def test_startup_warns_and_opens_inkscape_setup_for_stale_extension(tmp_path, qtbot, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+    from inksim.integration.inkscape_extensions import install_extension, prepare_install
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    extension_root = tmp_path / "extensions"
+    current_launcher = tmp_path / "current" / "bin" / "inksim"
+    old_launcher = tmp_path / "old" / "bin" / "inksim"
+    for launcher in (current_launcher, old_launcher):
+        launcher.parent.mkdir(parents=True, exist_ok=True)
+        launcher.write_text("#!/bin/sh\n", encoding="utf-8")
+        launcher.chmod(0o755)
+    install_extension(prepare_install(extension_root, old_launcher))
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/inkscape/bin/inkscape",
+            "user_extensions": str(extension_root),
+        },
+    )
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    opened = []
+
+    class RecordingDialog:
+        def __init__(
+            self,
+            parent,
+            executable,
+            *,
+            inksim_launcher,
+            highlight_inksim_update,
+        ):
+            opened.append((parent, executable, inksim_launcher, highlight_inksim_update))
+
+        def exec(self):
+            return 0
+
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    window.check_inkscape_extension(str(current_launcher))
+
+    assert opened == [(window, "/opt/inkscape/bin/inkscape", current_launcher, True)]
+    window.close()
 
 
 def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):

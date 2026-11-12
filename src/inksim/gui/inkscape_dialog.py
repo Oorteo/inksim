@@ -88,8 +88,17 @@ class InkStitchInstallation:
 class InkscapeIntegrationDialog(QDialog):
     """Display an Inkscape executable and the extension directories it uses."""
 
-    def __init__(self, parent: QWidget | None, executable: str | None) -> None:
+    def __init__(
+        self,
+        parent: QWidget | None,
+        executable: str | None,
+        *,
+        inksim_launcher: Path | None = None,
+        highlight_inksim_update: bool = False,
+    ) -> None:
         super().__init__(parent)
+        self._inksim_launcher = inksim_launcher
+        self._highlight_inksim_update = highlight_inksim_update
         self.setWindowTitle(_("integration.inkscape.title"))
         self.resize(860, 800)
         self.setMinimumSize(720, 640)
@@ -736,12 +745,20 @@ class InkscapeIntegrationDialog(QDialog):
                 error=_("integration.inkscape.directory_unavailable")
             )
         try:
-            plan = prepare_install(extension_root, resolve_inksim_launcher())
+            launcher = self._inksim_launcher or resolve_inksim_launcher()
+            plan = prepare_install(extension_root, launcher)
         except (InstallSafetyError, OSError, ValueError) as error:
             return _("integration.inkscape.inksim_status_unavailable").format(
                 error=_sanitize_path_text(str(error))
             )
 
+        if self._highlight_inksim_update:
+            self.inksim_extensions_list.setStyleSheet(
+                "QPlainTextEdit { background-color: #fff3cd; color: #664d03; "
+                "border: 2px solid #d39e00; }"
+                if plan.command_changed
+                else ""
+            )
         if not plan.destination.is_dir():
             return _("integration.inkscape.inksim_status_install")
         if not plan.update_required:
@@ -826,7 +843,7 @@ class InkscapeIntegrationDialog(QDialog):
             return
 
         try:
-            launcher = resolve_inksim_launcher()
+            launcher = self._inksim_launcher or resolve_inksim_launcher()
             plan = prepare_install(extension_directory, launcher)
         except (InstallSafetyError, OSError, ValueError) as error:
             self._show_extension_install_error(error)
