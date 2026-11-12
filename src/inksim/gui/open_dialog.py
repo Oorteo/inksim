@@ -81,6 +81,7 @@ KIND_OTHER = "other"
 _MAX_SVG_THUMBNAIL_BYTES = 20 * 1024 * 1024
 _CONVERSION_TIMEOUT_MS = 180_000
 _CONVERSION_PROGRESS_INTERVAL_MS = 100
+_SELECTION_PREVIEW_DEBOUNCE_MS = 250
 _INITIAL_PREVIEW_ESTIMATE_SECONDS = 10.0
 _MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
 _PREVIEW_TIMING_CONFIG_KEY = "svg_preview_timing"
@@ -275,7 +276,7 @@ class OpenBrowserDialog(QDialog):
 
         self._preview_timer = QTimer(self)
         self._preview_timer.setSingleShot(True)
-        self._preview_timer.setInterval(120)
+        self._preview_timer.setInterval(_SELECTION_PREVIEW_DEBOUNCE_MS)
         self._preview_timer.timeout.connect(self._load_embroidery_preview)
 
         self._conversion_timer = QTimer(self)

@@ -69,7 +69,6 @@ from ..update_check import (
 )
 from .about import show_about
 from .config_editor import show_config_editor
-from .dialogs import EmbroideryOpenDialog
 from .export_dialog import ExportPreviewDialog
 from .help import show_command_line_help
 from .inkscape_dialog import InkscapeIntegrationDialog
@@ -374,7 +373,7 @@ class MainWindow(QMainWindow):
             directory_path = Path(initial_directory)
             if directory_path.is_dir():
                 self.last_directory = str(directory_path.resolve())
-            QTimer.singleShot(0, self.open_file_dialog)
+            QTimer.singleShot(0, self.open_browser_dialog)
 
     def _action(
         self,
@@ -408,12 +407,6 @@ class MainWindow(QMainWindow):
     def _build_menus(self) -> None:
         file_menu = self.menuBar().addMenu(_("menu.file"))
         self._action(file_menu, _("menu.file.open_file"), self.open_browser_dialog, "Ctrl+O")
-        self._action(
-            file_menu,
-            _("menu.file.open"),
-            self.open_file_dialog,
-            "Ctrl+Shift+O",
-        )
         self._action(file_menu, _("menu.file.save_as"), self._save_as_embroidery_slot, "Ctrl+S")
         export_menu = file_menu.addMenu(_("menu.file.export"))
         self._action(
@@ -1160,15 +1153,20 @@ class MainWindow(QMainWindow):
         self,
         checked: bool = False,
         selected_file: str | Path | None = None,
+        initial_directory: str | Path | None = None,
     ) -> None:
         """Open the new file browser and handle its result action."""
-        initial_directory = (
-            Path(selected_file).parent if selected_file is not None else self.last_directory
-        )
+        if initial_directory is None:
+            initial_directory = (
+                Path(selected_file).parent if selected_file is not None else self.last_directory
+            )
+            initial_browser_file = selected_file or self.current_file_path
+        else:
+            initial_browser_file = selected_file
         dialog = OpenBrowserDialog(
             self,
             initial_directory,
-            selected_file or self.current_file_path,
+            initial_browser_file,
             self.recent_directories,
         )
         if dialog.exec() != QDialog.Accepted:
@@ -1193,23 +1191,6 @@ class MainWindow(QMainWindow):
             return
         if dialog.selected_path is not None:
             self.open_file(dialog.selected_path)
-
-    def open_file_dialog(self, checked: bool = False) -> None:
-        dialog = EmbroideryOpenDialog(
-            self, self.last_directory, self.current_file_path, self.recent_directories
-        )
-        if dialog.exec() == QDialog.Accepted:
-            selected = dialog.selected_path
-            if selected is not None:
-                self.open_file(selected)
-            chosen_background = dialog.background_color
-            if chosen_background != self.viewer.background_color:
-                self.viewer.background_color = chosen_background
-                self.viewer._save_view_setting("view/background_color", list(chosen_background))
-                if self.viewer.active_renderer == "gpu_textured":
-                    self.viewer._gl_widget.set_background(*chosen_background)
-                self.viewer.invalidate_cache()
-                self.viewer.repaint()
 
     def set_document_path(self, document_path: str | Path) -> None:
         """Set the source document used for Save As defaults."""
@@ -1606,16 +1587,7 @@ class MainWindow(QMainWindow):
             return
         dropped_path = Path(urls[0].toLocalFile())
         if dropped_path.is_dir():
-            dialog = EmbroideryOpenDialog(
-                self,
-                dropped_path,
-                self.current_file_path,
-                self.recent_directories,
-            )
-            if dialog.exec() == QDialog.Accepted:
-                selected = dialog.selected_path
-                if selected is not None:
-                    self.open_file(selected)
+            self.open_browser_dialog(initial_directory=dropped_path)
             event.acceptProposedAction()
             return
         if dropped_path.suffix.lower() == ".svg":
