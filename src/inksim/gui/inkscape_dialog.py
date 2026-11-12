@@ -98,8 +98,7 @@ class InkscapeIntegrationDialog(QDialog):
         layout.setContentsMargins(18, 18, 18, 14)
         layout.setSpacing(12)
 
-        def create_section(title_key: str, object_name: str) -> tuple[QGroupBox, QVBoxLayout]:
-            title = _(title_key)
+        def create_section(title: str, object_name: str) -> tuple[QGroupBox, QVBoxLayout]:
             group = QGroupBox(self)
             group.setObjectName(object_name)
             group.setAccessibleName(title)
@@ -130,7 +129,8 @@ class InkscapeIntegrationDialog(QDialog):
         self._report_entries: list[str] = []
 
         application_group, application_layout = create_section(
-            "integration.inkscape.section.application", "applicationSection"
+            _("integration.inkscape.section.application", "Inkscape application"),
+            "applicationSection",
         )
         program_row = QHBoxLayout()
         self.executable_label = QLabel(self)
@@ -156,7 +156,8 @@ class InkscapeIntegrationDialog(QDialog):
         layout.addWidget(application_group)
 
         extensions_group, extensions_layout = create_section(
-            "integration.inkscape.section.extensions", "extensionsSection"
+            _("integration.inkscape.section.extensions", "Extensions"),
+            "extensionsSection",
         )
         self._user_extensions_directory: Path | None = None
         self.user_extensions_label = QLabel(self)
@@ -173,7 +174,8 @@ class InkscapeIntegrationDialog(QDialog):
         layout.addWidget(extensions_group)
 
         inkstitch_group, inkstitch_layout = create_section(
-            "integration.inkscape.section.inkstitch", "inkstitchSection"
+            _("integration.inkscape.section.inkstitch", "Ink/Stitch"),
+            "inkstitchSection",
         )
         self.inkstitch_combo = QComboBox(self)
         self.inkstitch_combo.currentIndexChanged.connect(self._show_inkstitch_command)
@@ -185,7 +187,8 @@ class InkscapeIntegrationDialog(QDialog):
         layout.addWidget(inkstitch_group)
 
         inksim_group, inksim_layout = create_section(
-            "integration.inkscape.section.inksim", "inksimSection"
+            _("integration.inkscape.section.inksim", "InkSim"),
+            "inksimSection",
         )
         self.inksim_extensions_list = QPlainTextEdit(self)
         self.inksim_extensions_list.setObjectName("inksimExtensionDirectories")
@@ -215,7 +218,8 @@ class InkscapeIntegrationDialog(QDialog):
         layout.addWidget(inksim_group)
 
         report_group, report_layout = create_section(
-            "integration.inkscape.section.report", "reportSection"
+            _("integration.inkscape.section.report", "Report"),
+            "reportSection",
         )
         self.info_panel = QPlainTextEdit(self)
         self.info_panel.setObjectName("integrationReport")
