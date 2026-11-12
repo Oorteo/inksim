@@ -371,10 +371,6 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Nooca faylkan lagama furi karo InkSim."
     },
-    "dialog.open_browser.up": {
-        "source": "Up",
-        "translation": "Kor"
-    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Weynayso"

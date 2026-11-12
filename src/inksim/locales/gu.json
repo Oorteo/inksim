@@ -371,10 +371,6 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "આ ફાઇલ પ્રકાર InkSimમાં ખોલી શકાતો નથી."
     },
-    "dialog.open_browser.up": {
-        "source": "Up",
-        "translation": "ઉપર"
-    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "મોટું કરો"
