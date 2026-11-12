@@ -248,7 +248,7 @@ class InkSimServer(QObject):
         if Path(path).is_dir():
             window.last_directory = str(Path(path).resolve())
             window.focus_window()
-            QTimer.singleShot(0, window.open_file_dialog)
+            QTimer.singleShot(0, window.open_browser_dialog)
             return {"ok": True, "index": self.windows.index(window)}
         autoplay = bool(request.get("autoplay"))
         if not window.open_file(

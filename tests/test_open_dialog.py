@@ -102,6 +102,48 @@ def test_browser_dialog_navigates_directories_with_arrow_keys(qtbot, tmp_path, m
     dialog.reject()
 
 
+def test_embroidery_preview_waits_for_selection_to_settle(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    for name in ("first.pes", "second.pes", "third.pes"):
+        (tmp_path / name).touch()
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    loaded_paths = []
+    monkeypatch.setattr(
+        dialog.preview,
+        "load_design",
+        lambda path, **_kwargs: loaded_paths.append(path) or True,
+    )
+    dialog.show()
+
+    _select_file(dialog, "second.pes")
+    _select_file(dialog, "third.pes")
+    qtbot.wait(100)
+    assert loaded_paths == []
+    qtbot.waitUntil(lambda: len(loaded_paths) == 1)
+    assert loaded_paths == [str(tmp_path / "third.pes")]
+    dialog.reject()
+
+
+def test_invalid_embroidery_preview_shows_message(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    bad_json = tmp_path / "not_embroidery.json"
+    bad_json.write_text('{"foo": "bar"}', encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, bad_json.name)
+
+    qtbot.waitUntil(
+        lambda: dialog.preview_stack.currentWidget() == dialog.message_page,
+        timeout=5000,
+    )
+    assert "Not a valid embroidery file" in dialog.message_label.text()
+    dialog.reject()
+
+
 def test_filter_limits_files_to_svg(qtbot, tmp_path, monkeypatch):
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
     (tmp_path / "design.svg").write_text(_SVG, encoding="utf-8")
@@ -595,4 +637,39 @@ def test_svg_drop_opens_new_browser(qtbot, tmp_path, monkeypatch):
     window.dropEvent(drop_event)
 
     assert calls == [(tmp_path, svg_path)]
+    window.close()
+
+
+def test_directory_drop_opens_browser_in_dropped_directory(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import QMimeData, Qt, QUrl
+    from PySide6.QtGui import QDropEvent
+
+    from inksim.gui.frame import MainWindow
+
+    dropped_directory = tmp_path / "designs"
+    dropped_directory.mkdir()
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    calls = []
+    monkeypatch.setattr(
+        window,
+        "open_browser_dialog",
+        lambda checked=False, selected_file=None, initial_directory=None: calls.append(
+            (selected_file, Path(initial_directory))
+        ),
+    )
+
+    mime_data = QMimeData()
+    mime_data.setUrls([QUrl.fromLocalFile(str(dropped_directory))])
+    drop_event = QDropEvent(
+        window.rect().center().toPointF(),
+        Qt.CopyAction,
+        mime_data,
+        Qt.LeftButton,
+        Qt.NoModifier,
+    )
+
+    window.dropEvent(drop_event)
+
+    assert calls == [(None, dropped_directory)]
     window.close()

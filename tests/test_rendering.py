@@ -145,7 +145,7 @@ def test_sample_design_can_load(sample_design, qtbot):
     window.close()
 
 
-def test_startup_with_directory_opens_file_dialog(qtbot, tmp_path, monkeypatch):
+def test_startup_with_directory_opens_browser_dialog(qtbot, tmp_path, monkeypatch):
     """Passing a directory as input opens the file dialog in that directory."""
     from inksim.gui.frame import MainWindow
 
@@ -154,15 +154,15 @@ def test_startup_with_directory_opens_file_dialog(qtbot, tmp_path, monkeypatch):
 
     opened_in: list[str] = []
 
-    def fake_open_file_dialog(checked: bool = False) -> None:
+    def fake_open_browser_dialog(checked: bool = False) -> None:
         opened_in.append(window.last_directory)
 
-    monkeypatch.setattr(window, "open_file_dialog", fake_open_file_dialog)
+    monkeypatch.setattr(window, "open_browser_dialog", fake_open_browser_dialog)
 
     window.show_initial_window(initial_directory=str(tmp_path))
     qtbot.wait(100)
 
-    assert opened_in, "open_file_dialog was not called"
+    assert opened_in, "open_browser_dialog was not called"
     assert Path(opened_in[0]) == tmp_path.resolve()
     window.close()
 
@@ -203,33 +203,6 @@ def test_drag_and_drop_loads_file(sample_design, qtbot, monkeypatch):
     window.close()
 
 
-def test_empty_embroidery_file_shows_error_in_open_dialog(qtbot, tmp_path, monkeypatch):
-    """A file with zero stitches is treated as invalid in the open dialog."""
-    import pystitch as emb
-
-    from inksim.gui.dialogs import EmbroideryOpenDialog
-
-    empty_file = tmp_path / "empty.pes"
-    pattern = emb.EmbPattern()
-    pattern.stitches = []
-    emb.write(pattern, str(empty_file))
-
-    dialog = EmbroideryOpenDialog(
-        parent=None,
-        initial_directory=str(tmp_path),
-        selected_file=str(empty_file),
-    )
-    qtbot.addWidget(dialog)
-    dialog.show()
-
-    qtbot.waitUntil(lambda: dialog.preview_error_label.isVisible())
-
-    assert dialog.selected_path == empty_file
-    assert dialog.preview_error_label.isVisible()
-    assert "Not a valid embroidery file" in dialog.preview_error_label.text()
-    dialog.close()
-
-
 def test_switching_from_gpu_hides_widget_without_destroying_gl_resources():
     class FakeGLWidget:
         def __init__(self):
@@ -253,121 +226,6 @@ def test_switching_from_gpu_hides_widget_without_destroying_gl_resources():
 
     assert gl_widget.hidden
     assert gl_widget.cleanup_calls == 0
-
-
-def test_open_dialog_cleans_preview_gl_resources_before_rejecting(qtbot, tmp_path):
-    from inksim.gui.dialogs import EmbroideryOpenDialog
-
-    dialog = EmbroideryOpenDialog(None, tmp_path)
-    qtbot.addWidget(dialog)
-    cleanup_calls = []
-    dialog.preview._gl_widget.cleanup = lambda: cleanup_calls.append(True)
-
-    dialog.show()
-    qtbot.wait(50)
-    dialog.reject()
-
-    assert cleanup_calls == [True]
-
-
-def test_open_dialog_preview_survives_invalid_json(qtbot, tmp_path):
-    """Selecting a .json file that is not a valid embroidery preview must not crash."""
-    from inksim.gui.dialogs import EmbroideryOpenDialog
-
-    bad_json = tmp_path / "not_embroidery.json"
-    bad_json.write_text('{"foo": "bar"}')
-
-    dialog = EmbroideryOpenDialog(None, tmp_path)
-    qtbot.addWidget(dialog)
-    dialog.show()
-
-    # Selecting the invalid json triggers a preview load.
-    dialog.file_list.setCurrentRow(dialog.file_paths.index(bad_json))
-    qtbot.waitUntil(lambda: dialog.preview_error_label.isVisible())
-
-    assert dialog.selected_path == bad_json
-    assert dialog.preview.pattern is None
-    assert dialog.preview_error_label.isVisible()
-    assert "Not a valid embroidery file" in dialog.preview_error_label.text()
-    dialog.reject()
-
-
-def test_open_dialog_debounces_preview_while_selection_moves(qtbot, tmp_path, monkeypatch):
-    from inksim.gui.dialogs import EmbroideryOpenDialog
-
-    for name in ("first.pes", "second.pes", "third.pes"):
-        (tmp_path / name).touch()
-
-    dialog = EmbroideryOpenDialog(None, tmp_path)
-    qtbot.addWidget(dialog)
-    loaded_paths = []
-    monkeypatch.setattr(
-        dialog.preview,
-        "load_design",
-        lambda path, **_kwargs: loaded_paths.append(path) or True,
-    )
-
-    dialog.file_list.setCurrentRow(2)
-    dialog.file_list.setCurrentRow(3)
-    assert dialog.selected_path == tmp_path / "third.pes"
-
-    qtbot.wait(100)
-    assert loaded_paths == []
-    qtbot.waitUntil(lambda: len(loaded_paths) == 1)
-    assert loaded_paths == [str(tmp_path / "third.pes")]
-    dialog.reject()
-
-
-def test_open_dialog_navigates_directories_with_arrow_keys(qtbot, tmp_path):
-    from PySide6.QtCore import Qt
-
-    from inksim.gui.dialogs import EmbroideryOpenDialog
-
-    subdirectory = tmp_path / "designs"
-    subdirectory.mkdir()
-    (subdirectory / "nested.pes").touch()
-    (tmp_path / "top.pes").touch()
-
-    dialog = EmbroideryOpenDialog(None, tmp_path)
-    qtbot.addWidget(dialog)
-    dialog.show()
-
-    folder_row = next(
-        row
-        for row in range(dialog.file_list.count())
-        if dialog.file_list.item(row).text() == "designs/"
-    )
-    dialog.file_list.setCurrentRow(folder_row)
-    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Return)
-
-    assert dialog.current_directory == tmp_path
-    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
-    assert dialog.current_directory == subdirectory
-    assert dialog.file_list.item(0).text() == ".."
-    assert dialog.file_list.currentRow() == 0
-    assert dialog.selected_path is None
-
-    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
-    assert dialog.current_directory == tmp_path
-    assert dialog.file_list.item(dialog.file_list.currentRow()).text() == "designs/"
-
-    dialog.file_list.setCurrentRow(
-        next(
-            row
-            for row in range(dialog.file_list.count())
-            if dialog.file_list.item(row).text() == "designs/"
-        )
-    )
-    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
-    assert dialog.current_directory == subdirectory
-    assert dialog.file_list.currentRow() == 0
-
-    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Left)
-
-    assert dialog.current_directory == tmp_path
-    assert dialog.file_list.item(dialog.file_list.currentRow()).text() == "designs/"
-    assert dialog.selected_path is None
-    dialog.reject()
 
 
 def test_save_as_embroidery_writes_pystitch_format(sample_design, qtbot, tmp_path):
