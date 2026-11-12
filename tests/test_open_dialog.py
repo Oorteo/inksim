@@ -359,11 +359,19 @@ def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_pa
     )
     assert str(tmp_path / "extensions" / "inkstitch-other") not in dialog.status_label.text()
     assert "PATH" not in dialog.status_label.text()
-    config.set(
-        INKSCAPE_CONFIG_KEY,
-        {"executable": str(inkscape.resolve()), "status": "not_found", "inkstitch": []},
-    )
-    dialog.refresh_tools_button.click()
+
+    class FakeIntegrationDialog:
+        def __init__(self, parent, executable):
+            pass
+
+        def exec(self):
+            config.set(
+                INKSCAPE_CONFIG_KEY,
+                {"executable": str(inkscape.resolve()), "status": "not_found", "inkstitch": []},
+            )
+
+    monkeypatch.setattr("inksim.gui.open_dialog.InkscapeIntegrationDialog", FakeIntegrationDialog)
+    dialog.tools_button.click()
     assert "not found in Inkscape" in dialog.status_label.text()
     dialog.reject()
 
