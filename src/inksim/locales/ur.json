@@ -172,8 +172,8 @@
         "translation": "غلطی کی تفصیلات کے لیے output.err دیکھیں۔"
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Ink/Stitch CSV ایکسپورٹ کا وقت ختم ہو گیا۔"
+        "source": "Stitch preview timed out.",
+        "translation": "ٹانکوں کا پیش منظر بنانے میں وقت ختم ہو گیا۔"
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "SVG فائلوں میں ترمیم کے لیے Inkscape درکار ہے۔"
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "SVG پری ویو کے لیے فعال اور ترتیب شدہ Ink/Stitch انسٹالیشن درکار ہے۔"
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Ink/Stitch کی ترتیب شدہ انسٹالیشن اور Python لانچر درکار ہیں۔"
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "پری ویو"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "فعال Ink/Stitch انسٹالیشن استعمال کرکے اس SVG سے اسٹچ ڈیٹا بنائیں۔"
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "اس SVG سے Inkscape/Ink/Stitch کے ذریعے ٹانکوں کا ڈیٹا بنائیں۔"
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "اپ ڈیٹ درکار ہے ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "سسٹم ایکسٹینشن: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "موجودہ صارف ایکسٹینشن (انسٹال/اپ ڈیٹ کا ہدف): {path} | حالت: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "دوسرے صارف کی ایکسٹینشن: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",

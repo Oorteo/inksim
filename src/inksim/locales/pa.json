@@ -172,8 +172,8 @@
         "translation": "ਗਲਤੀ ਦੇ ਵੇਰਵਿਆਂ ਲਈ output.err ਵੇਖੋ।"
     },
     "dialog.open_browser.conversion_timeout": {
-        "source": "Ink/Stitch CSV export timed out.",
-        "translation": "Ink/Stitch CSV ਐਕਸਪੋਰਟ ਲਈ ਸਮਾਂ ਸਮਾਪਤ ਹੋ ਗਿਆ।"
+        "source": "Stitch preview timed out.",
+        "translation": "ਟਾਂਕਿਆਂ ਦੀ ਝਲਕ ਲਈ ਸਮਾਂ ਸਮਾਪਤ ਹੋ ਗਿਆ।"
     },
     "dialog.open_browser.converting": {
         "source": "Running Ink/Stitch CSV export...",
@@ -244,8 +244,8 @@
         "translation": "SVG ਫ਼ਾਈਲਾਂ ਸੋਧਣ ਲਈ Inkscape ਲੋੜੀਂਦਾ ਹੈ।"
     },
     "dialog.open_browser.inkstitch_required": {
-        "source": "A configured active Ink/Stitch installation is required for SVG preview.",
-        "translation": "SVG ਪ੍ਰੀਵਿਊ ਲਈ Ink/Stitch ਦੀ ਸੰਰਚਿਤ ਅਤੇ ਸਰਗਰਮ ਇੰਸਟਾਲੇਸ਼ਨ ਲੋੜੀਂਦੀ ਹੈ।"
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "ਇੱਕ ਸੰਰਚਿਤ Ink/Stitch ਇੰਸਟਾਲੇਸ਼ਨ ਅਤੇ Python ਲਾਂਚਰ ਲੋੜੀਂਦੇ ਹਨ।"
     },
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
@@ -272,8 +272,8 @@
         "translation": "ਪ੍ਰੀਵਿਊ"
     },
     "dialog.open_browser.preview_hint": {
-        "source": "Generate stitch data from this SVG using the active Ink/Stitch installation.",
-        "translation": "ਸਰਗਰਮ Ink/Stitch ਇੰਸਟਾਲੇਸ਼ਨ ਨਾਲ ਇਸ SVG ਤੋਂ ਸਟਿੱਚ ਡਾਟਾ ਬਣਾਓ।"
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Inkscape/Ink/Stitch ਨਾਲ ਇਸ SVG ਤੋਂ ਟਾਂਕਿਆਂ ਦਾ ਡਾਟਾ ਬਣਾਓ।"
     },
     "dialog.open_browser.preview_unavailable": {
         "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
@@ -459,9 +459,17 @@
         "source": "Update required ({details})",
         "translation": "ਅੱਪਡੇਟ ਲੋੜੀਂਦਾ ਹੈ ({details})"
     },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "ਸਿਸਟਮ ਐਕਸਟੈਂਸ਼ਨ: {path}"
+    },
     "integration.inkscape.inksim_user_current": {
         "source": "Current user extension (install/update target): {path} | Status: {status}",
         "translation": "ਮੌਜੂਦਾ ਯੂਜ਼ਰ ਐਕਸਟੈਂਸ਼ਨ (ਇੰਸਟਾਲ/ਅੱਪਡੇਟ ਟਿਕਾਣਾ): {path} | ਸਥਿਤੀ: {status}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "ਹੋਰ ਵਰਤੋਂਕਾਰ ਦੀ ਐਕਸਟੈਂਸ਼ਨ: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
