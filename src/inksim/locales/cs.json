@@ -127,13 +127,13 @@
         "source": "Needle color",
         "translation": "Barva jehly"
     },
-    "dialog.open_browser.cancel": {
-        "source": "Cancel",
-        "translation": "Zrušit"
-    },
     "dialog.open_browser.add_favorite": {
         "source": "Add to places",
         "translation": "Přidat mezi oblíbené"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Zrušit"
     },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",
@@ -187,6 +187,10 @@
         "source": "No supported files in this folder.",
         "translation": "V této složce nejsou žádné podporované soubory."
     },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Oblíbené"
+    },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
         "translation": "Soubor nelze přečíst: {error}"
@@ -211,10 +215,6 @@
         "source": "SVG source",
         "translation": "SVG zdroj"
     },
-    "dialog.open_browser.favorites": {
-        "source": "Favorites",
-        "translation": "Oblíbené"
-    },
     "dialog.open_browser.fit": {
         "source": "Fit",
         "translation": "Přizpůsobit"
@@ -223,6 +223,18 @@
         "source": "Folder",
         "translation": "Složka"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Upravit cestu"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Přejít"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Zadejte nebo vložte cestu ke složce"
+    },
     "dialog.open_browser.folder_hint": {
         "source": "Double-click the folder to browse its files.",
         "translation": "Dvojklikem na složku zobrazíte její soubory."
@@ -230,6 +242,10 @@
     "dialog.open_browser.folder_open_hint": {
         "source": "Double-click the folder to browse its files.",
         "translation": "Dvojklikem na složku zobrazíte její soubory."
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Domů"
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -246,10 +262,6 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Tato složka není dostupná."
-    },
-    "dialog.open_browser.home": {
-        "source": "Home",
-        "translation": "Domů"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
