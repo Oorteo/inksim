@@ -463,10 +463,6 @@
         "source": "Up to date",
         "translation": "Up to date"
     },
-    "integration.inkscape.inksim_status_debug_script": {
-        "source": "Debug script mode is enabled",
-        "translation": "Debug script mode is enabled"
-    },
     "integration.inkscape.inksim_status_install": {
         "source": "Installation required",
         "translation": "Installation required"

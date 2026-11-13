@@ -451,10 +451,6 @@
         "source": "Up to date",
         "translation": "Aktuální"
     },
-    "integration.inkscape.inksim_status_debug_script": {
-        "source": "Debug script mode is enabled",
-        "translation": "Režim debug skriptu je zapnutý"
-    },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
         "translation": "Vytvářet debug skript (debug_inksim.sh)"
