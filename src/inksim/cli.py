@@ -13,7 +13,6 @@ import signal
 import subprocess
 import sys
 import tempfile
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -33,8 +32,6 @@ from .integration.paths import INKSCAPE_CONFIG_KEY
 from .ipc import IpcUnavailable, send_request
 from .runtime import runtime_info_lines
 from .server import InkSimServer, forward_request, idle_timeout_seconds
-
-INKSCAPE_EXTENSION_LOG_PATH = Path(tempfile.gettempdir()) / "inksim-extension.md"
 
 
 def _parse_pair(value: str, name: str, separator: str) -> tuple[int, int]:
@@ -145,45 +142,6 @@ def _extension_name(arguments: list[str]) -> str | None:
         if argument.startswith("--extension="):
             return argument.partition("=")[2]
     return None
-
-
-def _log_inkscape_extension_invocation(arguments: list[str]) -> None:
-    """Append diagnostic details for an invocation started by Inkscape."""
-    environment_names = (
-        "DOCUMENT_PATH",
-        "INKEX_GETTEXT_DOMAIN",
-        "INKEX_GETTEXT_DIRECTORY",
-        "INKSCAPE_PROFILE_DIR",
-        "PYTHONPATH",
-    )
-    environment = [
-        f"    {name}={os.environ[name]}" for name in environment_names if name in os.environ
-    ]
-    record = [
-        f"## Inkscape extension invocation - {datetime.now().astimezone().isoformat()}",
-        "",
-        f"- Extension: {_extension_name(arguments) or '(unknown)'}",
-        f"- Executable: {sys.executable}",
-        f"- Working directory: {Path.cwd()}",
-        "",
-        "### Arguments",
-        *(f"    [{index}] {argument}" for index, argument in enumerate(sys.argv)),
-        "",
-        "### Inkscape environment",
-        *(environment or ["    (none of the selected variables are set)"]),
-        "",
-        "---",
-        "",
-    ]
-    try:
-        with INKSCAPE_EXTENSION_LOG_PATH.open("a", encoding="utf-8") as log_file:
-            log_file.write("\n".join(record))
-    except OSError as error:
-        print(
-            f"Warning: could not write Inkscape diagnostics to "
-            f"{INKSCAPE_EXTENSION_LOG_PATH}: {error}",
-            file=sys.stderr,
-        )
 
 
 def _inkstitch_preview_arguments(arguments: list[str]) -> list[str]:
@@ -665,7 +623,6 @@ def main() -> None:
     parser = build_argument_parser()
     command_line = sys.argv[1:]
     if _is_inkscape_extension_invocation(command_line):
-        _log_inkscape_extension_invocation(command_line)
         args = parser.parse_args([])
         if _extension_name(command_line) == "preview":
             _run_inkscape_preview(parser, args, command_line)

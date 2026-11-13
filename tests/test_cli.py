@@ -108,16 +108,12 @@ def test_manual_launch_passes_current_inksim_launcher_for_extension_check(monkey
     assert requests[0]["inksim_launcher"] == str(launcher)
 
 
-def test_inkscape_extension_invocation_opens_inksim_despite_extension_arguments(
-    monkeypatch, tmp_path
-):
+def test_inkscape_extension_invocation_opens_inksim_despite_extension_arguments(monkeypatch):
     import pytest
 
     from inksim import cli
 
     requests = []
-    log_path = tmp_path / "inksim-extension.md"
-    monkeypatch.setattr(cli, "INKSCAPE_EXTENSION_LOG_PATH", log_path)
     monkeypatch.setenv("DOCUMENT_PATH", "/home/user/design.svg")
     monkeypatch.setattr(cli.sys, "argv", ["inksim", "--extension=about", "--id=selection"])
     monkeypatch.setattr(cli, "_ensure_core_application", lambda: None)
@@ -139,12 +135,6 @@ def test_inkscape_extension_invocation_opens_inksim_despite_extension_arguments(
         "--id=selection",
     ]
     assert "inksim_launcher" not in requests[0]
-    log_record = log_path.read_text(encoding="utf-8")
-    assert "## Inkscape extension invocation - " in log_record
-    assert "- Extension: about" in log_record
-    assert "    [1] --extension=about" in log_record
-    assert "    [2] --id=selection" in log_record
-    assert "    DOCUMENT_PATH=/home/user/design.svg" in log_record
 
 
 def test_inkstitch_preview_arguments_preserve_ids_and_set_csv_options():

@@ -588,15 +588,18 @@ def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
         "import json, os, sys, time\n"
         "time.sleep(0.2)\n"
         "sys.stdout.write('csv-data')\n"
-        "sys.stderr.write(json.dumps({\n"
-        "  'arguments': sys.argv[1:],\n"
-        "  'cwd': os.getcwd(),\n"
-        "  'environment': {key: os.environ.get(key) for key in (\n"
-        "    'INKSTITCH_OFFLINE_SCRIPT', 'INKEX_GETTEXT_DOMAIN',\n"
-        "    'INKEX_GETTEXT_DIRECTORY', 'INKSCAPE_PROFILE_DIR',\n"
-        "    'DOCUMENT_PATH', 'PYTHONPATH',\n"
-        "  )},\n"
-        "}))\n",
+        "details = {\n"
+        "    'arguments': sys.argv[1:],\n"
+        "    'cwd': os.getcwd(),\n"
+        "    'environment': {key: os.environ.get(key) for key in (\n"
+        "        'INKSTITCH_OFFLINE_SCRIPT', 'INKEX_GETTEXT_DOMAIN',\n"
+        "        'INKEX_GETTEXT_DIRECTORY', 'INKSCAPE_PROFILE_DIR',\n"
+        "        'DOCUMENT_PATH', 'PYTHONPATH',\n"
+        "    )},\n"
+        "}\n"
+        "target = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'details.json')\n"
+        "with open(target, 'w', encoding='utf-8') as handle:\n"
+        "    json.dump(details, handle)\n",
         encoding="utf-8",
     )
     inx_directory = script.parent / "inx"
@@ -650,7 +653,7 @@ def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
     assert csv_path.suffix == ".csv"
     assert csv_path.read_text(encoding="utf-8") == "csv-data"
     assert not (tmp_path / "output.csv").exists()
-    process_details = json.loads((tmp_path / "output.err").read_text(encoding="utf-8"))
+    process_details = json.loads((script.parent / "details.json").read_text(encoding="utf-8"))
     assert process_details == {
         "arguments": [
             "--extension=output",
@@ -668,7 +671,63 @@ def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
             "PYTHONPATH": None,
         },
     }
+    assert not (tmp_path / "output.err").exists()
+    assert not list(tmp_path.glob("*.inksim.log"))
     csv_path.unlink()
+
+
+def test_failed_preview_keeps_log_next_to_the_source_file(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    script = tmp_path / "extensions" / "inkstitch" / "inkstitch.py"
+    script.parent.mkdir(parents=True)
+    script.write_text(
+        "import sys\nsys.stderr.write('Traceback: satin column is empty\\n')\nsys.exit(2)\n",
+        encoding="utf-8",
+    )
+    inx_directory = script.parent / "inx"
+    inx_directory.mkdir()
+    svg_path = tmp_path / "input design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+    config_path = tmp_path / "config.toml"
+    config = Config(config_path)
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "status": "found",
+            "active_inkstitch": str(inx_directory),
+            "inkstitch": [
+                {
+                    "extension_dir": str(inx_directory),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                    "interpreter": "python",
+                }
+            ],
+            "python-interpretor": sys.executable,
+        },
+    )
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: Config(config_path))
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    warnings: list[str] = []
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.QMessageBox.warning",
+        lambda _parent, _title, message: warnings.append(message),
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, svg_path.name)
+    dialog.open_button.click()
+
+    qtbot.waitUntil(lambda: bool(warnings), timeout=5000)
+    log_path = tmp_path / "input design.svg.inksim.log"
+    assert log_path.is_file()
+    assert "satin column is empty" in log_path.read_text(encoding="utf-8")
+    assert log_path.name in warnings[0]
+    assert dialog.result_action != "preview"
+    assert not (tmp_path / "output.err").exists()
 
 
 def test_svg_preview_progress_uses_bounded_average_and_records_runs(qtbot, tmp_path, monkeypatch):
