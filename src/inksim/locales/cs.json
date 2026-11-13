@@ -148,8 +148,8 @@
         "translation": "Export CSV v Ink/Stitch selhal."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Podrobnosti chyby jsou v souboru output.err."
+        "source": "Full log: {path}",
+        "translation": "Plný log: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
