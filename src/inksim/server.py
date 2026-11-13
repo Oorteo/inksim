@@ -306,6 +306,10 @@ class InkSimServer(QObject):
             return {"ok": False, "error": f"cannot open {path}"}
         if autoplay and (not reuse_loaded_file or not window.viewer.is_playing):
             window.viewer.toggle_auto_play(forward=True)
+        # Loading a document clears the marker, so restore it for this preview.
+        window.set_debug_script(
+            Path(debug_script) if isinstance(debug_script, str) and debug_script else None
+        )
         window.focus_window()
         self._restart_idle_timer()
         schedule_inkscape_extension_check()
