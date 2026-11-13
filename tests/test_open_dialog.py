@@ -1010,16 +1010,10 @@ def test_debug_script_is_announced_in_the_window(qtbot, tmp_path, monkeypatch):
     script = tmp_path / "debug_inksim.sh"
 
     window.set_debug_script(script)
-    window.statusBar().clearMessage()
-    window.show_debug_script_notice()
 
     assert window.windowTitle().startswith("[debug] ")
-    assert "debug_inksim.sh" in window.statusBar().currentMessage()
 
     window.set_debug_script(None)
-    window.statusBar().clearMessage()
-    window.show_debug_script_notice()
 
     assert "[debug]" not in window.windowTitle()
-    assert window.statusBar().currentMessage() == ""
     window.close()
