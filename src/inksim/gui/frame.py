@@ -1225,9 +1225,9 @@ class MainWindow(QMainWindow):
             initial_directory = (
                 Path(selected_file).parent if selected_file is not None else self.last_directory
             )
-            initial_browser_file = selected_file or self.current_file_path
+            initial_browser_file = self._browser_initial_file(selected_file)
         else:
-            initial_browser_file = selected_file
+            initial_browser_file = Path(selected_file) if selected_file is not None else None
         dialog = OpenBrowserDialog(
             self,
             initial_directory,
@@ -1262,6 +1262,32 @@ class MainWindow(QMainWindow):
         path = Path(document_path).resolve()
         self.document_path = path
         self.last_directory = str(path.parent)
+
+    def _remember_last_file(self, path: Path) -> None:
+        """Remember the opened file so the next dialog can preselect it."""
+        self.last_directory = str(path.parent)
+        self.config.set("last_directory", _sanitize_path(self.last_directory))
+        self.config.set("last_file", _sanitize_path(path))
+
+    def _browser_initial_file(
+        self,
+        selected_file: str | Path | None = None,
+    ) -> Path | None:
+        """Return the file the open dialog should preselect."""
+        if selected_file is not None:
+            return Path(selected_file)
+        if self._temporary_input_path is not None and self.document_path is not None:
+            # The loaded file is a temporary preview CSV, so point at its source
+            # instead of a path that no longer exists in the browsed folder.
+            return self.document_path
+        if self.current_file_path is not None or self.document_path is not None:
+            return self.current_file_path or self.document_path
+        remembered = _unsanitize_path(str(self.config.get("last_file", "") or ""))
+        if remembered:
+            candidate = Path(remembered)
+            if candidate.is_file():
+                return candidate
+        return None
 
     def set_command_line_args(self, arguments: list[str]) -> None:
         """Store the arguments from the most recent client invocation."""
@@ -1575,8 +1601,7 @@ class MainWindow(QMainWindow):
         self.current_file_path = selected_path
         self._source_mtime_ns = self._capture_source_mtime(selected_path)
         if not delete_after_load and not retain_temporary_input:
-            self.last_directory = str(selected_path.parent)
-            self.config.set("last_directory", _sanitize_path(self.last_directory))
+            self._remember_last_file(selected_path)
             if add_recent_directory:
                 self._add_recent_directory(selected_path.parent)
         total = self.viewer.stitches_np.shape[0]
