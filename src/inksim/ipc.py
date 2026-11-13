@@ -131,7 +131,9 @@ def send_request(
     while b"\n" not in buffer:
         if not socket.waitForReadyRead(timeout_ms):
             socket.abort()
-            raise IpcUnavailable("InkSim server did not respond")
+            raise IpcUnavailable(
+                f"InkSim server did not respond within {timeout_ms / 1000:g} seconds"
+            )
         buffer.extend(socket.readAll().data())
     socket.disconnectFromServer()
     line = bytes(buffer).split(b"\n", 1)[0]
