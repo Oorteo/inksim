@@ -6,6 +6,47 @@ import subprocess
 import sys
 
 
+def test_server_window_only_shows_splash_before_first_renderer_warmup(qapp, monkeypatch):
+    from inksim import cli
+
+    splashes = []
+    windows = []
+
+    class FakeSplash:
+        def __init__(self):
+            splashes.append(self)
+
+        def show_centered(self):
+            pass
+
+        def set_message(self, _message):
+            pass
+
+        def close_after(self):
+            pass
+
+    class FakeWindow:
+        def __init__(self, **_options):
+            windows.append(self)
+
+        def show_initial_window(self, _autoplay, _initial_directory):
+            pass
+
+    def warm_up(_app):
+        cli._renderers_warmed = True
+
+    monkeypatch.setattr(cli, "_renderers_warmed", False)
+    monkeypatch.setattr(cli, "SplashScreen", FakeSplash)
+    monkeypatch.setattr(cli, "MainWindow", FakeWindow)
+    monkeypatch.setattr(cli, "_warm_up_renderers", warm_up)
+
+    cli._create_server_window({})
+    cli._create_server_window({})
+
+    assert len(splashes) == 1
+    assert len(windows) == 2
+
+
 def test_package_defines_standard_console_and_gui_commands():
     import tomllib
     from pathlib import Path

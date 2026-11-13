@@ -66,7 +66,7 @@ def _create_server_window(options: dict[str, Any]) -> MainWindow:
     """Create and show a viewer window for the server from client-supplied options."""
     app = QApplication.instance()
     splash: SplashScreen | None = None
-    if isinstance(app, QApplication):
+    if isinstance(app, QApplication) and not _renderers_warmed:
         splash = SplashScreen()
         splash.show_centered()
         splash.set_message("Preparing InkSim...")
