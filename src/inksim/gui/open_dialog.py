@@ -58,7 +58,7 @@ from PySide6.QtWidgets import (
 
 from ..config import Config
 from ..debug import logger
-from ..formats import get_supported_input_extensions
+from ..formats import get_supported_input_extensions, is_stitchblock_svg
 from ..i18n import _
 from ..integration.inkstitch import (
     active_inkstitch_installation,
@@ -272,6 +272,7 @@ class OpenBrowserDialog(QDialog):
         self.tool_status: ToolStatus = self._detect_tools()
         self._all_paths: list[Path] = []
         self._visible_paths: list[Path] = []
+        self._svg_kind_cache: dict[Path, str] = {}
         self._preview_loaded = False
         self._svg_source: QPixmap | None = None
         self._conversion_process: QProcess | None = None
@@ -786,6 +787,7 @@ class OpenBrowserDialog(QDialog):
             )
             return
 
+        self._svg_kind_cache.clear()
         directories = sorted(
             (path for path in entries if path.is_dir()), key=lambda path: path.name.casefold()
         )
@@ -929,7 +931,11 @@ class OpenBrowserDialog(QDialog):
             return KIND_DIRECTORY
         suffix = path.suffix.lstrip(".").lower()
         if suffix == "svg":
-            return KIND_SVG
+            kind = self._svg_kind_cache.get(path)
+            if kind is None:
+                kind = KIND_EMBROIDERY if is_stitchblock_svg(path) else KIND_SVG
+                self._svg_kind_cache[path] = kind
+            return kind
         if suffix == "csv":
             return KIND_CSV
         if suffix in self.extensions:
@@ -1201,6 +1207,17 @@ class OpenBrowserDialog(QDialog):
                 "dialog.open_browser.open_hint",
                 "Open the selected embroidery file.",
             )
+            if kind == KIND_EMBROIDERY and path is not None and path.suffix.lower() == ".svg":
+                can_edit = self.tool_status.can_edit_svg
+                edit_tip = _(
+                    "dialog.open_browser.edit_hint",
+                    "Open this SVG in a new Inkscape window.",
+                )
+                if not self.tool_status.has_inkscape:
+                    edit_tip = _(
+                        "dialog.open_browser.inkscape_required",
+                        "Inkscape is required to edit SVG files.",
+                    )
         elif kind == KIND_SVG:
             open_label = _("dialog.open_browser.preview", "Preview")
             can_open = self._active_inkstitch_preview() is not None
@@ -1493,7 +1510,9 @@ class OpenBrowserDialog(QDialog):
     def _edit_in_inkscape(self, checked: bool = False) -> None:
         del checked
         path = self._current_path()
-        if path is None or self._kind_for_path(path) != KIND_SVG:
+        if path is None or path.suffix.lower() != ".svg":
+            return
+        if self._kind_for_path(path) not in (KIND_SVG, KIND_EMBROIDERY):
             return
         command = self.tool_status.inkscape.command
         if not command:

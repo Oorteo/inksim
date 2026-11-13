@@ -28,6 +28,18 @@ def read_embroidery_file(path: str | Path) -> Any | None:
     return emb.read(path)
 
 
+def is_stitchblock_svg(path: str | Path) -> bool:
+    """Return whether an SVG can be read as a PyStitch stitch-block export."""
+    try:
+        with Path(path).open("rb") as source:
+            _, root = next(ET.iterparse(source, events=("start",)))
+    except (OSError, ET.ParseError, StopIteration):
+        return False
+    if root.tag != _SVG_ROOT_TAG or set(root.attrib) != {"version", "width", "height", "viewBox"}:
+        return False
+    return _read_pystitch_svg(path) is not None
+
+
 def _read_pystitch_svg(path: str | Path) -> Any | None:
     try:
         root = ET.parse(path).getroot()

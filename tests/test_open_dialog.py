@@ -267,6 +267,65 @@ def test_invalid_embroidery_preview_shows_message(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_stitchblock_svg_is_opened_as_embroidery(qtbot, tmp_path, monkeypatch):
+    from inksim.gui.open_dialog import KIND_EMBROIDERY
+
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape=None, inkstitch=None),
+    )
+    sample_svg = Path(__file__).parent / "data" / "sample_svg.svg"
+    svg_path = tmp_path / sample_svg.name
+    svg_path.write_bytes(sample_svg.read_bytes())
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, svg_path.name)
+
+    assert dialog._kind_for_path(svg_path) == KIND_EMBROIDERY
+    qtbot.waitUntil(lambda: dialog._preview_loaded, timeout=5000)
+    assert "Embroidery" in dialog.details_label.text()
+    assert dialog.open_button.isEnabled()
+
+    dialog.open_button.click()
+    assert dialog.result_action == "open"
+    assert dialog.selected_path == svg_path
+
+
+def test_stitchblock_svg_can_be_edited_in_inkscape(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape="/usr/bin/inkscape", inkstitch=None),
+    )
+    monkeypatch.setattr("inksim.gui.open_dialog.clean_child_environment", lambda: {})
+    launched = []
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.subprocess.Popen",
+        lambda *args, **kwargs: launched.append((args, kwargs)),
+    )
+    sample_svg = Path(__file__).parent / "data" / "sample_svg.svg"
+    svg_path = tmp_path / sample_svg.name
+    svg_path.write_bytes(sample_svg.read_bytes())
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, svg_path.name)
+    qtbot.waitUntil(lambda: dialog._preview_loaded, timeout=5000)
+
+    assert dialog.edit_button.isEnabled()
+    dialog.edit_button.click()
+
+    assert dialog.result_action == "edit"
+    assert dialog.document_path == svg_path
+    assert len(launched) == 1
+    arguments = launched[0][0][0]
+    assert arguments[0] == "/usr/bin/inkscape"
+    assert arguments[-1] == str(svg_path)
+    assert any(argument.startswith("--app-id-tag=inksim-") for argument in arguments)
+
+
 def test_filter_limits_files_to_svg(qtbot, tmp_path, monkeypatch):
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
     (tmp_path / "design.svg").write_text(_SVG, encoding="utf-8")
