@@ -974,9 +974,5 @@
     "status.slider.width": {
         "source": "Width",
         "translation": "Width"
-    },
-    "frame.debug_script_created": {
-        "source": "Debug script created: {path}",
-        "translation": "Debug script created: {path}"
     }
 }
