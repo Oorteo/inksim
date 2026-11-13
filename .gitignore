@@ -3,6 +3,7 @@ CHAT*.md
 *[Hh][Aa][Nn][Dd][Oo][Ff][Ff]*
 
 tests/data/*.png
+tests/data/debug_*
 
 
 doc_inksim

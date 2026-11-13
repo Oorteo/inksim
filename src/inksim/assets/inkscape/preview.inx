@@ -3,6 +3,7 @@
     <name>Preview</name>
     <id>oorteo.inksim.preview</id>
     <param name="extension" type="string" gui-hidden="true">preview</param>
+    <param name="create_bash_script" type="boolean" gui-hidden="true">false</param>
     <effect implements-custom-gui="true">
         <object-type>all</object-type>
         <icon>icons/inksim.svg</icon>
