@@ -307,8 +307,6 @@ class InkSimServer(QObject):
         if autoplay and (not reuse_loaded_file or not window.viewer.is_playing):
             window.viewer.toggle_auto_play(forward=True)
         window.focus_window()
-        # Announce last: the viewer reports loading progress through the status bar.
-        window.show_debug_script_notice()
         self._restart_idle_timer()
         schedule_inkscape_extension_check()
         return {"ok": True, "index": self.windows.index(window)}

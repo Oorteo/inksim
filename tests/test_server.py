@@ -29,7 +29,6 @@ class FakeWindow(QObject):
         self.open_file_result = True
         self.current_file_path = None
         self.debug_script = None
-        self.debug_script_notice_shown = False
         self.visible = True
         self.hide_on_close = False
 
@@ -44,9 +43,6 @@ class FakeWindow(QObject):
 
     def set_debug_script(self, path):
         self.debug_script = path
-
-    def show_debug_script_notice(self):
-        self.debug_script_notice_shown = True
 
     def set_hide_on_close(self, enabled):
         self.hide_on_close = enabled

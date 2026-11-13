@@ -1107,16 +1107,6 @@ class MainWindow(QMainWindow):
         """Remember the debug replay script and mark it in the window title."""
         self._debug_script = path
         self._update_window_title()
-        if path is None:
-            self.statusBar().clearMessage()
-
-    def show_debug_script_notice(self) -> None:
-        """Show the debug script location once the viewer has finished loading."""
-        if self._debug_script is None:
-            return
-        self.statusBar().showMessage(
-            _("frame.debug_script_created").format(path=_sanitize_path(str(self._debug_script)))
-        )
 
     def _design_size_text(self) -> str:
         """Return the current design size formatted for the window title."""
