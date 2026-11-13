@@ -28,6 +28,7 @@ class FakeWindow(QObject):
         self.inksim_launcher = None
         self.open_file_result = True
         self.current_file_path = None
+        self.debug_script = None
         self.visible = True
         self.hide_on_close = False
 
@@ -39,6 +40,9 @@ class FakeWindow(QObject):
 
     def set_command_line_args(self, arguments):
         self.command_line_args = arguments.copy()
+
+    def announce_debug_script(self, path):
+        self.debug_script = path
 
     def set_hide_on_close(self, enabled):
         self.hide_on_close = enabled

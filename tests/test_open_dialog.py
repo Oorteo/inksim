@@ -998,3 +998,23 @@ def test_open_dialog_preselects_the_last_opened_file_after_a_restart(qtbot, tmp_
     assert restored._browser_initial_file() == design
     assert Config(config_path).get("last_file")
     restored.close()
+
+
+def test_debug_script_is_announced_in_the_window(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: Config(tmp_path / "config.toml"))
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    script = tmp_path / "debug_inksim.sh"
+
+    window.announce_debug_script(script)
+
+    assert window.windowTitle().startswith("[debug] ")
+    assert "debug_inksim.sh" in window.statusBar().currentMessage()
+
+    window.announce_debug_script(None)
+
+    assert "[debug]" not in window.windowTitle()
+    window.close()
