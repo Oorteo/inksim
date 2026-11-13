@@ -122,6 +122,71 @@ def _hide_windows_console(arguments: Any) -> None:
     arguments.flags |= _WINDOWS_CREATE_NO_WINDOW
 
 
+def _create_temporary_conversion_files() -> tuple[Path, Path]:
+    """Create the temporary CSV and stderr files used by one conversion."""
+    created: list[Path] = []
+    try:
+        for suffix in (".csv", ".err"):
+            with tempfile.NamedTemporaryFile(
+                prefix="inksim-preview-",
+                suffix=suffix,
+                delete=False,
+            ) as temporary:
+                created.append(Path(temporary.name))
+    except OSError:
+        for path in created:
+            path.unlink(missing_ok=True)
+        raise
+    return created[0], created[1]
+
+
+def _remove_temporary_file(path: Path | None, description: str) -> None:
+    """Delete a temporary conversion file, reporting failures without failing."""
+    if path is None:
+        return
+    try:
+        path.unlink(missing_ok=True)
+    except OSError as ex:
+        logger.warning(
+            "Could not remove %s %s: %s",
+            description,
+            _sanitize_path_text(str(path)),
+            _sanitize_path_text(str(ex)),
+        )
+
+
+def _store_conversion_log(
+    source_path: Path | None,
+    error_path: Path | None,
+    stderr_text: str,
+) -> Path | None:
+    """Keep a failed conversion's stderr next to its source file.
+
+    A successful conversion leaves nothing behind, so the log only exists when
+    there is an error to read. It is named after the converted file, which makes
+    it obvious which document produced it.
+    """
+    if error_path is None:
+        return None
+    if not stderr_text:
+        _remove_temporary_file(error_path, "temporary Ink/Stitch log")
+        return None
+    if source_path is not None:
+        log_path = source_path.with_name(f"{source_path.name}.inksim.log")
+        try:
+            log_path.write_text(stderr_text + "\n", encoding="utf-8")
+        except OSError as ex:
+            logger.warning(
+                "Could not write Ink/Stitch log %s: %s",
+                _sanitize_path_text(str(log_path)),
+                _sanitize_path_text(str(ex)),
+            )
+        else:
+            _remove_temporary_file(error_path, "temporary Ink/Stitch log")
+            return log_path
+    return error_path
+
+
 class SvgPreviewWidget(QWidget):
     """Display an SVG preview with mouse-wheel zooming and drag panning."""
 
@@ -1293,12 +1358,7 @@ class OpenBrowserDialog(QDialog):
         ]
 
         try:
-            with tempfile.NamedTemporaryFile(
-                prefix="inksim-preview-",
-                suffix=".csv",
-                delete=False,
-            ) as temporary_csv:
-                csv_path = Path(temporary_csv.name)
+            csv_path, error_path = _create_temporary_conversion_files()
         except OSError as ex:
             QMessageBox.warning(
                 self,
@@ -1309,7 +1369,6 @@ class OpenBrowserDialog(QDialog):
             )
             return
 
-        error_path = self.current_directory / "output.err"
         self._conversion_csv = csv_path
         self._conversion_error = error_path
         self._conversion_source = path
@@ -1411,6 +1470,7 @@ class OpenBrowserDialog(QDialog):
         del exit_status
         if self._closing or self._conversion_aborted:
             self._discard_conversion_csv()
+            _remove_temporary_file(self._conversion_error, "temporary Ink/Stitch log")
             return
         self._record_conversion_duration()
         self.progress.setValue(100)
@@ -1423,6 +1483,7 @@ class OpenBrowserDialog(QDialog):
         except OSError:
             has_output = False
         if exit_code == 0 and has_output:
+            _remove_temporary_file(error_path, "temporary Ink/Stitch log")
             self.preview_csv_path = csv_path
             self._conversion_csv = None
             self.document_path = source_path
@@ -1440,14 +1501,16 @@ class OpenBrowserDialog(QDialog):
         except OSError as ex:
             stderr_text = str(ex)
         self._discard_conversion_csv()
+        log_path = _store_conversion_log(source_path, error_path, stderr_text)
         message = _(
             "dialog.open_browser.conversion_failed",
             "Ink/Stitch CSV export failed.",
         )
-        message += "\n\n" + _(
-            "dialog.open_browser.conversion_hint",
-            "See output.err for the error details.",
-        )
+        if log_path is not None:
+            message += "\n\n" + _(
+                "dialog.open_browser.conversion_hint",
+                "Full log: {path}",
+            ).format(path=str(log_path))
         if stderr_text:
             message += "\n\n" + stderr_text[-1200:]
         message += f"\n\n{_('dialog.open_browser.conversion_exit_code').format(code=exit_code)}"
@@ -1466,6 +1529,7 @@ class OpenBrowserDialog(QDialog):
             process.kill()
             process.waitForFinished(2000)
         self._discard_conversion_csv()
+        _remove_temporary_file(self._conversion_error, "temporary Ink/Stitch log")
         self._finish_conversion_ui()
         QMessageBox.warning(
             self,
@@ -1483,6 +1547,7 @@ class OpenBrowserDialog(QDialog):
             process.kill()
             process.waitForFinished(2000)
         self._discard_conversion_csv()
+        _remove_temporary_file(self._conversion_error, "temporary Ink/Stitch log")
         self._finish_conversion_ui()
         if not self._closing:
             QMessageBox.warning(
@@ -1576,16 +1641,7 @@ class OpenBrowserDialog(QDialog):
     def _discard_conversion_csv(self) -> None:
         csv_path = self._conversion_csv
         self._conversion_csv = None
-        if csv_path is None:
-            return
-        try:
-            csv_path.unlink(missing_ok=True)
-        except OSError as ex:
-            logger.warning(
-                "Could not remove temporary preview CSV %s: %s",
-                _sanitize_path_text(str(csv_path)),
-                _sanitize_path_text(str(ex)),
-            )
+        _remove_temporary_file(csv_path, "temporary preview CSV")
 
     @property
     def background_color(self) -> tuple[int, int, int]:
