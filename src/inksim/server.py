@@ -33,6 +33,7 @@ if TYPE_CHECKING:
 
 DEFAULT_IDLE_TIMEOUT_SECONDS = 300
 SERVER_START_TIMEOUT_SECONDS = 120.0
+SERVER_OPEN_TIMEOUT_SECONDS = 120.0
 SERVER_STOP_TIMEOUT_SECONDS = 5.0
 SERVER_ARGS = ["-m", "inksim", "--server"]
 
@@ -144,6 +145,11 @@ def forward_request(request: Request) -> Response:
             logger.error(message)
             raise IpcUnavailable(message)
         logger.debug("InkSim server responded after %.2f seconds", time.monotonic() - started_at)
+    if request.get("type") == "open":
+        return send_request(
+            request,
+            timeout_ms=int(SERVER_OPEN_TIMEOUT_SECONDS * 1000),
+        )
     return send_request(request)
 
 
