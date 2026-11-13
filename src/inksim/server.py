@@ -247,7 +247,7 @@ class InkSimServer(QObject):
             window.set_command_line_args(command_line)
 
         debug_script = request.get("debug_script")
-        window.announce_debug_script(
+        window.set_debug_script(
             Path(debug_script) if isinstance(debug_script, str) and debug_script else None
         )
 
@@ -307,6 +307,8 @@ class InkSimServer(QObject):
         if autoplay and (not reuse_loaded_file or not window.viewer.is_playing):
             window.viewer.toggle_auto_play(forward=True)
         window.focus_window()
+        # Announce last: the viewer reports loading progress through the status bar.
+        window.show_debug_script_notice()
         self._restart_idle_timer()
         schedule_inkscape_extension_check()
         return {"ok": True, "index": self.windows.index(window)}
