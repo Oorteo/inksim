@@ -401,3 +401,51 @@ def test_frozen_build_is_rejected_explicitly(monkeypatch):
     with pytest.raises(NotImplementedError):
         server_module.code_fingerprint()
     server_module.code_fingerprint.cache_clear()
+
+
+def test_open_marks_the_window_with_the_debug_script(qapp, tmp_path):
+    server, created = _server(qapp)
+    script = tmp_path / "debug_inksim.sh"
+    input_path = tmp_path / "preview.csv"
+
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+            "temporary_input": True,
+            "debug_script": str(script),
+        }
+    )
+
+    assert response["ok"] is True
+    assert created[0].debug_script == script
+
+
+def test_open_without_debug_script_clears_the_marker(qapp, tmp_path):
+    server, created = _server(qapp)
+    script = tmp_path / "debug_inksim.sh"
+    input_path = tmp_path / "preview.csv"
+    server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+            "temporary_input": True,
+            "debug_script": str(script),
+        }
+    )
+
+    server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "index": 0,
+            "path": str(input_path),
+            "temporary_input": True,
+        }
+    )
+
+    assert created[0].debug_script is None

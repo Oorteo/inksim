@@ -1000,7 +1000,9 @@ def test_open_dialog_preselects_the_last_opened_file_after_a_restart(qtbot, tmp_
     restored.close()
 
 
-def test_debug_script_is_announced_in_the_window(qtbot, tmp_path, monkeypatch):
+def test_debug_script_marks_the_window_until_another_file_is_opened(
+    qtbot, tmp_path, monkeypatch, sample_design
+):
     from inksim.config import Config
     from inksim.gui.frame import MainWindow
 
@@ -1013,7 +1015,10 @@ def test_debug_script_is_announced_in_the_window(qtbot, tmp_path, monkeypatch):
 
     assert window.windowTitle().startswith("[debug] ")
 
-    window.set_debug_script(None)
+    assert window.open_file(sample_design)
+    assert "[debug]" not in window.windowTitle()
 
+    window.set_debug_script(script)
+    window.set_debug_script(None)
     assert "[debug]" not in window.windowTitle()
     window.close()
