@@ -21,6 +21,7 @@ from xml.sax.saxutils import escape as escape_xml_text
 INSTALL_DIRECTORY = "inksim"
 MANIFEST_NAME = ".inksim-install.json"
 _LAUNCHER_TOKEN = "__INKSIM_EXECUTABLE__"
+_DEBUG_SCRIPT_PARAM = "create_bash_script"
 _MANIFEST_VERSION = 1
 _ASSET_DIRECTORY = Path(__file__).resolve().parents[1] / "assets" / "inkscape"
 
@@ -349,8 +350,33 @@ def _managed_hash(name: str, content: bytes) -> str:
             commands = [node for node in root.iter() if node.tag.rsplit("}", 1)[-1] == "command"]
             if len(commands) == 1:
                 commands[0].text = _LAUNCHER_TOKEN
+                # The debug-script switch is a user preference stored in the
+                # installed file, so enabling it is not an outdated extension.
+                for node in root.iter():
+                    if (
+                        node.tag.rsplit("}", 1)[-1] == "param"
+                        and node.get("name") == _DEBUG_SCRIPT_PARAM
+                    ):
+                        node.text = "false"
                 content = ET.tostring(root, encoding="utf-8")
     return hashlib.sha256(content).hexdigest()
+
+
+def debug_script_enabled(extension_directory: Path) -> bool:
+    """Return True when the installed extension writes the debug script."""
+    preview = extension_directory / "preview.inx"
+    try:
+        root = ET.fromstring(preview.read_bytes())
+    except (OSError, ET.ParseError):
+        return False
+    for node in root.iter():
+        if (
+            node.tag.rsplit("}", 1)[-1] == "param"
+            and node.get("name") == _DEBUG_SCRIPT_PARAM
+            and (node.text or "").strip().lower() == "true"
+        ):
+            return True
+    return False
 
 
 def _preview_command(content: bytes) -> str | None:
