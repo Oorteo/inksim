@@ -110,6 +110,11 @@ executable (a legacy of Windows' DOS heritage) that starts without a console
 window, while `inksim` opens one. Use `inksim-gui` on Windows for shortcuts,
 file associations, and `Win+R`.
 
+InkSim installs its Inkscape extension with the GUI launcher on Windows, so
+using **Extensions → Ink/Stitch → Visualize and Export → InkSim** does not open
+a console window. The Ink/Stitch export that InkSim starts for the preview is
+hidden the same way.
+
 ## Running options
 
 ```bash
