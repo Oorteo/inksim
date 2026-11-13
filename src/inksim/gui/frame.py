@@ -125,6 +125,7 @@ class MainWindow(QMainWindow):
         self.recent_directories: list[str] = self._load_recent_directories()
         self.current_file_path: Path | None = None
         self._temporary_input_path: Path | None = None
+        self._debug_script: Path | None = None
         self._preserve_temporary_input_on_close = False
         self._hide_on_close = False
         self._source_mtime_ns: int | None = None
@@ -1088,14 +1089,29 @@ class MainWindow(QMainWindow):
         self._last_geometry = current
 
     def _update_window_title(self) -> None:
-        """Show layout state and update status in the window title."""
-        snap_prefix = "[snap] " if self._layout_state == "snapped" else ""
+        """Show layout and debug state plus update status in the window title."""
+        prefixes = []
+        if self._debug_script is not None:
+            prefixes.append("[debug]")
+        if self._layout_state == "snapped":
+            prefixes.append("[snap]")
+        prefix = "".join(f"{part} " for part in prefixes)
         base = self._base_title
         suffix = self._update_suffix
         # The suffix must never repeat the application name.
         if suffix and APP_TITLE in suffix:
             suffix = ""
-        self.setWindowTitle(f"{snap_prefix}{base}{suffix}")
+        self.setWindowTitle(f"{prefix}{base}{suffix}")
+
+    def announce_debug_script(self, path: Path | None) -> None:
+        """Show where the debug replay script was written, or clear the notice."""
+        self._debug_script = path
+        self._update_window_title()
+        if path is not None:
+            self.statusBar().showMessage(
+                _("frame.debug_script_created").format(path=_sanitize_path(str(path))),
+                10000,
+            )
 
     def _design_size_text(self) -> str:
         """Return the current design size formatted for the window title."""

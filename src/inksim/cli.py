@@ -318,8 +318,9 @@ def _run_inkscape_preview(
     except ValueError as error:
         parser.error(str(error))
 
+    debug_script: Path | None = None
     if create_bash_script:
-        _create_inksim_debug_script(extension_arguments)
+        debug_script = _create_inksim_debug_script(extension_arguments)
 
     status = Config().get(INKSCAPE_CONFIG_KEY)
     preview = resolve_inkstitch_preview(status) if isinstance(status, dict) else None
@@ -383,6 +384,7 @@ def _run_inkscape_preview(
                 [csv_path],
                 temporary_input=True,
                 autoplay=True,
+                debug_script=debug_script,
             )
         except SystemExit as error:
             retained = error.code == 0
@@ -400,6 +402,7 @@ def _forward_to_server(
     temporary_input: bool | None = None,
     autoplay: bool | None = None,
     check_inkscape_extension: bool = False,
+    debug_script: Path | None = None,
 ) -> None:
     """Ask the singleton server to show the first input, then exit the client."""
     _ensure_core_application()
@@ -420,6 +423,8 @@ def _forward_to_server(
             "snap_layout_key": args.snap,
         },
     }
+    if debug_script is not None:
+        request["debug_script"] = str(debug_script)
     if check_inkscape_extension:
         try:
             request["inksim_launcher"] = str(resolve_inksim_launcher())

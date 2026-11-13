@@ -246,6 +246,11 @@ class InkSimServer(QObject):
         ):
             window.set_command_line_args(command_line)
 
+        debug_script = request.get("debug_script")
+        window.announce_debug_script(
+            Path(debug_script) if isinstance(debug_script, str) and debug_script else None
+        )
+
         launcher_path = request.get("inksim_launcher")
 
         def schedule_inkscape_extension_check() -> None:
