@@ -87,11 +87,13 @@ from .viewer import EmbroideryViewerWidget
 
 
 def _force_foreground_on_windows(window: QWidget) -> None:
-    """Take the foreground despite the Windows focus lock.
+    """Bring the window to the front despite the Windows foreground lock.
 
     Windows only lets the foreground process change the foreground window, so
     activating a window that was started by another program (Inkscape) is
-    ignored. Attaching to the current foreground thread lifts that restriction.
+    ignored. Re-asserting the window with ``SetWindowPos`` is allowed for any
+    process and does not share an input queue the way ``AttachThreadInput``
+    does, which would stall this UI whenever the other program is busy.
     """
     if sys.platform != "win32":
         return
@@ -99,24 +101,19 @@ def _force_foreground_on_windows(window: QWidget) -> None:
         import ctypes
 
         user32 = ctypes.windll.user32  # type: ignore[attr-defined]
-        kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
     except AttributeError:
         return
     handle = int(window.winId())
-    foreground = user32.GetForegroundWindow()
-    if not foreground or foreground == handle:
+    if not handle or user32.GetForegroundWindow() == handle:
         return
-    current_thread = kernel32.GetCurrentThreadId()
-    foreground_thread = user32.GetWindowThreadProcessId(foreground, None)
-    attached = False
-    if foreground_thread and foreground_thread != current_thread:
-        attached = bool(user32.AttachThreadInput(current_thread, foreground_thread, True))
-    try:
-        user32.BringWindowToTop(handle)
-        user32.SetForegroundWindow(handle)
-    finally:
-        if attached:
-            user32.AttachThreadInput(current_thread, foreground_thread, False)
+    # HWND_TOPMOST/HWND_NOTOPMOST are pseudo handles; a plain Python int is
+    # passed as a 32-bit value and the call fails, so wrap them explicitly.
+    hwnd_topmost = ctypes.c_void_p(-1)
+    hwnd_notopmost = ctypes.c_void_p(-2)
+    flags = 0x0001 | 0x0002 | 0x0040  # NOSIZE | NOMOVE | SHOWWINDOW
+    user32.SetWindowPos(handle, hwnd_topmost, 0, 0, 0, 0, flags)
+    user32.SetWindowPos(handle, hwnd_notopmost, 0, 0, 0, 0, flags)
+    user32.SetForegroundWindow(handle)
 
 
 class MainWindow(QMainWindow):
