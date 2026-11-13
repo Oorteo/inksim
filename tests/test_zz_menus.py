@@ -500,19 +500,19 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
     debug_checkbox.setChecked(True)
 
     assert debug_checkbox.isChecked()
-    status, is_current, is_debug = dialog._current_inksim_update_status()
-    assert status == "Debug script mode is enabled"
+    assert "#1a73e8" in debug_checkbox.styleSheet()
+    status, is_current = dialog._current_inksim_update_status()
+    assert status == "Up to date"
     assert is_current
-    assert is_debug
-    assert not dialog.inksim_status_text.isHidden()
-    assert dialog.inksim_status_text.text() == "Debug script mode is enabled"
+    assert dialog.inksim_status_container.isHidden()
 
     debug_checkbox.setChecked(False)
 
-    status, is_current, is_debug = dialog._current_inksim_update_status()
+    assert not debug_checkbox.isChecked()
+    assert debug_checkbox.styleSheet() == ""
+    status, is_current = dialog._current_inksim_update_status()
     assert status == "Up to date"
     assert is_current
-    assert not is_debug
     extension_lines = dialog.inksim_extensions_list.toPlainText().splitlines()
     assert not any(line.endswith(str(current_copy)) for line in extension_lines)
     assert any(line.endswith(str(old_copy)) for line in extension_lines)
@@ -530,10 +530,10 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
         about_file.read_text(encoding="utf-8") + "\n",
         encoding="utf-8",
     )
-    status, is_current, is_debug = dialog._current_inksim_update_status()
+    status, is_current = dialog._current_inksim_update_status()
     assert "changed files: about.inx" in status
     assert not is_current
-    dialog._show_inksim_update_status(status, is_current, is_debug)
+    dialog._show_inksim_update_status(status, is_current)
     assert dialog.inksim_warning_icon.text() == "⚠"
     assert dialog.inksim_status_icon.isHidden()
     assert not dialog.inksim_status_container.isHidden()
@@ -546,10 +546,10 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
         "inksim.gui.inkscape_dialog.resolve_inksim_launcher",
         lambda: replacement_launcher,
     )
-    status, is_current, is_debug = dialog._current_inksim_update_status()
+    status, is_current = dialog._current_inksim_update_status()
     assert "Preview command changed" in status
     assert not is_current
-    dialog._show_inksim_update_status(status, is_current, is_debug)
+    dialog._show_inksim_update_status(status, is_current)
     assert "background-color: #fff3cd" in dialog.inksim_status_container.styleSheet()
 
     dialog.remove_old_extensions_button.click()
