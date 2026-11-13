@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from pathlib import Path
+
 import pystitch as emb
 
 from inksim.formats import read_embroidery_file
@@ -30,6 +32,16 @@ def test_reads_pystitch_stitchblock_svg(tmp_path):
         [30.0, 30.0, emb.JUMP],
         [40.0, 40.0, emb.STITCH],
     ]
+
+
+def test_reads_sample_stitchblock_svg():
+    svg_path = Path(__file__).parent / "data" / "sample_svg.svg"
+
+    pattern = read_embroidery_file(svg_path)
+
+    assert pattern is not None
+    assert len(pattern.stitches) == 7208
+    assert len(pattern.threadlist) == 2
 
 
 def test_regular_svg_is_not_mistaken_for_stitchblock_export(tmp_path):
