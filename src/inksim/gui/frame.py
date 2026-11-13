@@ -85,6 +85,8 @@ from .status import ModeBar
 from .timeline import TimelineWidget
 from .viewer import EmbroideryViewerWidget
 
+_WINDOWS_FOCUS_RETRY_DELAYS_MS = (300, 900)
+
 
 def _force_foreground_on_windows(window: QWidget) -> None:
     """Bring the window to the front despite the Windows foreground lock.
@@ -1036,7 +1038,18 @@ class MainWindow(QMainWindow):
         self.show_window(focus=False)
         self.raise_()
         self.activateWindow()
+        if sys.platform != "win32":
+            return
+        # Inkscape takes the focus back once the extension process it started
+        # finishes, so re-assert the window shortly after the first attempt.
         _force_foreground_on_windows(self)
+        for delay_ms in _WINDOWS_FOCUS_RETRY_DELAYS_MS:
+            QTimer.singleShot(delay_ms, self._regain_foreground)
+
+    def _regain_foreground(self) -> None:
+        """Re-assert the foreground after another program tried to take it."""
+        if self.isVisible():
+            _force_foreground_on_windows(self)
 
     def _default_snapped_geometry(self) -> QRect:
         """Return a rectangle covering the right half of the primary screen."""
