@@ -332,6 +332,37 @@ def test_stale_code_fingerprint_replaces_running_server(monkeypatch):
     assert "spawn" in calls
 
 
+def test_open_request_uses_extended_response_timeout(monkeypatch):
+    from inksim import server as server_module
+
+    calls = []
+    monkeypatch.setattr(server_module, "app_version", lambda: "test")
+    monkeypatch.setattr(server_module, "code_fingerprint", lambda: "current")
+    monkeypatch.setattr(
+        server_module,
+        "_hello_or_none",
+        lambda: {
+            "app_version": "test",
+            "code_fingerprint": "current",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+        },
+    )
+    monkeypatch.setattr(
+        server_module,
+        "send_request",
+        lambda request, **kwargs: calls.append((request, kwargs)) or {"ok": True},
+    )
+
+    server_module.forward_request({"type": "open", "path": "design.pes"})
+
+    assert calls == [
+        (
+            {"type": "open", "path": "design.pes"},
+            {"timeout_ms": 120_000},
+        )
+    ]
+
+
 def test_server_start_timeout_reports_child_process_state(monkeypatch):
     import pytest
 
