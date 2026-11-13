@@ -185,6 +185,7 @@ class InkSimServer(QObject):
         self._idle_timer.stop()
         self._ipc.stop()
         for window in list(self.windows):
+            window.set_hide_on_close(False)
             window.close()
         self.windows.clear()
         if relaunch_args is not None:
@@ -231,6 +232,7 @@ class InkSimServer(QObject):
             window = self.windows[index]
         else:
             return {"ok": False, "error": f"no InkSim window with index {index}"}
+        self._idle_timer.stop()
 
         command_line = request.get("command_line")
         if isinstance(command_line, list) and all(
@@ -253,11 +255,13 @@ class InkSimServer(QObject):
         path = request.get("path")
         if path is None:
             window.focus_window()
+            self._restart_idle_timer()
             schedule_inkscape_extension_check()
             return {"ok": True, "index": self.windows.index(window)}
         if Path(path).is_dir():
             window.last_directory = str(Path(path).resolve())
             window.focus_window()
+            self._restart_idle_timer()
             schedule_inkscape_extension_check()
             QTimer.singleShot(0, window.open_browser_dialog)
             return {"ok": True, "index": self.windows.index(window)}
@@ -265,12 +269,15 @@ class InkSimServer(QObject):
         autoplay = bool(request.get("autoplay"))
         delete_after_load = bool(request.get("delete_after_load"))
         temporary_input = bool(request.get("temporary_input"))
+        reuse_loaded_file = not delete_after_load and window.has_unchanged_file(
+            selected_path, temporary_input
+        )
         is_svg = (
             selected_path.suffix.lower() == ".svg"
             and selected_path.is_file()
             and not temporary_input
         )
-        loaded = window.open_file(
+        loaded = reuse_loaded_file or window.open_file(
             path,
             delete_after_load=delete_after_load,
             autoplay=autoplay,
@@ -280,19 +287,24 @@ class InkSimServer(QObject):
         if not loaded and is_svg:
             window.open_browser_dialog(selected_file=selected_path.resolve())
             window.focus_window()
+            self._restart_idle_timer()
             schedule_inkscape_extension_check()
             return {"ok": True, "index": self.windows.index(window)}
         if not loaded:
+            self._restart_idle_timer()
             return {"ok": False, "error": f"cannot open {path}"}
-        if autoplay:
+        if autoplay and (not reuse_loaded_file or not window.viewer.is_playing):
             window.viewer.toggle_auto_play(forward=True)
         window.focus_window()
+        self._restart_idle_timer()
         schedule_inkscape_extension_check()
         return {"ok": True, "index": self.windows.index(window)}
 
     def _adopt(self, window: MainWindow) -> None:
         self.windows.append(window)
+        window.set_hide_on_close(True)
         window.closed.connect(self._on_window_closed)
+        window.hidden.connect(self._on_window_hidden)
         window.quit_all_requested.connect(self.quit_all)
         window.restart_requested.connect(self.quit_all)
         self._restart_idle_timer()
@@ -302,13 +314,17 @@ class InkSimServer(QObject):
             self.windows.remove(window)
         self._restart_idle_timer()
 
+    def _on_window_hidden(self, window: MainWindow) -> None:
+        if window in self.windows:
+            self._restart_idle_timer()
+
     def _restart_idle_timer(self) -> None:
         self._idle_timer.stop()
         if self._stopping:
             return
-        if not self.windows and self._idle_timeout > 0:
+        if not any(window.isVisible() for window in self.windows) and self._idle_timeout > 0:
             self._idle_timer.start(self._idle_timeout * 1000)
 
     def _on_idle_timeout(self) -> None:
-        if not self.windows:
+        if not any(window.isVisible() for window in self.windows):
             self.quit_all()

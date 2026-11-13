@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from types import SimpleNamespace
 
 from PySide6.QtCore import QObject, Signal
@@ -13,6 +14,7 @@ from inksim.server import InkSimServer
 
 class FakeWindow(QObject):
     closed = Signal(object)
+    hidden = Signal(object)
     quit_all_requested = Signal()
     restart_requested = Signal(object)
 
@@ -20,10 +22,14 @@ class FakeWindow(QObject):
         super().__init__()
         self.document_path = None
         self.open_file_args = None
+        self.open_file_calls = []
         self.browser_dialog_args = None
         self.command_line_args = None
         self.inksim_launcher = None
         self.open_file_result = True
+        self.current_file_path = None
+        self.visible = True
+        self.hide_on_close = False
 
     def set_document_path(self, path):
         self.document_path = path
@@ -34,8 +40,20 @@ class FakeWindow(QObject):
     def set_command_line_args(self, arguments):
         self.command_line_args = arguments.copy()
 
+    def set_hide_on_close(self, enabled):
+        self.hide_on_close = enabled
+
+    def isVisible(self):
+        return self.visible
+
     def focus_window(self):
-        pass
+        self.visible = True
+
+    def has_unchanged_file(self, path, temporary_input):
+        return (
+            self.current_file_path == Path(path).resolve()
+            and temporary_input is self.open_file_args["temporary_input"]
+        )
 
     def open_browser_dialog(self, selected_file=None, initial_directory=None):
         self.browser_dialog_args = {
@@ -51,6 +69,7 @@ class FakeWindow(QObject):
         temporary_input=False,
         show_error_dialog=True,
     ):
+        self.open_file_calls.append(path)
         self.open_file_args = {
             "path": path,
             "delete_after_load": delete_after_load,
@@ -58,9 +77,15 @@ class FakeWindow(QObject):
             "temporary_input": temporary_input,
             "show_error_dialog": show_error_dialog,
         }
+        if self.open_file_result:
+            self.current_file_path = Path(path).resolve()
         return self.open_file_result
 
     def close(self):
+        if self.hide_on_close:
+            self.visible = False
+            self.hidden.emit(self)
+            return
         self.closed.emit(self)
 
 
@@ -200,16 +225,18 @@ def test_open_schedules_inkscape_extension_check(qapp):
     assert created[0].inksim_launcher == "/opt/inksim/bin/inksim"
 
 
-def test_closing_last_window_starts_idle_timer(qapp):
+def test_hiding_last_window_keeps_it_and_starts_idle_timer(qapp):
     server, _ = _server(qapp, idle_timeout=300)
     server._handle_request(
         {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "new_window": True}
     )
     assert not server._idle_timer.isActive()
+    window = server.windows[0]
 
-    server.windows[0].close()
+    window.close()
 
-    assert server.windows == []
+    assert server.windows == [window]
+    assert not window.isVisible()
     assert server._idle_timer.isActive()
 
 
@@ -220,7 +247,61 @@ def test_idle_timer_disabled_when_timeout_is_zero(qapp):
     )
     server.windows[0].close()
 
+    assert len(server.windows) == 1
     assert not server._idle_timer.isActive()
+
+
+def test_server_managed_close_hides_window_and_preserves_view_state(qtbot):
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    window.viewer.visible_count = 12
+    window.set_hide_on_close(True)
+    window.show()
+
+    window.close()
+
+    assert not window.isVisible()
+    assert window.viewer.visible_count == 12
+    window.focus_window()
+    assert window.isVisible()
+    assert window.viewer.visible_count == 12
+    window.set_hide_on_close(False)
+    window.close()
+
+
+def test_open_reuses_hidden_window_and_unchanged_input(qapp, tmp_path):
+    server, created = _server(qapp)
+    input_path = tmp_path / "design.pes"
+    input_path.write_bytes(b"design")
+    request = {
+        "type": "open",
+        "protocol_version": IPC_PROTOCOL_VERSION,
+        "new_window": True,
+        "path": str(input_path),
+    }
+
+    response = server._handle_request(request)
+    window = created[0]
+    window.close()
+    assert not window.isVisible()
+
+    response = server._handle_request({**request, "new_window": False})
+
+    assert response["ok"] is True
+    assert created == [window]
+    assert len(window.open_file_calls) == 1
+    assert window.isVisible()
+    assert not server._idle_timer.isActive()
+
+    different_path = tmp_path / "other.pes"
+    different_path.write_bytes(b"other design")
+    response = server._handle_request({**request, "new_window": False, "path": str(different_path)})
+
+    assert response["ok"] is True
+    assert len(window.open_file_calls) == 2
+    assert window.current_file_path == different_path.resolve()
 
 
 def test_stale_code_fingerprint_replaces_running_server(monkeypatch):
