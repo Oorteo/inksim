@@ -493,22 +493,26 @@ def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbo
     assert not dialog.inksim_status_icon.isHidden()
     assert dialog.inksim_status_container.isHidden()
     assert dialog.inksim_status_icon.toolTip() == "Up to date"
-    import xml.etree.ElementTree as ET
+    debug_checkbox = dialog.inksim_debug_script_checkbox
+    assert debug_checkbox.isEnabled()
+    assert not debug_checkbox.isChecked()
 
-    preview_file = current_copy / "preview.inx"
-    preview_root = ET.fromstring(preview_file.read_bytes())
-    for node in preview_root.iter():
-        if node.get("name") == "create_bash_script":
-            node.text = "true"
-    preview_file.write_bytes(ET.tostring(preview_root, encoding="utf-8"))
+    debug_checkbox.setChecked(True)
+
+    assert debug_checkbox.isChecked()
     status, is_current, is_debug = dialog._current_inksim_update_status()
     assert status == "Debug script mode is enabled"
     assert is_current
     assert is_debug
-    dialog._show_inksim_update_status(status, is_current, is_debug)
     assert not dialog.inksim_status_text.isHidden()
     assert dialog.inksim_status_text.text() == "Debug script mode is enabled"
-    assert not dialog.inksim_status_container.isHidden()
+
+    debug_checkbox.setChecked(False)
+
+    status, is_current, is_debug = dialog._current_inksim_update_status()
+    assert status == "Up to date"
+    assert is_current
+    assert not is_debug
     extension_lines = dialog.inksim_extensions_list.toPlainText().splitlines()
     assert not any(line.endswith(str(current_copy)) for line in extension_lines)
     assert any(line.endswith(str(old_copy)) for line in extension_lines)
