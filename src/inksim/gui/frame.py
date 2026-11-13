@@ -1610,6 +1610,7 @@ class MainWindow(QMainWindow):
             self._remove_temporary_file(previous_temporary_input)
 
         self.current_file_path = selected_path
+        self._debug_script = None
         self._source_mtime_ns = self._capture_source_mtime(selected_path)
         if not delete_after_load and not retain_temporary_input:
             self._remember_last_file(selected_path)
