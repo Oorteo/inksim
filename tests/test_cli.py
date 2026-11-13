@@ -281,6 +281,7 @@ def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(
     ]
     assert process_calls[0][1]["cwd"] == extension_dir
     assert process_calls[0][1]["env"]["INKSTITCH_OFFLINE_SCRIPT"] == "True"
+    assert process_calls[0][1]["stdin"] == cli.subprocess.DEVNULL
     assert "--create_bash_script=true" not in process_calls[0][0]
     debug_svg = document_dir / "debug_inksim.svg"
     debug_script = document_dir / "debug_inksim.sh"
@@ -303,9 +304,27 @@ def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(
         )
         in script_contents
     )
+    assert "export INKSIM_OFFLINE_SCRIPT=true" in script_contents
     assert "--extension=output" not in script_contents
     assert "INKSTITCH_OFFLINE_SCRIPT" not in script_contents
     assert str(debug_script) in capsys.readouterr().err
+    assert (
+        cli._create_inksim_debug_script(
+            ["--extension=preview", "--create_bash_script=true", str(debug_svg)]
+        )
+        is None
+    )
+    assert capsys.readouterr().err == ""
+    original_script = debug_script.read_text(encoding="utf-8")
+    monkeypatch.setenv("INKSIM_OFFLINE_SCRIPT", "true")
+    assert (
+        cli._create_inksim_debug_script(
+            ["--extension=preview", "--create_bash_script=true", str(svg_path)]
+        )
+        is None
+    )
+    assert debug_script.read_text(encoding="utf-8") == original_script
+    assert capsys.readouterr().err == ""
     assert requests[0]["command_line"] == [
         "inksim",
         "--extension=preview",

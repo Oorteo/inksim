@@ -268,6 +268,9 @@ def _extract_create_bash_script(arguments: list[str]) -> tuple[bool, list[str]]:
 
 def _create_inksim_debug_script(extension_arguments: list[str]) -> Path | None:
     """Save Inkscape's temporary SVG and a shell command for replaying InkSim."""
+    if os.environ.get("INKSIM_OFFLINE_SCRIPT", "").lower() == "true":
+        return None
+
     input_svg = next(
         (
             Path(argument).resolve()
@@ -292,10 +295,6 @@ def _create_inksim_debug_script(extension_arguments: list[str]) -> Path | None:
     working_directory = Path.cwd()
 
     if input_svg == debug_svg.resolve():
-        print(
-            f"Could not create InkSim debug script: input is already {debug_svg}.",
-            file=sys.stderr,
-        )
         return None
 
     replay_arguments = [
@@ -320,6 +319,7 @@ def _create_inksim_debug_script(extension_arguments: list[str]) -> Path | None:
         for name in exported_environment
         if name in os.environ
     )
+    lines.append("export INKSIM_OFFLINE_SCRIPT=true")
     lines.append(shlex.join([sys.argv[0], *replay_arguments]))
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -381,6 +381,7 @@ def _run_inkscape_preview(
                     [*command, *output_arguments],
                     cwd=script_path.parent,
                     env=inkstitch_process_environment(extension_dir, status),
+                    stdin=subprocess.DEVNULL,
                     stdout=csv_file,
                     stderr=subprocess.PIPE,
                     text=True,
