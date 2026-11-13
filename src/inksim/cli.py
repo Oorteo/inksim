@@ -7,10 +7,13 @@ from __future__ import annotations
 
 import argparse
 import os
+import shlex
+import shutil
 import signal
 import subprocess
 import sys
 import tempfile
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +33,8 @@ from .integration.paths import INKSCAPE_CONFIG_KEY
 from .ipc import IpcUnavailable, send_request
 from .runtime import runtime_info_lines
 from .server import InkSimServer, forward_request, idle_timeout_seconds
+
+INKSCAPE_EXTENSION_LOG_PATH = Path(tempfile.gettempdir()) / "inksim-extension.md"
 
 
 def _parse_pair(value: str, name: str, separator: str) -> tuple[int, int]:
@@ -142,6 +147,45 @@ def _extension_name(arguments: list[str]) -> str | None:
     return None
 
 
+def _log_inkscape_extension_invocation(arguments: list[str]) -> None:
+    """Append diagnostic details for an invocation started by Inkscape."""
+    environment_names = (
+        "DOCUMENT_PATH",
+        "INKEX_GETTEXT_DOMAIN",
+        "INKEX_GETTEXT_DIRECTORY",
+        "INKSCAPE_PROFILE_DIR",
+        "PYTHONPATH",
+    )
+    environment = [
+        f"    {name}={os.environ[name]}" for name in environment_names if name in os.environ
+    ]
+    record = [
+        f"## Inkscape extension invocation - {datetime.now().astimezone().isoformat()}",
+        "",
+        f"- Extension: {_extension_name(arguments) or '(unknown)'}",
+        f"- Executable: {sys.executable}",
+        f"- Working directory: {Path.cwd()}",
+        "",
+        "### Arguments",
+        *(f"    [{index}] {argument}" for index, argument in enumerate(sys.argv)),
+        "",
+        "### Inkscape environment",
+        *(environment or ["    (none of the selected variables are set)"]),
+        "",
+        "---",
+        "",
+    ]
+    try:
+        with INKSCAPE_EXTENSION_LOG_PATH.open("a", encoding="utf-8") as log_file:
+            log_file.write("\n".join(record))
+    except OSError as error:
+        print(
+            f"Warning: could not write Inkscape diagnostics to "
+            f"{INKSCAPE_EXTENSION_LOG_PATH}: {error}",
+            file=sys.stderr,
+        )
+
+
 def _inkstitch_preview_arguments(arguments: list[str]) -> list[str]:
     """Translate InkSim's preview extension arguments into Ink/Stitch output arguments."""
     result: list[str] = []
@@ -193,6 +237,103 @@ def _inkstitch_preview_arguments(arguments: list[str]) -> list[str]:
     return result
 
 
+def _extract_create_bash_script(arguments: list[str]) -> tuple[bool, list[str]]:
+    """Read and remove the optional debug-script extension parameter."""
+    enabled = False
+    result: list[str] = []
+    option = "--create_bash_script"
+    index = 0
+    while index < len(arguments):
+        argument = arguments[index]
+        if argument == option:
+            enabled = True
+            if index + 1 < len(arguments) and arguments[index + 1].lower() in {
+                "true",
+                "false",
+                "1",
+                "0",
+            }:
+                enabled = arguments[index + 1].lower() in {"true", "1"}
+                index += 1
+        elif argument.startswith(f"{option}="):
+            value = argument.partition("=")[2].lower()
+            if value not in {"true", "false", "1", "0"}:
+                raise ValueError(f"Invalid value for {option}: {value!r}")
+            enabled = value in {"true", "1"}
+        else:
+            result.append(argument)
+        index += 1
+    return enabled, result
+
+
+def _create_inksim_debug_script(extension_arguments: list[str]) -> Path | None:
+    """Save Inkscape's temporary SVG and a shell command for replaying InkSim."""
+    input_svg = next(
+        (
+            Path(argument).resolve()
+            for argument in extension_arguments
+            if ".svg" in Path(argument).name.lower() and Path(argument).is_file()
+        ),
+        None,
+    )
+    if input_svg is None:
+        print("Could not create InkSim debug script: no input SVG was found.", file=sys.stderr)
+        return None
+
+    document_path = os.environ.get("DOCUMENT_PATH")
+    if document_path:
+        document = Path(document_path).expanduser()
+        output_dir = document if document.is_dir() else document.parent
+    else:
+        output_dir = input_svg.parent
+    output_dir = output_dir.resolve()
+    debug_svg = output_dir / "debug_inksim.svg"
+    debug_script = output_dir / "debug_inksim.sh"
+    working_directory = Path.cwd()
+
+    if input_svg == debug_svg.resolve():
+        print(
+            f"Could not create InkSim debug script: input is already {debug_svg}.",
+            file=sys.stderr,
+        )
+        return None
+
+    replay_arguments = [
+        str(debug_svg) if Path(argument).resolve() == input_svg else argument
+        for argument in extension_arguments
+    ]
+    exported_environment = (
+        "PATH",
+        "PYTHONPATH",
+        "INKEX_GETTEXT_DOMAIN",
+        "INKEX_GETTEXT_DIRECTORY",
+        "INKSCAPE_PROFILE_DIR",
+        "DOCUMENT_PATH",
+    )
+    lines = [
+        "#!/usr/bin/env bash",
+        "set -e",
+        f"cd -- {shlex.quote(str(working_directory))}",
+    ]
+    lines.extend(
+        f"export {name}={shlex.quote(os.environ[name])}"
+        for name in exported_environment
+        if name in os.environ
+    )
+    lines.append(shlex.join([sys.argv[0], *replay_arguments]))
+    try:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(input_svg, debug_svg)
+        debug_script.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        debug_script.chmod(0o755)
+    except OSError as error:
+        print(f"Could not create InkSim debug script: {error}", file=sys.stderr)
+        return None
+
+    print(f"InkSim debug script created: {debug_script}", file=sys.stderr)
+    return debug_script
+
+
 def _remove_temporary_csv(path: Path) -> None:
     try:
         path.unlink(missing_ok=True)
@@ -207,9 +348,13 @@ def _run_inkscape_preview(
 ) -> None:
     """Wait for Ink/Stitch to export Inkscape's temporary SVG, then display its CSV."""
     try:
-        output_arguments = _inkstitch_preview_arguments(extension_arguments)
+        create_bash_script, preview_arguments = _extract_create_bash_script(extension_arguments)
+        output_arguments = _inkstitch_preview_arguments(preview_arguments)
     except ValueError as error:
         parser.error(str(error))
+
+    if create_bash_script:
+        _create_inksim_debug_script(extension_arguments)
 
     status = Config().get(INKSCAPE_CONFIG_KEY)
     preview = resolve_inkstitch_preview(status) if isinstance(status, dict) else None
@@ -510,6 +655,7 @@ def main() -> None:
     parser = build_argument_parser()
     command_line = sys.argv[1:]
     if _is_inkscape_extension_invocation(command_line):
+        _log_inkscape_extension_invocation(command_line)
         args = parser.parse_args([])
         if _extension_name(command_line) == "preview":
             _run_inkscape_preview(parser, args, command_line)

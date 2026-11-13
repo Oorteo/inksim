@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
+import shlex
 import subprocess
 import sys
 
@@ -108,13 +109,16 @@ def test_manual_launch_passes_current_inksim_launcher_for_extension_check(monkey
 
 
 def test_inkscape_extension_invocation_opens_inksim_despite_extension_arguments(
-    monkeypatch,
+    monkeypatch, tmp_path
 ):
     import pytest
 
     from inksim import cli
 
     requests = []
+    log_path = tmp_path / "inksim-extension.md"
+    monkeypatch.setattr(cli, "INKSCAPE_EXTENSION_LOG_PATH", log_path)
+    monkeypatch.setenv("DOCUMENT_PATH", "/home/user/design.svg")
     monkeypatch.setattr(cli.sys, "argv", ["inksim", "--extension=about", "--id=selection"])
     monkeypatch.setattr(cli, "_ensure_core_application", lambda: None)
     monkeypatch.setattr(
@@ -135,6 +139,12 @@ def test_inkscape_extension_invocation_opens_inksim_despite_extension_arguments(
         "--id=selection",
     ]
     assert "inksim_launcher" not in requests[0]
+    log_record = log_path.read_text(encoding="utf-8")
+    assert "## Inkscape extension invocation - " in log_record
+    assert "- Extension: about" in log_record
+    assert "    [1] --extension=about" in log_record
+    assert "    [2] --id=selection" in log_record
+    assert "    DOCUMENT_PATH=/home/user/design.svg" in log_record
 
 
 def test_inkstitch_preview_arguments_preserve_ids_and_set_csv_options():
@@ -164,7 +174,25 @@ def test_inkstitch_preview_arguments_preserve_ids_and_set_csv_options():
     ]
 
 
-def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(monkeypatch, tmp_path):
+def test_extract_create_bash_script_flag():
+    from inksim.cli import _extract_create_bash_script
+
+    assert _extract_create_bash_script(["--extension=preview"]) == (
+        False,
+        ["--extension=preview"],
+    )
+    assert _extract_create_bash_script(
+        ["--extension=preview", "--create_bash_script=true", "--id=selection"]
+    ) == (True, ["--extension=preview", "--id=selection"])
+    assert _extract_create_bash_script(["--extension=preview", "--create_bash_script=false"]) == (
+        False,
+        ["--extension=preview"],
+    )
+
+
+def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(
+    monkeypatch, tmp_path, capsys
+):
     from pathlib import Path
     from types import SimpleNamespace
 
@@ -178,8 +206,12 @@ def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(monkeypatc
     script.write_text("# Ink/Stitch test script\n", encoding="utf-8")
     python = tmp_path / "python"
     python.touch()
-    svg_path = tmp_path / "inkscape-temporary.svg"
+    svg_path = tmp_path / "ink_ext_XXXXXX.svg50RMY3"
     svg_path.write_text("<svg />", encoding="utf-8")
+    document_dir = tmp_path / "original document"
+    document_dir.mkdir()
+    document_path = document_dir / "design.svg"
+    document_path.write_text("<svg id='original' />", encoding="utf-8")
     status = {
         "status": "found",
         "active_inkstitch": str(extension_dir),
@@ -217,6 +249,8 @@ def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(monkeypatc
         return {"ok": True}
 
     monkeypatch.setattr(cli, "Config", FakeConfig)
+    monkeypatch.setenv("DOCUMENT_PATH", str(document_path))
+    monkeypatch.setenv("INKEX_GETTEXT_DIRECTORY", "/inkscape extensions/locale")
     monkeypatch.setattr(cli.subprocess, "run", run)
     monkeypatch.setattr(cli, "_ensure_core_application", lambda: None)
     monkeypatch.setattr(cli, "forward_request", forward)
@@ -226,6 +260,7 @@ def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(monkeypatc
         [
             "inksim",
             "--extension=preview",
+            "--create_bash_script=true",
             "--id=selection",
             str(svg_path),
         ],
@@ -246,9 +281,35 @@ def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(monkeypatc
     ]
     assert process_calls[0][1]["cwd"] == extension_dir
     assert process_calls[0][1]["env"]["INKSTITCH_OFFLINE_SCRIPT"] == "True"
+    assert "--create_bash_script=true" not in process_calls[0][0]
+    debug_svg = document_dir / "debug_inksim.svg"
+    debug_script = document_dir / "debug_inksim.sh"
+    assert debug_svg.read_text(encoding="utf-8") == "<svg />"
+    script_contents = debug_script.read_text(encoding="utf-8")
+    assert f"cd -- {shlex.quote(str(Path.cwd()))}" in script_contents
+    assert f"export DOCUMENT_PATH={shlex.quote(str(document_path))}" in script_contents
+    assert f"export INKEX_GETTEXT_DIRECTORY={shlex.quote('/inkscape extensions/locale')}" in (
+        script_contents
+    )
+    assert (
+        shlex.join(
+            [
+                "inksim",
+                "--extension=preview",
+                "--create_bash_script=true",
+                "--id=selection",
+                str(debug_svg),
+            ]
+        )
+        in script_contents
+    )
+    assert "--extension=output" not in script_contents
+    assert "INKSTITCH_OFFLINE_SCRIPT" not in script_contents
+    assert str(debug_script) in capsys.readouterr().err
     assert requests[0]["command_line"] == [
         "inksim",
         "--extension=preview",
+        "--create_bash_script=true",
         "--id=selection",
         str(svg_path),
     ]
