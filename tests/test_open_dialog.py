@@ -1022,3 +1022,30 @@ def test_debug_script_marks_the_window_until_another_file_is_opened(
     window.set_debug_script(None)
     assert "[debug]" not in window.windowTitle()
     window.close()
+
+
+def test_focus_window_uses_the_windows_foreground_helper(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui import frame
+
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: Config(tmp_path / "config.toml"))
+    forced = []
+    monkeypatch.setattr(frame, "_force_foreground_on_windows", lambda window: forced.append(window))
+    window = frame.MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    window.focus_window()
+
+    assert forced == [window]
+    window.close()
+
+
+def test_force_foreground_does_nothing_outside_windows():
+    import pytest
+
+    from inksim.gui import frame
+
+    if frame.sys.platform == "win32":
+        pytest.skip("Windows takes the native path")
+
+    frame._force_foreground_on_windows(None)
