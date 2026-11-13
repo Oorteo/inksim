@@ -160,8 +160,18 @@ def resolve_inksim_launcher() -> Path:
         except OSError:
             continue
         if resolved.is_file() and (os.name == "nt" or os.access(resolved, os.X_OK)):
-            return resolved
+            return prefer_gui_launcher(resolved)
     raise FileNotFoundError("Could not find the InkSim launcher for the current environment.")
+
+
+def prefer_gui_launcher(launcher: Path, windows: bool | None = None) -> Path:
+    """Prefer the GUI launcher on Windows so Inkscape opens no console window."""
+    if windows is None:
+        windows = os.name == "nt"
+    if not windows or launcher.name.lower() != "inksim.exe":
+        return launcher
+    gui_launcher = launcher.with_name("inksim-gui.exe")
+    return gui_launcher if gui_launcher.is_file() else launcher
 
 
 def prepare_install(extension_directory: Path, launcher: Path) -> InstallPlan:

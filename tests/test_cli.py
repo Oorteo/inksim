@@ -457,3 +457,11 @@ def test_cli_batch_export_from_subdirectory_files(sample_design, tmp_path):
     assert expected_a.stat().st_size > 0
     assert expected_b.is_file()
     assert expected_b.stat().st_size > 0
+
+
+def test_console_hiding_options_only_apply_on_windows(monkeypatch):
+    from inksim import cli
+
+    assert cli._console_hiding_options(platform="posix") == {}
+    monkeypatch.setattr(cli.subprocess, "CREATE_NO_WINDOW", 0x08000000, raising=False)
+    assert cli._console_hiding_options(platform="nt") == {"creationflags": 0x08000000}

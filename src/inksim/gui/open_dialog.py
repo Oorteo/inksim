@@ -1530,7 +1530,11 @@ class OpenBrowserDialog(QDialog):
         try:
             child_env = clean_child_environment()
             if os.name == "nt":
-                subprocess.Popen([command[0], *arguments], env=child_env)
+                subprocess.Popen(
+                    [command[0], *arguments],
+                    env=child_env,
+                    creationflags=subprocess.CREATE_NO_WINDOW,
+                )
             else:
                 subprocess.Popen(
                     [command[0], *arguments],
