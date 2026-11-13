@@ -8,6 +8,7 @@ import pytest
 
 from inksim.integration.inkscape_extensions import (
     InstallSafetyError,
+    debug_script_enabled,
     find_installed_inksim_extensions,
     install_extension,
     list_inksim_extension_files,
@@ -210,3 +211,58 @@ def test_enabled_debug_script_is_not_an_outdated_extension(tmp_path):
     assert not plan.requires_confirmation
     assert not plan.update_required
     assert debug_script_enabled(destination)
+
+
+def test_debug_script_can_be_toggled_in_the_installed_extension(tmp_path):
+    from inksim.integration.inkscape_extensions import set_debug_script_enabled
+
+    launcher = _launcher(tmp_path)
+    extension_directory = tmp_path / "extensions"
+    destination = install_extension(prepare_install(extension_directory, launcher))
+    preview = destination / "preview.inx"
+    original = preview.read_bytes()
+    assert not debug_script_enabled(destination)
+
+    assert set_debug_script_enabled(destination, True)
+
+    assert debug_script_enabled(destination)
+    assert b">true</param>" in preview.read_bytes()
+    assert not prepare_install(extension_directory, launcher).update_required
+
+    assert set_debug_script_enabled(destination, False)
+
+    assert not debug_script_enabled(destination)
+    assert preview.read_bytes() == original
+
+
+def test_update_keeps_the_enabled_debug_script(tmp_path):
+    from inksim.integration.inkscape_extensions import set_debug_script_enabled
+
+    first_launcher = _launcher(tmp_path)
+    extension_directory = tmp_path / "extensions"
+    destination = install_extension(prepare_install(extension_directory, first_launcher))
+    set_debug_script_enabled(destination, True)
+
+    second_launcher = tmp_path / "other & venv" / "bin" / "inksim"
+    second_launcher.parent.mkdir(parents=True)
+    second_launcher.write_text("#!/bin/sh\n", encoding="utf-8")
+    second_launcher.chmod(0o755)
+    plan = prepare_install(extension_directory, second_launcher)
+    assert plan.update_required
+    install_extension(plan)
+
+    assert debug_script_enabled(destination)
+
+
+def test_update_keeps_the_disabled_debug_script(tmp_path):
+    first_launcher = _launcher(tmp_path)
+    extension_directory = tmp_path / "extensions"
+    destination = install_extension(prepare_install(extension_directory, first_launcher))
+
+    second_launcher = tmp_path / "other & venv" / "bin" / "inksim"
+    second_launcher.parent.mkdir(parents=True)
+    second_launcher.write_text("#!/bin/sh\n", encoding="utf-8")
+    second_launcher.chmod(0o755)
+    install_extension(prepare_install(extension_directory, second_launcher))
+
+    assert not debug_script_enabled(destination)

@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
 import stat
 import sys
@@ -22,6 +23,12 @@ INSTALL_DIRECTORY = "inksim"
 MANIFEST_NAME = ".inksim-install.json"
 _LAUNCHER_TOKEN = "__INKSIM_EXECUTABLE__"
 _DEBUG_SCRIPT_PARAM = "create_bash_script"
+_NAMESPACE_PREFIX = rb"(?:[A-Za-z0-9_.-]+:)?"
+_DEBUG_SCRIPT_PATTERN = re.compile(
+    rb"<" + _NAMESPACE_PREFIX + rb'param\b[^>]*\bname="create_bash_script"'
+    rb"[^>]*>\s*(?P<value>true|false)\s*</" + _NAMESPACE_PREFIX + rb"param>",
+    re.IGNORECASE,
+)
 _MANIFEST_VERSION = 1
 _ASSET_DIRECTORY = Path(__file__).resolve().parents[1] / "assets" / "inkscape"
 
@@ -281,6 +288,8 @@ def install_extension(plan: InstallPlan, *, confirmed: bool = False) -> Path:
         _reject_symlink_parents(plan.destination, path)
         if path.is_symlink():
             raise InstallSafetyError(f"Refusing to replace a symbolic link: {path}")
+        if name == "preview.inx" and path.is_file():
+            content = _with_debug_script_value(content, _debug_script_value(path.read_bytes()))
         _atomic_write(path, content)
 
     manifest = {
@@ -364,19 +373,44 @@ def _managed_hash(name: str, content: bytes) -> str:
 
 def debug_script_enabled(extension_directory: Path) -> bool:
     """Return True when the installed extension writes the debug script."""
+    try:
+        content = (extension_directory / "preview.inx").read_bytes()
+    except OSError:
+        return False
+    return _debug_script_value(content)
+
+
+def set_debug_script_enabled(extension_directory: Path, enabled: bool) -> bool:
+    """Switch the debug replay script on or off in the installed extension."""
     preview = extension_directory / "preview.inx"
     try:
-        root = ET.fromstring(preview.read_bytes())
-    except (OSError, ET.ParseError):
+        content = preview.read_bytes()
+    except OSError:
         return False
-    for node in root.iter():
-        if (
-            node.tag.rsplit("}", 1)[-1] == "param"
-            and node.get("name") == _DEBUG_SCRIPT_PARAM
-            and (node.text or "").strip().lower() == "true"
-        ):
-            return True
-    return False
+    updated = _with_debug_script_value(content, enabled)
+    if updated == content:
+        return True
+    try:
+        _atomic_write(preview, updated)
+    except OSError:
+        return False
+    return True
+
+
+def _debug_script_value(content: bytes) -> bool:
+    match = _DEBUG_SCRIPT_PATTERN.search(content)
+    return match is not None and match.group("value").lower() == b"true"
+
+
+def _with_debug_script_value(content: bytes, enabled: bool) -> bytes:
+    value = b"true" if enabled else b"false"
+
+    def replace(match: re.Match[bytes]) -> bytes:
+        start, end = match.span("value")
+        offset = match.start()
+        return match.group(0)[: start - offset] + value + match.group(0)[end - offset :]
+
+    return _DEBUG_SCRIPT_PATTERN.sub(replace, content)
 
 
 def _preview_command(content: bytes) -> str | None:

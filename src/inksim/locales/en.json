@@ -431,6 +431,18 @@
         "source": "Unavailable",
         "translation": "Unavailable"
     },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Create debug script (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Could not change the debug script setting."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed."
+    },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
         "translation": "No InkSim extension folders were found."

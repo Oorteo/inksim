@@ -455,6 +455,18 @@
         "source": "Debug script mode is enabled",
         "translation": "Režim debug skriptu je zapnutý"
     },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Vytvářet debug skript (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Nepodařilo se změnit nastavení debug skriptu."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Zapíše debug_inksim.sh vedle dokumentu, aby šlo volání z Inkscape zopakovat."
+    },
     "integration.inkscape.inksim_status_install": {
         "source": "Installation required",
         "translation": "Je nutná instalace"
