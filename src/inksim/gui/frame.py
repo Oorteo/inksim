@@ -89,6 +89,7 @@ class MainWindow(QMainWindow):
     """Main InkSim window coordinating the viewer and playback controls."""
 
     closed = Signal(object)
+    hidden = Signal(object)
     quit_all_requested = Signal()
     restart_requested = Signal(object)
 
@@ -125,6 +126,7 @@ class MainWindow(QMainWindow):
         self.current_file_path: Path | None = None
         self._temporary_input_path: Path | None = None
         self._preserve_temporary_input_on_close = False
+        self._hide_on_close = False
         self._source_mtime_ns: int | None = None
         self._last_source_check: float = 0.0
         self._source_check_interval_s: float = 0.4
@@ -285,6 +287,19 @@ class MainWindow(QMainWindow):
             return Path(file_path).stat().st_mtime_ns
         except OSError:
             return None
+
+    def has_unchanged_file(self, file_path: Path | str, temporary_input: bool) -> bool:
+        selected_path = Path(file_path).resolve()
+        current_mtime = self._capture_source_mtime(selected_path)
+        return (
+            selected_path == self.current_file_path
+            and current_mtime is not None
+            and current_mtime == self._source_mtime_ns
+            and (self._temporary_input_path == selected_path) == temporary_input
+        )
+
+    def set_hide_on_close(self, enabled: bool) -> None:
+        self._hide_on_close = enabled
 
     def _show_reload_dialog(self) -> QDialog:
         dialog = QDialog(self)
@@ -1136,6 +1151,11 @@ class MainWindow(QMainWindow):
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
+        if self._hide_on_close:
+            event.ignore()
+            self.hide()
+            self.hidden.emit(self)
+            return
         # Release OpenGL resources while the context is still valid so Qt does
         # not warn about textures/buffers not being destroyed.
         try:
