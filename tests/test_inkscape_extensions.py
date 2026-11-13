@@ -34,8 +34,16 @@ def test_install_renders_active_launcher_and_installs_assets(tmp_path):
     preview = (destination / "preview.inx").read_text(encoding="utf-8")
     root = ET.fromstring(preview)
     command = next(node for node in root.iter() if node.tag.rsplit("}", 1)[-1] == "command")
+    create_script = next(
+        node
+        for node in root.iter()
+        if node.tag.rsplit("}", 1)[-1] == "param" and node.get("name") == "create_bash_script"
+    )
 
     assert command.text == str(launcher.resolve())
+    assert create_script.get("type") == "boolean"
+    assert create_script.get("gui-hidden") == "true"
+    assert create_script.text == "false"
     assert "__INKSIM_EXECUTABLE__" not in preview
     assert (destination / "about.inx").is_file()
     assert (destination / "scripts" / "about.py").is_file()
