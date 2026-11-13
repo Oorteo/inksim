@@ -187,3 +187,26 @@ def test_prefer_gui_launcher_keeps_console_when_gui_is_missing(tmp_path):
     console.touch()
 
     assert prefer_gui_launcher(console, windows=True) == console
+
+
+def test_enabled_debug_script_is_not_an_outdated_extension(tmp_path):
+    from inksim.integration.inkscape_extensions import debug_script_enabled
+
+    launcher = _launcher(tmp_path)
+    extension_directory = tmp_path / "extensions"
+    destination = install_extension(prepare_install(extension_directory, launcher))
+    assert not debug_script_enabled(destination)
+
+    preview = destination / "preview.inx"
+    root = ET.fromstring(preview.read_bytes())
+    for node in root.iter():
+        if node.get("name") == "create_bash_script":
+            node.text = "true"
+    preview.write_bytes(ET.tostring(root, encoding="utf-8"))
+
+    plan = prepare_install(extension_directory, launcher)
+
+    assert plan.update_files == ()
+    assert not plan.requires_confirmation
+    assert not plan.update_required
+    assert debug_script_enabled(destination)

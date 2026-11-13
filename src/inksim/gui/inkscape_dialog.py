@@ -44,6 +44,7 @@ from ..integration.inkscape_extensions import (
     InstalledInkSimExtension,
     InstallPlan,
     InstallSafetyError,
+    debug_script_enabled,
     find_installed_inksim_extensions,
     install_extension,
     list_inksim_extension_files,
@@ -823,8 +824,8 @@ class InkscapeIntegrationDialog(QDialog):
                 ).format(path=_sanitize_path_text(str(current_target)))
             )
             self.current_inksim_extension_row.show()
-            status, is_current = self._current_inksim_update_status()
-            self._show_inksim_update_status(status, is_current)
+            status, is_current, is_debug = self._current_inksim_update_status()
+            self._show_inksim_update_status(status, is_current, is_debug)
         else:
             self.current_inksim_extension_row.hide()
             self.inksim_status_container.hide()
@@ -857,13 +858,14 @@ class InkscapeIntegrationDialog(QDialog):
         )
         self.remove_old_extensions_button.setEnabled(has_old_user_installations)
 
-    def _current_inksim_update_status(self) -> tuple[str, bool]:
+    def _current_inksim_update_status(self) -> tuple[str, bool, bool]:
         extension_root = self._user_extensions_directory
         if extension_root is None:
             return (
                 _("integration.inkscape.inksim_status_unavailable").format(
                     error=_("integration.inkscape.directory_unavailable")
                 ),
+                False,
                 False,
             )
         try:
@@ -875,12 +877,15 @@ class InkscapeIntegrationDialog(QDialog):
                     error=_sanitize_path_text(str(error))
                 ),
                 False,
+                False,
             )
 
         if not plan.destination.is_dir():
-            return _("integration.inkscape.inksim_status_install"), False
+            return _("integration.inkscape.inksim_status_install"), False, False
         if not plan.update_required:
-            return _("integration.inkscape.inksim_status_current"), True
+            if debug_script_enabled(plan.destination):
+                return _("integration.inkscape.inksim_status_debug_script"), True, True
+            return _("integration.inkscape.inksim_status_current"), True, False
 
         details = []
         if plan.update_files:
@@ -894,9 +899,15 @@ class InkscapeIntegrationDialog(QDialog):
         return (
             _("integration.inkscape.inksim_status_update").format(details="; ".join(details)),
             False,
+            False,
         )
 
-    def _show_inksim_update_status(self, status: str, is_current: bool) -> None:
+    def _show_inksim_update_status(
+        self,
+        status: str,
+        is_current: bool,
+        is_debug: bool = False,
+    ) -> None:
         self.inksim_status_icon.setText("✓")
         self.inksim_status_icon.setAccessibleName(status)
         self.inksim_status_icon.setToolTip(status)
@@ -904,24 +915,36 @@ class InkscapeIntegrationDialog(QDialog):
             "QLabel { color: #188038; font-size: 18px; font-weight: bold; }"
         )
         self.inksim_status_icon.setVisible(is_current)
-        self.inksim_warning_icon.setText("⚠")
+        show_details = is_debug or not is_current
+        self.inksim_warning_icon.setText("⚙" if is_debug else "⚠")
         self.inksim_warning_icon.setAccessibleName(status)
         self.inksim_warning_icon.setToolTip(status)
         self.inksim_warning_icon.setStyleSheet(
-            "QLabel { color: #a15c00; font-size: 18px; font-weight: bold; }"
+            "QLabel { color: %s; font-size: 18px; font-weight: bold; }"
+            % ("#1a73e8" if is_debug else "#a15c00")
         )
-        self.inksim_status_text.setText("" if is_current else status)
-        self.inksim_status_text.setVisible(not is_current)
-        self.inksim_status_text.setStyleSheet(
-            "" if is_current else "QLabel { color: #8a4b00; font-weight: bold; }"
-        )
-        self.inksim_status_container.setVisible(not is_current)
-        self.inksim_status_container.setStyleSheet(
-            "QWidget#inksimExtensionStatus { background-color: #fff3cd; "
-            "border: 1px solid #d39e00; border-radius: 3px; }"
-            if self._highlight_inksim_update and not is_current
-            else ""
-        )
+        self.inksim_status_text.setText(status if show_details else "")
+        self.inksim_status_text.setVisible(show_details)
+        if is_debug:
+            self.inksim_status_text.setStyleSheet("QLabel { color: #1a73e8; font-weight: bold; }")
+        elif is_current:
+            self.inksim_status_text.setStyleSheet("")
+        else:
+            self.inksim_status_text.setStyleSheet("QLabel { color: #8a4b00; font-weight: bold; }")
+        self.inksim_status_container.setVisible(show_details)
+        if is_debug:
+            container_style = (
+                "QWidget#inksimExtensionStatus { background-color: #e8f0fe; "
+                "border: 1px solid #1a73e8; border-radius: 3px; }"
+            )
+        elif self._highlight_inksim_update and not is_current:
+            container_style = (
+                "QWidget#inksimExtensionStatus { background-color: #fff3cd; "
+                "border: 1px solid #d39e00; border-radius: 3px; }"
+            )
+        else:
+            container_style = ""
+        self.inksim_status_container.setStyleSheet(container_style)
 
     def _remove_old_inksim_extensions(self) -> None:
         user_extension_root = self._user_extensions_directory
