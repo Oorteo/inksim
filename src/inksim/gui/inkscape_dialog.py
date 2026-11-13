@@ -22,6 +22,7 @@ from filelock import Timeout
 from PySide6.QtCore import QProcess, Qt, QTimer
 from PySide6.QtWidgets import (
     QApplication,
+    QCheckBox,
     QComboBox,
     QDialog,
     QDialogButtonBox,
@@ -51,6 +52,7 @@ from ..integration.inkscape_extensions import (
     prepare_install,
     remove_old_inksim_extension,
     resolve_inksim_launcher,
+    set_debug_script_enabled,
 )
 from ..integration.paths import INKSCAPE_CONFIG_KEY, detect_tools
 from ..paths import _sanitize_path_text
@@ -274,6 +276,24 @@ class InkscapeIntegrationDialog(QDialog):
         status_layout.addWidget(self.inksim_status_text, 1)
         self.inksim_status_container.hide()
         inksim_layout.addWidget(self.inksim_status_container)
+        self.inksim_debug_script_checkbox = QCheckBox(
+            _(
+                "integration.inkscape.inksim_debug_script",
+                "Create debug script (debug_inksim.sh)",
+            ),
+            self,
+        )
+        self.inksim_debug_script_checkbox.setObjectName("inksimDebugScript")
+        self.inksim_debug_script_checkbox.setToolTip(
+            _(
+                "integration.inkscape.inksim_debug_script_hint",
+                "Writes debug_inksim.sh next to the document so the Inkscape "
+                "invocation can be replayed.",
+            )
+        )
+        self.inksim_debug_script_checkbox.setEnabled(False)
+        self.inksim_debug_script_checkbox.toggled.connect(self._toggle_inksim_debug_script)
+        inksim_layout.addWidget(self.inksim_debug_script_checkbox)
         self.inksim_extensions_list = QPlainTextEdit(self)
         self.inksim_extensions_list.setObjectName("inksimExtensionDirectories")
         self.inksim_extensions_list.setReadOnly(True)
@@ -826,6 +846,7 @@ class InkscapeIntegrationDialog(QDialog):
             self.current_inksim_extension_row.show()
             status, is_current, is_debug = self._current_inksim_update_status()
             self._show_inksim_update_status(status, is_current, is_debug)
+            self._sync_debug_script_checkbox(current_target)
         else:
             self.current_inksim_extension_row.hide()
             self.inksim_status_container.hide()
@@ -857,6 +878,30 @@ class InkscapeIntegrationDialog(QDialog):
             for installation in installations
         )
         self.remove_old_extensions_button.setEnabled(has_old_user_installations)
+
+    def _sync_debug_script_checkbox(self, destination: Path | None) -> None:
+        installed = destination is not None and destination.is_dir()
+        enabled = installed and destination is not None and debug_script_enabled(destination)
+        checkbox = self.inksim_debug_script_checkbox
+        blocked = checkbox.blockSignals(True)
+        checkbox.setChecked(enabled)
+        checkbox.blockSignals(blocked)
+        checkbox.setEnabled(installed)
+
+    def _toggle_inksim_debug_script(self, enabled: bool) -> None:
+        extension_root = self._user_extensions_directory
+        if extension_root is None:
+            return
+        if not set_debug_script_enabled(extension_root / INSTALL_DIRECTORY, enabled):
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _(
+                    "integration.inkscape.inksim_debug_script_failed",
+                    "Could not change the debug script setting.",
+                ),
+            )
+        self._refresh_inksim_extensions()
 
     def _current_inksim_update_status(self) -> tuple[str, bool, bool]:
         extension_root = self._user_extensions_directory
