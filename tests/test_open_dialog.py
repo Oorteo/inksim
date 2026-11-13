@@ -950,3 +950,51 @@ def test_directory_drop_opens_browser_in_dropped_directory(qtbot, tmp_path, monk
 
     assert calls == [(None, dropped_directory)]
     window.close()
+
+
+def test_open_dialog_preselects_the_source_of_a_temporary_preview(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    design = tmp_path / "design.svg"
+    design.write_text("<svg />", encoding="utf-8")
+    temporary_csv = tmp_path / "inksim-preview-123.csv"
+
+    assert window._browser_initial_file() is None
+
+    window.current_file_path = design
+    assert window._browser_initial_file() == design
+    assert window._browser_initial_file("other.pes") == Path("other.pes")
+
+    window.set_document_path(design)
+    window.current_file_path = temporary_csv
+    window._temporary_input_path = temporary_csv
+    assert window._browser_initial_file() == design
+
+    window.close()
+
+
+def test_open_dialog_preselects_the_last_opened_file_after_a_restart(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    config_path = tmp_path / "config.toml"
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: Config(config_path))
+    design = tmp_path / "design.pes"
+    design.write_bytes(b"")
+    first = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(first)
+    first._remember_last_file(design)
+    first.close()
+
+    restored = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(restored)
+
+    assert restored.last_directory == str(tmp_path)
+    assert restored._browser_initial_file() == design
+    assert Config(config_path).get("last_file")
+    restored.close()
