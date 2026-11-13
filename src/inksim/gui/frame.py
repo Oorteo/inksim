@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import shutil
+import sys
 import time
 from collections.abc import Callable
 from pathlib import Path
@@ -83,6 +84,39 @@ from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
 from .viewer import EmbroideryViewerWidget
+
+
+def _force_foreground_on_windows(window: QWidget) -> None:
+    """Take the foreground despite the Windows focus lock.
+
+    Windows only lets the foreground process change the foreground window, so
+    activating a window that was started by another program (Inkscape) is
+    ignored. Attaching to the current foreground thread lifts that restriction.
+    """
+    if sys.platform != "win32":
+        return
+    try:
+        import ctypes
+
+        user32 = ctypes.windll.user32  # type: ignore[attr-defined]
+        kernel32 = ctypes.windll.kernel32  # type: ignore[attr-defined]
+    except AttributeError:
+        return
+    handle = int(window.winId())
+    foreground = user32.GetForegroundWindow()
+    if not foreground or foreground == handle:
+        return
+    current_thread = kernel32.GetCurrentThreadId()
+    foreground_thread = user32.GetWindowThreadProcessId(foreground, None)
+    attached = False
+    if foreground_thread and foreground_thread != current_thread:
+        attached = bool(user32.AttachThreadInput(current_thread, foreground_thread, True))
+    try:
+        user32.BringWindowToTop(handle)
+        user32.SetForegroundWindow(handle)
+    finally:
+        if attached:
+            user32.AttachThreadInput(current_thread, foreground_thread, False)
 
 
 class MainWindow(QMainWindow):
@@ -1005,6 +1039,7 @@ class MainWindow(QMainWindow):
         self.show_window(focus=False)
         self.raise_()
         self.activateWindow()
+        _force_foreground_on_windows(self)
 
     def _default_snapped_geometry(self) -> QRect:
         """Return a rectangle covering the right half of the primary screen."""
