@@ -322,6 +322,7 @@ def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(
         "--id=selection",
         str(svg_path),
     ]
+    assert requests[0]["debug_script"] == str(debug_script)
     csv_path = Path(requests[0]["path"])
     assert csv_path.is_file()
     csv_path.unlink()
