@@ -341,6 +341,13 @@ def _remove_temporary_csv(path: Path) -> None:
         print(f"Warning: could not remove temporary Ink/Stitch CSV: {error}", file=sys.stderr)
 
 
+def _console_hiding_options(platform: str | None = None) -> dict[str, Any]:
+    """Return launch options that stop a console child from opening a window."""
+    if (os.name if platform is None else platform) != "nt":
+        return {}
+    return {"creationflags": subprocess.CREATE_NO_WINDOW}
+
+
 def _run_inkscape_preview(
     parser: argparse.ArgumentParser,
     args: argparse.Namespace,
@@ -376,6 +383,7 @@ def _run_inkscape_preview(
     retained = False
     try:
         try:
+            launch_options = _console_hiding_options()
             with csv_path.open("wb") as csv_file:
                 result = subprocess.run(
                     [*command, *output_arguments],
@@ -387,6 +395,7 @@ def _run_inkscape_preview(
                     text=True,
                     timeout=180,
                     check=False,
+                    **launch_options,
                 )
             has_output = csv_path.is_file() and csv_path.stat().st_size > 0
         except subprocess.TimeoutExpired as error:

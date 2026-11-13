@@ -165,3 +165,25 @@ def test_find_and_remove_only_confirmed_old_inksim_extension(tmp_path):
     assert not old_copy.exists()
     assert current.exists()
     assert system_copy.exists()
+
+
+def test_prefer_gui_launcher_picks_gui_entry_point_on_windows(tmp_path):
+    from inksim.integration.inkscape_extensions import prefer_gui_launcher
+
+    console = tmp_path / "inksim.exe"
+    console.touch()
+    gui = tmp_path / "inksim-gui.exe"
+    gui.touch()
+
+    assert prefer_gui_launcher(console, windows=True) == gui
+    assert prefer_gui_launcher(console, windows=False) == console
+    assert prefer_gui_launcher(gui, windows=True) == gui
+
+
+def test_prefer_gui_launcher_keeps_console_when_gui_is_missing(tmp_path):
+    from inksim.integration.inkscape_extensions import prefer_gui_launcher
+
+    console = tmp_path / "inksim.exe"
+    console.touch()
+
+    assert prefer_gui_launcher(console, windows=True) == console
