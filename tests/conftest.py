@@ -31,6 +31,25 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
         os._exit(0)
 
 
+@pytest.fixture(scope="session", autouse=True)
+def _isolated_xdg_config_home(tmp_path_factory):
+    """Keep subprocesses away from the developer's real config file.
+
+    Tests that run ``python -m inksim`` inherit ``os.environ``, so the
+    per-test monkeypatch of ``DEFAULT_CONFIG_PATH`` cannot reach them. Pointing
+    XDG_CONFIG_HOME at a throwaway directory keeps their recent directories,
+    renderer choice and palette answers out of ``~/.config/inksim``.
+    """
+    xdg_config_home = tmp_path_factory.mktemp("xdg-config")
+    previous = os.environ.get("XDG_CONFIG_HOME")
+    os.environ["XDG_CONFIG_HOME"] = str(xdg_config_home)
+    yield
+    if previous is None:
+        os.environ.pop("XDG_CONFIG_HOME", None)
+    else:
+        os.environ["XDG_CONFIG_HOME"] = previous
+
+
 @pytest.fixture(autouse=True)
 def _isolate_config(tmp_path, monkeypatch):
     """Redirect the default config path to a temp dir for every test.
