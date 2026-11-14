@@ -40,12 +40,15 @@ from PySide6.QtCore import (
 from PySide6.QtGui import (
     QAction,
     QActionGroup,
+    QColor,
     QFontDatabase,
     QIcon,
     QImage,
     QMouseEvent,
     QPainter,
     QPaintEvent,
+    QPalette,
+    QPen,
     QPixmap,
     QWheelEvent,
 )
@@ -70,6 +73,7 @@ from PySide6.QtWidgets import (
     QSplitter,
     QStackedWidget,
     QStyle,
+    QStyledItemDelegate,
     QToolButton,
     QVBoxLayout,
     QWidget,
@@ -140,6 +144,33 @@ _FAVORITE_DIRECTORIES_CONFIG_KEY = "favorite_directories"
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
 _PLACE_PATH_ROLE = Qt.ItemDataRole.UserRole
 _PLACE_FAVORITE_ROLE = Qt.ItemDataRole.UserRole + 1
+
+
+class _IconSelectionDelegate(QStyledItemDelegate):
+    """Make selected icons obvious in the icon-only grid.
+
+    A thumbnail covers its whole cell, so the selection background Qt paints
+    underneath is barely visible. A frame and a light tint over the image show
+    the selection without touching the thumbnail files.
+    """
+
+    def paint(self, painter: QPainter, option: Any, index: Any) -> None:  # type: ignore[override]
+        super().paint(painter, option, index)
+        view = option.widget
+        if not isinstance(view, QListView) or view.viewMode() != QListView.ViewMode.IconMode:
+            return
+        if not option.state & QStyle.StateFlag.State_Selected:
+            return
+        highlight = option.palette.color(QPalette.ColorRole.Highlight)
+        painter.save()
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+        rect = option.rect.adjusted(1, 1, -1, -1)
+        tint = QColor(highlight)
+        tint.setAlpha(70)
+        painter.fillRect(rect, tint)
+        painter.setPen(QPen(highlight, 3))
+        painter.drawRoundedRect(rect.adjusted(2, 2, -2, -2), 3, 3)
+        painter.restore()
 
 
 class _ThumbnailSignals(QObject):
@@ -601,6 +632,7 @@ class OpenBrowserDialog(QDialog):
         self.file_list.installEventFilter(self)
         self.file_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.file_list.setIconSize(QSize(THUMBNAIL_SIZE // 4, THUMBNAIL_SIZE // 4))
+        self.file_list.setItemDelegate(_IconSelectionDelegate(self.file_list))
         self.file_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.file_list.customContextMenuRequested.connect(self._show_thumbnail_menu)
         self.file_list.currentItemChanged.connect(self._on_current_item_changed)

@@ -173,6 +173,9 @@ Right-clicking a selection in the open dialog rotates the **thumbnail images**
 only — 90° left, 90° right, 180°, or back to the original orientation. The
 rotation is written into the PNG metadata next to the pixels, so updating or
 regenerating thumbnails keeps it, and the design file itself is never touched.
+Thumbnails keep their transparent background, and in the icon-only grid a
+selected design is outlined and tinted, because the image covers the whole cell
+that Qt would otherwise highlight.
 
 ## Rendering Notes
 
