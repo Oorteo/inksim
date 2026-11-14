@@ -55,6 +55,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QListWidget,
     QListWidgetItem,
+    QMenu,
     QMessageBox,
     QProgressBar,
     QPushButton,
@@ -63,6 +64,7 @@ from PySide6.QtWidgets import (
     QSplitter,
     QStackedWidget,
     QStyle,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -84,7 +86,12 @@ from ..integration.paths import (
     prefer_saved_inkscape,
 )
 from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
-from ..render.thumbnails import THUMBNAIL_SIZE, thumbnail_path, write_thumbnail
+from ..render.thumbnails import (
+    THUMBNAIL_SIZE,
+    thumbnail_is_current,
+    thumbnail_path,
+    write_thumbnail,
+)
 from .inkscape_dialog import InkscapeIntegrationDialog
 from .viewer import EmbroideryViewerWidget
 
@@ -115,10 +122,11 @@ class _ThumbnailSignals(QObject):
 class ThumbnailJob(QRunnable):
     """Write sidecar thumbnails for a batch of designs off the GUI thread."""
 
-    def __init__(self, paths: Sequence[Path]) -> None:
+    def __init__(self, paths: Sequence[Path], *, regenerate: bool = False) -> None:
         super().__init__()
         self.signals = _ThumbnailSignals()
         self._paths = list(paths)
+        self._regenerate = regenerate
         self._stop = False
 
     def stop(self) -> None:
@@ -130,10 +138,10 @@ class ThumbnailJob(QRunnable):
         for index, path in enumerate(self._paths, 1):
             if self._stop:
                 break
-            existed = thumbnail_path(path).exists()
-            if write_thumbnail(path) is None:
+            current = thumbnail_is_current(path)
+            if write_thumbnail(path, overwrite=self._regenerate) is None:
                 failed += 1
-            elif existed:
+            elif current and not self._regenerate:
                 skipped += 1
             else:
                 created += 1
@@ -610,16 +618,36 @@ class OpenBrowserDialog(QDialog):
         self.activity_label.setVisible(False)
         button_row.addWidget(self.activity_label)
         button_row.addStretch(1)
-        self.thumbnails_button = QPushButton(
-            _("dialog.open_browser.create_thumbnails", "Create thumbnails"), self
+        self.thumbnails_button = QToolButton(self)
+        self.thumbnails_button.setObjectName("createThumbnails")
+        self.thumbnails_button.setText(
+            _("dialog.open_browser.create_thumbnails", "Create thumbnails")
         )
         self.thumbnails_button.setToolTip(
             _(
                 "dialog.open_browser.create_thumbnails_hint",
-                "Write a 256 px PNG next to each selected design (design.pes.png).",
+                "Write a 256 px PNG next to each selected design (design.pes.png)."
+                "\nThe menu can rebuild thumbnails that are already up to date.",
             )
         )
-        self.thumbnails_button.clicked.connect(self._create_thumbnails)
+        self.thumbnails_button.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
+        self.thumbnails_button.clicked.connect(lambda: self._create_thumbnails())
+        thumbnails_menu = QMenu(self.thumbnails_button)
+        update_action = thumbnails_menu.addAction(
+            _(
+                "dialog.open_browser.thumbnails_update",
+                "Update outdated thumbnails",
+            )
+        )
+        update_action.triggered.connect(lambda: self._create_thumbnails())
+        regenerate_action = thumbnails_menu.addAction(
+            _(
+                "dialog.open_browser.thumbnails_regenerate",
+                "Regenerate all thumbnails",
+            )
+        )
+        regenerate_action.triggered.connect(lambda: self._create_thumbnails(regenerate=True))
+        self.thumbnails_button.setMenu(thumbnails_menu)
         button_row.addWidget(self.thumbnails_button)
         self.edit_button = QPushButton(
             _("dialog.open_browser.edit_inkscape", "Edit in Inkscape"), self
@@ -1339,14 +1367,18 @@ class OpenBrowserDialog(QDialog):
                 paths.append(path)
         return sorted(paths)
 
-    def _create_thumbnails(self) -> None:
-        """Write sidecar thumbnails for every selected design."""
+    def _create_thumbnails(self, regenerate: bool = False) -> None:
+        """Write sidecar thumbnails for every selected design.
+
+        Without *regenerate* only missing or outdated images are written, so a
+        repeated run is cheap; the menu forces a full rebuild instead.
+        """
         if self._thumbnail_job is not None:
             return
         paths = self._selected_design_paths()
         if not paths:
             return
-        job = ThumbnailJob(paths)
+        job = ThumbnailJob(paths, regenerate=regenerate)
         job.signals.progress.connect(self._on_thumbnail_progress)
         job.signals.finished.connect(self._on_thumbnails_finished)
         self._thumbnail_job = job
