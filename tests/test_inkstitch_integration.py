@@ -11,6 +11,7 @@ import pytest
 
 from inksim.integration.inkstitch import (
     active_inkstitch_installation,
+    changed_inkstitch_targets,
     inkstitch_project_python,
     resolve_inkstitch_preview,
 )
@@ -92,6 +93,61 @@ def _installation(project: Path) -> dict[str, str]:
         "location": "inx",
         "interpreter": "python",
     }
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="symlinked extension folders are POSIX-only")
+def test_extension_links_keep_their_identity(tmp_path):
+    """The stored extension_dir is the link Inkscape uses, not the checkout it points to."""
+    real = _checkout(tmp_path / "checkout")
+    extensions = tmp_path / "extensions"
+    extensions.mkdir()
+    link = extensions / "inkstitch-dev"
+    link.symlink_to(real, target_is_directory=True)
+    status = {
+        "active_inkstitch": str(link / "inx"),
+        "inkstitch": [
+            {
+                **_installation(real),
+                "extension_dir": str(link / "inx"),
+                "resolved_extension_dir": str((real / "inx").resolve()),
+            }
+        ],
+    }
+
+    installation = active_inkstitch_installation(status)
+
+    assert installation is not None
+    assert installation["extension_dir"] == str(link / "inx")
+    assert changed_inkstitch_targets(status) == []
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="symlinked extension folders are POSIX-only")
+def test_repointed_extension_link_is_reported(tmp_path):
+    """A link that now points at another checkout is detected without resolving it away."""
+    old = _checkout(tmp_path / "old")
+    new = _checkout(tmp_path / "new")
+    extensions = tmp_path / "extensions"
+    extensions.mkdir()
+    link = extensions / "inkstitch-dev"
+    link.symlink_to(new, target_is_directory=True)
+    status = {
+        "active_inkstitch": str(link / "inx"),
+        "inkstitch": [
+            {
+                **_installation(old),
+                "extension_dir": str(link / "inx"),
+                "resolved_extension_dir": str((old / "inx").resolve()),
+            }
+        ],
+    }
+
+    assert changed_inkstitch_targets(status) == [(new / "inx").resolve()]
+
+
+def test_changed_targets_ignores_status_without_a_stored_target(tmp_path):
+    status = {"inkstitch": [{"extension_dir": str(tmp_path / "inx")}]}
+
+    assert changed_inkstitch_targets(status) == []
 
 
 def test_active_installation_skips_a_deleted_worktree(tmp_path):
