@@ -58,10 +58,15 @@ to zoom around the cursor, left-drag to pan, or use the preview toolbar's
 | Click or drag the timeline | Seek to a stitch position    |
 | `Ctrl` + wheel over timeline | Zoom around the pointer     |
 | `Shift` + wheel over timeline | Pan the timeline range     |
+| Wheel over upper timeline   | Adjust waveform scale      |
 | Drag the overview range    | Pan the zoomed timeline     |
 | `−` / `+` / `All`          | Zoom or show the full timeline |
 | Drop a file on the viewer  | Open the file                |
 | `F11`                      | Toggle fullscreen            |
+
+The upper timeline always shows stitch lengths as a symmetric waveform. The
+default scale covers 0–5 mm; longer stitches are clipped and marked at the
+edge. Use the wheel over the upper timeline to change its vertical scale.
 
 ## Playback and Navigation
 

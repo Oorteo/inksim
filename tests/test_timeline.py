@@ -50,6 +50,39 @@ def test_ctrl_wheel_zooms_around_pointer(qtbot):
     assert timeline._view_start + 0.25 * (timeline._view_end - timeline._view_start) == 25
 
 
+def test_unmodified_wheel_adjusts_waveform_scale_only_over_main_timeline(qtbot):
+    timeline, _ = make_timeline(qtbot)
+    main_bar, overview, _ = timeline._layout_rects()
+    wheel_event = QWheelEvent(
+        main_bar.center(),
+        main_bar.center(),
+        QPoint(0, 0),
+        QPoint(0, 120),
+        Qt.NoButton,
+        Qt.NoModifier,
+        Qt.ScrollPhase.ScrollUpdate,
+        False,
+    )
+
+    timeline.wheelEvent(wheel_event)
+
+    assert timeline.waveform_scale_mm == 4
+
+    overview_event = QWheelEvent(
+        overview.center(),
+        overview.center(),
+        QPoint(0, 0),
+        QPoint(0, 120),
+        Qt.NoButton,
+        Qt.NoModifier,
+        Qt.ScrollPhase.ScrollUpdate,
+        False,
+    )
+    timeline.wheelEvent(overview_event)
+
+    assert timeline.waveform_scale_mm == 4
+
+
 def test_seek_maps_pointer_to_zoomed_range(qtbot):
     timeline, _ = make_timeline(qtbot)
     timeline._view_start = 20
@@ -85,6 +118,16 @@ def test_new_design_resets_timeline_to_full_range(qtbot):
     assert (timeline._view_start, timeline._view_end) == (0, 50)
 
 
+def test_stitch_waveform_scale_details_short_lengths_and_compresses_long_ones():
+    amplitude = TimelineWidget._stitch_waveform_amplitude
+
+    assert amplitude(0, 10, 5) == 1
+    assert amplitude(2.5, 10, 5) == 5
+    assert amplitude(5, 10, 5) == 10
+    assert amplitude(100_000, 10, 5) == 10
+    assert amplitude(5, 10, 10) == 5
+
+
 def test_timeline_renders_zoomed_view_with_command_markers(qtbot):
     timeline, viewer = make_timeline(qtbot)
     timeline._view_start = 20
@@ -103,3 +146,63 @@ def test_timeline_renders_zoomed_view_with_command_markers(qtbot):
     outside_pixel = image.toImage().pixelColor(overview.left() + 20, overview.center().y())
     selected_pixel = image.toImage().pixelColor(viewport.center().x(), overview.center().y())
     assert outside_pixel.lightness() > selected_pixel.lightness()
+
+
+def test_zoomed_timeline_draws_stitch_lengths_symmetrically(qtbot):
+    timeline, viewer = make_timeline(qtbot, total=2)
+    viewer.stitches_np = np.array(
+        [
+            [0, 0, 6, 0, 220, 30, 30],
+            [0, 0, 12, 0, 30, 70, 220],
+        ],
+        dtype=np.float32,
+    )
+    viewer.visible_count = 2
+    timeline.waveform_scale_mm = 12
+    timeline._view_start = 0
+    timeline._view_end = 2
+
+    image = timeline.grab().toImage()
+    main_bar, _, _ = timeline._layout_rects()
+    center_y = main_bar.center().y()
+    first_x = main_bar.left() + int(0.5 / 2 * main_bar.width())
+    second_x = main_bar.left() + int(1.5 / 2 * main_bar.width())
+    first_color_above = image.pixelColor(first_x, center_y - 4)
+    first_color_below = image.pixelColor(first_x, center_y + 4)
+    second_color_above = image.pixelColor(second_x, center_y - 9)
+    second_color_below = image.pixelColor(second_x, center_y + 9)
+
+    assert first_color_above.red() > first_color_above.blue()
+    assert first_color_below.red() > first_color_below.blue()
+    assert second_color_above.blue() > second_color_above.red()
+    assert second_color_below.blue() > second_color_below.red()
+
+
+def test_zoomed_out_waveform_does_not_fill_stitch_rectangles(qtbot):
+    timeline, viewer = make_timeline(qtbot, total=1000)
+    viewer.stitches_np = np.tile(
+        np.array([[0, 0, 1, 0, 220, 30, 30]], dtype=np.float32),
+        (1000, 1),
+    )
+    viewer.visible_count = len(viewer.stitches_np)
+
+    image = timeline.grab().toImage()
+    main_bar, _, _ = timeline._layout_rects()
+    pixel = image.pixelColor(main_bar.center().x(), main_bar.top() + 1)
+
+    assert pixel.blue() > 150
+
+
+def test_stitches_above_waveform_scale_have_clipped_end_marks(qtbot):
+    timeline, viewer = make_timeline(qtbot, total=1)
+    viewer.stitches_np = np.array([[0, 0, 20, 0, 220, 30, 30]], dtype=np.float32)
+    viewer.visible_count = 1
+
+    image = timeline.grab().toImage()
+    main_bar, _, _ = timeline._layout_rects()
+    stitch_x = main_bar.center().x()
+    cap_y = main_bar.center().y() - (main_bar.height() - 4) // 2
+    cap_pixel = image.pixelColor(stitch_x + 1, cap_y)
+
+    assert cap_pixel.red() > cap_pixel.green() * 2
+    assert cap_pixel.red() > cap_pixel.blue() * 2
