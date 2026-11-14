@@ -37,6 +37,8 @@ from PySide6.QtCore import (
     Signal,
 )
 from PySide6.QtGui import (
+    QAction,
+    QActionGroup,
     QIcon,
     QImage,
     QMouseEvent,
@@ -100,6 +102,9 @@ KIND_EMBROIDERY = "embroidery"
 KIND_SVG = "svg"
 KIND_CSV = "csv"
 KIND_OTHER = "other"
+
+_THUMBNAIL_UPDATE = "update"
+_THUMBNAIL_REGENERATE = "regenerate"
 
 _MAX_SVG_THUMBNAIL_BYTES = 20 * 1024 * 1024
 _CONVERSION_TIMEOUT_MS = 180_000
@@ -404,6 +409,8 @@ class OpenBrowserDialog(QDialog):
         self._closing = False
         self._thumbnail_icons: dict[Path, QIcon] = {}
         self._thumbnail_job: ThumbnailJob | None = None
+        self._thumbnail_mode = _THUMBNAIL_UPDATE
+        self._thumbnail_actions: dict[str, QAction] = {}
         self._thumbnail_pool = QThreadPool(self)
         self._thumbnail_pool.setMaxThreadCount(1)
 
@@ -620,34 +627,40 @@ class OpenBrowserDialog(QDialog):
         button_row.addStretch(1)
         self.thumbnails_button = QToolButton(self)
         self.thumbnails_button.setObjectName("createThumbnails")
-        self.thumbnails_button.setText(
-            _("dialog.open_browser.create_thumbnails", "Create thumbnails")
-        )
         self.thumbnails_button.setToolTip(
             _(
                 "dialog.open_browser.create_thumbnails_hint",
                 "Write a 256 px PNG next to each selected design (design.pes.png)."
-                "\nThe menu can rebuild thumbnails that are already up to date.",
+                "\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
             )
         )
         self.thumbnails_button.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
-        self.thumbnails_button.clicked.connect(lambda: self._create_thumbnails())
+        self.thumbnails_button.clicked.connect(self._run_thumbnail_action)
         thumbnails_menu = QMenu(self.thumbnails_button)
-        update_action = thumbnails_menu.addAction(
-            _(
+        action_group = QActionGroup(self.thumbnails_button)
+        action_group.setExclusive(True)
+        for mode, message_id, fallback in (
+            (
+                _THUMBNAIL_UPDATE,
                 "dialog.open_browser.thumbnails_update",
                 "Update outdated thumbnails",
-            )
-        )
-        update_action.triggered.connect(lambda: self._create_thumbnails())
-        regenerate_action = thumbnails_menu.addAction(
-            _(
+            ),
+            (
+                _THUMBNAIL_REGENERATE,
                 "dialog.open_browser.thumbnails_regenerate",
                 "Regenerate all thumbnails",
+            ),
+        ):
+            action = QAction(_(message_id, fallback), self.thumbnails_button)
+            action.setCheckable(True)
+            action.triggered.connect(
+                lambda _checked=False, selected=mode: self._select_thumbnail_mode(selected)
             )
-        )
-        regenerate_action.triggered.connect(lambda: self._create_thumbnails(regenerate=True))
+            action_group.addAction(action)
+            thumbnails_menu.addAction(action)
+            self._thumbnail_actions[mode] = action
         self.thumbnails_button.setMenu(thumbnails_menu)
+        self._select_thumbnail_mode(_THUMBNAIL_UPDATE)
         button_row.addWidget(self.thumbnails_button)
         self.edit_button = QPushButton(
             _("dialog.open_browser.edit_inkscape", "Edit in Inkscape"), self
@@ -1366,6 +1379,18 @@ class OpenBrowserDialog(QDialog):
             if self._kind_for_path(path) in (KIND_EMBROIDERY, KIND_CSV, KIND_SVG):
                 paths.append(path)
         return sorted(paths)
+
+    def _select_thumbnail_mode(self, mode: str) -> None:
+        """Show the chosen action on the button itself, without running it."""
+        self._thumbnail_mode = mode
+        action = self._thumbnail_actions.get(mode)
+        if action is None:
+            return
+        action.setChecked(True)
+        self.thumbnails_button.setText(action.text())
+
+    def _run_thumbnail_action(self) -> None:
+        self._create_thumbnails(regenerate=self._thumbnail_mode == _THUMBNAIL_REGENERATE)
 
     def _create_thumbnails(self, regenerate: bool = False) -> None:
         """Write sidecar thumbnails for every selected design.
