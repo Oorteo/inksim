@@ -61,6 +61,7 @@ from ..integration.inkscape_extensions import (
     InstallSafetyError,
     prepare_install,
 )
+from ..integration.inkstitch import changed_inkstitch_targets, missing_inkstitch_links
 from ..integration.paths import INKSCAPE_CONFIG_KEY, detect_tools, prefer_saved_inkscape
 from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
 from ..render import render_export_image
@@ -142,6 +143,7 @@ class MainWindow(QMainWindow):
         self.command_line_args: list[str] = []
         self._update_thread: UpdateCheckThread | None = None
         self._startup_inkscape_check_done = False
+        self._startup_inkstitch_check_done = False
         self._update_suffix: str = self._resolve_update_suffix(last_result(self.config))
         self._update_window_title()
 
@@ -636,6 +638,50 @@ class MainWindow(QMainWindow):
             highlight_inksim_update=True,
         )
         dialog.exec()
+
+    def check_inkstitch_link(self) -> None:
+        """Warn when the cached Ink/Stitch extension folder changed since the last setup."""
+        if self._startup_inkstitch_check_done:
+            return
+        self._startup_inkstitch_check_done = True
+        self.config.reload()
+        status = self.config.get(INKSCAPE_CONFIG_KEY)
+        if not isinstance(status, dict):
+            return
+        moved = changed_inkstitch_targets(status)
+        missing = missing_inkstitch_links(status)
+        if not moved and not missing:
+            return
+
+        details = [
+            _(
+                "integration.inkscape.inkstitch_link_moved",
+                "now points to: {path}",
+            ).format(path=_sanitize_path_text(str(target)))
+            for target in moved
+        ]
+        details.extend(
+            _(
+                "integration.inkscape.inkstitch_link_missing",
+                "folder is gone: {path}",
+            ).format(path=_sanitize_path_text(path))
+            for path in missing
+        )
+        QMessageBox.warning(
+            self,
+            _("integration.inkscape.title"),
+            _(
+                "integration.inkscape.inkstitch_link_changed_notice",
+                "Ink/Stitch in the Inkscape extensions folder changed since the last setup:"
+                "\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup"
+                " to store it.",
+            ).format(details="\n".join(details)),
+        )
+
+        executable = status.get("executable")
+        if not isinstance(executable, str):
+            executable = shutil.which("inkscape")
+        InkscapeIntegrationDialog(self, executable).exec()
 
     def _center_needle_slot(self, checked: bool = False) -> None:
         self.viewer.center_needle()

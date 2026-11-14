@@ -13,6 +13,7 @@ from inksim.integration.inkstitch import (
     active_inkstitch_installation,
     changed_inkstitch_targets,
     inkstitch_project_python,
+    missing_inkstitch_links,
     resolve_inkstitch_preview,
 )
 
@@ -142,6 +143,25 @@ def test_repointed_extension_link_is_reported(tmp_path):
     }
 
     assert changed_inkstitch_targets(status) == [(new / "inx").resolve()]
+
+
+def test_missing_links_lists_removed_folders(tmp_path):
+    """A renamed or removed extension folder is reported, an existing one is not."""
+    existing = _checkout(tmp_path / "existing")
+    gone = tmp_path / "extensions" / "inkstitch-gone" / "inx"
+    status = {
+        "inkstitch": [
+            {**_installation(existing), "extension_dir": str(existing / "inx")},
+            {
+                "extension_dir": str(gone),
+                "resolved_extension_dir": str(gone),
+                "command": "../inkstitch.py",
+                "location": "inx",
+            },
+        ]
+    }
+
+    assert missing_inkstitch_links(status) == [str(gone)]
 
 
 def test_changed_targets_ignores_status_without_a_stored_target(tmp_path):
