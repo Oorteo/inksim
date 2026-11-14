@@ -96,6 +96,41 @@ def test_selected_designs_get_sidecar_thumbnails(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_thumbnail_job_skips_current_files_and_regenerates_on_request(tmp_path):
+    """A repeated run only touches outdated files; the menu can force a rebuild."""
+    from inksim.gui.open_dialog import ThumbnailJob
+    from inksim.render.thumbnails import write_thumbnail
+
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    source = tmp_path / "design.pes"
+    source.write_bytes(sample.read_bytes())
+    write_thumbnail(source)
+
+    results: list[tuple[int, int, int]] = []
+    job = ThumbnailJob([source])
+    job.signals.finished.connect(lambda *args: results.append(args))
+    job.run()
+    assert results == [(0, 1, 0)]
+
+    job = ThumbnailJob([source], regenerate=True)
+    job.signals.finished.connect(lambda *args: results.append(args))
+    job.run()
+    assert results[-1] == (1, 0, 0)
+
+
+def test_thumbnail_button_offers_update_and_regenerate(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+
+    menu = dialog.thumbnails_button.menu()
+    assert menu is not None
+    labels = [action.text() for action in menu.actions()]
+    assert labels == ["Update outdated thumbnails", "Regenerate all thumbnails"]
+    dialog.reject()
+
+
 def test_thumbnail_action_needs_a_selected_design(qtbot, tmp_path, monkeypatch):
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
     (tmp_path / "folder").mkdir()
