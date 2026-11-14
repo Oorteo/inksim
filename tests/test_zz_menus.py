@@ -715,6 +715,7 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert status["python-interpretor"] == "python3"
     assert status["active_inkstitch"] == str(inx_path.parent.resolve())
     assert "python3" in dialog.python_interpreter_label.text()
+    assert "preferences.xml" in dialog.python_interpreter_label.text()
     assert "python3 (left unchanged)" in dialog.info_panel.toPlainText()
     assert "<!--preserve comment-->" in preferences_file.read_text(encoding="utf-8")
     assert preferences_file.read_bytes() == original_preferences
@@ -915,7 +916,8 @@ def test_missing_uvr_is_only_reported_without_modifying_preferences(tmp_path, qt
     assert preferences_file.read_bytes() == original_preferences
     assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == "python3"
     assert config.get(INKSCAPE_CONFIG_KEY)["python-interpretor"] == "python3"
-    assert dialog.interpreter_combo.count() == 2
+    assert dialog.interpreter_combo.itemData(1) == "__remove__"
+    assert dialog.interpreter_combo.count() == 3
     assert dialog.apply_interpreter_button.isEnabled() is False
 
 
@@ -985,6 +987,103 @@ def test_uvr_is_written_only_after_an_explicit_request_and_can_be_restored(
     assert "python-interpreter-backup" not in status
     assert dialog.restore_interpreter_button.isHidden()
     assert "Restored the previous Python interpreter: python3" in dialog.info_panel.toPlainText()
+
+
+def test_interpreter_setting_can_be_removed_and_restored(tmp_path, qtbot, monkeypatch):
+    """Remove the preference on request and keep the old value for Restore previous."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr(
+        InkscapeIntegrationDialog,
+        "_find_uvr_executable",
+        staticmethod(lambda _: None),
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QMessageBox.question",
+        lambda *args: QMessageBox.StandardButton.Yes,
+    )
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    preferences_file = user_data / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    remove_index = next(
+        index
+        for index in range(dialog.interpreter_combo.count())
+        if dialog.interpreter_combo.itemData(index) == "__remove__"
+    )
+    dialog.interpreter_combo.setCurrentIndex(remove_index)
+    assert dialog.apply_interpreter_button.isEnabled()
+    dialog._apply_selected_interpreter()
+
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) is None
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert "python-interpretor" not in status
+    assert status["python-interpreter-backup"] == "python3"
+    assert not dialog.restore_interpreter_button.isHidden()
+    assert "Removed the Inkscape Python interpreter preference." in dialog.info_panel.toPlainText()
+    assert dialog.apply_interpreter_button.isEnabled() is False
+
+    dialog._restore_previous_interpreter()
+
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == "python3"
+    assert config.get(INKSCAPE_CONFIG_KEY)["python-interpretor"] == "python3"
+
+
+def test_removing_the_interpreter_needs_a_configured_value(tmp_path, qtbot, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr(
+        InkscapeIntegrationDialog,
+        "_find_uvr_executable",
+        staticmethod(lambda _: None),
+    )
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    (user_data / "preferences.xml").write_text(
+        '<inkscape><group id="extensions" /></inkscape>',
+        encoding="utf-8",
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    remove_index = next(
+        index
+        for index in range(dialog.interpreter_combo.count())
+        if dialog.interpreter_combo.itemData(index) == "__remove__"
+    )
+    dialog.interpreter_combo.setCurrentIndex(remove_index)
+    assert dialog.apply_interpreter_button.isEnabled() is False
 
 
 def test_inkstitch_interpreter_candidate_comes_from_the_checkout(tmp_path):

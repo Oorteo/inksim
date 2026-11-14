@@ -559,6 +559,14 @@
         "source": "Do not change (recommended)",
         "translation": "Do not change (recommended)"
     },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Remove the interpreter setting"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?"
+    },
     "integration.inkscape.interpreter_restore": {
         "source": "Restore previous",
         "translation": "Restore previous"
@@ -594,6 +602,10 @@
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python interpreter: {path}"
+    },
+    "integration.inkscape.python_interpreter_file": {
+        "source": "({path})",
+        "translation": "({path})"
     },
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
