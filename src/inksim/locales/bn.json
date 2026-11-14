@@ -531,17 +531,9 @@
         "source": "No Ink/Stitch installation was found.",
         "translation": "কোনো Ink/Stitch ইনস্টলেশন পাওয়া যায়নি।"
     },
-    "integration.inkscape.report.interpreter_unchanged": {
-        "source": "Python interpreter is already configured: {path}",
-        "translation": "Python ইন্টারপ্রেটার আগে থেকেই কনফিগার করা আছে: {path}"
-    },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
         "translation": "Python ইন্টারপ্রেটার আপডেট করা হয়েছে: {path}"
-    },
-    "integration.inkscape.report.launcher_missing": {
-        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
-        "translation": "প্রয়োজনীয় লঞ্চার '{command}' পাওয়া যায়নি; পছন্দের সেটিং অপরিবর্তিত রাখা হয়েছে।"
     },
     "integration.inkscape.report.not_found": {
         "source": "Inkscape was not found. Choose its executable to inspect the setup.",
@@ -622,10 +614,6 @@
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "ব্যবহারকারীর এক্সটেনশন: {path}"
-    },
-    "integration.inkscape.uvr_missing": {
-        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
-        "translation": "প্রয়োজনীয় লঞ্চার '{command}' পাওয়া যায়নি। `uv tool install uvr` চালিয়ে নিজে uvr টুলটি ইনস্টল করুন, তারপর এই কনফিগারেশনটি আবার চালান। InkSim এটি ইনস্টল করবে না।"
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",

@@ -531,17 +531,9 @@
         "source": "No Ink/Stitch installation was found.",
         "translation": "ไม่พบการติดตั้ง Ink/Stitch"
     },
-    "integration.inkscape.report.interpreter_unchanged": {
-        "source": "Python interpreter is already configured: {path}",
-        "translation": "กำหนดค่าตัวแปลภาษา Python นี้ไว้อยู่แล้ว: {path}"
-    },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
         "translation": "อัปเดตตัวแปลภาษา Python แล้ว: {path}"
-    },
-    "integration.inkscape.report.launcher_missing": {
-        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
-        "translation": "ไม่พบโปรแกรมเรียกใช้ '{command}' ที่จำเป็น จึงคงค่าเดิมไว้"
     },
     "integration.inkscape.report.not_found": {
         "source": "Inkscape was not found. Choose its executable to inspect the setup.",
@@ -622,10 +614,6 @@
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "ส่วนขยายผู้ใช้: {path}"
-    },
-    "integration.inkscape.uvr_missing": {
-        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
-        "translation": "ไม่พบโปรแกรมเรียกใช้ '{command}' ที่จำเป็น ติดตั้งเครื่องมือ uvr เองด้วย `uv tool install uvr` แล้วเรียกใช้การกำหนดค่านี้อีกครั้ง InkSim จะไม่ติดตั้งให้"
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",

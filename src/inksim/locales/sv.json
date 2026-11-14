@@ -531,17 +531,9 @@
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ingen Ink/Stitch-installation hittades."
     },
-    "integration.inkscape.report.interpreter_unchanged": {
-        "source": "Python interpreter is already configured: {path}",
-        "translation": "Python-tolken är redan konfigurerad: {path}"
-    },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
         "translation": "Python-tolken har uppdaterats: {path}"
-    },
-    "integration.inkscape.report.launcher_missing": {
-        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
-        "translation": "Det nödvändiga startprogrammet '{command}' hittades inte. Inställningen ändrades inte."
     },
     "integration.inkscape.report.not_found": {
         "source": "Inkscape was not found. Choose its executable to inspect the setup.",
@@ -622,10 +614,6 @@
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Användartillägg: {path}"
-    },
-    "integration.inkscape.uvr_missing": {
-        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
-        "translation": "Det nödvändiga startprogrammet '{command}' hittades inte. Installera uvr-verktyget själv med `uv tool install uvr` och kör sedan konfigurationen igen. InkSim installerar det inte."
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",

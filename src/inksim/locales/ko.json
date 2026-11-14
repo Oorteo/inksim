@@ -531,17 +531,9 @@
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch 설치를 찾을 수 없어."
     },
-    "integration.inkscape.report.interpreter_unchanged": {
-        "source": "Python interpreter is already configured: {path}",
-        "translation": "Python 인터프리터가 이미 설정되어 있어: {path}"
-    },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
         "translation": "Python 인터프리터를 업데이트했어: {path}"
-    },
-    "integration.inkscape.report.launcher_missing": {
-        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
-        "translation": "필수 실행기 '{command}'를 찾을 수 없어. 환경설정은 변경하지 않았어."
     },
     "integration.inkscape.report.not_found": {
         "source": "Inkscape was not found. Choose its executable to inspect the setup.",
@@ -622,10 +614,6 @@
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "사용자 확장 기능: {path}"
-    },
-    "integration.inkscape.uvr_missing": {
-        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
-        "translation": "필수 실행기 '{command}'를 찾을 수 없어. `uv tool install uvr` 명령으로 uvr 도구를 직접 설치한 다음 이 설정을 다시 실행해. InkSim은 uvr를 설치하지 않아."
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",
