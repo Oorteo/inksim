@@ -106,3 +106,16 @@ def test_design_without_sidecar_keeps_an_empty_palette(tmp_path):
     pattern = read_embroidery_file(design)
 
     assert pattern.threadlist == []
+
+
+def test_palette_round_trips_through_an_edr_file(tmp_path):
+    from inksim.formats import palette_sidecar_path, read_palette_file, write_palette_file
+
+    palette_path = palette_sidecar_path(tmp_path / "design.dst")
+    write_palette_file(palette_path, ["#112233", "#445566"])
+
+    assert palette_path.name == "design.edr"
+    assert [thread.hex_color() for thread in read_palette_file(palette_path)] == [
+        "#112233",
+        "#445566",
+    ]

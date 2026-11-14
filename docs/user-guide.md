@@ -161,6 +161,14 @@ such as `.hus` or `.pes` — applied in color-block order. Files without any
 sidecar use a deterministic fallback palette. Jumps, color changes,
 trims, stops, slow, fast, and end markers are interpreted while loading.
 
+`Colors…` in the open dialog and `File > Load palette…` in the main window store
+the colors you pick as `<name>.edr` next to the design, so the choice applies to
+the preview, the thumbnails and the next session. Saving to a format that drops
+colors (DST, EXP) asks once whether the palette should be written next to the
+file; the answer is remembered as `save_palette_sidecar` (`ask`, `always` or
+`never`) and can be changed later in `File > Colors on save` or in the
+configuration file.
+
 ## Rendering Notes
 
 Loaded designs are kept in a NumPy array with one row per stitch segment:

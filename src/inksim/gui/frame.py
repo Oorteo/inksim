@@ -44,7 +44,9 @@ from ..config import Config
 from ..constants import APP_TITLE, DEFAULT_STATUS_TEXT
 from ..debug import logger
 from ..formats import (
+    color_block_count,
     extension_from_output_filter,
+    get_palette_output_formats,
     get_supported_output_filter,
     get_supported_output_formats,
 )
@@ -80,6 +82,7 @@ from .export_dialog import ExportPreviewDialog
 from .help import show_command_line_help
 from .inkscape_dialog import InkscapeIntegrationDialog
 from .open_dialog import OpenBrowserDialog
+from .palette import apply_palette_to_design, palette_format, store_palette_after_save
 from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
@@ -433,6 +436,10 @@ class MainWindow(QMainWindow):
         file_menu = self.menuBar().addMenu(_("menu.file"))
         self._action(file_menu, _("menu.file.open_file"), self.open_browser_dialog, "Ctrl+O")
         self._action(file_menu, _("menu.file.save_as"), self._save_as_embroidery_slot, "Ctrl+S")
+        self._action(
+            file_menu, _("menu.file.load_palette", "Load palette…"), self.load_palette_for_design
+        )
+        self._build_palette_save_menu(file_menu)
         export_menu = file_menu.addMenu(_("menu.file.export"))
         self._action(
             export_menu, _("menu.file.export.shaded_print"), self.export_shaded_png, "Ctrl+E"
@@ -784,6 +791,84 @@ class MainWindow(QMainWindow):
         )
         if answer == QMessageBox.Yes:
             self.close()
+
+    def _build_palette_save_menu(self, file_menu: QMenu) -> None:
+        """Expose the remembered answer of the palette question in Save as."""
+        palette_menu = file_menu.addMenu(_("menu.file.colors_on_save", "Colors on save"))
+        self._palette_save_actions: dict[str, QAction] = {}
+        group = QActionGroup(self)
+        group.setExclusive(True)
+        for value, label in (
+            ("ask", _("menu.file.colors_on_save.ask", "Ask every time")),
+            ("always", _("menu.file.colors_on_save.always", "Always write the palette")),
+            ("never", _("menu.file.colors_on_save.never", "Never write the palette")),
+        ):
+            action = QAction(label, self)
+            action.setCheckable(True)
+            action.triggered.connect(
+                lambda _checked=False, selected=value: self.set_save_palette_choice(selected)
+            )
+            group.addAction(action)
+            palette_menu.addAction(action)
+            self._palette_save_actions[value] = action
+        self._build_palette_format_menu(palette_menu)
+        self._sync_save_palette_actions()
+
+    def _build_palette_format_menu(self, palette_menu: QMenu) -> None:
+        """Pick which palette file Save as writes (.edr, .col, .inf)."""
+        format_menu = palette_menu.addMenu(_("menu.file.colors_on_save.format", "Palette format"))
+        self._palette_format_actions: dict[str, QAction] = {}
+        group = QActionGroup(self)
+        group.setExclusive(True)
+        for item in get_palette_output_formats():
+            extension = item["extension"]
+            action = QAction(extension.upper(), self)
+            action.setCheckable(True)
+            action.triggered.connect(
+                lambda _checked=False, selected=extension: self.set_save_palette_format(selected)
+            )
+            group.addAction(action)
+            format_menu.addAction(action)
+            self._palette_format_actions[extension] = action
+        self._sync_save_palette_format_actions()
+
+    def save_palette_format(self) -> str:
+        return palette_format(self.config)
+
+    def set_save_palette_format(self, extension: str) -> None:
+        try:
+            self.config.set("save_palette_format", extension)
+        except OSError as ex:
+            logger.warning("Could not store the palette format: %s", ex)
+        self._sync_save_palette_format_actions()
+
+    def _sync_save_palette_format_actions(self) -> None:
+        actions = getattr(self, "_palette_format_actions", None)
+        if not actions:
+            return
+        current = self.save_palette_format()
+        for extension, action in actions.items():
+            action.setChecked(extension == current)
+
+    def save_palette_choice(self) -> str:
+        """Return the remembered answer for writing a palette next to a save."""
+        value = self.config.get("save_palette_sidecar", "ask")
+        return value if value in ("ask", "always", "never") else "ask"
+
+    def set_save_palette_choice(self, value: str) -> None:
+        try:
+            self.config.set("save_palette_sidecar", value)
+        except OSError as ex:
+            logger.warning("Could not store the palette answer: %s", ex)
+        self._sync_save_palette_actions()
+
+    def _sync_save_palette_actions(self) -> None:
+        actions = getattr(self, "_palette_save_actions", None)
+        if not actions:
+            return
+        current = self.save_palette_choice()
+        for value, action in actions.items():
+            action.setChecked(value == current)
 
     def _show_config_editor_slot(self, checked: bool = False) -> None:
         show_config_editor(self, self.config)
@@ -1464,8 +1549,27 @@ class MainWindow(QMainWindow):
                 _("message.save_error.message").format(error=_sanitize_path_text(str(error))),
             )
             return False
-        self.statusBar().showMessage(f"Saved {path}", 3000)
+        palette = store_palette_after_save(self, self.config, Path(path), pattern.threadlist)
+        self._sync_save_palette_actions()
+        if palette is not None:
+            self.statusBar().showMessage(f"Saved {path} and {palette.name}", 5000)
+        else:
+            self.statusBar().showMessage(f"Saved {path}", 3000)
         return True
+
+    def load_palette_for_design(self, checked: bool = False) -> None:
+        """Store thread colors for the open design as a sidecar palette."""
+        del checked
+        pattern = self.viewer.pattern
+        source = self._preferred_source_path()
+        if pattern is None or source is None:
+            QMessageBox.warning(self, "Save embroidery", _("message.no_file_to_save"))
+            return
+        note = apply_palette_to_design(self, source, color_block_count(pattern), self.config)
+        if note is None:
+            return
+        self.statusBar().showMessage(note, 5000)
+        self.viewer.load_design(str(source), fit_to_screen=False, show_error_dialog=False)
 
     def _can_export_image(self) -> bool:
         if self.viewer.stitches_np.shape[0] == 0:
