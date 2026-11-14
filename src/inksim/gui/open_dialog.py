@@ -140,6 +140,10 @@ _MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
 _PREVIEW_TIMING_CONFIG_KEY = "svg_preview_timing"
 _ICON_SIZE_CONFIG_KEY = "open_dialog_icon_size"
 _VIEW_CONFIG_KEY = "open_dialog_view"
+_ICON_BACKGROUND_CONFIG_KEY = "open_dialog_icon_background"
+_ICON_STEP = 8
+_BACKGROUND_STEP = 12
+_BACKGROUND_SAVE_DEBOUNCE_MS = 400
 _SKIP_EXTENSIONS_CONFIG_KEY = "open_dialog_skip_extensions"
 _SKIP_SAVE_DEBOUNCE_MS = 600
 _ICON_SIZE_MIN = 32
@@ -162,6 +166,12 @@ class _IconSelectionDelegate(QStyledItemDelegate):
     frame plus a tint when selected. The thumbnail files stay untouched.
     """
 
+    def __init__(self, parent: QObject | None = None) -> None:
+        super().__init__(parent)
+        # Grey level of the icon tile (0 black .. 255 white); None keeps the
+        # palette-derived default.
+        self.tile_level: int | None = None
+
     def paint(self, painter: QPainter, option: Any, index: Any) -> None:  # type: ignore[override]
         view = option.widget
         if not isinstance(view, QListView) or view.viewMode() != QListView.ViewMode.IconMode:
@@ -182,10 +192,7 @@ class _IconSelectionDelegate(QStyledItemDelegate):
 
         painter.save()
         painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
-        painter.fillRect(
-            text_option.rect,
-            self._tile_color(option.palette, icon_rect.width(), icon_rect.height()),
-        )
+        painter.fillRect(text_option.rect, self._tile_color(option.palette))
         painter.restore()
         super().paint(painter, text_option, index)
 
@@ -194,10 +201,10 @@ class _IconSelectionDelegate(QStyledItemDelegate):
         if caption:
             self._paint_caption(painter, option, icon_rect, caption, caption_font)
 
-    @staticmethod
-    def _tile_color(palette: QPalette, width: int, height: int) -> QColor:
-        """Return a neutral tile so white thread stays visible on light themes."""
-        del width, height
+    def _tile_color(self, palette: QPalette) -> QColor:
+        """Return the tile colour: the chosen grey, or one derived from the theme."""
+        if self.tile_level is not None:
+            return QColor(self.tile_level, self.tile_level, self.tile_level)
         tile = QColor(palette.color(QPalette.ColorRole.Base))
         if tile.lightnessF() > 0.5:
             tile = tile.darker(112)
@@ -560,6 +567,11 @@ class OpenBrowserDialog(QDialog):
         self._conversion_progress_timer.setInterval(_CONVERSION_PROGRESS_INTERVAL_MS)
         self._conversion_progress_timer.timeout.connect(self._update_conversion_progress)
 
+        self._background_save_timer = QTimer(self)
+        self._background_save_timer.setSingleShot(True)
+        self._background_save_timer.setInterval(_BACKGROUND_SAVE_DEBOUNCE_MS)
+        self._background_save_timer.timeout.connect(self._store_icon_background)
+
         self._skip_save_timer = QTimer(self)
         self._skip_save_timer.setSingleShot(True)
         self._skip_save_timer.setInterval(_SKIP_SAVE_DEBOUNCE_MS)
@@ -664,6 +676,13 @@ class OpenBrowserDialog(QDialog):
             _("dialog.open_browser.icon_size", "Icon size ({size} px)").format(size=self._icon_size)
         )
         self.icon_size_slider.valueChanged.connect(self._on_icon_size_changed)
+        self.background_slider = QSlider(Qt.Orientation.Horizontal, self)
+        self.background_slider.setObjectName("iconBackgroundSlider")
+        self.background_slider.setRange(0, 255)
+        self.background_slider.setFixedWidth(80)
+        self.background_slider.setValue(self._initial_tile_level())
+        self.background_slider.setToolTip(self._background_tooltip())
+        self.background_slider.valueChanged.connect(self._on_icon_background_changed)
         search_row.addWidget(self.icon_size_slider)
         self.search_edit = QLineEdit(self)
         self.search_edit.setPlaceholderText(_("dialog.open_browser.search", "Search files"))
@@ -701,9 +720,11 @@ class OpenBrowserDialog(QDialog):
         self._list_font = self.file_list.font()
         self._mono_font = QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont)
         self.file_list.installEventFilter(self)
+        self.file_list.viewport().installEventFilter(self)
         self.file_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.file_list.setIconSize(QSize(THUMBNAIL_SIZE // 4, THUMBNAIL_SIZE // 4))
-        self.file_list.setItemDelegate(_IconSelectionDelegate(self.file_list))
+        self._icon_delegate = _IconSelectionDelegate(self.file_list)
+        self.file_list.setItemDelegate(self._icon_delegate)
         self.file_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.file_list.customContextMenuRequested.connect(self._show_thumbnail_menu)
         self.file_list.currentItemChanged.connect(self._on_current_item_changed)
@@ -1208,6 +1229,12 @@ class OpenBrowserDialog(QDialog):
         self._skip_save_timer.start()
         self._apply_filter()
 
+    def _store_icon_background(self) -> None:
+        try:
+            self.config.set(_ICON_BACKGROUND_CONFIG_KEY, self.background_slider.value())
+        except OSError as ex:
+            logger.warning("Could not store the icon background: %s", ex)
+
     def _store_skip_extensions(self) -> None:
         try:
             self.config.set(_SKIP_EXTENSIONS_CONFIG_KEY, "|".join(self._skip_extensions))
@@ -1507,12 +1534,55 @@ class OpenBrowserDialog(QDialog):
         self._open_selected()
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
-        if watched is self.file_list and event.type() == QEvent.Type.KeyPress:
-            # Arrow keys belong to the list: in the icon grid they move between
-            # icons, so directories are entered with Enter on the current row.
-            if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
-                return self._activate_current()
+        if watched in (self.file_list, self.file_list.viewport()):
+            if event.type() == QEvent.Type.Wheel:
+                assert isinstance(event, QWheelEvent)
+                return self._handle_list_wheel(event)
+            if event.type() == QEvent.Type.KeyPress and watched is self.file_list:
+                # Arrow keys belong to the list: in the icon grid they move
+                # between icons, so directories are entered with Enter.
+                if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+                    return self._activate_current()
         return super().eventFilter(watched, event)
+
+    def _handle_list_wheel(self, event: QWheelEvent) -> bool:
+        """Ctrl+wheel scales the icons, Shift+wheel shades their tile."""
+        modifiers = event.modifiers()
+        steps = 1 if event.angleDelta().y() > 0 else -1
+        if modifiers & Qt.KeyboardModifier.ControlModifier:
+            self.icon_size_slider.setValue(self.icon_size_slider.value() + steps * _ICON_STEP)
+            return True
+        if modifiers & Qt.KeyboardModifier.ShiftModifier:
+            self.background_slider.setValue(
+                self.background_slider.value() + steps * _BACKGROUND_STEP
+            )
+            return True
+        return False
+
+    def _initial_tile_level(self) -> int:
+        """Return the stored tile grey, or one derived from the current theme."""
+        stored = self.config.get(_ICON_BACKGROUND_CONFIG_KEY, None)
+        if isinstance(stored, int) and 0 <= stored <= 255:
+            return stored
+        base = QColor(self.palette().color(QPalette.ColorRole.Base))
+        if base.lightnessF() > 0.5:
+            base = base.darker(112)
+        else:
+            base = base.lighter(140)
+        return max(0, min(255, base.lightness()))
+
+    def _background_tooltip(self) -> str:
+        return _(
+            "dialog.open_browser.icon_background",
+            "Icon background shading ({level}, 0 = black, 255 = white)"
+            "\nCtrl+wheel scales the icons, Shift+wheel changes this.",
+        ).format(level=self.background_slider.value() if hasattr(self, "background_slider") else "")
+
+    def _on_icon_background_changed(self, level: int) -> None:
+        self._icon_delegate.tile_level = level
+        self.background_slider.setToolTip(self._background_tooltip())
+        self.file_list.viewport().update()
+        self._background_save_timer.start()
 
     def _activate_current(self) -> bool:
         """Enter on the current row: folders are entered, files are opened."""
@@ -2260,6 +2330,9 @@ class OpenBrowserDialog(QDialog):
         if self._skip_save_timer.isActive():
             self._skip_save_timer.stop()
             self._store_skip_extensions()
+        if self._background_save_timer.isActive():
+            self._background_save_timer.stop()
+            self._store_icon_background()
         self._conversion_started_at = None
         process = self._conversion_process
         if process is not None:

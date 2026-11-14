@@ -263,6 +263,10 @@
         "source": "Home",
         "translation": "Home"
     },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nCtrl+wheel scales the icons, Shift+wheel changes this.",
+        "translation": "Icon background shading ({level}, 0 = black, 255 = white)\nCtrl+wheel scales the icons, Shift+wheel changes this."
+    },
     "dialog.open_browser.icon_size": {
         "source": "Icon size ({size} px)",
         "translation": "Icon size ({size} px)"
