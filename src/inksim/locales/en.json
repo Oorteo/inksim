@@ -548,8 +548,8 @@
         "translation": "Optional — only for extensions with their own Python environment"
     },
     "integration.inkscape.interpreter_hint_tooltip": {
-        "source": "Only extensions that ask Inkscape for its Python interpreter need this, for example Ink/Stitch. InkSim's own extensions start the InkSim executable directly. The uvr launcher resolves the environment of each extension project, which helps when several extensions need their own environment.",
-        "translation": "Only extensions that ask Inkscape for its Python interpreter need this, for example Ink/Stitch. InkSim's own extensions start the InkSim executable directly. The uvr launcher resolves the environment of each extension project, which helps when several extensions need their own environment."
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly."
     },
     "integration.inkscape.interpreter_inkstitch": {
         "source": "Ink/Stitch environment ({path})",
@@ -603,13 +603,13 @@
         "source": "Python interpreter: {path}",
         "translation": "Python interpreter: {path}"
     },
-    "integration.inkscape.python_interpreter_file": {
-        "source": "({path})",
-        "translation": "({path})"
-    },
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Restart Inkscape to apply the new Python interpreter."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python interpreter ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
