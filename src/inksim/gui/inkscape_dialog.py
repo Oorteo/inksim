@@ -54,6 +54,7 @@ from ..integration.inkscape_extensions import (
     resolve_inksim_launcher,
     set_debug_script_enabled,
 )
+from ..integration.inkstitch import inkstitch_project_python
 from ..integration.paths import INKSCAPE_CONFIG_KEY, detect_tools
 from ..paths import _sanitize_path_text
 
@@ -62,6 +63,12 @@ INKSCAPE_PROBE_TIMEOUT_S = 10
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
 _PROBE_OPTIONS = ("--user-data-directory", "--system-data-directory")
 _VERSION_PROBE_OPTION = "--version"
+_CUSTOM_INTERPRETER = "__custom__"
+_XML_ATTRIBUTE_PATTERN = re.compile(
+    rb"(?P<space>[ \t\r\n]+)(?P<name>[^ \t\r\n=/>]+)"
+    rb"[ \t\r\n]*=[ \t\r\n]*(?P<quote>[\"'])(?P<value>.*?)(?P=quote)",
+    re.DOTALL,
+)
 
 
 def _hide_windows_console(arguments: Any) -> None:
@@ -182,6 +189,9 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_timer.setSingleShot(True)
         self._probe_timer.timeout.connect(self._on_probe_timeout)
         self._report_entries: list[str] = []
+        self._preferences_file: Path | None = None
+        self._interpreter_current: str | None = None
+        self._interpreter_backup: str | None = None
 
         application_group, application_layout = create_section(
             _("integration.inkscape.section.application", "Inkscape application"),
@@ -225,7 +235,49 @@ class InkscapeIntegrationDialog(QDialog):
         self.python_interpreter_label.setWordWrap(True)
         self.python_interpreter_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         extensions_layout.addWidget(self.python_interpreter_label)
+        interpreter_row = QHBoxLayout()
+        self.interpreter_combo = QComboBox(self)
+        self.interpreter_combo.setObjectName("extensionInterpreter")
+        self.interpreter_combo.currentIndexChanged.connect(self._sync_interpreter_buttons)
+        interpreter_row.addWidget(self.interpreter_combo, 1)
+        self.apply_interpreter_button = QPushButton(
+            _("integration.inkscape.interpreter_apply", "Apply"), self
+        )
+        self.apply_interpreter_button.setObjectName("applyExtensionInterpreter")
+        self.apply_interpreter_button.setEnabled(False)
+        self.apply_interpreter_button.clicked.connect(self._apply_selected_interpreter)
+        interpreter_row.addWidget(self.apply_interpreter_button)
+        self.restore_interpreter_button = QPushButton(
+            _("integration.inkscape.interpreter_restore", "Restore previous"), self
+        )
+        self.restore_interpreter_button.setObjectName("restoreExtensionInterpreter")
+        self.restore_interpreter_button.setEnabled(False)
+        self.restore_interpreter_button.hide()
+        self.restore_interpreter_button.clicked.connect(self._restore_previous_interpreter)
+        interpreter_row.addWidget(self.restore_interpreter_button)
+        extensions_layout.addLayout(interpreter_row)
+        self.interpreter_hint_label = QLabel(
+            _(
+                "integration.inkscape.interpreter_hint",
+                "Optional — only for extensions with their own Python environment",
+            ),
+            self,
+        )
+        self.interpreter_hint_label.setObjectName("extensionInterpreterHint")
+        self.interpreter_hint_label.setWordWrap(True)
+        self.interpreter_hint_label.setEnabled(False)
+        hint_tooltip = _(
+            "integration.inkscape.interpreter_hint_tooltip",
+            "Only extensions that ask Inkscape for its Python interpreter need this,"
+            " for example Ink/Stitch. InkSim's own extensions start the InkSim executable"
+            " directly. The uvr launcher resolves the environment of each extension"
+            " project, which helps when several extensions need their own environment.",
+        )
+        self.interpreter_hint_label.setToolTip(hint_tooltip)
+        self.interpreter_combo.setToolTip(hint_tooltip)
+        extensions_layout.addWidget(self.interpreter_hint_label)
         self._show_python_interpreter(None)
+        self._populate_interpreter_choices(None, [])
         layout.addWidget(extensions_group)
 
         inkstitch_group, inkstitch_layout = create_section(
@@ -370,7 +422,11 @@ class InkscapeIntegrationDialog(QDialog):
             self.system_extensions_label.setText(
                 _("integration.inkscape.system_extensions").format(path=unavailable)
             )
+            self._preferences_file = None
+            self._interpreter_current = None
+            self._interpreter_backup = None
             self._show_python_interpreter(None)
+            self._populate_interpreter_choices(None, [])
             self._set_report([_("integration.inkscape.report.not_found")])
             return
 
@@ -665,7 +721,6 @@ class InkscapeIntegrationDialog(QDialog):
         preferences_file = None
         python_interpreter = None
         preferences_error = None
-        interpreter_updated = False
         unavailable = _("integration.inkscape.directory_unavailable")
         if user_path != unavailable:
             preferences_file = (Path(user_path).parent / "preferences.xml").resolve()
@@ -690,61 +745,50 @@ class InkscapeIntegrationDialog(QDialog):
                         error=_sanitize_path_text(str(ex))
                     ),
                 )
-            if preferences_error is None:
-                uvr_executable = self._find_uvr_executable(python_interpreter)
-                if uvr_executable is None:
-                    report_entries.append(
-                        _("integration.inkscape.report.launcher_missing").format(
-                            command="uvr-gui" if sys.platform == "win32" else "uvr"
-                        )
-                    )
-                    QMessageBox.warning(
-                        self,
-                        _("integration.inkscape.title"),
-                        _("integration.inkscape.uvr_missing").format(
-                            command="uvr-gui" if sys.platform == "win32" else "uvr"
-                        ),
-                    )
-                else:
-                    target_interpreter = str(uvr_executable)
-                    if python_interpreter != target_interpreter:
-                        try:
-                            self._write_python_interpreter(preferences_file, uvr_executable)
-                            python_interpreter = self._read_python_interpreter(preferences_file)
-                            if python_interpreter != target_interpreter:
-                                raise ValueError(
-                                    "Inkscape did not persist the requested Python interpreter."
-                                )
-                            interpreter_updated = True
-                            report_entries.append(
-                                _("integration.inkscape.report.interpreter_updated").format(
-                                    path=_sanitize_path_text(python_interpreter)
-                                )
-                            )
-                            report_entries.append(_("integration.inkscape.report.restart"))
-                        except (OSError, ET.ParseError, expat.ExpatError, ValueError) as ex:
-                            preferences_error = str(ex)
-                            report_entries.append(
-                                _("integration.inkscape.report.preferences_error").format(
-                                    error=_sanitize_path_text(str(ex))
-                                )
-                            )
-                            QMessageBox.warning(
-                                self,
-                                _("integration.inkscape.title"),
-                                _("integration.inkscape.preferences_write_failed").format(
-                                    error=_sanitize_path_text(str(ex))
-                                ),
-                            )
-                    else:
-                        report_entries.append(
-                            _("integration.inkscape.report.interpreter_unchanged").format(
-                                path=_sanitize_path_text(python_interpreter)
-                            )
-                        )
         else:
             report_entries.append(_("integration.inkscape.report.preferences_skipped"))
-        self._show_python_interpreter(python_interpreter, interpreter_updated)
+        previous_backup = (
+            previous_status.get("python-interpreter-backup")
+            if isinstance(previous_status, dict)
+            else None
+        )
+        self._preferences_file = None if preferences_error is not None else preferences_file
+        self._interpreter_current = python_interpreter
+        self._interpreter_backup = previous_backup if isinstance(previous_backup, str) else None
+        if self._preferences_file is not None:
+            uvr_executable = self._find_uvr_executable(python_interpreter)
+            self._populate_interpreter_choices(
+                python_interpreter,
+                self._interpreter_candidates(uvr_executable, installations),
+            )
+            report_entries.append(
+                _(
+                    "integration.inkscape.report.interpreter_current",
+                    "Inkscape extension Python interpreter: {path} (left unchanged)",
+                ).format(
+                    path=_sanitize_path_text(
+                        python_interpreter or _("integration.inkscape.python_interpreter_unset")
+                    )
+                )
+            )
+            if uvr_executable is None:
+                report_entries.append(
+                    _(
+                        "integration.inkscape.report.uvr_missing",
+                        "The optional uvr launcher was not found; the Inkscape interpreter"
+                        " preference is left unchanged.",
+                    )
+                )
+            else:
+                report_entries.append(
+                    _(
+                        "integration.inkscape.report.uvr_available",
+                        "The optional uvr launcher is available: {path}",
+                    ).format(path=_sanitize_path_text(str(uvr_executable)))
+                )
+        else:
+            self._populate_interpreter_choices(None, [])
+        self._show_python_interpreter(python_interpreter)
 
         installation_data = []
         for installation in installations:
@@ -775,6 +819,8 @@ class InkscapeIntegrationDialog(QDialog):
             result["preferences_file"] = str(preferences_file)
         if python_interpreter is not None:
             result["python-interpretor"] = python_interpreter
+        if self._interpreter_backup is not None:
+            result["python-interpreter-backup"] = self._interpreter_backup
         if preferences_error is not None:
             result["preferences_error"] = preferences_error
         if installations:
@@ -1204,8 +1250,224 @@ class InkscapeIntegrationDialog(QDialog):
         return executable_path
 
     @staticmethod
-    def _write_python_interpreter(preferences_file: Path, interpreter: Path) -> None:
-        original = preferences_file.read_bytes()
+    def _find_inkstitch_python(installations: list[InkStitchInstallation]) -> Path | None:
+        """Return the project interpreter of a source (unfrozen) Ink/Stitch install.
+
+        Frozen Ink/Stitch builds ship their own interpreter and their INX files
+        do not request Inkscape's Python, so only installations whose command
+        declares ``interpreter="python"`` are relevant here.
+        """
+        for installation in installations:
+            if (installation.interpreter or "").lower() != "python":
+                continue
+            python = inkstitch_project_python(installation.resolved_path)
+            if python is not None:
+                return python
+        return None
+
+    @classmethod
+    def _interpreter_candidates(
+        cls,
+        uvr_executable: Path | None,
+        installations: list[InkStitchInstallation],
+    ) -> list[tuple[str, str]]:
+        """Return the optional launchers offered in addition to leaving Inkscape alone."""
+        candidates: list[tuple[str, str]] = []
+        if uvr_executable is not None:
+            candidates.append(
+                (
+                    _(
+                        "integration.inkscape.interpreter_uvr",
+                        "uvr launcher ({path})",
+                    ).format(path=_sanitize_path_text(str(uvr_executable))),
+                    str(uvr_executable),
+                )
+            )
+        inkstitch_python = cls._find_inkstitch_python(installations)
+        if inkstitch_python is not None:
+            candidates.append(
+                (
+                    _(
+                        "integration.inkscape.interpreter_inkstitch",
+                        "Ink/Stitch environment ({path})",
+                    ).format(path=_sanitize_path_text(str(inkstitch_python))),
+                    str(inkstitch_python),
+                )
+            )
+        return candidates
+
+    def _populate_interpreter_choices(
+        self, current: str | None, candidates: list[tuple[str, str]]
+    ) -> None:
+        """Offer launcher choices without changing the Inkscape preference."""
+        self.interpreter_combo.blockSignals(True)
+        self.interpreter_combo.clear()
+        self.interpreter_combo.addItem(
+            _("integration.inkscape.interpreter_keep", "Do not change (recommended)"), ""
+        )
+        for label, path in candidates:
+            self.interpreter_combo.addItem(label, path)
+        self.interpreter_combo.addItem(
+            _("integration.inkscape.interpreter_custom", "Custom path…"), _CUSTOM_INTERPRETER
+        )
+        self.interpreter_combo.setCurrentIndex(self._interpreter_choice_index(current))
+        self.interpreter_combo.blockSignals(False)
+        self._sync_interpreter_buttons()
+
+    def _interpreter_choice_index(self, interpreter: str | None) -> int:
+        if not interpreter:
+            return 0
+        configured = Path(interpreter).expanduser()
+        for index in range(1, self.interpreter_combo.count()):
+            data = self.interpreter_combo.itemData(index)
+            if data and data != _CUSTOM_INTERPRETER and Path(data) == configured:
+                return index
+        return 0
+
+    def _sync_interpreter_buttons(self, *_args: object) -> None:
+        data = self.interpreter_combo.currentData()
+        changed = bool(data) and data != self._interpreter_current
+        self.apply_interpreter_button.setEnabled(self._preferences_file is not None and changed)
+        available = self._preferences_file is not None and self._interpreter_backup is not None
+        self.restore_interpreter_button.setVisible(self._interpreter_backup is not None)
+        self.restore_interpreter_button.setEnabled(available)
+
+    def _selected_interpreter_target(self) -> str | None:
+        data = self.interpreter_combo.currentData()
+        if data != _CUSTOM_INTERPRETER:
+            return data or None
+        directory = ""
+        if self._interpreter_current:
+            directory = str(Path(self._interpreter_current).expanduser().parent)
+        path, _selected_filter = QFileDialog.getOpenFileName(
+            self,
+            _(
+                "integration.inkscape.interpreter_custom_title",
+                "Select a Python interpreter",
+            ),
+            directory,
+            "All files (*)",
+        )
+        return path or None
+
+    def _apply_selected_interpreter(self) -> None:
+        """Write the chosen launcher to Inkscape preferences after an explicit confirmation."""
+        preferences_file = self._preferences_file
+        target = self._selected_interpreter_target()
+        if preferences_file is None or not target:
+            return
+        interpreter = Path(target).expanduser()
+        if (
+            QMessageBox.question(
+                self,
+                _("integration.inkscape.title"),
+                _(
+                    "integration.inkscape.interpreter_confirm",
+                    "Change the Python interpreter for all Inkscape extensions to:"
+                    "\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+                ).format(path=_sanitize_path_text(str(interpreter))),
+            )
+            != QMessageBox.StandardButton.Yes
+        ):
+            return
+        previous = self._interpreter_current
+        try:
+            self._write_python_interpreter(preferences_file, interpreter)
+            current = self._read_python_interpreter(preferences_file)
+            if current != str(interpreter):
+                raise ValueError("Inkscape did not persist the requested Python interpreter.")
+        except (OSError, ET.ParseError, expat.ExpatError, ValueError) as ex:
+            self._report_interpreter_error(ex)
+            return
+        if self._interpreter_backup is None and previous != str(interpreter):
+            self._interpreter_backup = previous or ""
+        self._set_interpreter_state(current)
+        self._append_report(
+            _("integration.inkscape.report.interpreter_updated").format(
+                path=_sanitize_path_text(current)
+            )
+        )
+        self._append_report(_("integration.inkscape.report.restart"))
+
+    def _restore_previous_interpreter(self) -> None:
+        preferences_file = self._preferences_file
+        backup = self._interpreter_backup
+        if preferences_file is None or backup is None:
+            return
+        try:
+            if backup:
+                self._write_python_interpreter(preferences_file, Path(backup))
+            else:
+                self._remove_python_interpreter(preferences_file)
+            current = self._read_python_interpreter(preferences_file)
+            if current != (backup or None):
+                raise ValueError("Inkscape did not persist the requested Python interpreter.")
+        except (OSError, ET.ParseError, expat.ExpatError, ValueError) as ex:
+            self._report_interpreter_error(ex)
+            return
+        self._interpreter_backup = None
+        self._set_interpreter_state(current)
+        self._append_report(
+            _(
+                "integration.inkscape.report.interpreter_restored",
+                "Restored the previous Python interpreter: {path}",
+            ).format(path=_sanitize_path_text(current))
+            if current
+            else _(
+                "integration.inkscape.report.interpreter_removed",
+                "Removed the Inkscape Python interpreter preference.",
+            )
+        )
+
+    def _report_interpreter_error(self, error: Exception) -> None:
+        self._append_report(
+            _("integration.inkscape.report.preferences_error").format(
+                error=_sanitize_path_text(str(error))
+            )
+        )
+        QMessageBox.warning(
+            self,
+            _("integration.inkscape.title"),
+            _("integration.inkscape.preferences_write_failed").format(
+                error=_sanitize_path_text(str(error))
+            ),
+        )
+
+    def _set_interpreter_state(self, interpreter: str | None) -> None:
+        self._interpreter_current = interpreter
+        self._show_python_interpreter(interpreter, restart_required=True)
+        self._store_interpreter_status(interpreter)
+        self.interpreter_combo.blockSignals(True)
+        self.interpreter_combo.setCurrentIndex(self._interpreter_choice_index(interpreter))
+        self.interpreter_combo.blockSignals(False)
+        self._sync_interpreter_buttons()
+
+    def _store_interpreter_status(self, interpreter: str | None) -> None:
+        config = Config()
+        status = config.get(INKSCAPE_CONFIG_KEY)
+        if not isinstance(status, dict):
+            return
+        updated = dict(status)
+        if interpreter:
+            updated["python-interpretor"] = interpreter
+        else:
+            updated.pop("python-interpretor", None)
+        if self._interpreter_backup:
+            updated["python-interpreter-backup"] = self._interpreter_backup
+        else:
+            updated.pop("python-interpreter-backup", None)
+        try:
+            config.set(INKSCAPE_CONFIG_KEY, updated)
+        except (OSError, Timeout) as ex:
+            self._append_report(
+                _("integration.inkscape.report.config_save_failed").format(
+                    error=_sanitize_path_text(str(ex))
+                )
+            )
+
+    @staticmethod
+    def _extensions_start_tag(preferences_file: Path, original: bytes) -> tuple[int, int, bytes]:
+        """Return the byte offsets and the text of the extensions group start tag."""
         group_start = None
         document_encoding = None
         parser = expat.ParserCreate(namespace_separator="}")
@@ -1252,14 +1514,35 @@ class InkscapeIntegrationDialog(QDialog):
             raise ValueError(
                 f"Could not find the end of the extensions group in {preferences_file}."
             )
+        return group_start, tag_end, original[group_start : tag_end + 1]
 
-        start_tag = original[group_start : tag_end + 1]
-        attribute_pattern = re.compile(
-            rb"(?P<space>[ \t\r\n]+)(?P<name>[^ \t\r\n=/>]+)"
-            rb"[ \t\r\n]*=[ \t\r\n]*(?P<quote>[\"'])(?P<value>.*?)(?P=quote)",
-            re.DOTALL,
+    @staticmethod
+    def _replace_preferences(preferences_file: Path, updated: bytes) -> None:
+        """Replace preferences.xml atomically while preserving its permissions."""
+        verification_parser = expat.ParserCreate(namespace_separator="}")
+        verification_parser.Parse(updated, True)
+
+        original_mode = preferences_file.stat().st_mode & 0o777
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=preferences_file.name + ".",
+            suffix=".tmp",
+            dir=preferences_file.parent,
         )
-        attributes = list(attribute_pattern.finditer(start_tag))
+        temporary_path = Path(temporary_name)
+        try:
+            with os.fdopen(descriptor, "wb") as temporary_file:
+                temporary_file.write(updated)
+            os.chmod(temporary_path, original_mode)
+            os.replace(temporary_path, preferences_file)
+        finally:
+            with suppress(OSError):
+                temporary_path.unlink(missing_ok=True)
+
+    @classmethod
+    def _write_python_interpreter(cls, preferences_file: Path, interpreter: Path) -> None:
+        original = preferences_file.read_bytes()
+        group_start, tag_end, start_tag = cls._extensions_start_tag(preferences_file, original)
+        attributes = list(_XML_ATTRIBUTE_PATTERN.finditer(start_tag))
         interpreter_attribute = next(
             (
                 attribute
@@ -1298,24 +1581,26 @@ class InkscapeIntegrationDialog(QDialog):
             updated_tag = start_tag[:insert_at] + addition + start_tag[insert_at:]
 
         updated = original[:group_start] + updated_tag + original[tag_end + 1 :]
-        verification_parser = expat.ParserCreate(namespace_separator="}")
-        verification_parser.Parse(updated, True)
+        cls._replace_preferences(preferences_file, updated)
 
-        original_mode = preferences_file.stat().st_mode & 0o777
-        descriptor, temporary_name = tempfile.mkstemp(
-            prefix=preferences_file.name + ".",
-            suffix=".tmp",
-            dir=preferences_file.parent,
+    @classmethod
+    def _remove_python_interpreter(cls, preferences_file: Path) -> None:
+        """Drop the extensions interpreter attribute so Inkscape falls back to its default."""
+        original = preferences_file.read_bytes()
+        group_start, tag_end, start_tag = cls._extensions_start_tag(preferences_file, original)
+        attribute = next(
+            (
+                match
+                for match in _XML_ATTRIBUTE_PATTERN.finditer(start_tag)
+                if match.group("name") == b"python-interpreter"
+            ),
+            None,
         )
-        temporary_path = Path(temporary_name)
-        try:
-            with os.fdopen(descriptor, "wb") as temporary_file:
-                temporary_file.write(updated)
-            os.chmod(temporary_path, original_mode)
-            os.replace(temporary_path, preferences_file)
-        finally:
-            with suppress(OSError):
-                temporary_path.unlink(missing_ok=True)
+        if attribute is None:
+            return
+        updated_tag = start_tag[: attribute.start("space")] + start_tag[attribute.end() :]
+        updated = original[:group_start] + updated_tag + original[tag_end + 1 :]
+        cls._replace_preferences(preferences_file, updated)
 
     def _show_python_interpreter(
         self, interpreter: str | None, restart_required: bool = False

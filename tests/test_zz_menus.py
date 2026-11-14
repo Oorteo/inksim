@@ -639,7 +639,6 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
 
 def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeypatch):
     """Read Ink/Stitch command metadata from its about INX file."""
-    import xml.etree.ElementTree as ET
 
     from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
@@ -713,24 +712,16 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert status["executable"] == str(Path("/opt/inkscape/bin/inkscape").resolve())
     assert status["version"] == "Inkscape 1.4.2"
     assert status["preferences_file"] == str(preferences_file.resolve())
-    assert status["python-interpretor"] == str(uvr_executable.resolve())
+    assert status["python-interpretor"] == "python3"
     assert status["active_inkstitch"] == str(inx_path.parent.resolve())
-    assert str(uvr_executable.resolve()) in dialog.python_interpreter_label.text()
-    assert "\n" in dialog.python_interpreter_label.text()
+    assert "python3" in dialog.python_interpreter_label.text()
+    assert "python3 (left unchanged)" in dialog.info_panel.toPlainText()
     assert "<!--preserve comment-->" in preferences_file.read_text(encoding="utf-8")
-    preferences_root = ET.parse(preferences_file).getroot()
-    preferences_group = next(
-        element for element in preferences_root.iter() if element.get("id") == "extensions"
-    )
-    assert preferences_group.get("python-interpreter") == str(uvr_executable.resolve())
-    assert preferences_group.get("keep") == "yes"
-    assert preferences_group.find("param").text == "value"
-    expected_preferences = original_preferences.replace(
-        b'python-interpreter="python3"',
-        f'python-interpreter="{uvr_executable.resolve()}"'.encode(),
-        1,
-    )
-    assert preferences_file.read_bytes() == expected_preferences
+    assert preferences_file.read_bytes() == original_preferences
+    assert dialog.interpreter_combo.currentIndex() == 0
+    assert dialog.interpreter_combo.itemData(1) == str(uvr_executable.resolve())
+    assert dialog.apply_interpreter_button.isEnabled() is False
+    assert dialog.restore_interpreter_button.isHidden()
     assert status["inkstitch"] == [
         {
             "extension_dir": str(inx_path.parent.resolve()),
@@ -742,14 +733,15 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert "commands" not in status
     assert "[inkscape]" in config.as_text()
     assert "[[inkscape.inkstitch]]" in config.as_text()
-    assert f'python-interpretor = "{uvr_executable.resolve()}"' in config.as_text()
+    assert 'python-interpretor = "python3"' in config.as_text()
     assert "inkscape_extension_status" not in config.as_text()
     report = dialog.info_panel.toPlainText()
     assert "Checked Inkscape executable:" in report
     assert "Inkscape version: Inkscape 1.4.2" in report
     assert "User extensions:" in report
-    assert "Updated Python interpreter:" in report
-    assert "Restart Inkscape" in report
+    assert "The optional uvr launcher is available:" in report
+    assert "Updated Python interpreter:" not in report
+    assert "Restart Inkscape" not in report
     assert "Saved the detected setup to the InkSim configuration." in report
 
 
@@ -835,8 +827,8 @@ def test_python_interpreter_dialog_path_is_anonymized(qtbot):
     assert "~/.local/bin/uvr" in dialog.python_interpreter_label.text()
 
 
-def test_missing_uvr_warns_without_modifying_preferences(tmp_path, qtbot, monkeypatch):
-    """Recommend installing uvr but never install it or replace a different interpreter."""
+def test_missing_uvr_is_only_reported_without_modifying_preferences(tmp_path, qtbot, monkeypatch):
+    """Report a missing uvr launcher but never install it or replace the interpreter."""
     from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
     from inksim.integration.paths import INKSCAPE_CONFIG_KEY
@@ -862,6 +854,7 @@ def test_missing_uvr_warns_without_modifying_preferences(tmp_path, qtbot, monkey
         '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
         encoding="utf-8",
     )
+    original_preferences = preferences_file.read_bytes()
     _fake_inkscape_probe(
         monkeypatch,
         {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
@@ -871,12 +864,140 @@ def test_missing_uvr_warns_without_modifying_preferences(tmp_path, qtbot, monkey
     qtbot.addWidget(dialog)
     _wait_for_probe(qtbot, dialog)
 
-    assert len(warnings) == 1
-    assert "uv tool install uvr" in warnings[0][2]
+    assert warnings == []
     assert "python3" in dialog.python_interpreter_label.text()
-    assert "the preference was left unchanged" in dialog.info_panel.toPlainText()
+    assert "The optional uvr launcher was not found" in dialog.info_panel.toPlainText()
+    assert preferences_file.read_bytes() == original_preferences
     assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == "python3"
     assert config.get(INKSCAPE_CONFIG_KEY)["python-interpretor"] == "python3"
+    assert dialog.interpreter_combo.count() == 2
+    assert dialog.apply_interpreter_button.isEnabled() is False
+
+
+def test_uvr_is_written_only_after_an_explicit_request_and_can_be_restored(
+    tmp_path, qtbot, monkeypatch
+):
+    """Offer uvr as an alternative, then write and revert it on explicit user actions."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    uvr_executable = tmp_path / "uv-tool-bin" / "uvr"
+    uvr_executable.parent.mkdir()
+    uvr_executable.touch()
+    uvr_executable.chmod(0o755)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda command: str(uvr_executable) if command == "uvr" else None,
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QMessageBox.question",
+        lambda *args: QMessageBox.StandardButton.Yes,
+    )
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    preferences_file = user_data / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    original_preferences = preferences_file.read_bytes()
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+    assert preferences_file.read_bytes() == original_preferences
+
+    dialog.interpreter_combo.setCurrentIndex(1)
+    assert dialog.apply_interpreter_button.isEnabled()
+    dialog._apply_selected_interpreter()
+
+    interpreter = str(uvr_executable.resolve())
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == interpreter
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["python-interpretor"] == interpreter
+    assert status["python-interpreter-backup"] == "python3"
+    assert not dialog.restore_interpreter_button.isHidden()
+    assert dialog.restore_interpreter_button.isEnabled()
+    assert dialog.apply_interpreter_button.isEnabled() is False
+    assert "Updated Python interpreter:" in dialog.info_panel.toPlainText()
+    assert "Restart Inkscape" in dialog.info_panel.toPlainText()
+
+    dialog._restore_previous_interpreter()
+
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == "python3"
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["python-interpretor"] == "python3"
+    assert "python-interpreter-backup" not in status
+    assert dialog.restore_interpreter_button.isHidden()
+    assert "Restored the previous Python interpreter: python3" in dialog.info_panel.toPlainText()
+
+
+def test_inkstitch_interpreter_candidate_comes_from_the_checkout(tmp_path):
+    """Offer the checkout virtualenv for source installs and nothing for frozen builds."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog, InkStitchInstallation
+
+    project = tmp_path / "inkstitch"
+    (project / "inx").mkdir(parents=True)
+    (project / "inkstitch.py").write_text("", encoding="utf-8")
+    venv_bin = project / ".venv" / ("Scripts" if sys.platform == "win32" else "bin")
+    venv_bin.mkdir(parents=True)
+    interpreter = venv_bin / ("python.exe" if sys.platform == "win32" else "python")
+    interpreter.write_text("", encoding="utf-8")
+    about_inx = project / "inx" / "inkstitch_about.inx"
+    about_inx.write_text("<inkscape-extension />", encoding="utf-8")
+    source_install = InkStitchInstallation(
+        inx_path=about_inx,
+        command="../inkstitch.py",
+        interpreter="python",
+        location="inx",
+    )
+    frozen_install = InkStitchInstallation(
+        inx_path=about_inx,
+        command="../bin/inkstitch",
+        interpreter=None,
+        location="inx",
+    )
+
+    assert InkscapeIntegrationDialog._interpreter_candidates(None, [frozen_install]) == []
+    candidates = InkscapeIntegrationDialog._interpreter_candidates(
+        None, [frozen_install, source_install]
+    )
+    assert [path for _label, path in candidates] == [str(interpreter)]
+    assert str(project) in candidates[0][0]
+
+
+def test_python_interpreter_attribute_can_be_removed(tmp_path):
+    """Drop only the interpreter attribute and keep the rest of the XML intact."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_bytes(
+        b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        b"<inkscape>\n"
+        b"  <group\n"
+        b'     id="extensions"\n'
+        b'     python-interpreter="/old/uvr"\n'
+        b'     keep="yes">\n'
+        b"  </group>\n"
+        b"</inkscape>\n"
+    )
+
+    InkscapeIntegrationDialog._remove_python_interpreter(preferences_file)
+
+    text = preferences_file.read_text(encoding="utf-8")
+    assert "python-interpreter" not in text
+    assert 'keep="yes"' in text
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) is None
 
 
 def test_windows_uses_uvr_gui_launcher(tmp_path, monkeypatch):

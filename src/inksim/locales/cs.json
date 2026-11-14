@@ -183,6 +183,10 @@
         "source": "Edit in Inkscape",
         "translation": "Upravit v Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Upravit cestu"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "V této složce nejsou žádné podporované soubory."
@@ -223,18 +227,6 @@
         "source": "Folder",
         "translation": "Složka"
     },
-    "dialog.open_browser.edit_path": {
-        "source": "Edit path",
-        "translation": "Upravit cestu"
-    },
-    "dialog.open_browser.go": {
-        "source": "Go",
-        "translation": "Přejít"
-    },
-    "dialog.open_browser.path_placeholder": {
-        "source": "Enter or paste a folder path",
-        "translation": "Zadejte nebo vložte cestu ke složce"
-    },
     "dialog.open_browser.folder_hint": {
         "source": "Double-click the folder to browse its files.",
         "translation": "Dvojklikem na složku zobrazíte její soubory."
@@ -242,6 +234,10 @@
     "dialog.open_browser.folder_open_hint": {
         "source": "Double-click the folder to browse its files.",
         "translation": "Dvojklikem na složku zobrazíte její soubory."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Přejít"
     },
     "dialog.open_browser.home": {
         "source": "Home",
@@ -278,6 +274,10 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Otevřít vybraný soubor výšivky."
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Zadejte nebo vložte cestu ke složce"
     },
     "dialog.open_browser.places": {
         "source": "Places",
@@ -431,6 +431,18 @@
         "source": "Unavailable",
         "translation": "Nedostupné"
     },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Vytvářet debug skript (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Nepodařilo se změnit nastavení debug skriptu."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Zapíše debug_inksim.sh vedle dokumentu, aby šlo volání z Inkscape zopakovat."
+    },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
         "translation": "Nebyly nalezeny žádné složky rozšíření InkSim."
@@ -450,18 +462,6 @@
     "integration.inkscape.inksim_status_current": {
         "source": "Up to date",
         "translation": "Aktuální"
-    },
-    "integration.inkscape.inksim_debug_script": {
-        "source": "Create debug script (debug_inksim.sh)",
-        "translation": "Vytvářet debug skript (debug_inksim.sh)"
-    },
-    "integration.inkscape.inksim_debug_script_failed": {
-        "source": "Could not change the debug script setting.",
-        "translation": "Nepodařilo se změnit nastavení debug skriptu."
-    },
-    "integration.inkscape.inksim_debug_script_hint": {
-        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
-        "translation": "Zapíše debug_inksim.sh vedle dokumentu, aby šlo volání z Inkscape zopakovat."
     },
     "integration.inkscape.inksim_status_install": {
         "source": "Installation required",
@@ -506,6 +506,46 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Nic"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Použít"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Změnit Python interpret pro všechna rozšíření Inkscape na:\n\n{path}\n\nMění to globální nastavení Inkscape. Pokračovat?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Vlastní cesta…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Vyberte Python interpret"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Volitelné — jen pro rozšíření s vlastním Python prostředím"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this, for example Ink/Stitch. InkSim's own extensions start the InkSim executable directly. The uvr launcher resolves the environment of each extension project, which helps when several extensions need their own environment.",
+        "translation": "Potřebují to jen rozšíření, která se Inkscape ptá na jeho Python interpret, například Ink/Stitch. Vlastní rozšíření InkSim spouštějí přímo executable InkSim. Launcher uvr rozpozná prostředí každého projektu rozšíření, což pomůže, když více rozšíření potřebuje každé své vlastní prostředí."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "prostředí Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Neměnit (doporučeno)"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Obnovit původní"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "launcher uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -595,17 +635,21 @@
         "source": "No Ink/Stitch installation was found.",
         "translation": "Instalace Ink/Stitch nebyla nalezena."
     },
-    "integration.inkscape.report.interpreter_unchanged": {
-        "source": "Python interpreter is already configured: {path}",
-        "translation": "Python interpretér je již správně nastaven: {path}"
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Python interpret rozšíření Inkscape: {path} (beze změny)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Nastavení Python interpretu v Inkscape bylo odstraněno."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Obnoven původní Python interpret: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
         "translation": "Aktualizovaný Python interpret: {path}"
-    },
-    "integration.inkscape.report.launcher_missing": {
-        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
-        "translation": "Požadovaný spouštěč '{command}' nebyl nalezen; nastavení zůstalo beze změny."
     },
     "integration.inkscape.report.not_found": {
         "source": "Inkscape was not found. Choose its executable to inspect the setup.",
@@ -642,6 +686,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Uživatelská rozšíření: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Volitelný launcher uvr je k dispozici: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Volitelný launcher uvr nebyl nalezen; nastavení interpretu v Inkscape zůstává beze změny."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -686,10 +738,6 @@
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Uživatelská rozšíření: {path}"
-    },
-    "integration.inkscape.uvr_missing": {
-        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
-        "translation": "Požadovaný spouštěč '{command}' nebyl nalezen. Nainstalujte si nástroj uvr příkazem `uv tool install uvr` a poté znovu spusťte konfiguraci. InkSim jej nenainstaluje."
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",

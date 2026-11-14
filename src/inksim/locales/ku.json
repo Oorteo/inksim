@@ -531,17 +531,9 @@
         "source": "No Ink/Stitch installation was found.",
         "translation": "Tu sazkirineke Ink/Stitch nehat dîtin."
     },
-    "integration.inkscape.report.interpreter_unchanged": {
-        "source": "Python interpreter is already configured: {path}",
-        "translation": "Wergêrê Python jixwe hatiye mîhengkirin: {path}"
-    },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
         "translation": "Wergêrê Python hate nûkirin: {path}"
-    },
-    "integration.inkscape.report.launcher_missing": {
-        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
-        "translation": "Amûra destpêkerê ya pêwîst '{command}' nehat dîtin; mîheng bê guhertin hate hiştin."
     },
     "integration.inkscape.report.not_found": {
         "source": "Inkscape was not found. Choose its executable to inspect the setup.",
@@ -622,10 +614,6 @@
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Pêvekerên bikarhêner: {path}"
-    },
-    "integration.inkscape.uvr_missing": {
-        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
-        "translation": "Amûra destpêkerê ya pêwîst '{command}' nehat dîtin. Amûra uvr bi xwe bi `uv tool install uvr` saz bike, paşê vê mîhengkirinê dîsa bimeşîne. InkSim wê saz nake."
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",
