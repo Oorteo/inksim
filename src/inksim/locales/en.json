@@ -167,6 +167,22 @@
         "source": "Desktop",
         "translation": "Desktop"
     },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Colors"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Name"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Size"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Stitches"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Size: {width:.1f} x {height:.1f} mm"
@@ -422,6 +438,22 @@
     "dialog.open_browser.unsupported": {
         "source": "This file type cannot be opened in InkSim.",
         "translation": "This file type cannot be opened in InkSim."
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "View"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Details"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Icons only"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Icons & text"
     },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
