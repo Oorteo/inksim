@@ -156,6 +156,65 @@ def test_thumbnail_action_needs_a_selected_design(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_details_view_shows_size_stitches_and_colors(qtbot, tmp_path, monkeypatch):
+    """The details mode lists the facts stored with each thumbnail."""
+    from PySide6.QtWidgets import QListView
+
+    from inksim.render.thumbnails import write_thumbnail
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    design = tmp_path / "design.pes"
+    design.write_bytes(sample.read_bytes())
+    write_thumbnail(design)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("details")
+    )
+    qtbot.wait(10)
+
+    assert dialog.details_header.isVisible()
+    labels = {
+        dialog.file_list.item(index).text().split()[0]: dialog.file_list.item(index).text()
+        for index in range(dialog.file_list.count())
+    }
+    row = labels["design.pes"].split()
+    assert row[-2:] == ["7207", "2"]
+    assert dialog.file_list.viewMode() == QListView.ViewMode.ListMode
+    dialog.reject()
+
+
+def test_icons_only_view_hides_names(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtWidgets import QListView
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    qtbot.wait(10)
+
+    assert dialog.file_list.viewMode() == QListView.ViewMode.IconMode
+    assert dialog.file_list.iconSize().width() == 96
+    assert not dialog.details_header.isVisible()
+    labels = [dialog.file_list.item(i).text() for i in range(dialog.file_list.count())]
+    assert labels == [""] * len(labels)
+    dialog.reject()
+
+
 def test_search_keeps_folders_navigable(qtbot, tmp_path, monkeypatch):
     """Filtering files by suffix must not hide folders, or navigation stops."""
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
