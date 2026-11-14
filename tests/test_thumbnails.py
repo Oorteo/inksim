@@ -56,6 +56,33 @@ def test_write_thumbnail_creates_a_square_png(tmp_path):
     assert thumbnail_is_current(source)
 
 
+def test_write_thumbnail_renders_a_plain_svg(tmp_path):
+    """SVGs that are not stitch files are rasterised with Qt instead of stitches."""
+    source = tmp_path / "poster.svg"
+    source.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80" viewBox="0 0 120 80">'
+        '<rect width="120" height="80" fill="#d04a4a"/>'
+        '<circle cx="60" cy="40" r="28" fill="#2c6fa8"/>'
+        "</svg>",
+        encoding="utf-8",
+    )
+
+    thumbnail = write_thumbnail(source)
+
+    assert thumbnail == tmp_path / "poster.svg.png"
+    assert thumbnail is not None and thumbnail.is_file()
+    image = QImage(str(thumbnail))
+    assert image.size().width() == THUMBNAIL_SIZE
+    assert image.size().height() == THUMBNAIL_SIZE
+    drawn = sum(
+        1
+        for x in range(0, THUMBNAIL_SIZE, 8)
+        for y in range(0, THUMBNAIL_SIZE, 8)
+        if image.pixelColor(x, y).alpha() > 0
+    )
+    assert drawn > 0
+
+
 def test_write_thumbnail_keeps_a_current_file(tmp_path):
     source = _copy_sample(tmp_path)
     thumbnail = write_thumbnail(source)
