@@ -144,3 +144,12 @@ def test_palette_filter_lists_every_design_format():
     assert "*.edr" in filters[0]
     for extension in ("*.csv", "*.json", "*.svg", "*.pes"):
         assert extension in filters[1]
+
+
+def test_committed_dst_borrows_colors_from_its_edr():
+    """tests/data/two_tect.dst ships without colors; the .edr next to it has them."""
+    data = Path(__file__).parent / "data"
+
+    pattern = read_embroidery_file(data / "two_tect.dst")
+
+    assert [thread.hex_color() for thread in pattern.threadlist] == ["#008745", "#d42727"]
