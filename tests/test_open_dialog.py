@@ -118,7 +118,8 @@ def test_thumbnail_job_skips_current_files_and_regenerates_on_request(tmp_path):
     assert results[-1] == (1, 0, 0)
 
 
-def test_thumbnail_button_offers_update_and_regenerate(qtbot, tmp_path, monkeypatch):
+def test_thumbnail_button_shows_the_active_action(qtbot, tmp_path, monkeypatch):
+    """The button caption states what a click does; the menu only switches modes."""
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
 
     dialog = OpenBrowserDialog(None, tmp_path)
@@ -128,6 +129,16 @@ def test_thumbnail_button_offers_update_and_regenerate(qtbot, tmp_path, monkeypa
     assert menu is not None
     labels = [action.text() for action in menu.actions()]
     assert labels == ["Update outdated thumbnails", "Regenerate all thumbnails"]
+    assert dialog.thumbnails_button.text() == "Update outdated thumbnails"
+
+    menu.actions()[1].trigger()
+
+    assert dialog.thumbnails_button.text() == "Regenerate all thumbnails"
+    assert dialog._thumbnail_job is None
+
+    menu.actions()[0].trigger()
+
+    assert dialog.thumbnails_button.text() == "Update outdated thumbnails"
     dialog.reject()
 
 

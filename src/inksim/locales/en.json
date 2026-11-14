@@ -159,13 +159,9 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Running Ink/Stitch CSV export..."
     },
-    "dialog.open_browser.create_thumbnails": {
-        "source": "Create thumbnails",
-        "translation": "Create thumbnails"
-    },
     "dialog.open_browser.create_thumbnails_hint": {
-        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu can rebuild thumbnails that are already up to date.",
-        "translation": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu can rebuild thumbnails that are already up to date."
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt."
     },
     "dialog.open_browser.desktop": {
         "source": "Desktop",
@@ -391,17 +387,9 @@
         "source": "Thumbnails: {done}/{total}",
         "translation": "Thumbnails: {done}/{total}"
     },
-    "dialog.open_browser.thumbnails_regenerate": {
-        "source": "Regenerate all thumbnails",
-        "translation": "Regenerate all thumbnails"
-    },
     "dialog.open_browser.thumbnails_running": {
         "source": "Creating thumbnails…",
         "translation": "Creating thumbnails…"
-    },
-    "dialog.open_browser.thumbnails_update": {
-        "source": "Update outdated thumbnails",
-        "translation": "Update outdated thumbnails"
     },
     "dialog.open_browser.title": {
         "source": "Open file",
