@@ -257,6 +257,39 @@ def test_icons_only_view_scrolls_faster_than_a_few_pixels_per_notch(qtbot, tmp_p
     dialog.reject()
 
 
+def test_icon_grid_marks_the_selected_designs(qtbot, tmp_path, monkeypatch):
+    """The icon covers its cell, so selection needs a frame to be visible."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    for name in ("a.pes", "b.pes", "c.pes"):
+        (tmp_path / name).write_bytes(sample)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    qtbot.wait(30)
+    dialog.file_list.setCurrentRow(1)
+
+    model = dialog.file_list.model()
+    selected_rect = dialog.file_list.visualRect(model.index(1, 0))
+    plain_rect = dialog.file_list.visualRect(model.index(2, 0))
+    picture = dialog.file_list.viewport().grab().toImage()
+
+    def border_colors(rect):
+        return {
+            picture.pixelColor(rect.left() + 3, rect.top() + 3).name(),
+            picture.pixelColor(rect.center().x(), rect.top() + 3).name(),
+        }
+
+    assert border_colors(selected_rect) != border_colors(plain_rect)
+    dialog.reject()
+
+
 def test_icon_size_slider_scales_the_list_and_is_remembered(qtbot, tmp_path, monkeypatch):
     from inksim.config import Config
 
