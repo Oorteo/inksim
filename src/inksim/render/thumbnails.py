@@ -36,7 +36,45 @@ SVG_RENDER_LIMIT = 3072
 # Bump the version when the thumbnail pipeline changes in a way that should
 # invalidate existing files, so "update" regenerates them without a full run.
 STAMP_KEY = "InkSimThumbnail"
+DETAILS_KEY = "InkSimDesign"
 STAMP_VERSION = 1
+
+
+@dataclass(frozen=True)
+class ThumbnailDetails:
+    """Design facts recorded next to the thumbnail, so lists do not re-read files."""
+
+    stitches: int
+    colors: int
+    width_mm: float
+    height_mm: float
+
+    def encode(self) -> str:
+        return (
+            f"stitches={self.stitches};colors={self.colors}"
+            f";width_mm={self.width_mm:.3f};height_mm={self.height_mm:.3f}"
+        )
+
+    @classmethod
+    def decode(cls, text: str | None) -> ThumbnailDetails | None:
+        if not text:
+            return None
+        values = dict(part.split("=", 1) for part in text.split(";") if "=" in part)
+        try:
+            return cls(
+                stitches=int(values["stitches"]),
+                colors=int(values["colors"]),
+                width_mm=float(values["width_mm"]),
+                height_mm=float(values["height_mm"]),
+            )
+        except (KeyError, ValueError):
+            return None
+
+
+def thumbnail_details(source: Path) -> ThumbnailDetails | None:
+    """Return the design facts stored with the thumbnail of *source*, if any."""
+    reader = QImageReader(str(thumbnail_path(source)))
+    return ThumbnailDetails.decode(reader.text(DETAILS_KEY))
 
 
 def thumbnail_stamp(size: int = THUMBNAIL_SIZE) -> str:
@@ -155,11 +193,8 @@ def load_design_preview(source: Path) -> DesignPreview | None:
     return preview if preview.stitches.shape[0] else None
 
 
-def render_thumbnail(source: Path, size: int = THUMBNAIL_SIZE) -> QImage | None:
-    """Render a square thumbnail image for *source*, or None when it cannot be read."""
-    preview = load_design_preview(source)
-    if preview is None:
-        return None
+def render_preview_thumbnail(preview: DesignPreview, size: int = THUMBNAIL_SIZE) -> QImage:
+    """Render a loaded design as a square thumbnail image."""
     return render_export_image(
         preview.stitches,
         preview.bounds,
@@ -170,6 +205,14 @@ def render_thumbnail(source: Path, size: int = THUMBNAIL_SIZE) -> QImage | None:
         dpi=96,
         background="transparent",
     )
+
+
+def render_thumbnail(source: Path, size: int = THUMBNAIL_SIZE) -> QImage | None:
+    """Render a square thumbnail image for *source*, or None when it cannot be read."""
+    preview = load_design_preview(source)
+    if preview is None:
+        return None
+    return render_preview_thumbnail(preview, size)
 
 
 def _drawn_area(image: QImage) -> QRect | None:
@@ -255,6 +298,25 @@ def render_source_thumbnail(source: Path, size: int = THUMBNAIL_SIZE) -> QImage 
     return render_thumbnail(source, size)
 
 
+def _render_with_details(source: Path, size: int) -> tuple[QImage | None, ThumbnailDetails | None]:
+    """Render a thumbnail and collect the design facts worth caching beside it."""
+    if source.suffix.lower() == ".svg" and not is_stitchblock_svg(source):
+        return render_svg_thumbnail(source, size), None
+    preview = load_design_preview(source)
+    if preview is None:
+        return None, None
+    min_x, min_y, max_x, max_y = preview.bounds
+    return (
+        render_preview_thumbnail(preview, size),
+        ThumbnailDetails(
+            stitches=int(preview.stitches.shape[0]),
+            colors=preview.thread_colors,
+            width_mm=float(max_x - min_x),
+            height_mm=float(max_y - min_y),
+        ),
+    )
+
+
 def write_thumbnail(
     source: Path,
     *,
@@ -265,10 +327,12 @@ def write_thumbnail(
     thumbnail = thumbnail_path(source)
     if thumbnail_is_current(source) and not overwrite:
         return thumbnail
-    image = render_source_thumbnail(source, size)
+    image, details = _render_with_details(source, size)
     if image is None:
         return None
     image.setText(STAMP_KEY, thumbnail_stamp(size))
+    if details is not None:
+        image.setText(DETAILS_KEY, details.encode())
     # PySide6 accepts the format name; its stubs only describe the bytes overload.
     if not image.save(str(thumbnail), THUMBNAIL_FORMAT):  # type: ignore[call-overload]
         return None

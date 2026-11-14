@@ -39,6 +39,7 @@ from PySide6.QtCore import (
 from PySide6.QtGui import (
     QAction,
     QActionGroup,
+    QFontDatabase,
     QIcon,
     QImage,
     QMouseEvent,
@@ -55,6 +56,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QListView,
     QListWidget,
     QListWidgetItem,
     QMenu,
@@ -90,6 +92,7 @@ from ..integration.paths import (
 from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
 from ..render.thumbnails import (
     THUMBNAIL_SIZE,
+    thumbnail_details,
     thumbnail_is_current,
     thumbnail_path,
     write_thumbnail,
@@ -105,6 +108,10 @@ KIND_OTHER = "other"
 
 _THUMBNAIL_UPDATE = "update"
 _THUMBNAIL_REGENERATE = "regenerate"
+
+_VIEW_ICONS_TEXT = "icons_text"
+_VIEW_ICONS = "icons"
+_VIEW_DETAILS = "details"
 
 _MAX_SVG_THUMBNAIL_BYTES = 20 * 1024 * 1024
 _CONVERSION_TIMEOUT_MS = 180_000
@@ -381,7 +388,7 @@ class OpenBrowserDialog(QDialog):
     ) -> None:
         super().__init__(parent)
         self.setWindowTitle(_("dialog.open_browser.title", "Open file"))
-        self.resize(1100, 720)
+        self.resize(1280, 820)
         self.selected_path: Path | None = None
         self.preview_csv_path: Path | None = None
         self.document_path: Path | None = None
@@ -520,9 +527,20 @@ class OpenBrowserDialog(QDialog):
         self.filter_combo.addItem(_("dialog.open_browser.filter.csv", "CSV stitch data"), "csv")
         self.filter_combo.currentIndexChanged.connect(self._apply_filter)
         search_row.addWidget(self.filter_combo)
+        search_row.addWidget(QLabel(_("dialog.open_browser.view", "View"), self))
+        self.view_combo = QComboBox(self)
+        self.view_combo.addItem(
+            _("dialog.open_browser.view.icons_text", "Icons & text"), _VIEW_ICONS_TEXT
+        )
+        self.view_combo.addItem(_("dialog.open_browser.view.icons", "Icons only"), _VIEW_ICONS)
+        self.view_combo.addItem(_("dialog.open_browser.view.details", "Details"), _VIEW_DETAILS)
+        self.view_combo.currentIndexChanged.connect(self._apply_view_mode)
+        search_row.addWidget(self.view_combo)
         root.addLayout(search_row)
 
         self.file_list = QListWidget(self)
+        self._list_font = self.file_list.font()
+        self._mono_font = QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont)
         self.file_list.installEventFilter(self)
         self.file_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.file_list.setIconSize(QSize(THUMBNAIL_SIZE // 4, THUMBNAIL_SIZE // 4))
@@ -589,8 +607,20 @@ class OpenBrowserDialog(QDialog):
         self.preview_controls.setVisible(False)
         preview_panel_layout.addWidget(self.preview_controls)
 
+        self.file_list_container = QWidget(self)
+        list_layout = QVBoxLayout(self.file_list_container)
+        list_layout.setContentsMargins(0, 0, 0, 0)
+        list_layout.setSpacing(0)
+        self.details_header = QLabel(self.file_list_container)
+        self.details_header.setObjectName("fileDetailsHeader")
+        self.details_header.setFont(self._mono_font)
+        self.details_header.hide()
+        list_layout.addWidget(self.details_header)
+        list_layout.addWidget(self.file_list, 1)
+
         file_preview_splitter = QSplitter(Qt.Orientation.Horizontal, self)
-        file_preview_splitter.addWidget(self.file_list)
+        self.file_preview_splitter = file_preview_splitter
+        file_preview_splitter.addWidget(self.file_list_container)
         file_preview_splitter.addWidget(preview_panel)
         file_preview_splitter.setStretchFactor(1, 1)
         places_panel = QWidget(self)
@@ -676,6 +706,7 @@ class OpenBrowserDialog(QDialog):
         button_row.addWidget(self.open_button)
         root.addLayout(button_row)
 
+        self._apply_view_mode()
         self._update_actions()
 
     def _load_favorite_directories(self) -> list[Path]:
@@ -974,6 +1005,57 @@ class OpenBrowserDialog(QDialog):
         self.add_favorite_button.setEnabled(self.current_directory not in self.favorite_directories)
         self._apply_filter()
 
+    def _view_mode(self) -> str:
+        return self.view_combo.currentData() or _VIEW_ICONS_TEXT
+
+    def _apply_view_mode(self, *_args: object) -> None:
+        """Switch between the compact list, the icon grid and the detail list."""
+        mode = self._view_mode()
+        details = mode == _VIEW_DETAILS
+        self.details_header.setVisible(details)
+        self.file_list.setFont(self._mono_font if details else self._list_font)
+        if mode == _VIEW_ICONS:
+            self.file_list.setViewMode(QListView.ViewMode.IconMode)
+            self.file_list.setResizeMode(QListView.ResizeMode.Adjust)
+            self.file_list.setMovement(QListView.Movement.Static)
+            self.file_list.setGridSize(QSize(112, 104))
+            self.file_list.setIconSize(QSize(96, 96))
+            self.file_list.setWordWrap(False)
+        else:
+            self.file_list.setViewMode(QListView.ViewMode.ListMode)
+            self.file_list.setGridSize(QSize())
+            self.file_list.setIconSize(QSize(56, 56) if mode == _VIEW_ICONS_TEXT else QSize(24, 24))
+            self.file_list.setWordWrap(mode == _VIEW_ICONS_TEXT)
+        width = max(self.file_preview_splitter.width(), 900)
+        share = {_VIEW_ICONS: 0.62, _VIEW_DETAILS: 0.58}.get(mode, 0.30)
+        list_width = int(width * share)
+        self.file_preview_splitter.setSizes([list_width, width - list_width])
+        self.details_header.setText(
+            f"{'    ' + _('dialog.open_browser.details.name', 'Name'):<40.40}"
+            f" {_('dialog.open_browser.details.size', 'Size'):>10}"
+            f" {_('dialog.open_browser.details.stitches', 'Stitches'):>9}"
+            f" {_('dialog.open_browser.details.colors', 'Colors'):>6}"
+        )
+        # The first population happens in refresh_files(); filtering an empty
+        # folder here would show the "no files" message before the scan runs.
+        if self._all_paths:
+            self._apply_filter()
+
+    def _details_line(self, path: Path, kind: str, label: str) -> str:
+        if kind == KIND_DIRECTORY:
+            return label
+        try:
+            size = _format_size(path.stat().st_size)
+        except OSError:
+            size = ""
+        stitches = colors = ""
+        if kind in (KIND_EMBROIDERY, KIND_CSV):
+            details = thumbnail_details(path)
+            if details is not None:
+                stitches = str(details.stitches)
+                colors = str(details.colors)
+        return f"{label:<40.40} {size:>10} {stitches:>9} {colors:>6}"
+
     def _apply_filter(self, *_args: object) -> None:
         query = self.search_edit.text().strip().casefold()
         selected_filter = self.filter_combo.currentData() or "all"
@@ -1009,7 +1091,14 @@ class OpenBrowserDialog(QDialog):
                 if kind == KIND_DIRECTORY
                 else path.name
             )
+            if self._view_mode() == _VIEW_ICONS:
+                label = ""
+            elif self._view_mode() == _VIEW_DETAILS:
+                label = self._details_line(path, kind, label)
             item = QListWidgetItem(icon, label)
+            if self._view_mode() == _VIEW_ICONS:
+                # Keep the selection box around the icon instead of an empty text row.
+                item.setSizeHint(QSize(96, 96))
             item.setData(Qt.ItemDataRole.UserRole, str(path))
             item.setToolTip(_sanitize_path_text(str(path)))
             self.file_list.addItem(item)
