@@ -745,8 +745,8 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert "Saved the detected setup to the InkSim configuration." in report
 
 
-def test_python_interpreter_is_inserted_on_its_own_line(tmp_path):
-    """Insert the preference without reformatting the rest of the XML file."""
+def test_python_interpreter_is_inserted_right_after_the_extensions_id(tmp_path):
+    """Insert the preference on its own line right after the group id, not at the end."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
 
     preferences_file = tmp_path / "preferences.xml"
@@ -763,14 +763,59 @@ def test_python_interpreter_is_inserted_on_its_own_line(tmp_path):
     original_preferences = preferences_file.read_bytes()
     interpreter = Path("/new/uvr")
     expected_preferences = original_preferences.replace(
-        b'     keep="yes">',
-        b'     keep="yes"\n     python-interpreter="/new/uvr">',
+        b'     id="extensions"\n',
+        b'     id="extensions"\n     python-interpreter="/new/uvr"\n',
         1,
     )
 
     InkscapeIntegrationDialog._write_python_interpreter(preferences_file, interpreter)
 
     assert preferences_file.read_bytes() == expected_preferences
+
+
+def test_existing_interpreter_is_moved_next_to_the_extensions_id(tmp_path):
+    """Move an interpreter that sits at the end of the group tag back to the top."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_bytes(
+        b"<inkscape>\n"
+        b"  <group\n"
+        b'     id="extensions"\n'
+        b'     keep="yes"\n'
+        b'     python-interpreter="/old/uvr">\n'
+        b"  </group>\n"
+        b"</inkscape>\n"
+    )
+
+    InkscapeIntegrationDialog._write_python_interpreter(preferences_file, Path("/new/uvr"))
+
+    assert preferences_file.read_bytes() == (
+        b"<inkscape>\n"
+        b"  <group\n"
+        b'     id="extensions"\n'
+        b'     python-interpreter="/new/uvr"\n'
+        b'     keep="yes">\n'
+        b"  </group>\n"
+        b"</inkscape>\n"
+    )
+
+
+def test_python_interpreter_follows_the_id_of_a_single_line_group(tmp_path):
+    """Keep a compact group tag compact and put the preference next to its id."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_bytes(
+        b'<inkscape><group id="extensions" keep="yes"><param name="x">1</param></group></inkscape>'
+    )
+
+    InkscapeIntegrationDialog._write_python_interpreter(preferences_file, Path("/new/uvr"))
+
+    assert (
+        b'<group id="extensions" python-interpreter="/new/uvr" keep="yes">'
+        in preferences_file.read_bytes()
+    )
 
 
 def test_integration_sections_are_bold_and_report_expands(qtbot):

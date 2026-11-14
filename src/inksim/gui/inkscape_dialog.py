@@ -1551,34 +1551,39 @@ class InkscapeIntegrationDialog(QDialog):
             ),
             None,
         )
-        interpreter_value = str(interpreter)
+        # Inkscape expects the interpreter next to the group id, so an existing
+        # attribute is moved there instead of being replaced where it happens to be.
+        base_tag = start_tag
         if interpreter_attribute is not None:
-            quote_byte = interpreter_attribute.group("quote")
-            replacements = {'"': "&quot;"} if quote_byte == b'"' else {"'": "&apos;"}
-            escaped_value = escape_xml_attribute(interpreter_value, replacements).encode("utf-8")
-            updated_tag = (
-                start_tag[: interpreter_attribute.start("value")]
-                + escaped_value
-                + start_tag[interpreter_attribute.end("value") :]
+            base_tag = (
+                start_tag[: interpreter_attribute.start("space")]
+                + start_tag[interpreter_attribute.end() :]
             )
+        anchor = next(
+            (
+                match
+                for match in _XML_ATTRIBUTE_PATTERN.finditer(base_tag)
+                if match.group("name") == b"id"
+            ),
+            None,
+        )
+        if anchor is None:
+            raise ValueError(f"Could not find the extensions group id in {preferences_file}.")
+        name_start = anchor.start("name")
+        line_start = base_tag.rfind(b"\n", 0, name_start) + 1
+        indentation = base_tag[line_start:name_start]
+        if b"\n" in base_tag[:name_start] and not indentation.strip(b" \t"):
+            newline = b"\r\n" if b"\r\n" in base_tag else b"\n"
+            separator = newline + indentation
         else:
-            last_attribute = attributes[-1]
-            name_start = last_attribute.start("name")
-            line_start = start_tag.rfind(b"\n", 0, name_start) + 1
-            indentation = start_tag[line_start:name_start]
-            if b"\n" in start_tag[:name_start] and not indentation.strip(b" \t"):
-                newline = b"\r\n" if b"\r\n" in start_tag else b"\n"
-                separator = newline + indentation
-            else:
-                separator = b" "
-            addition = (
-                separator
-                + b'python-interpreter="'
-                + escape_xml_attribute(interpreter_value, {'"': "&quot;"}).encode("utf-8")
-                + b'"'
-            )
-            insert_at = last_attribute.end()
-            updated_tag = start_tag[:insert_at] + addition + start_tag[insert_at:]
+            separator = b" "
+        addition = (
+            separator
+            + b'python-interpreter="'
+            + escape_xml_attribute(str(interpreter), {'"': "&quot;"}).encode("utf-8")
+            + b'"'
+        )
+        updated_tag = base_tag[: anchor.end()] + addition + base_tag[anchor.end() :]
 
         updated = original[:group_start] + updated_tag + original[tag_end + 1 :]
         cls._replace_preferences(preferences_file, updated)
