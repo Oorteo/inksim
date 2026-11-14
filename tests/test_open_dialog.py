@@ -372,6 +372,32 @@ def test_ctrl_wheel_scales_the_icons(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_background_slider_sits_in_the_view_row(qtbot, tmp_path, monkeypatch):
+    """Both sliders belong to the view row; a loose widget would cover the status text."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    icon_geometry = dialog.icon_size_slider.geometry()
+    background_geometry = dialog.background_slider.geometry()
+    assert background_geometry.top() == icon_geometry.top()
+    assert background_geometry.left() > icon_geometry.left()
+    assert background_geometry.top() > dialog.status_label.geometry().bottom()
+
+    modes = [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())]
+    dialog.view_combo.setCurrentIndex(modes.index("details"))
+    assert not dialog.background_slider.isEnabled()
+    dialog.view_combo.setCurrentIndex(modes.index("icons"))
+    assert dialog.background_slider.isEnabled()
+    dialog.reject()
+
+
 def test_shift_wheel_shades_the_icon_background(qtbot, tmp_path, monkeypatch):
     """Shift+wheel moves the tile from white to black and remembers the level."""
     from PySide6.QtCore import Qt
