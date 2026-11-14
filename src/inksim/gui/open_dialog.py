@@ -1217,10 +1217,6 @@ class OpenBrowserDialog(QDialog):
         self.refresh_files()
         self.add_favorite_button.setEnabled(path not in self.favorite_directories)
 
-    def go_to_parent_directory(self, checked: bool = False) -> None:
-        del checked
-        self.set_directory(self.current_directory.parent)
-
     def _current_path(self) -> Path | None:
         item = self.file_list.currentItem()
         if item is None:
@@ -1320,15 +1316,24 @@ class OpenBrowserDialog(QDialog):
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if watched is self.file_list and event.type() == QEvent.Type.KeyPress:
-            if event.key() == Qt.Key.Key_Left:
-                self.go_to_parent_directory()
-                return True
-            if event.key() == Qt.Key.Key_Right:
-                path = self._current_path()
-                if path is not None and self._kind_for_path(path) == KIND_DIRECTORY:
-                    self.set_directory(path)
-                    return True
+            # Arrow keys belong to the list: in the icon grid they move between
+            # icons, so directories are entered with Enter on the current row.
+            if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+                return self._activate_current()
         return super().eventFilter(watched, event)
+
+    def _activate_current(self) -> bool:
+        """Enter on the current row: folders are entered, files are opened."""
+        path = self._current_path()
+        if path is None:
+            return False
+        if self._kind_for_path(path) == KIND_DIRECTORY:
+            self.set_directory(path)
+            return True
+        if not self.open_button.isEnabled():
+            return False
+        self._open_selected()
+        return True
 
     def _show_message(self, message: str) -> None:
         self.preview_controls.setVisible(False)
@@ -1652,7 +1657,7 @@ class OpenBrowserDialog(QDialog):
         elif kind == KIND_DIRECTORY:
             open_tip = _(
                 "dialog.open_browser.folder_open_hint",
-                "Double-click the folder to browse its files.",
+                "Press Enter or double-click the folder to browse its files.",
             )
         else:
             open_tip = _(
