@@ -56,6 +56,10 @@ to zoom around the cursor, left-drag to pan, or use the preview toolbar's
 | Double-click design        | Seek to visible stitch       |
 | `W` / `A` / `S` / `D`      | Pan up / left / down / right |
 | Click or drag the timeline | Seek to a stitch position    |
+| `Ctrl` + wheel over timeline | Zoom around the pointer     |
+| `Shift` + wheel over timeline | Pan the timeline range     |
+| Drag the overview range    | Pan the zoomed timeline     |
+| `−` / `+` / `All`          | Zoom or show the full timeline |
 | Drop a file on the viewer  | Open the file                |
 | `F11`                      | Toggle fullscreen            |
 

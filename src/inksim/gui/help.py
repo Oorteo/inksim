@@ -30,6 +30,10 @@ HELP_SECTIONS = (
 | Double-click design | Seek to visible stitch |
 | W / A / S / D | Pan up / left / down / right |
 | Click timeline | Seek stitch |
+| Ctrl + Wheel over timeline | Zoom around pointer |
+| Shift + Wheel over timeline | Pan timeline range |
+| Drag overview range | Pan zoomed timeline |
+| − / + / All | Zoom or show full timeline |
 """,
     ),
     (
