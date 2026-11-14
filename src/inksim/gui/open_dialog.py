@@ -685,6 +685,7 @@ class OpenBrowserDialog(QDialog):
         self.background_slider.setToolTip(self._background_tooltip())
         self.background_slider.valueChanged.connect(self._on_icon_background_changed)
         search_row.addWidget(self.icon_size_slider)
+        search_row.addWidget(self.background_slider)
         self.search_edit = QLineEdit(self)
         self.search_edit.setPlaceholderText(_("dialog.open_browser.search", "Search files"))
         self.search_edit.textChanged.connect(self._apply_filter)
@@ -1253,6 +1254,7 @@ class OpenBrowserDialog(QDialog):
         details = mode == _VIEW_DETAILS
         self.details_header.setVisible(details)
         self.icon_size_slider.setEnabled(not details)
+        self.background_slider.setEnabled(not details)
         self.file_list.setFont(self._mono_font if details else self._list_font)
         if mode == _VIEW_ICONS:
             self.file_list.setViewMode(QListView.ViewMode.IconMode)
