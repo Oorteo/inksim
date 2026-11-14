@@ -663,6 +663,10 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Ink/Stitch installations found: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "No Ink/Stitch installation was found."

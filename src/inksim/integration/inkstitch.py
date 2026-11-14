@@ -38,6 +38,15 @@ def _configured_python(status: dict[str, Any]) -> Path | None:
     return path if path.is_file() else None
 
 
+def link_key(value: str | Path) -> str:
+    """Return a comparable key for a path without resolving symlinks.
+
+    Extension folders in Inkscape are often symlinks to a checkout, so the link
+    keeps its identity: comparing resolved targets would hide a repointed link.
+    """
+    return os.path.normcase(os.path.abspath(Path(value).expanduser()))
+
+
 def _existing_extension_dir(installation: dict[str, Any]) -> Path | None:
     """Return the cached extension directory when it still exists on disk."""
     value = installation.get("extension_dir")
@@ -45,6 +54,27 @@ def _existing_extension_dir(installation: dict[str, Any]) -> Path | None:
         return None
     path = Path(value).expanduser()
     return path if path.is_dir() else None
+
+
+def changed_inkstitch_targets(status: dict[str, Any]) -> list[Path]:
+    """Return checkouts that cached Ink/Stitch links point at but were not stored with.
+
+    Inkscape extension folders are commonly symlinks to a checkout. The stored
+    link keeps its identity, so resolving it again tells whether the link was
+    repointed to another Ink/Stitch version since the status was cached.
+    """
+    changed: list[Path] = []
+    for installation in status.get("inkstitch") or []:
+        if not isinstance(installation, dict):
+            continue
+        link = installation.get("extension_dir")
+        stored = installation.get("resolved_extension_dir")
+        if not isinstance(link, str) or not link or not isinstance(stored, str) or not stored:
+            continue
+        current = Path(link).expanduser().resolve()
+        if os.path.normcase(str(current)) != os.path.normcase(str(Path(stored).expanduser())):
+            changed.append(current)
+    return changed
 
 
 def active_inkstitch_installation(status: dict[str, Any]) -> dict[str, Any] | None:
@@ -66,12 +96,12 @@ def active_inkstitch_installation(status: dict[str, Any]) -> dict[str, Any] | No
         return None
     active_inkstitch = status.get("active_inkstitch")
     if isinstance(active_inkstitch, str):
-        active_path = os.path.normcase(str(Path(active_inkstitch).expanduser().resolve()))
+        active_path = link_key(active_inkstitch)
         for installation in valid_installations:
-            extension_dir = os.path.normcase(
-                str(Path(installation["extension_dir"]).expanduser().resolve())
-            )
-            if extension_dir == active_path and _existing_extension_dir(installation) is not None:
+            if (
+                link_key(installation["extension_dir"]) == active_path
+                and _existing_extension_dir(installation) is not None
+            ):
                 return installation
     for installation in valid_installations:
         if _existing_extension_dir(installation) is not None:
