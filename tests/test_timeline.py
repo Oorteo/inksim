@@ -108,6 +108,25 @@ def test_overview_moves_zoomed_range_without_changing_its_scale(qtbot):
     assert (timeline._view_start, timeline._view_end) == (40, 60)
 
 
+def test_overview_viewport_frame_is_clickable_outside_thin_track(qtbot):
+    timeline, _ = make_timeline(qtbot)
+    timeline._view_start = 20
+    timeline._view_end = 40
+    _, overview, _ = timeline._layout_rects()
+    viewport = timeline._overview_viewport(overview, 100)
+    viewport_frame = timeline._overview_viewport_frame(viewport)
+    hit_position = QPoint(viewport.center().x(), viewport_frame.top())
+
+    assert not overview.contains(hit_position)
+    assert timeline._overview_interaction_rect(overview).contains(hit_position)
+
+    qtbot.mousePress(timeline, Qt.LeftButton, pos=hit_position)
+
+    assert timeline.dragging == "overview"
+
+    qtbot.mouseRelease(timeline, Qt.LeftButton, pos=hit_position)
+
+
 def test_new_design_resets_timeline_to_full_range(qtbot):
     timeline, viewer = make_timeline(qtbot)
     timeline._view_start = 20
@@ -191,6 +210,25 @@ def test_zoomed_out_waveform_does_not_fill_stitch_rectangles(qtbot):
     pixel = image.pixelColor(main_bar.center().x(), main_bar.top() + 1)
 
     assert pixel.blue() > 150
+
+
+def test_overview_needle_marker_shows_position_outside_zoomed_range(qtbot):
+    timeline, viewer = make_timeline(qtbot, total=100)
+    viewer.stitches_np = np.tile(
+        np.array([[0, 0, 1, 0, 40, 100, 180]], dtype=np.float32),
+        (100, 1),
+    )
+    viewer.visible_count = 75
+    timeline._view_start = 10
+    timeline._view_end = 20
+
+    image = timeline.grab().toImage()
+    _, overview, _ = timeline._layout_rects()
+    needle_x = overview.left() + int(75 / 100 * (overview.width() - 1))
+    marker_pixel = image.pixelColor(needle_x, overview.center().y())
+
+    assert marker_pixel.red() > marker_pixel.green() * 2
+    assert marker_pixel.red() > marker_pixel.blue() * 2
 
 
 def test_stitches_above_waveform_scale_have_clipped_end_marks(qtbot):

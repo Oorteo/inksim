@@ -129,11 +129,12 @@ class TimelineWidget(QWidget):
             self.seek(position.x())
             self.viewer.highlight_needle()
             self.grabMouse()
-        elif overview.contains(position.toPoint()):
+        elif self._overview_interaction_rect(overview).contains(position.toPoint()):
             self.dragging = "overview"
             self.drag_moved = False
             viewport = self._overview_viewport(overview, total)
-            if viewport.contains(position.toPoint()):
+            viewport_frame = self._overview_viewport_frame(viewport)
+            if viewport_frame.contains(position.toPoint()):
                 self._overview_drag_offset = position.x() - viewport.left()
             else:
                 self._overview_drag_offset = viewport.width() / 2
@@ -213,6 +214,14 @@ class TimelineWidget(QWidget):
         x0 = overview.left() + int(self._view_start / total * overview.width())
         x1 = overview.left() + int(self._view_end / total * overview.width())
         return QRect(x0, overview.top(), max(3, x1 - x0), overview.height())
+
+    @staticmethod
+    def _overview_interaction_rect(overview: QRect) -> QRect:
+        return overview.adjusted(0, -6, 0, 6)
+
+    @staticmethod
+    def _overview_viewport_frame(viewport: QRect) -> QRect:
+        return viewport.adjusted(0, -4, 0, 4)
 
     def _draw_stitch_colors(
         self,
@@ -445,7 +454,7 @@ class TimelineWidget(QWidget):
         self._draw_stitch_colors(painter, 0, total, overview, stitches)
         self._draw_commands(painter, overview, 0, total, overview=True)
         viewport = self._overview_viewport(overview, total)
-        viewport_frame = viewport.adjusted(0, -4, 0, 4)
+        viewport_frame = self._overview_viewport_frame(viewport)
         fog_color = QColor(250, 250, 250, 205)
         painter.setPen(Qt.NoPen)
         if viewport.left() > overview.left():
@@ -471,6 +480,23 @@ class TimelineWidget(QWidget):
         painter.setBrush(QColor(50, 115, 200, 45))
         painter.setPen(QPen(QColor(25, 75, 155), 2))
         painter.drawRect(viewport_frame)
+
+        needle_x = overview.left() + int(
+            max(0, min(total, self.viewer.visible_count)) / total * (overview.width() - 1)
+        )
+        needle_tip_y = overview.top() - 5
+        painter.setPen(QPen(QColor(255, 255, 255), 4))
+        painter.drawLine(needle_x, viewport_frame.top(), needle_x, viewport_frame.bottom())
+        painter.setPen(QPen(QColor(210, 40, 50), 2))
+        painter.drawLine(needle_x, viewport_frame.top(), needle_x, viewport_frame.bottom())
+        painter.setBrush(QColor(210, 40, 50))
+        painter.drawPolygon(
+            [
+                QPoint(needle_x, needle_tip_y),
+                QPoint(needle_x - 4, needle_tip_y + 5),
+                QPoint(needle_x + 4, needle_tip_y + 5),
+            ]
+        )
 
         if self._view_start <= self.viewer.visible_count <= self._view_end:
             knob_x = main_bar.left() + progress_width

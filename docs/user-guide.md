@@ -59,7 +59,7 @@ to zoom around the cursor, left-drag to pan, or use the preview toolbar's
 | `Ctrl` + wheel over timeline | Zoom around the pointer     |
 | `Shift` + wheel over timeline | Pan the timeline range     |
 | Wheel over upper timeline   | Adjust waveform scale      |
-| Drag the overview range    | Pan the zoomed timeline     |
+| Drag the overview range    | Pan the zoomed timeline; needle marker shows current position |
 | `−` / `+` / `All`          | Zoom or show the full timeline |
 | Drop a file on the viewer  | Open the file                |
 | `F11`                      | Toggle fullscreen            |
