@@ -41,6 +41,7 @@ from PySide6.QtGui import (
     QAction,
     QActionGroup,
     QColor,
+    QFont,
     QFontDatabase,
     QIcon,
     QImage,
@@ -74,6 +75,7 @@ from PySide6.QtWidgets import (
     QStackedWidget,
     QStyle,
     QStyledItemDelegate,
+    QStyleOptionViewItem,
     QToolButton,
     QVBoxLayout,
     QWidget,
@@ -135,6 +137,7 @@ _INITIAL_PREVIEW_ESTIMATE_SECONDS = 10.0
 _MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
 _PREVIEW_TIMING_CONFIG_KEY = "svg_preview_timing"
 _ICON_SIZE_CONFIG_KEY = "open_dialog_icon_size"
+_VIEW_CONFIG_KEY = "open_dialog_view"
 _SKIP_EXTENSIONS_CONFIG_KEY = "open_dialog_skip_extensions"
 _SKIP_SAVE_DEBOUNCE_MS = 600
 _ICON_SIZE_MIN = 32
@@ -144,6 +147,8 @@ _FAVORITE_DIRECTORIES_CONFIG_KEY = "favorite_directories"
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
 _PLACE_PATH_ROLE = Qt.ItemDataRole.UserRole
 _PLACE_FAVORITE_ROLE = Qt.ItemDataRole.UserRole + 1
+# Folders get their name drawn over the icon in the icon-only grid.
+_FOLDER_LABEL_ROLE = Qt.ItemDataRole.UserRole + 2
 
 
 class _IconSelectionDelegate(QStyledItemDelegate):
@@ -155,21 +160,50 @@ class _IconSelectionDelegate(QStyledItemDelegate):
     """
 
     def paint(self, painter: QPainter, option: Any, index: Any) -> None:  # type: ignore[override]
-        super().paint(painter, option, index)
         view = option.widget
-        if not isinstance(view, QListView) or view.viewMode() != QListView.ViewMode.IconMode:
+        icon_mode = isinstance(view, QListView) and view.viewMode() == QListView.ViewMode.IconMode
+        show_folder_name = bool(icon_mode and index.data(_FOLDER_LABEL_ROLE))
+        if show_folder_name:
+            # The name is drawn over the icon, so the default text must not
+            # squeeze itself under it.
+            option = QStyleOptionViewItem(option)
+            option.text = ""
+        super().paint(painter, option, index)
+        if not icon_mode:
             return
-        if not option.state & QStyle.StateFlag.State_Selected:
-            return
-        highlight = option.palette.color(QPalette.ColorRole.Highlight)
+        if option.state & QStyle.StateFlag.State_Selected:
+            highlight = option.palette.color(QPalette.ColorRole.Highlight)
+            painter.save()
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+            rect = option.rect.adjusted(1, 1, -1, -1)
+            tint = QColor(highlight)
+            tint.setAlpha(70)
+            painter.fillRect(rect, tint)
+            painter.setPen(QPen(highlight, 3))
+            painter.drawRoundedRect(rect.adjusted(2, 2, -2, -2), 3, 3)
+            painter.restore()
+        if show_folder_name:
+            self._paint_caption(painter, option, str(index.data(_FOLDER_LABEL_ROLE)))
+
+    @staticmethod
+    def _paint_caption(painter: QPainter, option: Any, name: str) -> None:
+        """Draw the folder name on a readable strip along the icon's bottom."""
         painter.save()
         painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
-        rect = option.rect.adjusted(1, 1, -1, -1)
-        tint = QColor(highlight)
-        tint.setAlpha(70)
-        painter.fillRect(rect, tint)
-        painter.setPen(QPen(highlight, 3))
-        painter.drawRoundedRect(rect.adjusted(2, 2, -2, -2), 3, 3)
+        font = QFont(option.font)
+        point_size = font.pointSizeF()
+        font.setPointSizeF(max(6.0, point_size * 0.8) if point_size > 0 else 7.0)
+        painter.setFont(font)
+        metrics = painter.fontMetrics()
+        rect = option.rect.adjusted(2, 2, -2, -2)
+        text = metrics.elidedText(name, Qt.TextElideMode.ElideMiddle, rect.width() - 8)
+        line_height = metrics.height()
+        strip = rect.adjusted(0, rect.height() - line_height - 2, 0, 0)
+        background = QColor(option.palette.color(QPalette.ColorRole.Base))
+        background.setAlpha(215)
+        painter.fillRect(strip, background)
+        painter.setPen(option.palette.color(QPalette.ColorRole.Text))
+        painter.drawText(strip, Qt.AlignmentFlag.AlignCenter, text)
         painter.restore()
 
 
@@ -582,7 +616,9 @@ class OpenBrowserDialog(QDialog):
         )
         self.view_combo.addItem(_("dialog.open_browser.view.icons", "Icons only"), _VIEW_ICONS)
         self.view_combo.addItem(_("dialog.open_browser.view.details", "Details"), _VIEW_DETAILS)
-        self.view_combo.currentIndexChanged.connect(self._apply_view_mode)
+        stored_view = self.config.get(_VIEW_CONFIG_KEY, _VIEW_ICONS_TEXT)
+        self.view_combo.setCurrentIndex(max(0, self.view_combo.findData(stored_view)))
+        self.view_combo.currentIndexChanged.connect(self._on_view_mode_changed)
         search_row.addWidget(self.view_combo)
         self.icon_size_slider = QSlider(Qt.Orientation.Horizontal, self)
         self.icon_size_slider.setObjectName("iconSizeSlider")
@@ -1117,6 +1153,14 @@ class OpenBrowserDialog(QDialog):
     def _view_mode(self) -> str:
         return self.view_combo.currentData() or _VIEW_ICONS_TEXT
 
+    def _on_view_mode_changed(self, index: int) -> None:
+        del index
+        try:
+            self.config.set(_VIEW_CONFIG_KEY, self._view_mode())
+        except OSError as ex:
+            logger.warning("Could not store the view mode: %s", ex)
+        self._apply_view_mode()
+
     def _on_skip_extensions_changed(self, text: str) -> None:
         self._skip_extensions = _parse_skip_extensions(text)
         self._skip_save_timer.start()
@@ -1233,6 +1277,7 @@ class OpenBrowserDialog(QDialog):
                 if kind == KIND_DIRECTORY
                 else path.name
             )
+            caption = label.rstrip("/") if kind == KIND_DIRECTORY else ""
             if self._view_mode() == _VIEW_ICONS:
                 label = ""
             elif self._view_mode() == _VIEW_DETAILS:
@@ -1241,6 +1286,8 @@ class OpenBrowserDialog(QDialog):
             if self._view_mode() == _VIEW_ICONS:
                 # Keep the selection box around the icon instead of an empty text row.
                 item.setSizeHint(QSize(self._icon_size, self._icon_size))
+                if caption:
+                    item.setData(_FOLDER_LABEL_ROLE, caption)
             item.setData(Qt.ItemDataRole.UserRole, str(path))
             item.setToolTip(_sanitize_path_text(str(path)))
             self.file_list.addItem(item)

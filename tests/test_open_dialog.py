@@ -215,6 +215,39 @@ def test_icons_only_view_hides_names(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_icons_only_view_captions_the_folders(qtbot, tmp_path, monkeypatch):
+    """Empty folder cells are hard to tell apart, so their names are drawn on."""
+
+    from inksim.gui.open_dialog import _FOLDER_LABEL_ROLE
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "designs").mkdir()
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    qtbot.wait(30)
+
+    captions = [
+        dialog.file_list.item(row).data(_FOLDER_LABEL_ROLE)
+        for row in range(dialog.file_list.count())
+    ]
+    assert "designs" in captions
+    assert ".." in captions
+    # The design keeps an empty cell: its thumbnail already identifies it.
+    assert captions.count(None) == 1
+    assert all(dialog.file_list.item(row).text() == "" for row in range(dialog.file_list.count()))
+    dialog.reject()
+
+
 def test_icons_only_view_scrolls_faster_than_a_few_pixels_per_notch(qtbot, tmp_path, monkeypatch):
     """A whole grid of icons must not crawl by three pixels per wheel notch."""
     from PySide6.QtCore import QPoint, QPointF, Qt
@@ -320,6 +353,34 @@ def test_icon_size_slider_scales_the_list_and_is_remembered(qtbot, tmp_path, mon
     dialog.view_combo.setCurrentIndex(modes.index("icons_text"))
     assert dialog.file_list.iconSize().width() == 48
     dialog.reject()
+
+
+def test_view_mode_is_remembered(qtbot, tmp_path, monkeypatch):
+    """The dialog reopens in the view the user left it in."""
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    modes = [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())]
+    assert dialog.view_combo.currentData() == "icons_text"
+
+    dialog.view_combo.setCurrentIndex(modes.index("details"))
+    dialog.reject()
+
+    assert config.get("open_dialog_view") == "details"
+
+    reopened = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(reopened)
+
+    assert reopened.view_combo.currentData() == "details"
+    reopened.reject()
 
 
 def test_icon_size_is_restored_from_the_config(qtbot, tmp_path, monkeypatch):
