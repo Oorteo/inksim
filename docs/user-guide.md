@@ -125,7 +125,7 @@ inksim *.pes --icon exports/ -y
 | `--simple-png [PATH]`     | Simple/flat renderer; defaults to `INPUT_TYPE-simple.png`                                     |
 | `--png [PATH]`            | Shaded volume renderer (default); defaults to `INPUT_TYPE.png`                                |
 | `--webp [PATH]`           | Shaded volume renderer (default); defaults to `INPUT_TYPE.webp`                               |
-| `--icon [PATH]`           | 256 x 256 icon/thumbnail, simple renderer; defaults to `INPUT_TYPE_thumb.png`                 |
+| `--icon [PATH]`           | 256 x 256 icon/thumbnail, simple renderer; defaults to `INPUT_FILE.png` (`design.pes.png`)      |
 | `--active-renderer`       | For `--png`/`--webp`, use the viewer's active renderer instead of the default `shaded_volume` |
 | `--dpi N`                 | DPI for print-sized exports; default is 300                                                   |
 | `--bg transparent\|white` | Select the export background                                                                  |
