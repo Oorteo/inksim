@@ -330,48 +330,56 @@ def test_search_keeps_folders_navigable(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
-def test_browser_dialog_navigates_directories_with_arrow_keys(qtbot, tmp_path, monkeypatch):
+def test_enter_opens_folders_and_arrows_stay_in_the_list(qtbot, tmp_path, monkeypatch):
+    """Enter activates the current row, so the arrows can move between icons."""
     from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QListView
 
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
     subdirectory = tmp_path / "designs"
     subdirectory.mkdir()
     (subdirectory / "nested.svg").write_text(_SVG, encoding="utf-8")
+    for index in range(4):
+        (tmp_path / f"design{index}.pes").write_bytes(
+            (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+        )
 
     dialog = OpenBrowserDialog(None, tmp_path)
     qtbot.addWidget(dialog)
     dialog.show()
 
-    folder_row = next(
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    assert dialog.file_list.viewMode() == QListView.ViewMode.IconMode
+    dialog.file_list.setCurrentRow(1)
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
+    assert dialog.file_list.currentRow() == 2
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Left)
+    assert dialog.file_list.currentRow() == 1
+    assert dialog.current_directory == tmp_path
+
+    def row_for(name: str) -> int:
+        for row in range(dialog.file_list.count()):
+            item = dialog.file_list.item(row)
+            if Path(item.data(Qt.ItemDataRole.UserRole)).name == name:
+                return row
+        raise AssertionError(name)
+
+    dialog.file_list.setCurrentRow(row_for("designs"))
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Return)
+    assert dialog.current_directory == subdirectory
+
+    parent_row = next(
         row
         for row in range(dialog.file_list.count())
-        if dialog.file_list.item(row).text() == "designs/"
+        if Path(dialog.file_list.item(row).data(Qt.ItemDataRole.UserRole)) == tmp_path
     )
-    dialog.file_list.setCurrentRow(folder_row)
+    dialog.file_list.setCurrentRow(parent_row)
     qtbot.keyClick(dialog.file_list, Qt.Key.Key_Return)
     assert dialog.current_directory == tmp_path
-
-    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
-    assert dialog.current_directory == subdirectory
-    assert dialog.file_list.item(dialog.file_list.currentRow()).text() == ".."
-    parent_row = next(
-        row for row in range(dialog.file_list.count()) if dialog.file_list.item(row).text() == ".."
-    )
-    assert dialog.file_list.currentRow() == parent_row
-    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
-    assert dialog.current_directory == tmp_path
-    assert dialog.file_list.item(dialog.file_list.currentRow()).text() == "designs/"
-
-    folder_row = next(
-        row
-        for row in range(dialog.file_list.count())
-        if dialog.file_list.item(row).text() == "designs/"
-    )
-    dialog.file_list.setCurrentRow(folder_row)
-    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
-    assert dialog.current_directory == subdirectory
-    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Left)
-    assert dialog.current_directory == tmp_path
+    current = dialog.file_list.currentItem()
+    assert Path(current.data(Qt.ItemDataRole.UserRole)).name == "designs"
     dialog.reject()
 
 
@@ -1140,6 +1148,27 @@ def test_open_embroidery_accepts_selected_file(qtbot, sample_design, monkeypatch
     dialog.fit_button.click()
     assert abs(dialog.preview.zoom - fit_zoom) < 0.001
     dialog.open_button.click()
+
+    assert dialog.selected_path == sample_design.resolve()
+    assert dialog.result_action == "open"
+
+
+def test_enter_opens_the_selected_design(qtbot, sample_design, monkeypatch):
+    from PySide6.QtCore import Qt
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+
+    dialog = OpenBrowserDialog(None, sample_design.parent, sample_design)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert dialog._preview_loaded
+
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Return)
 
     assert dialog.selected_path == sample_design.resolve()
     assert dialog.result_action == "open"
