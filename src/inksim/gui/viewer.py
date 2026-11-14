@@ -78,6 +78,7 @@ from ..constants import (
     MIN_VISIBLE_DESIGN_PIXELS,
 )
 from ..debug import is_enabled, logger
+from ..formats import command_name as pystitch_command_name
 from ..formats import read_embroidery_file
 from ..render import (
     RENDERERS_BY_KEY,
@@ -90,14 +91,6 @@ from ..runtime import is_opengl33_available
 from .gl_viewer import GLStitchWidget, list_thread_textures, resolve_thread_texture
 from .help import show_help
 from .settings import show_settings
-
-_COMMAND_NAMES: dict[int, str] = {}
-for _name in dir(emb):
-    if not _name.isupper() or _name.endswith("_MASK"):
-        continue
-    _value = getattr(emb, _name)
-    if isinstance(_value, int) and 0 <= _value <= emb.COMMAND_MASK and _value not in _COMMAND_NAMES:
-        _COMMAND_NAMES[_value] = _name
 
 
 def density_debug(message: str) -> None:
@@ -1155,7 +1148,7 @@ class EmbroideryViewerWidget(QWidget):
                 color_change_in_group = True
                 last_x, last_y = x, y
                 continue
-            command_name = _COMMAND_NAMES.get(cmd)
+            command_name = pystitch_command_name(cmd)
             if command_name is not None and command_name != "STITCH":
                 event_position = len(segs)
                 self.command_events.setdefault(event_position, []).append(command_name)

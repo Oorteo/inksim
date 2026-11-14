@@ -18,6 +18,19 @@ _SVG_ROOT_TAG = f"{{{_SVG_NAMESPACE}}}svg"
 _SVG_PATH_TAG = f"{{{_SVG_NAMESPACE}}}path"
 _SVG_HEX_COLOR = re.compile(r"#[0-9a-fA-F]{6}\Z")
 
+_COMMAND_NAMES: dict[int, str] = {}
+for _name in dir(emb):
+    if not _name.isupper() or _name.endswith("_MASK"):
+        continue
+    _value = getattr(emb, _name)
+    if isinstance(_value, int) and 0 <= _value <= emb.COMMAND_MASK and _value not in _COMMAND_NAMES:
+        _COMMAND_NAMES[_value] = _name
+
+
+def command_name(command: int) -> str | None:
+    """Return the PyStitch command name for *command*, or None for unknown codes."""
+    return _COMMAND_NAMES.get(command)
+
 
 def read_embroidery_file(path: str | Path) -> Any | None:
     """Read embroidery, including stitch-block SVGs written by PyStitch."""

@@ -442,8 +442,8 @@ def test_cli_batch_export_from_subdirectory_files(sample_design, tmp_path):
     assert result.returncode == 0, result.stderr
 
     ext = sample_design.suffix.lstrip(".").lower()
-    expected_a = output_dir / f"one_{ext}_thumb.png"
-    expected_b = output_dir / f"two_{ext}_thumb.png"
+    expected_a = output_dir / f"one.{ext}.png"
+    expected_b = output_dir / f"two.{ext}.png"
     assert expected_a.is_file()
     assert expected_a.stat().st_size > 0
     assert expected_b.is_file()

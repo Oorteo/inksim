@@ -57,6 +57,56 @@ def test_lists_supported_files_and_folders(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_selected_designs_get_sidecar_thumbnails(qtbot, tmp_path, monkeypatch):
+    """Create thumbnails for the whole multi-selection; details follow the last one."""
+    from PySide6.QtCore import QItemSelectionModel
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    first = tmp_path / "first.pes"
+    second = tmp_path / "second.pes"
+    first.write_bytes(sample.read_bytes())
+    second.write_bytes(sample.read_bytes())
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    items = {
+        dialog.file_list.item(index).text(): dialog.file_list.item(index)
+        for index in range(dialog.file_list.count())
+    }
+    dialog.file_list.setCurrentItem(items["first.pes"])
+    dialog.file_list.setCurrentItem(items["second.pes"], QItemSelectionModel.SelectionFlag.Select)
+    assert dialog.selected_path == second
+    assert dialog.thumbnails_button.isEnabled()
+
+    dialog._create_thumbnails()
+
+    qtbot.waitUntil(lambda: dialog._thumbnail_job is None, timeout=20000)
+    assert (tmp_path / "first.pes.png").is_file()
+    assert (tmp_path / "second.pes.png").is_file()
+    assert "2 created" in dialog.activity_label.text()
+    assert not items["first.pes"].icon().isNull()
+    assert not items["second.pes"].icon().isNull()
+    dialog.reject()
+
+
+def test_thumbnail_action_needs_a_selected_design(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "folder").mkdir()
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "folder")
+    assert not dialog.thumbnails_button.isEnabled()
+    dialog.reject()
+
+
 def test_browser_dialog_navigates_directories_with_arrow_keys(qtbot, tmp_path, monkeypatch):
     from PySide6.QtCore import Qt
 

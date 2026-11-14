@@ -159,6 +159,14 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Running Ink/Stitch CSV export..."
     },
+    "dialog.open_browser.create_thumbnails": {
+        "source": "Create thumbnails",
+        "translation": "Create thumbnails"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).",
+        "translation": "Write a 256 px PNG next to each selected design (design.pes.png)."
+    },
     "dialog.open_browser.desktop": {
         "source": "Desktop",
         "translation": "Desktop"
@@ -374,6 +382,18 @@
     "dialog.open_browser.temp_file_failed": {
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Could not create a temporary preview file: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Thumbnails: {created} created, {skipped} up to date, {failed} failed"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Thumbnails: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Creating thumbnails…"
     },
     "dialog.open_browser.title": {
         "source": "Open file",

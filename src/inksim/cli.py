@@ -587,7 +587,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
         nargs="?",
         const="",
         metavar="PATH",
-        help="Export a 256px preview PNG and exit (default: INPUT_TYPE_thumb.png; use --icon=PATH)",
+        help="Export a 256px preview PNG and exit (default: INPUT_FILE.png; use --icon=PATH)",
     )
     parser.add_argument(
         "--dpi",
@@ -706,7 +706,8 @@ def main() -> None:
             return f"{ext_part}.png"
         if kind == "webp":
             return f"{ext_part}.webp"
-        return f"{ext_part}_thumb.png"
+        # Thumbnails are sidecars: design.pes -> design.pes.png.
+        return f".{ext}.png" if ext else ".png"
 
     def _export_kind_and_format(args: argparse.Namespace) -> tuple[str, str]:
         if args.export_png is not None:

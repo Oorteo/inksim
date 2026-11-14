@@ -1308,6 +1308,11 @@ class MainWindow(QMainWindow):
         """Return the authoritative source path for output defaults."""
         return self.document_path or self.current_file_path
 
+    def _default_thumbnail_name(self) -> str:
+        """Return the sidecar thumbnail name for the open design (design.pes.png)."""
+        source_path = self._preferred_source_path()
+        return f"{source_path.name}.png" if source_path else "inksim.png"
+
     def _default_export_name(self, suffix: str) -> str:
         source_path = self._preferred_source_path()
         base_name = source_path.stem if source_path else "inksim"
@@ -1573,7 +1578,7 @@ class MainWindow(QMainWindow):
         self._show_export_preview(
             "Export icon/thumbnail",
             image,
-            self._default_export_name("_thumb.png"),
+            self._default_thumbnail_name(),
             icon=True,
             dpi=96,
         )

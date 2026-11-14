@@ -28,12 +28,23 @@ from PySide6.QtCore import (
     QProcess,
     QProcessEnvironment,
     QRectF,
+    QRunnable,
     QSize,
     QStandardPaths,
     Qt,
+    QThreadPool,
     QTimer,
+    Signal,
 )
-from PySide6.QtGui import QImage, QMouseEvent, QPainter, QPaintEvent, QPixmap, QWheelEvent
+from PySide6.QtGui import (
+    QIcon,
+    QImage,
+    QMouseEvent,
+    QPainter,
+    QPaintEvent,
+    QPixmap,
+    QWheelEvent,
+)
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -73,6 +84,7 @@ from ..integration.paths import (
     prefer_saved_inkscape,
 )
 from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
+from ..render.thumbnails import THUMBNAIL_SIZE, thumbnail_path, write_thumbnail
 from .inkscape_dialog import InkscapeIntegrationDialog
 from .viewer import EmbroideryViewerWidget
 
@@ -93,6 +105,40 @@ _FAVORITE_DIRECTORIES_CONFIG_KEY = "favorite_directories"
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
 _PLACE_PATH_ROLE = Qt.ItemDataRole.UserRole
 _PLACE_FAVORITE_ROLE = Qt.ItemDataRole.UserRole + 1
+
+
+class _ThumbnailSignals(QObject):
+    progress = Signal(int, int)
+    finished = Signal(int, int, int)
+
+
+class ThumbnailJob(QRunnable):
+    """Write sidecar thumbnails for a batch of designs off the GUI thread."""
+
+    def __init__(self, paths: Sequence[Path]) -> None:
+        super().__init__()
+        self.signals = _ThumbnailSignals()
+        self._paths = list(paths)
+        self._stop = False
+
+    def stop(self) -> None:
+        self._stop = True
+
+    def run(self) -> None:
+        created = skipped = failed = 0
+        total = len(self._paths)
+        for index, path in enumerate(self._paths, 1):
+            if self._stop:
+                break
+            existed = thumbnail_path(path).exists()
+            if write_thumbnail(path) is None:
+                failed += 1
+            elif existed:
+                skipped += 1
+            else:
+                created += 1
+            self.signals.progress.emit(index, total)
+        self.signals.finished.emit(created, skipped, failed)
 
 
 def _preview_timing_stats(value: object) -> tuple[float, int] | None:
@@ -348,6 +394,10 @@ class OpenBrowserDialog(QDialog):
         self._conversion_started_at: float | None = None
         self._conversion_estimate_seconds = _INITIAL_PREVIEW_ESTIMATE_SECONDS
         self._closing = False
+        self._thumbnail_icons: dict[Path, QIcon] = {}
+        self._thumbnail_job: ThumbnailJob | None = None
+        self._thumbnail_pool = QThreadPool(self)
+        self._thumbnail_pool.setMaxThreadCount(1)
 
         self._preview_timer = QTimer(self)
         self._preview_timer.setSingleShot(True)
@@ -459,9 +509,10 @@ class OpenBrowserDialog(QDialog):
 
         self.file_list = QListWidget(self)
         self.file_list.installEventFilter(self)
-        self.file_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        self.file_list.setIconSize(self.file_list.iconSize().expandedTo(QSize(22, 22)))
+        self.file_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
+        self.file_list.setIconSize(QSize(THUMBNAIL_SIZE // 4, THUMBNAIL_SIZE // 4))
         self.file_list.currentItemChanged.connect(self._on_current_item_changed)
+        self.file_list.itemSelectionChanged.connect(self._update_actions)
         self.file_list.itemDoubleClicked.connect(self._on_item_double_clicked)
         self.places_list = QListWidget(self)
         self.places_list.setObjectName("openPlaces")
@@ -559,6 +610,17 @@ class OpenBrowserDialog(QDialog):
         self.activity_label.setVisible(False)
         button_row.addWidget(self.activity_label)
         button_row.addStretch(1)
+        self.thumbnails_button = QPushButton(
+            _("dialog.open_browser.create_thumbnails", "Create thumbnails"), self
+        )
+        self.thumbnails_button.setToolTip(
+            _(
+                "dialog.open_browser.create_thumbnails_hint",
+                "Write a 256 px PNG next to each selected design (design.pes.png).",
+            )
+        )
+        self.thumbnails_button.clicked.connect(self._create_thumbnails)
+        button_row.addWidget(self.thumbnails_button)
         self.edit_button = QPushButton(
             _("dialog.open_browser.edit_inkscape", "Edit in Inkscape"), self
         )
@@ -894,7 +956,10 @@ class OpenBrowserDialog(QDialog):
         self.file_list.clear()
         for path in visible:
             kind = self._kind_for_path(path)
-            icon = self._folder_icon if kind == KIND_DIRECTORY else self._file_icon
+            if kind == KIND_DIRECTORY:
+                icon = self._folder_icon
+            else:
+                icon = self._thumbnail_icon(path) or self._file_icon
             label = (
                 ".."
                 if path == parent_directory and path != self.current_directory
@@ -1250,12 +1315,103 @@ class OpenBrowserDialog(QDialog):
                 )
         self.details_label.setText("\n".join(lines))
 
+    def _thumbnail_icon(self, path: Path) -> QIcon | None:
+        cached = self._thumbnail_icons.get(path)
+        if cached is not None:
+            return cached
+        thumbnail = thumbnail_path(path)
+        if not thumbnail.is_file():
+            return None
+        icon = QIcon(str(thumbnail))
+        if icon.isNull():
+            return None
+        self._thumbnail_icons[path] = icon
+        return icon
+
+    def _selected_design_paths(self) -> list[Path]:
+        paths: list[Path] = []
+        for item in self.file_list.selectedItems():
+            value = item.data(Qt.ItemDataRole.UserRole)
+            if not value:
+                continue
+            path = Path(value)
+            if self._kind_for_path(path) in (KIND_EMBROIDERY, KIND_CSV):
+                paths.append(path)
+        return sorted(paths)
+
+    def _create_thumbnails(self) -> None:
+        """Write sidecar thumbnails for every selected design."""
+        if self._thumbnail_job is not None:
+            return
+        paths = self._selected_design_paths()
+        if not paths:
+            return
+        job = ThumbnailJob(paths)
+        job.signals.progress.connect(self._on_thumbnail_progress)
+        job.signals.finished.connect(self._on_thumbnails_finished)
+        self._thumbnail_job = job
+        self.progress.setRange(0, len(paths))
+        self.progress.setValue(0)
+        self.progress.setVisible(True)
+        self.activity_label.setText(
+            _("dialog.open_browser.thumbnails_running", "Creating thumbnails…")
+        )
+        self.activity_label.setVisible(True)
+        self._update_actions()
+        self._thumbnail_pool.start(job)
+
+    def _on_thumbnail_progress(self, done: int, total: int) -> None:
+        self.progress.setValue(done)
+        self.activity_label.setText(
+            _("dialog.open_browser.thumbnails_progress", "Thumbnails: {done}/{total}").format(
+                done=done, total=total
+            )
+        )
+
+    def _on_thumbnails_finished(self, created: int, skipped: int, failed: int) -> None:
+        self._thumbnail_job = None
+        self.progress.setRange(0, 100)
+        self.progress.setValue(0)
+        self.progress.setVisible(False)
+        self.activity_label.setText(
+            _(
+                "dialog.open_browser.thumbnails_done",
+                "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+            ).format(created=created, skipped=skipped, failed=failed)
+        )
+        self._refresh_thumbnail_icons()
+        self._update_actions()
+
+    def _refresh_thumbnail_icons(self) -> None:
+        self._thumbnail_icons.clear()
+        for row in range(self.file_list.count()):
+            item = self.file_list.item(row)
+            value = item.data(Qt.ItemDataRole.UserRole)
+            if not value:
+                continue
+            path = Path(value)
+            if self._kind_for_path(path) == KIND_DIRECTORY:
+                continue
+            item.setIcon(self._thumbnail_icon(path) or self._file_icon)
+
+    def _stop_thumbnail_job(self) -> None:
+        job = self._thumbnail_job
+        if job is None:
+            return
+        job.stop()
+        self._thumbnail_pool.waitForDone(2000)
+        self._thumbnail_job = None
+
     def _update_actions(self) -> None:
         path = self._current_path()
         kind = self._kind_for_path(path) if path is not None else None
         converting = self._conversion_process is not None
+        generating = self._thumbnail_job is not None
+        self.thumbnails_button.setEnabled(
+            not converting and not generating and bool(self._selected_design_paths())
+        )
 
-        if converting:
+        if converting or generating:
             self.open_button.setEnabled(False)
             self.edit_button.setEnabled(False)
             self.cancel_button.setEnabled(True)
@@ -1624,6 +1780,7 @@ class OpenBrowserDialog(QDialog):
     def done(self, result: int) -> None:
         """Stop the conversion process and release preview GL resources."""
         self._closing = True
+        self._stop_thumbnail_job()
         self._conversion_timer.stop()
         self._conversion_progress_timer.stop()
         self._conversion_started_at = None
