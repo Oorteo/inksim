@@ -330,6 +330,66 @@ def test_search_keeps_folders_navigable(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_skipped_extensions_are_hidden_and_remembered(qtbot, tmp_path, monkeypatch):
+    """Formats InkSim cannot read stay registered but are hidden from the list."""
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    config.set("open_dialog_skip_extensions", "edr")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "subfolder").mkdir()
+    for name in ("design.edr", "design.dst", "design.pes"):
+        (tmp_path / name).write_bytes(b"")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    def labels() -> list[str]:
+        return [
+            dialog.file_list.item(index).text().rstrip("/")
+            for index in range(dialog.file_list.count())
+        ]
+
+    assert dialog.skip_edit.text() == "edr"
+    assert "design.edr" not in labels()
+    assert "design.dst" in labels()
+    assert "subfolder" in labels()
+
+    dialog.skip_edit.setText("edr|dst")
+    qtbot.wait(10)
+    assert "design.dst" not in labels()
+    assert "design.pes" in labels()
+
+    def saved_skips() -> str | None:
+        config.reload()
+        return config.get("open_dialog_skip_extensions")
+
+    qtbot.waitUntil(lambda: saved_skips() == "edr|dst", timeout=3000)
+    dialog.reject()
+
+
+def test_typed_skip_extensions_are_saved_when_the_dialog_closes(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(b"")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.skip_edit.setText(".EDR, dst")
+    dialog.reject()
+
+    assert Config(tmp_path / "config.toml").get("open_dialog_skip_extensions") == "edr|dst"
+
+
 def test_enter_opens_folders_and_arrows_stay_in_the_list(qtbot, tmp_path, monkeypatch):
     """Enter activates the current row, so the arrows can move between icons."""
     from PySide6.QtCore import Qt
