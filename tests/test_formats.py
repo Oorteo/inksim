@@ -119,3 +119,28 @@ def test_palette_round_trips_through_an_edr_file(tmp_path):
         "#112233",
         "#445566",
     ]
+
+
+def test_palette_reader_accepts_csv_and_stitchblock_svg():
+    """Everything that stores colors can supply a palette, including CSV."""
+    from inksim.formats import read_palette_file
+
+    data = Path(__file__).parent / "data"
+
+    csv_colors = read_palette_file(data / "sample.csv")
+    svg_colors = read_palette_file(data / "sample_svg.svg")
+
+    assert len(csv_colors) == 2
+    assert len(svg_colors) >= 1
+
+
+def test_palette_filter_lists_every_design_format():
+    """The palette picker must not hide CSV/JSON debug exports."""
+    from inksim.gui.palette import palette_file_filter
+
+    filters = palette_file_filter().split(";;")
+
+    assert len(filters) == 3
+    assert "*.edr" in filters[0]
+    for extension in ("*.csv", "*.json", "*.svg", "*.pes"):
+        assert extension in filters[1]

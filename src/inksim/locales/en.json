@@ -495,6 +495,18 @@
         "source": "{name} stores no thread colors.",
         "translation": "{name} stores no thread colors."
     },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "All files"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Design files (colors when stored)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Palette files"
+    },
     "dialog.palette.replace": {
         "source": "{name} already stores colors for this design.\nReplace it with {target}?",
         "translation": "{name} already stores colors for this design.\nReplace it with {target}?"
