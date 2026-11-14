@@ -659,7 +659,7 @@ class OpenBrowserDialog(QDialog):
         self.fit_button.clicked.connect(self._fit_preview)
         preview_controls_layout.addWidget(self.fit_button)
         preview_controls_layout.addStretch(1)
-        self.preview_controls.setVisible(False)
+        self._set_preview_controls_enabled(False)
         preview_panel_layout.addWidget(self.preview_controls)
 
         self.file_list_container = QWidget(self)
@@ -1331,7 +1331,7 @@ class OpenBrowserDialog(QDialog):
 
         path = Path(current.data(Qt.ItemDataRole.UserRole))
         kind = self._kind_for_path(path)
-        self.preview_controls.setVisible(False)
+        self._set_preview_controls_enabled(False)
         self.preview_csv_path = None
         self.document_path = None
         if kind == KIND_DIRECTORY:
@@ -1400,8 +1400,13 @@ class OpenBrowserDialog(QDialog):
         self._open_selected()
         return True
 
+    def _set_preview_controls_enabled(self, active: bool) -> None:
+        """Keep the zoom row in place; only the buttons change state."""
+        for button in (self.zoom_out_button, self.zoom_in_button, self.fit_button):
+            button.setEnabled(active)
+
     def _show_message(self, message: str) -> None:
-        self.preview_controls.setVisible(False)
+        self._set_preview_controls_enabled(False)
         self.message_label.setText(_sanitize_path_text(message))
         self.preview_stack.setCurrentWidget(self.message_page)
 
@@ -1479,7 +1484,7 @@ class OpenBrowserDialog(QDialog):
             )
         self.svg_caption.setText(caption)
         self.preview_stack.setCurrentWidget(self.svg_page)
-        self.preview_controls.setVisible(True)
+        self._set_preview_controls_enabled(True)
 
     def _change_preview_zoom(self, factor: float) -> None:
         if self.preview_stack.currentWidget() == self.svg_page:
@@ -1533,7 +1538,7 @@ class OpenBrowserDialog(QDialog):
                 _("dialog.open_browser.not_embroidery", "Not a valid embroidery file")
             )
         else:
-            self.preview_controls.setVisible(True)
+            self._set_preview_controls_enabled(True)
         self._update_details(path, kind)
         self._update_actions()
 
