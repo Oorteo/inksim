@@ -507,6 +507,18 @@
         "source": "Other user extension: {path}",
         "translation": "Other user extension: {path}"
     },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "folder is gone: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "now points to: {path}"
+    },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
         "translation": "Install / Update InkSim extensions"
