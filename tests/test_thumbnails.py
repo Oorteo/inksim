@@ -8,14 +8,16 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pystitch as emb
-from PySide6.QtGui import QImage
+from PySide6.QtGui import QImage, QImageReader
 
 from inksim.render.thumbnails import (
+    STAMP_KEY,
     THUMBNAIL_SIZE,
     _drawn_area,
     build_design_preview,
     thumbnail_is_current,
     thumbnail_path,
+    thumbnail_stamp,
     write_thumbnail,
 )
 
@@ -126,6 +128,29 @@ def test_write_thumbnail_refreshes_a_stale_file(tmp_path):
     assert write_thumbnail(source) == thumbnail
     assert thumbnail.stat().st_mtime_ns != stale_mtime
     assert thumbnail_is_current(source)
+
+
+def test_thumbnail_without_a_stamp_is_outdated(tmp_path):
+    """Images written before the parameters were recorded are rebuilt once."""
+    source = _copy_sample(tmp_path)
+    thumbnail = source.with_name("design.pes.png")
+    QImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, QImage.Format_RGBA8888).save(str(thumbnail), "PNG")
+
+    assert not thumbnail_is_current(source)
+
+    assert write_thumbnail(source) == thumbnail
+    assert QImageReader(str(thumbnail)).text(STAMP_KEY) == thumbnail_stamp()
+
+
+def test_thumbnail_with_other_parameters_is_outdated(tmp_path, monkeypatch):
+    """Changing the render settings invalidates existing thumbnails."""
+    source = _copy_sample(tmp_path)
+    assert write_thumbnail(source) is not None
+    assert thumbnail_is_current(source)
+
+    monkeypatch.setattr("inksim.render.thumbnails.THUMBNAIL_RENDERER", "shaded_volume")
+
+    assert not thumbnail_is_current(source)
 
 
 def test_write_thumbnail_reports_unreadable_designs(tmp_path):

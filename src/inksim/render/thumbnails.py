@@ -18,7 +18,7 @@ from typing import Any
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import QRect, QRectF, Qt
-from PySide6.QtGui import QImage, QPainter
+from PySide6.QtGui import QImage, QImageReader, QPainter
 from PySide6.QtSvg import QSvgRenderer
 
 from ..constants import AUTO_THREAD_COLORS, DEFAULT_LINE_WIDTH_MM
@@ -32,6 +32,16 @@ THUMBNAIL_RENDERER = "simple"
 # smoother edges and, because the gradients stay regular, smaller PNG files.
 SVG_SUPERSAMPLE = 12
 SVG_RENDER_LIMIT = 3072
+
+# Bump the version when the thumbnail pipeline changes in a way that should
+# invalidate existing files, so "update" regenerates them without a full run.
+STAMP_KEY = "InkSimThumbnail"
+STAMP_VERSION = 1
+
+
+def thumbnail_stamp(size: int = THUMBNAIL_SIZE) -> str:
+    """Return the parameters recorded inside every thumbnail we write."""
+    return f"version={STAMP_VERSION};size={size};renderer={THUMBNAIL_RENDERER}"
 
 
 @dataclass(frozen=True)
@@ -48,13 +58,20 @@ def thumbnail_path(source: Path) -> Path:
     return source.with_name(f"{source.name}.png")
 
 
-def thumbnail_is_current(source: Path) -> bool:
-    """Return whether *source* already has a thumbnail that is not older than it."""
+def thumbnail_is_current(source: Path, size: int = THUMBNAIL_SIZE) -> bool:
+    """Return whether *source* has a thumbnail made with the current settings.
+
+    The image is up to date when it is not older than the source and carries
+    the parameters InkSim writes today, so changed render settings invalidate
+    it even though the file itself did not move.
+    """
     thumbnail = thumbnail_path(source)
     try:
-        return thumbnail.stat().st_mtime >= source.stat().st_mtime
+        if thumbnail.stat().st_mtime < source.stat().st_mtime:
+            return False
     except OSError:
         return False
+    return QImageReader(str(thumbnail)).text(STAMP_KEY) == thumbnail_stamp(size)
 
 
 def _thread_rgb(thread: Any, color_index: int) -> tuple[int, int, int]:
@@ -251,6 +268,7 @@ def write_thumbnail(
     image = render_source_thumbnail(source, size)
     if image is None:
         return None
+    image.setText(STAMP_KEY, thumbnail_stamp(size))
     # PySide6 accepts the format name; its stubs only describe the bytes overload.
     if not image.save(str(thumbnail), THUMBNAIL_FORMAT):  # type: ignore[call-overload]
         return None
