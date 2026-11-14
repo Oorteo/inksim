@@ -673,9 +673,7 @@ class OpenBrowserDialog(QDialog):
         self.icon_size_slider.setRange(_ICON_SIZE_MIN, _ICON_SIZE_MAX)
         self.icon_size_slider.setValue(self._icon_size)
         self.icon_size_slider.setFixedWidth(110)
-        self.icon_size_slider.setToolTip(
-            _("dialog.open_browser.icon_size", "Icon size ({size} px)").format(size=self._icon_size)
-        )
+        self.icon_size_slider.setToolTip(self._icon_size_tooltip())
         self.icon_size_slider.valueChanged.connect(self._on_icon_size_changed)
         self.background_slider = QSlider(Qt.Orientation.Horizontal, self)
         self.background_slider.setObjectName("iconBackgroundSlider")
@@ -1237,11 +1235,18 @@ class OpenBrowserDialog(QDialog):
         except OSError as ex:
             logger.warning("Could not store the skipped extensions: %s", ex)
 
+    def _icon_size_tooltip(self) -> str:
+        size = (
+            self.icon_size_slider.value() if hasattr(self, "icon_size_slider") else self._icon_size
+        )
+        return _(
+            "dialog.open_browser.icon_size",
+            "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        ).format(size=size)
+
     def _on_icon_size_changed(self, size: int) -> None:
         self._icon_size = size
-        self.icon_size_slider.setToolTip(
-            _("dialog.open_browser.icon_size", "Icon size ({size} px)").format(size=size)
-        )
+        self.icon_size_slider.setToolTip(self._icon_size_tooltip())
         try:
             self.config.set(_ICON_SIZE_CONFIG_KEY, size)
         except OSError as ex:
@@ -1572,7 +1577,7 @@ class OpenBrowserDialog(QDialog):
         return _(
             "dialog.open_browser.icon_background",
             "Icon background shading ({level}, 0 = black, 255 = white)"
-            "\nCtrl+wheel scales the icons, Shift+wheel changes this.",
+            "\nShift+wheel over the list changes the shading.",
         ).format(level=self.background_slider.value() if hasattr(self, "background_slider") else "")
 
     def _on_icon_background_changed(self, level: int) -> None:

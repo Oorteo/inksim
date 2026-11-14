@@ -264,12 +264,12 @@
         "translation": "Home"
     },
     "dialog.open_browser.icon_background": {
-        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nCtrl+wheel scales the icons, Shift+wheel changes this.",
-        "translation": "Icon background shading ({level}, 0 = black, 255 = white)\nCtrl+wheel scales the icons, Shift+wheel changes this."
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading."
     },
     "dialog.open_browser.icon_size": {
-        "source": "Icon size ({size} px)",
-        "translation": "Icon size ({size} px)"
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
