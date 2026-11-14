@@ -124,6 +124,7 @@ _MAX_SVG_THUMBNAIL_BYTES = 20 * 1024 * 1024
 _CONVERSION_TIMEOUT_MS = 180_000
 _CONVERSION_PROGRESS_INTERVAL_MS = 100
 _SELECTION_PREVIEW_DEBOUNCE_MS = 250
+_DETAILS_LINES = 6
 _INITIAL_PREVIEW_ESTIMATE_SECONDS = 10.0
 _MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
 _PREVIEW_TIMING_CONFIG_KEY = "svg_preview_timing"
@@ -418,7 +419,6 @@ class OpenBrowserDialog(QDialog):
         self._visible_paths: list[Path] = []
         self._svg_kind_cache: dict[Path, str] = {}
         self._preview_loaded = False
-        self._palette_note: str | None = None
         self._svg_source: QPixmap | None = None
         self._conversion_process: QProcess | None = None
         self._conversion_csv: Path | None = None
@@ -697,6 +697,13 @@ class OpenBrowserDialog(QDialog):
         self.details_label = QLabel(self)
         self.details_label.setWordWrap(True)
         self.details_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.details_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        # Reserve every line up front: files with and without stitch counts would
+        # otherwise change the height of the dialog while browsing. The height is
+        # measured on real text, because Qt rounds line boxes up.
+        self.details_label.setText("\n".join(["\u00a0"] * _DETAILS_LINES))
+        self.details_label.setFixedHeight(self.details_label.sizeHint().height())
+        self.details_label.clear()
         root.addWidget(self.details_label)
 
         button_row = QHBoxLayout()
@@ -1324,7 +1331,6 @@ class OpenBrowserDialog(QDialog):
 
         path = Path(current.data(Qt.ItemDataRole.UserRole))
         kind = self._kind_for_path(path)
-        self._palette_note = None
         self.preview_controls.setVisible(False)
         self.preview_csv_path = None
         self.document_path = None
@@ -1502,7 +1508,8 @@ class OpenBrowserDialog(QDialog):
         note = apply_palette_to_design(self, path, blocks, self.config)
         if note is None:
             return
-        self._palette_note = note
+        self.activity_label.setText(note)
+        self.activity_label.setVisible(True)
         self._thumbnail_icons.pop(path, None)
         self._load_embroidery_preview()
 
@@ -1563,8 +1570,6 @@ class OpenBrowserDialog(QDialog):
                         "Size: {width:.1f} x {height:.1f} mm",
                     ).format(width=width_mm, height=height_mm)
                 )
-        if self._palette_note is not None and path == self.selected_path:
-            lines.append(self._palette_note)
         self.details_label.setText("\n".join(lines))
 
     def _thumbnail_icon(self, path: Path) -> QIcon | None:
