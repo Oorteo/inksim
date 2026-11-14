@@ -162,17 +162,20 @@ def test_all_menu_actions_trigger_cpu(qtbot, monkeypatch, sample_design):
 
 def test_load_palette_action_stores_colors_next_to_the_open_design(qtbot, tmp_path, monkeypatch):
     """File > Load palette keeps the colors a palette-less format would lose."""
+    import pystitch as emb
+
     from inksim.config import Config
     from inksim.formats import read_palette_file, write_palette_file
 
     chart = tmp_path / "chart.edr"
     write_palette_file(chart, ["#112233", "#445566"])
     monkeypatch.setattr(
-        "inksim.gui.palette.QFileDialog.getOpenFileName",
-        lambda *args, **kwargs: (str(chart), "Palette files (*.edr)"),
+        "inksim.gui.palette.choose_palette_file",
+        lambda parent, source: chart,
     )
-    design = tmp_path / "design.pes"
-    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    design = tmp_path / "design.dst"
+    emb.write_dst(emb.read(str(sample)), str(design))
 
     window = MainWindow(window_size=(320, 240))
     qtbot.addWidget(window)
@@ -188,13 +191,43 @@ def test_load_palette_action_stores_colors_next_to_the_open_design(qtbot, tmp_pa
     window.load_palette_for_design()
 
     assert reload_calls == [str(design)]
-
     sidecar = tmp_path / "design.edr"
     assert sidecar.is_file()
     assert [thread.hex_color() for thread in read_palette_file(sidecar)] == [
         "#112233",
         "#445566",
     ]
+    window.close()
+
+
+def test_load_palette_explains_designs_that_already_have_colors(qtbot, tmp_path, monkeypatch):
+    """The action stays out of the way when the file stores its own palette."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.config import Config
+
+    messages: list[str] = []
+    monkeypatch.setattr(
+        "inksim.gui.frame.QMessageBox.information",
+        lambda parent, title, text, *args, **kwargs: messages.append(text),
+    )
+    monkeypatch.setattr(
+        "inksim.gui.palette.choose_palette_file",
+        lambda parent, source: None,
+    )
+    design = tmp_path / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    assert window.open_file(str(design), precompute_density=False)
+
+    window.load_palette_for_design()
+
+    assert messages and "already stores" in messages[0]
+    assert not (tmp_path / "design.edr").exists()
+    assert QMessageBox is not None
     window.close()
 
 

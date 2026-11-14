@@ -161,9 +161,12 @@ such as `.hus` or `.pes` — applied in color-block order. Files without any
 sidecar use a deterministic fallback palette. Jumps, color changes,
 trims, stops, slow, fast, and end markers are interpreted while loading.
 
-`Colors…` in the open dialog and `File > Load palette…` in the main window store
-the colors you pick as `<name>.edr` next to the design, so the choice applies to
-the preview, the thumbnails and the next session. Saving to a format that drops
+`Colors…` in the open dialog and `File > Load palette…` in the main window load
+thread colors from a palette file or another design. They are only offered for
+designs whose format stores no colors of its own (DST, EXP, …); such a design is
+tinted with colors borrowed from `<name>.edr` sitting next to it. The picker
+opens on the file with the closest name, and the choice is written back as
+`<name>.edr`, so the preview, the thumbnails and the next session keep it. Saving to a format that drops
 colors (DST, EXP) asks once whether the palette should be written next to the
 file; the answer is remembered as `save_palette_sidecar` (`ask`, `always` or
 `never`) and can be changed later in `File > Colors on save` or in the

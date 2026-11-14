@@ -308,8 +308,12 @@
         "translation": "Colors…"
     },
     "dialog.open_browser.palette_hint": {
-        "source": "Store the thread colors of a design that keeps none (DST, EXP)\nas <name>.edr next to it.",
-        "translation": "Store the thread colors of a design that keeps none (DST, EXP)\nas <name>.edr next to it."
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "This file already stores its own thread colors."
     },
     "dialog.open_browser.path_placeholder": {
         "source": "Enter or paste a folder path",
@@ -538,6 +542,10 @@
     "dialog.palette.filter.palette": {
         "source": "Palette files",
         "translation": "Palette files"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "This design already stores its own thread colors."
     },
     "dialog.palette.replace": {
         "source": "{name} already stores colors for this design.\nReplace it with {target}?",

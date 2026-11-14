@@ -153,3 +153,23 @@ def test_committed_dst_borrows_colors_from_its_edr():
     pattern = read_embroidery_file(data / "two_tect.dst")
 
     assert [thread.hex_color() for thread in pattern.threadlist] == ["#008745", "#d42727"]
+
+
+def test_palette_candidate_prefers_the_matching_palette(tmp_path):
+    """The file dialog opens on the palette that belongs to the design."""
+    import pystitch as emb
+
+    from inksim.gui.palette import palette_candidate
+
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    design = tmp_path / "border.dst"
+    emb.write_dst(emb.read(str(sample)), str(design))
+    assert palette_candidate(design) is None
+
+    twin = tmp_path / "border.pes"
+    twin.write_bytes(sample.read_bytes())
+    assert palette_candidate(design) == twin
+
+    palette = tmp_path / "border.edr"
+    palette.write_bytes(b"\x00\x00\x00\x00")
+    assert palette_candidate(design) == palette

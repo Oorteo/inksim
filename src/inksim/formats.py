@@ -27,6 +27,9 @@ _SVG_HEX_COLOR = re.compile(r"#[0-9a-fA-F]{6}\Z")
 _COLOR_FORMAT_SUFFIX = "Color Format"
 _SIDECAR_PALETTE_SUFFIXES = ("edr", "col", "inf")
 _SIDECAR_SOURCE_SUFFIXES = ("hus", "pes", "jef", "vp3", "sew", "shv")
+# Attribute set on a pattern whose colors came from a file next to it, so
+# the UI can tell borrowed colors from colors the design stores itself.
+PALETTE_SOURCE_ATTR = "inksim_palette_source"
 
 _COMMAND_NAMES: dict[int, str] = {}
 for _name in dir(emb):
@@ -68,17 +71,25 @@ def apply_sidecar_palette(pattern: Any, source: Path) -> str | None:
     blocks = color_block_count(pattern)
     if blocks <= 0:
         return None
-    for suffix in (*_SIDECAR_PALETTE_SUFFIXES, *_SIDECAR_SOURCE_SUFFIXES):
-        candidate = source.with_suffix(f".{suffix}")
-        if candidate == source or not candidate.is_file():
-            continue
+    for candidate in sidecar_palette_candidates(source):
         palette = _read_threadlist(candidate)
         if not palette:
             continue
         for thread in palette[:blocks]:
             pattern.add_thread(thread)
+        setattr(pattern, PALETTE_SOURCE_ATTR, candidate.name)
         return candidate.name
     return None
+
+
+def sidecar_palette_candidates(source: Path) -> list[Path]:
+    """Return the files next to *source* that could hold its colors, best first."""
+    candidates: list[Path] = []
+    for suffix in (*_SIDECAR_PALETTE_SUFFIXES, *_SIDECAR_SOURCE_SUFFIXES):
+        candidate = source.with_suffix(f".{suffix}")
+        if candidate != source and candidate.is_file():
+            candidates.append(candidate)
+    return candidates
 
 
 def _read_threadlist(path: Path) -> list[Any]:
