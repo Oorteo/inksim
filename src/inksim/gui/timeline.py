@@ -87,7 +87,7 @@ class TimelineWidget(QWidget):
             return
         main_bar, _, _ = self._layout_rects()
         old_span = self._view_end - self._view_start
-        ratio = max(0.0, min(1.0, (mouse_x - main_bar.left()) / main_bar.width()))
+        ratio = max(0.0, min(1.0, (mouse_x - main_bar.left()) / max(1, main_bar.width() - 1)))
         anchor = self._view_start + ratio * old_span
         new_span = max(1, min(total, int(round(old_span / factor))))
         new_start = int(round(anchor - ratio * new_span))
@@ -202,11 +202,18 @@ class TimelineWidget(QWidget):
         if total == 0:
             return
         main_bar, _, _ = self._layout_rects()
-        ratio = max(0.0, min(1.0, (mouse_x - main_bar.left()) / main_bar.width()))
+        ratio = max(0.0, min(1.0, (mouse_x - main_bar.left()) / max(1, main_bar.width() - 1)))
         self.seek_requested.emit(
             int(self._view_start + ratio * (self._view_end - self._view_start))
         )
         self.update()
+
+    def _view_position_x(self, position: int, rect: QRect) -> int:
+        span = self._view_end - self._view_start
+        if span <= 0:
+            return rect.left()
+        ratio = max(0.0, min(1.0, (position - self._view_start) / span))
+        return rect.left() + int(round(ratio * (rect.width() - 1)))
 
     def _overview_viewport(self, overview: QRect, total: int) -> QRect:
         if total == 0:
@@ -316,14 +323,14 @@ class TimelineWidget(QWidget):
         painter.setPen(QPen(QColor(195, 199, 205), 1))
         painter.drawLine(rect.left(), center_y, rect.right(), center_y)
         if count <= rect.width():
-            for local_index, index in enumerate(range(start, end)):
-                x = rect.left() + int((local_index + 0.5) / count * rect.width())
+            for index in range(start, end):
+                x = self._view_position_x(index + 1, rect)
                 color = QColor(*(int(value) for value in stitches[index, 4:7]))
                 pen_width = max(1, min(2, int(round(pixels_per_stitch / 3))))
                 self._draw_waveform_mark(
                     painter,
                     x,
-                    float(lengths_mm[local_index]),
+                    float(lengths_mm[index - start]),
                     color,
                     center_y,
                     half_height,
@@ -331,9 +338,9 @@ class TimelineWidget(QWidget):
                 )
         else:
             bin_count = rect.width()
-            bin_indices = ((np.arange(count, dtype=np.float64) + 0.5) * bin_count / count).astype(
-                np.intp
-            )
+            bin_indices = np.rint(
+                (np.arange(count, dtype=np.float64) + 1) * (bin_count - 1) / count
+            ).astype(np.intp)
             peak_lengths = np.zeros(bin_count, dtype=lengths_mm.dtype)
             np.maximum.at(peak_lengths, bin_indices, lengths_mm)
             local_indices = np.arange(count, dtype=np.intp)
@@ -499,7 +506,7 @@ class TimelineWidget(QWidget):
         )
 
         if self._view_start <= self.viewer.visible_count <= self._view_end:
-            knob_x = main_bar.left() + progress_width
+            knob_x = self._view_position_x(self.viewer.visible_count, main_bar)
             painter.setPen(QPen(QColor(40, 40, 40), 2))
             painter.setBrush(QColor(250, 250, 250))
             painter.drawEllipse(knob_x - 6, main_bar.center().y() - 6, 12, 12)
