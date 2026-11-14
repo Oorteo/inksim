@@ -428,7 +428,7 @@ def test_colors_button_stores_a_palette_next_to_the_design(qtbot, tmp_path, monk
         "#112233",
         "#445566",
     ]
-    assert "chart.edr" in dialog.details_label.text()
+    assert "chart.edr" in dialog.activity_label.text()
     dialog.reject()
 
 
@@ -451,6 +451,39 @@ def test_storing_a_palette_replaces_a_sidecar_of_another_format(qtbot, tmp_path,
     assert target == tmp_path / "design.col"
     assert not (tmp_path / "design.edr").exists()
     assert [thread.hex_color() for thread in read_palette_file(target)] == ["#112233"]
+
+
+def test_info_box_keeps_its_height_between_files(qtbot, tmp_path, monkeypatch):
+    """A shorter info text must not resize the dialog while browsing."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+    (tmp_path / "drawing.svg").write_text(_SVG, encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "design.pes")
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert dialog.details_label.text().count("\n") + 1 == 6
+    design_height = dialog.details_label.height()
+    design_button_top = dialog.open_button.mapTo(dialog, dialog.open_button.rect().topLeft())
+
+    _select_file(dialog, "drawing.svg")
+    qtbot.wait(50)
+
+    assert dialog.details_label.text().count("\n") + 1 == 4
+    assert dialog.details_label.height() == design_height
+    assert (
+        dialog.open_button.mapTo(dialog, dialog.open_button.rect().topLeft()) == design_button_top
+    )
+    dialog.reject()
 
 
 def test_enter_opens_folders_and_arrows_stay_in_the_list(qtbot, tmp_path, monkeypatch):
