@@ -64,6 +64,7 @@ _WINDOWS_CREATE_NO_WINDOW = 0x08000000
 _PROBE_OPTIONS = ("--user-data-directory", "--system-data-directory")
 _VERSION_PROBE_OPTION = "--version"
 _CUSTOM_INTERPRETER = "__custom__"
+_REMOVE_INTERPRETER = "__remove__"
 _XML_ATTRIBUTE_PATTERN = re.compile(
     rb"(?P<space>[ \t\r\n]+)(?P<name>[^ \t\r\n=/>]+)"
     rb"[ \t\r\n]*=[ \t\r\n]*(?P<quote>[\"'])(?P<value>.*?)(?P=quote)",
@@ -1308,6 +1309,13 @@ class InkscapeIntegrationDialog(QDialog):
         for label, path in candidates:
             self.interpreter_combo.addItem(label, path)
         self.interpreter_combo.addItem(
+            _(
+                "integration.inkscape.interpreter_remove",
+                "Remove the interpreter setting",
+            ),
+            _REMOVE_INTERPRETER,
+        )
+        self.interpreter_combo.addItem(
             _("integration.inkscape.interpreter_custom", "Custom path…"), _CUSTOM_INTERPRETER
         )
         self.interpreter_combo.setCurrentIndex(self._interpreter_choice_index(current))
@@ -1320,13 +1328,20 @@ class InkscapeIntegrationDialog(QDialog):
         configured = Path(interpreter).expanduser()
         for index in range(1, self.interpreter_combo.count()):
             data = self.interpreter_combo.itemData(index)
-            if data and data != _CUSTOM_INTERPRETER and Path(data) == configured:
+            if (
+                data
+                and data not in (_CUSTOM_INTERPRETER, _REMOVE_INTERPRETER)
+                and Path(data) == (configured)
+            ):
                 return index
         return 0
 
     def _sync_interpreter_buttons(self, *_args: object) -> None:
         data = self.interpreter_combo.currentData()
-        changed = bool(data) and data != self._interpreter_current
+        if data == _REMOVE_INTERPRETER:
+            changed = self._interpreter_current is not None
+        else:
+            changed = bool(data) and data != self._interpreter_current
         self.apply_interpreter_button.setEnabled(self._preferences_file is not None and changed)
         available = self._preferences_file is not None and self._interpreter_backup is not None
         self.restore_interpreter_button.setVisible(self._interpreter_backup is not None)
@@ -1351,42 +1366,62 @@ class InkscapeIntegrationDialog(QDialog):
         return path or None
 
     def _apply_selected_interpreter(self) -> None:
-        """Write the chosen launcher to Inkscape preferences after an explicit confirmation."""
+        """Write or remove the chosen interpreter after an explicit confirmation."""
         preferences_file = self._preferences_file
         target = self._selected_interpreter_target()
         if preferences_file is None or not target:
             return
-        interpreter = Path(target).expanduser()
+        removing = target == _REMOVE_INTERPRETER
+        expected: str | None = None
+        if removing:
+            if self._interpreter_current is None:
+                return
+            message = _(
+                "integration.inkscape.interpreter_remove_confirm",
+                "Remove the Python interpreter setting from:"
+                "\n\n{path}\n\nInkscape falls back to its default interpreter for"
+                " every extension. Continue?",
+            ).format(path=_sanitize_path_text(str(preferences_file)))
+        else:
+            expected = str(Path(target).expanduser())
+            message = _(
+                "integration.inkscape.interpreter_confirm",
+                "Change the Python interpreter for all Inkscape extensions to:"
+                "\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+            ).format(path=_sanitize_path_text(expected))
         if (
-            QMessageBox.question(
-                self,
-                _("integration.inkscape.title"),
-                _(
-                    "integration.inkscape.interpreter_confirm",
-                    "Change the Python interpreter for all Inkscape extensions to:"
-                    "\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
-                ).format(path=_sanitize_path_text(str(interpreter))),
-            )
+            QMessageBox.question(self, _("integration.inkscape.title"), message)
             != QMessageBox.StandardButton.Yes
         ):
             return
         previous = self._interpreter_current
         try:
-            self._write_python_interpreter(preferences_file, interpreter)
+            if expected is None:
+                self._remove_python_interpreter(preferences_file)
+            else:
+                self._write_python_interpreter(preferences_file, Path(expected))
             current = self._read_python_interpreter(preferences_file)
-            if current != str(interpreter):
+            if current != expected:
                 raise ValueError("Inkscape did not persist the requested Python interpreter.")
         except (OSError, ET.ParseError, expat.ExpatError, ValueError) as ex:
             self._report_interpreter_error(ex)
             return
-        if self._interpreter_backup is None and previous != str(interpreter):
+        if self._interpreter_backup is None and previous != expected:
             self._interpreter_backup = previous or ""
         self._set_interpreter_state(current)
-        self._append_report(
-            _("integration.inkscape.report.interpreter_updated").format(
-                path=_sanitize_path_text(current)
+        if current is None:
+            self._append_report(
+                _(
+                    "integration.inkscape.report.interpreter_removed",
+                    "Removed the Inkscape Python interpreter preference.",
+                )
             )
-        )
+        else:
+            self._append_report(
+                _("integration.inkscape.report.interpreter_updated").format(
+                    path=_sanitize_path_text(current)
+                )
+            )
         self._append_report(_("integration.inkscape.report.restart"))
 
     def _restore_previous_interpreter(self) -> None:
@@ -1612,6 +1647,11 @@ class InkscapeIntegrationDialog(QDialog):
     ) -> None:
         value = interpreter or _("integration.inkscape.python_interpreter_unset")
         label = _("integration.inkscape.python_interpreter").format(path=_sanitize_path_text(value))
+        if self._preferences_file is not None:
+            label += " " + _(
+                "integration.inkscape.python_interpreter_file",
+                "({path})",
+            ).format(path=_sanitize_path_text(str(self._preferences_file)))
         if restart_required:
             label += "\n" + _("integration.inkscape.python_interpreter_restart")
         self.python_interpreter_label.setText(label)
