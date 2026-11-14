@@ -474,6 +474,8 @@ def test_info_box_keeps_its_height_between_files(qtbot, tmp_path, monkeypatch):
     assert dialog.details_label.text().count("\n") + 1 == 6
     design_height = dialog.details_label.height()
     design_button_top = dialog.open_button.mapTo(dialog, dialog.open_button.rect().topLeft())
+    controls_top = dialog.preview_controls.mapTo(dialog, dialog.preview_controls.rect().topLeft())
+    assert dialog.fit_button.isEnabled()
 
     _select_file(dialog, "drawing.svg")
     qtbot.wait(50)
@@ -483,6 +485,18 @@ def test_info_box_keeps_its_height_between_files(qtbot, tmp_path, monkeypatch):
     assert (
         dialog.open_button.mapTo(dialog, dialog.open_button.rect().topLeft()) == design_button_top
     )
+    assert (
+        dialog.preview_controls.mapTo(dialog, dialog.preview_controls.rect().topLeft())
+        == controls_top
+    )
+    assert dialog.preview_controls.isVisible()
+
+    _select_file(dialog, "..")
+    qtbot.wait(50)
+
+    assert not dialog.fit_button.isEnabled()
+    assert dialog.preview_controls.isVisible()
+    assert dialog.details_label.height() == design_height
     dialog.reject()
 
 
@@ -843,7 +857,7 @@ def test_svg_preview_preserves_content_aspect_and_can_be_zoomed(qtbot, tmp_path,
 
     assert dialog._svg_source is not None
     assert dialog._svg_source.width() == dialog._svg_source.height()
-    assert dialog.preview_controls.isVisible()
+    assert dialog.fit_button.isEnabled()
     dialog.zoom_in_button.click()
     assert dialog.svg_preview.zoom > 1.0
     dialog.zoom_out_button.click()
@@ -1297,7 +1311,7 @@ def test_open_embroidery_accepts_selected_file(qtbot, sample_design, monkeypatch
             break
 
     assert dialog._preview_loaded
-    assert dialog.preview_controls.isVisible()
+    assert dialog.fit_button.isEnabled()
     fit_zoom = dialog.preview.zoom
     dialog.zoom_in_button.click()
     assert dialog.preview.zoom > fit_zoom
