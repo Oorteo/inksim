@@ -372,6 +372,27 @@ def test_ctrl_wheel_scales_the_icons(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_each_slider_documents_its_own_wheel_gesture(qtbot, tmp_path, monkeypatch):
+    """The zoom hint belongs to the size slider, the shading hint to the other."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    size_tip = dialog.icon_size_slider.toolTip()
+    background_tip = dialog.background_slider.toolTip()
+    assert "Ctrl+wheel" in size_tip
+    assert "Shift+wheel" not in size_tip
+    assert "Shift+wheel" in background_tip
+    assert "Ctrl+wheel" not in background_tip
+    dialog.reject()
+
+
 def test_background_slider_sits_in_the_view_row(qtbot, tmp_path, monkeypatch):
     """Both sliders belong to the view row; a loose widget would cover the status text."""
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
