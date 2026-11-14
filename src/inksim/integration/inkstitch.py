@@ -6,10 +6,36 @@
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 from typing import Any
 
 from .paths import clean_child_environment
+
+
+def inkstitch_project_python(script_path: Path) -> Path | None:
+    """Return the virtualenv interpreter of the Ink/Stitch checkout holding *script_path*.
+
+    The returned path deliberately keeps the ``.venv`` component: resolving the
+    usual ``bin/python`` symlink would yield the base interpreter from the uv
+    (or system) installation and silently drop the project's site-packages.
+    """
+    directory = "Scripts" if sys.platform == "win32" else "bin"
+    executable = "python.exe" if sys.platform == "win32" else "python"
+    for project in (script_path.parent, script_path.parent.parent):
+        candidate = project / ".venv" / directory / executable
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def _configured_python(status: dict[str, Any]) -> Path | None:
+    """Return the interpreter configured in Inkscape preferences when it exists."""
+    configured = status.get("python-interpretor")
+    if not isinstance(configured, str) or not configured:
+        return None
+    path = Path(configured).expanduser()
+    return path if path.is_file() else None
 
 
 def active_inkstitch_installation(status: dict[str, Any]) -> dict[str, Any] | None:
@@ -57,11 +83,8 @@ def resolve_inkstitch_preview(
         isinstance(installation.get("interpreter"), str)
         and installation["interpreter"].lower() == "python"
     ):
-        configured_python = status.get("python-interpretor")
-        if not isinstance(configured_python, str) or not configured_python:
-            return None
-        python_path = Path(configured_python).expanduser()
-        if not python_path.is_file():
+        python_path = inkstitch_project_python(script_path) or _configured_python(status)
+        if python_path is None:
             return None
         return script_path, python_path, extension_dir
     return script_path, None, extension_dir

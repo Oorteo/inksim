@@ -531,17 +531,9 @@
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitchi paigaldust ei leitud."
     },
-    "integration.inkscape.report.interpreter_unchanged": {
-        "source": "Python interpreter is already configured: {path}",
-        "translation": "Pythoni interpretaator on juba seadistatud: {path}"
-    },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
         "translation": "Pythoni interpretaator uuendati: {path}"
-    },
-    "integration.inkscape.report.launcher_missing": {
-        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
-        "translation": "Vajalikku käivitajat '{command}' ei leitud; eelistust ei muudetud."
     },
     "integration.inkscape.report.not_found": {
         "source": "Inkscape was not found. Choose its executable to inspect the setup.",
@@ -622,10 +614,6 @@
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Kasutaja laiendused: {path}"
-    },
-    "integration.inkscape.uvr_missing": {
-        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
-        "translation": "Vajalikku käivitajat '{command}' ei leitud. Paigalda uvr ise käsuga `uv tool install uvr` ja käivita seejärel seadistus uuesti. InkSim seda ei paigalda."
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",

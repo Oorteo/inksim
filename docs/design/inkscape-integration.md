@@ -69,7 +69,7 @@ sections of this document.
    this in the preview action.
 
 5. **InkSim owns its Inkscape extension.**
-   A small `org.inksim.*` extension is bundled with InkSim and installed into
+   A small `oorteo.inksim.*` extension is bundled with InkSim and installed into
    Inkscape's user extensions directory on demand. It is a thin orchestrator,
    not a fork of Ink/Stitch. It must not import Ink/Stitch internals, so no
    Ink/Stitch release is required for it to work.
@@ -89,6 +89,19 @@ sections of this document.
    The new file browser with previews is developed in parallel with the
    existing `EmbroideryOpenDialog` and selected by a setting until it is
    ready. The old dialog remains the fallback.
+
+9. **Inkscape's extension interpreter is user-owned state.**
+   `extensions/python-interpreter` in `preferences.xml` is a global Inkscape
+   preference that every `.inx` declaring `interpreter="python"` uses (for
+   example Ink/Stitch). InkSim's own `preview.inx` uses
+   `<command location="absolute">` with the InkSim launcher, so it does not
+   depend on that preference at all. InkSim therefore never rewrites it
+   automatically: the Inkscape dialog only reports the current value and
+   offers optional launchers (`uvr`, the Ink/Stitch virtualenv interpreter, a
+   custom path) behind an explicit **Apply** with stored backup and
+   **Restore previous**. `uvr` is genuinely useful only when several
+   extensions each need their own Python environment; for a single Ink/Stitch
+   installation a plain interpreter path is enough.
 
 ## Verified facts (2026-10-27)
 
@@ -197,7 +210,7 @@ Inkscape --app-id-tag=inksim-<random> file.svg
   |
   | user edits, selects objects
   v
-org.inksim.bridge extension (inside Inkscape, same environment)
+oorteo.inksim.bridge extension (inside Inkscape, same environment)
   |
   | writes snapshot.svg / selection.svg if needed
   | calls Ink/Stitch or Inkscape --export-type=csv
@@ -331,7 +344,7 @@ inksim-extension/
     VERSION
 ```
 
-Extension ID namespace: `org.inksim.bridge` (and future `org.inksim.*` IDs).
+Extension ID namespace: `oorteo.inksim.bridge` (and future `oorteo.inksim.*` IDs).
 Do not reuse `org.inkstitch.*` IDs; that namespace belongs to Ink/Stitch.
 
 The extension is an `effect` extension because effects appear in the Inkscape
@@ -398,7 +411,7 @@ Request/response protocol:
 Transport is deliberately only the file protocol:
 
 1. InkSim writes `request-<id>.json` into the session directory.
-2. InkSim invokes `org.inksim.bridge` with the request ID as the action
+2. InkSim invokes `oorteo.inksim.bridge` with the request ID as the action
    argument, or the extension finds the newest pending request in
    `INKSIM_SESSION_DIR`.
 3. The extension writes `response-<id>.json` and `done-<id>` atomically.
@@ -744,7 +757,7 @@ work.
 
 ### M6 - InkSim Inkscape extension and file protocol
 
-- [ ] Implement `org.inksim.bridge` with `ping`, `info`, `snapshot`, `export`,
+- [ ] Implement `oorteo.inksim.bridge` with `ping`, `info`, `snapshot`, `export`,
       and `run_action`.
 - [ ] Implement request/response files with atomic writes and timeouts.
 - [ ] Implement install/update/version detection and conflict handling.

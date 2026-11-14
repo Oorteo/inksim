@@ -531,17 +531,9 @@
         "source": "No Ink/Stitch installation was found.",
         "translation": "Walang nakitang instalasyon ng Ink/Stitch."
     },
-    "integration.inkscape.report.interpreter_unchanged": {
-        "source": "Python interpreter is already configured: {path}",
-        "translation": "Naka-configure na ang Python interpreter: {path}"
-    },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
         "translation": "Na-update ang Python interpreter: {path}"
-    },
-    "integration.inkscape.report.launcher_missing": {
-        "source": "Required launcher '{command}' was not found; the preference was left unchanged.",
-        "translation": "Hindi makita ang kinakailangang launcher na '{command}'; hindi binago ang preference."
     },
     "integration.inkscape.report.not_found": {
         "source": "Inkscape was not found. Choose its executable to inspect the setup.",
@@ -622,10 +614,6 @@
     "integration.inkscape.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Mga user extension: {path}"
-    },
-    "integration.inkscape.uvr_missing": {
-        "source": "Required launcher '{command}' was not found. Install the uvr tool yourself with `uv tool install uvr`, then run this configuration again. InkSim will not install it.",
-        "translation": "Hindi makita ang kinakailangang launcher na '{command}'. Ikaw mismo ang mag-install ng uvr gamit ang `uv tool install uvr`, pagkatapos ay patakbuhin ulit ang configuration na ito. Hindi ito i-i-install ng InkSim."
     },
     "integration.inkscape.version": {
         "source": "Inkscape version: {version}",
