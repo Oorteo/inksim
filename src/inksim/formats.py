@@ -83,7 +83,7 @@ def apply_sidecar_palette(pattern: Any, source: Path) -> str | None:
 
 def _read_threadlist(path: Path) -> list[Any]:
     try:
-        pattern = emb.read(str(path))
+        pattern = _read_pystitch_svg(path) if path.suffix.lower() == ".svg" else emb.read(str(path))
     except Exception:  # noqa: BLE001 - a broken palette must not break the design
         return []
     return list(getattr(pattern, "threadlist", None) or ())
