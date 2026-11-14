@@ -17,10 +17,12 @@ from typing import Any
 
 import numpy as np
 import pystitch as emb
-from PySide6.QtGui import QImage
+from PySide6.QtCore import QRectF, Qt
+from PySide6.QtGui import QImage, QPainter
+from PySide6.QtSvg import QSvgRenderer
 
 from ..constants import AUTO_THREAD_COLORS, DEFAULT_LINE_WIDTH_MM
-from ..formats import command_name, read_embroidery_file
+from ..formats import command_name, is_stitchblock_svg, read_embroidery_file
 from .export import render_export_image
 
 THUMBNAIL_SIZE = 256
@@ -149,6 +151,41 @@ def render_thumbnail(source: Path, size: int = THUMBNAIL_SIZE) -> QImage | None:
     )
 
 
+def render_svg_thumbnail(source: Path, size: int = THUMBNAIL_SIZE) -> QImage | None:
+    """Rasterise a plain SVG with Qt, for documents that are not stitch files."""
+    renderer = QSvgRenderer(str(source))
+    if not renderer.isValid():
+        return None
+    image = QImage(size, size, QImage.Format_RGBA8888)
+    image.fill(Qt.GlobalColor.transparent)
+    box = renderer.viewBoxF()
+    if box.width() <= 0 or box.height() <= 0:
+        fallback = renderer.defaultSize()
+        box = QRectF(0, 0, fallback.width(), fallback.height())
+    if box.width() <= 0 or box.height() <= 0:
+        return None
+    margin = max(12.0, size * 0.06)
+    available = size - 2 * margin
+    scale = min(available / box.width(), available / box.height())
+    width = box.width() * scale
+    height = box.height() * scale
+    painter = QPainter(image)
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+    renderer.render(
+        painter,
+        QRectF((size - width) / 2, (size - height) / 2, width, height),
+    )
+    painter.end()
+    return image
+
+
+def render_source_thumbnail(source: Path, size: int = THUMBNAIL_SIZE) -> QImage | None:
+    """Render *source* as a thumbnail, using stitches only for real stitch files."""
+    if source.suffix.lower() == ".svg" and not is_stitchblock_svg(source):
+        return render_svg_thumbnail(source, size)
+    return render_thumbnail(source, size)
+
+
 def write_thumbnail(
     source: Path,
     *,
@@ -159,7 +196,7 @@ def write_thumbnail(
     thumbnail = thumbnail_path(source)
     if thumbnail_is_current(source) and not overwrite:
         return thumbnail
-    image = render_thumbnail(source, size)
+    image = render_source_thumbnail(source, size)
     if image is None:
         return None
     # PySide6 accepts the format name; its stubs only describe the bytes overload.

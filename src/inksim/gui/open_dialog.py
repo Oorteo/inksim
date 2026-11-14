@@ -1335,7 +1335,7 @@ class OpenBrowserDialog(QDialog):
             if not value:
                 continue
             path = Path(value)
-            if self._kind_for_path(path) in (KIND_EMBROIDERY, KIND_CSV):
+            if self._kind_for_path(path) in (KIND_EMBROIDERY, KIND_CSV, KIND_SVG):
                 paths.append(path)
         return sorted(paths)
 
