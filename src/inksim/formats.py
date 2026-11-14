@@ -13,10 +13,19 @@ from typing import Any
 
 import pystitch as emb
 
+from .debug import logger
+
 _SVG_NAMESPACE = "http://www.w3.org/2000/svg"
 _SVG_ROOT_TAG = f"{{{_SVG_NAMESPACE}}}svg"
 _SVG_PATH_TAG = f"{{{_SVG_NAMESPACE}}}path"
 _SVG_HEX_COLOR = re.compile(r"#[0-9a-fA-F]{6}\Z")
+
+# PyStitch registers its palette files (.edr, .col, .inf) as readable formats,
+# but they hold no stitches. They describe colours for designs such as DST that
+# carry no palette of their own.
+_COLOR_FORMAT_SUFFIX = "Color Format"
+_SIDECAR_PALETTE_SUFFIXES = ("edr", "col", "inf")
+_SIDECAR_SOURCE_SUFFIXES = ("hus", "pes", "jef", "vp3", "sew", "shv")
 
 _COMMAND_NAMES: dict[int, str] = {}
 for _name in dir(emb):
@@ -33,12 +42,61 @@ def command_name(command: int) -> str | None:
 
 
 def read_embroidery_file(path: str | Path) -> Any | None:
-    """Read embroidery, including stitch-block SVGs written by PyStitch."""
-    if Path(path).suffix.lower() == ".svg":
-        pattern = _read_pystitch_svg(path)
+    """Read embroidery, including stitch-block SVGs written by PyStitch.
+
+    Designs stored without a palette (DST and friends) borrow the colours of a
+    palette file or a coloured design sitting next to them.
+    """
+    source = Path(path)
+    if source.suffix.lower() == ".svg":
+        pattern = _read_pystitch_svg(source)
         if pattern is not None:
             return pattern
-    return emb.read(path)
+    pattern = emb.read(path)
+    if pattern is not None:
+        palette_source = apply_sidecar_palette(pattern, source)
+        if palette_source:
+            logger.debug("Took the colours of %s from %s", source.name, palette_source)
+    return pattern
+
+
+def apply_sidecar_palette(pattern: Any, source: Path) -> str | None:
+    """Colour a palette-less design from a sibling file, returning its name."""
+    if getattr(pattern, "threadlist", None):
+        return None
+    blocks = color_block_count(pattern)
+    if blocks <= 0:
+        return None
+    for suffix in (*_SIDECAR_PALETTE_SUFFIXES, *_SIDECAR_SOURCE_SUFFIXES):
+        candidate = source.with_suffix(f".{suffix}")
+        if candidate == source or not candidate.is_file():
+            continue
+        palette = _read_threadlist(candidate)
+        if not palette:
+            continue
+        for thread in palette[:blocks]:
+            pattern.add_thread(thread)
+        return candidate.name
+    return None
+
+
+def _read_threadlist(path: Path) -> list[Any]:
+    try:
+        pattern = emb.read(str(path))
+    except Exception:  # noqa: BLE001 - a broken palette must not break the design
+        return []
+    return list(getattr(pattern, "threadlist", None) or ())
+
+
+def color_block_count(pattern: Any) -> int:
+    """Return how many colour blocks the stitch data is divided into."""
+    count = 1
+    for stitch in getattr(pattern, "stitches", ()):
+        command = stitch[2] if len(stitch) > 2 else emb.STITCH
+        decoded = emb.decode_embroidery_command(command)[0]
+        if decoded in (emb.COLOR_CHANGE, emb.COLOR_BREAK):
+            count += 1
+    return count
 
 
 def is_stitchblock_svg(path: str | Path) -> bool:
@@ -150,13 +208,18 @@ def get_supported_input_extensions() -> set[str]:
     except Exception:
         return extensions
     for file_type in supported_formats:
-        if file_type.get("reader") is None:
+        if file_type.get("reader") is None or _is_color_format(file_type):
             continue
         file_extensions = file_type.get("extensions", ())
         if isinstance(file_extensions, str):
             file_extensions = (file_extensions,)
         extensions.update(ext.lstrip(".").lower() for ext in file_extensions)
     return extensions
+
+
+def _is_color_format(file_type: dict[str, Any]) -> bool:
+    """Return whether a PyStitch format only stores thread colours."""
+    return str(file_type.get("description", "")).endswith(_COLOR_FORMAT_SUFFIX)
 
 
 def get_supported_output_formats() -> list[dict[str, Any]]:

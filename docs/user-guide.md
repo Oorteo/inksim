@@ -152,8 +152,13 @@ InkSim supports all embroidery file formats with a reader reported by
 `pystitch.EmbPattern.supported_formats()`. The open dialog builds its file
 filter from those formats, so the supported extensions follow the installed
 version of the pystitch library rather than a separate hard-coded list.
-Thread colors are read from the pattern thread list when available; files
-without colors use a deterministic fallback palette. Jumps, color changes,
+Palette-only formats such as `.edr`, `.col` and `.inf` are excluded: pystitch
+registers them as readable, but they carry thread colors instead of stitches.
+Thread colors are read from the pattern thread list when available. A design
+stored without a palette (DST, for example) borrows the colors of a file with
+the same name next to it — `.edr`, `.col`, `.inf` first, then a colored design
+such as `.hus` or `.pes` — applied in color-block order. Files without any
+sidecar use a deterministic fallback palette. Jumps, color changes,
 trims, stops, slow, fast, and end markers are interpreted while loading.
 
 ## Rendering Notes
