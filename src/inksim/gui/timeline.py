@@ -20,27 +20,41 @@ class TimelineWidget(QWidget):
     """Interactive stitch timeline shown below the embroidery viewer."""
 
     seek_requested = Signal(int)
+    MIN_WAVEFORM_SCALE_MM = 0.25
+    MAX_WAVEFORM_SCALE_MM = 1000.0
+    WAVEFORM_SCALE_STEP = 1.25
 
     def __init__(self, parent: QWidget, viewer_panel: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer_panel
-        self.setMinimumHeight(64)
+        self.setMinimumHeight(84)
         self.setStyleSheet("background: rgb(250, 250, 250)")
         self.setToolTip(
-            "Ctrl+wheel: zoom; Shift+wheel: pan; drag the overview to move the visible range."
+            "Wheel: waveform scale; Ctrl+wheel: zoom; Shift+wheel: pan; "
+            "drag the overview to move the visible range."
         )
         self.dragging: str | None = None
         self.drag_moved = False
         self._overview_drag_offset = 0.0
         self._source_stitches = viewer_panel.stitches_np
+        self._stitch_lengths_mm = self._calculate_stitch_lengths(viewer_panel.stitches_np)
+        self.waveform_scale_mm = 5.0
         self._view_start = 0
         self._view_end = int(viewer_panel.stitches_np.shape[0])
+
+    @staticmethod
+    def _calculate_stitch_lengths(stitches: np.ndarray) -> np.ndarray:
+        return np.hypot(
+            stitches[:, 2] - stitches[:, 0],
+            stitches[:, 3] - stitches[:, 1],
+        )
 
     def _sync_view(self) -> int:
         stitches = self.viewer.stitches_np
         total = int(stitches.shape[0])
         if stitches is not self._source_stitches:
             self._source_stitches = stitches
+            self._stitch_lengths_mm = self._calculate_stitch_lengths(stitches)
             self._view_start = 0
             self._view_end = total
         else:
@@ -51,8 +65,8 @@ class TimelineWidget(QWidget):
         return total
 
     def _layout_rects(self) -> tuple[QRect, QRect, tuple[QRect, QRect, QRect]]:
-        main_bar = QRect(80, 7, max(1, self.width() - 88), 14)
-        overview = QRect(80, 29, max(1, self.width() - 88), 8)
+        main_bar = QRect(80, 7, max(1, self.width() - 88), 34)
+        overview = QRect(80, 50, max(1, self.width() - 88), 8)
         buttons = (
             QRect(5, 6, 20, 17),
             QRect(28, 6, 20, 17),
@@ -167,6 +181,18 @@ class TimelineWidget(QWidget):
             span = self._view_end - self._view_start
             self._set_view_start(self._view_start - int(round(span * delta / 120 * 0.1)))
             event.accept()
+        elif (
+            modifiers == Qt.NoModifier
+            and delta
+            and self._layout_rects()[0].contains(event.position().toPoint())
+        ):
+            scale_factor = self.WAVEFORM_SCALE_STEP ** (delta / 120)
+            self.waveform_scale_mm = max(
+                self.MIN_WAVEFORM_SCALE_MM,
+                min(self.MAX_WAVEFORM_SCALE_MM, self.waveform_scale_mm / scale_factor),
+            )
+            self.update()
+            event.accept()
         else:
             super().wheelEvent(event)
 
@@ -231,6 +257,98 @@ class TimelineWidget(QWidget):
                 painter.setBrush(color)
                 painter.setPen(QPen(color))
                 painter.drawRect(x0, rect.top(), max(1, rect.right() - x0 + 1), rect.height())
+        painter.restore()
+
+    @staticmethod
+    def _stitch_waveform_amplitude(length_mm: float, half_height: float, scale_mm: float) -> float:
+        """Map stitch length linearly to a clipped waveform amplitude."""
+        length_mm = max(0.0, length_mm)
+        fraction = min(1.0, length_mm / scale_mm)
+        return max(1.0, half_height * fraction)
+
+    def _draw_waveform_mark(
+        self,
+        painter: QPainter,
+        x: int,
+        length_mm: float,
+        color: QColor,
+        center_y: int,
+        half_height: float,
+        pen_width: int,
+    ) -> None:
+        amplitude = self._stitch_waveform_amplitude(length_mm, half_height, self.waveform_scale_mm)
+        y_top = int(round(center_y - amplitude))
+        y_bottom = int(round(center_y + amplitude))
+        painter.setPen(QPen(color, pen_width))
+        painter.drawLine(x, y_top, x, y_bottom)
+        if length_mm > self.waveform_scale_mm:
+            painter.setPen(QPen(color.darker(130), pen_width))
+            painter.drawLine(x - 2, y_top, x + 2, y_top)
+            painter.drawLine(x - 2, y_bottom, x + 2, y_bottom)
+
+    def _draw_stitch_waveform(
+        self,
+        painter: QPainter,
+        start: int,
+        end: int,
+        rect: QRect,
+        stitches: np.ndarray,
+    ) -> None:
+        count = end - start
+        if count <= 0:
+            return
+        pixels_per_stitch = rect.width() / count
+        center_y = rect.center().y()
+        half_height = max(1.0, (rect.height() - 4) / 2)
+        lengths_mm = self._stitch_lengths_mm[start:end]
+
+        painter.save()
+        painter.setClipRect(rect)
+        painter.setPen(QPen(QColor(195, 199, 205), 1))
+        painter.drawLine(rect.left(), center_y, rect.right(), center_y)
+        if count <= rect.width():
+            for local_index, index in enumerate(range(start, end)):
+                x = rect.left() + int((local_index + 0.5) / count * rect.width())
+                color = QColor(*(int(value) for value in stitches[index, 4:7]))
+                pen_width = max(1, min(2, int(round(pixels_per_stitch / 3))))
+                self._draw_waveform_mark(
+                    painter,
+                    x,
+                    float(lengths_mm[local_index]),
+                    color,
+                    center_y,
+                    half_height,
+                    pen_width,
+                )
+        else:
+            bin_count = rect.width()
+            bin_indices = ((np.arange(count, dtype=np.float64) + 0.5) * bin_count / count).astype(
+                np.intp
+            )
+            peak_lengths = np.zeros(bin_count, dtype=lengths_mm.dtype)
+            np.maximum.at(peak_lengths, bin_indices, lengths_mm)
+            local_indices = np.arange(count, dtype=np.intp)
+            peak_matches = lengths_mm == peak_lengths[bin_indices]
+            peak_indices = np.full(bin_count, count, dtype=np.intp)
+            np.minimum.at(
+                peak_indices,
+                bin_indices,
+                np.where(peak_matches, local_indices, count),
+            )
+            for bin_index, peak_local_index in enumerate(peak_indices):
+                if peak_local_index == count:
+                    continue
+                index = start + int(peak_local_index)
+                color = QColor(*(int(value) for value in stitches[index, 4:7]))
+                self._draw_waveform_mark(
+                    painter,
+                    rect.left() + bin_index,
+                    float(peak_lengths[bin_index]),
+                    color,
+                    center_y,
+                    half_height,
+                    1,
+                )
         painter.restore()
 
     def _draw_commands(
@@ -303,7 +421,7 @@ class TimelineWidget(QWidget):
             return
 
         stitches = self.viewer.stitches_np
-        self._draw_stitch_colors(painter, self._view_start, self._view_end, main_bar, stitches)
+        self._draw_stitch_waveform(painter, self._view_start, self._view_end, main_bar, stitches)
         progress_ratio = max(
             0.0,
             min(
@@ -384,12 +502,13 @@ class TimelineWidget(QWidget):
             bounds = self.viewer.bounds
             txt_right = (
                 f"{bounds[2] - bounds[0]:.1f} x {bounds[3] - bounds[1]:.1f} mm | "
-                f"{self.viewer.color_count} color sections"
+                f"{self.viewer.color_count} color sections | "
+                f"waveform ≤ {self.waveform_scale_mm:g} mm"
             )
         else:
-            txt_right = ""
+            txt_right = f"waveform ≤ {self.waveform_scale_mm:g} mm"
         font_metrics = painter.fontMetrics()
-        text_top = 43
+        text_top = 64
         text_height = font_metrics.height()
         bar_width = main_bar.width()
         left_width = int(bar_width * 0.45)
