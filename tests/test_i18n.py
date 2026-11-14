@@ -43,6 +43,15 @@ def test_english_catalog_contains_all_extracted_strings() -> None:
         assert catalog_entry["translation"] == extracted_entry["translation"]
 
 
+def test_every_message_id_has_a_readable_english_source() -> None:
+    """A missing fallback argument leaves the raw key in the user interface."""
+    catalog = load_catalog(EN_CATALOG)
+
+    bare = sorted(key for key in _message_ids(catalog) if catalog[key]["source"] == key)
+
+    assert bare == []
+
+
 def test_inkscape_section_titles_are_extracted_to_english_catalog() -> None:
     expected = {
         "integration.inkscape.section.application": "Inkscape application",

@@ -229,16 +229,81 @@ def test_switching_from_gpu_hides_widget_without_destroying_gl_resources():
 
 
 def test_save_as_embroidery_writes_pystitch_format(sample_design, qtbot, tmp_path):
+    from inksim.config import Config
     from inksim.gui.frame import MainWindow
 
     window = MainWindow(window_size=(320, 240))
     qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    window.config.set("save_palette_sidecar", "never")
     assert window.open_file(str(sample_design), precompute_density=False)
 
     output_path = tmp_path / "saved.dst"
     assert window.save_embroidery_to_path(output_path)
     assert output_path.is_file()
     assert output_path.stat().st_size > 0
+    assert not (tmp_path / "saved.edr").exists()
+    window.close()
+
+
+def test_save_as_writes_the_palette_for_formats_without_colors(sample_design, qtbot, tmp_path):
+    from inksim.config import Config
+    from inksim.formats import read_palette_file
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    window.config.set("save_palette_sidecar", "always")
+    assert window.open_file(str(sample_design), precompute_density=False)
+    colors = [thread.hex_color() for thread in window.viewer.pattern.threadlist]
+
+    output_path = tmp_path / "saved.dst"
+    assert window.save_embroidery_to_path(output_path)
+
+    sidecar = tmp_path / "saved.edr"
+    assert sidecar.is_file()
+    assert [thread.hex_color() for thread in read_palette_file(sidecar)] == colors
+    window.close()
+
+
+def test_save_as_writes_the_palette_in_the_chosen_format(sample_design, qtbot, tmp_path):
+    from inksim.config import Config
+    from inksim.formats import read_palette_file
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    window.config.set("save_palette_sidecar", "always")
+    window.config.set("save_palette_format", "col")
+    assert window.open_file(str(sample_design), precompute_density=False)
+    colors = [thread.hex_color() for thread in window.viewer.pattern.threadlist]
+
+    output_path = tmp_path / "saved.dst"
+    assert window.save_embroidery_to_path(output_path)
+
+    sidecar = tmp_path / "saved.col"
+    assert sidecar.is_file()
+    assert not (tmp_path / "saved.edr").exists()
+    assert [thread.hex_color() for thread in read_palette_file(sidecar)] == colors
+    window.close()
+
+
+def test_save_as_keeps_colors_in_a_format_that_stores_them(sample_design, qtbot, tmp_path):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    window.config.set("save_palette_sidecar", "always")
+    assert window.open_file(str(sample_design), precompute_density=False)
+
+    output_path = tmp_path / "saved.pes"
+    assert window.save_embroidery_to_path(output_path)
+
+    assert not (tmp_path / "saved.edr").exists()
     window.close()
 
 
