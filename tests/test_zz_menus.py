@@ -714,8 +714,9 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert status["preferences_file"] == str(preferences_file.resolve())
     assert status["python-interpretor"] == "python3"
     assert status["active_inkstitch"] == str(inx_path.parent.resolve())
-    assert "python3" in dialog.python_interpreter_label.text()
-    assert "preferences.xml" in dialog.python_interpreter_label.text()
+    label = dialog.python_interpreter_label.text()
+    assert label.startswith("Python interpreter (")
+    assert "preferences.xml): python3" in label
     assert "python3 (left unchanged)" in dialog.info_panel.toPlainText()
     assert "<!--preserve comment-->" in preferences_file.read_text(encoding="utf-8")
     assert preferences_file.read_bytes() == original_preferences
