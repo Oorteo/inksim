@@ -269,10 +269,8 @@ class InkscapeIntegrationDialog(QDialog):
         self.interpreter_hint_label.setEnabled(False)
         hint_tooltip = _(
             "integration.inkscape.interpreter_hint_tooltip",
-            "Only extensions that ask Inkscape for its Python interpreter need this,"
-            " for example Ink/Stitch. InkSim's own extensions start the InkSim executable"
-            " directly. The uvr launcher resolves the environment of each extension"
-            " project, which helps when several extensions need their own environment.",
+            "Only extensions that ask Inkscape for its Python interpreter need this"
+            " (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
         )
         self.interpreter_hint_label.setToolTip(hint_tooltip)
         self.interpreter_combo.setToolTip(hint_tooltip)
@@ -1646,12 +1644,18 @@ class InkscapeIntegrationDialog(QDialog):
         self, interpreter: str | None, restart_required: bool = False
     ) -> None:
         value = interpreter or _("integration.inkscape.python_interpreter_unset")
-        label = _("integration.inkscape.python_interpreter").format(path=_sanitize_path_text(value))
         if self._preferences_file is not None:
-            label += " " + _(
-                "integration.inkscape.python_interpreter_file",
-                "({path})",
-            ).format(path=_sanitize_path_text(str(self._preferences_file)))
+            label = _(
+                "integration.inkscape.python_interpreter_source",
+                "Python interpreter ({file}): {path}",
+            ).format(
+                file=_sanitize_path_text(str(self._preferences_file)),
+                path=_sanitize_path_text(value),
+            )
+        else:
+            label = _(
+                "integration.inkscape.python_interpreter", "Python interpreter: {path}"
+            ).format(path=_sanitize_path_text(value))
         if restart_required:
             label += "\n" + _("integration.inkscape.python_interpreter_restart")
         self.python_interpreter_label.setText(label)
