@@ -38,6 +38,9 @@ class FakeWindow(QObject):
     def check_inkscape_extension(self, launcher_path):
         self.inksim_launcher = launcher_path
 
+    def check_inkstitch_link(self):
+        self.inkstitch_check_count = getattr(self, "inkstitch_check_count", 0) + 1
+
     def set_command_line_args(self, arguments):
         self.command_line_args = arguments.copy()
 
@@ -227,6 +230,18 @@ def test_open_schedules_inkscape_extension_check(qapp):
 
     assert response["ok"] is True
     assert created[0].inksim_launcher == "/opt/inksim/bin/inksim"
+    assert created[0].inkstitch_check_count == 1
+
+
+def test_open_checks_the_inkstitch_link_without_a_launcher(qapp):
+    """The Ink/Stitch check does not depend on the InkSim launcher path."""
+    server, created = _server(qapp)
+    server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "new_window": True}
+    )
+    qapp.processEvents()
+
+    assert created[0].inkstitch_check_count == 1
 
 
 def test_hiding_last_window_keeps_it_and_starts_idle_timer(qapp):

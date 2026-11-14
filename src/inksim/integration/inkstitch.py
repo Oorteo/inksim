@@ -77,6 +77,22 @@ def changed_inkstitch_targets(status: dict[str, Any]) -> list[Path]:
     return changed
 
 
+def missing_inkstitch_links(status: dict[str, Any]) -> list[str]:
+    """Return configured extension folders that are no longer there.
+
+    Covers both a removed checkout and a renamed folder in Inkscape's
+    extensions directory, because the folder name is part of the link path.
+    """
+    missing: list[str] = []
+    for installation in status.get("inkstitch") or []:
+        if not isinstance(installation, dict):
+            continue
+        link = installation.get("extension_dir")
+        if isinstance(link, str) and link and not Path(link).expanduser().is_dir():
+            missing.append(link)
+    return missing
+
+
 def active_inkstitch_installation(status: dict[str, Any]) -> dict[str, Any] | None:
     """Return the selected Ink/Stitch installation from cached status.
 

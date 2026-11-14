@@ -612,6 +612,144 @@ def test_startup_warns_and_opens_inkscape_setup_for_stale_extension(tmp_path, qt
     window.close()
 
 
+class _NoopIntegrationDialog:
+    def exec(self) -> int:
+        return 0
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="symlinked extension folders are POSIX-only")
+def test_startup_warns_when_the_inkstitch_link_changed(tmp_path, qtbot, monkeypatch):
+    """A repointed Ink/Stitch link must not slip through a silent startup."""
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    old_checkout = tmp_path / "old-checkout"
+    new_checkout = tmp_path / "new-checkout"
+    for checkout in (old_checkout, new_checkout):
+        (checkout / "inx").mkdir(parents=True)
+    link = tmp_path / "extensions" / "inkstitch-dev"
+    link.parent.mkdir()
+    link.symlink_to(new_checkout, target_is_directory=True)
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/inkscape/bin/inkscape",
+            "inkstitch": [
+                {
+                    "extension_dir": str(link / "inx"),
+                    "resolved_extension_dir": str((old_checkout / "inx").resolve()),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                }
+            ],
+            "active_inkstitch": str(link / "inx"),
+        },
+    )
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    warnings: list[tuple[object, ...]] = []
+    monkeypatch.setattr("inksim.gui.frame.QMessageBox.warning", lambda *args: warnings.append(args))
+    opened: list[object] = []
+    monkeypatch.setattr(
+        "inksim.gui.frame.InkscapeIntegrationDialog",
+        lambda parent, executable: opened.append(executable) or _NoopIntegrationDialog(),
+    )
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    window.check_inkstitch_link()
+
+    assert len(warnings) == 1
+    assert "Ink/Stitch in the Inkscape extensions folder changed" in warnings[0][2]
+    assert str((new_checkout / "inx").resolve()) in warnings[0][2]
+    assert opened == ["/opt/inkscape/bin/inkscape"]
+
+    window.check_inkstitch_link()
+    assert len(warnings) == 1
+    window.close()
+
+
+def test_startup_warns_when_the_inkstitch_folder_disappeared(tmp_path, qtbot, monkeypatch):
+    """A renamed extension folder changes the link path, so startup reports it too."""
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    gone = tmp_path / "extensions" / "inkstitch-gone" / "inx"
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "inkstitch": [
+                {
+                    "extension_dir": str(gone),
+                    "resolved_extension_dir": str(gone),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                }
+            ]
+        },
+    )
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.frame.shutil.which", lambda _: None)
+    warnings: list[tuple[object, ...]] = []
+    monkeypatch.setattr("inksim.gui.frame.QMessageBox.warning", lambda *args: warnings.append(args))
+    opened: list[object] = []
+    monkeypatch.setattr(
+        "inksim.gui.frame.InkscapeIntegrationDialog",
+        lambda parent, executable: opened.append(executable) or _NoopIntegrationDialog(),
+    )
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    window.check_inkstitch_link()
+
+    assert len(warnings) == 1
+    assert str(gone) in warnings[0][2]
+    assert opened == [None]
+    window.close()
+
+
+def test_startup_is_quiet_when_the_inkstitch_link_is_unchanged(tmp_path, qtbot, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    checkout = tmp_path / "checkout"
+    (checkout / "inx").mkdir(parents=True)
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "inkstitch": [
+                {
+                    "extension_dir": str(checkout / "inx"),
+                    "resolved_extension_dir": str((checkout / "inx").resolve()),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                }
+            ]
+        },
+    )
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    warnings: list[tuple[object, ...]] = []
+    monkeypatch.setattr("inksim.gui.frame.QMessageBox.warning", lambda *args: warnings.append(args))
+    opened: list[object] = []
+    monkeypatch.setattr(
+        "inksim.gui.frame.InkscapeIntegrationDialog",
+        lambda parent, executable: opened.append(executable) or _NoopIntegrationDialog(),
+    )
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    window.check_inkstitch_link()
+
+    assert warnings == []
+    assert opened == []
+    window.close()
+
+
 def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     """Selecting another executable refreshes its extension directories."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog

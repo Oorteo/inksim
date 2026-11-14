@@ -259,6 +259,7 @@ class InkSimServer(QObject):
                     0,
                     lambda: window.check_inkscape_extension(launcher_path),
                 )
+            QTimer.singleShot(0, window.check_inkstitch_link)
 
         document_path = request.get("document_path")
         if document_path:
