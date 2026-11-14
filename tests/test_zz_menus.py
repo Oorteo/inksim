@@ -7,6 +7,7 @@ import sys
 import time
 from pathlib import Path
 
+import pytest
 from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication
 
@@ -726,7 +727,8 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert dialog.restore_interpreter_button.isHidden()
     assert status["inkstitch"] == [
         {
-            "extension_dir": str(inx_path.parent.resolve()),
+            "extension_dir": str(inx_path.parent),
+            "resolved_extension_dir": str(inx_path.parent.resolve()),
             "command": "../inkstitch.py",
             "location": "inx",
             "interpreter": "python",
@@ -1085,6 +1087,69 @@ def test_removing_the_interpreter_needs_a_configured_value(tmp_path, qtbot, monk
     )
     dialog.interpreter_combo.setCurrentIndex(remove_index)
     assert dialog.apply_interpreter_button.isEnabled() is False
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="symlinked extension folders are POSIX-only")
+def test_extension_link_repoint_is_reported(tmp_path, qtbot, monkeypatch):
+    """Tell the user when the Ink/Stitch link in Inkscape points at another checkout."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    old_checkout = tmp_path / "old-checkout"
+    (old_checkout / "inx").mkdir(parents=True)
+    (old_checkout / "inkstitch.py").write_text("", encoding="utf-8")
+    new_checkout = tmp_path / "new-checkout"
+    (new_checkout / "inx").mkdir(parents=True)
+    (new_checkout / "inkstitch.py").write_text("", encoding="utf-8")
+    inx_path = new_checkout / "inx" / "inkstitch_about.inx"
+    inx_path.write_text(
+        '<inkscape-extension><command location="inx" interpreter="python">'
+        "../inkstitch.py</command></inkscape-extension>",
+        encoding="utf-8",
+    )
+
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    extensions = user_data / "extensions"
+    extensions.mkdir(parents=True)
+    (extensions / "inkstitch-dev").symlink_to(new_checkout, target_is_directory=True)
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr(
+        InkscapeIntegrationDialog, "_find_uvr_executable", staticmethod(lambda _: None)
+    )
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/inkscape/bin/inkscape",
+            "status": "found",
+            "inkstitch": [
+                {
+                    "extension_dir": str(extensions / "inkstitch-dev" / "inx"),
+                    "resolved_extension_dir": str((old_checkout / "inx").resolve()),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                    "interpreter": "python",
+                }
+            ],
+            "active_inkstitch": str(extensions / "inkstitch-dev" / "inx"),
+        },
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    report = dialog.info_panel.toPlainText()
+    assert "Ink/Stitch link in the Inkscape extensions folder now points to" in report
+    assert str((new_checkout / "inx").resolve()) in report.replace("~", str(Path.home()))
 
 
 def test_inkstitch_interpreter_candidate_comes_from_the_checkout(tmp_path):

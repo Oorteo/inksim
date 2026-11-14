@@ -54,7 +54,11 @@ from ..integration.inkscape_extensions import (
     resolve_inksim_launcher,
     set_debug_script_enabled,
 )
-from ..integration.inkstitch import inkstitch_project_python
+from ..integration.inkstitch import (
+    changed_inkstitch_targets,
+    inkstitch_project_python,
+    link_key,
+)
 from ..integration.paths import INKSCAPE_CONFIG_KEY, detect_tools
 from ..paths import _sanitize_path_text
 
@@ -126,8 +130,13 @@ class InkStitchInstallation:
 
     @property
     def extension_dir(self) -> Path:
-        """Return the directory used to resolve an INX-relative command."""
+        """Return the directory Inkscape uses to resolve an INX-relative command."""
         return self.inx_path.parent
+
+    @property
+    def resolved_extension_dir(self) -> Path:
+        """Return the checkout the extension link currently points to."""
+        return self.extension_dir.resolve()
 
     @property
     def resolved_path(self) -> Path:
@@ -677,6 +686,15 @@ class InkscapeIntegrationDialog(QDialog):
         )
         config = Config()
         previous_status = config.get(INKSCAPE_CONFIG_KEY)
+        if isinstance(previous_status, dict):
+            for target in changed_inkstitch_targets(previous_status):
+                report_entries.append(
+                    _(
+                        "integration.inkscape.report.inkstitch_link_changed",
+                        "The Ink/Stitch link in the Inkscape extensions folder now points to:"
+                        " {path}",
+                    ).format(path=_sanitize_path_text(str(target)))
+                )
         current_executable = os.path.normcase(str(Path(self._probe_executable).resolve()))
         stored_executable = (
             os.path.normcase(str(Path(previous_status["executable"]).expanduser().resolve()))
@@ -690,7 +708,7 @@ class InkscapeIntegrationDialog(QDialog):
             else None
         )
         if isinstance(previous_active, str):
-            previous_active = str(Path(previous_active).expanduser().resolve())
+            previous_active = link_key(previous_active)
         self.inkstitch_combo.blockSignals(True)
         self.inkstitch_combo.clear()
         for installation in installations:
@@ -702,7 +720,7 @@ class InkscapeIntegrationDialog(QDialog):
             (
                 index
                 for index, installation in enumerate(installations)
-                if str(installation.extension_dir) == previous_active
+                if link_key(installation.extension_dir) == previous_active
             ),
             0,
         )
@@ -793,6 +811,7 @@ class InkscapeIntegrationDialog(QDialog):
         for installation in installations:
             item = {
                 "extension_dir": str(installation.extension_dir),
+                "resolved_extension_dir": str(installation.resolved_extension_dir),
                 "command": installation.command,
                 "location": installation.location,
             }
@@ -1691,9 +1710,8 @@ class InkscapeIntegrationDialog(QDialog):
                         command = (element.text or "").strip()
                         if not command:
                             continue
-                        resolved_inx_path = inx_path.resolve()
-                        installations[resolved_inx_path] = InkStitchInstallation(
-                            inx_path=resolved_inx_path,
+                        installations[inx_path.resolve()] = InkStitchInstallation(
+                            inx_path=inx_path,
                             command=command,
                             interpreter=element.get("interpreter"),
                             location=element.get("location", ""),
