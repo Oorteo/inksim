@@ -36,6 +36,25 @@ def _select_file(dialog: OpenBrowserDialog, name: str) -> None:
     raise AssertionError(f"{name!r} not found in {dialog.file_list.count()} rows")
 
 
+def _send_wheel(widget, modifier, notches: int) -> None:
+    from PySide6.QtCore import QPoint, QPointF, Qt
+    from PySide6.QtGui import QWheelEvent
+    from PySide6.QtWidgets import QApplication
+
+    for _ in range(notches):
+        event = QWheelEvent(
+            QPointF(50.0, 50.0),
+            QPointF(50.0, 50.0),
+            QPoint(0, 0),
+            QPoint(0, 120),
+            Qt.MouseButton.NoButton,
+            modifier,
+            Qt.ScrollPhase.NoScrollPhase,
+            False,
+        )
+        QApplication.sendEvent(widget, event)
+
+
 def test_lists_supported_files_and_folders(qtbot, tmp_path, monkeypatch):
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
     (tmp_path / "design.svg").write_text(_SVG, encoding="utf-8")
@@ -318,6 +337,72 @@ def test_icon_grid_marks_the_selected_designs(qtbot, tmp_path, monkeypatch):
         }
 
     assert border_colors(selected_rect) != border_colors(plain_rect)
+    dialog.reject()
+
+
+def test_ctrl_wheel_scales_the_icons(qtbot, tmp_path, monkeypatch):
+    """The wheel gesture works over the file list only, and keeps scrolling free."""
+    from PySide6.QtCore import Qt
+
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+    start = dialog.icon_size_slider.value()
+
+    _send_wheel(dialog.file_list.viewport(), Qt.KeyboardModifier.ControlModifier, 3)
+    qtbot.wait(20)
+
+    assert dialog.icon_size_slider.value() == start + 24
+    assert dialog.file_list.iconSize().width() == start + 24
+    assert config.get("open_dialog_icon_size") == start + 24
+
+    _send_wheel(dialog.file_list.viewport(), Qt.KeyboardModifier.NoModifier, 3)
+    qtbot.wait(20)
+    assert dialog.icon_size_slider.value() == start + 24
+    dialog.reject()
+
+
+def test_shift_wheel_shades_the_icon_background(qtbot, tmp_path, monkeypatch):
+    """Shift+wheel moves the tile from white to black and remembers the level."""
+    from PySide6.QtCore import Qt
+
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+    start = dialog.background_slider.value()
+
+    _send_wheel(dialog.file_list.viewport(), Qt.KeyboardModifier.ShiftModifier, 2)
+    qtbot.wait(20)
+
+    assert dialog.background_slider.value() == min(255, start + 24)
+    assert dialog._icon_delegate.tile_level == dialog.background_slider.value()
+    level = dialog.background_slider.value()
+
+    def stored() -> object:
+        config.reload()
+        return config.get("open_dialog_icon_background")
+
+    qtbot.waitUntil(lambda: stored() == level, timeout=3000)
     dialog.reject()
 
 

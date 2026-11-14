@@ -178,6 +178,11 @@ icon on a neutral tile so light thread stays visible on a light theme, captions
 each cell with the name in small type, and outlines selected items, because the
 image covers the whole cell that Qt would otherwise highlight.
 
+With the pointer over the file list, `Ctrl`+wheel scales the icons and
+`Shift`+wheel shades the tile from white to black. The shading has a slider too
+(0 = black, 255 = white); both values are remembered as
+`open_dialog_icon_size` and `open_dialog_icon_background`.
+
 ## Rendering Notes
 
 Loaded designs are kept in a NumPy array with one row per stitch segment:
