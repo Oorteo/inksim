@@ -38,8 +38,22 @@ def _configured_python(status: dict[str, Any]) -> Path | None:
     return path if path.is_file() else None
 
 
+def _existing_extension_dir(installation: dict[str, Any]) -> Path | None:
+    """Return the cached extension directory when it still exists on disk."""
+    value = installation.get("extension_dir")
+    if not isinstance(value, str) or not value:
+        return None
+    path = Path(value).expanduser()
+    return path if path.is_dir() else None
+
+
 def active_inkstitch_installation(status: dict[str, Any]) -> dict[str, Any] | None:
-    """Return the selected Ink/Stitch extension installation from cached status."""
+    """Return the selected Ink/Stitch installation from cached status.
+
+    A deleted worktree leaves ``active_inkstitch`` pointing at a directory that
+    no longer exists, so a single ``is_dir`` check skips the stored choice and
+    falls back to an installation that is still there.
+    """
     installations = status.get("inkstitch")
     if not isinstance(installations, list):
         return None
@@ -57,8 +71,11 @@ def active_inkstitch_installation(status: dict[str, Any]) -> dict[str, Any] | No
             extension_dir = os.path.normcase(
                 str(Path(installation["extension_dir"]).expanduser().resolve())
             )
-            if extension_dir == active_path:
+            if extension_dir == active_path and _existing_extension_dir(installation) is not None:
                 return installation
+    for installation in valid_installations:
+        if _existing_extension_dir(installation) is not None:
+            return installation
     return valid_installations[0]
 
 

@@ -3,12 +3,17 @@
 
 from __future__ import annotations
 
+import shutil
 import sys
 from pathlib import Path
 
 import pytest
 
-from inksim.integration.inkstitch import inkstitch_project_python, resolve_inkstitch_preview
+from inksim.integration.inkstitch import (
+    active_inkstitch_installation,
+    inkstitch_project_python,
+    resolve_inkstitch_preview,
+)
 
 
 def _checkout(tmp_path: Path, *, virtualenv: bool = True) -> Path:
@@ -78,6 +83,56 @@ def test_preview_prefers_the_checkout_interpreter_over_a_stale_preference(tmp_pa
         _project_python(project),
         (project / "inx").resolve(),
     )
+
+
+def _installation(project: Path) -> dict[str, str]:
+    return {
+        "extension_dir": str(project / "inx"),
+        "command": "../inkstitch.py",
+        "location": "inx",
+        "interpreter": "python",
+    }
+
+
+def test_active_installation_skips_a_deleted_worktree(tmp_path):
+    """A saved path that no longer exists falls back to an installation that is there."""
+    removed = _checkout(tmp_path / "removed")
+    kept = _checkout(tmp_path / "kept")
+    status = {
+        "active_inkstitch": str(removed / "inx"),
+        "inkstitch": [_installation(removed), _installation(kept)],
+    }
+    shutil.rmtree(removed / "inx")
+
+    assert active_inkstitch_installation(status) == _installation(kept)
+
+
+def test_active_installation_keeps_an_existing_saved_choice(tmp_path):
+    first = _checkout(tmp_path / "first")
+    second = _checkout(tmp_path / "second")
+    status = {
+        "active_inkstitch": str(second / "inx"),
+        "inkstitch": [_installation(first), _installation(second)],
+    }
+
+    assert active_inkstitch_installation(status) == _installation(second)
+
+
+def test_active_installation_falls_back_to_the_first_entry_when_nothing_exists(tmp_path):
+    missing = _installation(tmp_path / "missing")
+
+    assert active_inkstitch_installation({"inkstitch": [missing]}) == missing
+
+
+def test_preview_returns_none_for_a_deleted_checkout(tmp_path):
+    removed = _checkout(tmp_path / "removed")
+    status = {
+        "active_inkstitch": str(removed / "inx"),
+        "inkstitch": [_installation(removed)],
+    }
+    shutil.rmtree(removed)
+
+    assert resolve_inkstitch_preview(status) is None
 
 
 def test_preview_uses_the_configured_interpreter_without_a_checkout_virtualenv(tmp_path):
