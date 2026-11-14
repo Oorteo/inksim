@@ -44,6 +44,7 @@ from ..config import Config
 from ..constants import APP_TITLE, DEFAULT_STATUS_TEXT
 from ..debug import logger
 from ..formats import (
+    PALETTE_SOURCE_ATTR,
     color_block_count,
     extension_from_output_filter,
     get_palette_output_formats,
@@ -1564,6 +1565,16 @@ class MainWindow(QMainWindow):
         source = self._preferred_source_path()
         if pattern is None or source is None:
             QMessageBox.warning(self, "Save embroidery", _("message.no_file_to_save"))
+            return
+        if not getattr(pattern, PALETTE_SOURCE_ATTR, None) and getattr(pattern, "threadlist", None):
+            QMessageBox.information(
+                self,
+                _("dialog.palette.title", "Thread colors"),
+                _(
+                    "dialog.palette.has_colors",
+                    "This design already stores its own thread colors.",
+                ),
+            )
             return
         note = apply_palette_to_design(self, source, color_block_count(pattern), self.config)
         if note is None:

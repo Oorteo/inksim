@@ -10,7 +10,6 @@ a palette file once and stores it as that sidecar.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +21,7 @@ from ..formats import (
     get_supported_input_extensions,
     palette_sidecar_path,
     read_palette_file,
+    sidecar_palette_candidates,
     write_palette_file,
 )
 from ..i18n import _
@@ -47,17 +47,31 @@ def _title() -> str:
     return _("dialog.palette.title", "Thread colors")
 
 
-def choose_palette_file(parent: QWidget | None, directory: Path) -> Path | None:
-    """Ask for a palette file to take the thread colors from."""
-    path, _selected_filter = QFileDialog.getOpenFileName(
+def palette_candidate(source: Path) -> Path | None:
+    """Return the file next to *source* that most likely holds its colors."""
+    candidates = sidecar_palette_candidates(source)
+    return candidates[0] if candidates else None
+
+
+def choose_palette_file(parent: QWidget | None, source: Path) -> Path | None:
+    """Ask for a palette file, starting next to *source* with a close name."""
+    dialog = QFileDialog(
         parent,
         _("dialog.palette.choose", "Choose a palette or a colored design"),
-        str(directory),
+        str(source.parent),
         palette_file_filter(),
     )
-    if not path:
+    dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
+    dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+    suggested = palette_candidate(source)
+    if suggested is not None:
+        dialog.selectFile(suggested.name)
+    else:
+        dialog.selectFile(source.name)
+    if dialog.exec() != QFileDialog.DialogCode.Accepted:
         return None
-    return Path(path)
+    selected = dialog.selectedFiles()
+    return Path(selected[0]) if selected else None
 
 
 def palette_format(config: Any) -> str:
@@ -131,7 +145,7 @@ def apply_palette_to_design(
 
     Returns a status message on success and None when nothing was stored.
     """
-    chosen = choose_palette_file(parent, source.parent or Path(os.getcwd()))
+    chosen = choose_palette_file(parent, source)
     if chosen is None:
         return None
     threads = read_palette_file(chosen)
@@ -169,6 +183,7 @@ def apply_palette_to_design(
 
 
 _SAVE_PALETTE_CONFIG_KEY = "save_palette_sidecar"
+_PALETTE_SUFFIXES = ("edr", "col", "inf")
 _SAVE_PALETTE_FORMAT_KEY = "save_palette_format"
 
 

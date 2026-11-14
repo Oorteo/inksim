@@ -567,19 +567,54 @@ def test_typed_skip_extensions_are_saved_when_the_dialog_closes(qtbot, tmp_path,
     assert Config(tmp_path / "config.toml").get("open_dialog_skip_extensions") == "edr|dst"
 
 
+def test_colors_button_only_offers_palette_less_designs(qtbot, tmp_path, monkeypatch):
+    """A design that stores its own colors has nothing to load colors for."""
+    import pystitch as emb
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    (tmp_path / "with_colors.pes").write_bytes(sample.read_bytes())
+    emb.write_dst(emb.read(str(sample)), str(tmp_path / "no_colors.dst"))
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "with_colors.pes")
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert not dialog.palette_button.isEnabled()
+    assert "already stores" in dialog.palette_button.toolTip()
+
+    _select_file(dialog, "no_colors.dst")
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert dialog.palette_button.isEnabled()
+    assert "Load thread colors" in dialog.palette_button.toolTip()
+    dialog.reject()
+
+
 def test_colors_button_stores_a_palette_next_to_the_design(qtbot, tmp_path, monkeypatch):
     """The Colors action writes the sidecar that palette-less formats need."""
+    import pystitch as emb
+
     from inksim.formats import read_palette_file, write_palette_file
 
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
     (tmp_path / "folder").mkdir()
-    design = tmp_path / "design.pes"
-    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    design = tmp_path / "design.dst"
+    emb.write_dst(emb.read(str(sample)), str(design))
     chart = tmp_path / "chart.edr"
     write_palette_file(chart, ["#112233", "#445566"])
     monkeypatch.setattr(
-        "inksim.gui.palette.QFileDialog.getOpenFileName",
-        lambda *args, **kwargs: (str(chart), "Palette files (*.edr)"),
+        "inksim.gui.palette.choose_palette_file",
+        lambda parent, source: chart,
     )
 
     dialog = OpenBrowserDialog(None, tmp_path)
@@ -590,7 +625,7 @@ def test_colors_button_stores_a_palette_next_to_the_design(qtbot, tmp_path, monk
     _select_file(dialog, "folder")
     assert not dialog.palette_button.isEnabled()
 
-    _select_file(dialog, "design.pes")
+    _select_file(dialog, "design.dst")
     for _ in range(20):
         qtbot.wait(50)
         if dialog._preview_loaded:

@@ -86,6 +86,7 @@ from PySide6.QtWidgets import (
 from ..config import Config
 from ..debug import logger
 from ..formats import (
+    PALETTE_SOURCE_ATTR,
     color_block_count,
     get_supported_input_extensions,
     is_stitchblock_svg,
@@ -889,13 +890,7 @@ class OpenBrowserDialog(QDialog):
         button_row.addWidget(self.edit_button)
         self.palette_button = QPushButton(_("dialog.open_browser.palette", "Colors…"), self)
         self.palette_button.setObjectName("applyPalette")
-        self.palette_button.setToolTip(
-            _(
-                "dialog.open_browser.palette_hint",
-                "Store the thread colors of a design that keeps none (DST, EXP)"
-                "\nas <name>.edr next to it.",
-            )
-        )
+        self.palette_button.setToolTip(self._palette_tooltip())
         self.palette_button.clicked.connect(self._apply_palette)
         button_row.addWidget(self.palette_button)
         self.cancel_button = QPushButton(_("dialog.open_browser.cancel", "Cancel"), self)
@@ -1700,6 +1695,30 @@ class OpenBrowserDialog(QDialog):
             self.preview._pending_fit_to_screen = False
             self.preview.fit_to_screen()
 
+    def _design_has_own_colors(self) -> bool:
+        """Return whether the previewed design carries its own thread colors."""
+        pattern = getattr(self.preview, "pattern", None)
+        if pattern is None:
+            return False
+        if getattr(pattern, PALETTE_SOURCE_ATTR, None):
+            return False
+        return bool(getattr(pattern, "threadlist", None))
+
+    def _palette_tooltip(self, needs_colors: bool | None = None) -> str:
+        if needs_colors is None:
+            needs_colors = not self._design_has_own_colors()
+        if not needs_colors:
+            return _(
+                "dialog.open_browser.palette_hint_has_colors",
+                "This file already stores its own thread colors.",
+            )
+        return _(
+            "dialog.open_browser.palette_hint",
+            "Load thread colors from a palette file or another design.\n"
+            "They are kept next to this file as <name>.edr, because this format\n"
+            "cannot store colors itself.",
+        )
+
     def _apply_palette(self) -> None:
         """Store thread colors for a design whose format keeps none."""
         path = self.selected_path
@@ -1738,6 +1757,7 @@ class OpenBrowserDialog(QDialog):
             self._set_preview_controls_enabled(True)
         self._update_details(path, kind)
         self._update_actions()
+        self.palette_button.setToolTip(self._palette_tooltip())
 
     def _update_details(self, path: Path, kind: str) -> None:
         lines = [path.name, self._type_label(kind)]
@@ -1951,9 +1971,9 @@ class OpenBrowserDialog(QDialog):
             not converting and not generating and bool(self._selected_design_paths())
         )
 
-        self.palette_button.setEnabled(
-            not converting and not generating and kind in (KIND_EMBROIDERY, KIND_CSV)
-        )
+        needs_colors = kind in (KIND_EMBROIDERY, KIND_CSV) and not self._design_has_own_colors()
+        self.palette_button.setEnabled(not converting and not generating and needs_colors)
+        self.palette_button.setToolTip(self._palette_tooltip(needs_colors))
 
         if converting or generating:
             self.open_button.setEnabled(False)
