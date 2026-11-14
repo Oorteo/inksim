@@ -77,7 +77,11 @@ from PySide6.QtWidgets import (
 
 from ..config import Config
 from ..debug import logger
-from ..formats import get_supported_input_extensions, is_stitchblock_svg
+from ..formats import (
+    color_block_count,
+    get_supported_input_extensions,
+    is_stitchblock_svg,
+)
 from ..i18n import _
 from ..integration.inkstitch import (
     active_inkstitch_installation,
@@ -100,6 +104,7 @@ from ..render.thumbnails import (
     write_thumbnail,
 )
 from .inkscape_dialog import InkscapeIntegrationDialog
+from .palette import apply_palette_to_design
 from .viewer import EmbroideryViewerWidget
 
 KIND_DIRECTORY = "directory"
@@ -413,6 +418,7 @@ class OpenBrowserDialog(QDialog):
         self._visible_paths: list[Path] = []
         self._svg_kind_cache: dict[Path, str] = {}
         self._preview_loaded = False
+        self._palette_note: str | None = None
         self._svg_source: QPixmap | None = None
         self._conversion_process: QProcess | None = None
         self._conversion_csv: Path | None = None
@@ -746,6 +752,17 @@ class OpenBrowserDialog(QDialog):
         )
         self.edit_button.clicked.connect(self._edit_in_inkscape)
         button_row.addWidget(self.edit_button)
+        self.palette_button = QPushButton(_("dialog.open_browser.palette", "Colors…"), self)
+        self.palette_button.setObjectName("applyPalette")
+        self.palette_button.setToolTip(
+            _(
+                "dialog.open_browser.palette_hint",
+                "Store the thread colors of a design that keeps none (DST, EXP)"
+                "\nas <name>.edr next to it.",
+            )
+        )
+        self.palette_button.clicked.connect(self._apply_palette)
+        button_row.addWidget(self.palette_button)
         self.cancel_button = QPushButton(_("dialog.open_browser.cancel", "Cancel"), self)
         self.cancel_button.clicked.connect(self.reject)
         button_row.addWidget(self.cancel_button)
@@ -1307,6 +1324,7 @@ class OpenBrowserDialog(QDialog):
 
         path = Path(current.data(Qt.ItemDataRole.UserRole))
         kind = self._kind_for_path(path)
+        self._palette_note = None
         self.preview_controls.setVisible(False)
         self.preview_csv_path = None
         self.document_path = None
@@ -1474,6 +1492,20 @@ class OpenBrowserDialog(QDialog):
             self.preview._pending_fit_to_screen = False
             self.preview.fit_to_screen()
 
+    def _apply_palette(self) -> None:
+        """Store thread colors for a design whose format keeps none."""
+        path = self.selected_path
+        if path is None:
+            return
+        pattern = getattr(self.preview, "pattern", None)
+        blocks = color_block_count(pattern) if pattern is not None else 0
+        note = apply_palette_to_design(self, path, blocks, self.config)
+        if note is None:
+            return
+        self._palette_note = note
+        self._thumbnail_icons.pop(path, None)
+        self._load_embroidery_preview()
+
     def _load_embroidery_preview(self) -> None:
         path = self.selected_path
         if path is None:
@@ -1531,6 +1563,8 @@ class OpenBrowserDialog(QDialog):
                         "Size: {width:.1f} x {height:.1f} mm",
                     ).format(width=width_mm, height=height_mm)
                 )
+        if self._palette_note is not None and path == self.selected_path:
+            lines.append(self._palette_note)
         self.details_label.setText("\n".join(lines))
 
     def _thumbnail_icon(self, path: Path) -> QIcon | None:
@@ -1643,6 +1677,10 @@ class OpenBrowserDialog(QDialog):
         generating = self._thumbnail_job is not None
         self.thumbnails_button.setEnabled(
             not converting and not generating and bool(self._selected_design_paths())
+        )
+
+        self.palette_button.setEnabled(
+            not converting and not generating and kind in (KIND_EMBROIDERY, KIND_CSV)
         )
 
         if converting or generating:

@@ -160,6 +160,76 @@ def test_all_menu_actions_trigger_cpu(qtbot, monkeypatch, sample_design):
     _run_menu_smoke_test(qtbot, monkeypatch, sample_design, "shaded_volume")
 
 
+def test_load_palette_action_stores_colors_next_to_the_open_design(qtbot, tmp_path, monkeypatch):
+    """File > Load palette keeps the colors a palette-less format would lose."""
+    from inksim.config import Config
+    from inksim.formats import read_palette_file, write_palette_file
+
+    chart = tmp_path / "chart.edr"
+    write_palette_file(chart, ["#112233", "#445566"])
+    monkeypatch.setattr(
+        "inksim.gui.palette.QFileDialog.getOpenFileName",
+        lambda *args, **kwargs: (str(chart), "Palette files (*.edr)"),
+    )
+    design = tmp_path / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    assert window.open_file(str(design), precompute_density=False)
+
+    window.load_palette_for_design()
+
+    sidecar = tmp_path / "design.edr"
+    assert sidecar.is_file()
+    assert [thread.hex_color() for thread in read_palette_file(sidecar)] == [
+        "#112233",
+        "#445566",
+    ]
+    window.close()
+
+
+def test_colors_on_save_menu_remembers_the_answer(qtbot, tmp_path, monkeypatch):
+    """The saved answer to the palette question stays reachable from the menu."""
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    assert window.save_palette_choice() == "ask"
+    assert window._palette_save_actions["ask"].isChecked()
+
+    window.set_save_palette_choice("never")
+
+    assert config.get("save_palette_sidecar") == "never"
+    assert window._palette_save_actions["never"].isChecked()
+    assert not window._palette_save_actions["ask"].isChecked()
+    window.close()
+
+
+def test_colors_on_save_offers_every_palette_format(qtbot, tmp_path, monkeypatch):
+    """Save as can write EDR, COL or INF, and remembers which one."""
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    assert set(window._palette_format_actions) >= {"edr", "col", "inf"}
+    assert window._palette_format_actions["edr"].isChecked()
+
+    window.set_save_palette_format("inf")
+
+    assert config.get("save_palette_format") == "inf"
+    assert window._palette_format_actions["inf"].isChecked()
+    assert not window._palette_format_actions["edr"].isChecked()
+    window.close()
+
+
 def test_menu_mnemonics_are_omitted_for_other_locales(qtbot, monkeypatch):
     """Avoid English/Czech menu mnemonics in other localized menus."""
     monkeypatch.setattr("inksim.i18n._current_locale", "fr")

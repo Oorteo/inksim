@@ -299,6 +299,14 @@
         "source": "Open the selected embroidery file.",
         "translation": "Open the selected embroidery file."
     },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Colors…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Store the thread colors of a design that keeps none (DST, EXP)\nas <name>.edr next to it.",
+        "translation": "Store the thread colors of a design that keeps none (DST, EXP)\nas <name>.edr next to it."
+    },
     "dialog.open_browser.path_placeholder": {
         "source": "Enter or paste a folder path",
         "translation": "Enter or paste a folder path"
@@ -478,6 +486,38 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Zoom out"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Choose a palette or a colored design"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} stores no thread colors."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} already stores colors for this design.\nReplace it with {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Remember my choice"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} keeps no thread colors.\nSave them as {name} next to the design?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Thread colors"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Could not save the colors: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -875,6 +915,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Choose stitch renderer..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Colors on save"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Always write the palette"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Ask every time"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Palette format"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Never write the palette"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Export"
@@ -898,6 +958,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU textured render"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Load palette…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -1094,6 +1158,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Needle crosshair settings"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Colors of {palette} saved as {name}"
     },
     "status.slider.color": {
         "source": "Color…",

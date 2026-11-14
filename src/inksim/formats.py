@@ -8,6 +8,7 @@ from __future__ import annotations
 import math
 import re
 import xml.etree.ElementTree as ET
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
@@ -86,6 +87,45 @@ def _read_threadlist(path: Path) -> list[Any]:
     except Exception:  # noqa: BLE001 - a broken palette must not break the design
         return []
     return list(getattr(pattern, "threadlist", None) or ())
+
+
+def palette_sidecar_path(source: str | Path, suffix: str = "edr") -> Path:
+    """Return the colour file stored next to *source* for palette-less formats."""
+    return Path(source).with_suffix(f".{suffix.lstrip('.').lower()}")
+
+
+def get_palette_output_formats() -> list[dict[str, str]]:
+    """Return the palette formats pystitch can write, EDR first."""
+    try:
+        supported_formats = emb.supported_formats()
+    except Exception:
+        return [
+            {"extension": extension, "description": extension.upper()}
+            for extension in _SIDECAR_PALETTE_SUFFIXES
+        ]
+    found: dict[str, str] = {}
+    for file_type in supported_formats:
+        if file_type.get("writer") is None or not _is_color_format(file_type):
+            continue
+        extension = str(file_type.get("extension", "")).lstrip(".").lower()
+        if extension:
+            found[extension] = str(file_type.get("description", extension.upper()))
+    ordered = [ext for ext in _SIDECAR_PALETTE_SUFFIXES if ext in found]
+    ordered += sorted(ext for ext in found if ext not in _SIDECAR_PALETTE_SUFFIXES)
+    return [{"extension": ext, "description": found[ext]} for ext in ordered]
+
+
+def read_palette_file(path: str | Path) -> list[Any]:
+    """Return the thread colours stored in a palette file or a coloured design."""
+    return _read_threadlist(Path(path))
+
+
+def write_palette_file(path: str | Path, threads: Sequence[Any]) -> None:
+    """Store *threads* as an EDR palette that machines and Ink/Stitch understand."""
+    palette = emb.EmbPattern()
+    for thread in threads:
+        palette.add_thread(thread)
+    emb.write(palette, str(path))
 
 
 def color_block_count(pattern: Any) -> int:

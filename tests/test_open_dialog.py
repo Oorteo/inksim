@@ -390,6 +390,69 @@ def test_typed_skip_extensions_are_saved_when_the_dialog_closes(qtbot, tmp_path,
     assert Config(tmp_path / "config.toml").get("open_dialog_skip_extensions") == "edr|dst"
 
 
+def test_colors_button_stores_a_palette_next_to_the_design(qtbot, tmp_path, monkeypatch):
+    """The Colors action writes the sidecar that palette-less formats need."""
+    from inksim.formats import read_palette_file, write_palette_file
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "folder").mkdir()
+    design = tmp_path / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    chart = tmp_path / "chart.edr"
+    write_palette_file(chart, ["#112233", "#445566"])
+    monkeypatch.setattr(
+        "inksim.gui.palette.QFileDialog.getOpenFileName",
+        lambda *args, **kwargs: (str(chart), "Palette files (*.edr)"),
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "folder")
+    assert not dialog.palette_button.isEnabled()
+
+    _select_file(dialog, "design.pes")
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert dialog.palette_button.isEnabled()
+
+    dialog.palette_button.click()
+
+    sidecar = tmp_path / "design.edr"
+    assert sidecar.is_file()
+    assert [thread.hex_color() for thread in read_palette_file(sidecar)] == [
+        "#112233",
+        "#445566",
+    ]
+    assert "chart.edr" in dialog.details_label.text()
+    dialog.reject()
+
+
+def test_storing_a_palette_replaces_a_sidecar_of_another_format(qtbot, tmp_path, monkeypatch):
+    """One palette per design: the old format does not linger and win later."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.formats import read_palette_file, write_palette_file
+    from inksim.gui import palette as palette_module
+
+    write_palette_file(tmp_path / "design.edr", ["#111111"])
+    monkeypatch.setattr(
+        palette_module.QMessageBox,
+        "question",
+        lambda *args, **kwargs: QMessageBox.StandardButton.Yes,
+    )
+
+    target = palette_module.store_palette(None, tmp_path / "design.dst", ["#112233"], "col")
+
+    assert target == tmp_path / "design.col"
+    assert not (tmp_path / "design.edr").exists()
+    assert [thread.hex_color() for thread in read_palette_file(target)] == ["#112233"]
+
+
 def test_enter_opens_folders_and_arrows_stay_in_the_list(qtbot, tmp_path, monkeypatch):
     """Enter activates the current row, so the arrows can move between icons."""
     from PySide6.QtCore import Qt
