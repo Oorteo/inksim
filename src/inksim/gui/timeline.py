@@ -7,8 +7,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import numpy as np
 from PySide6.QtCore import QPoint, QRect, Qt, Signal
-from PySide6.QtGui import QColor, QMouseEvent, QPainter, QPaintEvent, QPen
+from PySide6.QtGui import QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QWheelEvent
 from PySide6.QtWidgets import QWidget
 
 if TYPE_CHECKING:
@@ -23,107 +24,223 @@ class TimelineWidget(QWidget):
     def __init__(self, parent: QWidget, viewer_panel: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
         self.viewer = viewer_panel
-        self.setMinimumHeight(58)
+        self.setMinimumHeight(64)
         self.setStyleSheet("background: rgb(250, 250, 250)")
-        self.dragging = False
+        self.setToolTip(
+            "Ctrl+wheel: zoom; Shift+wheel: pan; drag the overview to move the visible range."
+        )
+        self.dragging: str | None = None
         self.drag_moved = False
-        self.margin_x = 24
-        self.bar_y = 8
-        self.bar_h = 14
+        self._overview_drag_offset = 0.0
+        self._source_stitches = viewer_panel.stitches_np
+        self._view_start = 0
+        self._view_end = int(viewer_panel.stitches_np.shape[0])
+
+    def _sync_view(self) -> int:
+        stitches = self.viewer.stitches_np
+        total = int(stitches.shape[0])
+        if stitches is not self._source_stitches:
+            self._source_stitches = stitches
+            self._view_start = 0
+            self._view_end = total
+        else:
+            self._view_start = max(0, min(self._view_start, total))
+            self._view_end = max(self._view_start + 1, min(self._view_end, total))
+            if total == 0:
+                self._view_start = self._view_end = 0
+        return total
+
+    def _layout_rects(self) -> tuple[QRect, QRect, tuple[QRect, QRect, QRect]]:
+        main_bar = QRect(80, 7, max(1, self.width() - 88), 14)
+        overview = QRect(80, 29, max(1, self.width() - 88), 8)
+        buttons = (
+            QRect(5, 6, 20, 17),
+            QRect(28, 6, 20, 17),
+            QRect(51, 6, 25, 17),
+        )
+        return main_bar, overview, buttons
+
+    def _set_view_start(self, start: int) -> None:
+        total = self._sync_view()
+        span = self._view_end - self._view_start
+        self._view_start = max(0, min(start, max(0, total - span)))
+        self._view_end = self._view_start + span
+        self.update()
+
+    def _zoom_at(self, mouse_x: float, factor: float) -> None:
+        total = self._sync_view()
+        if total <= 1:
+            return
+        main_bar, _, _ = self._layout_rects()
+        old_span = self._view_end - self._view_start
+        ratio = max(0.0, min(1.0, (mouse_x - main_bar.left()) / main_bar.width()))
+        anchor = self._view_start + ratio * old_span
+        new_span = max(1, min(total, int(round(old_span / factor))))
+        new_start = int(round(anchor - ratio * new_span))
+        self._view_start = max(0, min(new_start, total - new_span))
+        self._view_end = self._view_start + new_span
+        self.update()
+
+    def _pan_overview_to(self, x: float) -> None:
+        total = self._sync_view()
+        if total == 0:
+            return
+        _, overview, _ = self._layout_rects()
+        span = self._view_end - self._view_start
+        start = int(
+            round((x - self._overview_drag_offset - overview.left()) / overview.width() * total)
+        )
+        self._set_view_start(start)
+        self._view_end = self._view_start + span
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        if event.button() == Qt.LeftButton:
-            self.dragging = True
+        if event.button() != Qt.LeftButton:
+            super().mousePressEvent(event)
+            return
+
+        main_bar, overview, buttons = self._layout_rects()
+        position = event.position()
+        total = self._sync_view()
+        if buttons[0].contains(position.toPoint()):
+            self._zoom_at(main_bar.center().x(), 1 / 1.25)
+        elif buttons[1].contains(position.toPoint()):
+            self._zoom_at(main_bar.center().x(), 1.25)
+        elif buttons[2].contains(position.toPoint()):
+            self._view_start = 0
+            self._view_end = total
+            self.update()
+        elif main_bar.contains(position.toPoint()):
+            self.dragging = "seek"
             self.drag_moved = False
-            self.seek(event.position().x())
+            self.seek(position.x())
             self.viewer.highlight_needle()
             self.grabMouse()
-            event.accept()
+        elif overview.contains(position.toPoint()):
+            self.dragging = "overview"
+            self.drag_moved = False
+            viewport = self._overview_viewport(overview, total)
+            if viewport.contains(position.toPoint()):
+                self._overview_drag_offset = position.x() - viewport.left()
+            else:
+                self._overview_drag_offset = viewport.width() / 2
+            self._pan_overview_to(position.x())
+            self.grabMouse()
         else:
             super().mousePressEvent(event)
+            return
+        event.accept()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        if event.button() == Qt.LeftButton:
-            if self.dragging:
+        if event.button() == Qt.LeftButton and self.dragging is not None:
+            if self.dragging == "seek":
                 self.seek(event.position().x())
                 self.viewer.highlight_needle()
-                self.releaseMouse()
-                self.dragging = False
-                self.drag_moved = False
+            self.releaseMouse()
+            self.dragging = None
+            self.drag_moved = False
             event.accept()
         else:
             super().mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        if self.dragging and event.buttons() & Qt.LeftButton:
+        if self.dragging == "seek" and event.buttons() & Qt.LeftButton:
             self.drag_moved = True
             self.seek(event.position().x())
+            event.accept()
+        elif self.dragging == "overview" and event.buttons() & Qt.LeftButton:
+            self.drag_moved = True
+            self._pan_overview_to(event.position().x())
             event.accept()
         else:
             super().mouseMoveEvent(event)
 
+    def wheelEvent(self, event: QWheelEvent) -> None:
+        modifiers = event.modifiers()
+        delta = event.angleDelta().y()
+        if not delta:
+            delta = event.pixelDelta().y() * 8
+        if modifiers & Qt.ControlModifier and delta:
+            factor = 1.25 ** (delta / 120)
+            self._zoom_at(event.position().x(), factor)
+            event.accept()
+        elif modifiers & Qt.ShiftModifier and delta:
+            span = self._view_end - self._view_start
+            self._set_view_start(self._view_start - int(round(span * delta / 120 * 0.1)))
+            event.accept()
+        else:
+            super().wheelEvent(event)
+
     def seek(self, mouse_x: float) -> None:
-        width = self.width()
-        total = self.viewer.stitches_np.shape[0]
-        if total == 0 or width == 0:
+        total = self._sync_view()
+        if total == 0:
             return
-        bar_width = width - 2 * self.margin_x
-        ratio = max(0.0, min(1.0, (mouse_x - self.margin_x) / bar_width if bar_width > 0 else 0))
-        self.seek_requested.emit(int(ratio * total))
+        main_bar, _, _ = self._layout_rects()
+        ratio = max(0.0, min(1.0, (mouse_x - main_bar.left()) / main_bar.width()))
+        self.seek_requested.emit(
+            int(self._view_start + ratio * (self._view_end - self._view_start))
+        )
         self.update()
 
-    def paintEvent(self, event: QPaintEvent) -> None:
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.fillRect(self.rect(), QColor(250, 250, 250))
-        width = self.width()
-        total = self.viewer.stitches_np.shape[0]
-        visible = self.viewer.visible_count
-        bar_x = self.margin_x
-        bar_width = width - 2 * self.margin_x
-        bar_rect = self.rect().adjusted(bar_x, self.bar_y, -bar_x, 0)
-        bar_rect.setHeight(self.bar_h)
-        painter.setBrush(QColor(230, 230, 230))
-        painter.setPen(QPen(QColor(200, 200, 200)))
-        painter.drawRoundedRect(bar_rect, 4, 4)
+    def _overview_viewport(self, overview: QRect, total: int) -> QRect:
         if total == 0:
-            painter.end()
-            return
+            return QRect()
+        x0 = overview.left() + int(self._view_start / total * overview.width())
+        x1 = overview.left() + int(self._view_end / total * overview.width())
+        return QRect(x0, overview.top(), max(3, x1 - x0), overview.height())
 
-        stitches = self.viewer.stitches_np
+    def _draw_stitch_colors(
+        self,
+        painter: QPainter,
+        start: int,
+        end: int,
+        rect: QRect,
+        stitches: np.ndarray,
+    ) -> None:
+        count = end - start
+        if count <= 0:
+            return
         painter.save()
-        painter.setClipRect(bar_rect)
-        if bar_width < total:
-            step = max(1, total // max(1, bar_width))
-            for index in range(0, total, step):
+        painter.setClipRect(rect)
+        if rect.width() < count:
+            step = max(1, count // max(1, rect.width()))
+            for index in range(start, end, step):
                 color = QColor(
                     int(stitches[index, 4]), int(stitches[index, 5]), int(stitches[index, 6])
                 )
-                x = bar_x + int(index / total * bar_width)
+                x = rect.left() + int((index - start) / count * rect.width())
                 painter.setPen(QPen(color))
-                painter.drawLine(x, self.bar_y, x, self.bar_y + self.bar_h)
+                painter.drawLine(x, rect.top(), x, rect.bottom())
         else:
             last_color: tuple[int, int, int] | None = None
-            block_start = 0
-            for index in range(total):
+            block_start = start
+            for index in range(start, end):
                 rgb = tuple(int(value) for value in stitches[index, 4:7])
                 assert len(rgb) == 3
                 if rgb != last_color and last_color is not None:
-                    x0 = bar_x + int(block_start / total * bar_width)
-                    x1 = bar_x + int(index / total * bar_width)
-                    qcolor = QColor(*last_color)
-                    painter.setBrush(qcolor)
-                    painter.setPen(QPen(qcolor))
-                    painter.drawRect(x0, self.bar_y, max(2, x1 - x0), self.bar_h)
+                    x0 = rect.left() + int((block_start - start) / count * rect.width())
+                    x1 = rect.left() + int((index - start) / count * rect.width())
+                    color = QColor(*last_color)
+                    painter.setBrush(color)
+                    painter.setPen(QPen(color))
+                    painter.drawRect(x0, rect.top(), max(1, x1 - x0), rect.height())
                     block_start = index
                 last_color = rgb
-            if last_color:
-                x0 = bar_x + int(block_start / total * bar_width)
-                qcolor = QColor(*last_color)
-                painter.setBrush(qcolor)
-                painter.setPen(QPen(qcolor))
-                painter.drawRect(x0, self.bar_y, bar_width - (x0 - bar_x), self.bar_h)
+            if last_color is not None:
+                x0 = rect.left() + int((block_start - start) / count * rect.width())
+                color = QColor(*last_color)
+                painter.setBrush(color)
+                painter.setPen(QPen(color))
+                painter.drawRect(x0, rect.top(), max(1, rect.right() - x0 + 1), rect.height())
+        painter.restore()
 
+    def _draw_commands(
+        self,
+        painter: QPainter,
+        rect: QRect,
+        start: int,
+        end: int,
+        overview: bool = False,
+    ) -> None:
         command_colors = {
             "JUMP": QColor(100, 100, 100),
             "COLOR CHANGE": QColor(210, 45, 45),
@@ -132,60 +249,133 @@ class TimelineWidget(QWidget):
             "SLOW": QColor(70, 100, 180),
             "FAST": QColor(40, 150, 90),
         }
-        progress_width = int(visible / total * bar_width)
+        span = end - start
+        painter.save()
+        painter.setClipRect(rect)
+        for stitch_index, commands in self.viewer.command_events.items():
+            if not start <= stitch_index <= end:
+                continue
+            x = (
+                rect.left() + int((stitch_index - start) / span * rect.width())
+                if span
+                else rect.left()
+            )
+            for marker_index, command in enumerate(commands):
+                color = command_colors.get(command)
+                if color is None and command.startswith("COLOR CHANGE"):
+                    color = command_colors["COLOR CHANGE"]
+                color = color or QColor(80, 80, 80)
+                marker_y = rect.top() if overview else rect.top() - 5 + marker_index * 5
+                painter.setPen(QPen(QColor(30, 30, 30), 1))
+                painter.drawLine(x, marker_y, x, rect.bottom())
+                if not overview:
+                    painter.setBrush(color)
+                    painter.drawPolygon(
+                        [
+                            QPoint(x, marker_y),
+                            QPoint(x - 4, marker_y + 5),
+                            QPoint(x + 4, marker_y + 5),
+                        ]
+                    )
+        painter.restore()
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.fillRect(self.rect(), QColor(250, 250, 250))
+        total = self._sync_view()
+        main_bar, overview, buttons = self._layout_rects()
+
+        for rect, label in zip(buttons, ("−", "+", "All"), strict=True):
+            painter.setBrush(QColor(245, 245, 245))
+            painter.setPen(QPen(QColor(190, 190, 190)))
+            painter.drawRoundedRect(rect, 2, 2)
+            painter.setPen(QColor(35, 35, 35))
+            painter.drawText(rect, Qt.AlignCenter, label)
+
+        painter.setBrush(QColor(230, 230, 230))
+        painter.setPen(QPen(QColor(200, 200, 200)))
+        painter.drawRoundedRect(main_bar, 4, 4)
+        painter.setBrush(QColor(230, 230, 230))
+        painter.drawRect(overview)
+        if total == 0:
+            painter.end()
+            return
+
+        stitches = self.viewer.stitches_np
+        self._draw_stitch_colors(painter, self._view_start, self._view_end, main_bar, stitches)
+        progress_ratio = max(
+            0.0,
+            min(
+                1.0,
+                (self.viewer.visible_count - self._view_start)
+                / (self._view_end - self._view_start),
+            ),
+        )
+        progress_width = int(progress_ratio * main_bar.width())
         painter.setBrush(QColor(255, 255, 255, 150))
         painter.setPen(Qt.NoPen)
-        if progress_width < bar_width:
+        if progress_width < main_bar.width():
             painter.drawRect(
-                bar_x + progress_width, self.bar_y, bar_width - progress_width, self.bar_h
+                main_bar.left() + progress_width,
+                main_bar.top(),
+                main_bar.width() - progress_width,
+                main_bar.height(),
             )
-        painter.restore()
+        self._draw_commands(painter, main_bar, self._view_start, self._view_end)
 
-        painter.save()
-        painter.setClipRect(QRect(bar_x, 0, bar_width, self.bar_y + self.bar_h))
-        for stitch_index, commands in self.viewer.command_events.items():
-            marker_x = bar_x + int(stitch_index / total * bar_width)
-            for marker_index, command in enumerate(commands):
-                marker_color = command_colors.get(command)
-                if marker_color is None and command.startswith("COLOR CHANGE"):
-                    marker_color = command_colors["COLOR CHANGE"]
-                marker_color = marker_color or QColor(80, 80, 80)
-                marker_y = self.bar_y - 5 + marker_index * 5
-                painter.setPen(QPen(QColor(30, 30, 30), 1))
-                painter.drawLine(marker_x, marker_y, marker_x, self.bar_y + self.bar_h)
-                painter.setBrush(marker_color)
-                painter.drawPolygon(
-                    [
-                        QPoint(marker_x, marker_y),
-                        QPoint(marker_x - 4, marker_y + 5),
-                        QPoint(marker_x + 4, marker_y + 5),
-                    ]
+        self._draw_stitch_colors(painter, 0, total, overview, stitches)
+        self._draw_commands(painter, overview, 0, total, overview=True)
+        viewport = self._overview_viewport(overview, total)
+        viewport_frame = viewport.adjusted(0, -4, 0, 4)
+        fog_color = QColor(250, 250, 250, 205)
+        painter.setPen(Qt.NoPen)
+        if viewport.left() > overview.left():
+            painter.setBrush(fog_color)
+            painter.drawRect(
+                QRect(
+                    overview.left(),
+                    viewport_frame.top(),
+                    viewport.left() - overview.left(),
+                    viewport_frame.height(),
                 )
-        painter.restore()
+            )
+        if viewport.right() < overview.right():
+            painter.setBrush(fog_color)
+            painter.drawRect(
+                QRect(
+                    viewport.right() + 1,
+                    viewport_frame.top(),
+                    overview.right() - viewport.right(),
+                    viewport_frame.height(),
+                )
+            )
+        painter.setBrush(QColor(50, 115, 200, 45))
+        painter.setPen(QPen(QColor(25, 75, 155), 2))
+        painter.drawRect(viewport_frame)
 
-        knob_x = bar_x + progress_width
-        painter.setPen(QPen(QColor(40, 40, 40), 2))
-        painter.setBrush(QColor(250, 250, 250))
-        painter.drawEllipse(knob_x - 6, self.bar_y + self.bar_h // 2 - 6, 12, 12)
-        painter.setBrush(QColor(40, 40, 40))
-        painter.drawEllipse(knob_x - 3, self.bar_y + self.bar_h // 2 - 3, 6, 6)
-        painter.setPen(QColor(30, 30, 30))
+        if self._view_start <= self.viewer.visible_count <= self._view_end:
+            knob_x = main_bar.left() + progress_width
+            painter.setPen(QPen(QColor(40, 40, 40), 2))
+            painter.setBrush(QColor(250, 250, 250))
+            painter.drawEllipse(knob_x - 6, main_bar.center().y() - 6, 12, 12)
+            painter.setBrush(QColor(40, 40, 40))
+            painter.drawEllipse(knob_x - 3, main_bar.center().y() - 3, 6, 6)
+
+        visible = self.viewer.visible_count
+        txt_left = f"{visible}/{total}"
         if visible > 0:
             last_stitch = stitches[visible - 1]
             dx = float(last_stitch[2] - last_stitch[0])
             dy = float(last_stitch[3] - last_stitch[1])
             last_step_mm = (dx * dx + dy * dy) ** 0.5
+            txt_left += f" | [{last_step_mm:.2f} mm]"
         stitches_per_minute = (
             int(round(self.viewer.play_step / self.viewer.play_speed * 60000))
             if self.viewer.play_speed > 0
             else 0
         )
-        if visible > 0:
-            txt_left = (
-                f"{visible}/{total} | {stitches_per_minute} stitches/min | [{last_step_mm:.2f} mm]"
-            )
-        else:
-            txt_left = f"{visible}/{total} | {stitches_per_minute} stitches/min"
+        txt_left += f" | {stitches_per_minute} stitches/min"
         visible_commands: list[str] | tuple[()] = self.viewer.command_events.get(visible, ())
         if visible_commands:
             txt_left += f" | {' | '.join(visible_commands)}"
@@ -199,14 +389,18 @@ class TimelineWidget(QWidget):
         else:
             txt_right = ""
         font_metrics = painter.fontMetrics()
-        text_top = self.bar_y + self.bar_h + 3
+        text_top = 43
         text_height = font_metrics.height()
+        bar_width = main_bar.width()
         left_width = int(bar_width * 0.45)
         center_width = int(bar_width * 0.15)
         right_width = bar_width - left_width - center_width
-        left_rect = QRect(bar_x, text_top, left_width, text_height)
-        center_rect = QRect(bar_x + left_width, text_top, center_width, text_height)
-        right_rect = QRect(bar_x + left_width + center_width, text_top, right_width, text_height)
+        left_rect = QRect(main_bar.left(), text_top, left_width, text_height)
+        center_rect = QRect(main_bar.left() + left_width, text_top, center_width, text_height)
+        right_rect = QRect(
+            main_bar.left() + left_width + center_width, text_top, right_width, text_height
+        )
+        painter.setPen(QColor(30, 30, 30))
         painter.drawText(
             left_rect,
             Qt.AlignLeft | Qt.AlignVCenter,

@@ -2066,7 +2066,7 @@ class EmbroideryViewerWidget(QWidget):
         self.invalidate_cache()
         self.update()
         if self.progress_bar and self.progress_bar.dragging:
-            self.progress_bar.dragging = False
+            self.progress_bar.dragging = None
             self.progress_bar.releaseMouse()
 
     def mouseDoubleClickEvent(self, e: QMouseEvent | None) -> None:
