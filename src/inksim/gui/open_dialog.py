@@ -561,7 +561,7 @@ class OpenBrowserDialog(QDialog):
         search_row.addWidget(self.search_edit, 1)
         search_row.addWidget(QLabel(_("dialog.open_browser.skip_label", "Skip"), self))
         self.skip_edit = QLineEdit(self)
-        self.skip_edit.setPlaceholderText(_("dialog.open_browser.skip", "edr|dst"))
+        self.skip_edit.setPlaceholderText(_("dialog.open_browser.skip", "dst|exp"))
         self.skip_edit.setToolTip(
             _(
                 "dialog.open_browser.skip_hint",
