@@ -347,6 +347,18 @@
         "source": "Size: {size}",
         "translation": "Size: {size}"
     },
+    "dialog.open_browser.skip": {
+        "source": "edr|dst",
+        "translation": "edr|dst"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Skip"
+    },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
         "translation": "Inkscape: {path}"

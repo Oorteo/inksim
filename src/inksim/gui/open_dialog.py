@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import math
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -122,6 +123,8 @@ _INITIAL_PREVIEW_ESTIMATE_SECONDS = 10.0
 _MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
 _PREVIEW_TIMING_CONFIG_KEY = "svg_preview_timing"
 _ICON_SIZE_CONFIG_KEY = "open_dialog_icon_size"
+_SKIP_EXTENSIONS_CONFIG_KEY = "open_dialog_skip_extensions"
+_SKIP_SAVE_DEBOUNCE_MS = 600
 _ICON_SIZE_MIN = 32
 _ICON_SIZE_MAX = 160
 _ICON_SIZE_DEFAULT = 96
@@ -427,6 +430,10 @@ class OpenBrowserDialog(QDialog):
             if isinstance(stored_icon_size, int)
             else _ICON_SIZE_DEFAULT
         )
+        stored_skips = self.config.get(_SKIP_EXTENSIONS_CONFIG_KEY, "")
+        self._skip_extensions = _parse_skip_extensions(
+            stored_skips if isinstance(stored_skips, str) else ""
+        )
         self._thumbnail_mode = _THUMBNAIL_UPDATE
         self._thumbnail_actions: dict[str, QAction] = {}
         self._thumbnail_pool = QThreadPool(self)
@@ -444,6 +451,11 @@ class OpenBrowserDialog(QDialog):
         self._conversion_progress_timer = QTimer(self)
         self._conversion_progress_timer.setInterval(_CONVERSION_PROGRESS_INTERVAL_MS)
         self._conversion_progress_timer.timeout.connect(self._update_conversion_progress)
+
+        self._skip_save_timer = QTimer(self)
+        self._skip_save_timer.setSingleShot(True)
+        self._skip_save_timer.setInterval(_SKIP_SAVE_DEBOUNCE_MS)
+        self._skip_save_timer.timeout.connect(self._store_skip_extensions)
 
         self._folder_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_DirIcon)
         self._file_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon)
@@ -547,6 +559,22 @@ class OpenBrowserDialog(QDialog):
         self.search_edit.setPlaceholderText(_("dialog.open_browser.search", "Search files"))
         self.search_edit.textChanged.connect(self._apply_filter)
         search_row.addWidget(self.search_edit, 1)
+        search_row.addWidget(QLabel(_("dialog.open_browser.skip_label", "Skip"), self))
+        self.skip_edit = QLineEdit(self)
+        self.skip_edit.setPlaceholderText(_("dialog.open_browser.skip", "edr|dst"))
+        self.skip_edit.setToolTip(
+            _(
+                "dialog.open_browser.skip_hint",
+                "Hide these extensions in the dialog.\n"
+                "Separate them with | and the list is stored in config.toml.",
+            )
+        )
+        self.skip_edit.setClearButtonEnabled(True)
+        self.skip_edit.setMinimumWidth(150)
+        self.skip_edit.setMaximumWidth(220)
+        self.skip_edit.setText("|".join(self._skip_extensions))
+        self.skip_edit.textChanged.connect(self._on_skip_extensions_changed)
+        search_row.addWidget(self.skip_edit)
         search_row.addWidget(QLabel(_("dialog.open_browser.filter", "Show"), self))
         self.filter_combo = QComboBox(self)
         self.filter_combo.addItem(_("dialog.open_browser.filter.all", "All supported"), "all")
@@ -1029,6 +1057,17 @@ class OpenBrowserDialog(QDialog):
     def _view_mode(self) -> str:
         return self.view_combo.currentData() or _VIEW_ICONS_TEXT
 
+    def _on_skip_extensions_changed(self, text: str) -> None:
+        self._skip_extensions = _parse_skip_extensions(text)
+        self._skip_save_timer.start()
+        self._apply_filter()
+
+    def _store_skip_extensions(self) -> None:
+        try:
+            self.config.set(_SKIP_EXTENSIONS_CONFIG_KEY, "|".join(self._skip_extensions))
+        except OSError as ex:
+            logger.warning("Could not store the skipped extensions: %s", ex)
+
     def _on_icon_size_changed(self, size: int) -> None:
         self._icon_size = size
         self.icon_size_slider.setToolTip(
@@ -1111,6 +1150,8 @@ class OpenBrowserDialog(QDialog):
                 visible.append(path)
                 continue
             if query and query not in path.name.casefold():
+                continue
+            if path.suffix.lstrip(".").casefold() in self._skip_extensions:
                 continue
             if selected_filter != "all" and kind != selected_filter:
                 continue
@@ -1976,6 +2017,9 @@ class OpenBrowserDialog(QDialog):
         self._stop_thumbnail_job()
         self._conversion_timer.stop()
         self._conversion_progress_timer.stop()
+        if self._skip_save_timer.isActive():
+            self._skip_save_timer.stop()
+            self._store_skip_extensions()
         self._conversion_started_at = None
         process = self._conversion_process
         if process is not None:
@@ -1997,6 +2041,12 @@ class OpenBrowserDialog(QDialog):
     def background_color(self) -> tuple[int, int, int]:
         """Return the preview viewer's background colour chosen by the user."""
         return self.preview.background_color
+
+
+def _parse_skip_extensions(text: str) -> tuple[str, ...]:
+    """Split "edr|dst, .EXP" into the skipped lowercase extensions."""
+    tokens = (token.strip().lstrip(".") for token in re.split(r"[|,;\s]+", text))
+    return tuple(token.casefold() for token in tokens if token)
 
 
 def _format_size(size: int) -> str:
