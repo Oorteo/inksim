@@ -67,6 +67,7 @@ def test_selected_designs_get_sidecar_thumbnails(qtbot, tmp_path, monkeypatch):
     second = tmp_path / "second.pes"
     first.write_bytes(sample.read_bytes())
     second.write_bytes(sample.read_bytes())
+    (tmp_path / "poster.svg").write_text(_SVG, encoding="utf-8")
 
     dialog = OpenBrowserDialog(None, tmp_path)
     qtbot.addWidget(dialog)
@@ -79,7 +80,8 @@ def test_selected_designs_get_sidecar_thumbnails(qtbot, tmp_path, monkeypatch):
     }
     dialog.file_list.setCurrentItem(items["first.pes"])
     dialog.file_list.setCurrentItem(items["second.pes"], QItemSelectionModel.SelectionFlag.Select)
-    assert dialog.selected_path == second
+    dialog.file_list.setCurrentItem(items["poster.svg"], QItemSelectionModel.SelectionFlag.Select)
+    assert dialog.selected_path == tmp_path / "poster.svg"
     assert dialog.thumbnails_button.isEnabled()
 
     dialog._create_thumbnails()
@@ -87,9 +89,10 @@ def test_selected_designs_get_sidecar_thumbnails(qtbot, tmp_path, monkeypatch):
     qtbot.waitUntil(lambda: dialog._thumbnail_job is None, timeout=20000)
     assert (tmp_path / "first.pes.png").is_file()
     assert (tmp_path / "second.pes.png").is_file()
-    assert "2 created" in dialog.activity_label.text()
+    assert (tmp_path / "poster.svg.png").is_file()
+    assert "3 created" in dialog.activity_label.text()
     assert not items["first.pes"].icon().isNull()
-    assert not items["second.pes"].icon().isNull()
+    assert not items["poster.svg"].icon().isNull()
     dialog.reject()
 
 
