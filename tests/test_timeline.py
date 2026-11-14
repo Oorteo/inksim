@@ -184,8 +184,8 @@ def test_zoomed_timeline_draws_stitch_lengths_symmetrically(qtbot):
     image = timeline.grab().toImage()
     main_bar, _, _ = timeline._layout_rects()
     center_y = main_bar.center().y()
-    first_x = main_bar.left() + int(0.5 / 2 * main_bar.width())
-    second_x = main_bar.left() + int(1.5 / 2 * main_bar.width())
+    first_x = timeline._view_position_x(1, main_bar)
+    second_x = timeline._view_position_x(2, main_bar)
     first_color_above = image.pixelColor(first_x, center_y - 4)
     first_color_below = image.pixelColor(first_x, center_y + 4)
     second_color_above = image.pixelColor(second_x, center_y - 9)
@@ -195,6 +195,25 @@ def test_zoomed_timeline_draws_stitch_lengths_symmetrically(qtbot):
     assert first_color_below.red() > first_color_below.blue()
     assert second_color_above.blue() > second_color_above.red()
     assert second_color_below.blue() > second_color_below.red()
+
+
+def test_one_stitch_step_places_needle_on_matching_waveform_mark(qtbot):
+    timeline, viewer = make_timeline(qtbot, total=2)
+    viewer.stitches_np = np.array(
+        [
+            [0, 0, 4, 0, 220, 30, 30],
+            [0, 0, 1, 0, 30, 70, 220],
+        ],
+        dtype=np.float32,
+    )
+    viewer.visible_count = 1
+
+    image = timeline.grab().toImage()
+    main_bar, _, _ = timeline._layout_rects()
+    stitch_x = timeline._view_position_x(1, main_bar)
+    mark_pixel = image.pixelColor(stitch_x, main_bar.center().y() - 9)
+
+    assert mark_pixel.red() > mark_pixel.blue()
 
 
 def test_zoomed_out_waveform_does_not_fill_stitch_rectangles(qtbot):
@@ -238,9 +257,9 @@ def test_stitches_above_waveform_scale_have_clipped_end_marks(qtbot):
 
     image = timeline.grab().toImage()
     main_bar, _, _ = timeline._layout_rects()
-    stitch_x = main_bar.center().x()
+    stitch_x = timeline._view_position_x(1, main_bar)
     cap_y = main_bar.center().y() - (main_bar.height() - 4) // 2
-    cap_pixel = image.pixelColor(stitch_x + 1, cap_y)
+    cap_pixel = image.pixelColor(stitch_x - 1, cap_y)
 
     assert cap_pixel.red() > cap_pixel.green() * 2
     assert cap_pixel.red() > cap_pixel.blue() * 2
