@@ -54,3 +54,55 @@ def test_regular_svg_is_not_mistaken_for_stitchblock_export(tmp_path):
     )
 
     assert read_embroidery_file(svg_path) is None
+
+
+def _write_palette_less_design(directory: Path) -> Path:
+    """Write the sample as DST, which stores stitches but no palette."""
+    pattern = emb.read(str(Path(__file__).parent / "data" / "sample.pes"))
+    target = directory / "design.dst"
+    emb.write_dst(pattern, str(target))
+    return target
+
+
+def _write_palette(path: Path, colors: list[str]) -> None:
+    palette = emb.EmbPattern()
+    for color in colors:
+        palette.add_thread(color)
+    emb.write(palette, str(path))
+
+
+def test_color_formats_are_not_offered_as_designs():
+    from inksim.formats import get_supported_input_extensions
+
+    extensions = get_supported_input_extensions()
+
+    assert not {"edr", "col", "inf"} & extensions
+    assert {"dst", "hus", "pes"} <= extensions
+
+
+def test_palette_less_design_borrows_the_sidecar_edr(tmp_path):
+    design = _write_palette_less_design(tmp_path)
+    _write_palette(tmp_path / "design.edr", ["#112233", "#445566", "#778899"])
+
+    pattern = read_embroidery_file(design)
+
+    assert [thread.hex_color() for thread in pattern.threadlist] == ["#112233", "#445566"]
+
+
+def test_sidecar_edr_wins_over_a_coloured_design_next_to_it(tmp_path):
+    design = _write_palette_less_design(tmp_path)
+    _write_palette(tmp_path / "design.edr", ["#112233", "#445566"])
+    twin = emb.read(str(Path(__file__).parent / "data" / "sample.pes"))
+    emb.write_pes(twin, str(tmp_path / "design.pes"))
+
+    pattern = read_embroidery_file(design)
+
+    assert [thread.hex_color() for thread in pattern.threadlist] == ["#112233", "#445566"]
+
+
+def test_design_without_sidecar_keeps_an_empty_palette(tmp_path):
+    design = _write_palette_less_design(tmp_path)
+
+    pattern = read_embroidery_file(design)
+
+    assert pattern.threadlist == []
