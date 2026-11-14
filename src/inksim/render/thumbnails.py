@@ -18,7 +18,7 @@ from typing import Any
 import numpy as np
 import pystitch as emb
 from PySide6.QtCore import QRect, QRectF, Qt
-from PySide6.QtGui import QImage, QImageReader, QPainter
+from PySide6.QtGui import QImage, QImageReader, QPainter, QTransform
 from PySide6.QtSvg import QSvgRenderer
 
 from ..constants import AUTO_THREAD_COLORS, DEFAULT_LINE_WIDTH_MM
@@ -37,6 +37,9 @@ SVG_RENDER_LIMIT = 3072
 # invalidate existing files, so "update" regenerates them without a full run.
 STAMP_KEY = "InkSimThumbnail"
 DETAILS_KEY = "InkSimDesign"
+# Thumbnails of designs stored sideways are rotated by hand. The angle lives in
+# the PNG so "update" and "regenerate" keep it.
+ROTATION_KEY = "InkSimRotation"
 STAMP_VERSION = 1
 
 
@@ -110,6 +113,41 @@ def thumbnail_is_current(source: Path, size: int = THUMBNAIL_SIZE) -> bool:
     except OSError:
         return False
     return QImageReader(str(thumbnail)).text(STAMP_KEY) == thumbnail_stamp(size)
+
+
+def thumbnail_rotation(source: Path) -> int:
+    """Return the rotation stored with the thumbnail of *source* (0/90/180/270)."""
+    text = QImageReader(str(thumbnail_path(source))).text(ROTATION_KEY)
+    try:
+        value = int(text) if text else 0
+    except ValueError:
+        return 0
+    return value % 360 if value % 90 == 0 else 0
+
+
+def rotate_thumbnail(source: Path, degrees: int) -> int | None:
+    """Rotate the sidecar image of *source* and remember the new angle."""
+    thumbnail = thumbnail_path(source)
+    if not thumbnail.is_file():
+        return None
+    reader = QImageReader(str(thumbnail))
+    stamp = reader.text(STAMP_KEY)
+    details = reader.text(DETAILS_KEY)
+    image = reader.read()
+    if image.isNull():
+        return None
+    angle = (thumbnail_rotation(source) + degrees) % 360
+    rotated = image.transformed(
+        QTransform().rotate(degrees), Qt.TransformationMode.FastTransformation
+    )
+    if stamp:
+        rotated.setText(STAMP_KEY, stamp)
+    if details:
+        rotated.setText(DETAILS_KEY, details)
+    rotated.setText(ROTATION_KEY, str(angle))
+    if not rotated.save(str(thumbnail), THUMBNAIL_FORMAT):  # type: ignore[call-overload]
+        return None
+    return angle
 
 
 def _thread_rgb(thread: Any, color_index: int) -> tuple[int, int, int]:
@@ -327,9 +365,15 @@ def write_thumbnail(
     thumbnail = thumbnail_path(source)
     if thumbnail_is_current(source) and not overwrite:
         return thumbnail
+    rotation = thumbnail_rotation(source)
     image, details = _render_with_details(source, size)
     if image is None:
         return None
+    if rotation:
+        image = image.transformed(
+            QTransform().rotate(rotation), Qt.TransformationMode.FastTransformation
+        )
+        image.setText(ROTATION_KEY, str(rotation))
     image.setText(STAMP_KEY, thumbnail_stamp(size))
     if details is not None:
         image.setText(DETAILS_KEY, details.encode())

@@ -500,6 +500,57 @@ def test_info_box_keeps_its_height_between_files(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_right_click_rotates_only_the_thumbnail_png(qtbot, tmp_path, monkeypatch):
+    """Rotation applies to the sidecar image, never to the design file."""
+    from inksim.render.thumbnails import thumbnail_path, thumbnail_rotation, write_thumbnail
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    design = tmp_path / "design.pes"
+    payload = (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    design.write_bytes(payload)
+    write_thumbnail(design)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "design.pes")
+    dialog._rotate_thumbnails(90)
+
+    assert design.read_bytes() == payload
+    assert thumbnail_rotation(design) == 90
+    assert thumbnail_path(design).is_file()
+    assert "90" in dialog.activity_label.text()
+
+    # "Original orientation" takes the stored angle back to zero.
+    dialog._rotate_thumbnails(None)
+
+    assert thumbnail_rotation(design) == 0
+    assert "original" in dialog.activity_label.text().lower()
+    dialog.reject()
+
+
+def test_thumbnail_menu_is_disabled_without_a_thumbnail(qtbot, tmp_path, monkeypatch):
+    from inksim.render.thumbnails import thumbnail_path
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "design.pes")
+    dialog._rotate_thumbnails(90)
+
+    assert not thumbnail_path(tmp_path / "design.pes").exists()
+    dialog.reject()
+
+
 def test_enter_opens_folders_and_arrows_stay_in_the_list(qtbot, tmp_path, monkeypatch):
     """Enter activates the current row, so the arrows can move between icons."""
     from PySide6.QtCore import Qt

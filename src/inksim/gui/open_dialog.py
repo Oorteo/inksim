@@ -98,9 +98,11 @@ from ..integration.paths import (
 from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
 from ..render.thumbnails import (
     THUMBNAIL_SIZE,
+    rotate_thumbnail,
     thumbnail_details,
     thumbnail_is_current,
     thumbnail_path,
+    thumbnail_rotation,
     write_thumbnail,
 )
 from .inkscape_dialog import InkscapeIntegrationDialog
@@ -599,6 +601,8 @@ class OpenBrowserDialog(QDialog):
         self.file_list.installEventFilter(self)
         self.file_list.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.file_list.setIconSize(QSize(THUMBNAIL_SIZE // 4, THUMBNAIL_SIZE // 4))
+        self.file_list.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.file_list.customContextMenuRequested.connect(self._show_thumbnail_menu)
         self.file_list.currentItemChanged.connect(self._on_current_item_changed)
         self.file_list.itemSelectionChanged.connect(self._update_actions)
         self.file_list.itemDoubleClicked.connect(self._on_item_double_clicked)
@@ -1589,6 +1593,71 @@ class OpenBrowserDialog(QDialog):
             return None
         self._thumbnail_icons[path] = icon
         return icon
+
+    def _show_thumbnail_menu(self, position: Any) -> None:
+        """Offer thumbnail rotation for the selected designs."""
+        targets = [path for path in self._selected_design_paths() if thumbnail_path(path).is_file()]
+        menu = QMenu(self.file_list)
+        actions = (
+            (_("dialog.open_browser.rotate_left", "Rotate thumbnail left"), -90),
+            (_("dialog.open_browser.rotate_right", "Rotate thumbnail right"), 90),
+            (_("dialog.open_browser.rotate_half", "Rotate thumbnail 180°"), 180),
+        )
+        if targets:
+            for label, degrees in actions:
+                action = menu.addAction(label)
+                action.triggered.connect(
+                    lambda _checked=False, angle=degrees: self._rotate_thumbnails(angle)
+                )
+            menu.addSeparator()
+            original = menu.addAction(
+                _("dialog.open_browser.rotate_original", "Original orientation")
+            )
+            original.setEnabled(any(thumbnail_rotation(path) for path in targets))
+            original.triggered.connect(lambda _checked=False: self._rotate_thumbnails(None))
+        else:
+            hint = menu.addAction(
+                _(
+                    "dialog.open_browser.rotate_needs_thumbnail",
+                    "Select a design with a thumbnail to rotate it",
+                )
+            )
+            hint.setEnabled(False)
+        menu.exec(self.file_list.viewport().mapToGlobal(position))
+
+    def _rotate_thumbnails(self, degrees: int | None) -> None:
+        """Rotate the PNG of every selected design; None restores the original."""
+        rotated: list[Path] = []
+        for path in self._selected_design_paths():
+            angle = -thumbnail_rotation(path) if degrees is None else degrees
+            if not angle or rotate_thumbnail(path, angle) is None:
+                continue
+            rotated.append(path)
+            self._thumbnail_icons.pop(path, None)
+        if not rotated:
+            return
+        self._refresh_icons(rotated)
+        if degrees is None:
+            note = _(
+                "dialog.open_browser.thumbnails_restored",
+                "Restored the original orientation of {count} thumbnail(s)",
+            ).format(count=len(rotated))
+        else:
+            note = _(
+                "dialog.open_browser.rotated_thumbnails",
+                "Rotated {count} thumbnail(s) by {degrees}°",
+            ).format(count=len(rotated), degrees=degrees)
+        self.activity_label.setText(note)
+        self.activity_label.setVisible(True)
+
+    def _refresh_icons(self, paths: list[Path]) -> None:
+        wanted = set(paths)
+        for row in range(self.file_list.count()):
+            item = self.file_list.item(row)
+            value = item.data(Qt.ItemDataRole.UserRole)
+            if not value or Path(value) not in wanted:
+                continue
+            item.setIcon(self._thumbnail_icon(Path(value)) or self._file_icon)
 
     def _selected_design_paths(self) -> list[Path]:
         paths: list[Path] = []
