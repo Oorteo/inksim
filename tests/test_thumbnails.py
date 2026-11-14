@@ -12,6 +12,7 @@ from PySide6.QtGui import QImage
 
 from inksim.render.thumbnails import (
     THUMBNAIL_SIZE,
+    _drawn_area,
     build_design_preview,
     thumbnail_is_current,
     thumbnail_path,
@@ -81,6 +82,25 @@ def test_write_thumbnail_renders_a_plain_svg(tmp_path):
         if image.pixelColor(x, y).alpha() > 0
     )
     assert drawn > 0
+
+
+def test_svg_thumbnail_crops_to_the_drawing(tmp_path):
+    """A small drawing on a large page still fills the thumbnail canvas."""
+    source = tmp_path / "page.svg"
+    source.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"'
+        ' viewBox="0 0 1000 1000">'
+        '<circle cx="500" cy="500" r="120" fill="#2c6fa8"/></svg>',
+        encoding="utf-8",
+    )
+
+    thumbnail = write_thumbnail(source)
+
+    assert thumbnail is not None
+    drawn = _drawn_area(QImage(str(thumbnail)))
+    assert drawn is not None
+    assert drawn.width() >= THUMBNAIL_SIZE * 0.7
+    assert drawn.height() >= THUMBNAIL_SIZE * 0.7
 
 
 def test_write_thumbnail_keeps_a_current_file(tmp_path):

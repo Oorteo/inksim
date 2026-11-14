@@ -17,7 +17,7 @@ from typing import Any
 
 import numpy as np
 import pystitch as emb
-from PySide6.QtCore import QRectF, Qt
+from PySide6.QtCore import QRect, QRectF, Qt
 from PySide6.QtGui import QImage, QPainter
 from PySide6.QtSvg import QSvgRenderer
 
@@ -28,6 +28,10 @@ from .export import render_export_image
 THUMBNAIL_SIZE = 256
 THUMBNAIL_FORMAT = "PNG"
 THUMBNAIL_RENDERER = "simple"
+# SVG renders are supersampled before scaling down; a higher factor renders
+# smoother edges and, because the gradients stay regular, smaller PNG files.
+SVG_SUPERSAMPLE = 12
+SVG_RENDER_LIMIT = 3072
 
 
 @dataclass(frozen=True)
@@ -151,29 +155,77 @@ def render_thumbnail(source: Path, size: int = THUMBNAIL_SIZE) -> QImage | None:
     )
 
 
+def _drawn_area(image: QImage) -> QRect | None:
+    """Return the bounding box of the visible pixels, or None for a blank image."""
+    width = image.width()
+    height = image.height()
+    stride = image.bytesPerLine()
+    raw = np.frombuffer(image.constBits(), dtype=np.uint8, count=stride * height)
+    alpha = raw.reshape(height, stride)[:, : width * 4].reshape(height, width, 4)[:, :, 3]
+    rows = np.flatnonzero(alpha.any(axis=1))
+    columns = np.flatnonzero(alpha.any(axis=0))
+    if rows.size == 0 or columns.size == 0:
+        return None
+    return QRect(
+        int(columns[0]),
+        int(rows[0]),
+        int(columns[-1] - columns[0] + 1),
+        int(rows[-1] - rows[0] + 1),
+    )
+
+
 def render_svg_thumbnail(source: Path, size: int = THUMBNAIL_SIZE) -> QImage | None:
-    """Rasterise a plain SVG with Qt, for documents that are not stitch files."""
+    """Rasterise a plain SVG with Qt, for documents that are not stitch files.
+
+    Documents often use a page much larger than the drawing itself, so the
+    render is cropped to the visible pixels before it is scaled into the
+    square canvas; otherwise the artwork ends up as a speck in empty space.
+    """
     renderer = QSvgRenderer(str(source))
     if not renderer.isValid():
         return None
-    image = QImage(size, size, QImage.Format_RGBA8888)
-    image.fill(Qt.GlobalColor.transparent)
+    render_size = min(max(size * SVG_SUPERSAMPLE, 512), SVG_RENDER_LIMIT)
+    render = QImage(render_size, render_size, QImage.Format_RGBA8888)
+    render.fill(Qt.GlobalColor.transparent)
     box = renderer.viewBoxF()
     if box.width() <= 0 or box.height() <= 0:
         fallback = renderer.defaultSize()
         box = QRectF(0, 0, fallback.width(), fallback.height())
     if box.width() <= 0 or box.height() <= 0:
         return None
-    margin = max(12.0, size * 0.06)
-    available = size - 2 * margin
-    scale = min(available / box.width(), available / box.height())
+    scale = min(render_size / box.width(), render_size / box.height())
     width = box.width() * scale
     height = box.height() * scale
-    painter = QPainter(image)
+    painter = QPainter(render)
     painter.setRenderHint(QPainter.RenderHint.Antialiasing)
     renderer.render(
         painter,
-        QRectF((size - width) / 2, (size - height) / 2, width, height),
+        QRectF((render_size - width) / 2, (render_size - height) / 2, width, height),
+    )
+    painter.end()
+
+    drawn = _drawn_area(render)
+    if drawn is None:
+        return None
+    margin = max(12.0, size * 0.06)
+    available = size - 2 * margin
+    fit = min(available / drawn.width(), available / drawn.height())
+    target_width = drawn.width() * fit
+    target_height = drawn.height() * fit
+    image = QImage(size, size, QImage.Format_RGBA8888)
+    image.fill(Qt.GlobalColor.transparent)
+    painter = QPainter(image)
+    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+    painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+    painter.drawImage(
+        QRectF(
+            (size - target_width) / 2,
+            (size - target_height) / 2,
+            target_width,
+            target_height,
+        ),
+        render,
+        QRectF(drawn),
     )
     painter.end()
     return image
