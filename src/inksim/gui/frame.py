@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import shutil
-import sys
 import time
 from collections.abc import Callable
 from pathlib import Path
@@ -84,38 +83,6 @@ from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
 from .viewer import EmbroideryViewerWidget
-
-_WINDOWS_FOCUS_RETRY_DELAYS_MS = (300, 900)
-
-
-def _force_foreground_on_windows(window: QWidget) -> None:
-    """Bring the window to the front despite the Windows foreground lock.
-
-    Windows only lets the foreground process change the foreground window, so
-    activating a window that was started by another program (Inkscape) is
-    ignored. Re-asserting the window with ``SetWindowPos`` is allowed for any
-    process and does not share an input queue the way ``AttachThreadInput``
-    does, which would stall this UI whenever the other program is busy.
-    """
-    if sys.platform != "win32":
-        return
-    try:
-        import ctypes
-
-        user32 = ctypes.windll.user32  # type: ignore[attr-defined]
-    except AttributeError:
-        return
-    handle = int(window.winId())
-    if not handle or user32.GetForegroundWindow() == handle:
-        return
-    # HWND_TOPMOST/HWND_NOTOPMOST are pseudo handles; a plain Python int is
-    # passed as a 32-bit value and the call fails, so wrap them explicitly.
-    hwnd_topmost = ctypes.c_void_p(-1)
-    hwnd_notopmost = ctypes.c_void_p(-2)
-    flags = 0x0001 | 0x0002 | 0x0040  # NOSIZE | NOMOVE | SHOWWINDOW
-    user32.SetWindowPos(handle, hwnd_topmost, 0, 0, 0, 0, flags)
-    user32.SetWindowPos(handle, hwnd_notopmost, 0, 0, 0, 0, flags)
-    user32.SetForegroundWindow(handle)
 
 
 class MainWindow(QMainWindow):
@@ -1038,18 +1005,6 @@ class MainWindow(QMainWindow):
         self.show_window(focus=False)
         self.raise_()
         self.activateWindow()
-        if sys.platform != "win32":
-            return
-        # Inkscape takes the focus back once the extension process it started
-        # finishes, so re-assert the window shortly after the first attempt.
-        _force_foreground_on_windows(self)
-        for delay_ms in _WINDOWS_FOCUS_RETRY_DELAYS_MS:
-            QTimer.singleShot(delay_ms, self._regain_foreground)
-
-    def _regain_foreground(self) -> None:
-        """Re-assert the foreground after another program tried to take it."""
-        if self.isVisible():
-            _force_foreground_on_windows(self)
 
     def _default_snapped_geometry(self) -> QRect:
         """Return a rectangle covering the right half of the primary screen."""
