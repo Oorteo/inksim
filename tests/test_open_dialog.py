@@ -156,6 +156,31 @@ def test_thumbnail_action_needs_a_selected_design(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_search_keeps_folders_navigable(qtbot, tmp_path, monkeypatch):
+    """Filtering files by suffix must not hide folders, or navigation stops."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "subfolder").mkdir()
+    (tmp_path / "design.dst").write_bytes(b"")
+    (tmp_path / "design.pes").write_bytes(b"")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.search_edit.setText(".dst")
+    qtbot.wait(10)
+
+    labels = [
+        dialog.file_list.item(index).text().rstrip("/") for index in range(dialog.file_list.count())
+    ]
+    assert "subfolder" in labels
+    assert ".." in labels
+    assert "design.dst" in labels
+    assert "design.pes" not in labels
+    dialog.reject()
+
+
 def test_browser_dialog_navigates_directories_with_arrow_keys(qtbot, tmp_path, monkeypatch):
     from PySide6.QtCore import Qt
 

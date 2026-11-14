@@ -982,11 +982,12 @@ class OpenBrowserDialog(QDialog):
         parent_directory = self.current_directory.parent
         for path in self._all_paths:
             kind = self._kind_for_path(path)
-            is_parent_entry = path == parent_directory and path != self.current_directory
-            if query and query not in path.name.casefold() and not is_parent_entry:
-                continue
             if kind == KIND_DIRECTORY:
+                # Folders stay in the list, otherwise a file search leaves no way
+                # to navigate to where the matches actually are.
                 visible.append(path)
+                continue
+            if query and query not in path.name.casefold():
                 continue
             if selected_filter != "all" and kind != selected_filter:
                 continue
