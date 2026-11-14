@@ -1049,6 +1049,11 @@ class OpenBrowserDialog(QDialog):
         self.file_list.setFont(self._mono_font if details else self._list_font)
         if mode == _VIEW_ICONS:
             self.file_list.setViewMode(QListView.ViewMode.IconMode)
+            # Per-item scrolling leaves the wheel step at a single pixel, so one
+            # notch would move the grid by three pixels and a folder of hundreds
+            # of icons would crawl. Scrolling per pixel follows the grid row.
+            self.file_list.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+            self.file_list.setUniformItemSizes(True)
             self.file_list.setResizeMode(QListView.ResizeMode.Adjust)
             self.file_list.setMovement(QListView.Movement.Static)
             self.file_list.setGridSize(QSize(self._icon_size + 16, self._icon_size + 8))
@@ -1056,6 +1061,8 @@ class OpenBrowserDialog(QDialog):
             self.file_list.setWordWrap(False)
         else:
             self.file_list.setViewMode(QListView.ViewMode.ListMode)
+            self.file_list.setUniformItemSizes(False)
+            self.file_list.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerItem)
             self.file_list.setGridSize(QSize())
             icon_size = self._icon_size if mode == _VIEW_ICONS_TEXT else 24
             self.file_list.setIconSize(QSize(icon_size, icon_size))
