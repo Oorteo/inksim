@@ -263,6 +263,10 @@
         "source": "Home",
         "translation": "Home"
     },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)",
+        "translation": "Icon size ({size} px)"
+    },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
         "translation": "Inkscape could not be started: {error}"

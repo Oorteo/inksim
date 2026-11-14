@@ -65,6 +65,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QScrollArea,
     QSizePolicy,
+    QSlider,
     QSplitter,
     QStackedWidget,
     QStyle,
@@ -120,6 +121,10 @@ _SELECTION_PREVIEW_DEBOUNCE_MS = 250
 _INITIAL_PREVIEW_ESTIMATE_SECONDS = 10.0
 _MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
 _PREVIEW_TIMING_CONFIG_KEY = "svg_preview_timing"
+_ICON_SIZE_CONFIG_KEY = "open_dialog_icon_size"
+_ICON_SIZE_MIN = 32
+_ICON_SIZE_MAX = 160
+_ICON_SIZE_DEFAULT = 96
 _FAVORITE_DIRECTORIES_CONFIG_KEY = "favorite_directories"
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
 _PLACE_PATH_ROLE = Qt.ItemDataRole.UserRole
@@ -416,6 +421,12 @@ class OpenBrowserDialog(QDialog):
         self._closing = False
         self._thumbnail_icons: dict[Path, QIcon] = {}
         self._thumbnail_job: ThumbnailJob | None = None
+        stored_icon_size = self.config.get(_ICON_SIZE_CONFIG_KEY, _ICON_SIZE_DEFAULT)
+        self._icon_size = (
+            max(_ICON_SIZE_MIN, min(_ICON_SIZE_MAX, stored_icon_size))
+            if isinstance(stored_icon_size, int)
+            else _ICON_SIZE_DEFAULT
+        )
         self._thumbnail_mode = _THUMBNAIL_UPDATE
         self._thumbnail_actions: dict[str, QAction] = {}
         self._thumbnail_pool = QThreadPool(self)
@@ -513,6 +524,25 @@ class OpenBrowserDialog(QDialog):
         root.addLayout(recent_row)
 
         search_row = QHBoxLayout()
+        search_row.addWidget(QLabel(_("dialog.open_browser.view", "View"), self))
+        self.view_combo = QComboBox(self)
+        self.view_combo.addItem(
+            _("dialog.open_browser.view.icons_text", "Icons & text"), _VIEW_ICONS_TEXT
+        )
+        self.view_combo.addItem(_("dialog.open_browser.view.icons", "Icons only"), _VIEW_ICONS)
+        self.view_combo.addItem(_("dialog.open_browser.view.details", "Details"), _VIEW_DETAILS)
+        self.view_combo.currentIndexChanged.connect(self._apply_view_mode)
+        search_row.addWidget(self.view_combo)
+        self.icon_size_slider = QSlider(Qt.Orientation.Horizontal, self)
+        self.icon_size_slider.setObjectName("iconSizeSlider")
+        self.icon_size_slider.setRange(_ICON_SIZE_MIN, _ICON_SIZE_MAX)
+        self.icon_size_slider.setValue(self._icon_size)
+        self.icon_size_slider.setFixedWidth(110)
+        self.icon_size_slider.setToolTip(
+            _("dialog.open_browser.icon_size", "Icon size ({size} px)").format(size=self._icon_size)
+        )
+        self.icon_size_slider.valueChanged.connect(self._on_icon_size_changed)
+        search_row.addWidget(self.icon_size_slider)
         self.search_edit = QLineEdit(self)
         self.search_edit.setPlaceholderText(_("dialog.open_browser.search", "Search files"))
         self.search_edit.textChanged.connect(self._apply_filter)
@@ -527,15 +557,6 @@ class OpenBrowserDialog(QDialog):
         self.filter_combo.addItem(_("dialog.open_browser.filter.csv", "CSV stitch data"), "csv")
         self.filter_combo.currentIndexChanged.connect(self._apply_filter)
         search_row.addWidget(self.filter_combo)
-        search_row.addWidget(QLabel(_("dialog.open_browser.view", "View"), self))
-        self.view_combo = QComboBox(self)
-        self.view_combo.addItem(
-            _("dialog.open_browser.view.icons_text", "Icons & text"), _VIEW_ICONS_TEXT
-        )
-        self.view_combo.addItem(_("dialog.open_browser.view.icons", "Icons only"), _VIEW_ICONS)
-        self.view_combo.addItem(_("dialog.open_browser.view.details", "Details"), _VIEW_DETAILS)
-        self.view_combo.currentIndexChanged.connect(self._apply_view_mode)
-        search_row.addWidget(self.view_combo)
         root.addLayout(search_row)
 
         self.file_list = QListWidget(self)
@@ -1008,23 +1029,36 @@ class OpenBrowserDialog(QDialog):
     def _view_mode(self) -> str:
         return self.view_combo.currentData() or _VIEW_ICONS_TEXT
 
+    def _on_icon_size_changed(self, size: int) -> None:
+        self._icon_size = size
+        self.icon_size_slider.setToolTip(
+            _("dialog.open_browser.icon_size", "Icon size ({size} px)").format(size=size)
+        )
+        try:
+            self.config.set(_ICON_SIZE_CONFIG_KEY, size)
+        except OSError as ex:
+            logger.warning("Could not store the icon size: %s", ex)
+        self._apply_view_mode()
+
     def _apply_view_mode(self, *_args: object) -> None:
         """Switch between the compact list, the icon grid and the detail list."""
         mode = self._view_mode()
         details = mode == _VIEW_DETAILS
         self.details_header.setVisible(details)
+        self.icon_size_slider.setEnabled(not details)
         self.file_list.setFont(self._mono_font if details else self._list_font)
         if mode == _VIEW_ICONS:
             self.file_list.setViewMode(QListView.ViewMode.IconMode)
             self.file_list.setResizeMode(QListView.ResizeMode.Adjust)
             self.file_list.setMovement(QListView.Movement.Static)
-            self.file_list.setGridSize(QSize(112, 104))
-            self.file_list.setIconSize(QSize(96, 96))
+            self.file_list.setGridSize(QSize(self._icon_size + 16, self._icon_size + 8))
+            self.file_list.setIconSize(QSize(self._icon_size, self._icon_size))
             self.file_list.setWordWrap(False)
         else:
             self.file_list.setViewMode(QListView.ViewMode.ListMode)
             self.file_list.setGridSize(QSize())
-            self.file_list.setIconSize(QSize(56, 56) if mode == _VIEW_ICONS_TEXT else QSize(24, 24))
+            icon_size = self._icon_size if mode == _VIEW_ICONS_TEXT else 24
+            self.file_list.setIconSize(QSize(icon_size, icon_size))
             self.file_list.setWordWrap(mode == _VIEW_ICONS_TEXT)
         width = max(self.file_preview_splitter.width(), 900)
         share = {_VIEW_ICONS: 0.62, _VIEW_DETAILS: 0.58}.get(mode, 0.30)
@@ -1098,7 +1132,7 @@ class OpenBrowserDialog(QDialog):
             item = QListWidgetItem(icon, label)
             if self._view_mode() == _VIEW_ICONS:
                 # Keep the selection box around the icon instead of an empty text row.
-                item.setSizeHint(QSize(96, 96))
+                item.setSizeHint(QSize(self._icon_size, self._icon_size))
             item.setData(Qt.ItemDataRole.UserRole, str(path))
             item.setToolTip(_sanitize_path_text(str(path)))
             self.file_list.addItem(item)

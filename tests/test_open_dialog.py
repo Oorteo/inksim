@@ -215,6 +215,54 @@ def test_icons_only_view_hides_names(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_icon_size_slider_scales_the_list_and_is_remembered(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    modes = [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())]
+    dialog.view_combo.setCurrentIndex(modes.index("icons"))
+    dialog.icon_size_slider.setValue(48)
+    qtbot.wait(10)
+
+    assert dialog.file_list.iconSize().width() == 48
+    assert dialog.file_list.gridSize().width() == 64
+    assert config.get("open_dialog_icon_size") == 48
+
+    dialog.view_combo.setCurrentIndex(modes.index("details"))
+    assert not dialog.icon_size_slider.isEnabled()
+
+    dialog.view_combo.setCurrentIndex(modes.index("icons_text"))
+    assert dialog.file_list.iconSize().width() == 48
+    dialog.reject()
+
+
+def test_icon_size_is_restored_from_the_config(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    config.set("open_dialog_icon_size", 72)
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+
+    assert dialog.icon_size_slider.value() == 72
+    assert dialog.file_list.iconSize().width() == 72
+    dialog.reject()
+
+
 def test_search_keeps_folders_navigable(qtbot, tmp_path, monkeypatch):
     """Filtering files by suffix must not hide folders, or navigation stops."""
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
