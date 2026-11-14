@@ -215,10 +215,9 @@ def test_icons_only_view_hides_names(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
-def test_icons_only_view_captions_the_folders(qtbot, tmp_path, monkeypatch):
-    """Empty folder cells are hard to tell apart, so their names are drawn on."""
-
-    from inksim.gui.open_dialog import _FOLDER_LABEL_ROLE
+def test_icons_only_view_captions_every_cell(qtbot, tmp_path, monkeypatch):
+    """Names are drawn under the icons, so an empty grid is never ambiguous."""
+    from inksim.gui.open_dialog import _CAPTION_ROLE
 
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
     (tmp_path / "designs").mkdir()
@@ -237,13 +236,12 @@ def test_icons_only_view_captions_the_folders(qtbot, tmp_path, monkeypatch):
     qtbot.wait(30)
 
     captions = [
-        dialog.file_list.item(row).data(_FOLDER_LABEL_ROLE)
-        for row in range(dialog.file_list.count())
+        dialog.file_list.item(row).data(_CAPTION_ROLE) for row in range(dialog.file_list.count())
     ]
     assert "designs" in captions
     assert ".." in captions
-    # The design keeps an empty cell: its thumbnail already identifies it.
-    assert captions.count(None) == 1
+    assert "design.pes" in captions
+    # The item text stays empty: the delegate draws the caption itself.
     assert all(dialog.file_list.item(row).text() == "" for row in range(dialog.file_list.count()))
     dialog.reject()
 

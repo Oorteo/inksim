@@ -28,6 +28,7 @@ from PySide6.QtCore import (
     QPointF,
     QProcess,
     QProcessEnvironment,
+    QRect,
     QRectF,
     QRunnable,
     QSize,
@@ -43,6 +44,7 @@ from PySide6.QtGui import (
     QColor,
     QFont,
     QFontDatabase,
+    QFontMetrics,
     QIcon,
     QImage,
     QMouseEvent,
@@ -147,63 +149,96 @@ _FAVORITE_DIRECTORIES_CONFIG_KEY = "favorite_directories"
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
 _PLACE_PATH_ROLE = Qt.ItemDataRole.UserRole
 _PLACE_FAVORITE_ROLE = Qt.ItemDataRole.UserRole + 1
-# Folders get their name drawn over the icon in the icon-only grid.
-_FOLDER_LABEL_ROLE = Qt.ItemDataRole.UserRole + 2
+# The icon-only grid draws the name under each icon instead of the item text.
+_CAPTION_ROLE = Qt.ItemDataRole.UserRole + 2
 
 
 class _IconSelectionDelegate(QStyledItemDelegate):
-    """Make selected icons obvious in the icon-only grid.
+    """Draw the icon-only grid: tile, caption and a visible selection.
 
-    A thumbnail covers its whole cell, so the selection background Qt paints
-    underneath is barely visible. A frame and a light tint over the image show
-    the selection without touching the thumbnail files.
+    Thumbnails cover their whole cell, so plain white thread disappears on a
+    light background and Qt's selection fill hides under the image. Every icon
+    therefore sits on a neutral tile, carries its name underneath and gets a
+    frame plus a tint when selected. The thumbnail files stay untouched.
     """
 
     def paint(self, painter: QPainter, option: Any, index: Any) -> None:  # type: ignore[override]
         view = option.widget
-        icon_mode = isinstance(view, QListView) and view.viewMode() == QListView.ViewMode.IconMode
-        show_folder_name = bool(icon_mode and index.data(_FOLDER_LABEL_ROLE))
-        if show_folder_name:
-            # The name is drawn over the icon, so the default text must not
-            # squeeze itself under it.
-            option = QStyleOptionViewItem(option)
-            option.text = ""
-        super().paint(painter, option, index)
-        if not icon_mode:
+        if not isinstance(view, QListView) or view.viewMode() != QListView.ViewMode.IconMode:
+            super().paint(painter, option, index)
             return
-        if option.state & QStyle.StateFlag.State_Selected:
-            highlight = option.palette.color(QPalette.ColorRole.Highlight)
-            painter.save()
-            painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
-            rect = option.rect.adjusted(1, 1, -1, -1)
-            tint = QColor(highlight)
-            tint.setAlpha(70)
-            painter.fillRect(rect, tint)
-            painter.setPen(QPen(highlight, 3))
-            painter.drawRoundedRect(rect.adjusted(2, 2, -2, -2), 3, 3)
-            painter.restore()
-        if show_folder_name:
-            self._paint_caption(painter, option, str(index.data(_FOLDER_LABEL_ROLE)))
-
-    @staticmethod
-    def _paint_caption(painter: QPainter, option: Any, name: str) -> None:
-        """Draw the folder name on a readable strip along the icon's bottom."""
-        painter.save()
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+        caption = str(index.data(_CAPTION_ROLE) or "")
         font = QFont(option.font)
         point_size = font.pointSizeF()
         font.setPointSizeF(max(6.0, point_size * 0.8) if point_size > 0 else 7.0)
+        caption_font = font
+        text_option = QStyleOptionViewItem(option)
+        text_option.text = ""
+        band = QFontMetrics(caption_font).height() + 2 if caption else 0
+        icon_rect = QRect(
+            option.rect.left(), option.rect.top(), option.rect.width(), option.rect.height() - band
+        )
+        text_option.rect = icon_rect.adjusted(2, 2, -2, -2)
+
+        painter.save()
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+        painter.fillRect(
+            text_option.rect,
+            self._tile_color(option.palette, icon_rect.width(), icon_rect.height()),
+        )
+        painter.restore()
+        super().paint(painter, text_option, index)
+
+        if option.state & QStyle.StateFlag.State_Selected:
+            self._paint_selection(painter, option, icon_rect)
+        if caption:
+            self._paint_caption(painter, option, icon_rect, caption, caption_font)
+
+    @staticmethod
+    def _tile_color(palette: QPalette, width: int, height: int) -> QColor:
+        """Return a neutral tile so white thread stays visible on light themes."""
+        del width, height
+        tile = QColor(palette.color(QPalette.ColorRole.Base))
+        if tile.lightnessF() > 0.5:
+            tile = tile.darker(112)
+        else:
+            tile = tile.lighter(140)
+        return tile
+
+    @staticmethod
+    def _paint_selection(painter: QPainter, option: Any, icon_rect: QRect) -> None:
+        highlight = option.palette.color(QPalette.ColorRole.Highlight)
+        painter.save()
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+        rect = icon_rect.adjusted(1, 1, -1, -1)
+        tint = QColor(highlight)
+        tint.setAlpha(70)
+        painter.fillRect(rect, tint)
+        painter.setPen(QPen(highlight, 3))
+        painter.drawRoundedRect(rect.adjusted(2, 2, -2, -2), 3, 3)
+        painter.restore()
+
+    @staticmethod
+    def _paint_caption(
+        painter: QPainter,
+        option: Any,
+        icon_rect: QRect,
+        caption: str,
+        font: QFont,
+    ) -> None:
+        """Draw the name in a small line under the icon."""
+        painter.save()
         painter.setFont(font)
         metrics = painter.fontMetrics()
-        rect = option.rect.adjusted(2, 2, -2, -2)
-        text = metrics.elidedText(name, Qt.TextElideMode.ElideMiddle, rect.width() - 8)
-        line_height = metrics.height()
-        strip = rect.adjusted(0, rect.height() - line_height - 2, 0, 0)
-        background = QColor(option.palette.color(QPalette.ColorRole.Base))
-        background.setAlpha(215)
-        painter.fillRect(strip, background)
+        strip = QRect(
+            option.rect.left() + 1,
+            icon_rect.bottom(),
+            option.rect.width() - 2,
+            metrics.height() + 1,
+        )
+        text = metrics.elidedText(caption, Qt.TextElideMode.ElideMiddle, strip.width() - 4)
         painter.setPen(option.palette.color(QPalette.ColorRole.Text))
-        painter.drawText(strip, Qt.AlignmentFlag.AlignCenter, text)
+        painter.drawText(strip, Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop, text)
         painter.restore()
 
 
@@ -1150,6 +1185,13 @@ class OpenBrowserDialog(QDialog):
         self.add_favorite_button.setEnabled(self.current_directory not in self.favorite_directories)
         self._apply_filter()
 
+    def _caption_height(self) -> int:
+        """Return the space the small file name needs under an icon."""
+        font = QFont(self._list_font)
+        point_size = font.pointSizeF()
+        font.setPointSizeF(max(6.0, point_size * 0.8) if point_size > 0 else 7.0)
+        return QFontMetrics(font).height() + 2
+
     def _view_mode(self) -> str:
         return self.view_combo.currentData() or _VIEW_ICONS_TEXT
 
@@ -1199,7 +1241,9 @@ class OpenBrowserDialog(QDialog):
             self.file_list.setUniformItemSizes(True)
             self.file_list.setResizeMode(QListView.ResizeMode.Adjust)
             self.file_list.setMovement(QListView.Movement.Static)
-            self.file_list.setGridSize(QSize(self._icon_size + 16, self._icon_size + 8))
+            self.file_list.setGridSize(
+                QSize(self._icon_size + 16, self._icon_size + self._caption_height() + 8)
+            )
             self.file_list.setIconSize(QSize(self._icon_size, self._icon_size))
             self.file_list.setWordWrap(False)
         else:
@@ -1277,17 +1321,17 @@ class OpenBrowserDialog(QDialog):
                 if kind == KIND_DIRECTORY
                 else path.name
             )
-            caption = label.rstrip("/") if kind == KIND_DIRECTORY else ""
+            caption = label.rstrip("/") if kind == KIND_DIRECTORY else path.name
             if self._view_mode() == _VIEW_ICONS:
                 label = ""
             elif self._view_mode() == _VIEW_DETAILS:
                 label = self._details_line(path, kind, label)
             item = QListWidgetItem(icon, label)
             if self._view_mode() == _VIEW_ICONS:
-                # Keep the selection box around the icon instead of an empty text row.
-                item.setSizeHint(QSize(self._icon_size, self._icon_size))
-                if caption:
-                    item.setData(_FOLDER_LABEL_ROLE, caption)
+                # The delegate draws the name under the icon, so the item keeps
+                # an empty text and its cell grows by one caption line.
+                item.setSizeHint(QSize(self._icon_size, self._icon_size + self._caption_height()))
+                item.setData(_CAPTION_ROLE, caption)
             item.setData(Qt.ItemDataRole.UserRole, str(path))
             item.setToolTip(_sanitize_path_text(str(path)))
             self.file_list.addItem(item)
