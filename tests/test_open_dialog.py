@@ -215,6 +215,48 @@ def test_icons_only_view_hides_names(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_icons_only_view_scrolls_faster_than_a_few_pixels_per_notch(qtbot, tmp_path, monkeypatch):
+    """A whole grid of icons must not crawl by three pixels per wheel notch."""
+    from PySide6.QtCore import QPoint, QPointF, Qt
+    from PySide6.QtGui import QWheelEvent
+    from PySide6.QtWidgets import QApplication
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    for index in range(60):
+        (tmp_path / f"design{index:02d}.pes").write_bytes(sample)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    qtbot.wait(10)
+
+    scrollbar = dialog.file_list.verticalScrollBar()
+    assert scrollbar.maximum() > 0
+    scrollbar.setValue(0)
+    for _ in range(3):
+        event = QWheelEvent(
+            QPointF(10.0, 10.0),
+            QPointF(10.0, 10.0),
+            QPoint(0, 0),
+            QPoint(0, -120),
+            Qt.MouseButton.NoButton,
+            Qt.KeyboardModifier.NoModifier,
+            Qt.ScrollPhase.NoScrollPhase,
+            False,
+        )
+        QApplication.sendEvent(dialog.file_list.viewport(), event)
+    qtbot.wait(10)
+
+    assert scrollbar.value() > 20
+    dialog.reject()
+
+
 def test_icon_size_slider_scales_the_list_and_is_remembered(qtbot, tmp_path, monkeypatch):
     from inksim.config import Config
 
