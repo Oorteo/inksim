@@ -190,3 +190,46 @@ def test_build_design_preview_handles_an_empty_pattern():
 
     assert preview.stitches.shape == (0, 7)
     assert preview.thread_colors == 0
+
+
+def test_rotating_a_thumbnail_is_remembered_and_survives_regeneration(tmp_path):
+    """The angle lives in the PNG, so update and regenerate keep the rotation."""
+    from PySide6.QtCore import Qt
+    from PySide6.QtGui import QImage, QTransform
+
+    from inksim.render.thumbnails import (
+        rotate_thumbnail,
+        thumbnail_path,
+        thumbnail_rotation,
+        write_thumbnail,
+    )
+
+    source = tmp_path / "design.pes"
+    source.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    write_thumbnail(source)
+    original = QImage(str(thumbnail_path(source)))
+
+    assert rotate_thumbnail(source, 90) == 90
+    assert thumbnail_rotation(source) == 90
+    quarter = original.transformed(
+        QTransform().rotate(90), Qt.TransformationMode.FastTransformation
+    )
+    assert QImage(str(thumbnail_path(source))) == quarter
+
+    assert rotate_thumbnail(source, 90) == 180
+    write_thumbnail(source, overwrite=True)
+
+    assert thumbnail_rotation(source) == 180
+    half = original.transformed(QTransform().rotate(180), Qt.TransformationMode.FastTransformation)
+    assert QImage(str(thumbnail_path(source))) == half
+
+
+def test_thumbnail_rotation_defaults_to_zero(tmp_path):
+    from inksim.render.thumbnails import rotate_thumbnail, thumbnail_rotation, write_thumbnail
+
+    source = tmp_path / "design.pes"
+    source.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    write_thumbnail(source)
+
+    assert thumbnail_rotation(source) == 0
+    assert rotate_thumbnail(tmp_path / "missing.pes", 90) is None

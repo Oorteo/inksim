@@ -169,6 +169,11 @@ file; the answer is remembered as `save_palette_sidecar` (`ask`, `always` or
 `never`) and can be changed later in `File > Colors on save` or in the
 configuration file.
 
+Right-clicking a selection in the open dialog rotates the **thumbnail images**
+only — 90° left, 90° right, 180°, or back to the original orientation. The
+rotation is written into the PNG metadata next to the pixels, so updating or
+regenerating thumbnails keeps it, and the design file itself is never touched.
+
 ## Rendering Notes
 
 Loaded designs are kept in a NumPy array with one row per stitch segment:

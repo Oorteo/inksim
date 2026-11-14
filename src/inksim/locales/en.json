@@ -343,6 +343,30 @@
         "source": "Remove favorite",
         "translation": "Remove favorite"
     },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Rotate thumbnail 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Rotate thumbnail left"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Select a design with a thumbnail to rotate it"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Original orientation"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Rotate thumbnail right"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Rotated {count} thumbnail(s) by {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Search files"
@@ -426,6 +450,10 @@
     "dialog.open_browser.thumbnails_progress": {
         "source": "Thumbnails: {done}/{total}",
         "translation": "Thumbnails: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Restored the original orientation of {count} thumbnail(s)"
     },
     "dialog.open_browser.thumbnails_running": {
         "source": "Creating thumbnails…",
