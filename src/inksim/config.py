@@ -55,6 +55,7 @@ class Config:
         self._lock_path = Path(str(self.path) + ".lock")
         self._lock = FileLock(str(self._lock_path))
         self._data: dict[str, Any] = {}
+        self._pending: dict[str, Any] = {}
         if self._load():
             with self._lock.acquire(timeout=5.0):
                 self._load()
@@ -102,18 +103,23 @@ class Config:
             raise
 
     def save(self, timeout: float = 5.0) -> None:
-        """Persist the current in-memory data atomically.
+        """Persist the values this instance changed, atomically.
+
+        The file is re-read first and only the keys changed through this
+        instance are applied on top. Merging the whole in-memory snapshot would
+        let a long-lived instance (the main window) roll back newer values
+        written by a short-lived one (the open dialog remembering its view).
 
         Args:
             timeout: Seconds to wait for the file lock. Raises ``Timeout``
                 if the lock cannot be acquired.
         """
         with self._lock.acquire(timeout=timeout):
-            # Re-read before writing so concurrent edits are less likely to be
-            # overwritten blindly, then merge our current values on top.
-            old_data = dict(self._data)
+            pending = dict(self._pending)
             self._load()
-            self._data.update(old_data)
+            if pending:
+                self._data.update(pending)
+                self._pending.clear()
             self._save_locked()
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -123,6 +129,7 @@ class Config:
     def set(self, key: str, value: Any) -> None:
         """Set *key* to *value* and persist the file."""
         self._data[key] = value
+        self._pending[key] = value
         self.save()
 
     def delete(self, key: str) -> None:
@@ -133,6 +140,7 @@ class Config:
         key from the on-disk copy.
         """
         with self._lock.acquire(timeout=5.0):
+            self._pending.pop(key, None)
             self._load()
             self._data.pop(key, None)
             self._save_locked()
@@ -140,6 +148,7 @@ class Config:
     def set_values(self, values: dict[str, Any]) -> None:
         """Update several top-level keys at once and persist once."""
         self._data.update(values)
+        self._pending.update(values)
         self.save()
 
     def update(self, key: str, updater: Callable[[Any], Any]) -> None:
@@ -150,6 +159,7 @@ class Config:
         (or ``None`` if absent) and must return the new value.
         """
         with self._lock.acquire(timeout=5.0):
+            self._pending.pop(key, None)
             self._load()
             old_value = self._data.get(key)
             self._data[key] = updater(old_value)
@@ -174,6 +184,7 @@ class Config:
             self._data = _sanitize_config_value(tomllib.loads(text))
         except Exception as exc:
             raise ValueError(f"Invalid TOML: {exc}") from exc
+        self._pending.clear()
         with self._lock.acquire(timeout=5.0):
             self._save_locked()
 
@@ -184,6 +195,7 @@ class Config:
         so existing sibling keys are preserved.
         """
         self._data = self._merge(self._data, data)
+        self._pending.update({key: self._data[key] for key in data if key in self._data})
         self.save()
 
     @staticmethod

@@ -136,3 +136,24 @@ def test_config_lock_file_is_created_next_to_config(tmp_path):
     config.set("x", 1)
     assert config._lock_path == path.parent / "config.toml.lock"
     assert config._lock_path.exists()
+
+
+def test_stale_instance_does_not_roll_back_newer_values(tmp_path):
+    """A long-lived window config must not undo a dialog's fresh settings."""
+    from inksim.config import Config
+
+    path = tmp_path / "config.toml"
+    window_config = Config(path)
+    window_config.set("open_dialog_icon_size", 96)
+
+    dialog_config = Config(path)
+    dialog_config.set("open_dialog_icon_size", 140)
+    dialog_config.set("open_dialog_view", "icons")
+
+    # The main window writes something else later; its snapshot still holds 96.
+    window_config.set("last_directory", "~/brother")
+
+    stored = Config(path)
+    assert stored.get("open_dialog_icon_size") == 140
+    assert stored.get("open_dialog_view") == "icons"
+    assert stored.get("last_directory") == "~/brother"

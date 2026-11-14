@@ -178,8 +178,16 @@ def test_load_palette_action_stores_colors_next_to_the_open_design(qtbot, tmp_pa
     qtbot.addWidget(window)
     window.config = Config(tmp_path / "config.toml")
     assert window.open_file(str(design), precompute_density=False)
+    # The action reloads the viewer to pick the new colors up; that reload is
+    # covered elsewhere, and stubbing it keeps GL out of this menu test.
+    reload_calls: list[str] = []
+    monkeypatch.setattr(
+        window.viewer, "load_design", lambda path, **kwargs: reload_calls.append(path) or True
+    )
 
     window.load_palette_for_design()
+
+    assert reload_calls == [str(design)]
 
     sidecar = tmp_path / "design.edr"
     assert sidecar.is_file()
