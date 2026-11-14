@@ -252,8 +252,8 @@
         "translation": "Double-click the folder to browse its files."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Double-click the folder to browse its files."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Press Enter or double-click the folder to browse its files."
     },
     "dialog.open_browser.go": {
         "source": "Go",
