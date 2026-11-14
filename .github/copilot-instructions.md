@@ -15,3 +15,8 @@
   developer put there by hand. Never delete untracked files there and never
   `git add -A` them into a commit. Restore generated fixture churn with
   `git checkout -- tests/data` only; leave anything else alone.
+- The real user config lives in `~/.config/inksim/config.toml`. Tests are
+  isolated from it (per-test `DEFAULT_CONFIG_PATH` plus a session
+  `XDG_CONFIG_HOME`), so ad-hoc GUI or CLI runs must do the same: point
+  `Config` at a temp file or export a throwaway `XDG_CONFIG_HOME`. Never leave
+  probe directories in the user's `recent_directories`.
