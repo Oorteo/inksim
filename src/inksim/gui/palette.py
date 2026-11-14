@@ -19,16 +19,28 @@ from PySide6.QtWidgets import QCheckBox, QFileDialog, QMessageBox, QWidget
 from ..debug import logger
 from ..formats import (
     get_palette_output_formats,
+    get_supported_input_extensions,
     palette_sidecar_path,
     read_palette_file,
     write_palette_file,
 )
 from ..i18n import _
 
-PALETTE_FILTER = (
-    "Palette files (*.edr *.col *.inf);;Designs with colours (*.hus *.pes *.jef *.vp3 *.sew "
-    "*.shv);;All files (*)"
-)
+
+def palette_file_filter() -> str:
+    """List palette files and every design format, since any may store colors."""
+    palettes = " ".join(f"*.{extension}" for extension in ("edr", "col", "inf"))
+    designs = " ".join(
+        f"*.{extension}" for extension in sorted(get_supported_input_extensions() | {"svg"})
+    )
+    return ";;".join(
+        (
+            f"{_('dialog.palette.filter.palette', 'Palette files')} ({palettes})",
+            f"{_('dialog.palette.filter.designs', 'Design files (colors when stored)')}"
+            f" ({designs})",
+            f"{_('dialog.palette.filter.all', 'All files')} (*)",
+        )
+    )
 
 
 def _title() -> str:
@@ -41,7 +53,7 @@ def choose_palette_file(parent: QWidget | None, directory: Path) -> Path | None:
         parent,
         _("dialog.palette.choose", "Choose a palette or a colored design"),
         str(directory),
-        PALETTE_FILTER,
+        palette_file_filter(),
     )
     if not path:
         return None
