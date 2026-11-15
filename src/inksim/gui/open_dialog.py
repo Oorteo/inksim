@@ -23,6 +23,7 @@ from filelock import Timeout as FileLockTimeout
 from PySide6.QtCore import (
     QDir,
     QEvent,
+    QFileSystemWatcher,
     QObject,
     QPoint,
     QPointF,
@@ -47,12 +48,14 @@ from PySide6.QtGui import (
     QFontMetrics,
     QIcon,
     QImage,
+    QKeySequence,
     QMouseEvent,
     QPainter,
     QPaintEvent,
     QPalette,
     QPen,
     QPixmap,
+    QShortcut,
     QWheelEvent,
 )
 from PySide6.QtSvg import QSvgRenderer
@@ -135,6 +138,7 @@ _MAX_SVG_THUMBNAIL_BYTES = 20 * 1024 * 1024
 _CONVERSION_TIMEOUT_MS = 180_000
 _CONVERSION_PROGRESS_INTERVAL_MS = 100
 _SELECTION_PREVIEW_DEBOUNCE_MS = 250
+_DIRECTORY_REFRESH_DEBOUNCE_MS = 200
 _DETAILS_LINES = 6
 _INITIAL_PREVIEW_ESTIMATE_SECONDS = 10.0
 _MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
@@ -578,6 +582,14 @@ class OpenBrowserDialog(QDialog):
         self._skip_save_timer.setInterval(_SKIP_SAVE_DEBOUNCE_MS)
         self._skip_save_timer.timeout.connect(self._store_skip_extensions)
 
+        self._directory_watcher = QFileSystemWatcher(self)
+        self._directory_watcher.directoryChanged.connect(self._on_directory_changed)
+        self._directory_refresh_timer = QTimer(self)
+        self._directory_refresh_timer.setSingleShot(True)
+        self._directory_refresh_timer.setInterval(_DIRECTORY_REFRESH_DEBOUNCE_MS)
+        self._directory_refresh_timer.timeout.connect(self.refresh_files)
+        self._directory_watch_warning_path: Path | None = None
+
         self._folder_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_DirIcon)
         self._file_icon = self.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon)
         self._place_items: list[QListWidgetItem] = []
@@ -585,7 +597,7 @@ class OpenBrowserDialog(QDialog):
         self._build_ui(recent_directories or [])
         self._refresh_places()
         self._update_tool_status()
-        self.refresh_files()
+        self.refresh_files(preserve_view=False)
         QTimer.singleShot(0, self.file_list.setFocus)
 
     def _build_ui(self, recent_directories: Sequence[str]) -> None:
@@ -637,6 +649,15 @@ class OpenBrowserDialog(QDialog):
         self.edit_path_button = QPushButton(_("dialog.open_browser.edit_path", "Edit path"), self)
         self.edit_path_button.clicked.connect(self._toggle_path_edit)
         directory_row.addWidget(self.edit_path_button)
+        self.refresh_button = QPushButton(_("dialog.open_browser.refresh", "Refresh"), self)
+        self.refresh_button.setToolTip(
+            _("dialog.open_browser.refresh_hint", "Refresh this folder (Ctrl+R)")
+        )
+        self.refresh_button.clicked.connect(self._refresh_current_directory)
+        directory_row.addWidget(self.refresh_button)
+        self.refresh_shortcut = QShortcut(QKeySequence("Ctrl+R"), self)
+        self.refresh_shortcut.setContext(Qt.ShortcutContext.WindowShortcut)
+        self.refresh_shortcut.activated.connect(self._refresh_current_directory)
         self.add_favorite_button = QPushButton(
             _("dialog.open_browser.add_favorite", "Add to places"), self
         )
@@ -1165,7 +1186,40 @@ class OpenBrowserDialog(QDialog):
         if kind == KIND_SVG:
             self._show_svg_preview(path)
 
-    def refresh_files(self) -> None:
+    def _refresh_current_directory(self, checked: bool = False) -> None:
+        del checked
+        self.refresh_files()
+
+    def _on_directory_changed(self, path: str) -> None:
+        if Path(path).resolve() == self.current_directory:
+            self._directory_refresh_timer.start()
+
+    def _watch_current_directory(self) -> None:
+        for watched_path in self._directory_watcher.directories():
+            if Path(watched_path).resolve() != self.current_directory:
+                self._directory_watcher.removePath(watched_path)
+
+        if not self.current_directory.is_dir():
+            return
+        if any(
+            Path(path).resolve() == self.current_directory
+            for path in self._directory_watcher.directories()
+        ):
+            return
+        if not self._directory_watcher.addPath(str(self.current_directory)):
+            if self._directory_watch_warning_path != self.current_directory:
+                logger.warning(
+                    "Could not watch open dialog directory for changes: %s",
+                    self.current_directory,
+                )
+                self._directory_watch_warning_path = self.current_directory
+            return
+        self._directory_watch_warning_path = None
+
+    def refresh_files(self, preserve_view: bool = True) -> None:
+        self._directory_refresh_timer.stop()
+        self._watch_current_directory()
+        scroll_position = self.file_list.verticalScrollBar().value() if preserve_view else 0
         if not self.current_directory.is_dir():
             self._show_message(
                 _("dialog.open_browser.invalid_folder", "This folder is not accessible.")
@@ -1196,9 +1250,12 @@ class OpenBrowserDialog(QDialog):
             key=lambda path: path.name.casefold(),
         )
         self._all_paths = [*parent_entry, *directories, *files]
+        self._thumbnail_icons.clear()
         self._refresh_breadcrumbs()
         self.add_favorite_button.setEnabled(self.current_directory not in self.favorite_directories)
         self._apply_filter()
+        if preserve_view:
+            self.file_list.verticalScrollBar().setValue(scroll_position)
 
     def _caption_height(self) -> int:
         """Return the space the small file name needs under an icon."""
@@ -1435,7 +1492,7 @@ class OpenBrowserDialog(QDialog):
         self.initial_file = None
         self.path_stack.setCurrentWidget(self.breadcrumb_scroll)
         self.edit_path_button.setText(_("dialog.open_browser.edit_path", "Edit path"))
-        self.refresh_files()
+        self.refresh_files(preserve_view=False)
         self.add_favorite_button.setEnabled(path not in self.favorite_directories)
 
     def _current_path(self) -> Path | None:
@@ -1534,6 +1591,11 @@ class OpenBrowserDialog(QDialog):
             self.set_directory(path)
             return
         self._open_selected()
+
+    def event(self, event: QEvent) -> bool:
+        if event.type() == QEvent.Type.WindowActivate:
+            self.refresh_files()
+        return super().event(event)
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if watched in (self.file_list, self.file_list.viewport()):

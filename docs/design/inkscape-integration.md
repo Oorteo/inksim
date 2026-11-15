@@ -919,6 +919,9 @@ These are easy to forget and should be tracked before the first release.
 - Do not launch Inkscape once per file in a directory. Batch or defer.
 - Handle network paths, permission errors, huge directories, and unicode
   names.
+- Watch the current folder for external changes with a debounced refresh; also
+  refresh on window activation and provide a Refresh button plus `Ctrl+R` for
+  filesystems that do not reliably report changes.
 - Keep the classic dialog available until the browser passes manual testing.
 - Decide whether the browser shows unsupported files or hides them by default.
 - Provide a clear empty state and error state.

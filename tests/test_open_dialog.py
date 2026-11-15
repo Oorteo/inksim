@@ -76,6 +76,80 @@ def test_lists_supported_files_and_folders(qtbot, tmp_path, monkeypatch):
     dialog.reject()
 
 
+def test_refresh_button_reloads_current_directory(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    (tmp_path / "new-folder").mkdir()
+    dialog.refresh_button.click()
+
+    labels = [
+        dialog.file_list.item(index).text().rstrip("/") for index in range(dialog.file_list.count())
+    ]
+    assert "new-folder" in labels
+    dialog.reject()
+
+
+def test_ctrl_r_reloads_current_directory(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import Qt
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    (tmp_path / "new-folder").mkdir()
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_R, Qt.KeyboardModifier.ControlModifier)
+
+    labels = [
+        dialog.file_list.item(index).text().rstrip("/") for index in range(dialog.file_list.count())
+    ]
+    assert "new-folder" in labels
+    dialog.reject()
+
+
+def test_directory_changes_refresh_listing_automatically(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    (tmp_path / "new-folder").mkdir()
+
+    qtbot.waitUntil(
+        lambda: any(
+            dialog.file_list.item(index).text().rstrip("/") == "new-folder"
+            for index in range(dialog.file_list.count())
+        ),
+        timeout=3000,
+    )
+    dialog.reject()
+
+
+def test_window_activation_refreshes_current_directory(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import QEvent
+    from PySide6.QtWidgets import QApplication
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    (tmp_path / "new-folder").mkdir()
+    QApplication.sendEvent(dialog, QEvent(QEvent.Type.WindowActivate))
+
+    labels = [
+        dialog.file_list.item(index).text().rstrip("/") for index in range(dialog.file_list.count())
+    ]
+    assert "new-folder" in labels
+    dialog.reject()
+
+
 def test_selected_designs_get_sidecar_thumbnails(qtbot, tmp_path, monkeypatch):
     """Create thumbnails for the whole multi-selection; details follow the last one."""
     from PySide6.QtCore import QItemSelectionModel
