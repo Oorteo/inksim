@@ -8,6 +8,7 @@ import pytest
 
 from inksim.integration.inkscape_extensions import (
     InstallSafetyError,
+    _preview_command,
     debug_script_enabled,
     find_installed_inksim_extensions,
     install_extension,
@@ -48,6 +49,12 @@ def test_install_renders_active_launcher_and_installs_assets(tmp_path):
     assert "__INKSIM_EXECUTABLE__" not in preview
     assert (destination / "about.inx").is_file()
     assert (destination / "scripts" / "about.py").is_file()
+
+
+def test_preview_command_rejects_entity_declarations():
+    content = b'<!DOCTYPE extension [<!ENTITY command "inksim">]><extension><command>&command;</command></extension>'
+
+    assert _preview_command(content) is None
 
 
 def test_launcher_change_does_not_count_as_user_edit(tmp_path):

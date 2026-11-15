@@ -19,6 +19,7 @@ dependencies = [
     "pyopengl",
     "tomli-w",
     "filelock",
+    "defusedxml>=0.7.1",
 ]
 
 [tool.uv.build-backend]

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pystitch as emb
 
-from inksim.formats import read_embroidery_file
+from inksim.formats import is_stitchblock_svg, read_embroidery_file
 
 
 def test_reads_pystitch_stitchblock_svg(tmp_path):
@@ -54,6 +54,19 @@ def test_regular_svg_is_not_mistaken_for_stitchblock_export(tmp_path):
     )
 
     assert read_embroidery_file(svg_path) is None
+
+
+def test_stitchblock_detection_rejects_entity_declarations(tmp_path):
+    svg_path = tmp_path / "entity.svg"
+    svg_path.write_text(
+        """<!DOCTYPE svg [<!ENTITY title "design">]>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+        width="100" height="80" viewBox="-10 -20 100 80">
+        <title>&title;</title></svg>""",
+        encoding="utf-8",
+    )
+
+    assert not is_stitchblock_svg(svg_path)
 
 
 def _write_palette_less_design(directory: Path) -> Path:

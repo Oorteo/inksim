@@ -10,7 +10,6 @@ import re
 import shutil
 import sys
 import tempfile
-import xml.etree.ElementTree as ET
 from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,6 +17,8 @@ from typing import Any
 from xml.parsers import expat
 from xml.sax.saxutils import escape as escape_xml_attribute
 
+from defusedxml import ElementTree as ET
+from defusedxml.common import DefusedXmlException
 from filelock import Timeout
 from PySide6.QtCore import QProcess, Qt, QTimer
 from PySide6.QtWidgets import (
@@ -748,7 +749,7 @@ class InkscapeIntegrationDialog(QDialog):
             )
             try:
                 python_interpreter = self._read_python_interpreter(preferences_file)
-            except (OSError, ET.ParseError) as ex:
+            except (OSError, ET.ParseError, DefusedXmlException) as ex:
                 preferences_error = str(ex)
                 report_entries.append(
                     _("integration.inkscape.report.preferences_error").format(
@@ -1702,7 +1703,7 @@ class InkscapeIntegrationDialog(QDialog):
                         continue
                     try:
                         root = ET.parse(inx_path).getroot()
-                    except (ET.ParseError, OSError):
+                    except (ET.ParseError, DefusedXmlException, OSError):
                         continue
                     for element in root.iter():
                         if element.tag.rsplit("}", 1)[-1] != "command":
