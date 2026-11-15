@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: 2026 Authors (see git history)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import os
+import stat
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -49,6 +51,16 @@ def test_install_renders_active_launcher_and_installs_assets(tmp_path):
     assert "__INKSIM_EXECUTABLE__" not in preview
     assert (destination / "about.inx").is_file()
     assert (destination / "scripts" / "about.py").is_file()
+
+
+def test_new_extension_files_are_private(tmp_path):
+    if os.name == "nt":
+        pytest.skip("POSIX file permission bits are not available on Windows")
+
+    launcher = _launcher(tmp_path)
+    destination = install_extension(prepare_install(tmp_path / "extensions", launcher))
+
+    assert stat.S_IMODE((destination / "preview.inx").stat().st_mode) == 0o600
 
 
 def test_preview_command_rejects_entity_declarations():

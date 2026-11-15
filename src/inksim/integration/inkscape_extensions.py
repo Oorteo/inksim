@@ -477,7 +477,7 @@ def _atomic_write(path: Path, content: bytes) -> None:
             stream.write(content)
             stream.flush()
             os.fsync(stream.fileno())
-        os.chmod(temporary_path, stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o644)
+        os.chmod(temporary_path, stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o600)
         os.replace(temporary_path, path)
     finally:
         if temporary_path.exists():
