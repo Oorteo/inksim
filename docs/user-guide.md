@@ -14,10 +14,9 @@
 
 ## Opening Files
 
-**File → Open...** opens the new file browser. It lists supported embroidery
-files and `.svg` sources, shows a preview, and reports which external tools
-were detected. **File → Open embroidery file** keeps the previous
-embroidery-only dialog available.
+**File → Open...** (`Ctrl+O`) opens the file browser. It lists supported
+embroidery files and `.svg` sources, shows a preview, and reports which
+external tools were detected.
 
 The browser watches the current directory and refreshes its listing when files
 change or the window regains focus. If a change is not picked up, use the
@@ -205,7 +204,11 @@ opens on the file with the closest name, and the choice is written back as
 colors (DST, EXP) asks once whether the palette should be written next to the
 file; the answer is remembered as `save_palette_sidecar` (`ask`, `always` or
 `never`) and can be changed later in `File > Colors on save` or in the
-configuration file.
+configuration file. If a sidecar beside the design already stores the same
+colors, InkSim reuses it and removes duplicate palette files; if it stores
+different colors, InkSim asks before replacing it unless you chose `always`.
+The **Palette format** submenu under `File > Colors on save` picks which
+sidecar format is written (`save_palette_format`, `edr` by default).
 
 Right-clicking a selection in the open dialog opens a context menu. Its
 thumbnail rotation actions come before Copy, Move, and Paste. Rotation changes

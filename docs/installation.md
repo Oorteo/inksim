@@ -85,8 +85,11 @@ candidate directly from its GitHub release page if you want to test one.
 
 In the GUI, **Help → Check for updates** checks the newest stable version on
 PyPI and reports whether an update is available; it does not install anything.
-It also checks automatically once per day by default. Pre-releases are not offered by this regular update check. Once the matching
-final release is published on PyPI, the update check offers it.
+It also checks automatically once per day by default. Pre-releases are not
+offered by this regular update check. Once the matching final release is
+published on PyPI, the update check offers it. The automatic check can be
+disabled with `update_check_enabled = false` and its interval changed with
+`update_check_interval_days` in the InkSim configuration file.
 
 ## Alternative installers
 
