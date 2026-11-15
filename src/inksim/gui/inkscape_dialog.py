@@ -60,8 +60,9 @@ from ..integration.inkstitch import (
     inkstitch_project_python,
     link_key,
 )
-from ..integration.paths import INKSCAPE_CONFIG_KEY, detect_tools
+from ..integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, detect_tools
 from ..paths import _sanitize_path_text
+from .dialogs import dispose_qt_child
 
 # Cold starts of Inkscape on Windows (antivirus scans, profile setup) can exceed a few seconds.
 INKSCAPE_PROBE_TIMEOUT_S = 10
@@ -189,11 +190,13 @@ class InkscapeIntegrationDialog(QDialog):
         layout.addWidget(self.probe_status_label)
         self._probe_process: QProcess | None = None
         self._probe_results: list[str] = []
-        self._probe_candidates: list[str] = []
+        self._probe_candidates: list[tuple[str, list[str]]] = []
         self._probe_candidate_index = 0
         self._probe_version: str | None = None
         self._probe_executable = ""
+        self._probe_arguments: list[str] = []
         self._probe_error: str | None = None
+        self._is_probing = False
         self._inkscape_extension_roots: tuple[tuple[Path, bool], ...] = ()
         self._installed_inksim_extensions: tuple[InstalledInkSimExtension, ...] = ()
         self._probe_timer = QTimer(self)
@@ -439,33 +442,45 @@ class InkscapeIntegrationDialog(QDialog):
             self._set_report([_("integration.inkscape.report.not_found")])
             return
 
-        executable_path = str(Path(executable).resolve())
-        self.executable_label.setText(_sanitize_path_text(executable_path))
-        self._start_probe(executable_path)
+        self.executable_label.setText(_sanitize_path_text(executable))
+        self._start_probe(executable)
 
     def done(self, result: int) -> None:
         self._cancel_probe()
         super().done(result)
 
-    def _start_probe(self, executable_path: str) -> None:
+    def _start_probe(self, executable_command: str) -> None:
+        command = ToolInfo("Inkscape", executable_command, "configuration").command
+        if not command:
+            return
+
+        def normalize_program(program: str) -> str:
+            path = Path(program).expanduser()
+            if path.is_file():
+                return str(path.resolve())
+            return shutil.which(program) or program
+
+        program = normalize_program(command[0])
+        candidates = [(program, command[1:])]
         detected_path = detect_tools().inkscape.path
-        candidates = [executable_path]
         if detected_path:
-            candidates.append(detected_path)
-        candidates.extend(_windows_inkscape_candidates(executable_path))
+            detected_command = ToolInfo("Inkscape", detected_path, "detected").command
+            if detected_command:
+                candidates.append((normalize_program(detected_command[0]), detected_command[1:]))
+        candidates.extend((candidate, []) for candidate in _windows_inkscape_candidates(program))
         self._probe_candidates = []
-        seen: set[str] = set()
-        for candidate in candidates:
-            resolved = str(Path(candidate).resolve())
-            key = os.path.normcase(resolved)
+        seen: set[tuple[str, tuple[str, ...]]] = set()
+        for candidate, arguments in candidates:
+            key = (os.path.normcase(candidate), tuple(arguments))
             if key not in seen:
                 seen.add(key)
-                self._probe_candidates.append(resolved)
+                self._probe_candidates.append((candidate, arguments))
         self._probe_candidate_index = 0
-        self._start_probe_candidate(self._probe_candidates[0])
+        self._start_probe_candidate(*self._probe_candidates[0])
 
-    def _start_probe_candidate(self, executable_path: str) -> None:
+    def _start_probe_candidate(self, executable_path: str, arguments: list[str]) -> None:
         self._probe_executable = executable_path
+        self._probe_arguments = arguments
         self._probe_results = []
         self._probe_version = None
         self._probe_error = None
@@ -490,9 +505,9 @@ class InkscapeIntegrationDialog(QDialog):
         ):
             return False
         self._probe_candidate_index += 1
-        executable_path = self._probe_candidates[self._probe_candidate_index]
+        executable_path, arguments = self._probe_candidates[self._probe_candidate_index]
         self.executable_label.setText(_sanitize_path_text(executable_path))
-        self._start_probe_candidate(executable_path)
+        self._start_probe_candidate(executable_path, arguments)
         return True
 
     def _run_next_probe(self) -> None:
@@ -509,7 +524,7 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_timer.start(int(INKSCAPE_PROBE_TIMEOUT_S * 1000))
         step = len(self._probe_results)
         option = _PROBE_OPTIONS[step] if step < len(_PROBE_OPTIONS) else _VERSION_PROBE_OPTION
-        process.start(self._probe_executable, [option])
+        process.start(self._probe_executable, [*self._probe_arguments, option])
 
     def _on_probe_step_done(self, process: QProcess, failed: bool = False) -> None:
         # Ignore late signals from a process that was already replaced, killed, or handled.
@@ -534,7 +549,7 @@ class InkscapeIntegrationDialog(QDialog):
             step_error = "Inkscape terminated unexpectedly."
         else:
             step_error = f"Inkscape exited with code {process.exitCode()}."
-        process.deleteLater()
+        dispose_qt_child(process)
         if is_version_probe:
             self._probe_version = (
                 output.splitlines()[0].strip() if not step_error and output else None
@@ -560,7 +575,7 @@ class InkscapeIntegrationDialog(QDialog):
             return
         self._probe_process = None
         process.kill()
-        process.deleteLater()
+        dispose_qt_child(process)
         if len(self._probe_results) >= len(_PROBE_OPTIONS):
             self._probe_version = None
             self._probe_results.append("")
@@ -589,10 +604,13 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_process = None
         self._probe_timer.stop()
         process.kill()
-        process.deleteLater()
+        dispose_qt_child(process)
         self._set_probing(False)
 
     def _set_probing(self, active: bool) -> None:
+        if self._is_probing == active:
+            return
+        self._is_probing = active
         self.probe_status_label.setVisible(active)
         self.change_button.setEnabled(not active)
         if active:
@@ -1244,6 +1262,22 @@ class InkscapeIntegrationDialog(QDialog):
     def _find_uvr_executable(current_interpreter: str | None) -> Path | None:
         command = "uvr-gui" if sys.platform == "win32" else "uvr"
         executable = shutil.which(command)
+        if executable is None and current_interpreter is not None:
+            configured_path = Path(current_interpreter).expanduser()
+            configured_names = {
+                "uvr",
+                "uvr.exe",
+                "uvr.cmd",
+                "uvr-gui",
+                "uvr-gui.exe",
+                "uvr-gui.cmd",
+            }
+            if configured_path.name.lower() in configured_names:
+                executable = (
+                    str(configured_path)
+                    if configured_path.is_file()
+                    else shutil.which(current_interpreter)
+                )
         if executable is None:
             local_bin = Path.home() / ".local" / "bin"
             candidate_names = (command, f"{command}.exe", f"{command}.cmd")
@@ -1255,11 +1289,6 @@ class InkscapeIntegrationDialog(QDialog):
                 ),
                 None,
             )
-        if executable is None and current_interpreter is not None:
-            configured_path = Path(current_interpreter).expanduser()
-            configured_names = {command, f"{command}.exe", f"{command}.cmd"}
-            if configured_path.name.lower() in configured_names and configured_path.is_file():
-                executable = str(configured_path)
         if executable is None:
             return None
 
@@ -1505,7 +1534,7 @@ class InkscapeIntegrationDialog(QDialog):
             updated["python-interpretor"] = interpreter
         else:
             updated.pop("python-interpretor", None)
-        if self._interpreter_backup:
+        if self._interpreter_backup is not None:
             updated["python-interpreter-backup"] = self._interpreter_backup
         else:
             updated.pop("python-interpreter-backup", None)

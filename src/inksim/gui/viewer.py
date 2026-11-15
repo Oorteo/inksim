@@ -88,6 +88,7 @@ from ..render import (
     render_viewport_raster,
 )
 from ..runtime import is_opengl33_available
+from .dialogs import dispose_qt_child
 from .gl_viewer import GLStitchWidget, list_thread_textures, resolve_thread_texture
 from .help import show_help
 from .settings import show_settings
@@ -258,6 +259,12 @@ class EmbroideryViewerWidget(QWidget):
         self.settings_dialog: QDialog | None = None
         self._last_dir = 1
         self._pending_fit_to_screen = False
+        self._fit_to_screen_retries: int = 20
+        self._fit_to_screen_timer = QTimer(self)
+        self._fit_to_screen_timer.setSingleShot(True)
+        self._fit_to_screen_timer.timeout.connect(
+            lambda: self._try_fit_to_screen(self._fit_to_screen_retries)
+        )
         self.play_timer = QTimer(self)
         self.play_speed = 20
         self.play_speed_levels = (1, 2, 3, 5, 7, 10, 15, 22, 32, 47, 68, 98)
@@ -372,11 +379,9 @@ class EmbroideryViewerWidget(QWidget):
         super().resizeEvent(event)
 
     def _schedule_fit_to_screen(self, delay_ms: int, retries: int = 20) -> None:
-        # A timer owned by this widget is destroyed with it, so it cannot fire on a deleted C++ object.
-        timer = QTimer(self)
-        timer.setSingleShot(True)
-        timer.timeout.connect(lambda: self._try_fit_to_screen(retries))
-        timer.start(delay_ms)
+        # One reusable timer keeps retries from piling up viewer-owned timers.
+        self._fit_to_screen_retries = retries
+        self._fit_to_screen_timer.start(delay_ms)
 
     def _try_fit_to_screen(self, retries: int = 20) -> None:
         """Fit the design once Qt has assigned a usable panel size."""
@@ -1656,19 +1661,25 @@ class EmbroideryViewerWidget(QWidget):
         self.pan_y = float(my - scale * (my - self.pan_y))
         if self.zoom_render_timer is not None:
             self.zoom_render_timer.stop()
+            dispose_qt_child(self.zoom_render_timer)
+            self.zoom_render_timer = None
         if self.cached_bitmap:
             self._cache_valid = True
-            self.zoom_render_timer = QTimer(self)
-            self.zoom_render_timer.setSingleShot(True)
-            self.zoom_render_timer.timeout.connect(self._finish_zoom_render)
-            self.zoom_render_timer.start(140)
+            timer = QTimer(self)
+            timer.setSingleShot(True)
+            timer.timeout.connect(lambda timer=timer: self._finish_zoom_render(timer))
+            self.zoom_render_timer = timer
+            timer.start(140)
         else:
             self.invalidate_cache()
         self.update()
 
-    def _finish_zoom_render(self) -> None:
+    def _finish_zoom_render(self, timer: QTimer) -> None:
         """Schedule a full-quality render after zooming settles."""
+        if timer is not self.zoom_render_timer:
+            return
         self.zoom_render_timer = None
+        dispose_qt_child(timer)
         self.invalidate_cache()
         self.update()
 

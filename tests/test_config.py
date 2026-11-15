@@ -123,6 +123,26 @@ def test_config_does_not_write_until_save(tmp_path):
     assert not path.exists()
 
 
+def test_config_keeps_pending_values_when_save_fails(tmp_path, monkeypatch):
+    from inksim import config as config_module
+
+    path = tmp_path / "config.toml"
+    config = Config(path)
+    original_dump = config_module.tomli_w.dump
+
+    def fail_dump(*_args, **_kwargs):
+        raise OSError("simulated write failure")
+
+    monkeypatch.setattr("inksim.config.tomli_w.dump", fail_dump)
+    with pytest.raises(OSError, match="simulated write failure"):
+        config.set("answer", 42)
+
+    monkeypatch.setattr("inksim.config.tomli_w.dump", original_dump)
+    config.save()
+
+    assert Config(path).get("answer") == 42
+
+
 def test_config_corrupt_file_is_ignored(tmp_path):
     path = tmp_path / "config.toml"
     path.write_text("this is not valid toml", encoding="utf-8")

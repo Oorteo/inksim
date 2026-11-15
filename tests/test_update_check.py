@@ -26,3 +26,7 @@ def test_is_newer_orders_release_candidates(latest, current, expected):
 
 def test_latest_stable_version_ignores_release_candidates():
     assert _latest_stable_version(["0.6.0rc1", "0.5.4", "0.6.0rc2", "0.5.10", "0.6.0"]) == "0.6.0"
+
+
+def test_latest_stable_version_ignores_unsupported_release_keys():
+    assert _latest_stable_version(["0.6.1.dev1", "0.6.0rc1", "0.5.10"]) == "0.5.10"

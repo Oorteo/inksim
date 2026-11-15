@@ -27,7 +27,8 @@ _LAUNCHER_TOKEN = "__INKSIM_EXECUTABLE__"
 _DEBUG_SCRIPT_PARAM = "create_bash_script"
 _NAMESPACE_PREFIX = rb"(?:[A-Za-z0-9_.-]+:)?"
 _DEBUG_SCRIPT_PATTERN = re.compile(
-    rb"<" + _NAMESPACE_PREFIX + rb'param\b[^>]*\bname="create_bash_script"'
+    rb"<" + _NAMESPACE_PREFIX + rb"param\b[^>]*\bname=(?P<quote>[\"'])"
+    rb"create_bash_script(?P=quote)"
     rb"[^>]*>\s*(?P<value>true|false)\s*</" + _NAMESPACE_PREFIX + rb"param>",
     re.IGNORECASE,
 )

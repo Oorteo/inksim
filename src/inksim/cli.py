@@ -410,12 +410,12 @@ def _forward_to_server(
         "type": "open",
         "index": args.index,
         "new_window": args.new_window,
-        "path": str(input_paths[0]) if input_paths else None,
+        "path": str(input_paths[0].resolve()) if input_paths else None,
         "autoplay": args.play if autoplay is None else autoplay,
         "delete_after_load": args.delete_input,
         "temporary_input": (args.temporary_input if temporary_input is None else temporary_input),
         "command_line": sys.argv.copy(),
-        "document_path": str(args.document_path) if args.document_path else None,
+        "document_path": str(args.document_path.resolve()) if args.document_path else None,
         "window": {
             "fullscreen": args.fullscreen,
             "window_size": args.size,
@@ -423,6 +423,18 @@ def _forward_to_server(
             "snap_layout_key": args.snap,
         },
     }
+    debug_enabled = (
+        args.debug
+        or args.log is not None
+        or bool(os.environ.get("INKSIM_DEBUG") or os.environ.get("INKSIM_LOG"))
+    )
+    if debug_enabled:
+        log_path = (
+            args.log
+            or (Path(os.environ["INKSIM_LOG"]) if os.environ.get("INKSIM_LOG") else None)
+            or _default_log_path(input_paths)
+        )
+        request["debug_log_path"] = str(log_path.expanduser().resolve())
     if debug_script is not None:
         request["debug_script"] = str(debug_script)
     if check_inkscape_extension:

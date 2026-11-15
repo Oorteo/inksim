@@ -115,19 +115,77 @@ def test_write_thumbnail_keeps_a_current_file(tmp_path):
     assert thumbnail.stat().st_mtime_ns == first_mtime
 
 
+def test_write_thumbnail_checks_currentness_at_requested_size(tmp_path):
+    source = _copy_sample(tmp_path)
+
+    thumbnail = write_thumbnail(source, size=128)
+
+    assert thumbnail is not None
+    assert QImage(str(thumbnail)).size().width() == 128
+    assert thumbnail_is_current(source, size=128)
+    assert not thumbnail_is_current(source)
+    first_mtime = thumbnail.stat().st_mtime_ns
+    assert write_thumbnail(source, size=128) == thumbnail
+    assert thumbnail.stat().st_mtime_ns == first_mtime
+
+
 def test_write_thumbnail_refreshes_a_stale_file(tmp_path):
     source = _copy_sample(tmp_path)
     thumbnail = write_thumbnail(source)
     assert thumbnail is not None
-    stale_mtime = os.stat(thumbnail).st_mtime_ns
 
-    stale = source.stat().st_mtime - 10
-    os.utime(thumbnail, (stale, stale))
+    source_mtime_ns = 1_700_000_000_000_000_000
+    os.utime(source, ns=(source_mtime_ns, source_mtime_ns))
+    stale_mtime_ns = source_mtime_ns - 10_000_000_000
+    os.utime(thumbnail, ns=(stale_mtime_ns, stale_mtime_ns))
     assert not thumbnail_is_current(source)
 
     assert write_thumbnail(source) == thumbnail
-    assert thumbnail.stat().st_mtime_ns != stale_mtime
+    assert thumbnail.stat().st_mtime_ns >= source.stat().st_mtime_ns
     assert thumbnail_is_current(source)
+
+
+def test_palette_sidecar_changes_invalidate_thumbnail(tmp_path):
+    from inksim.formats import write_palette_file
+
+    source = tmp_path / "design.dst"
+    source.write_bytes((Path(__file__).parent / "data" / "two_tect.dst").read_bytes())
+    palette = source.with_suffix(".edr")
+
+    thumbnail = write_thumbnail(source)
+    assert thumbnail is not None
+    assert thumbnail_is_current(source)
+
+    write_palette_file(palette, ["#112233", "#445566"])
+    assert not thumbnail_is_current(source)
+
+    assert write_thumbnail(source) == thumbnail
+    assert thumbnail_is_current(source)
+
+    write_palette_file(palette, ["#AABBCC", "#DDEEFF"])
+    assert not thumbnail_is_current(source)
+
+    assert write_thumbnail(source) == thumbnail
+    assert thumbnail_is_current(source)
+
+    palette.unlink()
+    assert not thumbnail_is_current(source)
+
+
+def test_source_revision_during_render_is_not_written_as_current(tmp_path, monkeypatch):
+    from inksim.render import thumbnails
+
+    source = _copy_sample(tmp_path)
+
+    def render_and_modify_source(_source, size):
+        source.write_bytes(source.read_bytes() + b"\0")
+        return QImage(size, size, QImage.Format_RGBA8888), None
+
+    monkeypatch.setattr(thumbnails, "_render_with_details", render_and_modify_source)
+
+    assert write_thumbnail(source, overwrite=True) is None
+    assert not thumbnail_path(source).exists()
+    assert not thumbnail_is_current(source)
 
 
 def test_thumbnail_without_a_stamp_is_outdated(tmp_path):
@@ -211,6 +269,7 @@ def test_rotating_a_thumbnail_is_remembered_and_survives_regeneration(tmp_path):
 
     assert rotate_thumbnail(source, 90) == 90
     assert thumbnail_rotation(source) == 90
+    assert thumbnail_is_current(source)
     quarter = original.transformed(
         QTransform().rotate(90), Qt.TransformationMode.FastTransformation
     )

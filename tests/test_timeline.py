@@ -329,6 +329,7 @@ def test_stitches_above_waveform_scale_have_clipped_end_marks(qtbot):
     timeline, viewer = make_timeline(qtbot, total=1)
     viewer.stitches_np = np.array([[0, 0, 20, 0, 220, 30, 30]], dtype=np.float32)
     viewer.visible_count = 1
+    timeline._sync_view()
 
     image = timeline.grab().toImage()
     main_bar, _, _ = timeline._layout_rects()

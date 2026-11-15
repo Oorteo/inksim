@@ -711,6 +711,7 @@ def test_colors_button_only_offers_palette_less_designs(qtbot, tmp_path, monkeyp
     assert "already stores" in dialog.palette_button.toolTip()
 
     _select_file(dialog, "no_colors.dst")
+    assert not dialog.palette_button.isEnabled()
     for _ in range(20):
         qtbot.wait(50)
         if dialog._preview_loaded:
@@ -784,6 +785,30 @@ def test_storing_a_palette_replaces_a_sidecar_of_another_format(qtbot, tmp_path,
     assert target == tmp_path / "design.col"
     assert not (tmp_path / "design.edr").exists()
     assert [thread.hex_color() for thread in read_palette_file(target)] == ["#112233"]
+
+
+def test_second_svg_conversion_is_ignored_while_one_is_running(qtbot, tmp_path, monkeypatch):
+    import pytest
+    from PySide6.QtCore import QProcess
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    svg_path = tmp_path / "design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    process = QProcess(dialog)
+    dialog._conversion_process = process
+    monkeypatch.setattr(
+        dialog,
+        "_active_inkstitch_preview",
+        lambda: pytest.fail("A concurrent conversion must not be started."),
+    )
+
+    dialog._start_svg_conversion(svg_path)
+
+    assert dialog._conversion_process is process
+    dialog._conversion_process = None
+    dialog.reject()
 
 
 def test_info_box_keeps_its_height_between_files(qtbot, tmp_path, monkeypatch):
@@ -1064,6 +1089,86 @@ def test_transfer_conflicts_replace_the_whole_batch_after_one_confirmation(
     assert (destination_directory / first.name).read_bytes() == b"first"
     assert existing_second.read_bytes() == b"new second"
     assert first.is_file() and second.is_file()
+    dialog.reject()
+
+
+def test_transfer_does_not_replace_destination_changed_after_confirmation(
+    qtbot, tmp_path, monkeypatch
+):
+    import os
+
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"new second")
+    destination = destination_directory / second.name
+    destination.write_bytes(b"old destination")
+    replacement = destination_directory / "external-file"
+    prompts = []
+
+    def replace_during_confirmation(_parent, _title, text, *_args):
+        prompts.append(text)
+        replacement.write_bytes(b"external replacement")
+        os.replace(replacement, destination)
+        return QMessageBox.StandardButton.Yes
+
+    monkeypatch.setattr(QMessageBox, "question", replace_during_confirmation)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_args: None)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (first, second))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert prompts
+    assert destination.read_bytes() == b"external replacement"
+    assert not (destination_directory / first.name).exists()
+    dialog.reject()
+
+
+def test_move_rechecks_each_source_before_deleting(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"second")
+    original_unlink = Path.unlink
+    first_deleted = False
+
+    def change_second_after_first_delete(path, *args, **kwargs):
+        nonlocal first_deleted
+        if path == first and not first_deleted:
+            first_deleted = True
+            result = original_unlink(path, *args, **kwargs)
+            second.write_bytes(b"changed during move")
+            return result
+        return original_unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "unlink", change_second_after_first_delete)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_args: None)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("move", (first, second))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert first.read_bytes() == b"first"
+    assert second.read_bytes() == b"changed during move"
+    assert not (destination_directory / first.name).exists()
+    assert not (destination_directory / second.name).exists()
     dialog.reject()
 
 
@@ -1912,17 +2017,15 @@ def test_open_embroidery_accepts_selected_file(qtbot, sample_design, monkeypatch
     qtbot.addWidget(dialog)
     dialog.show()
 
-    for _ in range(20):
-        qtbot.wait(50)
-        if dialog._preview_loaded:
-            break
-
-    assert dialog._preview_loaded
+    qtbot.waitUntil(lambda: dialog._preview_loaded, timeout=10000)
     assert dialog.fit_button.isEnabled()
+    # Fit explicitly so the captured zoom does not race a pending deferred fit.
+    dialog.fit_button.click()
     fit_zoom = dialog.preview.zoom
     dialog.zoom_in_button.click()
     assert dialog.preview.zoom > fit_zoom
     dialog.fit_button.click()
+    qtbot.waitUntil(lambda: abs(dialog.preview.zoom - fit_zoom) < 0.001, timeout=10000)
     assert abs(dialog.preview.zoom - fit_zoom) < 0.001
     dialog.open_button.click()
 

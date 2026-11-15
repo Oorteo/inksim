@@ -61,7 +61,7 @@ class ToolInfo:
         if expanded.is_file():
             return [str(expanded)]
         try:
-            return shlex.split(self.path, posix=os.name != "nt")
+            return shlex.split(self.path, posix=True)
         except ValueError:
             return [self.path]
 

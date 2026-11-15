@@ -249,9 +249,22 @@ def test_debug_script_can_be_toggled_in_the_installed_extension(tmp_path):
     assert not prepare_install(extension_directory, launcher).update_required
 
     assert set_debug_script_enabled(destination, False)
-
     assert not debug_script_enabled(destination)
     assert preview.read_bytes() == original
+
+
+def test_debug_script_parameter_accepts_single_quoted_name():
+    from inksim.integration.inkscape_extensions import _debug_script_value, _with_debug_script_value
+
+    content = (
+        b"<inkscape-extension><param name='create_bash_script' "
+        b"type='boolean'>false</param></inkscape-extension>"
+    )
+
+    assert not _debug_script_value(content)
+    updated = _with_debug_script_value(content, True)
+    assert _debug_script_value(updated)
+    assert b"name='create_bash_script' type='boolean'>true</param>" in updated
 
 
 def test_update_keeps_the_enabled_debug_script(tmp_path):

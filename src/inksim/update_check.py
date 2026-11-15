@@ -17,7 +17,7 @@ import re
 import time
 import urllib.request
 
-from PySide6.QtCore import QThread, Signal
+from PySide6.QtCore import QObject, QThread, Signal
 
 from .config import Config
 
@@ -66,7 +66,14 @@ def is_newer(latest: str, current: str) -> bool:
 
 def _latest_stable_version(versions: list[str]) -> str | None:
     """Return the newest stable version, excluding release candidates."""
-    stable = [version for version in versions if _parse_version(version)[1] == 1]
+    stable = []
+    for version in versions:
+        try:
+            is_stable = _parse_version(version)[1] == 1
+        except ValueError:
+            continue
+        if is_stable:
+            stable.append(version)
     return max(stable, key=_parse_version, default=None)
 
 
@@ -89,8 +96,12 @@ def fetch_latest_version(timeout: float = REQUEST_TIMEOUT_S) -> str | None:
             return latest_stable
 
     version = data.get("info", {}).get("version")
-    if version and _parse_version(version)[1] == 1:
-        return version
+    if version:
+        try:
+            if _parse_version(version)[1] == 1:
+                return version
+        except ValueError:
+            pass
     return None
 
 
@@ -148,8 +159,12 @@ def last_check_text(config: Config) -> str:
 class UpdateCheckThread(QThread):
     """Fetch the latest version off the GUI thread and report the result."""
 
-    result_ready = Signal(str)  # latest version, or "" when none/error
+    result_ready = Signal(str, bool)  # latest version, or "" when none/error; automatic check
+
+    def __init__(self, parent: QObject | None = None, *, automatic: bool = False) -> None:
+        super().__init__(parent)
+        self.automatic = automatic
 
     def run(self) -> None:  # type: ignore[override]
         latest = fetch_latest_version()
-        self.result_ready.emit(latest or "")
+        self.result_ready.emit(latest or "", self.automatic)

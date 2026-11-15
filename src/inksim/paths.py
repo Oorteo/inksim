@@ -13,7 +13,7 @@ from typing import Any
 def _sanitize_path(path: str | Path) -> str:
     """Return a path string with the user's home directory replaced by '~'."""
     resolved = Path(path).expanduser().resolve()
-    home = Path.home()
+    home = Path.home().resolve()
     try:
         relative = resolved.relative_to(home)
         return f"~/{relative.as_posix()}"
@@ -23,7 +23,7 @@ def _sanitize_path(path: str | Path) -> str:
 
 def _unsanitize_path(path_str: str) -> str:
     """Expand a portable home-relative path back to the current user's home."""
-    if path_str.startswith(("~/", "~\\")):
+    if path_str == "~" or path_str.startswith(("~/", "~\\")):
         return str(Path(path_str).expanduser())
     return path_str
 

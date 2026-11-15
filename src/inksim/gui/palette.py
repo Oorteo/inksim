@@ -202,14 +202,33 @@ def store_palette_after_save(
         return None
     if read_palette_file(target):
         return None
-    if _existing_palettes(target):
-        # The design already has colors next to it, so nothing is lost.
-        return None
+    existing = _existing_palettes(target)
+    colors = _palette_colors(threads)
+    matching = [path for path in existing if _palette_colors(read_palette_file(path)) == colors]
+    if matching:
+        _remove_stale_palettes(existing, matching[0])
+        return matching[0]
     choice = config.get(_SAVE_PALETTE_CONFIG_KEY, "ask")
     if choice == "never":
         return None
     suffix = palette_format(config)
-    if choice != "always":
+    if existing and choice != "always":
+        answer = QMessageBox.question(
+            parent,
+            _title(),
+            _(
+                "dialog.palette.replace",
+                "{name} already stores colors for this design.\nReplace it with {target}?",
+            ).format(
+                name=", ".join(path.name for path in existing),
+                target=palette_sidecar_path(target, suffix).name,
+            ),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if answer != QMessageBox.StandardButton.Yes:
+            return None
+    elif choice != "always":
         sidecar = palette_sidecar_path(target, suffix)
         box = QMessageBox(parent)
         box.setWindowTitle(_title())
@@ -239,4 +258,24 @@ def store_palette_after_save(
     except (OSError, RuntimeError, ValueError) as ex:
         logger.warning("Could not write the palette %s: %s", sidecar, ex)
         return None
+    _remove_stale_palettes(existing, sidecar)
     return sidecar
+
+
+def _palette_colors(threads: list[object]) -> list[str]:
+    colors = []
+    for thread in threads:
+        hex_color = getattr(thread, "hex_color", None)
+        color = hex_color() if callable(hex_color) else str(thread)
+        colors.append(color.casefold())
+    return colors
+
+
+def _remove_stale_palettes(existing: list[Path], keep: Path) -> None:
+    for stale in existing:
+        if stale == keep:
+            continue
+        try:
+            stale.unlink()
+        except OSError as ex:
+            logger.warning("Could not remove the old palette %s: %s", stale, ex)

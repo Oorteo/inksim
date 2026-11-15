@@ -246,9 +246,79 @@ def test_save_as_embroidery_writes_pystitch_format(sample_design, qtbot, tmp_pat
     window.close()
 
 
+def test_opening_a_new_design_clears_the_previous_document_source(sample_design, qtbot, tmp_path):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    window.document_path = tmp_path / "old-source.svg"
+
+    assert window.open_file(str(sample_design), precompute_density=False)
+
+    assert window.document_path is None
+    window.close()
+
+
+def test_failed_browser_preview_preserves_document_source(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtWidgets import QDialog
+
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    class FailedPreviewDialog:
+        result_action = "preview"
+        preview_csv_path = tmp_path / "failed.csv"
+        document_path = tmp_path / "failed.svg"
+        selected_path = document_path
+
+        def __init__(self, *_args):
+            pass
+
+        def exec(self):
+            return QDialog.DialogCode.Accepted
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    previous_source = tmp_path / "previous.svg"
+    window.set_document_path(previous_source)
+    previous_directory = window.last_directory
+    monkeypatch.setattr("inksim.gui.frame.OpenBrowserDialog", FailedPreviewDialog)
+    monkeypatch.setattr(window, "open_file", lambda *_args, **_kwargs: False)
+
+    window.open_browser_dialog()
+
+    assert window.document_path == previous_source.resolve()
+    assert window.last_directory == previous_directory
+    window.close()
+
+
+def test_close_saves_window_geometry(qtbot, tmp_path):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    config_path = tmp_path / "config.toml"
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(config_path)
+    window.setGeometry(25, 35, 420, 310)
+    window.set_hide_on_close(True)
+    layout_key = window._layout_config_key()
+
+    window.close()
+
+    layout = Config(config_path).get(layout_key)
+    assert layout["x"] == 25
+    assert layout["y"] == 35
+    assert layout["width"] == 420
+    assert layout["height"] == 310
+
+
 def test_save_as_writes_the_palette_for_formats_without_colors(sample_design, qtbot, tmp_path):
     from inksim.config import Config
-    from inksim.formats import read_palette_file
+    from inksim.formats import read_palette_file, write_palette_file
     from inksim.gui.frame import MainWindow
 
     window = MainWindow(window_size=(320, 240))
@@ -259,11 +329,47 @@ def test_save_as_writes_the_palette_for_formats_without_colors(sample_design, qt
     colors = [thread.hex_color() for thread in window.viewer.pattern.threadlist]
 
     output_path = tmp_path / "saved.dst"
+    write_palette_file(tmp_path / "saved.edr", ["#112233"])
     assert window.save_embroidery_to_path(output_path)
 
     sidecar = tmp_path / "saved.edr"
     assert sidecar.is_file()
     assert [thread.hex_color() for thread in read_palette_file(sidecar)] == colors
+    window.close()
+
+
+def test_save_as_requests_confirmation_before_replacing_stale_palette(
+    sample_design, qtbot, tmp_path, monkeypatch
+):
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.config import Config
+    from inksim.formats import read_palette_file, write_palette_file
+    from inksim.gui import palette as palette_module
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    assert window.open_file(str(sample_design), precompute_density=False)
+    write_palette_file(tmp_path / "saved.edr", ["#112233"])
+    prompts = []
+    monkeypatch.setattr(
+        palette_module.QMessageBox,
+        "question",
+        lambda _parent, _title, text, *_args: (
+            prompts.append(text) or QMessageBox.StandardButton.Yes
+        ),
+    )
+
+    output_path = tmp_path / "saved.dst"
+    assert window.save_embroidery_to_path(output_path)
+
+    assert prompts
+    assert "saved.edr" in prompts[0]
+    assert [thread.hex_color() for thread in read_palette_file(tmp_path / "saved.edr")] == [
+        thread.hex_color() for thread in window.viewer.pattern.threadlist
+    ]
     window.close()
 
 

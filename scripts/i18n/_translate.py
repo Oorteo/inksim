@@ -140,7 +140,12 @@ def parse_copilot_response(raw: str, model: str) -> dict[str, str]:
         raise RuntimeError(f"{model} did not return valid JSON: {ex}") from ex
     if not isinstance(response, dict):
         raise RuntimeError(f"{model} response is not a JSON object")
-    return {str(key): str(value) for key, value in response.items()}
+    for key, value in response.items():
+        if not isinstance(value, str):
+            raise RuntimeError(
+                f"{model} returned a non-string translation for {key!r} ({type(value).__name__})"
+            )
+    return response
 
 
 def call_copilot_batch(
@@ -297,7 +302,12 @@ def call_ollama(prompt: str, model: str) -> dict[str, str]:
             raise RuntimeError(f"Model did not return valid JSON: {decode_err}") from None
     if not isinstance(raw, dict):
         raise RuntimeError("Model response is not a JSON object")
-    return {k: str(v) for k, v in raw.items()}
+    for key, value in raw.items():
+        if not isinstance(value, str):
+            raise RuntimeError(
+                f"Model returned a non-string translation for {key!r} ({type(value).__name__})"
+            )
+    return raw
 
 
 def _normalize_locale_tag(value: str) -> str:
@@ -321,29 +331,38 @@ def translate_locales(
     """Translate missing/stale strings for each locale and update its catalog."""
     _, en_messages = load_catalog(EN_CATALOG)
     jobs: list[TranslationJob] = []
+    failures: dict[str, str] = {}
     for locale in locales:
         locale = _normalize_locale_tag(locale)
         if locale.split("-")[0] == "en":
             raise ValueError("cannot translate into the source language 'en'")
 
-        target_path = LOCALES_DIR / f"{locale}.json"
-        target_meta, target_messages = load_catalog(target_path)
-        work = find_translation_work(en_messages, target_messages)
-        if not work:
-            print(f"No missing or stale translations for {locale}.", flush=True)
-            continue
+        try:
+            target_path = LOCALES_DIR / f"{locale}.json"
+            target_meta, target_messages = load_catalog(target_path)
+            work = find_translation_work(en_messages, target_messages)
+            if not work:
+                print(f"No missing or stale translations for {locale}.", flush=True)
+                continue
 
-        language_name = target_meta.get("name", locale)
-        jobs.append(
-            TranslationJob(
-                locale=locale,
-                target_path=target_path,
-                target_meta=target_meta,
-                target_messages=target_messages,
-                work=work,
-                prompt=build_llm_prompt(work, language_name, locale),
+            language_name = target_meta.get("name", locale)
+            jobs.append(
+                TranslationJob(
+                    locale=locale,
+                    target_path=target_path,
+                    target_meta=target_meta,
+                    target_messages=target_messages,
+                    work=work,
+                    prompt=build_llm_prompt(work, language_name, locale),
+                )
             )
-        )
+        except Exception as ex:
+            failures[locale] = str(ex)
+            print(
+                f"Preparing translation for {locale} failed: {ex}",
+                file=sys.stderr,
+                flush=True,
+            )
 
     if dry_run:
         for job in jobs:
@@ -353,9 +372,9 @@ def translate_locales(
             )
             print(f"Dry run; would send this prompt for {job.locale}:")
             print(job.prompt)
-        return 0
+        return -1 if failures else 0
     if not jobs:
-        return 0
+        return -1 if failures else 0
 
     total_work = sum(len(job.work) for job in jobs)
     print(
@@ -387,13 +406,13 @@ def translate_locales(
         total_translated += saved
         print(f"Updated {job.target_path} with {saved} translation(s).", flush=True)
 
-    failures: dict[str, str] = {}
     if provider == "copilot":
-        _, failures = call_copilot_batch(
+        _, provider_failures = call_copilot_batch(
             {job.locale: job.prompt for job in jobs},
             model,
             on_translation=save_translation,
         )
+        failures.update(provider_failures)
     else:
         for index, job in enumerate(jobs, start=1):
             started_at = time.monotonic()
