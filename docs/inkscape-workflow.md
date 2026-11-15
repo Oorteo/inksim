@@ -2,28 +2,26 @@
 
 ## Contents
 
-- [Calling InkSim from Inkscape](#calling-inksim-from-inkscape-after-the-pr-is-released)
+- [Preview from Inkscape](#preview-from-inkscape)
 - [Window layout and snap position](#window-layout-and-snap-position)
 - [Export preview back to Inkscape](#export-preview-back-to-inkscape)
 - [Tips](#tips)
 
-InkSim can work as an external preview for the [Ink/Stitch](https://inkstitch.org/) extension, but this integration is **not available in the current official Ink/Stitch release**. It is currently being developed and reviewed as a pull request.
+## Preview from Inkscape
 
-Until it is merged, start InkSim separately from a terminal as described in the [installation guide](installation.md), then paste your exported stitch files into InkSim manually.
+InkSim provides and installs its own Inkscape extension. Ink/Stitch is used by
+that extension to export the document, but the Inkscape menu action itself is
+shipped with InkSim. For first-time setup, launch InkSim and follow the
+[installation guide](installation.md#inkscape-integration) to install the
+extension, then restart Inkscape.
 
-> **Preliminary integration.** The menu path shown below does not exist in the official Ink/Stitch release yet. It is implemented on a development branch and will appear only after the corresponding PR is merged and released.
+With an Inkscape document open, choose **Extensions → Inksim → Preview**. The
+extension runs the installed Ink/Stitch exporter, then sends the generated
+preview to InkSim through its own local IPC. InkSim starts its singleton
+application if needed or reuses the running instance.
 
-## Calling InkSim from Inkscape (after the PR is released)
-
-Once the integration is available, select the objects you want to preview and choose:
-
-**Extensions → Ink/Stitch → Visualize and Export → InkSim**
-
-or press **Ctrl+"**.
-
-<p align="center"><img src="assets/inkstitch/010_menu_inksim.webp" alt="InkSim menu in Inkscape" width="600"></p>
-
-Ink/Stitch builds a stitch plan and forwards it to InkSim. The extension uses a small local IPC command, so InkSim can run in its own window independently of Inkscape.
+The extension does not define a shortcut by default. If available, **Ctrl+Shift+I**
+is a convenient shortcut to assign to **Inksim → Preview** in Inkscape.
 
 ## Window layout and snap position
 

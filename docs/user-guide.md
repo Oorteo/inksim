@@ -45,7 +45,7 @@ For an `.svg` source:
 - If Inkscape or Ink/Stitch is missing, the status area explains what is
   needed. The **Tools...** button opens the Inkscape detection dialog.
 
-In **Tools → Config**, use **Install / Update InkSim extensions** to add the
+In **Tools → Inkscape Setup...**, use **Install / Update InkSim extensions** to add the
 Preview and About commands to Inkscape's user extensions folder. InkSim asks
 before replacing changed files and preserves unrelated files. Restart Inkscape
 after installation or update to load the extensions. The **InkSim extensions**
@@ -54,6 +54,12 @@ shows the exact files and asks for confirmation before deleting duplicate user
 folders; the current install target is protected, and system copies must be
 removed manually. The current install target also shows whether installation or
 an update is needed, including changed files or a changed Preview command.
+
+After installation and restarting Inkscape, use **Extensions → Inksim →
+Preview** to send the current document to InkSim. The extension starts the
+singleton application if needed or reuses the running instance. If you use the
+action often, consider assigning **Ctrl+Shift+I** to it in Inkscape's keyboard
+shortcuts.
 
 The preview reads the saved `.svg` from disk. Unsaved changes in Inkscape are
 not included. Use **Edit in Inkscape**, save the document, and preview again.

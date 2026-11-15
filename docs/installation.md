@@ -3,6 +3,7 @@
 ## Contents
 
 - [Quick start](#quick-start)
+- [Inkscape integration](#inkscape-integration)
 - [Update](#update)
 - [Alternative installers](#alternative-installers)
 - [Developer install](#developer-install)
@@ -10,11 +11,9 @@
 - [Running options](#running-options)
 - [GPU textured renderer](#gpu-textured-renderer)
 
-InkSim is a **standalone GUI application**, not an Inkscape extension. You do
-not copy files into Inkscape's `extensions` folder.
-
-> **Ink/Stitch integration** is still in PR review. Until it is merged, export
-> the embroidery as CSV from Ink/Stitch and open that file in InkSim.
+InkSim is a **standalone GUI application** with an optional, bundled Inkscape
+extension. The extension is shipped with InkSim; Ink/Stitch supplies the
+embroidery exporter that it uses.
 
 ## Quick start
 
@@ -48,6 +47,26 @@ not copy files into Inkscape's `extensions` folder.
 
 On Windows, `inksim-gui design.pes` starts without a console window.
 
+## Inkscape integration
+
+InkSim installs its own **Preview** extension into Inkscape's user extensions
+folder. You need Inkscape and Ink/Stitch installed. The extension is installed
+from the InkSim GUI, so launch InkSim at least once after installing it:
+
+1. In InkSim, choose **Tools → Inkscape Setup...**.
+2. Click **Install / Update InkSim extensions**.
+3. Restart Inkscape so it loads the new extension.
+4. Open a document in Inkscape and choose **Extensions → Inksim → Preview**.
+
+The extension asks Ink/Stitch to export the current document, then forwards
+the resulting preview to InkSim. Its launcher starts the singleton application
+if needed, or reuses the running instance, and manages the handoff through
+local IPC.
+
+The extension does not assign a keyboard shortcut. If `Ctrl+Shift+I` is free
+in your Inkscape setup, consider assigning it to **Inksim → Preview** in
+Inkscape's keyboard-shortcut settings.
+
 ## Update
 
 For an installation made with `uv`, update from PyPI with:
@@ -56,17 +75,14 @@ For an installation made with `uv`, update from PyPI with:
 uv tool upgrade inksim
 ```
 
-uv prefers stable releases by default. If `0.5.6` is the latest stable version
-and `0.6.0rc1` is available as a pre-release, `uv tool upgrade inksim` keeps
-users on the stable release unless they explicitly opt in to pre-releases.
+For a standard PyPI installation, this upgrades InkSim from PyPI. InkSim
+release candidates are published through GitHub Releases, not PyPI; install a
+candidate directly from its GitHub release page if you want to test one.
 
 In the GUI, **Help → Check for updates** checks the newest stable version on
 PyPI and reports whether an update is available; it does not install anything.
-It also checks automatically once per day by default. InkSim release
-candidates are published on GitHub, not PyPI, and are not offered by this
-regular update check. Install a candidate directly from its GitHub release page
-if you want to test it. Once the matching final release is published (e.g.
-`0.6.0` after `0.6.0rc1`), the update check offers it.
+It also checks automatically once per day by default. Pre-releases are not offered by this regular update check. Once the matching
+final release is published on PyPI, the update check offers it.
 
 ## Alternative installers
 
@@ -110,10 +126,9 @@ executable (a legacy of Windows' DOS heritage) that starts without a console
 window, while `inksim` opens one. Use `inksim-gui` on Windows for shortcuts,
 file associations, and `Win+R`.
 
-InkSim installs its Inkscape extension with the GUI launcher on Windows, so
-using **Extensions → Ink/Stitch → Visualize and Export → InkSim** does not open
-a console window. The Ink/Stitch export that InkSim starts for the preview is
-hidden the same way.
+The installed extension uses the InkSim launcher selected during setup. On
+Windows, use `inksim-gui` when you want the GUI launcher to run without a
+console window.
 
 ## Running options
 

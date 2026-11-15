@@ -3,6 +3,7 @@
 ## Contents
 
 - [Single Server Process](#single-server-process)
+- [Inkscape Preview Extension](#inkscape-preview-extension)
 - [Command Line](#command-line)
 - [Protocol](#protocol)
 
@@ -15,6 +16,19 @@ viewer process is needed.
 The transport is Qt `QLocalServer` and `QLocalSocket`. It works on Windows,
 macOS, and Linux and does not open a TCP port. The endpoint name is per user,
 so separate operating-system accounts run separate servers.
+
+## Inkscape Preview Extension
+
+The **Extensions → Inksim → Preview** action invokes the InkSim executable
+installed by **Tools → Inkscape Setup...**. It runs Ink/Stitch to export a
+temporary CSV, then sends that file to the singleton server through the same
+local IPC used by other `inksim` command-line calls. The client starts the
+singleton server if needed or reuses the running instance. The server displays
+the preview in its application window; the extension does not implement a
+separate IPC protocol or start a second persistent InkSim application.
+
+The **Preview** menu action is shipped with InkSim; Ink/Stitch supplies the
+embroidery export used by that action.
 
 ## Single Server Process
 
@@ -71,9 +85,10 @@ uv run inksim --new-window tests/data/square.pes
 uv run inksim --stop-server
 ```
 
-If no server is running, a normal `inksim` call starts the GUI as before.
-When a call asks for a server that cannot be reached, the command exits with a
-non-zero code and prints the error.
+If no server is running, a regular `inksim` call starts the singleton server
+and GUI. The same applies to the Inkscape extension invocation. If the server
+cannot be started or reached, the command exits with a non-zero code and
+prints the error.
 
 ## Protocol
 
@@ -107,6 +122,5 @@ Fields of `open`:
 {"ok": true, "index": 0}
 ```
 
-Errors have `"ok": false` and an `error` text.
- are added to `InkSimServer._handle_request` in
-`src/inksim/server.py` and documented here.
+Errors have `"ok": false` and an `error` text. New request types are added to
+`InkSimServer._handle_request` in `src/inksim/server.py` and documented here.
