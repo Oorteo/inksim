@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Ине түсі"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Орындарға қосу"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Болдырмау"
@@ -144,8 +148,8 @@
         "translation": "Ink/Stitch CSV экспорты сәтсіз аяқталды."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Қате туралы мәліметті output.err файлынан қараңыз."
+        "source": "Full log: {path}",
+        "translation": "Толық журнал: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Ink/Stitch CSV экспорты орындалып жатыр..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} файл көшірілді"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Файлдарды көшіру"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Таңдалған әр дизайнның қасына 256 px PNG файлын жазады (design.pes.png).\nМәзірде ескірген файлдарды немесе барлық нобайды қайта жасау таңдауы бар."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Жұмыс үстелі"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Түстер"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Атауы"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Өлшемі"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Тігістер"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Өлшемі: {width:.1f} x {height:.1f} мм"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Құжаттар"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Жүктеулер"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Inkscape-та өңдеу"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Жолды өңдеу"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Бұл бумада қолдау көрсетілетін файлдар жоқ."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Таңдаулылар"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Файлдарын шолу үшін буманы екі рет басыңыз."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Файлдарын шолу үшін буманы екі рет басыңыз."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Файлдарын шолу үшін Enter пернесін бас немесе қалтаны екі рет шертіп аш."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Өту"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Үй қалтасы"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Белгіше фонының жарықтығы ({level}, 0 = қара, 255 = ақ)\nТізім үстінде Shift пернесін басып тұрып дөңгелекті айналдырсаң, жарықтық өзгереді."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Белгіше өлшемі ({size} px)\nТізім үстінде Ctrl пернесін басып тұрып дөңгелекті айналдырсаң, белгішелердің өлшемі өзгереді."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Өзгертілген: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Файлдарды жылжыту"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} файл жылжытылды"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Жарамды кестелеу файлы емес"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Таңдалған кестелеу файлын ашу."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Түстер…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Жіп түстерін палитра файлынан немесе басқа дизайннан жүкте.\nБұл пішім түстерді сақтай алмайтындықтан, олар осы файлдың қасына <name>.edr ретінде сақталады."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Бұл файлда өз жіп түстері сақталған."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Файлдарды қою"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Қалта жолын енгіз немесе қой"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Орындар"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— буманы таңдау —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Жаңарту"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Осы қалтаны жаңарту (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Таңдаулылардан алып тастау"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Нобайды 180° бұру"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Нобайды солға бұру"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Бұру үшін нобайы бар дизайнды таңда"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Бастапқы бағыты"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Нобайды оңға бұру"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} нобай {degrees}° бұрылды"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Файлдарды іздеу"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Өлшемі: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Бұл кеңейтімдерді диалог терезесінде жасыр.\nОларды | таңбасымен бөл. Тізім config.toml файлына сақталады."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Жасыру"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Алдын ала қарау үшін уақытша файл жасау мүмкін болмады: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Нобайлар: {created} жасалды, {skipped} жаңартылған, {failed} сәтсіз"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Нобайлар: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "{count} нобайдың бастапқы бағыты қалпына келтірілді"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Нобайлар жасалуда…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Файлды ашу"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Құралдар..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Файлдар бұрыннан бар"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Файлдарды тасымалдау сәтсіз аяқталды: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Файлдарды тасымалдау сәтсіз аяқталды"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Мына файлдар баратын жолдарда бұрыннан бар. Олардың арасында файлдармен алмастыруға болмайтын қалталар да бар. Ештеңе тасымалданбады:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Қалталарды алмастыру мүмкін емес"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} дайын: {count} файл"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Мына файлдар баратын жерде бұрыннан бар:\n{files}\n\nОлардың барлығын алмастырайын ба?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Бұл файлдар осында бұрыннан бар."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Бұл файл түрін InkSim-де ашу мүмкін емес."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Көрініс"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Толық мәлімет"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Тек белгішелер"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Белгішелер мен мәтін"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Үлкейту"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Кішірейту"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Палитраны немесе түстері бар дизайнды таңда"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} файлында жіп түстері жоқ."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Барлық файлдар"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Дизайн файлдары (түстері болса)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Палитра файлдары"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Бұл дизайнда өз жіп түстері сақталған."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} файлында осы дизайнның түстері бұрыннан бар.\nОны {target} файлына ауыстырайын ба?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Таңдауымды есте сақтау"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} пішімі жіп түстерін сақтамайды.\nОларды дизайнның қасына {name} ретінде сақтайын ба?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Жіп түстері"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} файлында {available} түс бар, ал дизайнда {blocks} түс блогы бар.\nБәрібір қолданайын ба? Соңғы түс қайталанады."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Түстерді сақтау мүмкін болмады: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Қолжетімсіз"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Түзету скриптін жасау (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Түзету скриптінің параметрін өзгерту мүмкін болмады."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Inkscape іске қосу пәрменін қайталау үшін құжаттың қасына debug_inksim.sh файлын жазады."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Жүйелік кеңейтім: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Ағымдағы пайдаланушы кеңейтімі (орнату/жаңарту нысанасы): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Басқа пайдаланушының кеңейтімі: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Inkscape кеңейтімдері қалтасындағы Ink/Stitch соңғы баптаудан бері өзгерген:\n\n{details}\n\nInkSim ағымдағы сілтемені пайдаланады. Оны сақтау үшін Inkscape баптауын аш."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "қалта жоқ: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "енді мына жолға сілтейді: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Ешқайсысы"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Қолдану"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Барлық Inkscape кеңейтімдері үшін Python интерпретаторын мынаған өзгертейін бе?\n\n{path}\n\nБұл Inkscape бағдарламасының жалпы параметрін өзгертеді. Жалғастырайын ба?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Өзге жол…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Python интерпретаторын таңда"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Міндетті емес — тек өз Python ортасы бар кеңейтімдерге қажет"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Бұл параметр Inkscape-тен Python интерпретаторын сұрайтын кеңейтімдерге ғана қажет (мысалы, Ink/Stitch).\nInkSim-нің өз кеңейтімдері InkSim-ді тікелей іске қосады."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch ортасы ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Өзгертпеу (ұсынылады)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Интерпретатор параметрін алып тастау"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Python интерпретаторының параметрін мына жерден алып тастайын ба?\n\n{path}\n\nInkscape барлық кеңейтім үшін әдепкі интерпретаторына қайта оралады. Жалғастырайын ба?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Алдыңғысын қалпына келтіру"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr іске қосқышы ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Жаңа Python интерпретаторын қолдану үшін Inkscape-ті қайта іске қосыңыз."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python интерпретаторы ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Анықталған конфигурация InkSim баптауларына сақталды."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Inkscape бағдарламасын тексеру мүмкін болмағандықтан, конфигурация өзгеріссіз қалды."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Тексерілген Inkscape орындалатын файлы: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Табылған Ink/Stitch орнатылымдары: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape кеңейтімдері қалтасындағы Ink/Stitch сілтемесі енді мынаған сілтейді: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch орнатылымы табылмады."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape кеңейтімдерінің Python интерпретаторы: {path} (өзгеріссіз қалды)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape-тің Python интерпретаторы параметрі алынды."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Алдыңғы Python интерпретаторы қалпына келтірілді: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Пайдаланушы кеңейтімдері: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Қосымша uvr іске қосқышы қолжетімді: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Қосымша uvr іске қосқышы табылмады; Inkscape интерпретаторының параметрі өзгеріссіз қалды."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Тігіс рендерерін таңдау..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Сақтағанда түстерді өңдеу"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Палитраны әрдайым жазу"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Әр жолы сұрау"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Палитра пішімі"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Палитраны ешқашан жазбау"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Экспорт"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU текстуралы рендер"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Палитраны жүктеу…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Құралдар"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Конфигурация"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape баптауы..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Ине кресті параметрлері"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette} түстері {name} ретінде сақталды"
     },
     "status.slider.color": {
         "source": "Color…",

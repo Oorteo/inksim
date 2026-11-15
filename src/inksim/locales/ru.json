@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Цвет иглы"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Добавить в места"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Отмена"
@@ -144,8 +148,8 @@
         "translation": "Не удалось экспортировать CSV из Ink/Stitch."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Подробности ошибки см. в output.err."
+        "source": "Full log: {path}",
+        "translation": "Полный журнал: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Выполняется экспорт CSV из Ink/Stitch..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Скопировано файлов: {count}"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Копировать файлы"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Создавать PNG-миниатюру размером 256 пикселей рядом с каждым выбранным дизайном (design.pes.png).\nВ меню можно выбрать, создавать ли миниатюры только для устаревших файлов или для всех."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Рабочий стол"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Цвета"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Название"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Размер"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Стежки"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Размер: {width:.1f} × {height:.1f} мм"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Документы"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Загрузки"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Редактировать в Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Изменить путь"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "В этой папке нет поддерживаемых файлов."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Избранное"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Дважды щёлкните папку, чтобы просмотреть её файлы."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Дважды щёлкните папку, чтобы просмотреть её файлы."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Нажми Enter или дважды щёлкни по папке, чтобы просмотреть её файлы."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Перейти"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Домашняя папка"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Затемнение фона значка ({level}, 0 = чёрный, 255 = белый)\nУдерживай Shift и крути колёсико над списком, чтобы изменить затемнение."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Размер значков ({size} пикс.)\nУдерживай Ctrl и крути колёсико над списком, чтобы изменить масштаб значков."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Изменён: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Переместить файлы"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Перемещено файлов: {count}"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Некорректный файл вышивки"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Открыть выбранный файл вышивки."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Цвета…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Загрузи цвета ниток из файла палитры или другого дизайна.\nОни хранятся рядом с этим файлом в формате <name>.edr, поскольку сам формат файла не поддерживает хранение цветов."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "В этом файле уже сохранены цвета ниток."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Вставить файлы"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Введи или вставь путь к папке"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Места"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— выбрать папку —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Обновить"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Обновить эту папку (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Удалить из избранного"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Повернуть миниатюру на 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Повернуть миниатюру влево"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Выбери дизайн с миниатюрой, чтобы повернуть её"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Исходная ориентация"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Повернуть миниатюру вправо"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Миниатюр повёрнуто на {degrees}°: {count}"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Поиск файлов"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Размер: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Скрывать в этом окне файлы с этими расширениями.\nРазделяй их символом |. Список сохраняется в config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Пропускать"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Не удалось создать временный файл предпросмотра: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Миниатюры: создано — {created}, актуальных — {skipped}, ошибок — {failed}"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Миниатюры: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Восстановлена исходная ориентация миниатюр: {count}"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Создание миниатюр…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Открыть файл"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Инструменты..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Файлы уже существуют"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Не удалось передать файлы: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Не удалось передать файлы"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "По этим путям назначения уже есть файлы, в том числе папки, которые нельзя заменить файлами. Ничего не перенесено:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Нельзя заменить папки"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation}: готово к выполнению, файлов — {count}"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Эти файлы уже есть в папке назначения:\n{files}\n\nЗаменить их все?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Эти файлы уже здесь."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "InkSim не может открыть файлы этого типа."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Вид"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Подробности"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Только значки"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Значки и текст"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Увеличить"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Уменьшить"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Выбери палитру или дизайн с цветами"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "В {name} не сохранены цвета ниток."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Все файлы"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Файлы дизайнов (с сохранёнными цветами)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Файлы палитр"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "В этом дизайне уже сохранены цвета ниток."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "В {name} уже сохранены цвета для этого дизайна.\nЗаменить их на цвета из {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Запомнить мой выбор"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "Формат {format} не сохраняет цвета ниток.\nСохранить их в файле {name} рядом с дизайном?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Цвета ниток"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "В {name} цветов: {available}, а в дизайне цветовых блоков: {blocks}.\nВсё равно использовать? Последний цвет будет повторяться."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Не удалось сохранить цвета: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Недоступно"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Создать отладочный скрипт (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Не удалось изменить настройку отладочного скрипта."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Сохраняет debug_inksim.sh рядом с документом, чтобы можно было повторить запуск Inkscape."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Системное расширение: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Текущая пользовательская версия расширения (цель установки/обновления): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Расширение другого пользователя: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "С последней настройки ссылка Ink/Stitch в папке расширений Inkscape изменилась:\n\n{details}\n\nInkSim использует текущую ссылку. Открой настройки Inkscape, чтобы сохранить её."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "папка отсутствует: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "теперь указывает на: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Нет"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Применить"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Изменить интерпретатор Python для всех расширений Inkscape на:\n\n{path}\n\nЭто изменит глобальные настройки Inkscape. Продолжить?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Указать путь…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Выбери интерпретатор Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Необязательно — только для расширений со своей средой Python"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Это нужно только расширениям, которым требуется интерпретатор Python Inkscape (например, Ink/Stitch).\nСобственные расширения InkSim запускают InkSim напрямую."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Среда Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Не менять (рекомендуется)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Удалить настройку интерпретатора"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Удалить настройку интерпретатора Python из:\n\n{path}\n\nДля всех расширений Inkscape будет использоваться интерпретатор по умолчанию. Продолжить?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Восстановить предыдущий"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Средство запуска uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Перезапустите Inkscape, чтобы применить новый интерпретатор Python."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Интерпретатор Python ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Обнаруженные настройки сохранены в конфигурации InkSim."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Настройки не изменены: не удалось проверить Inkscape."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Проверен исполняемый файл Inkscape: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Найдено установок Ink/Stitch: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Ссылка Ink/Stitch в папке расширений Inkscape теперь указывает на: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Установка Ink/Stitch не найдена."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Интерпретатор Python для расширений Inkscape: {path} (без изменений)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Настройка интерпретатора Python в Inkscape удалена."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Восстановлен предыдущий интерпретатор Python: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Пользовательские расширения: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Доступно дополнительное средство запуска uvr: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Дополнительное средство запуска uvr не найдено; настройка интерпретатора Inkscape не изменена."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Выбрать рендерер стежков..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Сохранять цвета"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Всегда записывать палитру"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Спрашивать каждый раз"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Формат палитры"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Не записывать палитру"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Экспорт"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Текстурный рендер GPU"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Загрузить палитру…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Инструменты"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Настроить"
+        "source": "Inkscape Setup...",
+        "translation": "Настройка Inkscape..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Настройки перекрестия иглы"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Цвета из палитры {palette} сохранены как {name}"
     },
     "status.slider.color": {
         "source": "Color…",

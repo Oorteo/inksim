@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "ஊசி நிறம்"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "இடங்களில் சேர்"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "ரத்து செய்"
@@ -144,8 +148,8 @@
         "translation": "Ink/Stitch CSV ஏற்றுமதி தோல்வியடைந்தது."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "பிழை விவரங்களுக்கு output.err-ஐப் பார்க்கவும்."
+        "source": "Full log: {path}",
+        "translation": "முழுப் பதிவு: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Ink/Stitch CSV ஏற்றுமதி நடைபெறுகிறது..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} கோப்பு(கள்) நகலெடுக்கப்பட்டன"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "கோப்புகளை நகலெடு"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "தேர்ந்தெடுத்த ஒவ்வொரு வடிவமைப்பின் அருகிலும் 256 px PNG-ஐ எழுது (design.pes.png).\nபழைய கோப்புகளையா அல்லது எல்லாச் சிறுபடங்களையா மீண்டும் உருவாக்குவது என்பதை மெனு தேர்வுசெய்கிறது."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "பணிமேசை"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "நிறங்கள்"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "பெயர்"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "அளவு"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "தையல்கள்"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "அளவு: {width:.1f} x {height:.1f} மிமீ"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "ஆவணங்கள்"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "பதிவிறக்கங்கள்"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Inkscape-இல் திருத்து"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "பாதையைத் திருத்து"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "இந்தக் கோப்புறையில் ஆதரிக்கப்படும் கோப்புகள் இல்லை."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "பிடித்தவை"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "கோப்புகளை உலாவ கோப்புறையை இருமுறை சொடுக்கவும்."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "கோப்புகளை உலாவ கோப்புறையை இருமுறை சொடுக்கவும்."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "கோப்புறையின் கோப்புகளைப் பார்க்க Enter அழுத்தவும் அல்லது கோப்புறையை இருமுறை சொடுக்கவும்."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "செல்"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "முகப்பு"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "சின்னத்தின் பின்னணி நிழல் ({level}, 0 = கருப்பு, 255 = வெள்ளை)\nபட்டியலின் மேல் Shift+சக்கரத்தைச் சுழற்றினால் நிழலை மாற்றலாம்."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "சின்னத்தின் அளவு ({size} px)\nபட்டியலின் மேல் Ctrl+சக்கரத்தைச் சுழற்றினால் சின்னங்களின் அளவை மாற்றலாம்."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "மாற்றிய நேரம்: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "கோப்புகளை நகர்த்து"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} கோப்பு(கள்) நகர்த்தப்பட்டன"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "இது செல்லுபடியான எம்பிராய்டரி கோப்பு அல்ல"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "தேர்ந்தெடுத்த எம்பிராய்டரி கோப்பைத் திற."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "நிறங்கள்…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "நிறத்தட்டு கோப்பிலிருந்தோ மற்றொரு வடிவமைப்பிலிருந்தோ நூல் நிறங்களை ஏற்று.\nஇந்த வடிவம் நிறங்களைச் சேமிக்க முடியாததால், அவை இந்தக் கோப்பின் அருகே <name>.edr என்ற பெயரில் வைக்கப்படும்."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "இந்தக் கோப்பில் ஏற்கெனவே அதன் சொந்த நூல் நிறங்கள் சேமிக்கப்பட்டுள்ளன."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "கோப்புகளை ஒட்டு"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "கோப்புறைப் பாதையை உள்ளிடு அல்லது ஒட்டு"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "இடங்கள்"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— கோப்பகத்தைத் தேர்ந்தெடு —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "புதுப்பி"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "இந்தக் கோப்புறையைப் புதுப்பி (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "பிடித்தவற்றிலிருந்து நீக்கு"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "சிறுபடத்தை 180° சுழற்று"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "சிறுபடத்தை இடப்புறம் சுழற்று"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "சுழற்ற, சிறுபடம் உள்ள வடிவமைப்பைத் தேர்ந்தெடு"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "அசல் திசை"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "சிறுபடத்தை வலப்புறம் சுழற்று"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} சிறுபடம்(கள்) {degrees}° சுழற்றப்பட்டன"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "கோப்புகளைத் தேடு"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "அளவு: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "இந்த உரையாடலில் இந்த நீட்டிப்புகளை மறை.\n| குறியால் பிரித்துக் கொடு; பட்டியல் config.toml-இல் சேமிக்கப்படும்."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "தவிர்"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "தற்காலிக முன்னோட்டக் கோப்பை உருவாக்க முடியவில்லை: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "சிறுபடங்கள்: {created} உருவாக்கப்பட்டன, {skipped} ஏற்கெனவே புதுப்பித்த நிலையில் உள்ளன, {failed} தோல்வியடைந்தன"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "சிறுபடங்கள்: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "{count} சிறுபடம்(களின்) அசல் திசை மீட்டெடுக்கப்பட்டது"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "சிறுபடங்கள் உருவாக்கப்படுகின்றன…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "கோப்பைத் திற"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "கருவிகள்..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "கோப்புகள் ஏற்கெனவே உள்ளன"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "கோப்பு பரிமாற்றம் தோல்வியடைந்தது: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "கோப்பு பரிமாற்றம் தோல்வியடைந்தது"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "கோப்புகளால் மாற்ற முடியாத கோப்புறைகள் உட்பட, இந்த இலக்குப் பாதைகள் ஏற்கெனவே உள்ளன. எதுவும் பரிமாற்றப்படவில்லை:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "கோப்புறைகளை மாற்ற முடியாது"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} தயார்: {count} கோப்பு(கள்)"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "இந்த இலக்குக் கோப்புகள் ஏற்கெனவே உள்ளன:\n{files}\n\nஅனைத்தையும் மாற்றவா?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "இந்தக் கோப்புகள் ஏற்கெனவே இங்கே உள்ளன."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "இந்தக் கோப்பு வகையை InkSim-இல் திறக்க முடியாது."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "காட்சி"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "விவரங்கள்"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "சின்னங்கள் மட்டும்"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "சின்னங்களும் உரையும்"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "பெரிதாக்கு"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "சிறிதாக்கு"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "நிறத்தட்டையோ நிறமுள்ள வடிவமைப்பையோ தேர்ந்தெடு"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name}-இல் நூல் நிறங்கள் எதுவும் சேமிக்கப்படவில்லை."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "அனைத்துக் கோப்புகளும்"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "வடிவமைப்புக் கோப்புகள் (சேமித்திருந்தால் நிறங்கள்)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "நிறத்தட்டுக் கோப்புகள்"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "இந்த வடிவமைப்பில் ஏற்கெனவே அதன் சொந்த நூல் நிறங்கள் சேமிக்கப்பட்டுள்ளன."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name}-இல் இந்த வடிவமைப்புக்கான நிறங்கள் ஏற்கெனவே சேமிக்கப்பட்டுள்ளன.\nஅதற்குப் பதிலாக {target}-ஐப் பயன்படுத்தவா?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "எனது தேர்வை நினைவில் கொள்"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format}-இல் நூல் நிறங்களைச் சேமிக்க முடியாது.\nவடிவமைப்பின் அருகே {name} எனச் சேமிக்கவா?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "நூல் நிறங்கள்"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name}-இல் {available} நிறங்கள் உள்ளன; ஆனால் வடிவமைப்பில் {blocks} நிறத் தொகுதிகள் உள்ளன.\nஇருந்தாலும் பயன்படுத்தவா? கடைசி நிறம் மீண்டும் பயன்படுத்தப்படும்."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "நிறங்களைச் சேமிக்க முடியவில்லை: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "கிடைக்கவில்லை"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "பிழைத்திருத்த ஸ்கிரிப்டை உருவாக்கு (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "பிழைத்திருத்த ஸ்கிரிப்ட் அமைப்பை மாற்ற முடியவில்லை."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Inkscape கட்டளையை மீண்டும் இயக்குவதற்காக, ஆவணத்தின் அருகே debug_inksim.sh கோப்பை எழுதும்."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "கணினி நீட்டிப்பு: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "தற்போதைய பயனர் நீட்டிப்பு (நிறுவல்/புதுப்பிப்பு இலக்கு): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "வேறொரு பயனரின் நீட்டிப்பு: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "கடைசி அமைப்புக்குப் பிறகு Inkscape நீட்டிப்புகள் கோப்புறையில் உள்ள Ink/Stitch இணைப்பு மாறிவிட்டது:\n\n{details}\n\nInkSim தற்போதைய இணைப்பைப் பயன்படுத்துகிறது. அதைச் சேமிக்க Inkscape அமைப்பைத் திற."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "கோப்புறை இல்லை: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "இப்போது இதைச் சுட்டுகிறது: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "எதுவுமில்லை"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "பயன்படுத்து"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "அனைத்து Inkscape நீட்டிப்புகளுக்குமான Python interpreter-ஐ இதற்கு மாற்றவா?\n\n{path}\n\nஇது Inkscape-இன் உலகளாவிய விருப்பத்தை மாற்றும். தொடரவா?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "தனிப்பயன் பாதை…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Python interpreter-ஐத் தேர்ந்தெடு"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "விருப்பத்தேர்வு — சொந்த Python சூழல் கொண்ட நீட்டிப்புகளுக்கு மட்டும்"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Inkscape-இன் Python interpreter-ஐக் கேட்கும் நீட்டிப்புகளுக்கு மட்டுமே இது தேவை (எ.கா. Ink/Stitch).\nInkSim-இன் சொந்த நீட்டிப்புகள் InkSim-ஐ நேரடியாகத் தொடங்கும்."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch சூழல் ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "மாற்ற வேண்டாம் (பரிந்துரைக்கப்படுகிறது)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Interpreter அமைப்பை நீக்கு"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "இதிலிருந்து Python interpreter அமைப்பை நீக்கவா?\n\n{path}\n\nஒவ்வொரு நீட்டிப்புக்கும் Inkscape அதன் இயல்புநிலை interpreter-ஐப் பயன்படுத்தும். தொடரவா?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "முந்தையதை மீட்டமை"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr தொடக்கி ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "புதிய Python மொழிபெயர்ப்பியைப் பயன்படுத்த Inkscape-ஐ மறுதொடக்கம் செய்."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python interpreter ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "கண்டறியப்பட்ட அமைப்பு InkSim அமைப்பில் சேமிக்கப்பட்டது."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Inkscape-ஐ ஆய்வு செய்ய முடியாததால் அமைப்பில் எந்த மாற்றமும் செய்யப்படவில்லை."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "சரிபார்க்கப்பட்ட Inkscape செயல்படுத்தக்கூடிய கோப்பு: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Ink/Stitch நிறுவல்கள் கிடைத்தன: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape நீட்டிப்புகள் கோப்புறையில் உள்ள Ink/Stitch இணைப்பு இப்போது இதைச் சுட்டுகிறது: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch நிறுவல் எதுவும் கிடைக்கவில்லை."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape நீட்டிப்புகளின் Python interpreter: {path} (மாற்றப்படவில்லை)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape Python interpreter விருப்பம் நீக்கப்பட்டது."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "முந்தைய Python interpreter மீட்டமைக்கப்பட்டது: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "பயனர் நீட்டிப்புகள்: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "விருப்ப uvr தொடக்கி உள்ளது: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "விருப்ப uvr தொடக்கி கிடைக்கவில்லை; Inkscape interpreter விருப்பம் மாற்றப்படாமல் உள்ளது."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "தையல் ரெண்டரரை தேர்வு செய்..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "சேமிக்கும்போது நிறங்கள்"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "நிறத்தட்டையை எப்போதும் எழுது"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "ஒவ்வொரு முறையும் கேள்"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "நிறத்தட்டு வடிவம்"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "நிறத்தட்டையை ஒருபோதும் எழுதாதே"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "ஏற்றுமதி"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU அமைப்பு ரெண்டர்"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "நிறத்தட்டையை ஏற்று…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&கருவிகள்"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "அமைப்பு"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape அமைப்பு..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "ஊசி குறுக்கு கோடு அமைப்புகள்"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette}-இன் நிறங்கள் {name} எனச் சேமிக்கப்பட்டன"
     },
     "status.slider.color": {
         "source": "Color…",

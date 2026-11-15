@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Litur nálar"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Bæta við staði"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Hætta við"
@@ -144,8 +148,8 @@
         "translation": "Útflutningur Ink/Stitch í CSV mistókst."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Sjá output.err fyrir nánari upplýsingar um villuna."
+        "source": "Full log: {path}",
+        "translation": "Heildarskráning: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Flyt út úr Ink/Stitch í CSV..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Afritaði {count} skrá(r)"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Afrita skrár"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Vista 256 px PNG-mynd við hlið hverrar valinnar hönnunar (design.pes.png).\nValmyndin velur hvort endurgera eigi úreltar myndir eða allar smámyndir."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Skjáborð"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Litir"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Nafn"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Stærð"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Spor"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Stærð: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Skjöl"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Niðurhal"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Breyta í Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Breyta slóð"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Engar studdar skrár í þessari möppu."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Uppáhalds"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Tvísmelltu á möppuna til að skoða skrárnar í henni."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Tvísmelltu á möppuna til að skoða skrárnar í henni."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Ýttu á Enter eða tvísmelltu á möppuna til að skoða skrárnar hennar."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Fara"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Heim"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Skygging táknbakgrunns ({level}, 0 = svart, 255 = hvítt)\nShift+hjól yfir listanum breytir skyggingunni."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Stærð tákna ({size} px)\nCtrl+hjól yfir listanum breytir stærð táknanna."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Breytt: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Færa skrár"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Færði {count} skrá(r)"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Þetta er ekki gild útsaumsskrá"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Opna valda útsaumsskrá."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Litir…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Hlaða inn þráðalitum úr litaskrá eða annarri hönnun.\nÞeir eru geymdir við hlið þessarar skráar sem <name>.edr, þar sem þetta snið\ngetur ekki geymt liti sjálft."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Þessi skrá geymir nú þegar sína eigin þráðaliti."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Líma skrár"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Sláðu inn eða límdu möppuslóð"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Staðir"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— veldu möppu —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Endurlesa"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Endurlesa þessa möppu (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Fjarlægja úr uppáhaldi"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Snúa smámynd um 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Snúa smámynd til vinstri"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Veldu hönnun með smámynd til að snúa henni"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Upprunaleg stefna"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Snúa smámynd til hægri"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Sneri {count} smámynd(um) um {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Leita að skrám"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Stærð: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Fela þessar skráarendingar í glugganum.\nAðskildu þær með | og listinn er vistaður í config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Sleppa"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Ekki tókst að búa til tímabundna forskoðunarskrá: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Smámyndir: {created} búnar til, {skipped} uppfærðar, {failed} mistókust"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Smámyndir: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Endurheimti upprunalega stefnu {count} smámyndar(a)"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Bý til smámyndir…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Opna skrá"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Tools..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Skrár eru þegar til"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Ekki tókst að flytja skrár: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Skráaflutningur mistókst"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Þessar slóðir á áfangastað eru þegar til, þar á meðal möppur sem ekki er hægt að skipta út fyrir skrár. Ekkert var flutt:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Ekki hægt að skipta út möppum"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} tilbúið: {count} skrá(r)"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Þessar skrár eru þegar til á áfangastað:\n{files}\n\nSkipta þeim öllum út?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Þessar skrár eru nú þegar hér."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Ekki er hægt að opna þessa skráartegund í InkSim."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Skoða"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Nánar"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Aðeins tákn"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Tákn og texti"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Stækka"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Minnka"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Veldu litaskrá eða litaða hönnun"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} geymir enga þráðaliti."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Allar skrár"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Hönnunarskrár (litir ef þeir eru vistaðir)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Litaskrár"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Þessi hönnun geymir nú þegar sína eigin þráðaliti."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} geymir nú þegar liti fyrir þessa hönnun.\nSkipta þeim út fyrir {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Muna val mitt"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} geymir ekki þráðaliti.\nVista þá sem {name} við hlið hönnunarinnar?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Þráðalitir"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} hefur {available} liti en hönnunin hefur {blocks} litablokkir.\nNota hana samt? Síðasti liturinn verður endurtekinn."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Ekki tókst að vista litina: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Ekki tiltækt"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Búa til aflúsunarskriftu (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Ekki tókst að breyta stillingu aflúsunarskriftu."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Skrifar debug_inksim.sh við hlið skjalsins svo hægt sé að endurtaka ræsingu Inkscape."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Kerfisviðbót: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Núverandi notendaviðbót (uppsetningar-/uppfærslumark): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Viðbót annars notanda: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch í Inkscape-viðbótamöppunni hefur breyst frá síðustu uppsetningu:\n\n{details}\n\nInkSim notar núverandi tengil. Opnaðu Inkscape-uppsetninguna til að vista hann."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "mappan er horfin: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "vísar nú á: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Engar"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Virkja"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Breyta Python-túlkinum fyrir allar Inkscape-viðbætur í:\n\n{path}\n\nÞetta breytir almennri Inkscape-stillingu. Halda áfram?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Sérsniðin slóð…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Veldu Python-túlk"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Valfrjálst — aðeins fyrir viðbætur með sitt eigið Python-umhverfi"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Aðeins viðbætur sem biðja Inkscape um Python-túlk þurfa þetta (t.d. Ink/Stitch).\nInkSim-viðbæturnar ræsa InkSim beint."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch-umhverfi ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Ekki breyta (ráðlagt)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Fjarlægja stillingu Python-túlks"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Fjarlægja stillingu Python-túlks úr:\n\n{path}\n\nInkscape notar þá sjálfgefinn túlk fyrir allar viðbætur. Halda áfram?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Endurheimta fyrri"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr-ræsiforrit ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Endurræstu Inkscape til að nota nýja Python-túlkinn."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python-túlkur ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Greind uppsetning vistuð í InkSim-stillingarnar."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Stillingunum var ekki breytt þar sem ekki tókst að skoða Inkscape."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Athugað Inkscape-forrit: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Ink/Stitch-uppsetningar fundust: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Ink/Stitch-tengillinn í Inkscape-viðbótamöppunni vísar nú á: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Engin Ink/Stitch-uppsetning fannst."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Python-túlkur Inkscape-viðbóta: {path} (óbreytt)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Stilling Python-túlks Inkscape var fjarlægð."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Fyrri Python-túlkur endurheimtur: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Notandaviðbætur: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Valfrjálsa uvr-ræsiforritið er tiltækt: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Valfrjálsa uvr-ræsiforritið fannst ekki; Python-túlksstilling Inkscape var ekki breytt."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Veldu sporateiknara..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Litir við vistun"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Vista litaskrá alltaf"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Spyrja í hvert sinn"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Snið litaskrár"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Aldrei vista litaskrá"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Flytja út"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU áferðateikning"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Hlaða litaskrá…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Verkfæri"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Stillingar"
+        "source": "Inkscape Setup...",
+        "translation": "Setja upp Inkscape..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Stillingar krosshárs nálar"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Litir úr {palette} vistaðir sem {name}"
     },
     "status.slider.color": {
         "source": "Color…",

@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Tű színe"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Hozzáadás a helyekhez"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Mégse"
@@ -144,8 +148,8 @@
         "translation": "Az Ink/Stitch CSV-exportálása nem sikerült."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "A hiba részletei az output.err fájlban találhatók."
+        "source": "Full log: {path}",
+        "translation": "Teljes napló: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Ink/Stitch CSV-exportálása folyamatban..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} fájl másolva"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Fájlok másolása"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "256 px-es PNG-kép mentése minden kiválasztott terv mellé (terv.pes.png).\nA menüben választhatod ki, hogy csak az elavult fájlok vagy az összes bélyegkép készüljön-e újra."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Asztal"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Színek"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Név"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Méret"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Öltések"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Méret: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Dokumentumok"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Letöltések"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Szerkesztés az Inkscape-ben"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Útvonal szerkesztése"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Ebben a mappában nincsenek támogatott fájlok."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Kedvencek"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Kattints duplán a mappára a benne lévő fájlok böngészéséhez."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Kattints duplán a mappára a benne lévő fájlok böngészéséhez."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Nyomj Entert vagy kattints duplán a mappára a benne lévő fájlok böngészéséhez."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Ugrás"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Saját mappa"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Ikonháttér árnyalata ({level}, 0 = fekete, 255 = fehér)\nA Shift+görgővel módosíthatod az árnyalatot a lista fölött."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Ikonméret ({size} px)\nA Ctrl+görgővel méretezheted az ikonokat a lista fölött."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Módosítva: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Fájlok áthelyezése"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} fájl áthelyezve"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Nem érvényes hímzésfájl"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "A kijelölt hímzésfájl megnyitása."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Színek…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Cérnaszínek betöltése palettafájlból vagy egy másik tervből.\nA színek a fájl mellett, <name>.edr néven lesznek tárolva, mert ez a formátum\nönmagában nem tudja tárolni őket."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Ez a fájl már tárolja a saját cérnaszíneit."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Fájlok beillesztése"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Adj meg vagy illessz be egy mappaútvonalat"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Helyek"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— könyvtár kiválasztása —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Frissítés"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Mappa frissítése (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Eltávolítás a kedvencek közül"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Bélyegkép elforgatása 180°-kal"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Bélyegkép elforgatása balra"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Az elforgatáshoz válassz egy bélyegképpel rendelkező tervet"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Eredeti tájolás"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Bélyegkép elforgatása jobbra"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} bélyegkép elforgatva {degrees}°-kal"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Fájlok keresése"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Méret: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Ezeknek a kiterjesztéseknek az elrejtése a párbeszédablakban.\nVálaszd el őket | jellel; a lista a config.toml fájlban lesz tárolva."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Kihagyás"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Nem sikerült létrehozni az ideiglenes előnézeti fájlt: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Bélyegképek: {created} létrehozva, {skipped} naprakész, {failed} sikertelen"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Bélyegképek: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "{count} bélyegkép eredeti tájolása visszaállítva"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Bélyegképek létrehozása…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Fájl megnyitása"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Eszközök..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "A fájlok már léteznek"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "A fájlátvitel nem sikerült: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "A fájlátvitel nem sikerült"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "A célútvonalak közül néhány már létezik, köztük olyan mappák is, amelyeket nem lehet fájlokkal felülírni. Nem történt fájlátvitel:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "A mappák nem írhatók felül"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} kész: {count} fájl"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "A következő célfájlok már léteznek:\n{files}\n\nFelülírod mindet?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Ezek a fájlok már itt vannak."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Ez a fájltípus nem nyitható meg az InkSimben."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Nézet"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Részletek"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Csak ikonok"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Ikonok és szöveg"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Nagyítás"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Kicsinyítés"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Válassz palettát vagy színezett tervet"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "A(z) {name} nem tárol cérnaszíneket."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Minden fájl"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Tervfájlok (ha tárolnak színeket)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Palettafájlok"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Ez a terv már tárolja a saját cérnaszíneit."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "A(z) {name} már tárol színeket ehhez a tervhez.\nLecseréled erre: {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Emlékezz a választásomra"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "A(z) {format} formátum nem tárol cérnaszíneket.\nMented őket a terv mellé {name} néven?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Cérnaszínek"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "A(z) {name} {available} színt tartalmaz, a tervben viszont {blocks} színblokk van.\nÍgy is használod? Az utolsó szín ismétlődni fog."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "A színek mentése nem sikerült: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Nem érhető el"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Hibakereső szkript létrehozása (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "A hibakereső szkript beállítását nem sikerült módosítani."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "A dokumentum mellé menti a debug_inksim.sh fájlt, így újraindítható az Inkscape."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Rendszerbővítmény: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Jelenlegi felhasználói kiegészítő (telepítési/frissítési cél): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Másik felhasználó bővítménye: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Az Inkscape kiegészítőmappájában lévő Ink/Stitch megváltozott a legutóbbi beállítás óta:\n\n{details}\n\nAz InkSim a jelenlegi hivatkozást használja. Mentsd el az Inkscape beállításainál."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "a mappa nem található: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "jelenleg erre mutat: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Nincs"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Alkalmaz"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Módosítod az összes Inkscape-kiegészítő Python-értelmezőjét erre:\n\n{path}\n\nEz egy globális Inkscape-beállítást módosít. Folytatod?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Egyéni útvonal…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Python-értelmező kiválasztása"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Nem kötelező — csak saját Python-környezetet használó kiegészítőkhöz"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Csak azoknak a kiegészítőknek van erre szükségük, amelyek az Inkscape-től kérik a Python-értelmezőt (pl. Ink/Stitch).\nAz InkSim saját kiegészítői közvetlenül indítják el az InkSimet."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch-környezet ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Ne módosítsd (ajánlott)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Python-értelmező beállításának eltávolítása"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Eltávolítod a Python-értelmező beállítását innen:\n\n{path}\n\nAz Inkscape ezután minden kiegészítőnél az alapértelmezett értelmezőt használja. Folytatod?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Előző visszaállítása"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr-indító ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Az új Python-értelmező alkalmazásához indítsd újra az Inkscape-et."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python-értelmező ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Az észlelt beállítás mentve az InkSim konfigurációjába."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "A beállítás nem változott, mert az Inkscape állapotát nem sikerült ellenőrizni."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Ellenőrzött Inkscape-futtatható fájl: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Talált Ink/Stitch-telepítések: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Az Inkscape kiegészítőmappájában lévő Ink/Stitch-hivatkozás most erre mutat: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Nem található Ink/Stitch-telepítés."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape-kiegészítők Python-értelmezője: {path} (változatlan maradt)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Az Inkscape Python-értelmezőjének beállítása eltávolítva."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Az előző Python-értelmező visszaállítva: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Felhasználói bővítmények: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Az opcionális uvr-indító elérhető: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Az opcionális uvr-indító nem található; az Inkscape értelmezőbeállítása változatlan maradt."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Öltés-megjelenítő kiválasztása..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Színek mentéskor"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Paletta mindig mentése"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Rákérdezés minden alkalommal"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Paletta formátuma"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Paletta mentésének mellőzése"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Exportálás"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU textúrázott megjelenítés"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Paletta betöltése…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Eszközök"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Beállítás"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape beállítása..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Tű célkereszt beállítások"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "A(z) {palette} színei {name} néven mentve"
     },
     "status.slider.color": {
         "source": "Color…",

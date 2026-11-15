@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Dath an tsnáthaid"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Cuir le háiteanna"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Cealaigh"
@@ -144,8 +148,8 @@
         "translation": "Theip ar easpórtáil CSV Ink/Stitch."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Féach ar output.err chun sonraí na hearráide a fheiceáil."
+        "source": "Full log: {path}",
+        "translation": "Log iomlán: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Easpórtáil CSV Ink/Stitch ar siúl..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Cóipeáladh {count} comhad"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Cóipeáil comhaid"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Scríobh PNG 256 px in aice le gach dearadh roghnaithe (design.pes.png).\nRoghnaigh sa roghchlár cé acu comhaid atá as dáta nó gach mionsamhail a athchruthaítear."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Deasc"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Dathanna"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Ainm"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Méid"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Greamanna"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Méid: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Doiciméid"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Íoslódálacha"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Cuir in eagar in Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Cuir an chonair in eagar"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Níl aon chomhaid a dtacaítear leo san fhillteán seo."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Ceanáin"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Cliceáil faoi dhó ar an bhfillteán chun a chomhaid a bhrabhsáil."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Cliceáil faoi dhó ar an bhfillteán chun a chomhaid a bhrabhsáil."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Brúigh Enter nó cliceáil faoi dhó ar an bhfillteán chun a chomhaid a bhrabhsáil."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Téigh"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Baile"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Scáthú chúlra na ndeilbhíní ({level}, 0 = dubh, 255 = bán)\nAthraigh an scáthú leis an roth agus Shift brúite agus an cúrsóir os cionn an liosta."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Méid na ndeilbhíní ({size} px)\nAthraigh méid na ndeilbhíní leis an roth agus Ctrl brúite agus an cúrsóir os cionn an liosta."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Athraithe: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Bog comhaid"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Bogadh {count} comhad"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Ní comhad bailí bróidnéireachta é seo"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Oscail an comhad bróidnéireachta roghnaithe."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Dathanna…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Luchtaigh dathanna snáithe ó chomhad pailéid nó ó dhearadh eile.\nCoinnítear iad in aice leis an gcomhad seo mar <name>.edr, mar ní féidir leis an bhformáid seo dathanna a stóráil inti féin."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Stórálann an comhad seo a dhathanna snáithe féin cheana féin."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Greamaigh comhaid"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Cuir isteach nó greamaigh conair fillteáin"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Áiteanna"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— roghnaigh fillteán —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Athnuaigh"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Athnuaigh an fillteán seo (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Bain de na ceanáin"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Rothlaigh an mhionsamhail 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Rothlaigh an mhionsamhail ar chlé"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Roghnaigh dearadh a bhfuil mionsamhail aige chun é a rothlú"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "An treoshuíomh bunaidh"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Rothlaigh an mhionsamhail ar dheis"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Rothlaíodh {count} mionsamhail faoi {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Cuardaigh comhaid"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Méid: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Folaigh na hiarmhíreanna seo sa dialóg.\nDealaigh iad le | agus stórálfar an liosta in config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Ná taispeáin"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Níorbh fhéidir comhad réamhamhairc sealadach a chruthú: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Mionsamhlacha: {created} cruthaithe, {skipped} cothrom le dáta, {failed} teipthe"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Mionsamhlacha: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Athchóiríodh an treoshuíomh bunaidh do {count} mionsamhail"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Mionsamhlacha á gcruthú…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Oscail comhad"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Uirlisí..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Tá comhaid ann cheana"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Theip ar aistriú na gcomhad: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Theip ar aistriú na gcomhad"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Tá na conairí sprice seo ann cheana, lena n-áirítear fillteáin nach féidir comhaid a chur ina n-ionad. Níor aistríodh aon rud:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Ní féidir fillteáin a chur ina n-ionad"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "Tá {operation} réidh: {count} comhad"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Tá na comhaid sprice seo ann cheana:\n{files}\n\nAn bhfuil fonn ort iad uile a ionadú?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Tá na comhaid seo anseo cheana."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Ní féidir an cineál comhaid seo a oscailt in InkSim."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Amharc"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Mionsonraí"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Deilbhíní amháin"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Deilbhíní agus téacs"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Zúmáil isteach"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Zúmáil amach"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Roghnaigh pailéad nó dearadh daite"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "Ní stórálann {name} aon dathanna snáithe."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Gach comhad"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Comhaid dearaidh (dathanna, má stóráiltear iad)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Comhaid pailéid"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Stórálann an dearadh seo a dhathanna snáithe féin cheana féin."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "Stórálann {name} dathanna don dearadh seo cheana féin.\nAn bhfuil fonn ort {target} a chur ina n-ionad?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Cuimhnigh ar mo rogha"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "Ní stórálann {format} dathanna snáithe.\nAn bhfuil fonn ort iad a shábháil mar {name} in aice leis an dearadh?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Dathanna snáithe"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "Tá {available} dathanna in {name}, ach tá {blocks} bloc dathanna sa dearadh.\nAr mhaith leat é a úsáid mar sin féin? Déanfar an dath deireanach a athúsáid."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Níorbh fhéidir na dathanna a shábháil: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Níl sé ar fáil"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Cruthaigh script dífhabhtaithe (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Níorbh fhéidir socrú na scripte dífhabhtaithe a athrú."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Scríobhann sé debug_inksim.sh in aice leis an doiciméad chun glao Inkscape a athsheinm."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Síneadh córais: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Síneadh an úsáideora reatha (sprioc suiteála/nuashonraithe): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Síneadh úsáideora eile: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Tá Ink/Stitch i bhfillteán na síntí Inkscape athraithe ón uair dheireanach a socraíodh é:\n\n{details}\n\nÚsáideann InkSim an nasc reatha. Oscail socrú Inkscape chun é a stóráil."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "níl an fillteán ann: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "díríonn sé ar seo anois: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Ceann ar bith"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Cuir i bhfeidhm"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Athraigh ateangaire Python do gach síneadh Inkscape go:\n\n{path}\n\nAthróidh sé seo socrú domhanda Inkscape. Lean ar aghaidh?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Conair shaincheaptha…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Roghnaigh ateangaire Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Roghnach — do shíntí amháin a bhfuil timpeallacht Python dá gcuid féin acu"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Níl sé seo de dhíth ach ar shíntí a iarrann ateangaire Python ar Inkscape (m.sh. Ink/Stitch).\nSeolann síntí InkSim féin InkSim go díreach."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Timpeallacht Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Ná hathraigh (molta)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Bain socrú an ateangaire"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Bain socrú ateangaire Python de:\n\n{path}\n\nÚsáidfidh Inkscape a ghnáth-ateangaire do gach síneadh. Lean ar aghaidh?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Athchóirigh an ceann roimhe seo"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Tosaitheoir uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Atosaigh Inkscape chun an t-ateangaire Python nua a chur i bhfeidhm."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Ateangaire Python ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Sábháladh an socrú aimsithe i gcumraíocht InkSim."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Níor athraíodh an chumraíocht mar níorbh fhéidir Inkscape a iniúchadh."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Seiceáladh comhad inrite Inkscape: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Suiteálacha Ink/Stitch aimsithe: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Díríonn an nasc Ink/Stitch i bhfillteán síntí Inkscape ar seo anois: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Níor aimsíodh aon suiteáil Ink/Stitch."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Ateangaire Python do shíntí Inkscape: {path} (fágtha gan athrú)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Baineadh sainrogha ateangaire Python Inkscape."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Athchóiríodh an t-ateangaire Python roimhe seo: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Síntí an úsáideora: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Tá an tosaitheoir roghnach uvr ar fáil: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Níor aimsíodh an tosaitheoir roghnach uvr; fágadh sainrogha ateangaire Inkscape gan athrú."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Roghnaigh rindreálaí greama..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Dathanna nuair a shábháiltear"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Scríobh an pailéad i gcónaí"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Fiafraigh gach uair"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Formáid an phailéid"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Ná scríobh an pailéad riamh"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Easportáil"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Rindreáil uigeachta GPU"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Luchtaigh pailéad…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Uirlisí"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Cumraigh"
+        "source": "Inkscape Setup...",
+        "translation": "Socrú Inkscape..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Socruithe crosbhóthar snáthaide"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Sábháladh dathanna {palette} mar {name}"
     },
     "status.slider.color": {
         "source": "Color…",

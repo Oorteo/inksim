@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Color acus"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Locis adde"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Dimitte"
@@ -144,8 +148,8 @@
         "translation": "Exportatio CSV ab Ink/Stitch defecit."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Vide output.err ut causam erroris cognoscas."
+        "source": "Full log: {path}",
+        "translation": "Commentarii integri: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Exportatio CSV ab Ink/Stitch fit..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Fasciculi copiati: {count}"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Fasciculos copia"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Imaginem PNG 256 px iuxta singula opera selecta scribe (opus.pes.png).\nMenu statuit utrum fasciculi obsoleti an omnes imagines praeviae reficiantur."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Mensa operis"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Colores"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Nomen"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Magnitudo"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Suturae"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Magnitudo: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Documenta"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Recepta"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "In Inkscape emenda"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Iter muta"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Nulli fasciculi apti in hoc indice."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Dilecta"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Indicem duplici ictu aperi, ut fasciculos eius perlustres."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Indicem duplici ictu aperi, ut fasciculos eius perlustres."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Preme Intra aut duplici clicca in folder ut eius fasciculos explores."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "I"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Domus"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Umbratio fundi iconis ({level}, 0 = niger, 255 = albus)\nRotam prehensis Shift super indicem verte ut umbrationem mutes."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Magnitudo iconis ({size} px)\nRotam prehensis Ctrl super indicem verte ut icones amplifices vel minuas."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Mutatus: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Fasciculos move"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Fasciculi moti: {count}"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Fasciculus intertexturae acu pictae non valet"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Fasciculum intertexturae acu pictae delectum aperi."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Colores…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Colores filorum ex paletta aut alio opere importa.\nHic iuxta fasciculum servantur ut <nomen>.edr, quia haec forma\ncolores per se servare nequit."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Hic fasciculus colores filorum suos iam continet."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Fasciculos colloca"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Iter ad folder inscribe aut colloca"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Loca"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— elige indicem —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Renova"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Hunc folder renova (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "E dilectis remove"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Imaginem praeviam 180° verte"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Imaginem praeviam ad sinistram verte"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Opus cum imagine praeviam selige ut eam vertas"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Situs originalis"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Imaginem praeviam ad dextram verte"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Imagines praeviae rotatae: {count}, per {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Fasciculos quaere"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Magnitudo: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Has extensiones in fenestra cela.\nEas | distingue; index in config.toml servatur."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Omitte"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Fasciculus temporarius praevisionis creari non potuit: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Imagines praeviae: {created} creatae, {skipped} iam recentes, {failed} defecerunt"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Imagines praeviae: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Situs originalis {count} imaginum praevium restitutus"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Imagines praeviae creantur…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Fasciculum aperi"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Instrumenta..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Fasciculi iam exstant"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Fasciculus transferri non potuit: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Translatio fasciculi defecit"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Haec itinera destinationis iam exstant, etiam folder qui fasciculis substitui nequeunt. Nihil translatum est:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Folder substitui non potest"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} paratum: {count} fasciculi"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Hi fasciculi destinationis iam exstant:\n{files}\n\nOmnesne substituere vis?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Hi fasciculi iam hic sunt."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Hoc genus fasciculi in InkSim aperiri non potest."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Aspectus"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Singula"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Solae icones"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Icones et textus"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Amplifica"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Minue"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Palettam aut opus coloratum elige"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} colores filorum non continet."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Omnes fasciculi"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Fasciculi operum (colores si insunt)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Fasciculi palettarum"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Hoc opus colores filorum suos iam continet."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} colores huius operis iam continet.\nEos cum {target} substituere vis?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Electionem meam memora"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} colores filorum non servat.\nEos ut {name} iuxta opus servare vis?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Colores filorum"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} {available} colores habet, opus autem {blocks} colorum partes.\nUti tamen vis? Color ultimus repetetur."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Colores servari non potuerunt: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Inaccessibilis"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Scriptum ad errores investigandos crea (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Optio scripti ad errores investigandos mutari non potuit."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "debug_inksim.sh iuxta documentum scribit, ut mandatum Inkscape iterum exsequi possis."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Extensio systematis: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Extensio huius usoris (locus institutionis/renovationis): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Alia extensio usoris: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch in folder extensionum Inkscape mutatus est post ultimam institutionem:\n\n{details}\n\nInkSim nexum praesentem adhibet. Institutionem Inkscape aperi ut eum serves."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "folder non iam exstat: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "nunc huc ducit: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Nulla"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Adhibe"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Interpretem Pythonicum omnium extensionum Inkscape ad hunc mutare vis?\n\n{path}\n\nHaec optio universalis Inkscape mutabitur. Pergere vis?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Iter proprium…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Interpretem Pythonicum elige"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Optativum — tantum extensionibus cum ambitu Pythonico proprio"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Hoc solum extensionibus opus est quae interpretem Pythonicum ab Inkscape petunt (ut Ink/Stitch).\nExtensiones InkSim ipsum InkSim statim incipiunt."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ambitus Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Ne mutes (commendatur)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Optationem interpretis remove"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Optationem interpretis Pythonici hinc removere vis?\n\n{path}\n\nInkscape interpretem suum solitum ad omnes extensiones adhibebit. Pergere vis?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Priorem restitue"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Programma uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Inkscape iterum incipe ut novus interpretator Python valeat."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Interpres Pythonicus ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Configuratio InkSim ex institutione detecta servata est."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Configuratio immutata mansit, quia Inkscape inspici non potuit."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Programma Inkscape exploratum: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Institutiones Ink/Stitch inventae: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Nexus Ink/Stitch in folder extensionum Inkscape nunc huc ducit: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Nulla institutio Ink/Stitch inventa est."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Interpres Pythonicus extensionum Inkscape: {path} (immutatus)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Optatio interpretis Pythonici Inkscape remota est."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Interpres Pythonicus prior restitutus: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Extensiones usoris: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Programma uvr optativum adest: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Programma uvr optativum non repertum est; optatio interpretis Inkscape immutata mansit."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Elige rationem reddendi punctorum..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Colores cum servas"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Palettam semper scribe"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Singulis vicibus quaere"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Forma palettae"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Palettam numquam scribe"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Exporta"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Reddere texturatum GPU"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Palettam importa…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Instrumenta"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Configura"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape constitue..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Optiones crucis acus"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Colores palettae {palette} ut {name} servati sunt"
     },
     "status.slider.color": {
         "source": "Color…",

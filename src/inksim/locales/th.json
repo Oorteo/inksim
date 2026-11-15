@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "สีเข็ม"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "เพิ่มในตำแหน่งโปรด"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "ยกเลิก"
@@ -144,8 +148,8 @@
         "translation": "ส่งออก CSV จาก Ink/Stitch ไม่สำเร็จ"
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "ดูรายละเอียดข้อผิดพลาดใน output.err"
+        "source": "Full log: {path}",
+        "translation": "บันทึกฉบับเต็ม: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "กำลังส่งออก CSV จาก Ink/Stitch..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "คัดลอกแล้ว {count} ไฟล์"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "คัดลอกไฟล์"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "สร้างไฟล์ PNG ขนาด 256 พิกเซลไว้ข้างไฟล์ลายปักที่เลือกแต่ละไฟล์ (design.pes.png)\nเมนูนี้ใช้เลือกว่าจะสร้างภาพขนาดย่อใหม่เฉพาะไฟล์ที่ล้าสมัยหรือสร้างใหม่ทั้งหมด"
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "เดสก์ท็อป"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "สี"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "ชื่อ"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "ขนาด"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "ฝีเข็ม"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "ขนาด: {width:.1f} x {height:.1f} มม."
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "เอกสาร"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "ดาวน์โหลด"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "แก้ไขใน Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "แก้ไขเส้นทาง"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "ไม่มีไฟล์ที่รองรับในโฟลเดอร์นี้"
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "รายการโปรด"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "ดับเบิลคลิกโฟลเดอร์เพื่อดูไฟล์"
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "ดับเบิลคลิกโฟลเดอร์เพื่อดูไฟล์"
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "กด Enter หรือดับเบิลคลิกโฟลเดอร์เพื่อดูไฟล์ในนั้น"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "ไป"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "หน้าหลัก"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "ความสว่างพื้นหลังไอคอน ({level}, 0 = ดำ, 255 = ขาว)\nกด Shift ค้างแล้วหมุนล้อเมาส์เหนือรายการเพื่อปรับความสว่าง"
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "ขนาดไอคอน ({size} พิกเซล)\nกด Ctrl ค้างแล้วหมุนล้อเมาส์เหนือรายการเพื่อปรับขนาดไอคอน"
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "แก้ไขเมื่อ: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "ย้ายไฟล์"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "ย้ายแล้ว {count} ไฟล์"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "ไฟล์งานปักไม่ถูกต้อง"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "เปิดไฟล์งานปักที่เลือก"
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "สี…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "โหลดสีด้ายจากไฟล์พาเลตหรือจากลายปักอื่น\nสีจะถูกเก็บไว้ข้างไฟล์นี้ในไฟล์ชื่อ <name>.edr เนื่องจากรูปแบบไฟล์นี้\nไม่สามารถเก็บสีไว้ในตัวได้"
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "ไฟล์นี้เก็บสีด้ายไว้ในตัวอยู่แล้ว"
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "วางไฟล์"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "ป้อนหรือวางเส้นทางโฟลเดอร์"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "ตำแหน่ง"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— เลือกโฟลเดอร์ —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "รีเฟรช"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "รีเฟรชโฟลเดอร์นี้ (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "นำออกจากรายการโปรด"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "หมุนภาพขนาดย่อ 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "หมุนภาพขนาดย่อไปทางซ้าย"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "เลือกไฟล์ลายปักที่มีภาพขนาดย่อเพื่อหมุน"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "การวางแนวเดิม"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "หมุนภาพขนาดย่อไปทางขวา"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "หมุนภาพขนาดย่อ {count} ภาพไป {degrees}° แล้ว"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ค้นหาไฟล์"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "ขนาด: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "ซ่อนนามสกุลไฟล์เหล่านี้ในหน้าต่างโต้ตอบ\nคั่นแต่ละนามสกุลด้วย | แล้วรายการจะถูกบันทึกไว้ใน config.toml"
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "ข้าม"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "สร้างไฟล์ตัวอย่างชั่วคราวไม่ได้: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "ภาพขนาดย่อ: สร้าง {created} รายการ, เป็นปัจจุบันแล้ว {skipped} รายการ, ล้มเหลว {failed} รายการ"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "ภาพขนาดย่อ: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "คืนการวางแนวเดิมให้ภาพขนาดย่อ {count} ภาพแล้ว"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "กำลังสร้างภาพขนาดย่อ…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "เปิดไฟล์"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "เครื่องมือ..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "มีไฟล์อยู่แล้ว"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "โอนไฟล์ไม่สำเร็จ: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "โอนไฟล์ไม่สำเร็จ"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "มีเส้นทางปลายทางเหล่านี้อยู่แล้ว รวมถึงโฟลเดอร์ที่ไม่สามารถแทนที่ด้วยไฟล์ได้ ไม่มีการโอนไฟล์ใด ๆ:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "แทนที่โฟลเดอร์ไม่ได้"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "พร้อม{operation}: {count} ไฟล์"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "มีไฟล์ปลายทางเหล่านี้อยู่แล้ว:\n{files}\n\nแทนที่ทั้งหมดหรือไม่?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "ไฟล์เหล่านี้อยู่ที่นี่แล้ว"
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "InkSim เปิดไฟล์ประเภทนี้ไม่ได้"
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "มุมมอง"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "รายละเอียด"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "ไอคอนเท่านั้น"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "ไอคอนและข้อความ"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "ซูมเข้า"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "ซูมออก"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "เลือกพาเลตหรือลายปักที่มีสี"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} ไม่มีสีด้าย"
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "ไฟล์ทั้งหมด"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "ไฟล์ลายปัก (มีสีหากบันทึกไว้)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "ไฟล์พาเลต"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "ลายปักนี้เก็บสีด้ายไว้ในตัวอยู่แล้ว"
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} เก็บสีสำหรับลายปักนี้ไว้อยู่แล้ว\nแทนที่ด้วย {target} หรือไม่?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "จำตัวเลือกของฉัน"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} ไม่เก็บสีด้ายไว้\nบันทึกสีเป็น {name} ไว้ข้างไฟล์ลายปักหรือไม่?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "สีด้าย"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} มีสี {available} สี แต่ลายปักมีบล็อกสี {blocks} บล็อก\nต้องการใช้ต่อหรือไม่? สีสุดท้ายจะถูกใช้ซ้ำ"
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "บันทึกสีไม่สำเร็จ: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "ไม่พร้อมใช้งาน"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "สร้างสคริปต์ดีบัก (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "เปลี่ยนการตั้งค่าสคริปต์ดีบักไม่สำเร็จ"
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "เขียนไฟล์ debug_inksim.sh ไว้ข้างเอกสาร เพื่อให้เรียกใช้ Inkscape แบบเดิมซ้ำได้"
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "ส่วนขยายของระบบ: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "ส่วนขยายของผู้ใช้ปัจจุบัน (ตำแหน่งติดตั้ง/อัปเดต): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "ส่วนขยายของผู้ใช้รายอื่น: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch ในโฟลเดอร์ส่วนขยายของ Inkscape เปลี่ยนไปตั้งแต่ตั้งค่าครั้งล่าสุด:\n\n{details}\n\nInkSim จะใช้ลิงก์ปัจจุบัน เปิดการตั้งค่า Inkscape เพื่อบันทึกลิงก์นี้"
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "ไม่มีโฟลเดอร์แล้ว: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "ตอนนี้ชี้ไปที่: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "ไม่มี"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "นำไปใช้"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "เปลี่ยนตัวแปลภาษา Python สำหรับส่วนขยาย Inkscape ทั้งหมดเป็น:\n\n{path}\n\nการเปลี่ยนแปลงนี้จะปรับค่ากำหนดส่วนกลางของ Inkscape ดำเนินการต่อหรือไม่?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "กำหนดเส้นทางเอง…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "เลือกตัวแปลภาษา Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "ไม่บังคับ — ใช้เฉพาะกับส่วนขยายที่มีสภาพแวดล้อม Python ของตัวเอง"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "ใช้เฉพาะกับส่วนขยายที่ขอให้ Inkscape จัดหาตัวแปลภาษา Python ให้ (เช่น Ink/Stitch)\nส่วนขยายของ InkSim จะเริ่ม InkSim โดยตรง"
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "สภาพแวดล้อม Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "ไม่เปลี่ยนแปลง (แนะนำ)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "นำการตั้งค่าตัวแปลภาษาออก"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "นำการตั้งค่าตัวแปลภาษา Python ออกจาก:\n\n{path}\n\nInkscape จะกลับไปใช้ตัวแปลภาษาเริ่มต้นกับทุกส่วนขยาย ดำเนินการต่อหรือไม่?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "คืนค่าก่อนหน้า"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "ตัวเรียกใช้ uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "รีสตาร์ต Inkscape เพื่อใช้ตัวแปลภาษา Python ใหม่"
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "ตัวแปลภาษา Python ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "บันทึกการตั้งค่าที่ตรวจพบลงในการกำหนดค่า InkSim แล้ว"
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "ไม่ได้เปลี่ยนการตั้งค่า เนื่องจากตรวจสอบ Inkscape ไม่สำเร็จ"
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "ตรวจสอบไฟล์โปรแกรม Inkscape แล้ว: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "พบการติดตั้ง Ink/Stitch: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "ตอนนี้ลิงก์ Ink/Stitch ในโฟลเดอร์ส่วนขยายของ Inkscape ชี้ไปที่: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "ไม่พบการติดตั้ง Ink/Stitch"
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "ตัวแปลภาษา Python สำหรับส่วนขยาย Inkscape: {path} (ไม่เปลี่ยนแปลง)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "นำค่ากำหนดตัวแปลภาษา Python ของ Inkscape ออกแล้ว"
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "คืนค่าตัวแปลภาษา Python ก่อนหน้าแล้ว: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "ส่วนขยายผู้ใช้: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "มีตัวเรียกใช้ uvr ซึ่งเป็นตัวเลือกให้ใช้งาน: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "ไม่พบตัวเรียกใช้ uvr ซึ่งเป็นตัวเลือก คงค่ากำหนดตัวแปลภาษา Inkscape ไว้ตามเดิม"
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "เลือกตัวเรนเดอร์ตะเข็บ..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "สีเมื่อบันทึก"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "เขียนพาเลตทุกครั้ง"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "ถามทุกครั้ง"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "รูปแบบพาเลต"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "ไม่เขียนพาเลต"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "ส่งออก"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "เรนเดอร์พื้นผิวด้วย GPU"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "โหลดพาเลต…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&เครื่องมือ"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "กำหนดค่า"
+        "source": "Inkscape Setup...",
+        "translation": "ตั้งค่า Inkscape..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "การตั้งค่าเส้นกากบาทเข็ม"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "บันทึกสีของ {palette} เป็น {name} แล้ว"
     },
     "status.slider.color": {
         "source": "Color…",

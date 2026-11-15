@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Зүүний өнгө"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Байршлуудад нэмэх"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Цуцлах"
@@ -144,8 +148,8 @@
         "translation": "Ink/Stitch CSV экспорт амжилтгүй боллоо."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Алдааны дэлгэрэнгүйг output.err файлаас үзнэ үү."
+        "source": "Full log: {path}",
+        "translation": "Бүрэн бүртгэл: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Ink/Stitch CSV экспорт хийж байна..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} файл хууллаа"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Файл хуулах"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Сонгосон загвар бүрийн хажууд 256 px PNG зураг үүсгэнэ (design.pes.png).\nЦэсээр хуучирсан файлуудыг эсвэл бүх зургийг дахин үүсгэхийг сонгоно."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Ширээний компьютер"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Өнгө"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Нэр"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Хэмжээ"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Оёдол"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Хэмжээ: {width:.1f} x {height:.1f} мм"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Баримтууд"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Татсан зүйлс"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Inkscape дээр засах"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Замыг засах"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Энэ хавтсанд дэмжигдэх файл алга."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Дуртай"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Файлуудыг үзэхийн тулд хавтас дээр давхар товшино уу."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Файлуудыг үзэхийн тулд хавтас дээр давхар товшино уу."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Файлуудыг үзэхийн тулд Enter дар эсвэл хавтас дээр давхар товш."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Очих"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Нүүр"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Дүрсний дэвсгэрийн сүүдэр ({level}, 0 = хар, 255 = цагаан)\nЖагсаалт дээр Shift+дугуйг эргүүлж сүүдрийг өөрчилнө."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Дүрсний хэмжээ ({size} px)\nЖагсаалт дээр Ctrl+дугуйг эргүүлж дүрсний хэмжээг өөрчилнө."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Өөрчилсөн: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Файл зөөх"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} файл зөөлөө"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Хатгамлын файл буруу байна"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Сонгосон хатгамлын файлыг нээх."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Өнгө…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Өнгөний утсыг палитрын файлаас эсвэл өөр загвараас ачаална.\nЭнэ формат өнгийг өөртөө хадгалж чаддаггүй тул өнгүүдийг\nэнэ файлын хажууд <name>.edr нэрээр хадгална."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Энэ файл өөрийн өнгөний утсуудыг аль хэдийн хадгалсан байна."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Файл буулгах"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Хавтасны замыг оруулах эсвэл буулгах"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Байршлууд"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— хавтас сонгох —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Шинэчлэх"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Энэ хавтсыг шинэчлэх (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Дуртайгаас хасах"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Зургийг 180° эргүүлэх"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Зургийг зүүн тийш эргүүлэх"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Эргүүлэхийн тулд зурагтай загвар сонгоно уу"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Анхны чиглэл"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Зургийг баруун тийш эргүүлэх"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} зургийг {degrees}° эргүүллээ"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Файл хайх"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Хэмжээ: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Эдгээр өргөтгөлийг энэ цонхонд нуух.\n| тэмдгээр тусгаарлан бичнэ. Жагсаалт config.toml файлд хадгалагдана."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Алгасах"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Урьдчилан харах түр файл үүсгэж чадсангүй: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Зураг: {created} үүсгэсэн, {skipped} шинэ байсан, {failed} амжилтгүй"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Зураг: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "{count} зургийг анхны чиглэлд нь буцаалаа"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Зураг үүсгэж байна…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Файл нээх"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Хэрэгслүүд..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Файл аль хэдийн байна"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Файл шилжүүлж чадсангүй: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Файл шилжүүлж чадсангүй"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Эдгээр очих замд файл аль хэдийн байна. Файлаар солих боломжгүй хавтас ч байна. Юу ч шилжүүлсэнгүй:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Хавтсыг солих боломжгүй"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} хийхэд бэлэн: {count} файл"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Эдгээр очих файл аль хэдийн байна:\n{files}\n\nБүгдийг нь солих уу?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Эдгээр файл энд аль хэдийн байна."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Энэ төрлийн файлыг InkSim дээр нээх боломжгүй."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Харагдац"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Дэлгэрэнгүй"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Зөвхөн дүрс"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Дүрс ба текст"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Томруулах"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Жижигрүүлэх"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Палитр эсвэл өнгөт загвар сонгох"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} файлд утасны өнгө хадгалаагүй байна."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Бүх файл"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Загварын файл (хадгалсан өнгөтэй бол)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Палитрын файл"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Энэ загвар өөрийн утасны өнгийг аль хэдийн хадгалсан байна."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} файл энэ загварын өнгийг аль хэдийн хадгалсан байна.\nҮүнийг {target}-оор солих уу?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Сонголтыг санах"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} формат утасны өнгийг хадгалдаггүй.\nЗагварын хажууд {name} нэрээр хадгалах уу?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Утасны өнгө"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} файлд {available} өнгө байгаа ч загвар {blocks} өнгөний блоктой байна.\nГэсэн ч ашиглах уу? Сүүлийн өнгө давтагдана."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Өнгийг хадгалж чадсангүй: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Боломжгүй"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Дибаг скрипт үүсгэх (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Дибаг скриптийн тохиргоог өөрчилж чадсангүй."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Баримтын хажууд debug_inksim.sh үүсгэж, Inkscape-г ажиллуулсан командыг дахин ажиллуулах боломж олгоно."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Системийн өргөтгөл: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Одоогийн хэрэглэгчийн өргөтгөл (суулгах/шинэчлэх байршил): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Бусад хэрэглэгчийн өргөтгөл: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Inkscape-ийн өргөтгөлийн хавтас дахь Ink/Stitch холбоос сүүлийн тохиргооноос хойш өөрчлөгджээ:\n\n{details}\n\nInkSim одоогийн холбоосыг ашиглана. Үүнийг хадгалахын тулд Inkscape-ийн тохиргоог нээнэ үү."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "хавтас байхгүй: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "одоо дараах байршлыг зааж байна: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Байхгүй"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Хэрэглэх"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Inkscape-ийн бүх өргөтгөлийн Python тайлбарлагчийг дараах болгож өөрчлөх үү:\n\n{path}\n\nЭнэ нь Inkscape-ийн ерөнхий тохиргоог өөрчилнө. Үргэлжлүүлэх үү?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Өөр зам…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Python тайлбарлагч сонгох"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Сонголттой — зөвхөн өөрийн Python орчинтой өргөтгөлүүдэд"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Зөвхөн Inkscape-ээс Python тайлбарлагчаа асуудаг өргөтгөлүүдэд хэрэгтэй (жишээ нь Ink/Stitch).\nInkSim-ийн өөрийн өргөтгөлүүд InkSim-г шууд эхлүүлнэ."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch орчин ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Өөрчлөхгүй (зөвлөж байна)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Тайлбарлагчийн тохиргоог арилгах"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Дараахаас Python тайлбарлагчийн тохиргоог арилгах уу:\n\n{path}\n\nInkscape бүх өргөтгөлд анхдагч тайлбарлагчаа ашиглана. Үргэлжлүүлэх үү?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Өмнөхийг сэргээх"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr эхлүүлэгч ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Шинэ Python тайлбарлагчийг ашиглахын тулд Inkscape-г дахин эхлүүлнэ үү."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python тайлбарлагч ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Илрүүлсэн тохиргоог InkSim-ийн тохиргоонд хадгаллаа."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Inkscape-г шалгаж чадсангүй тул тохиргоог өөрчлөлгүй үлдээлээ."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Шалгасан Inkscape ажиллуулах файл: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Олдсон Ink/Stitch суулгалт: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape-ийн өргөтгөлийн хавтас дахь Ink/Stitch холбоос одоо дараах байршлыг зааж байна: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch суулгалт олдсонгүй."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape-ийн өргөтгөлийн Python тайлбарлагч: {path} (өөрчлөлгүй үлдээсэн)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape-ийн Python тайлбарлагчийн тохиргоог арилгалаа."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Өмнөх Python тайлбарлагчийг сэргээлээ: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Хэрэглэгчийн өргөтгөлүүд: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Сонголтот uvr эхлүүлэгч боломжтой: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Сонголтот uvr эхлүүлэгч олдсонгүй; Inkscape-ийн тайлбарлагчийн тохиргоог өөрчлөлгүй үлдээлээ."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Оёдолын рендерер сонгох..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Хадгалах үеийн өнгө"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Палитрыг үргэлж бичих"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Үргэлж асуух"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Палитрын формат"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Палитрыг хэзээ ч бичихгүй"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Экспорт"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU бүтэцтэй рендер"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Палитр ачаалах…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Хэрэгслүүд"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Тохиргоо"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape-ийн тохиргоо..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Зүүний хөндлөн шугамын тохиргоо"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette}-ийн өнгийг {name} нэрээр хадгаллаа"
     },
     "status.slider.color": {
         "source": "Color…",
