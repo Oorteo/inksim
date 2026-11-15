@@ -7,12 +7,13 @@ from __future__ import annotations
 
 import math
 import re
-import xml.etree.ElementTree as ET
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
 import pystitch as emb
+from defusedxml import ElementTree as ET
+from defusedxml.common import DefusedXmlException
 
 from .debug import logger
 
@@ -155,7 +156,7 @@ def is_stitchblock_svg(path: str | Path) -> bool:
     try:
         with Path(path).open("rb") as source:
             _, root = next(ET.iterparse(source, events=("start",)))
-    except (OSError, ET.ParseError, StopIteration):
+    except (OSError, ET.ParseError, DefusedXmlException, StopIteration):
         return False
     if root.tag != _SVG_ROOT_TAG or set(root.attrib) != {"version", "width", "height", "viewBox"}:
         return False
@@ -165,7 +166,7 @@ def is_stitchblock_svg(path: str | Path) -> bool:
 def _read_pystitch_svg(path: str | Path) -> Any | None:
     try:
         root = ET.parse(path).getroot()
-    except (OSError, ET.ParseError):
+    except (OSError, ET.ParseError, DefusedXmlException):
         return None
     if root.tag != _SVG_ROOT_TAG or set(root.attrib) != {"version", "width", "height", "viewBox"}:
         return None

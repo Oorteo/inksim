@@ -13,11 +13,13 @@ import shutil
 import stat
 import sys
 import tempfile
-import xml.etree.ElementTree as ET
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from xml.sax.saxutils import escape as escape_xml_text
+
+from defusedxml import ElementTree as ET
+from defusedxml.common import DefusedXmlException
 
 INSTALL_DIRECTORY = "inksim"
 MANIFEST_NAME = ".inksim-install.json"
@@ -339,7 +341,7 @@ def _is_inksim_extension(directory: Path) -> bool:
             continue
         try:
             root = ET.parse(inx_path).getroot()
-        except (OSError, ET.ParseError):
+        except (OSError, ET.ParseError, DefusedXmlException):
             continue
         for node in root.iter():
             if node.tag.rsplit("}", 1)[-1] == "id" and node.text:
@@ -353,7 +355,7 @@ def _managed_hash(name: str, content: bytes) -> str:
     if name == "preview.inx":
         try:
             root = ET.fromstring(content)
-        except ET.ParseError:
+        except (ET.ParseError, DefusedXmlException):
             pass
         else:
             commands = [node for node in root.iter() if node.tag.rsplit("}", 1)[-1] == "command"]
@@ -416,7 +418,7 @@ def _with_debug_script_value(content: bytes, enabled: bool) -> bytes:
 def _preview_command(content: bytes) -> str | None:
     try:
         root = ET.fromstring(content)
-    except ET.ParseError:
+    except (ET.ParseError, DefusedXmlException):
         return None
     commands = [node for node in root.iter() if node.tag.rsplit("}", 1)[-1] == "command"]
     if len(commands) != 1:
