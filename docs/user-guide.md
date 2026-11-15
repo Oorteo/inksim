@@ -283,7 +283,7 @@ creates missing parent directories. The same settings can be supplied through
 the `INKSIM_DEBUG` and `INKSIM_LOG` environment variables.
 
 The log records file loading, preview painting, and density-worker lifecycle
-events, including thread IDs and elapsed times. In the open dialog, entries
-with `precompute_density=False` confirm that density is not being calculated
-for arrow-key preview navigation. The logger is silent and creates no file
-unless debug logging is enabled.
+events, including thread IDs and elapsed times. To keep file browsing
+responsive, quick previews skip density-map precomputation; the full viewer
+calculates the map on demand. The logger is silent and creates no file unless
+debug logging is enabled.
