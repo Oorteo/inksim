@@ -105,6 +105,8 @@ uv run poe test
 ```
 
 It produces a terminal coverage summary and an HTML report in `htmlcov/`.
+`tests/test_docs.py` also validates every link and heading anchor in the
+Markdown documentation, so a renamed section or moved page fails the suite.
 Automatic PyPI update checks are disabled for the test session so GUI tests stay
 deterministic; the update worker and its window slot have explicit tests in
 `tests/test_zz_menus.py`.
