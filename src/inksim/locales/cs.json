@@ -159,9 +159,37 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Probíhá export CSV z Ink/Stitchu..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Zkopírováno souborů: {count}"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Kopírovat soubory"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Vytvořit vedle každého vybraného návrhu PNG náhled o velikosti 256 px (design.pes.png).\nV nabídce vyber, jestli znovu vytvořit jen zastaralé soubory, nebo všechny náhledy."
+    },
     "dialog.open_browser.desktop": {
         "source": "Desktop",
         "translation": "Plocha"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Barvy"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Název"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Velikost"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Stehy"
     },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
@@ -232,8 +260,8 @@
         "translation": "Dvojklikem na složku zobrazíte její soubory."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Dvojklikem na složku zobrazíte její soubory."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Stiskni Enter nebo dvakrát klikni na složku a zobraz její soubory."
     },
     "dialog.open_browser.go": {
         "source": "Go",
@@ -242,6 +270,14 @@
     "dialog.open_browser.home": {
         "source": "Home",
         "translation": "Domů"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Stínování pozadí ikon ({level}, 0 = černá, 255 = bílá)\nZměň stínování pomocí Shift+kolečko myši nad seznamem."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Velikost ikon ({size} px)\nZměň velikost ikon pomocí Ctrl+kolečko myši nad seznamem."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -263,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Změněno: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Přesunout soubory"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Přesunuto souborů: {count}"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Toto není platný soubor výšivky."
@@ -274,6 +318,22 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Otevřít vybraný soubor výšivky."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Barvy…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Načti barvy nití ze souboru palety nebo z jiného návrhu.\nUkládají se vedle tohoto souboru jako <name>.edr, protože tento formát neumí ukládat barvy."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Tento soubor už obsahuje vlastní barvy nití."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Vložit soubory"
     },
     "dialog.open_browser.path_placeholder": {
         "source": "Enter or paste a folder path",
@@ -307,9 +367,41 @@
         "source": "— choose directory —",
         "translation": "— vyberte složku —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Obnovit"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Obnovit tuto složku (Ctrl+R)"
+    },
     "dialog.open_browser.remove_favorite": {
         "source": "Remove favorite",
         "translation": "Odebrat z oblíbených"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Otočit náhled o 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Otočit náhled doleva"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Vyber návrh s náhledem, který chceš otočit"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Původní orientace"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Otočit náhled doprava"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Počet otočených náhledů: {count} (o {degrees}°)"
     },
     "dialog.open_browser.search": {
         "source": "Search files",
@@ -322,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Velikost: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "V dialogu skrýt soubory s těmito příponami.\nOdděl je znakem | a seznam se uloží do config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Přeskočit"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -375,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Nepodařilo se vytvořit dočasný soubor náhledu: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Náhledy: vytvořeno {created}, aktuálních {skipped}, chyb {failed}"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Náhledy: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Obnovena původní orientace náhledů: {count}"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Vytváření náhledů…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Otevřít soubor"
@@ -382,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Nástroje..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Soubory už existují"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Přenos souborů se nezdařil: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Přenos souborů se nezdařil"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Tyto cílové cesty už existují, včetně složek, které nelze nahradit soubory. Nic se nepřeneslo:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Složky nelze nahradit"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} připraveno: souborů {count}"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Tyto cílové soubory už existují:\n{files}\n\nChceš je všechny nahradit?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Tyto soubory už jsou tady."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -407,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Tento typ souboru nelze v InkSim otevřít."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Zobrazit"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Podrobnosti"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Pouze ikony"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Ikony a text"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Přiblížit"
@@ -414,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Oddálit"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Vyber paletu nebo barevný návrh"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} neobsahuje žádné barvy nití."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Všechny soubory"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Soubory návrhů (obsahují-li barvy)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Soubory palet"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Tento návrh už obsahuje vlastní barvy nití."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} už obsahuje barvy pro tento návrh.\nChceš je nahradit barvami z {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Zapamatovat si mou volbu"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "Formát {format} neukládá barvy nití.\nChceš je uložit do souboru {name} vedle návrhu?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Barvy nití"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} obsahuje {available} barev, ale návrh má {blocks} barevných bloků.\nChceš je přesto použít? Poslední barva se bude opakovat."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Barvy se nepodařilo uložit: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -487,6 +703,18 @@
         "source": "Other user extension: {path}",
         "translation": "Rozšíření jiného uživatele: {path}"
     },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch ve složce rozšíření Inkscape se od posledního nastavení změnil:\n\n{details}\n\nInkSim používá aktuální odkaz. Otevři nastavení Inkscape a ulož ho."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "složka neexistuje: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "nyní odkazuje na: {path}"
+    },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
         "translation": "Nainstalovat / aktualizovat rozšíření InkSim"
@@ -528,8 +756,8 @@
         "translation": "Volitelné — jen pro rozšíření s vlastním Python prostředím"
     },
     "integration.inkscape.interpreter_hint_tooltip": {
-        "source": "Only extensions that ask Inkscape for its Python interpreter need this, for example Ink/Stitch. InkSim's own extensions start the InkSim executable directly. The uvr launcher resolves the environment of each extension project, which helps when several extensions need their own environment.",
-        "translation": "Potřebují to jen rozšíření, která se Inkscape ptá na jeho Python interpret, například Ink/Stitch. Vlastní rozšíření InkSim spouštějí přímo executable InkSim. Launcher uvr rozpozná prostředí každého projektu rozšíření, což pomůže, když více rozšíření potřebuje každé své vlastní prostředí."
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Potřebují ho jen rozšíření, která si od Inkscape vyžádají jeho interpret Pythonu (např. Ink/Stitch).\nVlastní rozšíření InkSim spouštějí InkSim přímo."
     },
     "integration.inkscape.interpreter_inkstitch": {
         "source": "Ink/Stitch environment ({path})",
@@ -538,6 +766,14 @@
     "integration.inkscape.interpreter_keep": {
         "source": "Do not change (recommended)",
         "translation": "Neměnit (doporučeno)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Odebrat nastavení interpretu"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Odebrat nastavení interpretu Pythonu z:\n\n{path}\n\nInkscape bude pro všechna rozšíření používat svůj výchozí interpret. Pokračovat?"
     },
     "integration.inkscape.interpreter_restore": {
         "source": "Restore previous",
@@ -578,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Aby se nový Python interpretér použil, restartujte Inkscape."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Interpret Pythonu ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -630,6 +870,10 @@
     "integration.inkscape.report.inkstitch_found": {
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Nalezené instalace Ink/Stitch: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Odkaz na Ink/Stitch ve složce rozšíření Inkscape nyní ukazuje na: {path}"
     },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
@@ -783,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Vybrat vykreslovač stehů..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Ukládání barev"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Vždy uložit paletu"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Pokaždé se zeptat"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Formát palety"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Paletu nikdy neukládat"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Export"
@@ -806,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU texturované vykreslování"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Načíst paletu…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -1002,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Nastavení kříže jehly"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Barvy z palety {palette} byly uloženy jako {name}"
     },
     "status.slider.color": {
         "source": "Color…",
