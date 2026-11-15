@@ -434,6 +434,7 @@ def _forward_to_server(
         response = forward_request(request)
     except IpcUnavailable as ex:
         parser.error(str(ex))
+        raise SystemExit(2) from ex
     if not response.get("ok"):
         print(response.get("error", "InkSim server request failed"), file=sys.stderr)
         raise SystemExit(1)

@@ -84,6 +84,26 @@ def test_hidden_temporary_input_option_is_forwarded_to_server(monkeypatch, tmp_p
     assert "--temporary-input" not in parser.format_help()
 
 
+def test_forward_request_unavailable_exits_with_parser_error(monkeypatch, capsys):
+    import pytest
+
+    from inksim import cli
+
+    parser = cli.build_argument_parser()
+    monkeypatch.setattr(cli, "_ensure_core_application", lambda: None)
+
+    def raise_unavailable(_request):
+        raise cli.IpcUnavailable("server unavailable")
+
+    monkeypatch.setattr(cli, "forward_request", raise_unavailable)
+
+    with pytest.raises(SystemExit) as exit_info:
+        cli._forward_to_server(parser, parser.parse_args([]), [])
+
+    assert exit_info.value.code == 2
+    assert "server unavailable" in capsys.readouterr().err
+
+
 def test_manual_launch_passes_current_inksim_launcher_for_extension_check(monkeypatch, tmp_path):
     import pytest
 
