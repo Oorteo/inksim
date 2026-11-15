@@ -13,9 +13,10 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QLockFile, QObject, QStandardPaths
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 
 from .constants import IPC_PROTOCOL_VERSION, IPC_SERVER_NAME
@@ -56,19 +57,55 @@ class IpcServer(QObject):
         self._server = QLocalServer(self)
         self._server.newConnection.connect(self._accept_connections)
         self._buffers: dict[QLocalSocket, bytearray] = {}
+        self._lock: QLockFile | None = None
 
     def start(self) -> bool:
         """Start listening; return False when another server owns the endpoint."""
+        if self._lock is not None and self._lock.isLocked():
+            return self._server.isListening()
+
+        lock_directory = QStandardPaths.writableLocation(QStandardPaths.RuntimeLocation)
+        if not lock_directory:
+            lock_directory = QStandardPaths.writableLocation(QStandardPaths.TempLocation)
+        if not lock_directory:
+            raise IpcUnavailable("Could not determine a directory for the IPC server lock.")
+        lock_path = Path(lock_directory) / f"{self.server_name}.lock"
+        try:
+            lock_path.parent.mkdir(parents=True, exist_ok=True)
+        except OSError as ex:
+            message = f"Could not create the IPC server lock directory: {ex}"
+            logger.error(message)
+            raise IpcUnavailable(message) from ex
+
+        lock = QLockFile(str(lock_path))
+        lock.setStaleLockTime(0)
+        if not lock.tryLock(0):
+            if lock.error() == QLockFile.LockError.LockFailedError:
+                logger.debug("IPC endpoint is owned by another server")
+                return False
+            message = f"Could not acquire the IPC server lock: {lock.error()}"
+            logger.error(message)
+            raise IpcUnavailable(message)
+        self._lock = lock
+
         if endpoint_is_active(self.server_name):
             logger.debug("IPC endpoint is owned by another server")
+            self._release_lock()
             return False
         if self._server.listen(self.server_name):
             return True
+
+        if endpoint_is_active(self.server_name):
+            logger.debug("IPC endpoint became active before the server could listen")
+            self._release_lock()
+            return False
+
         # A stale Unix socket file can survive a crash. Remove it and retry once.
         QLocalServer.removeServer(self.server_name)
         if self._server.listen(self.server_name):
             return True
         logger.debug("IPC listen failed: %s", self._server.errorString())
+        self._release_lock()
         return False
 
     def stop(self) -> None:
@@ -78,7 +115,15 @@ class IpcServer(QObject):
             socket.abort()
             socket.deleteLater()
         self._buffers.clear()
-        QLocalServer.removeServer(self.server_name)
+        if self._lock is not None and self._lock.isLocked():
+            QLocalServer.removeServer(self.server_name)
+            self._release_lock()
+
+    def _release_lock(self) -> None:
+        lock = self._lock
+        self._lock = None
+        if lock is not None and lock.isLocked():
+            lock.unlock()
 
     def _accept_connections(self) -> None:
         while self._server.hasPendingConnections():
