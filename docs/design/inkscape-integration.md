@@ -22,6 +22,9 @@ Implementation status:
   and offers a Refresh button and `Ctrl+R`. Its context menu supports
   file-only Copy, Move, and Paste, including matching palette sidecars and
   existing PNG previews; destination conflicts are reviewed as one batch.
+- InkSim ships its own Inkscape **Preview** extension. It runs Ink/Stitch to
+  export a temporary CSV, then forwards that file through InkSim's local IPC,
+  starting the singleton server if needed or reusing the running instance.
 - Still open for the broader integration: persistent tagged sessions,
   selection-only preview through the proposed request/response protocol, and
   a standalone Ink/Stitch backend. Directory-list refresh is separate from
@@ -60,17 +63,17 @@ sections of this document.
    follow-up command carries that tag. This isolates the shell/action channel
    from other Inkscape windows and from other InkSim sessions.
 
-2. **No local IPC in the new flow.**
-   The Inkscape integration must not depend on the InkSim singleton server
-   (see [interconnect.md](../interconnect.md)). The Qt `QLocalServer` used
-   by that server is a separate feature. IPC for this flow is replaced by a
-   private session directory with request and response files.
+2. **Reuse the singleton IPC for preview handoff.**
+   The shipped Inkscape Preview extension invokes the InkSim executable. InkSim
+   runs the installed Ink/Stitch exporter, then forwards the temporary CSV to
+   the singleton server over the local IPC described in
+   [interconnect.md](../interconnect.md), starting it if needed. Do not add a
+   second transport for this handoff.
 
-3. **The data flow starts and ends in InkSim.**
-   InkSim creates a session directory, sets environment variables, launches
-   Inkscape, and waits for result files. The extension (or Ink/Stitch
-   subprocess) writes files back. No sockets, no named pipes, no queued
-   messages.
+3. **The current preview flow is initiated in Inkscape.**
+   Inkscape invokes the bundled InkSim extension; InkSim coordinates the
+   Ink/Stitch export and delivers the result to the running application.
+   Persistent managed Inkscape sessions remain a separate future capability.
 
 4. **Selection-first preview.**
    When objects are selected in Inkscape, preview only the selection by
@@ -418,7 +421,9 @@ Request/response protocol:
 }
 ```
 
-Transport is deliberately only the file protocol:
+This request/response file protocol is a proposal for a future managed-session
+bridge, not the transport used by the shipped Preview action. The current
+action uses the InkSim CLI and singleton IPC as described above.
 
 1. InkSim writes `request-<id>.json` into the session directory.
 2. InkSim invokes `oorteo.inksim.bridge` with the request ID as the action
@@ -427,7 +432,9 @@ Transport is deliberately only the file protocol:
 3. The extension writes `response-<id>.json` and `done-<id>` atomically.
 4. InkSim waits with a timeout, reads the response, and loads the CSV.
 
-No sockets, named pipes, or `inksim` server calls are used by the new flow.
+The proposed session bridge uses atomic files rather than its own socket or
+named-pipe protocol. This does not replace the existing singleton IPC used to
+deliver preview CSV files to InkSim.
 
 ### Selection preview
 
