@@ -58,6 +58,10 @@ from the InkSim GUI, so launch InkSim at least once after installing it:
 3. Restart Inkscape so it loads the new extension.
 4. Open a document in Inkscape and choose **Extensions → Inksim → Preview**.
 
+
+<p align="center"><img src="assets/basic_usage/020_inkscape_setup.webp" alt="Inkscape Setup" width="500"></p>
+
+
 The extension asks Ink/Stitch to export the current document, then forwards
 the resulting preview to InkSim. Its launcher starts the singleton application
 if needed, or reuses the running instance, and manages the handoff through

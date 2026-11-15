@@ -4,8 +4,8 @@ InkSim is a standalone embroidery simulator and preview renderer. It opens
 embroidery files, shows the stitch sequence, and lets you inspect or replay a
 design before production.
 
-It is a normal Python desktop application installed from PyPI — **not** an
-Inkscape extension.
+It is a standalone Python desktop application installed from PyPI, with its
+own optional Inkscape extension for previewing designs.
 
 <p align="center">
   <img src="docs/assets/images/InkSim_colorful_small.png" alt="InkSim preview" width="250">
@@ -45,6 +45,22 @@ On Windows, `inksim-gui design.pes` starts without a console window.
 <p align="center">
   <img src="docs/assets/basic_usage/010_basic_windows.webp" alt="InkSim main window" width="600">
 </p>
+
+## Open and preview
+
+InkSim's file browser lets you browse embroidery designs, inspect detected
+Inkscape and Ink/Stitch paths, and preview stitches before opening a file.
+
+<p align="center">
+  <img src="docs/assets/basic_usage/030_open_dialog.webp" alt="InkSim open dialog showing detected Inkscape and Ink/Stitch paths, file list, and stitch preview" width="600">
+</p>
+
+## Inkscape integration
+
+Install InkSim's extension from **Tools → Inkscape Setup...** in InkSim, then
+choose **Extensions → Inksim → Preview** in Inkscape. InkSim starts the
+preview application if needed. See the [Inkscape workflow](docs/inkscape-workflow.md)
+for details.
 
 ## Documentation
 
