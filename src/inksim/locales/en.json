@@ -375,6 +375,14 @@
         "source": "Rotated {count} thumbnail(s) by {degrees}°",
         "translation": "Rotated {count} thumbnail(s) by {degrees}°"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Refresh"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Refresh this folder (Ctrl+R)"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Search files"
