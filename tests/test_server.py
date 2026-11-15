@@ -3,12 +3,16 @@
 
 from __future__ import annotations
 
+import subprocess
+import sys
+import uuid
 from pathlib import Path
 from types import SimpleNamespace
 
 from PySide6.QtCore import QObject, Signal
 
 from inksim.constants import IPC_PROTOCOL_VERSION
+from inksim.ipc import IpcServer, endpoint_is_active
 from inksim.server import InkSimServer
 
 
@@ -107,6 +111,58 @@ def _server(qapp, idle_timeout=0, open_file_result=True):
 
     server = InkSimServer(qapp, create_window, idle_timeout, server_name="inksim-test-server")
     return server, created
+
+
+def test_second_ipc_server_cannot_remove_the_active_endpoint(qapp):
+    server_name = f"inksim-test-{uuid.uuid4().hex}"
+    first = IpcServer(lambda request: {"ok": True}, server_name)
+    second = IpcServer(lambda request: {"ok": True}, server_name)
+
+    try:
+        assert first.start()
+        assert not second.start()
+
+        second.stop()
+
+        assert endpoint_is_active(server_name)
+    finally:
+        second.stop()
+        first.stop()
+
+
+def test_ipc_server_recovers_after_owner_process_crashes(qapp):
+    server_name = f"inksim-crash-test-{uuid.uuid4().hex}"
+    script = """
+import os
+import sys
+from PySide6.QtCore import QCoreApplication
+from inksim.ipc import IpcServer
+
+app = QCoreApplication([])
+app.setApplicationName("InkSim")
+app.setOrganizationName("InkSim")
+server = IpcServer(lambda request: {"ok": True}, sys.argv[1])
+if not server.start():
+    raise SystemExit(1)
+print("started", flush=True)
+os._exit(0)
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", script, server_name],
+        capture_output=True,
+        check=False,
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        timeout=10,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "started"
+
+    server = IpcServer(lambda request: {"ok": True}, server_name)
+    try:
+        assert server.start()
+    finally:
+        server.stop()
 
 
 def test_hello_reports_protocol_and_window_count(qapp):
