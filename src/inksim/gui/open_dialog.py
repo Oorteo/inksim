@@ -120,6 +120,7 @@ from ..render.thumbnails import (
     thumbnail_rotation,
     write_thumbnail,
 )
+from .dialogs import dispose_qt_child
 from .inkscape_dialog import InkscapeIntegrationDialog
 from .palette import apply_palette_to_design
 from .viewer import EmbroideryViewerWidget
@@ -540,6 +541,7 @@ class OpenBrowserDialog(QDialog):
         self._visible_paths: list[Path] = []
         self._svg_kind_cache: dict[Path, str] = {}
         self._preview_loaded = False
+        self._preview_path: Path | None = None
         self._svg_source: QPixmap | None = None
         self._conversion_process: QProcess | None = None
         self._conversion_csv: Path | None = None
@@ -1076,7 +1078,7 @@ class OpenBrowserDialog(QDialog):
                 continue
             widget = item.widget()
             if widget is not None:
-                widget.deleteLater()
+                dispose_qt_child(widget)
 
         current = Path(self.current_directory.anchor)
         parts = self.current_directory.parts
@@ -1798,8 +1800,8 @@ class OpenBrowserDialog(QDialog):
 
     def _apply_palette(self) -> None:
         """Store thread colors for a design whose format keeps none."""
-        path = self.selected_path
-        if path is None:
+        path = self._current_path()
+        if path is None or not self._preview_loaded or self._preview_path != path:
             return
         pattern = getattr(self.preview, "pattern", None)
         blocks = color_block_count(pattern) if pattern is not None else 0
@@ -1818,6 +1820,8 @@ class OpenBrowserDialog(QDialog):
         kind = self._kind_for_path(path)
         if kind not in (KIND_EMBROIDERY, KIND_CSV):
             return
+        self._preview_loaded = False
+        self._preview_path = None
         self.preview_stack.setCurrentWidget(self.preview_container)
         loaded = self.preview.load_design(
             str(path),
@@ -1826,6 +1830,8 @@ class OpenBrowserDialog(QDialog):
             show_error_dialog=False,
         )
         self._preview_loaded = loaded
+        if loaded:
+            self._preview_path = path
         if not loaded:
             self._show_message(
                 _("dialog.open_browser.not_embroidery", "Not a valid embroidery file")
@@ -2080,6 +2086,14 @@ class OpenBrowserDialog(QDialog):
             )
             return
 
+        try:
+            conflict_signatures = {
+                target: self._transfer_path_signature(target) for target in conflicts
+            }
+        except OSError as ex:
+            self._show_file_transfer_error(ex)
+            return
+
         if conflicts:
             names = "\n".join(f"- {_sanitize_path_text(path.name)}" for path in conflicts)
             answer = QMessageBox.question(
@@ -2096,7 +2110,7 @@ class OpenBrowserDialog(QDialog):
                 return
 
         try:
-            count = self._execute_file_transfer(operation, plan, conflicts)
+            count = self._execute_file_transfer(operation, plan, conflict_signatures)
         except OSError as ex:
             self._show_file_transfer_error(ex)
             return
@@ -2114,7 +2128,7 @@ class OpenBrowserDialog(QDialog):
         self,
         operation: str,
         plan: list[tuple[Path, Path]],
-        approved_conflicts: list[Path],
+        approved_conflicts: dict[Path, tuple[int, int, int, int, int, int]],
     ) -> int:
         if operation not in {"copy", "move"}:
             raise ValueError(f"Unsupported file transfer operation: {operation}")
@@ -2142,11 +2156,23 @@ class OpenBrowserDialog(QDialog):
                 "Could not remove file transfer staging directory %s: %s", staging_root, ex
             )
 
+    @staticmethod
+    def _transfer_path_signature(path: Path) -> tuple[int, int, int, int, int, int]:
+        stat = path.lstat()
+        return (
+            stat.st_dev,
+            stat.st_ino,
+            stat.st_mode,
+            stat.st_size,
+            stat.st_mtime_ns,
+            stat.st_ctime_ns,
+        )
+
     def _execute_staged_file_transfer(
         self,
         operation: str,
         plan: list[tuple[Path, Path]],
-        approved_conflicts: list[Path],
+        approved_conflicts: dict[Path, tuple[int, int, int, int, int, int]],
         staging_root: Path,
     ) -> int:
         staged_directory = staging_root / "staged"
@@ -2169,12 +2195,13 @@ class OpenBrowserDialog(QDialog):
                 raise OSError(f"Source file changed during transfer: {source}")
             staged_sources[source] = staged
 
-        approved = set(approved_conflicts)
         for pair in plan:
             target = pair[1]
             exists_now = target.exists() or target.is_symlink()
-            if exists_now and target not in approved:
+            if exists_now and target not in approved_conflicts:
                 raise FileExistsError(f"Destination appeared during transfer: {target}")
+            if exists_now and self._transfer_path_signature(target) != approved_conflicts[target]:
+                raise FileExistsError(f"Destination changed during transfer: {target}")
             if target.is_dir():
                 raise IsADirectoryError(f"Destination is a folder: {target}")
 
@@ -2185,6 +2212,10 @@ class OpenBrowserDialog(QDialog):
             for index, (_, target) in enumerate(plan):
                 if not (target.exists() or target.is_symlink()):
                     continue
+                if target not in approved_conflicts:
+                    raise FileExistsError(f"Destination appeared during transfer: {target}")
+                if self._transfer_path_signature(target) != approved_conflicts[target]:
+                    raise FileExistsError(f"Destination changed during transfer: {target}")
                 backup = backup_directory / f"{index}-{target.name}"
                 os.replace(target, backup)
                 backups.append((backup, target))
@@ -2192,7 +2223,8 @@ class OpenBrowserDialog(QDialog):
             for index, (source, target) in enumerate(plan):
                 staged_install = install_directory / f"{index}-{target.name}"
                 shutil.copy2(staged_sources[source], staged_install)
-                os.replace(staged_install, target)
+                os.link(staged_install, target)
+                staged_install.unlink()
                 installed.append(target)
 
             if operation == "move":
@@ -2201,6 +2233,9 @@ class OpenBrowserDialog(QDialog):
                     if (current.st_size, current.st_mtime_ns) != source_signatures[source]:
                         raise OSError(f"Source file changed during transfer: {source}")
                 for source in sources:
+                    current = source.stat()
+                    if (current.st_size, current.st_mtime_ns) != source_signatures[source]:
+                        raise OSError(f"Source file changed during transfer: {source}")
                     source.unlink()
                     deleted_sources.append(source)
         except OSError as ex:
@@ -2330,7 +2365,12 @@ class OpenBrowserDialog(QDialog):
             not converting and not generating and bool(self._selected_design_paths())
         )
 
-        needs_colors = kind in (KIND_EMBROIDERY, KIND_CSV) and not self._design_has_own_colors()
+        preview_matches = self._preview_loaded and self._preview_path == path
+        needs_colors = (
+            kind in (KIND_EMBROIDERY, KIND_CSV)
+            and preview_matches
+            and not self._design_has_own_colors()
+        )
         self.palette_button.setEnabled(not converting and not generating and needs_colors)
         self.palette_button.setToolTip(self._palette_tooltip(needs_colors))
 
@@ -2419,6 +2459,8 @@ class OpenBrowserDialog(QDialog):
             self._start_svg_conversion(path)
 
     def _start_svg_conversion(self, path: Path) -> None:
+        if self._conversion_process is not None:
+            return
         preview = self._active_inkstitch_preview()
         if preview is None:
             QMessageBox.warning(
@@ -2647,7 +2689,7 @@ class OpenBrowserDialog(QDialog):
         process = self._conversion_process
         self._conversion_process = None
         if process is not None:
-            process.deleteLater()
+            dispose_qt_child(process)
         self._conversion_error = None
         self._update_actions()
 
@@ -2718,7 +2760,7 @@ class OpenBrowserDialog(QDialog):
             if process.state() == QProcess.ProcessState.Running:
                 process.kill()
                 process.waitForFinished(2000)
-            process.deleteLater()
+            dispose_qt_child(process)
             self._conversion_process = None
         self._discard_conversion_csv()
         self.preview._gl_widget.cleanup()

@@ -9,7 +9,8 @@ from collections.abc import Callable
 from pathlib import Path
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QObject, QRect, QSignalBlocker, Qt, QTimer, Signal
+from filelock import Timeout
+from PySide6.QtCore import QEvent, QObject, QRect, QSignalBlocker, Qt, QTimer, Signal, Slot
 from PySide6.QtGui import (
     QAction,
     QActionGroup,
@@ -79,6 +80,7 @@ from ..update_check import (
 )
 from .about import show_about
 from .config_editor import show_config_editor
+from .dialogs import dispose_qt_child
 from .export_dialog import ExportPreviewDialog
 from .help import show_command_line_help
 from .inkscape_dialog import InkscapeIntegrationDialog
@@ -940,18 +942,30 @@ class MainWindow(QMainWindow):
         """Query PyPI for a newer version and notify the user."""
         if self._update_thread is not None and self._update_thread.isRunning():
             return
+        app = QApplication.instance()
+        if app is None:
+            raise RuntimeError("Cannot check for updates without a QApplication.")
         self.statusBar().showMessage("Checking for updates...", 3000)
-        thread = UpdateCheckThread(self)
-        thread.result_ready.connect(lambda latest: self._on_update_result(latest, automatic))
-        thread.finished.connect(thread.deleteLater)
-        thread.finished.connect(lambda: self._clear_update_thread(thread))
+        thread = UpdateCheckThread(app, automatic=automatic)
+        thread.result_ready.connect(self._on_update_result)
+        thread.finished.connect(self._dispose_update_thread)
+        thread.finished.connect(self._clear_update_thread)
+        app.aboutToQuit.connect(thread.wait)
         self._update_thread = thread
         thread.start()
 
-    def _clear_update_thread(self, thread: UpdateCheckThread) -> None:
-        if self._update_thread is thread:
+    @Slot()
+    def _dispose_update_thread(self) -> None:
+        thread = self.sender()
+        if isinstance(thread, UpdateCheckThread):
+            dispose_qt_child(thread)
+
+    @Slot()
+    def _clear_update_thread(self) -> None:
+        if self._update_thread is self.sender():
             self._update_thread = None
 
+    @Slot(str, bool)
     def _on_update_result(self, latest: str, automatic: bool = False) -> None:
         record_check(self.config)
         if not latest:
@@ -1294,6 +1308,10 @@ class MainWindow(QMainWindow):
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
+        try:
+            self._save_window_layout()
+        except (OSError, Timeout) as ex:
+            logger.warning("Could not save window layout: %s", ex)
         if self._hide_on_close:
             event.ignore()
             self.hide()
@@ -1384,8 +1402,6 @@ class MainWindow(QMainWindow):
             return
         if dialog.result_action == "preview" and dialog.preview_csv_path is not None:
             source_path = dialog.document_path or dialog.selected_path
-            if source_path is not None:
-                self.set_document_path(source_path)
             loaded = self.open_file(
                 dialog.preview_csv_path,
                 add_recent_directory=False,
@@ -1767,6 +1783,7 @@ class MainWindow(QMainWindow):
             if temporary_input and not was_temporary_input:
                 self._remove_temporary_file(selected_path)
             return False
+        self.document_path = None
         previous_temporary_input = self._temporary_input_path
         self._temporary_input_path = selected_path if retain_temporary_input else None
         if (

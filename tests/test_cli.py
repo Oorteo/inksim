@@ -84,6 +84,36 @@ def test_hidden_temporary_input_option_is_forwarded_to_server(monkeypatch, tmp_p
     assert "--temporary-input" not in parser.format_help()
 
 
+def test_forwarded_input_paths_are_absolute(monkeypatch, tmp_path):
+    import pytest
+
+    from inksim import cli
+
+    input_path = tmp_path / "design.pes"
+    input_path.write_bytes(b"design")
+    monkeypatch.chdir(tmp_path)
+    parser = cli.build_argument_parser()
+    log_path = tmp_path / "inksim.log"
+    args = parser.parse_args(
+        ["design.pes", "--document-path", "source.svg", "--debug", "--log", str(log_path)]
+    )
+    requests = []
+    monkeypatch.setattr(cli, "_ensure_core_application", lambda: None)
+    monkeypatch.setattr(
+        cli,
+        "forward_request",
+        lambda request: requests.append(request) or {"ok": True},
+    )
+
+    with pytest.raises(SystemExit) as exit_info:
+        cli._forward_to_server(parser, args, [input_path.relative_to(tmp_path)])
+
+    assert exit_info.value.code == 0
+    assert requests[0]["path"] == str(input_path.resolve())
+    assert requests[0]["document_path"] == str((tmp_path / "source.svg").resolve())
+    assert requests[0]["debug_log_path"] == str(log_path.resolve())
+
+
 def test_forward_request_unavailable_exits_with_parser_error(monkeypatch, capsys):
     import pytest
 

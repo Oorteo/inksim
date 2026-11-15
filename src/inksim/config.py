@@ -119,8 +119,8 @@ class Config:
             self._load()
             if pending:
                 self._data.update(pending)
-                self._pending.clear()
             self._save_locked()
+            self._pending.clear()
 
     def get(self, key: str, default: Any = None) -> Any:
         """Return the value for *key*, or *default* if it is not set."""

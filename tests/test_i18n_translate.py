@@ -72,6 +72,77 @@ def test_copilot_response_must_be_a_json_object() -> None:
         _translate.parse_copilot_response("[]", "GPT-6 Luna")
 
 
+def test_copilot_response_rejects_non_string_translations() -> None:
+    with pytest.raises(RuntimeError, match="non-string translation for 'hello'"):
+        _translate.parse_copilot_response('{"hello": null}', "GPT-6 Luna")
+
+
+def test_translation_preparation_failure_does_not_skip_other_locales(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    _prepare_catalogs(tmp_path, monkeypatch)
+    locale_dir = _translate.LOCALES_DIR
+    (locale_dir / "cs.json").write_text("{invalid json", encoding="utf-8")
+    monkeypatch.setattr(
+        _translate,
+        "call_ollama",
+        lambda _prompt, _model: {"hello": "Ahoj"},
+    )
+
+    result = _translate.translate_locales(["cs", "sk"], "ollama", "test-model")
+
+    assert result == -1
+    assert json.loads((locale_dir / "sk.json").read_text(encoding="utf-8"))["hello"] == {
+        "source": "Hello",
+        "translation": "Ahoj",
+    }
+    assert "Preparing translation for cs failed" in capsys.readouterr().err
+
+
+def test_ollama_non_string_translation_is_reported_for_affected_locale(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    _prepare_catalogs(tmp_path, monkeypatch)
+
+    class FakeResponse:
+        def __init__(self, value: str) -> None:
+            self.value = value
+
+        def __enter__(self) -> FakeResponse:
+            return self
+
+        def __exit__(self, *_args: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return json.dumps({"response": self.value}).encode("utf-8")
+
+    def fake_urlopen(request: object, timeout: int) -> FakeResponse:
+        payload = json.loads(request.data)
+        translations = {"hello": None if "(cs)" in payload["prompt"] else "Ahoj"}
+        return FakeResponse(json.dumps(translations))
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+
+    result = _translate.translate_locales(["cs", "sk"], "ollama", "test-model")
+
+    assert result == -1
+    assert not (tmp_path / "locales" / "cs.json").exists()
+    assert (
+        json.loads((tmp_path / "locales" / "sk.json").read_text(encoding="utf-8"))["hello"][
+            "translation"
+        ]
+        == "Ahoj"
+    )
+    error = capsys.readouterr().err
+    assert "Ollama translation for cs failed" in error
+    assert "non-string translation for 'hello' (NoneType)" in error
+
+
 def test_translation_cli_accepts_multiple_locales(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

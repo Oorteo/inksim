@@ -234,7 +234,7 @@ def test_open_loads_svg_before_showing_browser_dialog(qapp, tmp_path):
     assert created[0].browser_dialog_args is None
 
 
-def test_open_routes_svg_to_browser_if_loading_fails(qapp, tmp_path):
+def test_open_routes_svg_to_browser_after_ipc_response_if_loading_fails(qapp, tmp_path, qtbot):
     server, created = _server(qapp, open_file_result=False)
     input_path = tmp_path / "design.svg"
     input_path.write_text("<svg/>", encoding="utf-8")
@@ -249,6 +249,8 @@ def test_open_routes_svg_to_browser_if_loading_fails(qapp, tmp_path):
     )
 
     assert response["ok"] is True
+    assert created[0].browser_dialog_args is None
+    qtbot.waitUntil(lambda: created[0].browser_dialog_args is not None)
     assert created[0].browser_dialog_args == {
         "selected_file": input_path.resolve(),
         "initial_directory": None,
@@ -270,6 +272,31 @@ def test_open_forwards_command_line_to_window(qapp):
     )
     assert response["ok"] is True
     assert created[0].command_line_args == command_line
+
+
+def test_open_applies_forwarded_debug_log_path(qapp, monkeypatch, tmp_path):
+    from inksim import server as server_module
+
+    calls = []
+    monkeypatch.setattr(
+        server_module,
+        "configure_logging",
+        lambda enabled, path, *, append=False: calls.append((enabled, Path(path), append)),
+    )
+    server, _created = _server(qapp)
+    log_path = tmp_path / "inksim.log"
+
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "debug_log_path": str(log_path),
+        }
+    )
+
+    assert response["ok"] is True
+    assert calls == [(True, log_path, True)]
 
 
 def test_open_schedules_inkscape_extension_check(qapp):

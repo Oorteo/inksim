@@ -69,6 +69,12 @@ def _isolate_config(tmp_path, monkeypatch):
     )
 
 
+@pytest.fixture(autouse=True)
+def _disable_automatic_update_checks(monkeypatch):
+    """Keep GUI tests independent of network update checks."""
+    monkeypatch.setattr("inksim.gui.frame.should_check", lambda _config: False)
+
+
 @pytest.fixture
 def sample_design():
     """Return an available external embroidery sample by a generic name."""

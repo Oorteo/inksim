@@ -25,7 +25,7 @@ from PySide6.QtWidgets import QApplication
 
 from .config import Config
 from .constants import IPC_PROTOCOL_VERSION, IPC_SERVER_NAME
-from .debug import logger
+from .debug import configure_logging, logger
 from .ipc import IpcServer, IpcUnavailable, Request, Response, endpoint_is_active, send_request
 
 if TYPE_CHECKING:
@@ -230,6 +230,12 @@ class InkSimServer(QObject):
     def _open(self, request: Request) -> Response:
         if request.get("protocol_version") != IPC_PROTOCOL_VERSION:
             return {"ok": False, "error": "protocol version mismatch"}
+        debug_log_path = request.get("debug_log_path")
+        if isinstance(debug_log_path, str) and debug_log_path:
+            try:
+                configure_logging(True, debug_log_path, append=True)
+            except OSError as ex:
+                return {"ok": False, "error": f"cannot create debug log {debug_log_path}: {ex}"}
         index = int(request.get("index", 0))
         if request.get("new_window") or not self.windows:
             window = self._create_window(request.get("window") or {})
@@ -262,8 +268,6 @@ class InkSimServer(QObject):
             QTimer.singleShot(0, window.check_inkstitch_link)
 
         document_path = request.get("document_path")
-        if document_path:
-            window.set_document_path(Path(document_path))
         path = request.get("path")
         if path is None:
             window.focus_window()
@@ -297,14 +301,23 @@ class InkSimServer(QObject):
             show_error_dialog=not is_svg,
         )
         if not loaded and is_svg:
-            window.open_browser_dialog(selected_file=selected_path.resolve())
             window.focus_window()
             self._restart_idle_timer()
             schedule_inkscape_extension_check()
+            QTimer.singleShot(
+                0,
+                lambda selected_path=selected_path: window.open_browser_dialog(
+                    selected_file=selected_path.resolve()
+                ),
+            )
             return {"ok": True, "index": self.windows.index(window)}
         if not loaded:
             self._restart_idle_timer()
             return {"ok": False, "error": f"cannot open {path}"}
+        if isinstance(document_path, str) and document_path:
+            window.set_document_path(Path(document_path))
+        else:
+            window.document_path = None
         if autoplay and (not reuse_loaded_file or not window.viewer.is_playing):
             window.viewer.toggle_auto_play(forward=True)
         # Loading a document clears the marker, so restore it for this preview.

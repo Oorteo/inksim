@@ -76,6 +76,20 @@ def test_existing_path_with_spaces_stays_one_argument(monkeypatch, tmp_path):
     assert status.inkscape.command == [str(executable)]
 
 
+def test_windows_quoted_command_preserves_program_and_arguments(monkeypatch):
+    monkeypatch.setattr("inksim.integration.paths.os.name", "nt")
+    command = ToolInfo(
+        "Inkscape",
+        '"C:\\Program Files\\Inkscape\\inkscape.exe" --app-id-tag="InkSim preview"',
+        "environment",
+    )
+
+    assert command.command == [
+        "C:\\Program Files\\Inkscape\\inkscape.exe",
+        "--app-id-tag=InkSim preview",
+    ]
+
+
 def test_inkscape_is_enough_to_attempt_svg_preview():
     status = ToolStatus(
         inkscape=ToolInfo("Inkscape", "/usr/bin/inkscape", "PATH"),

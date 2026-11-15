@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QObject, Qt
 from PySide6.QtGui import QColor, QPainter, QPaintEvent, QPen
 from PySide6.QtWidgets import (
     QDialog,
@@ -17,6 +17,18 @@ from PySide6.QtWidgets import (
 )
 
 from ..i18n import _
+
+
+def dispose_qt_child(obj: QObject) -> None:
+    """Delete a Qt child exactly once.
+
+    ``deleteLater()`` on an object that still has a Qt parent leaves two
+    owners: the deferred delete and the parent.  When the parent is destroyed
+    first, the deferred event is delivered to freed memory and the process
+    aborts with a double free.  Detaching first keeps a single owner.
+    """
+    obj.setParent(None)
+    obj.deleteLater()
 
 
 class CalibrationDialog(QDialog):

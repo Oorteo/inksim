@@ -11,6 +11,7 @@ its own image, the file manager shows them together, and a glob such as
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -22,7 +23,12 @@ from PySide6.QtGui import QImage, QImageReader, QPainter, QTransform
 from PySide6.QtSvg import QSvgRenderer
 
 from ..constants import AUTO_THREAD_COLORS, DEFAULT_LINE_WIDTH_MM
-from ..formats import command_name, is_stitchblock_svg, read_embroidery_file
+from ..formats import (
+    command_name,
+    is_stitchblock_svg,
+    read_embroidery_file,
+    sidecar_palette_candidates,
+)
 from .export import render_export_image
 
 THUMBNAIL_SIZE = 256
@@ -40,6 +46,7 @@ DETAILS_KEY = "InkSimDesign"
 # Thumbnails of designs stored sideways are rotated by hand. The angle lives in
 # the PNG so "update" and "regenerate" keep it.
 ROTATION_KEY = "InkSimRotation"
+INPUTS_KEY = "InkSimInputs"
 STAMP_VERSION = 1
 
 
@@ -85,6 +92,27 @@ def thumbnail_stamp(size: int = THUMBNAIL_SIZE) -> str:
     return f"version={STAMP_VERSION};size={size};renderer={THUMBNAIL_RENDERER}"
 
 
+def _file_revision(path: Path) -> tuple[int, int, int, int] | None:
+    """Return inexpensive metadata that identifies a file revision."""
+    try:
+        stat = path.stat()
+    except OSError:
+        return None
+    return stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size, stat.st_ino
+
+
+def _input_signature(source: Path) -> str | None:
+    """Describe the source and present palette candidates without reading contents."""
+    source_revision = _file_revision(source)
+    if source_revision is None:
+        return None
+    sidecars = [
+        (candidate.name, _file_revision(candidate))
+        for candidate in sidecar_palette_candidates(source)
+    ]
+    return json.dumps((source_revision, sidecars), separators=(",", ":"))
+
+
 @dataclass(frozen=True)
 class DesignPreview:
     """Render-ready stitch segments and the metadata the open dialog shows."""
@@ -108,11 +136,14 @@ def thumbnail_is_current(source: Path, size: int = THUMBNAIL_SIZE) -> bool:
     """
     thumbnail = thumbnail_path(source)
     try:
-        if thumbnail.stat().st_mtime < source.stat().st_mtime:
+        if thumbnail.stat().st_mtime_ns < source.stat().st_mtime_ns:
             return False
     except OSError:
         return False
-    return QImageReader(str(thumbnail)).text(STAMP_KEY) == thumbnail_stamp(size)
+    reader = QImageReader(str(thumbnail))
+    return reader.text(STAMP_KEY) == thumbnail_stamp(size) and reader.text(
+        INPUTS_KEY
+    ) == _input_signature(source)
 
 
 def thumbnail_rotation(source: Path) -> int:
@@ -133,6 +164,7 @@ def rotate_thumbnail(source: Path, degrees: int) -> int | None:
     reader = QImageReader(str(thumbnail))
     stamp = reader.text(STAMP_KEY)
     details = reader.text(DETAILS_KEY)
+    inputs = reader.text(INPUTS_KEY)
     image = reader.read()
     if image.isNull():
         return None
@@ -144,6 +176,8 @@ def rotate_thumbnail(source: Path, degrees: int) -> int | None:
         rotated.setText(STAMP_KEY, stamp)
     if details:
         rotated.setText(DETAILS_KEY, details)
+    if inputs:
+        rotated.setText(INPUTS_KEY, inputs)
     rotated.setText(ROTATION_KEY, str(angle))
     if not rotated.save(str(thumbnail), THUMBNAIL_FORMAT):  # type: ignore[call-overload]
         return None
@@ -363,11 +397,16 @@ def write_thumbnail(
 ) -> Path | None:
     """Write the sidecar thumbnail for *source* and return its path."""
     thumbnail = thumbnail_path(source)
-    if thumbnail_is_current(source) and not overwrite:
+    if thumbnail_is_current(source, size) and not overwrite:
         return thumbnail
+    input_signature = _input_signature(source)
+    if input_signature is None:
+        return None
     rotation = thumbnail_rotation(source)
     image, details = _render_with_details(source, size)
     if image is None:
+        return None
+    if _input_signature(source) != input_signature:
         return None
     if rotation:
         image = image.transformed(
@@ -375,6 +414,7 @@ def write_thumbnail(
         )
         image.setText(ROTATION_KEY, str(rotation))
     image.setText(STAMP_KEY, thumbnail_stamp(size))
+    image.setText(INPUTS_KEY, input_signature)
     if details is not None:
         image.setText(DETAILS_KEY, details.encode())
     # PySide6 accepts the format name; its stubs only describe the bytes overload.
