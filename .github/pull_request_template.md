@@ -18,6 +18,6 @@
 
 - [ ] I understand and tested these changes.
 - [ ] If I used AI tools, I checked that the output doesn't copy third-party code.
-- [ ] I agree to the [CLA](CLA.md) and [Contributing Guidelines](CONTRIBUTING.md).
+- [ ] I agree to the [CLA](/CLA.md) and [Contributing Guidelines](/CONTRIBUTING.md).
 
 _Thanks for taking the time to help make InkSim better!_ 🚀
