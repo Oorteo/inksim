@@ -8,6 +8,7 @@ from __future__ import annotations
 import math
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -91,8 +92,10 @@ from ..debug import logger
 from ..formats import (
     PALETTE_SOURCE_ATTR,
     color_block_count,
+    get_palette_output_formats,
     get_supported_input_extensions,
     is_stitchblock_svg,
+    sidecar_palette_candidates,
 )
 from ..i18n import _
 from ..integration.inkstitch import (
@@ -160,6 +163,10 @@ _PLACE_PATH_ROLE = Qt.ItemDataRole.UserRole
 _PLACE_FAVORITE_ROLE = Qt.ItemDataRole.UserRole + 1
 # The icon-only grid draws the name under each icon instead of the item text.
 _CAPTION_ROLE = Qt.ItemDataRole.UserRole + 2
+
+
+class _FileTransferRollbackError(OSError):
+    pass
 
 
 class _IconSelectionDelegate(QStyledItemDelegate):
@@ -556,6 +563,7 @@ class OpenBrowserDialog(QDialog):
         )
         self._thumbnail_mode = _THUMBNAIL_UPDATE
         self._thumbnail_actions: dict[str, QAction] = {}
+        self._pending_file_transfer: tuple[str, tuple[Path, ...]] | None = None
         self._thumbnail_pool = QThreadPool(self)
         self._thumbnail_pool.setMaxThreadCount(1)
 
@@ -1877,8 +1885,20 @@ class OpenBrowserDialog(QDialog):
         return icon
 
     def _show_thumbnail_menu(self, position: Any) -> None:
-        """Offer thumbnail rotation for the selected designs."""
+        """Offer thumbnail rotation and file transfer actions."""
+        clicked_item = self.file_list.itemAt(position)
+        if clicked_item is not None and not clicked_item.isSelected():
+            self.file_list.clearSelection()
+            clicked_item.setSelected(True)
+            self.file_list.setCurrentItem(clicked_item)
+
+        menu = self._create_file_context_menu()
+        menu.exec(self.file_list.viewport().mapToGlobal(position))
+
+    def _create_file_context_menu(self) -> QMenu:
+        """Build the context menu without showing it."""
         targets = [path for path in self._selected_design_paths() if thumbnail_path(path).is_file()]
+        selected_files = self._selected_transfer_sources()
         menu = QMenu(self.file_list)
         actions = (
             (_("dialog.open_browser.rotate_left", "Rotate thumbnail left"), -90),
@@ -1905,7 +1925,22 @@ class OpenBrowserDialog(QDialog):
                 )
             )
             hint.setEnabled(False)
-        menu.exec(self.file_list.viewport().mapToGlobal(position))
+
+        menu.addSeparator()
+        copy_action = menu.addAction(_("dialog.open_browser.copy_files", "Copy files"))
+        copy_action.setEnabled(bool(selected_files))
+        copy_action.triggered.connect(
+            lambda _checked=False: self._remember_file_transfer("copy", selected_files)
+        )
+        move_action = menu.addAction(_("dialog.open_browser.move_files", "Move files"))
+        move_action.setEnabled(bool(selected_files))
+        move_action.triggered.connect(
+            lambda _checked=False: self._remember_file_transfer("move", selected_files)
+        )
+        paste_action = menu.addAction(_("dialog.open_browser.paste_files", "Paste files"))
+        paste_action.setEnabled(self._pending_file_transfer is not None)
+        paste_action.triggered.connect(lambda _checked=False: self._paste_file_transfer())
+        return menu
 
     def _rotate_thumbnails(self, degrees: int | None) -> None:
         """Rotate the PNG of every selected design; None restores the original."""
@@ -1951,6 +1986,261 @@ class OpenBrowserDialog(QDialog):
             if self._kind_for_path(path) in (KIND_EMBROIDERY, KIND_CSV, KIND_SVG):
                 paths.append(path)
         return sorted(paths)
+
+    def _selected_transfer_sources(self) -> tuple[Path, ...]:
+        paths = {
+            Path(value)
+            for item in self.file_list.selectedItems()
+            if (value := item.data(Qt.ItemDataRole.UserRole)) and Path(value).is_file()
+        }
+        return tuple(sorted(paths))
+
+    def _remember_file_transfer(self, operation: str, sources: tuple[Path, ...]) -> None:
+        if operation not in {"copy", "move"} or not sources:
+            return
+        self._pending_file_transfer = (operation, sources)
+        label = _("dialog.open_browser.copy_files", "Copy files")
+        if operation == "move":
+            label = _("dialog.open_browser.move_files", "Move files")
+        self.activity_label.setText(
+            _("dialog.open_browser.transfer_ready", "{operation} ready: {count} file(s)").format(
+                operation=label, count=len(sources)
+            )
+        )
+        self.activity_label.setVisible(True)
+
+    def _file_transfer_plan(self, sources: tuple[Path, ...]) -> list[tuple[Path, Path]]:
+        palette_extensions = {
+            f".{item['extension'].lstrip('.').lower()}" for item in get_palette_output_formats()
+        }
+        files: list[Path] = []
+        seen: set[Path] = set()
+        for source in sources:
+            if not source.is_file():
+                raise FileNotFoundError(f"Source file no longer exists: {source}")
+            if source not in seen:
+                files.append(source)
+                seen.add(source)
+
+            if source.suffix.lower() not in palette_extensions:
+                palette = next(
+                    (
+                        candidate
+                        for candidate in sidecar_palette_candidates(source)
+                        if candidate.suffix.lower() in palette_extensions
+                    ),
+                    None,
+                )
+                if palette is not None and palette not in seen:
+                    files.append(palette)
+                    seen.add(palette)
+
+                thumbnail = thumbnail_path(source)
+                if thumbnail.is_file() and thumbnail not in seen:
+                    files.append(thumbnail)
+                    seen.add(thumbnail)
+
+        return [
+            (source, self.current_directory / source.name)
+            for source in files
+            if source.resolve() != (self.current_directory / source.name).resolve()
+        ]
+
+    def _paste_file_transfer(self) -> None:
+        pending = self._pending_file_transfer
+        if pending is None:
+            return
+        operation, sources = pending
+        try:
+            plan = self._file_transfer_plan(sources)
+            if not plan:
+                self.activity_label.setText(
+                    _("dialog.open_browser.transfer_same_folder", "These files are already here.")
+                )
+                self.activity_label.setVisible(True)
+                return
+            if not self.current_directory.is_dir():
+                raise OSError(f"Destination folder is not accessible: {self.current_directory}")
+        except OSError as ex:
+            self._show_file_transfer_error(ex)
+            return
+
+        conflicts = [target for _, target in plan if target.exists() or target.is_symlink()]
+        directories = [target for target in conflicts if target.is_dir()]
+        if directories:
+            names = "\n".join(f"- {_sanitize_path_text(path.name)}" for path in conflicts)
+            QMessageBox.warning(
+                self,
+                _("dialog.open_browser.transfer_folder_conflict_title", "Cannot replace folders"),
+                _(
+                    "dialog.open_browser.transfer_folder_conflict",
+                    "These destination paths already exist, including folders that cannot be "
+                    "replaced by files. Nothing was transferred:\n{files}",
+                ).format(files=names),
+            )
+            return
+
+        if conflicts:
+            names = "\n".join(f"- {_sanitize_path_text(path.name)}" for path in conflicts)
+            answer = QMessageBox.question(
+                self,
+                _("dialog.open_browser.transfer_conflict_title", "Files already exist"),
+                _(
+                    "dialog.open_browser.transfer_replace_all",
+                    "These destination files already exist:\n{files}\n\nReplace all of them?",
+                ).format(files=names),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel,
+                QMessageBox.StandardButton.Cancel,
+            )
+            if answer != QMessageBox.StandardButton.Yes:
+                return
+
+        try:
+            count = self._execute_file_transfer(operation, plan, conflicts)
+        except OSError as ex:
+            self._show_file_transfer_error(ex)
+            return
+
+        if operation == "move":
+            self._pending_file_transfer = None
+        self.refresh_files()
+        label = _("dialog.open_browser.copied_files", "Copied {count} file(s)")
+        if operation == "move":
+            label = _("dialog.open_browser.moved_files", "Moved {count} file(s)")
+        self.activity_label.setText(label.format(count=count))
+        self.activity_label.setVisible(True)
+
+    def _execute_file_transfer(
+        self,
+        operation: str,
+        plan: list[tuple[Path, Path]],
+        approved_conflicts: list[Path],
+    ) -> int:
+        if operation not in {"copy", "move"}:
+            raise ValueError(f"Unsupported file transfer operation: {operation}")
+        staging_root = Path(
+            tempfile.mkdtemp(prefix=".inksim-transfer-", dir=self.current_directory)
+        )
+        try:
+            count = self._execute_staged_file_transfer(
+                operation, plan, approved_conflicts, staging_root
+            )
+        except _FileTransferRollbackError:
+            raise
+        except OSError:
+            self._cleanup_transfer_staging(staging_root)
+            raise
+        self._cleanup_transfer_staging(staging_root)
+        return count
+
+    @staticmethod
+    def _cleanup_transfer_staging(staging_root: Path) -> None:
+        try:
+            shutil.rmtree(staging_root)
+        except OSError as ex:
+            logger.warning(
+                "Could not remove file transfer staging directory %s: %s", staging_root, ex
+            )
+
+    def _execute_staged_file_transfer(
+        self,
+        operation: str,
+        plan: list[tuple[Path, Path]],
+        approved_conflicts: list[Path],
+        staging_root: Path,
+    ) -> int:
+        staged_directory = staging_root / "staged"
+        backup_directory = staging_root / "backups"
+        install_directory = staging_root / "install"
+        staged_directory.mkdir()
+        backup_directory.mkdir()
+        install_directory.mkdir()
+
+        sources = [source for source, _ in plan]
+        source_signatures = {
+            source: (source.stat().st_size, source.stat().st_mtime_ns) for source in sources
+        }
+        staged_sources: dict[Path, Path] = {}
+        for index, source in enumerate(sources):
+            staged = staged_directory / f"{index}-{source.name}"
+            shutil.copy2(source, staged)
+            current = source.stat()
+            if (current.st_size, current.st_mtime_ns) != source_signatures[source]:
+                raise OSError(f"Source file changed during transfer: {source}")
+            staged_sources[source] = staged
+
+        approved = set(approved_conflicts)
+        for pair in plan:
+            target = pair[1]
+            exists_now = target.exists() or target.is_symlink()
+            if exists_now and target not in approved:
+                raise FileExistsError(f"Destination appeared during transfer: {target}")
+            if target.is_dir():
+                raise IsADirectoryError(f"Destination is a folder: {target}")
+
+        backups: list[tuple[Path, Path]] = []
+        installed: list[Path] = []
+        deleted_sources: list[Path] = []
+        try:
+            for index, (_, target) in enumerate(plan):
+                if not (target.exists() or target.is_symlink()):
+                    continue
+                backup = backup_directory / f"{index}-{target.name}"
+                os.replace(target, backup)
+                backups.append((backup, target))
+
+            for index, (source, target) in enumerate(plan):
+                staged_install = install_directory / f"{index}-{target.name}"
+                shutil.copy2(staged_sources[source], staged_install)
+                os.replace(staged_install, target)
+                installed.append(target)
+
+            if operation == "move":
+                for source in sources:
+                    current = source.stat()
+                    if (current.st_size, current.st_mtime_ns) != source_signatures[source]:
+                        raise OSError(f"Source file changed during transfer: {source}")
+                for source in sources:
+                    source.unlink()
+                    deleted_sources.append(source)
+        except OSError as ex:
+            rollback_errors: list[str] = []
+            if operation == "move":
+                for source in reversed(deleted_sources):
+                    try:
+                        if source.exists():
+                            raise FileExistsError(f"Cannot restore changed source file: {source}")
+                        shutil.copy2(staged_sources[source], source)
+                    except OSError as rollback_error:
+                        rollback_errors.append(str(rollback_error))
+            for target in reversed(installed):
+                try:
+                    target.unlink(missing_ok=True)
+                except OSError as rollback_error:
+                    rollback_errors.append(str(rollback_error))
+            for backup, target in reversed(backups):
+                try:
+                    os.replace(backup, target)
+                except OSError as rollback_error:
+                    rollback_errors.append(str(rollback_error))
+            if rollback_errors:
+                raise _FileTransferRollbackError(
+                    f"{ex}; rollback was incomplete: {'; '.join(rollback_errors)}. "
+                    f"Recovery files remain in {staging_root}"
+                ) from ex
+            raise
+        return len(plan)
+
+    def _show_file_transfer_error(self, error: OSError) -> None:
+        logger.warning("File transfer failed: %s", error)
+        QMessageBox.warning(
+            self,
+            _("dialog.open_browser.transfer_failed_title", "File transfer failed"),
+            _(
+                "dialog.open_browser.transfer_failed",
+                "File transfer failed: {error}",
+            ).format(error=_sanitize_path_text(str(error))),
+        )
 
     def _select_thumbnail_mode(self, mode: str) -> None:
         """Show the chosen action on the button itself, without running it."""

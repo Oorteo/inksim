@@ -884,6 +884,229 @@ def test_thumbnail_menu_is_disabled_without_a_thumbnail(qtbot, tmp_path, monkeyp
     dialog.reject()
 
 
+def test_file_transfer_menu_actions_follow_thumbnail_actions(qtbot, tmp_path, monkeypatch):
+    from inksim.i18n import _
+    from inksim.render.thumbnails import write_thumbnail
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    design = tmp_path / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    write_thumbnail(design)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+    _select_file(dialog, design.name)
+
+    menu = dialog._create_file_context_menu()
+    actions = menu.actions()
+    separator_index = max(index for index, action in enumerate(actions) if action.isSeparator())
+    rotation_actions = [action for action in actions[:separator_index] if not action.isSeparator()]
+    transfer_actions = [
+        action for action in actions[separator_index + 1 :] if not action.isSeparator()
+    ]
+
+    assert len(rotation_actions) == 4
+    assert [action.text() for action in transfer_actions] == [
+        _("dialog.open_browser.copy_files", "Copy files"),
+        _("dialog.open_browser.move_files", "Move files"),
+        _("dialog.open_browser.paste_files", "Paste files"),
+    ]
+    assert dialog._pending_file_transfer is None
+    transfer_actions[0].trigger()
+    assert dialog._pending_file_transfer == ("copy", (design,))
+    menu.deleteLater()
+    dialog.reject()
+
+
+def test_copy_transfer_includes_palette_and_thumbnail(qtbot, tmp_path, monkeypatch):
+    from inksim.render.thumbnails import thumbnail_path
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    design = source_directory / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    palette = design.with_suffix(".edr")
+    palette.write_bytes(b"color map")
+    preview = thumbnail_path(design)
+    preview.write_bytes(b"thumbnail")
+
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (design,))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert (destination_directory / design.name).read_bytes() == design.read_bytes()
+    assert (destination_directory / palette.name).read_bytes() == palette.read_bytes()
+    assert (destination_directory / preview.name).read_bytes() == preview.read_bytes()
+    assert design.is_file() and palette.is_file() and preview.is_file()
+    dialog.reject()
+
+
+def test_move_transfer_removes_sources_and_clears_buffer(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    design = source_directory / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("move", (design,))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert not design.exists()
+    assert (destination_directory / design.name).is_file()
+    assert dialog._pending_file_transfer is None
+    dialog.reject()
+
+
+def test_transfer_buffer_is_empty_in_a_new_dialog(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    design = tmp_path / "design.pes"
+    design.write_bytes(b"design")
+
+    first = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(first)
+    first._remember_file_transfer("copy", (design,))
+    assert first._pending_file_transfer is not None
+
+    second = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(second)
+    assert second._pending_file_transfer is None
+    first.reject()
+    second.reject()
+
+
+def test_transfer_conflict_cancels_the_entire_batch(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    third = source_directory / "third.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"new second")
+    third.write_bytes(b"new third")
+    existing_second = destination_directory / second.name
+    existing_third = destination_directory / third.name
+    existing_second.write_bytes(b"existing second")
+    existing_third.write_bytes(b"existing third")
+
+    prompts: list[str] = []
+
+    def cancel_conflicts(_parent, _title, text, *_args):
+        prompts.append(text)
+        return QMessageBox.StandardButton.Cancel
+
+    monkeypatch.setattr(QMessageBox, "question", cancel_conflicts)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (first, second, third))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert len(prompts) == 1
+    assert second.name in prompts[0]
+    assert third.name in prompts[0]
+    assert not (destination_directory / first.name).exists()
+    assert existing_second.read_bytes() == b"existing second"
+    assert existing_third.read_bytes() == b"existing third"
+    assert first.is_file() and second.is_file() and third.is_file()
+    assert dialog._pending_file_transfer is not None
+    dialog.reject()
+
+
+def test_transfer_conflicts_replace_the_whole_batch_after_one_confirmation(
+    qtbot, tmp_path, monkeypatch
+):
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"new second")
+    existing_second = destination_directory / second.name
+    existing_second.write_bytes(b"existing second")
+
+    prompts: list[str] = []
+
+    def replace_all(_parent, _title, text, *_args):
+        prompts.append(text)
+        return QMessageBox.StandardButton.Yes
+
+    monkeypatch.setattr(QMessageBox, "question", replace_all)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (first, second))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert len(prompts) == 1
+    assert second.name in prompts[0]
+    assert (destination_directory / first.name).read_bytes() == b"first"
+    assert existing_second.read_bytes() == b"new second"
+    assert first.is_file() and second.is_file()
+    dialog.reject()
+
+
+def test_transfer_failure_rolls_back_installed_files(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtWidgets import QMessageBox
+
+    import inksim.gui.open_dialog as open_dialog_module
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"second")
+
+    original_copy = open_dialog_module.shutil.copy2
+    calls = 0
+
+    def fail_during_install(source, target, *args, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 4:
+            raise OSError("simulated install failure")
+        return original_copy(source, target, *args, **kwargs)
+
+    monkeypatch.setattr(open_dialog_module.shutil, "copy2", fail_during_install)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_args: None)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (first, second))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert not (destination_directory / first.name).exists()
+    assert not (destination_directory / second.name).exists()
+    assert first.read_bytes() == b"first"
+    assert second.read_bytes() == b"second"
+    dialog.reject()
+
+
 def test_enter_opens_folders_and_arrows_stay_in_the_list(qtbot, tmp_path, monkeypatch):
     """Enter activates the current row, so the arrows can move between icons."""
     from PySide6.QtCore import Qt

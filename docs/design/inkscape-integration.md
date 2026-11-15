@@ -922,6 +922,12 @@ These are easy to forget and should be tracked before the first release.
 - Watch the current folder for external changes with a debounced refresh; also
   refresh on window activation and provide a Refresh button plus `Ctrl+R` for
   filesystems that do not reliably report changes.
+- Add file-only Copy, Move, and Paste actions after thumbnail rotation in the
+  context menu. Keep the pending paths in the dialog instance and clear them
+  when a new dialog opens. Transfer matching palette sidecars and PNG previews.
+- Preflight the complete transfer batch before changing anything. If targets
+  exist, ask once, list every conflict, and either replace the whole batch or
+  cancel it; roll back staged changes if a file operation fails.
 - Keep the classic dialog available until the browser passes manual testing.
 - Decide whether the browser shows unsupported files or hides them by default.
 - Provide a clear empty state and error state.
