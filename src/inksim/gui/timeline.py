@@ -9,7 +9,15 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from PySide6.QtCore import QPoint, QRect, Qt, Signal
-from PySide6.QtGui import QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QWheelEvent
+from PySide6.QtGui import (
+    QColor,
+    QLinearGradient,
+    QMouseEvent,
+    QPainter,
+    QPaintEvent,
+    QPen,
+    QWheelEvent,
+)
 from PySide6.QtWidgets import QWidget
 
 if TYPE_CHECKING:
@@ -23,6 +31,7 @@ class TimelineWidget(QWidget):
     MIN_WAVEFORM_SCALE_MM = 0.25
     MAX_WAVEFORM_SCALE_MM = 1000.0
     WAVEFORM_SCALE_STEP = 1.25
+    BACKGROUND_WHEEL_STEP = 12
 
     def __init__(self, parent: QWidget, viewer_panel: EmbroideryViewerWidget) -> None:
         super().__init__(parent)
@@ -30,8 +39,9 @@ class TimelineWidget(QWidget):
         self.setMinimumHeight(84)
         self.setStyleSheet("background: rgb(250, 250, 250)")
         self.setToolTip(
-            "Wheel: waveform scale; Ctrl+wheel: zoom; Shift+wheel: pan; "
-            "drag the overview to move the visible range."
+            "Drag BG from black to white to change the waveform background. "
+            "Wheel over BG: adjust background; wheel over waveform: scale; "
+            "Ctrl+wheel: zoom; Shift+wheel: pan."
         )
         self.dragging: str | None = None
         self.drag_moved = False
@@ -39,8 +49,12 @@ class TimelineWidget(QWidget):
         self._source_stitches = viewer_panel.stitches_np
         self._stitch_lengths_mm = self._calculate_stitch_lengths(viewer_panel.stitches_np)
         self.waveform_scale_mm = 5.0
+        self.waveform_background = 230
         self._view_start = 0
         self._view_end = int(viewer_panel.stitches_np.shape[0])
+
+    def _background_slider_rect(self) -> QRect:
+        return QRect(25, 7, 52, 14)
 
     @staticmethod
     def _calculate_stitch_lengths(stitches: np.ndarray) -> np.ndarray:
@@ -68,11 +82,24 @@ class TimelineWidget(QWidget):
         main_bar = QRect(80, 7, max(1, self.width() - 88), 34)
         overview = QRect(80, 50, max(1, self.width() - 88), 8)
         buttons = (
-            QRect(5, 6, 20, 17),
-            QRect(28, 6, 20, 17),
-            QRect(51, 6, 25, 17),
+            QRect(5, 26, 20, 17),
+            QRect(28, 26, 20, 17),
+            QRect(51, 26, 25, 17),
         )
         return main_bar, overview, buttons
+
+    def _set_waveform_background_from_x(self, x: float) -> None:
+        slider = self._background_slider_rect()
+        ratio = max(0.0, min(1.0, (x - slider.left()) / max(1, slider.width() - 1)))
+        self._set_waveform_background(int(round(ratio * 255)))
+
+    def _set_waveform_background(self, value: int) -> None:
+        self.waveform_background = max(0, min(255, value))
+        self.setToolTip(
+            f"Waveform background: {self.waveform_background}/255. "
+            "Drag or wheel BG to change the background; wheel over the waveform changes scale."
+        )
+        self.update()
 
     def _set_view_start(self, start: int) -> None:
         total = self._sync_view()
@@ -115,7 +142,12 @@ class TimelineWidget(QWidget):
         main_bar, overview, buttons = self._layout_rects()
         position = event.position()
         total = self._sync_view()
-        if buttons[0].contains(position.toPoint()):
+        if self._background_slider_rect().adjusted(0, -3, 0, 3).contains(position.toPoint()):
+            self.dragging = "background"
+            self.drag_moved = False
+            self._set_waveform_background_from_x(position.x())
+            self.grabMouse()
+        elif buttons[0].contains(position.toPoint()):
             self._zoom_at(main_bar.center().x(), 1 / 1.25)
         elif buttons[1].contains(position.toPoint()):
             self._zoom_at(main_bar.center().x(), 1.25)
@@ -166,6 +198,10 @@ class TimelineWidget(QWidget):
             self.drag_moved = True
             self._pan_overview_to(event.position().x())
             event.accept()
+        elif self.dragging == "background" and event.buttons() & Qt.LeftButton:
+            self.drag_moved = True
+            self._set_waveform_background_from_x(event.position().x())
+            event.accept()
         else:
             super().mouseMoveEvent(event)
 
@@ -181,6 +217,18 @@ class TimelineWidget(QWidget):
         elif modifiers & Qt.ShiftModifier and delta:
             span = self._view_end - self._view_start
             self._set_view_start(self._view_start - int(round(span * delta / 120 * 0.1)))
+            event.accept()
+        elif (
+            modifiers == Qt.NoModifier
+            and delta
+            and self._background_slider_rect()
+            .adjusted(0, -3, 0, 3)
+            .contains(event.position().toPoint())
+        ):
+            change = int(round(delta / 120 * self.BACKGROUND_WHEEL_STEP))
+            if change == 0:
+                change = 1 if delta > 0 else -1
+            self._set_waveform_background(self.waveform_background + change)
             event.accept()
         elif (
             modifiers == Qt.NoModifier
@@ -298,7 +346,7 @@ class TimelineWidget(QWidget):
         painter.setPen(QPen(color, pen_width))
         painter.drawLine(x, y_top, x, y_bottom)
         if length_mm > self.waveform_scale_mm:
-            painter.setPen(QPen(color.darker(130), pen_width))
+            painter.setPen(QPen(color, pen_width))
             painter.drawLine(x - 2, y_top, x + 2, y_top)
             painter.drawLine(x - 2, y_bottom, x + 2, y_bottom)
 
@@ -320,7 +368,7 @@ class TimelineWidget(QWidget):
 
         painter.save()
         painter.setClipRect(rect)
-        painter.setPen(QPen(QColor(195, 199, 205), 1))
+        painter.setPen(QPen(QColor(150, 150, 150), 1))
         painter.drawLine(rect.left(), center_y, rect.right(), center_y)
         if count <= rect.width():
             for index in range(start, end):
@@ -427,8 +475,32 @@ class TimelineWidget(QWidget):
             painter.setPen(QColor(35, 35, 35))
             painter.drawText(rect, Qt.AlignCenter, label)
 
-        painter.setBrush(QColor(230, 230, 230))
-        painter.setPen(QPen(QColor(200, 200, 200)))
+        slider = self._background_slider_rect()
+        painter.setPen(QColor(45, 45, 45))
+        painter.drawText(QRect(3, 7, 20, 14), Qt.AlignCenter, "BG")
+        gradient = QLinearGradient(
+            slider.left(),
+            slider.top(),
+            slider.right(),
+            slider.top(),
+        )
+        gradient.setColorAt(0, QColor(0, 0, 0))
+        gradient.setColorAt(1, QColor(255, 255, 255))
+        painter.setBrush(gradient)
+        painter.setPen(QPen(QColor(90, 90, 90), 1))
+        painter.drawRoundedRect(slider, 3, 3)
+        slider_x = slider.left() + int(round(self.waveform_background / 255 * (slider.width() - 1)))
+        painter.setBrush(QColor(255, 255, 255))
+        painter.setPen(QPen(QColor(20, 20, 20), 1))
+        painter.drawEllipse(slider_x - 4, slider.center().y() - 5, 9, 10)
+
+        background_color = QColor(
+            self.waveform_background,
+            self.waveform_background,
+            self.waveform_background,
+        )
+        painter.setBrush(background_color)
+        painter.setPen(QPen(QColor(128, 128, 128)))
         painter.drawRoundedRect(main_bar, 4, 4)
         painter.setBrush(QColor(230, 230, 230))
         painter.drawRect(overview)
@@ -536,10 +608,13 @@ class TimelineWidget(QWidget):
             txt_right = (
                 f"{bounds[2] - bounds[0]:.1f} x {bounds[3] - bounds[1]:.1f} mm | "
                 f"{self.viewer.color_count} color sections | "
-                f"waveform ≤ {self.waveform_scale_mm:g} mm"
+                f"waveform ≤ {self.waveform_scale_mm:g} mm | "
+                f"BG {self.waveform_background}/255"
             )
         else:
-            txt_right = f"waveform ≤ {self.waveform_scale_mm:g} mm"
+            txt_right = (
+                f"waveform ≤ {self.waveform_scale_mm:g} mm | BG {self.waveform_background}/255"
+            )
         font_metrics = painter.fontMetrics()
         text_top = 64
         text_height = font_metrics.height()

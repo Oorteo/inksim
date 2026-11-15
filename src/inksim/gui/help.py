@@ -32,6 +32,9 @@ HELP_SECTIONS = (
 | Click timeline | Seek stitch |
 | Ctrl + Wheel over timeline | Zoom around pointer |
 | Shift + Wheel over timeline | Pan timeline range |
+| Wheel over upper timeline | Adjust waveform scale |
+| Drag BG gradient | Change waveform background |
+| Wheel over BG gradient | Adjust waveform background |
 | Drag overview range | Pan zoomed timeline |
 | − / + / All | Zoom or show full timeline |
 """,
