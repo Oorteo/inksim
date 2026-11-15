@@ -11,7 +11,7 @@
 - [Internationalization (i18n)](#internationalization-i18n)
   - [Fallback chain](#fallback-chain)
   - [Adding or changing a UI string](#adding-or-changing-a-ui-string)
-  - [Translating locales via Ollama](#translating-locales-via-ollama)
+  - [Managing locales and translations](#managing-locales-and-translations)
   - [Running the application in another language](#running-the-application-in-another-language)
 - [Rendering Architecture](#rendering-architecture)
 - [Runtime Diagnostics](#runtime-diagnostics)
@@ -105,6 +105,9 @@ uv run poe test
 ```
 
 It produces a terminal coverage summary and an HTML report in `htmlcov/`.
+Automatic PyPI update checks are disabled for the test session so GUI tests stay
+deterministic; the update worker and its window slot have explicit tests in
+`tests/test_zz_menus.py`.
 
 ### Pre-commit hooks
 
@@ -201,7 +204,10 @@ commands accept `--dry-run` to preview prompts without calling a model.
 When using Copilot, `translate-all` reuses one client and starts a separate
 session for each locale, keeping translation context isolated without reconnecting
 for every language. It reports per-locale progress and saves each completed
-catalog immediately.
+catalog immediately. A locale whose catalog cannot be prepared or validated
+does not stop the remaining locales; the command reports it and exits with a
+non-zero status. Model output that is not a string is rejected instead of being
+converted.
 
 ### Running the application in another language
 
@@ -338,8 +344,22 @@ can be replaced without changing the tests:
 ```text
 tests/data/sample.csv
 tests/data/sample.pes
+tests/data/sample.svg
+tests/data/sample_svg.svg
 tests/data/square.pes
+tests/data/two_tect.csv
+tests/data/two_tect.dst
+tests/data/two_tect.edr
+tests/data/two_tect.svg
 ```
+
+`two_tect.dst` with `two_tect.edr` is a committed pair used to check that a
+design without its own palette borrows colors from a sidecar.
+
+The folder also collects files that tests generate: PNG thumbnails, `debug_*`
+logs and the occasional `.zip` archive. Git ignores them. Never commit
+generated or hand-made files from this folder, and never delete files you did
+not create; restore generated churn with `git checkout -- tests/data`.
 
 The `sample_design` pytest fixture selects an available sample from this
 folder. Test data and the `tests/` directory are excluded from application
@@ -485,3 +505,8 @@ Before submitting a change:
 2. Run `git diff --check`.
 3. Review the complete diff and confirm that unrelated files are unchanged.
 4. Keep runtime dependencies separate from the `dev` dependency group.
+5. Give every Qt object a single owner. When an object is scheduled for
+   deletion, use `dispose_qt_child()` from `inksim.gui.dialogs` instead of
+   calling `deleteLater()` on a child that its Qt parent also destroys: the
+   parent can free the object first and the queued deferred delete then runs on
+   released memory, which aborts the process with a double free.

@@ -9,8 +9,8 @@ manual. User instructions for the implemented browser live in
 
 Implementation status:
 
-- New `OpenBrowserDialog` is the primary **File -> Open** action. The old
-  embroidery-only dialog remains as **File -> Open embroidery file**.
+- `OpenBrowserDialog` is the only **File -> Open** action. The old
+  embroidery-only dialog was removed.
 - The dialog detects Inkscape and Ink/Stitch from environment variables and
   `PATH`, shows what is missing, renders SVG thumbnails, previews embroidery
   files, converts SVG to CSV through Inkscape, and can launch a tagged
@@ -95,13 +95,12 @@ sections of this document.
    Ink/Stitch installers may place their files in system-wide read-only
    directories. InkSim installs only into the writable user extension
    directory, with a manifest and version check, and never edits Ink/Stitch's
-   own files.
+   own files. New extension files are created owner-only (`0600`).
 
-8. **The browser is the primary open dialog.**
+8. **The browser is the only open dialog.**
    `File -> Open` opens `OpenBrowserDialog`; the previous
-   `EmbroideryOpenDialog` remains available as `File -> Open embroidery file`.
-   No `ui.open_dialog` setting is used. Keep the embroidery-only workflow
-   reachable while the browser continues to evolve.
+   `EmbroideryOpenDialog` has been removed.
+   No `ui.open_dialog` setting is used.
 
 9. **Inkscape's extension interpreter is user-owned state.**
    `extensions/python-interpreter` in `preferences.xml` is a global Inkscape
@@ -492,7 +491,7 @@ directory and report the conflict.
 `OpenBrowserDialog` is the primary **File -> Open** experience. It provides
 directory navigation, recent locations and favorites, list/grid/details views,
 filters and search, plus embroidery, CSV and SVG previews. The previous
-embroidery-only picker remains available separately; the proposed
+embroidery-only picker was removed; the proposed
 `ui.open_dialog` toggle was not implemented.
 
 The browser watches the current directory and refreshes its listing when
@@ -707,8 +706,8 @@ work.
 
 ### M2 - File browser (implemented)
 
-- The browser is the primary **File -> Open** action; the embroidery-only
-  picker remains separately available. No `ui.open_dialog` setting was added.
+- The browser is the only **File -> Open** action; the embroidery-only picker
+  was removed. No `ui.open_dialog` setting was added.
 - The current directory refreshes on filesystem changes and window
   activation, with a Refresh button and `Ctrl+R` as explicit fallbacks.
 - The file-list context menu supports Copy, Move, and Paste after the thumbnail
@@ -993,8 +992,8 @@ These are easy to forget and should be tracked before the first release.
   installer; installation must be defensive.
 - Large designs can take seconds or minutes to convert; progress and
   cancellation are mandatory.
-- The browser is now the primary open dialog. Keep the embroidery-only picker
-  reachable while browser workflows continue to evolve.
+- The browser is now the only open dialog; the embroidery-only picker was
+  removed.
 - Unsaved Inkscape edits cannot be recovered after a crash; only the last
   successful snapshot/CSV is recoverable.
 - Session directories must outlive an InkSim exit so reconnect is possible,

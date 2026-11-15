@@ -38,6 +38,11 @@ Start the server without a window:
 uv run inksim --server
 ```
 
+Server startup is serialized with a lock file in the platform runtime
+directory, so two servers never own the endpoint at the same time. A lock left
+behind by a crashed process is detected as stale and does not block the next
+start.
+
 Calls to `inksim` while the server runs are forwarded to it:
 
 - A call with a file opens the file in window `0` (or in the window given by

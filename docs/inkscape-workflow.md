@@ -108,7 +108,7 @@ You can also toggle the layout quickly with **View → Snap window layout** (**M
 
 After inspecting the design, copy the rendered preview back to Inkscape:
 
-1. Choose **File → Export shaded PNG for print**.
+1. Choose **File → Export → Shaded print...**.
 2. Click **Copy to clipboard**.
 3. Switch to Inkscape and press **Ctrl+V** to paste the image next to your vector design.
 
