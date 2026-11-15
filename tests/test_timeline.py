@@ -83,6 +83,81 @@ def test_unmodified_wheel_adjusts_waveform_scale_only_over_main_timeline(qtbot):
     assert timeline.waveform_scale_mm == 4
 
 
+def test_background_slider_changes_waveform_background(qtbot):
+    timeline, viewer = make_timeline(qtbot, total=1)
+    viewer.stitches_np = np.zeros((1, 7), dtype=np.float32)
+    viewer.visible_count = 1
+    slider = timeline._background_slider_rect()
+
+    qtbot.mouseClick(timeline, Qt.LeftButton, pos=QPoint(slider.left(), slider.center().y()))
+    assert timeline.waveform_background == 0
+    dark_image = timeline.grab().toImage()
+    main_bar, _, buttons = timeline._layout_rects()
+    dark_pixel = dark_image.pixelColor(main_bar.left() + 20, main_bar.center().y() + 8)
+
+    qtbot.mouseClick(timeline, Qt.LeftButton, pos=QPoint(slider.right(), slider.center().y()))
+    assert timeline.waveform_background == 255
+    light_image = timeline.grab().toImage()
+    light_pixel = light_image.pixelColor(main_bar.left() + 20, main_bar.center().y() + 8)
+
+    assert dark_pixel.lightness() < 50
+    assert light_pixel.lightness() > 200
+    assert buttons[0].top() > slider.bottom()
+
+
+def test_wheel_over_background_slider_adjusts_background(qtbot):
+    timeline, _ = make_timeline(qtbot)
+    slider = timeline._background_slider_rect()
+    position = slider.center()
+    timeline.waveform_background = 120
+
+    wheel_up = QWheelEvent(
+        position,
+        position,
+        QPoint(0, 0),
+        QPoint(0, 120),
+        Qt.NoButton,
+        Qt.NoModifier,
+        Qt.ScrollPhase.ScrollUpdate,
+        False,
+    )
+    timeline.wheelEvent(wheel_up)
+
+    assert timeline.waveform_background == 120 + timeline.BACKGROUND_WHEEL_STEP
+    assert timeline.waveform_scale_mm == 5
+
+    wheel_down = QWheelEvent(
+        position,
+        position,
+        QPoint(0, 0),
+        QPoint(0, -120),
+        Qt.NoButton,
+        Qt.NoModifier,
+        Qt.ScrollPhase.ScrollUpdate,
+        False,
+    )
+    timeline.wheelEvent(wheel_down)
+
+    assert timeline.waveform_background == 120
+
+
+def test_background_slider_does_not_change_stitch_colors(qtbot):
+    timeline, viewer = make_timeline(qtbot, total=1)
+    viewer.stitches_np = np.array([[0, 0, 4, 0, 220, 30, 30]], dtype=np.float32)
+    viewer.visible_count = 1
+    main_bar, _, _ = timeline._layout_rects()
+    stitch_x = timeline._view_position_x(1, main_bar) - 1
+    stitch_y = main_bar.center().y() - 8
+
+    timeline.waveform_background = 0
+    dark_pixel = timeline.grab().toImage().pixelColor(stitch_x, stitch_y)
+    timeline.waveform_background = 255
+    light_pixel = timeline.grab().toImage().pixelColor(stitch_x, stitch_y)
+
+    assert dark_pixel == light_pixel
+    assert dark_pixel.red() > dark_pixel.blue()
+
+
 def test_seek_maps_pointer_to_zoomed_range(qtbot):
     timeline, _ = make_timeline(qtbot)
     timeline._view_start = 20
