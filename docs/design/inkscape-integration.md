@@ -1,12 +1,16 @@
 # Inkscape / Ink/Stitch Integration Design and TODO
 
-Status: planning
-Date: 2026-10-27
+Status: implementation in progress
+Created: 2026-10-27
 
-Implementation status (2026-10-27):
+This is a contributor-facing architecture and roadmap document, not a user
+manual. User instructions for the implemented browser live in
+[the user guide](../user-guide.md#opening-files).
+
+Implementation status:
 
 - New `OpenBrowserDialog` is the primary **File -> Open** action. The old
-  embroidery-only dialog remains as **File -> Open embroidery**.
+  embroidery-only dialog remains as **File -> Open embroidery file**.
 - The dialog detects Inkscape and Ink/Stitch from environment variables and
   `PATH`, shows what is missing, renders SVG thumbnails, previews embroidery
   files, converts SVG to CSV through Inkscape, and can launch a tagged
@@ -14,9 +18,14 @@ Implementation status (2026-10-27):
   browser.
 - Inkscape child processes use `clean_child_environment()` so the InkSim
   virtualenv cannot leak into Inkscape's extension interpreter.
-- Not implemented yet: persistent sessions, selection-only preview, automatic
-  refresh, request/response files, on-the-fly extension installation, and the
-  standalone Ink/Stitch backend.
+- The browser watches its current directory, refreshes on window activation,
+  and offers a Refresh button and `Ctrl+R`. Its context menu supports
+  file-only Copy, Move, and Paste, including matching palette sidecars and
+  existing PNG previews; destination conflicts are reviewed as one batch.
+- Still open for the broader integration: persistent tagged sessions,
+  selection-only preview through the proposed request/response protocol, and
+  a standalone Ink/Stitch backend. Directory-list refresh is separate from
+  automatically regenerating a stitch preview after an SVG is saved.
 
 ## Goal
 
@@ -85,10 +94,11 @@ sections of this document.
    directory, with a manifest and version check, and never edits Ink/Stitch's
    own files.
 
-8. **The open dialog is being replaced gradually.**
-   The new file browser with previews is developed in parallel with the
-   existing `EmbroideryOpenDialog` and selected by a setting until it is
-   ready. The old dialog remains the fallback.
+8. **The browser is the primary open dialog.**
+   `File -> Open` opens `OpenBrowserDialog`; the previous
+   `EmbroideryOpenDialog` remains available as `File -> Open embroidery file`.
+   No `ui.open_dialog` setting is used. Keep the embroidery-only workflow
+   reachable while the browser continues to evolve.
 
 9. **Inkscape's extension interpreter is user-owned state.**
    `extensions/python-interpreter` in `preferences.xml` is a global Inkscape
@@ -470,51 +480,27 @@ directory and report the conflict.
 
 ## User experience
 
-### File -> Open browser (new dialog)
+### File -> Open browser (implemented)
 
-The current `EmbroideryOpenDialog` is a simple directory/file picker. The new
-goal is a first-class browser with previews for every supported file type. It
-is developed in parallel and selected by a setting:
+`OpenBrowserDialog` is the primary **File -> Open** experience. It provides
+directory navigation, recent locations and favorites, list/grid/details views,
+filters and search, plus embroidery, CSV and SVG previews. The previous
+embroidery-only picker remains available separately; the proposed
+`ui.open_dialog` toggle was not implemented.
 
-```toml
-[ui]
-open_dialog = "classic"   # classic | browser
-```
+The browser watches the current directory and refreshes its listing when
+changes are reported or the window regains focus. A Refresh button and
+`Ctrl+R` provide a fallback for filesystems that do not report changes
+reliably.
 
-Requirements:
+Its file-list context menu keeps thumbnail rotation first, followed by
+file-only Copy, Move, and Paste. The pending operation is local to the dialog
+and clears when a new dialog is opened. A transfer includes an existing
+thumbnail and a matching supported palette sidecar. Before writing, it checks
+the whole destination batch; conflicts are listed together and the user either
+replaces all or cancels without changes. Transfer errors trigger rollback.
 
-- Directory tree or breadcrumb navigation, recent directories, and favorites.
-- List/grid view with thumbnails, file name, type, size, modified time, and
-  stitch/thread counts when available.
-- Large preview pane showing:
-  - a rendered stitch preview for embroidery files,
-  - a vector thumbnail and optional stitch preview for `.svg`,
-  - a stitch preview and metadata for `.csv`,
-  - a generic placeholder for unsupported files.
-- Filter chips or a type filter, plus a text search field.
-- Keyboard navigation: arrows, Enter to open, Space to preview, Esc to cancel.
-- Multi-select where it makes sense; opening multiple files remains a separate
-  feature.
-- "Edit in Inkscape" action for `.svg` files, next to "Open" and "Preview".
-- Background thumbnail generation with a bounded worker pool, cancellation
-  when the selection changes, and disk caching.
-- Thumbnail cache key: absolute path, size, mtime, and a renderer/version
-  token. Store under the user cache directory, not in the source folder.
-- No blocking of the UI while Inkscape or Ink/Stitch is running. Show a
-  placeholder and a progress indicator, with a cancel option.
-- Graceful degradation when Inkscape or Ink/Stitch is missing: show the vector
-  thumbnail, disable stitch preview, and explain why.
-
-Implementation options:
-
-- A custom `QDialog` with `QFileSystemModel`, a custom proxy model for filters,
-  `QTreeView`/`QListView`, and a preview pane. This gives full control.
-- A non-native `QFileDialog` with a custom sidebar and preview widget. This
-  keeps some platform behavior but is harder to extend.
-
-Recommendation: custom dialog with a model/view architecture. Keep all
-thumbnail and conversion work in worker threads and reuse the existing
-embroidery preview code where possible.
+See [the user guide](../user-guide.md#opening-files) for user-facing steps.
 
 ### Opening an `.svg`
 
@@ -637,7 +623,11 @@ Reconnect after an InkSim restart:
   clean up according to the TTL policy.
 - Never reconnect automatically to an untagged Inkscape instance.
 
-## Module layout
+## Proposed module layout
+
+This is the target layout for the broader integration, not an inventory of
+current files. The browser currently lives in `gui/open_dialog.py`, and the
+thumbnail pipeline in `render/thumbnails.py`.
 
 ```text
 src/inksim/integration/
@@ -660,7 +650,7 @@ src/inksim/extension/ # bundled into the wheel as package data
 src/inksim/gui/
     inkscape_dialog.py   # rewritten status/configuration dialog
     svg_open_dialog.py   # preview / edit / both chooser
-    open_browser.py      # new File -> Open browser with thumbnails
+    open_dialog.py       # File -> Open browser with previews and file actions
     thumbnail_cache.py   # disk cache and background rendering
 ```
 
@@ -708,18 +698,18 @@ work.
 - [ ] Rewrite the Inkscape dialog with status, versions, paths, and tests.
 - [ ] Add unit tests with fake executables.
 
-### M2 - New File -> Open browser (parallel rollout)
+### M2 - File browser (implemented)
 
-- [ ] Add the `ui.open_dialog` setting with `classic` and `browser` values.
-- [ ] Build the browser shell: navigation, list/grid, filters, search, preview
-      pane, keyboard handling.
-- [ ] Add thumbnail cache and background rendering.
-- [ ] Add embroidery thumbnails and metadata.
-- [ ] Add SVG vector thumbnails and optional stitch previews.
-- [ ] Add CSV thumbnails and metadata.
-- [ ] Add graceful placeholders for unsupported or unreadable files.
-- [ ] Keep the classic dialog as the default until the browser is stable.
-- [ ] Add tests for filtering, selection, cache keys, and cancellation.
+- The browser is the primary **File -> Open** action; the embroidery-only
+  picker remains separately available. No `ui.open_dialog` setting was added.
+- The current directory refreshes on filesystem changes and window
+  activation, with a Refresh button and `Ctrl+R` as explicit fallbacks.
+- The file-list context menu supports Copy, Move, and Paste after the thumbnail
+  rotation actions. Transfers include matching palette and existing PNG
+  thumbnail sidecars, preflight all destination conflicts as one batch, and
+  roll back on transfer errors.
+- Focused tests cover refresh, transfer menu ordering, conflict handling, and
+  rollback.
 
 ### M3 - SVG open flow
 
@@ -996,8 +986,8 @@ These are easy to forget and should be tracked before the first release.
   installer; installation must be defensive.
 - Large designs can take seconds or minutes to convert; progress and
   cancellation are mandatory.
-- The new open dialog may become a large feature on its own; keep it behind a
-  setting and ship it incrementally.
+- The browser is now the primary open dialog. Keep the embroidery-only picker
+  reachable while browser workflows continue to evolve.
 - Unsaved Inkscape edits cannot be recovered after a crash; only the last
   successful snapshot/CSV is recoverable.
 - Session directories must outlive an InkSim exit so reconnect is possible,

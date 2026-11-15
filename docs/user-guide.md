@@ -19,6 +19,24 @@ files and `.svg` sources, shows a preview, and reports which external tools
 were detected. **File → Open embroidery file** keeps the previous
 embroidery-only dialog available.
 
+The browser watches the current directory and refreshes its listing when files
+change or the window regains focus. If a change is not picked up, use the
+Refresh button or press `Ctrl+R`.
+
+To copy or move files, select them in the file list and use the right-click
+menu's **Copy** or **Move** action, then navigate to the destination and choose
+**Paste** from the right-click menu. These actions transfer files only, not
+folders. A matching color-palette file and an existing PNG thumbnail are
+included when present. Copy can be pasted more than once; a successful Move
+consumes the pending operation. The pending operation is cleared when the
+dialog is opened again.
+
+Before transferring anything, InkSim checks the complete destination batch. If
+files already exist there, one prompt lists all conflicts and lets you replace
+all of them or cancel; cancel leaves the destination unchanged. If a transfer
+fails, InkSim attempts to roll it back and reports any recovery files that
+could not be removed.
+
 For an `.svg` source:
 
 - **Preview** converts the document to stitch data through Inkscape and
@@ -183,10 +201,12 @@ file; the answer is remembered as `save_palette_sidecar` (`ask`, `always` or
 `never`) and can be changed later in `File > Colors on save` or in the
 configuration file.
 
-Right-clicking a selection in the open dialog rotates the **thumbnail images**
-only — 90° left, 90° right, 180°, or back to the original orientation. The
-rotation is written into the PNG metadata next to the pixels, so updating or
-regenerating thumbnails keeps it, and the design file itself is never touched.
+Right-clicking a selection in the open dialog opens a context menu. Its
+thumbnail rotation actions come before Copy, Move, and Paste. Rotation changes
+the **thumbnail images** only — 90° left, 90° right, 180°, or back to the
+original orientation. The rotation is written into the PNG metadata next to
+the pixels, so updating or regenerating thumbnails keeps it, and the design
+file itself is never touched.
 Thumbnails keep their transparent background. The icon-only grid puts every
 icon on a neutral tile so light thread stays visible on a light theme, captions
 each cell with the name in small type, and outlines selected items, because the
