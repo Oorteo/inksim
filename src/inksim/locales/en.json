@@ -135,6 +135,58 @@
         "source": "Cancel",
         "translation": "Cancel"
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Copied {count} file(s)"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Copy files"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Moved {count} file(s)"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Move files"
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Paste files"
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Files already exist"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "File transfer failed: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "File transfer failed"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Cannot replace folders"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} ready: {count} file(s)"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "These destination files already exist:\n{files}\n\nReplace all of them?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "These files are already here."
+    },
     "dialog.open_browser.conversion_error": {
         "source": "The stitch preview process failed: {error}",
         "translation": "The stitch preview process failed: {error}"
