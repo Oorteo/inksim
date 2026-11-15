@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Culoarea acului"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Adaugă la locații"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Anulează"
@@ -144,8 +148,8 @@
         "translation": "Exportul CSV din Ink/Stitch a eșuat."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Vezi output.err pentru detalii despre eroare."
+        "source": "Full log: {path}",
+        "translation": "Jurnal complet: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Se exportă CSV-ul din Ink/Stitch..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "S-au copiat {count} fișiere"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Copiază fișierele"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Scrie un PNG de 256 px lângă fiecare model selectat (model.pes.png).\nMeniul alege dacă se reconstruiesc fișierele învechite sau toate miniaturile."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Desktop"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Culori"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Nume"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Dimensiune"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Cusături"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Dimensiune: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Documente"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Descărcări"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Editează în Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Editează calea"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Nu există fișiere compatibile în acest dosar."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Favorite"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Fă dublu clic pe dosar pentru a-i răsfoi fișierele."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Fă dublu clic pe dosar pentru a-i răsfoi fișierele."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Apasă Enter sau fă dublu clic pe dosar pentru a-i răsfoi fișierele."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Accesează"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Acasă"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Umbrire fundal pictograme ({level}, 0 = negru, 255 = alb)\nShift+rotița mouse-ului deasupra listei schimbă umbrirea."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Dimensiune pictograme ({size} px)\nCtrl+rotița mouse-ului deasupra listei redimensionează pictogramele."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Modificat: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Mută fișierele"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "S-au mutat {count} fișiere"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Fișierul nu este un fișier de broderie valid"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Deschide fișierul de broderie selectat."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Culori…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Încarcă culorile firelor dintr-un fișier de paletă sau dintr-un alt model.\nAcestea sunt păstrate lângă acest fișier ca <name>.edr, deoarece acest format\nnu poate stoca culori."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Acest fișier stochează deja propriile culori pentru fire."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Lipește fișierele"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Introdu sau lipește calea unui dosar"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Locații"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— alege un director —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Reîmprospătează"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Reîmprospătează acest dosar (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Elimină din favorite"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Rotește miniatura cu 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Rotește miniatura la stânga"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Selectează un model cu miniatură pentru a o roti"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Orientare originală"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Rotește miniatura la dreapta"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "S-au rotit {count} miniaturi cu {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Caută fișiere"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Dimensiune: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Ascunde aceste extensii în fereastră.\nSepară-le cu |; lista este salvată în config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Omite"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Nu s-a putut crea un fișier temporar pentru previzualizare: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Miniaturi: {created} create, {skipped} actualizate, {failed} eșuate"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Miniaturi: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "S-a restabilit orientarea originală pentru {count} miniaturi"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Se creează miniaturile…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Deschide fișierul"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Instrumente..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Fișierele există deja"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Transferul fișierelor a eșuat: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Transferul fișierelor a eșuat"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Aceste căi de destinație există deja, inclusiv dosare care nu pot fi înlocuite cu fișiere. Nu s-a transferat nimic:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Dosarele nu pot fi înlocuite"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} este gata: {count} fișiere"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Aceste fișiere există deja la destinație:\n{files}\n\nLe înlocuiești pe toate?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Aceste fișiere sunt deja aici."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Acest tip de fișier nu poate fi deschis în InkSim."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Vizualizare"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Detalii"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Doar pictograme"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Pictograme și text"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Mărește"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Micșorează"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Alege o paletă sau un model colorat"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} nu stochează culori pentru fire."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Toate fișierele"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Fișiere de model (culori, dacă sunt stocate)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Fișiere de paletă"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Acest model stochează deja propriile culori pentru fire."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} stochează deja culori pentru acest model.\nLe înlocuiești cu {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Ține minte alegerea mea"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} nu păstrează culorile firelor.\nLe salvezi ca {name} lângă model?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Culorile firelor"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} are {available} culori, dar modelul are {blocks} blocuri de culoare.\nO folosești oricum? Ultima culoare se va repeta."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Nu s-au putut salva culorile: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Indisponibil"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Creează script de depanare (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Nu s-a putut modifica setarea scriptului de depanare."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Scrie debug_inksim.sh lângă document, pentru a putea relua lansarea Inkscape."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Extensie de sistem: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Extensia utilizatorului curent (destinație instalare/actualizare): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Altă extensie a utilizatorului: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch din dosarul de extensii Inkscape s-a schimbat de la ultima configurare:\n\n{details}\n\nInkSim folosește legătura curentă. Deschide configurarea Inkscape pentru a o salva."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "dosarul nu mai există: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "indică acum către: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Niciuna"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Aplică"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Schimbi interpretorul Python pentru toate extensiile Inkscape în:\n\n{path}\n\nAceasta modifică o preferință globală Inkscape. Continui?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Cale personalizată…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Selectează un interpretor Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Opțional — doar pentru extensiile cu propriul mediu Python"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Este necesar doar pentru extensiile care cer Inkscape să le furnizeze interpretorul Python (de ex. Ink/Stitch).\nExtensiile proprii InkSim pornesc InkSim direct."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Mediul Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Nu modifica (recomandat)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Elimină setarea interpretorului"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Elimini setarea interpretorului Python din:\n\n{path}\n\nInkscape va folosi interpretorul implicit pentru toate extensiile. Continui?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Restabilește setarea anterioară"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Lansator uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Repornește Inkscape pentru a aplica noul interpretor Python."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Interpretor Python ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Configurația detectată a fost salvată în InkSim."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Configurația a rămas neschimbată, deoarece Inkscape nu a putut fi inspectat."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Executabilul Inkscape verificat: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Instalări Ink/Stitch găsite: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Legătura Ink/Stitch din dosarul de extensii Inkscape indică acum către: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Nu s-a găsit nicio instalare Ink/Stitch."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Interpretorul Python pentru extensiile Inkscape: {path} (neschimbat)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Preferința pentru interpretorul Python din Inkscape a fost eliminată."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Interpretorul Python anterior a fost restabilit: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Extensii ale utilizatorului: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Lansatorul opțional uvr este disponibil: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Lansatorul opțional uvr nu a fost găsit; preferința pentru interpretorul Inkscape a rămas neschimbată."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Alege renderer pentru cusături..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Culori la salvare"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Salvează întotdeauna paleta"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Întreabă de fiecare dată"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Formatul paletei"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Nu salva niciodată paleta"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Exportă"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Randare texturată GPU"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Încarcă paleta…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "Instrumente"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Configurare"
+        "source": "Inkscape Setup...",
+        "translation": "Configurare Inkscape..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Setări cruce ac"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Culorile din {palette} au fost salvate ca {name}"
     },
     "status.slider.color": {
         "source": "Color…",

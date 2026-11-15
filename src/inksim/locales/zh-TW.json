@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "針色"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "加入常用位置"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "取消"
@@ -144,8 +148,8 @@
         "translation": "Ink/Stitch CSV 匯出失敗。"
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "請查看 output.err 以取得錯誤詳細資訊。"
+        "source": "Full log: {path}",
+        "translation": "完整記錄：{path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "正在執行 Ink/Stitch CSV 匯出..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "已複製 {count} 個檔案"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "複製檔案"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "在每個選取的設計檔旁寫入 256 px 的 PNG 縮圖（design.pes.png）。\n選單可選擇重建過期的縮圖，或重建所有縮圖。"
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "桌面"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "顏色"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "名稱"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "大小"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "針數"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "尺寸：{width:.1f} x {height:.1f} 公釐"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "文件"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "下載"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "使用 Inkscape 編輯"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "編輯路徑"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "此資料夾中沒有支援的檔案。"
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "最愛"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "按兩下資料夾以瀏覽其中的檔案。"
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "按兩下資料夾以瀏覽其中的檔案。"
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "按 Enter 或雙擊資料夾來瀏覽裡面的檔案。"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "前往"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "首頁"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "圖示背景陰影（{level}，0 = 黑色，255 = 白色）\n在清單上按住 Shift 並滾動滑鼠滾輪可調整陰影。"
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "圖示大小（{size} px）\n在清單上按住 Ctrl 並滾動滑鼠滾輪可縮放圖示。"
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "修改時間：{time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "移動檔案"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "已移動 {count} 個檔案"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "不是有效的刺繡檔案"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "開啟選取的刺繡檔案。"
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "線色…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "從色票檔或其他設計檔載入線色。\n線色會以 <name>.edr 檔案儲存在此檔案旁，因為這種格式\n無法自行儲存線色。"
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "此檔案已儲存自己的線色。"
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "貼上檔案"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "輸入或貼上資料夾路徑"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "位置"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— 選擇資料夾 —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "重新整理"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "重新整理此資料夾（Ctrl+R）"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "從最愛移除"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "將縮圖旋轉 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "向左旋轉縮圖"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "選取有縮圖的設計檔才能旋轉"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "原始方向"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "向右旋轉縮圖"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "已將 {count} 個縮圖旋轉 {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "搜尋檔案"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "大小：{size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "在此對話框中隱藏這些副檔名。\n以 | 分隔，清單會儲存在 config.toml。"
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "略過"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "無法建立暫存預覽檔案：{error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "縮圖：建立 {created} 個、{skipped} 個已是最新、{failed} 個失敗"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "縮圖：{done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "已還原 {count} 個縮圖的原始方向"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "正在建立縮圖…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "開啟檔案"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "工具..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "檔案已存在"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "檔案傳輸失敗：{error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "檔案傳輸失敗"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "以下目的地路徑已存在，其中包含無法以檔案取代的資料夾。沒有任何檔案被傳輸：\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "無法取代資料夾"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation}準備就緒：{count} 個檔案"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "以下目的地檔案已存在：\n{files}\n\n要全部取代嗎？"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "這些檔案已經在這裡了。"
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "InkSim 無法開啟此檔案類型。"
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "檢視"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "詳細資料"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "僅圖示"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "圖示和文字"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "放大"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "縮小"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "選擇色票或有線色的設計檔"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} 沒有儲存任何線色。"
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "所有檔案"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "設計檔（若有儲存線色）"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "色票檔"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "此設計檔已儲存自己的線色。"
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} 已為此設計檔儲存線色。\n要用 {target} 取代嗎？"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "記住我的選擇"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} 不會儲存線色。\n要將線色存成 {name}，放在設計檔旁邊嗎？"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "線色"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} 有 {available} 種顏色，但此設計有 {blocks} 個顏色區塊。\n還是要使用嗎？最後一種顏色會重複使用。"
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "無法儲存線色：{error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "無法使用"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "建立除錯指令檔（debug_inksim.sh）"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "無法變更除錯指令檔設定。"
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "在文件旁寫入 debug_inksim.sh，以便重現 Inkscape 的啟動方式。"
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "系統擴充功能：{path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "目前的使用者擴充功能（安裝／更新目標）：{path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "其他使用者的擴充功能：{path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "自上次設定後，Inkscape 擴充功能資料夾中的 Ink/Stitch 已變更：\n\n{details}\n\nInkSim 會使用目前的連結。開啟 Inkscape 設定以儲存此連結。"
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "資料夾已不存在：{path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "目前指向：{path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "無"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "套用"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "要將所有 Inkscape 擴充功能的 Python 解譯器變更為：\n\n{path}\n\n這會變更 Inkscape 的全域偏好設定。要繼續嗎？"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "自訂路徑…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "選擇 Python 解譯器"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "選填 — 僅適用於有自己 Python 環境的擴充功能"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "只有需要 Inkscape 提供 Python 解譯器的擴充功能才需要此設定（例如 Ink/Stitch）。\nInkSim 自己的擴充功能會直接啟動 InkSim。"
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch 環境（{path}）"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "不變更（建議）"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "移除解譯器設定"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "要從以下位置移除 Python 解譯器設定嗎？\n\n{path}\n\nInkscape 會對所有擴充功能改用預設解譯器。要繼續嗎？"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "還原先前設定"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr 啟動程式（{path}）"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "請重新啟動 Inkscape 以套用新的 Python 解譯器。"
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python 解譯器（{file}）：{path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "已將偵測到的設定儲存至 InkSim 設定。"
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "由於無法檢查 Inkscape，設定未作變更。"
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "已檢查 Inkscape 執行檔：{path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "找到的 Ink/Stitch 安裝數：{count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape 擴充功能資料夾中的 Ink/Stitch 連結目前指向：{path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "找不到 Ink/Stitch 安裝。"
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape 擴充功能的 Python 解譯器：{path}（未變更）"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "已移除 Inkscape 的 Python 解譯器偏好設定。"
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "已還原先前的 Python 解譯器：{path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "使用者擴充功能：{path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "可使用選用的 uvr 啟動程式：{path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "找不到選用的 uvr 啟動程式；Inkscape 的解譯器偏好設定未作變更。"
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "選擇針跡渲染器..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "儲存時處理線色"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "一律寫入色票"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "每次詢問"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "色票格式"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "永不寫入色票"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "導出"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU 紋理渲染"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "載入色票…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&工具"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "設定"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape 設定..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "針十字準線設定"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "已將 {palette} 的線色儲存為 {name}"
     },
     "status.slider.color": {
         "source": "Color…",

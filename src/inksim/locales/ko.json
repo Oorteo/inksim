@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "바늘 색상"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "위치에 추가"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "취소"
@@ -144,8 +148,8 @@
         "translation": "Ink/Stitch CSV 내보내기에 실패했어."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "오류 세부 정보는 output.err를 확인해."
+        "source": "Full log: {path}",
+        "translation": "전체 로그: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Ink/Stitch CSV 내보내는 중..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "파일 {count}개 복사함"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "파일 복사"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "선택한 각 디자인 파일 옆에 256 px PNG를 저장합니다(design.pes.png).\n메뉴에서 오래된 파일만 다시 만들지, 모든 썸네일을 다시 만들지 선택하세요."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "바탕 화면"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "색상"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "이름"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "크기"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "스티치"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "크기: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "문서"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "다운로드"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Inkscape에서 편집"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "경로 편집"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "이 폴더에 지원되는 파일이 없어."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "즐겨찾기"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "폴더를 두 번 클릭해 파일을 살펴봐."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "폴더를 두 번 클릭해 파일을 살펴봐."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Enter 키를 누르거나 폴더를 두 번 클릭해 파일을 살펴보세요."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "이동"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "홈"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "아이콘 배경 밝기({level}, 0 = 검정, 255 = 흰색)\n목록 위에서 Shift+휠을 움직여 밝기를 조절하세요."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "아이콘 크기({size} px)\n목록 위에서 Ctrl+휠을 움직여 아이콘 크기를 조절하세요."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "수정한 날짜: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "파일 이동"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "파일 {count}개 이동함"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "올바른 자수 파일이 아니야"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "선택한 자수 파일을 열어."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "색상…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "팔레트 파일이나 다른 디자인에서 실 색상을 불러옵니다.\n이 형식에는 색상을 저장할 수 없어 이 파일 옆에 <name>.edr로 저장됩니다."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "이 파일에는 자체 실 색상이 이미 저장되어 있습니다."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "파일 붙여넣기"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "폴더 경로를 입력하거나 붙여넣으세요"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "위치"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— 폴더 선택 —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "새로고침"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "이 폴더 새로고침(Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "즐겨찾기에서 삭제"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "썸네일 180° 회전"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "썸네일 왼쪽으로 회전"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "회전할 썸네일이 있는 디자인을 선택하세요"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "원래 방향"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "썸네일 오른쪽으로 회전"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "썸네일 {count}개를 {degrees}° 회전함"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "파일 검색"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "크기: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "대화상자에서 이 확장자를 숨깁니다.\n|로 구분하세요. 목록은 config.toml에 저장됩니다."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "제외"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "임시 미리보기 파일을 만들 수 없어: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "썸네일: {created}개 생성, {skipped}개 최신 상태, {failed}개 실패"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "썸네일: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "썸네일 {count}개의 원래 방향을 복원함"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "썸네일 만드는 중…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "파일 열기"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "도구..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "파일이 이미 있습니다"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "파일 전송 실패: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "파일 전송 실패"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "다음 대상 경로가 이미 있습니다. 파일로 바꿀 수 없는 폴더도 포함됩니다. 아무 파일도 전송되지 않았습니다:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "폴더를 바꿀 수 없습니다"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} 준비 완료: 파일 {count}개"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "다음 대상 파일이 이미 있습니다:\n{files}\n\n모두 바꿀까요?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "이 파일은 이미 여기에 있습니다."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "InkSim에서 열 수 없는 파일 형식이야."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "보기"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "자세히"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "아이콘만"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "아이콘 및 텍스트"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "확대"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "축소"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "팔레트 또는 색상이 지정된 디자인 선택"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name}에 실 색상이 저장되어 있지 않습니다."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "모든 파일"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "디자인 파일(저장된 색상 포함)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "팔레트 파일"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "이 디자인에는 자체 실 색상이 이미 저장되어 있습니다."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name}에 이 디자인의 색상이 이미 저장되어 있습니다.\n{target}(으)로 바꿀까요?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "선택 기억하기"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} 형식에는 실 색상을 저장할 수 없습니다.\n디자인 파일 옆에 {name}(으)로 저장할까요?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "실 색상"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name}에는 색상이 {available}개 있지만 디자인에는 색상 블록이 {blocks}개 있습니다.\n그래도 사용할까요? 마지막 색상이 반복됩니다."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "색상을 저장할 수 없습니다: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "사용할 수 없음"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "디버그 스크립트 만들기(debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "디버그 스크립트 설정을 변경할 수 없습니다."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Inkscape 실행 명령을 다시 실행할 수 있도록 문서 옆에 debug_inksim.sh를 작성합니다."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "시스템 확장 프로그램: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "현재 사용자 확장 프로그램(설치/업데이트 대상): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "다른 사용자 확장 프로그램: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "마지막 설정 이후 Inkscape 확장 프로그램 폴더의 Ink/Stitch가 변경되었습니다:\n\n{details}\n\nInkSim은 현재 연결을 사용합니다. Inkscape 설정을 열어 저장하세요."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "폴더가 없습니다: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "현재 다음 위치를 가리킵니다: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "없음"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "적용"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "모든 Inkscape 확장 프로그램의 Python 인터프리터를 다음으로 변경할까요?\n\n{path}\n\nInkscape의 전역 설정이 변경됩니다. 계속할까요?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "사용자 지정 경로…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Python 인터프리터 선택"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "선택 사항 — 자체 Python 환경이 있는 확장 프로그램에만 필요합니다"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Inkscape에 Python 인터프리터를 요청하는 확장 프로그램에만 필요합니다(예: Ink/Stitch).\nInkSim 자체 확장 프로그램은 InkSim을 직접 실행합니다."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch 환경({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "변경 안 함(권장)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "인터프리터 설정 삭제"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "다음 위치에서 Python 인터프리터 설정을 삭제할까요?\n\n{path}\n\nInkscape는 모든 확장 프로그램에 기본 인터프리터를 사용합니다. 계속할까요?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "이전 설정 복원"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr 실행기({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "새 Python 인터프리터를 적용하려면 Inkscape를 다시 시작해."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python 인터프리터({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "감지된 설정을 InkSim 설정에 저장했어."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Inkscape를 확인할 수 없어 설정을 변경하지 않았습니다."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "확인한 Inkscape 실행 파일: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Ink/Stitch 설치 수: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape 확장 프로그램 폴더의 Ink/Stitch 연결이 현재 다음 위치를 가리킵니다: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch 설치를 찾을 수 없어."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape 확장 프로그램 Python 인터프리터: {path}(변경하지 않음)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape의 Python 인터프리터 설정을 삭제했습니다."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "이전 Python 인터프리터를 복원했습니다: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "사용자 확장 기능: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "선택 사항인 uvr 실행기를 사용할 수 있습니다: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "선택 사항인 uvr 실행기를 찾을 수 없습니다. Inkscape 인터프리터 설정은 변경하지 않았습니다."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "스티치 렌더러 선택..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "저장 시 색상"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "항상 팔레트 저장"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "매번 묻기"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "팔레트 형식"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "팔레트 저장 안 함"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "내보내기"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU 텍스처 렌더링"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "팔레트 불러오기…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&도구"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "설정"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape 설정..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "바늘 십자선 설정"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette}의 색상을 {name}(으)로 저장함"
     },
     "status.slider.color": {
         "source": "Color…",

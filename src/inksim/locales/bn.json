@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "সুইয়ের রং"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "পছন্দের তালিকায় যোগ করুন"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "বাতিল"
@@ -144,8 +148,8 @@
         "translation": "Ink/Stitch CSV এক্সপোর্ট ব্যর্থ হয়েছে।"
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "ত্রুটির বিবরণ দেখতে output.err দেখুন।"
+        "source": "Full log: {path}",
+        "translation": "সম্পূর্ণ লগ: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Ink/Stitch CSV এক্সপোর্ট চলছে..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count}টি ফাইল কপি করা হয়েছে"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "ফাইল কপি করুন"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "নির্বাচিত প্রতিটি ডিজাইনের পাশে 256 px PNG লিখুন (design.pes.png)।\nমেনু থেকে বেছে নিন পুরোনো ফাইলগুলো, নাকি সব থাম্বনেইল নতুন করে তৈরি হবে।"
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "ডেস্কটপ"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "রং"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "নাম"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "আকার"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "সেলাই"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "আকার: {width:.1f} x {height:.1f} মিমি"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "ডকুমেন্ট"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "ডাউনলোড"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Inkscape-এ সম্পাদনা করুন"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "পথ সম্পাদনা করুন"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "এই ফোল্ডারে কোনো সমর্থিত ফাইল নেই।"
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "পছন্দের তালিকা"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "ফাইল দেখতে ফোল্ডারে ডাবল-ক্লিক করুন।"
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "ফাইল দেখতে ফোল্ডারে ডাবল-ক্লিক করুন।"
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "ফোল্ডারের ফাইল দেখতে Enter চাপুন বা ফোল্ডারে ডাবল-ক্লিক করুন।"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "যান"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "হোম"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "আইকনের পটভূমির শেড ({level}, 0 = কালো, 255 = সাদা)\nতালিকার ওপর Shift+wheel ঘোরালে শেড বদলাবে।"
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "আইকনের আকার ({size} px)\nতালিকার ওপর Ctrl+wheel ঘোরালে আইকনের আকার বদলাবে।"
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "সংশোধিত: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "ফাইল সরান"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count}টি ফাইল সরানো হয়েছে"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "এটি বৈধ এমব্রয়ডারি ফাইল নয়"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "নির্বাচিত এমব্রয়ডারি ফাইলটি খুলুন।"
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "রং…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "প্যালেট ফাইল বা অন্য ডিজাইন থেকে সুতার রং লোড করুন।\nরংগুলো এই ফাইলের পাশে <name>.edr হিসেবে রাখা হয়, কারণ\nএই ফরম্যাটে রং সংরক্ষণ করা যায় না।"
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "এই ফাইলে সুতার নিজস্ব রং সংরক্ষিত আছে।"
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "ফাইল পেস্ট করুন"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "ফোল্ডারের পথ লিখুন বা পেস্ট করুন"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "অবস্থান"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— ফোল্ডার বেছে নিন —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "রিফ্রেশ"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "এই ফোল্ডার রিফ্রেশ করুন (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "পছন্দের তালিকা থেকে সরান"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "থাম্বনেইল 180° ঘোরান"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "থাম্বনেইল বাঁ দিকে ঘোরান"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "ঘোরাতে থাম্বনেইলসহ একটি ডিজাইন নির্বাচন করুন"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "আসল অভিমুখ"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "থাম্বনেইল ডান দিকে ঘোরান"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count}টি থাম্বনেইল {degrees}° ঘোরানো হয়েছে"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ফাইল খুঁজুন"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "আকার: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "ডায়ালগে এই এক্সটেনশনগুলো দেখাবেন না।\n| দিয়ে আলাদা করুন; তালিকাটি config.toml-এ সংরক্ষিত হবে।"
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "বাদ দিন"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "অস্থায়ী প্রিভিউ ফাইল তৈরি করা যায়নি: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "থাম্বনেইল: {created}টি তৈরি, {skipped}টি হালনাগাদ আছে, {failed}টি ব্যর্থ"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "থাম্বনেইল: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "{count}টি থাম্বনেইলের আসল অভিমুখ ফিরিয়ে আনা হয়েছে"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "থাম্বনেইল তৈরি হচ্ছে…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "ফাইল খুলুন"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Tools..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "ফাইল আগে থেকেই আছে"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "ফাইল স্থানান্তর ব্যর্থ: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "ফাইল স্থানান্তর ব্যর্থ"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "গন্তব্যের এই পথগুলো আগে থেকেই আছে। এর মধ্যে এমন ফোল্ডারও রয়েছে, যেগুলো ফাইল দিয়ে প্রতিস্থাপন করা যাবে না। কিছুই স্থানান্তর করা হয়নি:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "ফোল্ডার প্রতিস্থাপন করা যাবে না"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} প্রস্তুত: {count}টি ফাইল"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "গন্তব্যে এই ফাইলগুলো আগে থেকেই আছে:\n{files}\n\nসবগুলো প্রতিস্থাপন করবেন?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "এই ফাইলগুলো এখানেই আছে।"
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "এই ফাইলের ধরন InkSim-এ খোলা যাবে না।"
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "দেখুন"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "বিস্তারিত"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "শুধু আইকন"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "আইকন ও লেখা"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "বড় করে দেখুন"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "ছোট করে দেখুন"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "একটি প্যালেট বা রঙিন ডিজাইন বেছে নিন"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name}-এ কোনো সুতার রং সংরক্ষিত নেই।"
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "সব ফাইল"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "ডিজাইন ফাইল (রং সংরক্ষিত থাকলে)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "প্যালেট ফাইল"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "এই ডিজাইনে সুতার নিজস্ব রং সংরক্ষিত আছে।"
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name}-এ এই ডিজাইনের রং আগে থেকেই সংরক্ষিত আছে।\n{target} দিয়ে প্রতিস্থাপন করবেন?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "আমার পছন্দ মনে রাখুন"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format}-এ সুতার রং সংরক্ষণ করা যায় না।\nডিজাইনের পাশে {name} নামে সংরক্ষণ করবেন?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "সুতার রং"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name}-এ {available}টি রং আছে, কিন্তু ডিজাইনে {blocks}টি রঙের ব্লক রয়েছে।\nতারপরও ব্যবহার করবেন? শেষ রংটি আবার ব্যবহার হবে।"
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "রং সংরক্ষণ করা যায়নি: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "অনুপলব্ধ"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "ডিবাগ স্ক্রিপ্ট তৈরি করুন (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "ডিবাগ স্ক্রিপ্টের সেটিং বদলানো যায়নি।"
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "ডকুমেন্টের পাশে debug_inksim.sh লিখে রাখে, যাতে Inkscape চালানোর কমান্ডটি আবার চালানো যায়।"
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "সিস্টেম এক্সটেনশন: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "বর্তমান ব্যবহারকারীর এক্সটেনশন (ইনস্টল/আপডেটের গন্তব্য): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "অন্য ব্যবহারকারীর এক্সটেনশন: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "শেষ সেটআপের পর Inkscape-এর extensions ফোল্ডারে Ink/Stitch লিংক বদলে গেছে:\n\n{details}\n\nInkSim বর্তমান লিংকটি ব্যবহার করবে। এটি সংরক্ষণ করতে Inkscape সেটআপ খুলুন।"
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "ফোল্ডারটি আর নেই: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "এখন নির্দেশ করছে: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "কোনোটিই নয়"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "প্রয়োগ করুন"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "সব Inkscape এক্সটেনশনের জন্য Python interpreter বদলে এইটি ব্যবহার করবেন?\n\n{path}\n\nএতে Inkscape-এর একটি বৈশ্বিক পছন্দ বদলাবে। চালিয়ে যাবেন?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "নিজস্ব পথ…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "একটি Python interpreter নির্বাচন করুন"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "ঐচ্ছিক — শুধু নিজস্ব Python পরিবেশ আছে এমন এক্সটেনশনের জন্য"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "শুধু যেসব এক্সটেনশন Inkscape-কে তার Python interpreter দিতে বলে, তাদেরই এটি দরকার (যেমন Ink/Stitch)।\nInkSim-এর নিজস্ব এক্সটেনশন সরাসরি InkSim চালায়।"
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch পরিবেশ ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "বদলাবেন না (প্রস্তাবিত)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "interpreter সেটিং সরান"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "এখান থেকে Python interpreter সেটিং সরাবেন?\n\n{path}\n\nInkscape প্রতিটি এক্সটেনশনের জন্য তার ডিফল্ট interpreter ব্যবহার করবে। চালিয়ে যাবেন?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "আগেরটি ফিরিয়ে আনুন"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr লঞ্চার ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "নতুন Python ইন্টারপ্রেটার প্রয়োগ করতে Inkscape পুনরায় চালু করুন।"
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python interpreter ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "শনাক্ত করা সেটআপ InkSim কনফিগারেশনে সংরক্ষণ করা হয়েছে।"
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Inkscape পরীক্ষা করা যায়নি, তাই কনফিগারেশন অপরিবর্তিত রাখা হয়েছে।"
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Inkscape এক্সিকিউটেবল পরীক্ষা করা হয়েছে: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Ink/Stitch ইনস্টলেশন পাওয়া গেছে: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape-এর extensions ফোল্ডারে Ink/Stitch লিংকটি এখন নির্দেশ করছে: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "কোনো Ink/Stitch ইনস্টলেশন পাওয়া যায়নি।"
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape এক্সটেনশনের Python interpreter: {path} (অপরিবর্তিত রাখা হয়েছে)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape-এর Python interpreter পছন্দ সরানো হয়েছে।"
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "আগের Python interpreter ফিরিয়ে আনা হয়েছে: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "ব্যবহারকারীর এক্সটেনশন: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "ঐচ্ছিক uvr লঞ্চার পাওয়া গেছে: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "ঐচ্ছিক uvr লঞ্চার পাওয়া যায়নি; Inkscape-এর interpreter পছন্দ অপরিবর্তিত রাখা হয়েছে।"
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "স্টিচ রেন্ডারার নির্বাচন করুন..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "সংরক্ষণের সময় রং"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "সবসময় প্যালেট লিখুন"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "প্রতিবার জিজ্ঞেস করুন"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "প্যালেটের ফরম্যাট"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "কখনো প্যালেট লিখবেন না"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "রপ্তানি"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU টেক্সচার্ড রেন্ডার"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "প্যালেট লোড করুন…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&সরঞ্জাম"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "কনফিগার"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape সেটআপ..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "সুই ক্রসহেয়ার সেটিংস"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette}-এর রং {name} নামে সংরক্ষণ করা হয়েছে"
     },
     "status.slider.color": {
         "source": "Color…",

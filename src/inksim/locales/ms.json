@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Warna jarum"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Tambah ke tempat"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Batal"
@@ -144,8 +148,8 @@
         "translation": "Eksport CSV Ink/Stitch gagal."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Lihat output.err untuk butiran ralat."
+        "source": "Full log: {path}",
+        "translation": "Log penuh: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Menjalankan eksport CSV Ink/Stitch..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} fail disalin"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Salin fail"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Tulis PNG 256 px di sebelah setiap reka bentuk yang dipilih (design.pes.png).\nMenu ini menentukan sama ada fail lapuk sahaja atau semua imej kecil dibina semula."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Desktop"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Warna"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Nama"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Saiz"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Jahitan"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Saiz: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Dokumen"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Muat turun"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Edit dalam Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Edit laluan"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Tiada fail yang disokong dalam folder ini."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Kegemaran"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Klik dua kali folder untuk menyemak imbas failnya."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Klik dua kali folder untuk menyemak imbas failnya."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Tekan Enter atau klik dua kali folder untuk melihat fail di dalamnya."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Pergi"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Laman utama"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Kecerahan latar belakang ikon ({level}, 0 = hitam, 255 = putih)\nShift+roda tetikus pada senarai mengubah kecerahan."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Saiz ikon ({size} px)\nCtrl+roda tetikus pada senarai mengubah saiz ikon."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Diubah suai: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Alih fail"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} fail dialihkan"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Bukan fail sulaman yang sah"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Buka fail sulaman yang dipilih."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Warna…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Muatkan warna benang daripada fail palet atau reka bentuk lain.\nWarna disimpan di sebelah fail ini sebagai <name>.edr, kerana format ini\ntidak boleh menyimpan warna."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Fail ini sudah menyimpan warna benangnya sendiri."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Tampal fail"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Masukkan atau tampal laluan folder"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Tempat"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— pilih direktori —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Muat semula"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Muat semula folder ini (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Buang daripada kegemaran"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Putar imej kecil 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Putar imej kecil ke kiri"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Pilih reka bentuk yang mempunyai imej kecil untuk memutarkannya"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Orientasi asal"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Putar imej kecil ke kanan"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} imej kecil diputar sebanyak {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Cari fail"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Saiz: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Sembunyikan sambungan ini dalam dialog.\nPisahkan dengan | dan senarai ini disimpan dalam config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Langkau"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Tidak dapat mencipta fail pratonton sementara: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Imej kecil: {created} dicipta, {skipped} terkini, {failed} gagal"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Imej kecil: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Orientasi asal bagi {count} imej kecil dipulihkan"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Mencipta imej kecil…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Buka fail"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Alat..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Fail sudah wujud"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Pemindahan fail gagal: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Pemindahan fail gagal"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Laluan destinasi ini sudah wujud, termasuk folder yang tidak boleh digantikan dengan fail. Tiada apa-apa dipindahkan:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Folder tidak boleh digantikan"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} sedia: {count} fail"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Fail destinasi ini sudah wujud:\n{files}\n\nGantikan semuanya?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Fail ini sudah berada di sini."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Jenis fail ini tidak dapat dibuka dalam InkSim."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Paparan"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Butiran"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Ikon sahaja"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Ikon & teks"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Zum masuk"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Zum keluar"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Pilih palet atau reka bentuk berwarna"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} tidak menyimpan warna benang."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Semua fail"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Fail reka bentuk (warna jika disimpan)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Fail palet"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Reka bentuk ini sudah menyimpan warna benangnya sendiri."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} sudah menyimpan warna untuk reka bentuk ini.\nGantikannya dengan {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Ingat pilihan saya"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} tidak menyimpan warna benang.\nSimpan warna sebagai {name} di sebelah reka bentuk?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Warna benang"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} mempunyai {available} warna, tetapi reka bentuk ini mempunyai {blocks} blok warna.\nTetap gunakannya? Warna terakhir akan diulang."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Tidak dapat menyimpan warna: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Tidak tersedia"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Cipta skrip nyahpepijat (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Tidak dapat mengubah tetapan skrip nyahpepijat."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Menulis debug_inksim.sh di sebelah dokumen supaya arahan Inkscape boleh dijalankan semula."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Sambungan sistem: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Sambungan pengguna semasa (sasaran pemasangan/kemas kini): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Sambungan pengguna lain: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch dalam folder sambungan Inkscape telah berubah sejak persediaan terakhir:\n\n{details}\n\nInkSim menggunakan pautan semasa. Buka persediaan Inkscape untuk menyimpannya."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "folder tiada: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "kini menunjuk ke: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Tiada"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Gunakan"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Tukar penterjemah Python untuk semua sambungan Inkscape kepada:\n\n{path}\n\nIni mengubah tetapan global Inkscape. Teruskan?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Laluan tersuai…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Pilih penterjemah Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Pilihan — hanya untuk sambungan yang mempunyai persekitaran Python sendiri"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Hanya sambungan yang meminta penterjemah Python daripada Inkscape memerlukannya (contohnya, Ink/Stitch).\nSambungan InkSim sendiri memulakan InkSim secara terus."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Persekitaran Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Jangan ubah (disyorkan)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Buang tetapan penterjemah"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Buang tetapan penterjemah Python daripada:\n\n{path}\n\nInkscape akan menggunakan penterjemah lalainya untuk setiap sambungan. Teruskan?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Pulihkan yang sebelumnya"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Pelancar uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Mulakan semula Inkscape untuk menggunakan pentafsir Python yang baharu."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Penterjemah Python ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Persediaan yang dikesan telah disimpan dalam konfigurasi InkSim."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Konfigurasi tidak diubah kerana Inkscape tidak dapat diperiksa."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Pelaksanaan Inkscape yang diperiksa: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Pemasangan Ink/Stitch ditemui: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Pautan Ink/Stitch dalam folder sambungan Inkscape kini menunjuk ke: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Tiada pemasangan Ink/Stitch ditemui."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Penterjemah Python sambungan Inkscape: {path} (tidak diubah)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Keutamaan penterjemah Python Inkscape dibuang."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Penterjemah Python sebelumnya dipulihkan: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Sambungan pengguna: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Pelancar uvr pilihan tersedia: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Pelancar uvr pilihan tidak ditemui; keutamaan penterjemah Inkscape tidak diubah."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Pilih pemapar jahitan..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Warna semasa menyimpan"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Sentiasa tulis palet"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Tanya setiap kali"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Format palet"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Jangan tulis palet"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Eksport"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Pemaparan bertekstur GPU"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Muatkan palet…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Alat"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Konfigurasi"
+        "source": "Inkscape Setup...",
+        "translation": "Persediaan Inkscape..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Tetapan palang jarum"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Warna {palette} disimpan sebagai {name}"
     },
     "status.slider.color": {
         "source": "Color…",

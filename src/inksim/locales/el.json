@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Χρώμα βελόνας"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Προσθήκη στις τοποθεσίες"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Άκυρο"
@@ -144,8 +148,8 @@
         "translation": "Η εξαγωγή CSV του Ink/Stitch απέτυχε."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Δες το output.err για λεπτομέρειες του σφάλματος."
+        "source": "Full log: {path}",
+        "translation": "Πλήρες αρχείο καταγραφής: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Εκτελείται η εξαγωγή CSV του Ink/Stitch..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Αντιγράφηκαν {count} αρχεία"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Αντιγραφή αρχείων"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Δημιουργία PNG 256 px δίπλα σε κάθε επιλεγμένο σχέδιο (design.pes.png).\nΑπό το μενού επιλέγεις αν θα δημιουργηθούν ξανά τα παλιά αρχεία ή όλες οι μικρογραφίες."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Επιφάνεια εργασίας"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Χρώματα"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Όνομα"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Μέγεθος"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Βελονιές"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Μέγεθος: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Έγγραφα"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Λήψεις"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Επεξεργασία στο Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Επεξεργασία διαδρομής"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Δεν υπάρχουν υποστηριζόμενα αρχεία σε αυτόν τον φάκελο."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Αγαπημένα"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Κάνε διπλό κλικ στον φάκελο για να δεις τα αρχεία του."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Κάνε διπλό κλικ στον φάκελο για να δεις τα αρχεία του."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Πάτησε Enter ή κάνε διπλό κλικ στον φάκελο για να δεις τα αρχεία του."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Μετάβαση"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Αρχικός φάκελος"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Σκίαση φόντου εικονιδίων ({level}, 0 = μαύρο, 255 = λευκό)\nΚράτησε πατημένο το Shift και κύλησε τον τροχό πάνω στη λίστα για να αλλάξεις τη σκίαση."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Μέγεθος εικονιδίων ({size} px)\nΚράτησε πατημένο το Ctrl και κύλησε τον τροχό πάνω στη λίστα για να αλλάξεις το μέγεθός τους."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Τροποποιήθηκε: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Μετακίνηση αρχείων"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Μετακινήθηκαν {count} αρχεία"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Δεν είναι έγκυρο αρχείο κεντήματος"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Άνοιγμα του επιλεγμένου αρχείου κεντήματος."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Χρώματα…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Φόρτωσε χρώματα νημάτων από αρχείο παλέτας ή από άλλο σχέδιο.\nΑποθηκεύονται δίπλα σε αυτό το αρχείο ως <name>.edr, επειδή αυτή η μορφή\nδεν υποστηρίζει αποθήκευση χρωμάτων."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Αυτό το αρχείο αποθηκεύει ήδη τα δικά του χρώματα νημάτων."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Επικόλληση αρχείων"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Πληκτρολόγησε ή επικόλλησε τη διαδρομή ενός φακέλου"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Τοποθεσίες"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— επιλογή φακέλου —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Ανανέωση"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Ανανέωση αυτού του φακέλου (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Αφαίρεση από τα αγαπημένα"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Περιστροφή μικρογραφίας κατά 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Περιστροφή μικρογραφίας αριστερά"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Επίλεξε ένα σχέδιο με μικρογραφία για να την περιστρέψεις"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Αρχικός προσανατολισμός"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Περιστροφή μικρογραφίας δεξιά"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Περιστράφηκαν {count} μικρογραφίες κατά {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Αναζήτηση αρχείων"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Μέγεθος: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Απόκρυψη αυτών των επεκτάσεων στο παράθυρο διαλόγου.\nΧώρισέ τες με |. Η λίστα αποθηκεύεται στο config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Παράλειψη"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Δεν ήταν δυνατή η δημιουργία προσωρινού αρχείου προεπισκόπησης: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Μικρογραφίες: {created} δημιουργήθηκαν, {skipped} ήταν ενημερωμένες, {failed} απέτυχαν"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Μικρογραφίες: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Επαναφέρθηκε ο αρχικός προσανατολισμός για {count} μικρογραφίες"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Δημιουργία μικρογραφιών…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Άνοιγμα αρχείου"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Εργαλεία..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Τα αρχεία υπάρχουν ήδη"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Η μεταφορά αρχείων απέτυχε: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Η μεταφορά αρχείων απέτυχε"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Οι παρακάτω διαδρομές προορισμού υπάρχουν ήδη, ανάμεσά τους και φάκελοι που δεν μπορούν να αντικατασταθούν από αρχεία. Δεν μεταφέρθηκε τίποτα:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Δεν είναι δυνατή η αντικατάσταση φακέλων"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "Έτοιμο για {operation}: {count} αρχεία"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Τα παρακάτω αρχεία προορισμού υπάρχουν ήδη:\n{files}\n\nΝα αντικατασταθούν όλα;"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Αυτά τα αρχεία βρίσκονται ήδη εδώ."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Δεν είναι δυνατό το άνοιγμα αυτού του τύπου αρχείου στο InkSim."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Προβολή"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Λεπτομέρειες"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Μόνο εικονίδια"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Εικονίδια και κείμενο"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Μεγέθυνση"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Σμίκρυνση"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Επίλεξε μια παλέτα ή ένα έγχρωμο σχέδιο"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "Το {name} δεν περιέχει χρώματα νημάτων."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Όλα τα αρχεία"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Αρχεία σχεδίων (αν περιέχουν χρώματα)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Αρχεία παλέτας"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Αυτό το σχέδιο αποθηκεύει ήδη τα δικά του χρώματα νημάτων."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "Το {name} αποθηκεύει ήδη χρώματα για αυτό το σχέδιο.\nΝα αντικατασταθούν με τα χρώματα του {target};"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Απομνημόνευση της επιλογής μου"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "Η μορφή {format} δεν αποθηκεύει χρώματα νημάτων.\nΝα αποθηκευτούν ως {name} δίπλα στο σχέδιο;"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Χρώματα νημάτων"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "Το {name} έχει {available} χρώματα, αλλά το σχέδιο έχει {blocks} ομάδες χρωμάτων.\nΝα χρησιμοποιηθεί παρ' όλα αυτά; Το τελευταίο χρώμα θα επαναλαμβάνεται."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Δεν ήταν δυνατή η αποθήκευση των χρωμάτων: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Μη διαθέσιμο"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Δημιουργία σεναρίου εντοπισμού σφαλμάτων (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Δεν ήταν δυνατή η αλλαγή της ρύθμισης για το σενάριο εντοπισμού σφαλμάτων."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Γράφει το debug_inksim.sh δίπλα στο έγγραφο, ώστε να μπορείς να επαναλάβεις την εκκίνηση του Inkscape."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Επέκταση συστήματος: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Τρέχουσα επέκταση χρήστη (στόχος εγκατάστασης/ενημέρωσης): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Επέκταση άλλου χρήστη: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Το Ink/Stitch στον φάκελο επεκτάσεων του Inkscape άλλαξε από την τελευταία ρύθμιση:\n\n{details}\n\nΤο InkSim χρησιμοποιεί τον τρέχοντα σύνδεσμο. Άνοιξε τη ρύθμιση του Inkscape για να τον αποθηκεύσεις."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "ο φάκελος δεν υπάρχει πλέον: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "δείχνει πλέον στο: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Καμία"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Εφαρμογή"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Να αλλάξει ο διερμηνευτής Python για όλες τις επεκτάσεις του Inkscape σε:\n\n{path}\n\nΑυτό αλλάζει μια καθολική προτίμηση του Inkscape. Συνέχεια;"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Προσαρμοσμένη διαδρομή…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Επιλογή διερμηνευτή Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Προαιρετικό — μόνο για επεκτάσεις με δικό τους περιβάλλον Python"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Χρειάζεται μόνο για επεκτάσεις που ζητούν από το Inkscape τον διερμηνευτή Python του (π.χ. το Ink/Stitch).\nΟι επεκτάσεις του InkSim εκκινούν απευθείας το InkSim."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Περιβάλλον Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Να μη γίνει αλλαγή (συνιστάται)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Αφαίρεση της ρύθμισης διερμηνευτή"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Να αφαιρεθεί η ρύθμιση διερμηνευτή Python από:\n\n{path}\n\nΤο Inkscape θα χρησιμοποιεί τον προεπιλεγμένο διερμηνευτή του για όλες τις επεκτάσεις. Συνέχεια;"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Επαναφορά προηγούμενου"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Εκκινητής uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Επανεκκίνησε το Inkscape για να εφαρμοστεί ο νέος διερμηνευτής Python."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Διερμηνευτής Python ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Η ρύθμιση που εντοπίστηκε αποθηκεύτηκε στις ρυθμίσεις του InkSim."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Η διαμόρφωση δεν άλλαξε, επειδή δεν ήταν δυνατός ο έλεγχος του Inkscape."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Εκτελέσιμο Inkscape που ελέγχθηκε: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Εγκαταστάσεις Ink/Stitch που βρέθηκαν: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Ο σύνδεσμος Ink/Stitch στον φάκελο επεκτάσεων του Inkscape δείχνει πλέον στο: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Δεν βρέθηκε εγκατάσταση Ink/Stitch."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Διερμηνευτής Python των επεκτάσεων του Inkscape: {path} (χωρίς αλλαγή)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Η προτίμηση διερμηνευτή Python του Inkscape αφαιρέθηκε."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Επαναφέρθηκε ο προηγούμενος διερμηνευτής Python: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Επεκτάσεις χρήστη: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Ο προαιρετικός εκκινητής uvr είναι διαθέσιμος: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Δεν βρέθηκε ο προαιρετικός εκκινητής uvr. Η προτίμηση διερμηνευτή του Inkscape δεν άλλαξε."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Επιλογή απόδοσης βελονιάς..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Χρώματα κατά την αποθήκευση"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Πάντα αποθήκευση της παλέτας"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Ερώτηση κάθε φορά"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Μορφή παλέτας"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Να μη γίνεται αποθήκευση της παλέτας"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Εξαγωγή"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Απόδοση με υφή GPU"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Φόρτωση παλέτας…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Εργαλεία"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Ρύθμιση"
+        "source": "Inkscape Setup...",
+        "translation": "Ρύθμιση Inkscape..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Ρυθμίσεις σταυρονήματος βελόνας"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Τα χρώματα της παλέτας {palette} αποθηκεύτηκαν ως {name}"
     },
     "status.slider.color": {
         "source": "Color…",

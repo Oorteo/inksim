@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Màu kim"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Thêm vào vị trí"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Hủy"
@@ -144,8 +148,8 @@
         "translation": "Không thể xuất CSV từ Ink/Stitch."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Xem output.err để biết chi tiết lỗi."
+        "source": "Full log: {path}",
+        "translation": "Nhật ký đầy đủ: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Đang xuất CSV từ Ink/Stitch..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Đã sao chép {count} tệp"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Sao chép tệp"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Tạo ảnh PNG 256 px bên cạnh mỗi mẫu đã chọn (design.pes.png).\nMenu cho phép chọn tạo lại tệp đã cũ hoặc tất cả ảnh thu nhỏ."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Màn hình nền"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Màu sắc"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Tên"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Kích thước"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Mũi thêu"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Kích thước: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Tài liệu"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Tệp đã tải xuống"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Chỉnh sửa bằng Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Sửa đường dẫn"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Không có tệp nào được hỗ trợ trong thư mục này."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Yêu thích"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Nhấp đúp vào thư mục để duyệt các tệp bên trong."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Nhấp đúp vào thư mục để duyệt các tệp bên trong."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Nhấn Enter hoặc nhấp đúp vào thư mục để xem các tệp bên trong."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Đi"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Thư mục chính"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Độ sáng nền biểu tượng ({level}, 0 = đen, 255 = trắng)\nGiữ Shift và cuộn chuột trên danh sách để thay đổi độ sáng."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Kích thước biểu tượng ({size} px)\nGiữ Ctrl và cuộn chuột trên danh sách để đổi kích thước biểu tượng."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Đã sửa đổi: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Di chuyển tệp"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Đã di chuyển {count} tệp"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Không phải tệp thêu hợp lệ"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Mở tệp thêu đã chọn."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Màu sắc…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Tải màu chỉ từ tệp bảng màu hoặc một mẫu khác.\nMàu được lưu bên cạnh tệp này dưới dạng <name>.edr vì định dạng này\nkhông thể tự lưu màu."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Tệp này đã lưu sẵn màu chỉ riêng."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Dán tệp"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Nhập hoặc dán đường dẫn thư mục"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Vị trí"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— chọn thư mục —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Làm mới"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Làm mới thư mục này (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Xóa khỏi mục yêu thích"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Xoay ảnh thu nhỏ 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Xoay ảnh thu nhỏ sang trái"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Chọn một mẫu có ảnh thu nhỏ để xoay"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Hướng ban đầu"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Xoay ảnh thu nhỏ sang phải"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Đã xoay {count} ảnh thu nhỏ {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Tìm tệp"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Kích thước: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Ẩn các phần mở rộng này trong hộp thoại.\nPhân tách chúng bằng |; danh sách sẽ được lưu trong config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Bỏ qua"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Không thể tạo tệp xem trước tạm thời: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Ảnh thu nhỏ: đã tạo {created}, đã cập nhật {skipped}, lỗi {failed}"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Ảnh thu nhỏ: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Đã khôi phục hướng ban đầu cho {count} ảnh thu nhỏ"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Đang tạo ảnh thu nhỏ…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Mở tệp"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Công cụ..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Tệp đã tồn tại"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Không thể chuyển tệp: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Chuyển tệp thất bại"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Các đường dẫn đích này đã tồn tại, bao gồm cả thư mục không thể thay thế bằng tệp. Không có gì được chuyển:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Không thể thay thế thư mục"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "Sẵn sàng {operation}: {count} tệp"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Các tệp đích này đã tồn tại:\n{files}\n\nThay thế tất cả chứ?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Các tệp này đã ở đây rồi."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "InkSim không thể mở loại tệp này."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Xem"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Chi tiết"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Chỉ biểu tượng"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Biểu tượng và văn bản"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Phóng to"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Thu nhỏ"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Chọn bảng màu hoặc mẫu có màu"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} không lưu màu chỉ nào."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Tất cả tệp"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Tệp mẫu (có màu nếu được lưu)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Tệp bảng màu"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Mẫu này đã lưu sẵn màu chỉ riêng."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} đã lưu màu cho mẫu này.\nThay bằng {target} chứ?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Ghi nhớ lựa chọn của tôi"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} không lưu màu chỉ.\nLưu màu thành {name} bên cạnh mẫu chứ?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Màu chỉ"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} có {available} màu nhưng mẫu có {blocks} khối màu.\nVẫn dùng chứ? Màu cuối sẽ được lặp lại."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Không thể lưu màu: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Không khả dụng"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Tạo tập lệnh gỡ lỗi (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Không thể thay đổi cài đặt tập lệnh gỡ lỗi."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Ghi debug_inksim.sh bên cạnh tài liệu để có thể chạy lại lệnh gọi Inkscape."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Phần mở rộng hệ thống: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Tiện ích mở rộng hiện tại của người dùng (đích cài đặt/cập nhật): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Phần mở rộng của người dùng khác: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch trong thư mục tiện ích mở rộng của Inkscape đã thay đổi kể từ lần thiết lập trước:\n\n{details}\n\nInkSim đang dùng liên kết hiện tại. Mở phần thiết lập Inkscape để lưu liên kết này."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "thư mục không còn tồn tại: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "hiện trỏ đến: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Không có"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Áp dụng"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Thay đổi trình thông dịch Python cho tất cả tiện ích mở rộng Inkscape thành:\n\n{path}\n\nThao tác này thay đổi tùy chọn chung của Inkscape. Tiếp tục chứ?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Đường dẫn tùy chỉnh…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Chọn trình thông dịch Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Không bắt buộc — chỉ dành cho tiện ích mở rộng có môi trường Python riêng"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Chỉ cần thiết lập này cho các tiện ích mở rộng yêu cầu Inkscape cung cấp trình thông dịch Python (ví dụ: Ink/Stitch).\nCác tiện ích mở rộng riêng của InkSim khởi chạy InkSim trực tiếp."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Môi trường Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Không thay đổi (khuyên dùng)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Xóa cài đặt trình thông dịch"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Xóa cài đặt trình thông dịch Python khỏi:\n\n{path}\n\nInkscape sẽ dùng trình thông dịch mặc định cho mọi tiện ích mở rộng. Tiếp tục chứ?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Khôi phục cài đặt trước"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Trình khởi chạy uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Khởi động lại Inkscape để áp dụng trình thông dịch Python mới."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Trình thông dịch Python ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Đã lưu thiết lập được phát hiện vào cấu hình InkSim."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Cấu hình được giữ nguyên vì không thể kiểm tra Inkscape."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Đã kiểm tra tệp thực thi Inkscape: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Số bản cài đặt Ink/Stitch được tìm thấy: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Liên kết Ink/Stitch trong thư mục tiện ích mở rộng của Inkscape hiện trỏ đến: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Không tìm thấy bản cài đặt Ink/Stitch nào."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Trình thông dịch Python cho tiện ích mở rộng Inkscape: {path} (được giữ nguyên)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Đã xóa tùy chọn trình thông dịch Python của Inkscape."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Đã khôi phục trình thông dịch Python trước đó: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Tiện ích mở rộng của người dùng: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Trình khởi chạy uvr tùy chọn hiện có: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Không tìm thấy trình khởi chạy uvr tùy chọn; tùy chọn trình thông dịch Inkscape được giữ nguyên."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Chọn trình kết xuất mũi may..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Lưu màu khi lưu tệp"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Luôn ghi bảng màu"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Luôn hỏi"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Định dạng bảng màu"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Không bao giờ ghi bảng màu"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Xuất"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Kết xuất kết cấu GPU"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Tải bảng màu…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Công cụ"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Cấu hình"
+        "source": "Inkscape Setup...",
+        "translation": "Thiết lập Inkscape..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Cài đặt chữ thập kim"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Màu của {palette} đã được lưu thành {name}"
     },
     "status.slider.color": {
         "source": "Color…",

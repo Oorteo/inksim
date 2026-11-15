@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "సూది రంగు"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "ప్రదేశాలకు జోడించు"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "రద్దు చేయి"
@@ -144,8 +148,8 @@
         "translation": "Ink/Stitch CSV ఎగుమతి విఫలమైంది."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "లోపం వివరాల కోసం output.err చూడండి."
+        "source": "Full log: {path}",
+        "translation": "పూర్తి లాగ్: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Ink/Stitch CSV ఎగుమతి నడుస్తోంది..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} ఫైల్(లు) కాపీ అయ్యాయి"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "ఫైళ్లను కాపీ చేయి"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "ఎంచుకున్న ప్రతి డిజైన్ పక్కన 256 px PNGను రాయండి (design.pes.png).\nపాత ఫైళ్లను మాత్రమేనా, లేక అన్ని థంబ్‌నెయిల్‌లను మళ్లీ నిర్మించాలా అనేది మెనూలో ఎంచుకోండి."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "డెస్క్‌టాప్"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "రంగులు"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "పేరు"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "పరిమాణం"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "కుట్టులు"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "కొలతలు: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "పత్రాలు"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "డౌన్‌లోడ్‌లు"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Inkscapeలో సవరించండి"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "మార్గాన్ని సవరించు"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "ఈ ఫోల్డర్‌లో మద్దతు ఉన్న ఫైళ్లు లేవు."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "ఇష్టమైనవి"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "ఫైళ్లను చూడటానికి ఫోల్డర్‌పై రెండుసార్లు క్లిక్ చేయండి."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "ఫైళ్లను చూడటానికి ఫోల్డర్‌పై రెండుసార్లు క్లిక్ చేయండి."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "ఫోల్డర్‌లోని ఫైళ్లను చూడటానికి Enter నొక్కండి లేదా ఫోల్డర్‌పై రెండుసార్లు క్లిక్ చేయండి."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "వెళ్లు"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "హోమ్"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "చిహ్నం నేపథ్య ఛాయ ({level}, 0 = నలుపు, 255 = తెలుపు)\nజాబితాపై Shift+వీల్ తిప్పితే ఛాయ మారుతుంది."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "చిహ్నం పరిమాణం ({size} px)\nజాబితాపై Ctrl+వీల్ తిప్పితే చిహ్నాల పరిమాణం మారుతుంది."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "మార్చిన సమయం: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "ఫైళ్లను తరలించు"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} ఫైల్(లు) తరలించబడ్డాయి"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "చెల్లుబాటు అయ్యే ఎంబ్రాయిడరీ ఫైల్ కాదు"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "ఎంచుకున్న ఎంబ్రాయిడరీ ఫైల్‌ను తెరవండి."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "రంగులు…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "పాలెట్ ఫైల్ లేదా మరో డిజైన్ నుంచి దారాల రంగులను లోడ్ చేయండి.\nఈ ఫార్మాట్‌లో రంగులను నిల్వ చేయలేము కాబట్టి, అవి ఈ ఫైల్ పక్కనే <name>.edrగా ఉంచబడతాయి."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "ఈ ఫైల్‌లో దారాల రంగులు ఇప్పటికే నిల్వ ఉన్నాయి."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "ఫైళ్లను పేస్ట్ చేయి"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "ఫోల్డర్ మార్గాన్ని నమోదు చేయండి లేదా పేస్ట్ చేయండి"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "ప్రదేశాలు"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— డైరెక్టరీని ఎంచుకోండి —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "రిఫ్రెష్ చేయి"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "ఈ ఫోల్డర్‌ను రిఫ్రెష్ చేయి (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "ఇష్టమైన వాటి నుంచి తీసివేయి"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "థంబ్‌నెయిల్‌ను 180° తిప్పు"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "థంబ్‌నెయిల్‌ను ఎడమవైపు తిప్పు"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "తిప్పడానికి థంబ్‌నెయిల్ ఉన్న డిజైన్‌ను ఎంచుకోండి"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "అసలు దిశ"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "థంబ్‌నెయిల్‌ను కుడివైపు తిప్పు"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} థంబ్‌నెయిల్(లు) {degrees}° తిప్పబడ్డాయి"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "ఫైళ్లను వెతకండి"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "పరిమాణం: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "ఈ పొడిగింపులను డైలాగ్‌లో చూపించవద్దు.\nవాటిని |తో వేరు చేయండి; ఈ జాబితా config.tomlలో నిల్వ చేయబడుతుంది."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "దాటవేయి"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "తాత్కాలిక ప్రివ్యూ ఫైల్‌ను సృష్టించలేకపోయాం: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "థంబ్‌నెయిల్‌లు: {created} సృష్టించబడ్డాయి, {skipped} తాజాగా ఉన్నాయి, {failed} విఫలమయ్యాయి"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "థంబ్‌నెయిల్‌లు: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "{count} థంబ్‌నెయిల్(ల) అసలు దిశ పునరుద్ధరించబడింది"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "థంబ్‌నెయిల్‌లు సృష్టించబడుతున్నాయి…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "ఫైల్ తెరువు"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "పరికరాలు..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "ఫైళ్లు ఇప్పటికే ఉన్నాయి"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "ఫైల్ బదిలీ విఫలమైంది: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "ఫైల్ బదిలీ విఫలమైంది"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "ఈ గమ్యస్థాన మార్గాలు ఇప్పటికే ఉన్నాయి. ఫైళ్లతో భర్తీ చేయలేని ఫోల్డర్‌లు కూడా ఉన్నాయి. ఏదీ బదిలీ కాలేదు:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "ఫోల్డర్‌లను భర్తీ చేయలేము"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation}కు సిద్ధం: {count} ఫైల్(లు)"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "ఈ గమ్యస్థాన ఫైళ్లు ఇప్పటికే ఉన్నాయి:\n{files}\n\nవీటన్నింటినీ భర్తీ చేయాలా?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "ఈ ఫైళ్లు ఇప్పటికే ఇక్కడే ఉన్నాయి."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "ఈ ఫైల్ రకాన్ని InkSimలో తెరవలేము."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "వీక్షణ"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "వివరాలు"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "చిహ్నాలు మాత్రమే"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "చిహ్నాలు మరియు వచనం"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "జూమ్ పెంచు"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "జూమ్ తగ్గించు"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "పాలెట్ లేదా రంగులున్న డిజైన్‌ను ఎంచుకోండి"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name}లో దారాల రంగులు లేవు."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "అన్ని ఫైళ్లు"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "డిజైన్ ఫైళ్లు (రంగులు నిల్వ ఉంటే)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "పాలెట్ ఫైళ్లు"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "ఈ డిజైన్‌లో దారాల రంగులు ఇప్పటికే నిల్వ ఉన్నాయి."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name}లో ఈ డిజైన్‌కు సంబంధించిన రంగులు ఇప్పటికే నిల్వ ఉన్నాయి.\nవాటిని {target}తో భర్తీ చేయాలా?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "నా ఎంపికను గుర్తుంచుకో"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format}లో దారాల రంగులు నిల్వ ఉండవు.\nవాటిని డిజైన్ పక్కన {name}గా సేవ్ చేయాలా?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "దారాల రంగులు"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name}లో {available} రంగులు ఉన్నాయి, కానీ డిజైన్‌లో {blocks} రంగు బ్లాక్‌లు ఉన్నాయి.\nఅయినా ఉపయోగించాలా? చివరి రంగు మళ్లీ ఉపయోగించబడుతుంది."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "రంగులను సేవ్ చేయలేకపోయాం: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "అందుబాటులో లేదు"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "డీబగ్ స్క్రిప్ట్ సృష్టించు (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "డీబగ్ స్క్రిప్ట్ సెట్టింగ్‌ను మార్చలేకపోయాం."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Inkscape ఆదేశాన్ని మళ్లీ అమలు చేయడానికి వీలుగా, పత్రం పక్కన debug_inksim.shను రాస్తుంది."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "సిస్టమ్ ఎక్స్‌టెన్షన్: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "ప్రస్తుత వినియోగదారు ఎక్స్‌టెన్షన్ (ఇన్‌స్టాల్/అప్‌డేట్ లక్ష్యం): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "ఇతర యూజర్ ఎక్స్‌టెన్షన్: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "చివరి సెటప్ తర్వాత Inkscape ఎక్స్‌టెన్షన్‌ల ఫోల్డర్‌లోని Ink/Stitch మారింది:\n\n{details}\n\nInkSim ప్రస్తుతం ఉన్న లింక్‌ను ఉపయోగిస్తుంది. దాన్ని సేవ్ చేయడానికి Inkscape సెటప్‌ను తెరవండి."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "ఫోల్డర్ లేదు: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "ఇప్పుడు దీనికి సూచిస్తోంది: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "ఏవీ లేవు"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "వర్తింపజేయి"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "అన్ని Inkscape ఎక్స్‌టెన్షన్‌ల కోసం Python ఇంటర్‌ప్రెటర్‌ను దీనికి మార్చాలా?\n\n{path}\n\nఇది Inkscape గ్లోబల్ ప్రాధాన్యతను మారుస్తుంది. కొనసాగించాలా?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "అనుకూల మార్గం…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Python ఇంటర్‌ప్రెటర్‌ను ఎంచుకోండి"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "ఐచ్ఛికం — తమ స్వంత Python వాతావరణం ఉన్న ఎక్స్‌టెన్షన్‌లకు మాత్రమే"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Inkscape నుంచి Python ఇంటర్‌ప్రెటర్‌ను అడిగే ఎక్స్‌టెన్షన్‌లకే ఇది అవసరం (ఉదా. Ink/Stitch).\nInkSim స్వంత ఎక్స్‌టెన్షన్‌లు InkSimను నేరుగా ప్రారంభిస్తాయి."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch వాతావరణం ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "మార్చవద్దు (సిఫార్సు చేయబడింది)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "ఇంటర్‌ప్రెటర్ సెట్టింగ్‌ను తీసివేయి"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "దీని నుంచి Python ఇంటర్‌ప్రెటర్ సెట్టింగ్‌ను తీసివేయాలా?\n\n{path}\n\nప్రతి ఎక్స్‌టెన్షన్‌కు Inkscape తన డిఫాల్ట్ ఇంటర్‌ప్రెటర్‌ను ఉపయోగిస్తుంది. కొనసాగించాలా?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "మునుపటిదాన్ని పునరుద్ధరించు"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr లాంచర్ ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "కొత్త Python ఇంటర్‌ప్రెటర్‌ను వర్తింపజేయడానికి Inkscapeను మళ్లీ ప్రారంభించండి."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python ఇంటర్‌ప్రెటర్ ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "గుర్తించిన సెటప్‌ను InkSim కాన్ఫిగరేషన్‌లో సేవ్ చేశాం."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Inkscapeను పరిశీలించలేకపోవడంతో కాన్ఫిగరేషన్‌లో ఎలాంటి మార్పు చేయలేదు."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "తనిఖీ చేసిన Inkscape ఎక్జిక్యూటబుల్: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Ink/Stitch ఇన్‌స్టాలేషన్‌లు కనుగొనబడ్డాయి: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape ఎక్స్‌టెన్షన్‌ల ఫోల్డర్‌లోని Ink/Stitch లింక్ ఇప్పుడు దీనికి సూచిస్తోంది: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch ఇన్‌స్టాలేషన్ ఏదీ కనుగొనబడలేదు."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape ఎక్స్‌టెన్షన్ Python ఇంటర్‌ప్రెటర్: {path} (మార్చలేదు)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape Python ఇంటర్‌ప్రెటర్ ప్రాధాన్యత తీసివేయబడింది."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "మునుపటి Python ఇంటర్‌ప్రెటర్ పునరుద్ధరించబడింది: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "వినియోగదారు పొడిగింపులు: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "ఐచ్ఛిక uvr లాంచర్ అందుబాటులో ఉంది: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "ఐచ్ఛిక uvr లాంచర్ కనబడలేదు; Inkscape ఇంటర్‌ప్రెటర్ ప్రాధాన్యత మార్చలేదు."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "కుట్టు రెండరర్ను ఎంచుకోండి..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "సేవ్ చేసినప్పుడు రంగులు"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "పాలెట్‌ను ఎల్లప్పుడూ రాయి"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "ప్రతిసారీ అడుగు"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "పాలెట్ ఫార్మాట్"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "పాలెట్‌ను ఎప్పుడూ రాయవద్దు"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "ఎగుమతి"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU టెక్స్చర్డ్ రెండర్"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "పాలెట్‌ను లోడ్ చేయి…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&పరికరాలు"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "కాన్ఫిగర్ చేయి"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape సెటప్..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "సూది క్రాస్హైర్ సెట్టింగ్లు"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette}లోని రంగులు {name}గా సేవ్ చేయబడ్డాయి"
     },
     "status.slider.color": {
         "source": "Color…",

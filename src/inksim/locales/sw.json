@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Rangi ya sindano"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Ongeza kwenye maeneo"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Ghairi"
@@ -144,8 +148,8 @@
         "translation": "Uhamishaji wa CSV wa Ink/Stitch umeshindwa."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Tazama output.err kwa maelezo ya hitilafu."
+        "source": "Full log: {path}",
+        "translation": "Kumbukumbu kamili: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Uhamishaji wa CSV wa Ink/Stitch unaendelea..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Imenakili faili {count}"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Nakili faili"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Andika PNG ya pikseli 256 karibu na kila muundo uliochaguliwa (design.pes.png).\nMenyu huchagua ikiwa faili zilizopitwa na wakati au vijipicha vyote vitaundwa upya."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Eneo-kazi"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Rangi"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Jina"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Ukubwa"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Mishono"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Vipimo: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Nyaraka"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Vipakuliwa"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Hariri katika Inkscape"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Hariri njia"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Hakuna faili zinazotumika kwenye folda hii."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Vipendwa"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Bofya folda mara mbili ili kuvinjari faili zake."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Bofya folda mara mbili ili kuvinjari faili zake."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Bonyeza Enter au bofya folda mara mbili ili kuona faili zake."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Nenda"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Nyumbani"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Kivuli cha mandharinyuma ya ikoni ({level}, 0 = nyeusi, 255 = nyeupe)\nSogeza gurudumu huku umeshikilia Shift juu ya orodha ili kubadilisha kivuli."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Ukubwa wa ikoni ({size} px)\nSogeza gurudumu huku umeshikilia Ctrl juu ya orodha ili kubadilisha ukubwa wa ikoni."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Ilirekebishwa: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Hamisha faili"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Imehamisha faili {count}"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Hii si faili halali ya embroidery"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Fungua faili ya embroidery iliyochaguliwa."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Rangi…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Pakia rangi za nyuzi kutoka kwenye faili ya paleti au muundo mwingine.\nHuhifadhiwa karibu na faili hii kama <name>.edr, kwa sababu umbizo hili\nhaliwezi kuhifadhi rangi lenyewe."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Faili hii tayari inahifadhi rangi zake za nyuzi."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Bandika faili"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Weka au bandika njia ya folda"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Maeneo"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— chagua saraka —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Onyesha upya"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Onyesha upya folda hii (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Ondoa kwenye vipendwa"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Zungusha kijipicha kwa 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Zungusha kijipicha kushoto"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Chagua muundo wenye kijipicha ili kukizungusha"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Mwelekeo wa asili"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Zungusha kijipicha kulia"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Vimezungusha vijipicha {count} kwa {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Tafuta faili"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Ukubwa: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Ficha viendelezi hivi kwenye dirisha hili.\nVitenganishe kwa | na orodha itahifadhiwa kwenye config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Ruka"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Imeshindwa kuunda faili ya muda ya hakikisho: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Vijipicha: {created} vimeundwa, {skipped} ni vya sasa, {failed} vimeshindwa"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Vijipicha: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Imerejesha mwelekeo wa asili wa vijipicha {count}"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Inaunda vijipicha…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Fungua faili"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Zana..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Faili tayari zipo"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Uhamishaji wa faili umeshindwa: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Uhamishaji wa faili umeshindwa"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Njia hizi za lengwa tayari zipo, zikiwemo folda ambazo haziwezi kubadilishwa na faili. Hakuna kilichohamishwa:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Haiwezi kubadilisha folda"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} iko tayari: faili {count}"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Faili hizi za lengwa tayari zipo:\n{files}\n\nUzibadilishe zote?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Faili hizi tayari ziko hapa."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Aina hii ya faili haiwezi kufunguliwa katika InkSim."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Mwonekano"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Maelezo"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Ikoni pekee"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Ikoni na maandishi"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Kuza"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Punguza"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Chagua paleti au muundo wenye rangi"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} haihifadhi rangi za nyuzi."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Faili zote"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Faili za miundo (rangi ikiwa zimehifadhiwa)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Faili za paleti"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Muundo huu tayari unahifadhi rangi zake za nyuzi."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} tayari inahifadhi rangi za muundo huu.\nUibadilishe kwa {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Kumbuka chaguo langu"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} haihifadhi rangi za nyuzi.\nUzihifadhi kama {name} karibu na muundo?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Rangi za nyuzi"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} ina rangi {available}, lakini muundo una vizuizi vya rangi {blocks}.\nUitumie hata hivyo? Rangi ya mwisho itarudiwa."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Imeshindwa kuhifadhi rangi: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Haipatikani"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Unda hati ya utatuzi (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Imeshindwa kubadilisha mpangilio wa hati ya utatuzi."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Huandika debug_inksim.sh karibu na hati ili amri ya kuanzisha Inkscape iweze kutekelezwa tena."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Kiendelezi cha mfumo: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Kiendelezi cha sasa cha mtumiaji (lengwa la kusakinisha/kusasisha): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Kiendelezi cha mtumiaji mwingine: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch kwenye folda ya viendelezi vya Inkscape imebadilika tangu usanidi wa mwisho:\n\n{details}\n\nInkSim hutumia kiungo cha sasa. Fungua usanidi wa Inkscape ili kukihifadhi."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "folda haipo tena: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "sasa inaelekeza kwenye: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Hakuna"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Tumia"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Badilisha mkalimani wa Python kwa viendelezi vyote vya Inkscape kuwa:\n\n{path}\n\nHii hubadilisha mpangilio wa jumla wa Inkscape. Uendelee?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Njia maalum…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Chagua mkalimani wa Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Si lazima — kwa viendelezi vyenye mazingira yao ya Python pekee"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Viendelezi vinavyoomba mkalimani wa Python kutoka Inkscape pekee ndivyo vinavyohitaji hii (k.m. Ink/Stitch).\nViendelezi vya InkSim huanzisha InkSim moja kwa moja."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Mazingira ya Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Usibadilishe (inapendekezwa)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Ondoa mpangilio wa mkalimani"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Ondoa mpangilio wa mkalimani wa Python kutoka:\n\n{path}\n\nInkscape itatumia mkalimani wake chaguomsingi kwa kila kiendelezi. Uendelee?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Rejesha uliotangulia"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Kizindua cha uvr ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Anzisha upya Inkscape ili kutumia kikalimani kipya cha Python."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Mkalimani wa Python ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Usanidi uliotambuliwa umehifadhiwa kwenye usanidi wa InkSim."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Usanidi haukubadilishwa kwa sababu haikuwezekana kukagua Inkscape."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Imekagua programu ya Inkscape: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Usakinishaji wa Ink/Stitch uliopatikana: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Kiungo cha Ink/Stitch kwenye folda ya viendelezi vya Inkscape sasa kinaelekeza kwenye: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Hakuna usakinishaji wa Ink/Stitch uliopatikana."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Mkalimani wa Python wa kiendelezi cha Inkscape: {path} (haujabadilishwa)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Imeondoa mapendeleo ya mkalimani wa Python ya Inkscape."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Imerejesha mkalimani wa awali wa Python: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Viendelezi vya mtumiaji: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Kizindua cha hiari cha uvr kinapatikana: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Kizindua cha hiari cha uvr hakikupatikana; mpangilio wa mkalimani wa Inkscape haukubadilishwa."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Chagua kionyeshi cha mishono..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Rangi wakati wa kuhifadhi"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Andika paleti kila wakati"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Uliza kila mara"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Umbizo la paleti"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Usiandike paleti kamwe"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Hamisha"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "Utoaji wa GPU wenye texture"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Pakia paleti…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Zana"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Sanidi"
+        "source": "Inkscape Setup...",
+        "translation": "Sanidi Inkscape..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Mipangilio ya msalaba wa sindano"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Rangi za {palette} zimehifadhiwa kama {name}"
     },
     "status.slider.color": {
         "source": "Color…",

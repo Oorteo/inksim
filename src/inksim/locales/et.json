@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "Nõela värv"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Lisa asukohtade hulka"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Loobu"
@@ -144,8 +148,8 @@
         "translation": "Ink/Stitchi CSV-eksport nurjus."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "Veateavet vaata failist output.err."
+        "source": "Full log: {path}",
+        "translation": "Täielik logi: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "Ink/Stitchi CSV-eksport käib..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Kopeeriti {count} faili"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Kopeeri failid"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Salvesta iga valitud disaini kõrvale 256 px PNG-pisipilt (design.pes.png).\nMenüüst saad valida, kas luua uuesti aegunud failid või kõik pisipildid."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Töölaud"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Värvid"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Nimi"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Suurus"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Pisted"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "Mõõtmed: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Dokumendid"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Allalaadimised"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "Muuda Inkscape'is"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Muuda asukohta"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "Selles kaustas pole toetatud faile."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Lemmikud"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "Failide sirvimiseks tee kaustal topeltklõps."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "Failide sirvimiseks tee kaustal topeltklõps."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Failide sirvimiseks vajuta Enter või tee kaustal topeltklõps."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Mine"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Kodukaust"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Ikooni tausta heledus ({level}, 0 = must, 255 = valge)\nNihuta heledust, kerides loendi kohal hiirerattaga ja hoides samal ajal Shift-klahvi all."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Ikooni suurus ({size} px)\nMuuda ikoonide suurust, kerides loendi kohal hiirerattaga ja hoides samal ajal Ctrl-klahvi all."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "Muudetud: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Teisalda failid"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Teisaldati {count} faili"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "See pole kehtiv tikandifail"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "Ava valitud tikandifail."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Värvid…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Laadi niidivärvid paletifailist või teisest disainist.\nVärvid salvestatakse selle faili kõrvale failina <name>.edr, sest see vorming\nise värve talletada ei saa."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "See fail sisaldab juba niidivärve."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Kleebi failid"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Sisesta või kleebi kausta asukoht"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Asukohad"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— vali kaust —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Värskenda"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Värskenda seda kausta (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Eemalda lemmikute hulgast"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Pööra pisipilti 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Pööra pisipilti vasakule"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Pööramiseks vali pisipildiga disain"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Algne suund"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Pööra pisipilti paremale"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Pöörati {count} pisipilti {degrees}°"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "Otsi faile"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "Suurus: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Peida need faililaiendid dialoogis.\nEralda laiendid märgiga |; loend salvestatakse faili config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Peida"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "Ajutise eelvaatefaili loomine nurjus: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Pisipildid: {created} loodud, {skipped} ajakohased, {failed} ebaõnnestus"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Pisipildid: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Taastati {count} pisipildi algne suund"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Pisipiltide loomine…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "Ava fail"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "Tööriistad..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Failid on juba olemas"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Failide ülekandmine ebaõnnestus: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Failide ülekandmine ebaõnnestus"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Järgmised sihtkohad on juba olemas, sealhulgas kaustad, mida ei saa failidega asendada. Ühtegi faili ei teisaldatud:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Kaustu ei saa asendada"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} on valmis: {count} faili"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Järgmised sihtfailid on juba olemas:\n{files}\n\nKas asendada need kõik?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Need failid on juba siin."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Seda failitüüpi ei saa InkSimis avada."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Vaade"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Üksikasjad"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Ainult ikoonid"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Ikoonid ja tekst"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "Suurenda"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "Vähenda"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Vali palett või värvidega disain"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} ei sisalda niidivärve."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Kõik failid"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Disainifailid (salvestatud värvidega)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Paletifailid"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "See disain sisaldab juba niidivärve."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} sisaldab juba selle disaini värve.\nKas asendada need failiga {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Jäta mu valik meelde"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} ei salvesta niidivärve.\nKas salvestada need disaini kõrvale faili {name}?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Niidivärvid"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} sisaldab {available} värvi, kuid disainis on {blocks} värviplokki.\nKas kasutada seda ikkagi? Viimast värvi korratakse."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Värvide salvestamine ebaõnnestus: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Pole saadaval"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Loo silumisskript (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Silumisskripti seade muutmine ebaõnnestus."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Salvestab dokumendi kõrvale faili debug_inksim.sh, et Inkscape'i käivituskäsu saaks uuesti käivitada."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "Süsteemilaiendus: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Praegune kasutaja laiendus (paigaldamise/värskendamise sihtkoht): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "Teise kasutaja laiendus: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch Inkscape'i laienduste kaustas on pärast viimast seadistamist muutunud:\n\n{details}\n\nInkSim kasutab praegust linki. Selle salvestamiseks ava Inkscape'i seadistus."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "kaust puudub: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "viitab nüüd asukohale: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "Puudub"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Rakenda"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Kas muuta kõigi Inkscape'i laienduste Pythoni interpretaatoriks:\n\n{path}\n\nSee muudab Inkscape'i üldist eelistust. Kas jätkata?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Kohandatud asukoht…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Vali Pythoni interpretaator"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Valikuline — ainult laiendustele, millel on oma Pythoni keskkond"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Seda vajavad ainult laiendused, mis küsivad Inkscape'ilt Pythoni interpretaatorit (nt Ink/Stitch).\nInkSimi enda laiendused käivitavad InkSimi otse."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitchi keskkond ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Ära muuda (soovitatav)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Eemalda interpretaatori seade"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Kas eemaldada Pythoni interpretaatori seade asukohast:\n\n{path}\n\nInkscape kasutab kõigi laienduste jaoks vaikeinterpretaatorit. Kas jätkata?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Taasta eelmine"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr-käivitaja ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "Uue Pythoni interpretaatori rakendamiseks taaskäivita Inkscape."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Pythoni interpretaator ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Leitud seadistus salvestati InkSimi seadistusse."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "Seadistust ei muudetud, sest Inkscape'i ei saanud kontrollida."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Kontrollitud Inkscape'i käivitusfail: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "Leitud Ink/Stitchi paigaldusi: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Ink/Stitchi link Inkscape'i laienduste kaustas viitab nüüd asukohale: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitchi paigaldust ei leitud."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape'i laienduste Pythoni interpretaator: {path} (jäeti muutmata)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape'i Pythoni interpretaatori eelistus eemaldati."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Taastati eelmine Pythoni interpretaator: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "Kasutaja laiendused: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Valikuline uvr-käivitaja on saadaval: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Valikulist uvr-käivitajat ei leitud; Inkscape'i interpretaatori eelistust ei muudetud."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "Vali pistete renderdaja..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Värvide salvestamine"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Salvesta palett alati"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Küsi iga kord"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Paleti vorming"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Ära salvesta paletti kunagi"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "Ekspordi"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU tekstuuriga renderdus"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Laadi palett…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&Tööriistad"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "Seadista"
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape'i seadistus..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Nõela ristjoone seaded"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Paleti {palette} värvid salvestati nimega {name}"
     },
     "status.slider.color": {
         "source": "Color…",

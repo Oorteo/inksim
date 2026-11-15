@@ -127,6 +127,10 @@
         "source": "Needle color",
         "translation": "د سوزن رنګ"
     },
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "ځایونو ته ورزیاتول"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "لغوه کول"
@@ -144,8 +148,8 @@
         "translation": "د Ink/Stitch د CSV صادرول ناکام شول."
     },
     "dialog.open_browser.conversion_hint": {
-        "source": "See output.err for the error details.",
-        "translation": "د تېروتنې د جزیاتو لپاره output.err وګورئ."
+        "source": "Full log: {path}",
+        "translation": "بشپړ لاګ: {path}"
     },
     "dialog.open_browser.conversion_timeout": {
         "source": "Stitch preview timed out.",
@@ -155,9 +159,49 @@
         "source": "Running Ink/Stitch CSV export...",
         "translation": "د Ink/Stitch د CSV صادرول روان دي..."
     },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} فایلونه کاپي شول"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "فایلونه کاپي کول"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "د هر ټاکل شوي ډیزاین ترڅنګ ۲۵۶ پېکسله PNG ولیکئ (design.pes.png).\nمېنو ټاکي چې زړېدلي فایلونه بیا جوړ شي که ټول تمبیلونه."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "ډېسکټاپ"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "رنګونه"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "نوم"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "اندازه"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "ګنډنې"
+    },
     "dialog.open_browser.dimensions": {
         "source": "Size: {width:.1f} x {height:.1f} mm",
         "translation": "اندازه: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "اسناد"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "ډاونلوډونه"
     },
     "dialog.open_browser.edit_hint": {
         "source": "Open this SVG in a new Inkscape window.",
@@ -167,9 +211,17 @@
         "source": "Edit in Inkscape",
         "translation": "په Inkscape کې سمون"
     },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "لاره سمول"
+    },
     "dialog.open_browser.empty": {
         "source": "No supported files in this folder.",
         "translation": "په دې پوښۍ کې د ملاتړ وړ فایلونه نشته."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "خوښې"
     },
     "dialog.open_browser.file_read_failed": {
         "source": "Cannot read this file: {error}",
@@ -208,8 +260,24 @@
         "translation": "د فایلونو د لټون لپاره پر پوښۍ دوه ځله کلیک وکړئ."
     },
     "dialog.open_browser.folder_open_hint": {
-        "source": "Double-click the folder to browse its files.",
-        "translation": "د فایلونو د لټون لپاره پر پوښۍ دوه ځله کلیک وکړئ."
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "د فایلونو د کتلو لپاره Enter کېکاږئ یا پر پوښۍ دوه ځله کلیک وکړئ."
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "ورشه"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "کور"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "د آیکن د شالید سیوری ({level}، ۰ = تور، ۲۵۵ = سپین)\nپر لېست د Shift+wheel په کارولو سره سیوری بدل کړئ."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "د آیکن اندازه ({size} پېکسل)\nپر لېست د Ctrl+wheel په کارولو سره د آیکن اندازه بدله کړئ."
     },
     "dialog.open_browser.inkscape_launch_failed": {
         "source": "Inkscape could not be started: {error}",
@@ -231,6 +299,14 @@
         "source": "Modified: {time}",
         "translation": "بدلون شوی: {time}"
     },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "فایلونه لېږدول"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} فایلونه ولېږدول شول"
+    },
     "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "دا د ګنډلو سمه فایل نه ده"
@@ -242,6 +318,30 @@
     "dialog.open_browser.open_hint": {
         "source": "Open the selected embroidery file.",
         "translation": "ټاکل شوې د ګنډلو فایل پرانیزئ."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "رنګونه…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "د رنګونو فایل یا بل ډیزاین څخه د تار رنګونه پورته کړئ.\nدا رنګونه د همدې فایل ترڅنګ د <name>.edr په نوم ساتل کېږي، ځکه دا بڼه\nپخپله رنګونه نه شي ساتلی."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "دا فایل د تار خپل رنګونه لري."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "فایلونه نښلول"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "د پوښۍ لاره ولیکئ یا ونښلوئ"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "ځایونه"
     },
     "dialog.open_browser.preview": {
         "source": "Preview",
@@ -267,6 +367,42 @@
         "source": "— choose directory —",
         "translation": "— پوښۍ وټاکئ —"
     },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "تازه کول"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "دا پوښۍ تازه کړئ (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "له خوښو لرې کول"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "تمبیل ۱۸۰° تاوول"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "تمبیل چپ لوري ته تاوول"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "د تاوولو لپاره هغه ډیزاین وټاکئ چې تمبیل لري"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "اصلي لوری"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "تمبیل ښي لوري ته تاوول"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} تمبیلونه {degrees}° تاو شول"
+    },
     "dialog.open_browser.search": {
         "source": "Search files",
         "translation": "فایلونه لټول"
@@ -278,6 +414,18 @@
     "dialog.open_browser.size": {
         "source": "Size: {size}",
         "translation": "اندازه: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "دا شاتاړي په کړکۍ کې پټ کړئ.\nپه | یې سره جلا کړئ؛ لېست په config.toml کې ساتل کېږي."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "سترول"
     },
     "dialog.open_browser.status.inkscape": {
         "source": "Inkscape: {path}",
@@ -331,6 +479,22 @@
         "source": "Could not create a temporary preview file: {error}",
         "translation": "د مخکتنې لنډمهالی فایل جوړ نه شو: {error}"
     },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "تمبیلونه: {created} جوړ شول، {skipped} تازه وو، {failed} ناکام شول"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "تمبیلونه: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "د {count} تمبیلونو اصلي لوری بېرته وګرځول شو"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "تمبیلونه جوړېږي…"
+    },
     "dialog.open_browser.title": {
         "source": "Open file",
         "translation": "فایل پرانیستل"
@@ -338,6 +502,38 @@
     "dialog.open_browser.tools": {
         "source": "Tools...",
         "translation": "وسایل..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "فایلونه له مخکې شته"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "د فایل لېږد ناکام شو: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "د فایل لېږد ناکام شو"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "دا د موخې لارې له مخکې شته دي، په هغو پوښیو کې هم چې د فایلونو په وسیله نه شي بدلیدای. هېڅ شی ونه لېږدول شو:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "پوښۍ نه شي بدلول کېدای"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} چمتو دی: {count} فایلونه"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "دا د موخې فایلونه له مخکې شته دي:\n{files}\n\nټول یې بدل کړئ؟"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "دا فایلونه لا دمخه دلته دي."
     },
     "dialog.open_browser.type.csv": {
         "source": "CSV stitch data",
@@ -363,6 +559,22 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "دا ډول فایل په InkSim کې نه شي پرانیستل کېدای."
     },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "ښودل"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "تفصیلات"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "یوازې آیکنونه"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "آیکنونه او متن"
+    },
     "dialog.open_browser.zoom_in": {
         "source": "Zoom in",
         "translation": "لویول"
@@ -370,6 +582,54 @@
     "dialog.open_browser.zoom_out": {
         "source": "Zoom out",
         "translation": "کوچنیول"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "د رنګونو فایل یا رنګ لرونکی ډیزاین وټاکئ"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} د تار رنګونه نه لري."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "ټول فایلونه"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "د ډیزاین فایلونه (که رنګونه ولري)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "د رنګونو فایلونه"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "دا ډیزاین د تار خپل رنګونه لري."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} د دې ډیزاین لپاره لا دمخه رنګونه لري.\nپه {target} یې بدل کړئ؟"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "زما انتخاب په یاد وساته"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} د تار رنګونه نه ساتي.\nرنګونه د ډیزاین ترڅنګ د {name} په نوم وساتو؟"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "د تار رنګونه"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} {available} رنګونه لري، خو ډیزاین {blocks} رنګیزې برخې لري.\nبیا یې هم وکاروو؟ وروستی رنګ به تکرار شي."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "رنګونه ونه ساتل شول: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
@@ -386,6 +646,18 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "شتون نه لري"
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "د ډیبګ سکریپټ جوړول (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "د ډیبګ سکریپټ تنظیم بدل نه شو."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "د سند ترڅنګ debug_inksim.sh لیکي، څو د Inkscape چلولو امر بیا وکارول شي."
     },
     "integration.inkscape.inksim_none": {
         "source": "No InkSim extension folders were found.",
@@ -423,9 +695,25 @@
         "source": "System extension: {path}",
         "translation": "د سیسټم پراختیا: {path}"
     },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "د اوسني کارن شاتاړی (د نصب/تازه کولو ځای): {path}"
+    },
     "integration.inkscape.inksim_user_other": {
         "source": "Other user extension: {path}",
         "translation": "د بل کارن پراختیا: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "د Inkscape د شاتاړونو په پوښۍ کې Ink/Stitch د وروستي تنظیم راهیسې بدل شوی دی:\n\n{details}\n\nInkSim اوسنی لینک کاروي. د ساتلو لپاره د Inkscape تنظیمات پرانیزئ."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "پوښۍ ورکه شوې ده: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "اوس دې ځای ته اشاره کوي: {path}"
     },
     "integration.inkscape.install_extensions": {
         "source": "Install / Update InkSim extensions",
@@ -446,6 +734,54 @@
     "integration.inkscape.install_none": {
         "source": "None",
         "translation": "هېڅ نه"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "پلي کول"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "د ټولو Inkscape شاتاړونو لپاره د Python ژباړن دې ته بدل کړئ:\n\n{path}\n\nدا د Inkscape یو نړیوال غوره‌توب بدلوي. دوام ورکړو؟"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "ځانګړې لاره…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "د Python ژباړن وټاکئ"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "اختیاري — یوازې د هغو شاتاړونو لپاره چې خپل Python چاپېریال لري"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "دا یوازې هغو شاتاړونو ته پکار دی چې له Inkscape څخه د Python ژباړن غواړي (لکه Ink/Stitch).\nد InkSim خپل شاتاړونه InkSim نېغ په نېغه پیلوي."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "د Ink/Stitch چاپېریال ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "بدلون مه راولئ (سپارښتنه کېږي)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "د ژباړن تنظیم لرې کول"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "د Python ژباړن تنظیم له دې ځایه لرې کړئ:\n\n{path}\n\nInkscape به د ټولو شاتاړونو لپاره خپل اصلي ژباړن وکاروي. دوام ورکړو؟"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "پخوانی بېرته راګرځول"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "د uvr چلوونکی ({path})"
     },
     "integration.inkscape.label": {
         "source": "Inkscape:",
@@ -478,6 +814,10 @@
     "integration.inkscape.python_interpreter_restart": {
         "source": "Restart Inkscape to apply the new Python interpreter.",
         "translation": "د نوي Python مفسر د پلي کولو لپاره Inkscape بیا پیل کړئ."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "د Python ژباړن ({file}): {path}"
     },
     "integration.inkscape.python_interpreter_unset": {
         "source": "not set",
@@ -515,6 +855,10 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "موندل شوی جوړښت د InkSim په تنظیماتو کې خوندي شو."
     },
+    "integration.inkscape.report.config_unchanged": {
+        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
+        "translation": "تنظیمات بدل نه شول، ځکه د Inkscape کتنه ممکنه نه وه."
+    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "د Inkscape اجرایي فایل وکتل شو: {path}"
@@ -527,9 +871,25 @@
         "source": "Ink/Stitch installations found: {count}",
         "translation": "د Ink/Stitch موندل شوې لګونې: {count}"
     },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "د Inkscape د شاتاړونو په پوښۍ کې د Ink/Stitch لینک اوس دې ځای ته اشاره کوي: {path}"
+    },
     "integration.inkscape.report.inkstitch_none": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "د Ink/Stitch هېڅ لګونه ونه موندل شوه."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "د Inkscape شاتاړونو Python ژباړن: {path} (بدل نه شو)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "د Inkscape د Python ژباړن غوره‌توب لرې شو."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "پخوانی Python ژباړن بېرته وټاکل شو: {path}"
     },
     "integration.inkscape.report.interpreter_updated": {
         "source": "Updated Python interpreter: {path}",
@@ -570,6 +930,14 @@
     "integration.inkscape.report.user_extensions": {
         "source": "User extensions: {path}",
         "translation": "د کارن غځونې: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "اختیاري uvr چلوونکی شته: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "اختیاري uvr چلوونکی ونه موندل شو؛ د Inkscape د ژباړن غوره‌توب بدل نه شو."
     },
     "integration.inkscape.report.version": {
         "source": "Inkscape version: {version}",
@@ -659,6 +1027,26 @@
         "source": "Choose stitch renderer...",
         "translation": "د ګنډې رینډرر غوره کول..."
     },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "د ساتلو پر مهال رنګونه"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "د رنګونو فایل تل لیکل"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "هر ځل پوښتل"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "د رنګونو د فایل بڼه"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "د رنګونو فایل هېڅکله نه لیکل"
+    },
     "menu.file.export": {
         "source": "Export",
         "translation": "صادرول"
@@ -682,6 +1070,10 @@
     "menu.file.gpu_textured_render": {
         "source": "GPU textured render",
         "translation": "GPU ټیکسچر رینډر"
+    },
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "د رنګونو فایل پورته کول…"
     },
     "menu.file.open_file": {
         "source": "Open...",
@@ -744,8 +1136,8 @@
         "translation": "&وسایل"
     },
     "menu.integration.locate_inkscape": {
-        "source": "Config",
-        "translation": "تنظیم"
+        "source": "Inkscape Setup...",
+        "translation": "د Inkscape تنظیمات..."
     },
     "menu.language": {
         "source": "&Language",
@@ -878,6 +1270,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "د سوزن کراس هیر ترتیبات"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "د {palette} رنګونه د {name} په نوم وساتل شول"
     },
     "status.slider.color": {
         "source": "Color…",
