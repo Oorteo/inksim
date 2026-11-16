@@ -533,9 +533,20 @@ def _install_staged_file(staged: Path, target: Path) -> None:
     except OSError as ex:
         if ex.errno not in _LINK_UNSUPPORTED_ERRNOS:
             raise
-    with staged.open("rb") as source_file, target.open("xb") as target_file:
-        shutil.copyfileobj(source_file, target_file, 1024 * 1024)
-    shutil.copystat(staged, target)
+    with staged.open("rb") as source_file:
+        target_file = target.open("xb")
+        try:
+            with target_file:
+                shutil.copyfileobj(source_file, target_file, 1024 * 1024)
+            shutil.copystat(staged, target)
+        except Exception as error:
+            try:
+                target.unlink()
+            except FileNotFoundError:
+                pass
+            except OSError as cleanup_error:
+                error.add_note(f"Could not remove incomplete copy at {target}: {cleanup_error}")
+            raise
 
 
 class OpenBrowserDialog(QDialog):
