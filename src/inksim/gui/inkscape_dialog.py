@@ -340,6 +340,29 @@ class InkscapeIntegrationDialog(QDialog):
         self.inkstitch_details_label.setWordWrap(True)
         self.inkstitch_details_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         inkstitch_layout.addWidget(self.inkstitch_details_label)
+        self.inkstitch_missing_container = QWidget(self)
+        self.inkstitch_missing_container.setObjectName("inkstitchMissing")
+        missing_layout = QHBoxLayout(self.inkstitch_missing_container)
+        missing_layout.setContentsMargins(4, 2, 4, 2)
+        missing_layout.setSpacing(8)
+        self.inkstitch_missing_icon = QLabel("\u26a0", self.inkstitch_missing_container)
+        self.inkstitch_missing_icon.setObjectName("inkstitchMissingIcon")
+        self.inkstitch_missing_icon.setFixedWidth(20)
+        self.inkstitch_missing_icon.setStyleSheet(
+            "QLabel { color: #a15c00; font-size: 18px; font-weight: bold; }"
+        )
+        missing_layout.addWidget(self.inkstitch_missing_icon)
+        self.inkstitch_missing_label = QLabel(self.inkstitch_missing_container)
+        self.inkstitch_missing_label.setObjectName("inkstitchMissingText")
+        self.inkstitch_missing_label.setWordWrap(True)
+        self.inkstitch_missing_label.setStyleSheet("QLabel { color: #8a4b00; font-weight: bold; }")
+        missing_layout.addWidget(self.inkstitch_missing_label, 1)
+        self.inkstitch_missing_container.setStyleSheet(
+            "QWidget#inkstitchMissing { background-color: #fff3cd; "
+            "border: 1px solid #d39e00; border-radius: 3px; }"
+        )
+        self.inkstitch_missing_container.hide()
+        inkstitch_layout.addWidget(self.inkstitch_missing_container)
         layout.addWidget(inkstitch_group)
 
         inksim_group, inksim_layout = create_section(
@@ -831,9 +854,16 @@ class InkscapeIntegrationDialog(QDialog):
         self.inkstitch_combo.setCurrentIndex(active_index if installations else -1)
         self.inkstitch_combo.blockSignals(False)
         if not installations:
-            self.inkstitch_details_label.setText(_("integration.inkstitch.not_found"))
+            if timed_out or error is not None:
+                # The extensions folder could not be read, so absence proves nothing.
+                self.inkstitch_missing_container.hide()
+                self.inkstitch_details_label.setText(_("integration.inkstitch.not_found"))
+            else:
+                self.inkstitch_details_label.clear()
+                self._show_missing_inkstitch()
             report_entries.append(_("integration.inkscape.report.inkstitch_none"))
         else:
+            self.inkstitch_missing_container.hide()
             self._show_inkstitch_command(active_index, persist=False)
             report_entries.append(
                 _("integration.inkscape.report.inkstitch_found").format(count=len(installations))
@@ -1135,6 +1165,17 @@ class InkscapeIntegrationDialog(QDialog):
             _("integration.inkscape.inksim_status_update").format(details="; ".join(details)),
             False,
         )
+
+    def _show_missing_inkstitch(self) -> None:
+        """Highlight that the extensions folder holds no Ink/Stitch installation."""
+        hint = _(
+            "integration.inkstitch.not_found_hint",
+            "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        )
+        self.inkstitch_missing_label.setText(f"{_('integration.inkstitch.not_found')} {hint}")
+        self.inkstitch_missing_icon.setToolTip(hint)
+        self.inkstitch_missing_icon.setAccessibleName(_("integration.inkstitch.not_found"))
+        self.inkstitch_missing_container.setVisible(True)
 
     def _show_inksim_update_status(self, status: str, is_current: bool) -> None:
         self.inksim_status_icon.setText("✓")

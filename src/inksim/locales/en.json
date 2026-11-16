@@ -1047,6 +1047,10 @@
         "source": "No Ink/Stitch installation was found.",
         "translation": "No Ink/Stitch installation was found."
     },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Install Ink/Stitch into one of the Inkscape extensions folders shown above."
+    },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",
         "translation": "Path: {path}"
