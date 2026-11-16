@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import os
 import re
+import shlex
 import shutil
 import sys
 import tempfile
@@ -149,7 +150,9 @@ class InkStitchInstallation:
 
 
 def _quote_command_token(token: str) -> str:
-    """Quote a token that contains whitespace so it round-trips through parsing."""
+    """Quote whitespace and quote characters so tokens round-trip through parsing."""
+    if "'" in token or '"' in token:
+        return shlex.quote(token)
     return f'"{token}"' if any(character.isspace() for character in token) else token
 
 
@@ -160,14 +163,15 @@ def _command_line(program: str, arguments: list[str]) -> str:
     return " ".join(_quote_command_token(token) for token in (program, *arguments))
 
 
-def _configured_program(value: str | None) -> str:
-    """Return the normalized program of a configured command line."""
+def _configured_command(value: str | None) -> tuple[str, ...]:
+    """Return a configured command with its program path normalized."""
     if not isinstance(value, str) or not value.strip():
-        return ""
+        return ()
     command = ToolInfo("Inkscape", value, "configuration").command
     if not command:
-        return ""
-    return os.path.normcase(str(Path(command[0]).expanduser().resolve()))
+        return ()
+    program = os.path.normcase(str(Path(command[0]).expanduser().resolve()))
+    return (program, *command[1:])
 
 
 class InkscapeIntegrationDialog(QDialog):
@@ -736,15 +740,17 @@ class InkscapeIntegrationDialog(QDialog):
                         " {path}",
                     ).format(path=_sanitize_path_text(str(target)))
                 )
-        current_executable = os.path.normcase(str(Path(self._probe_executable).resolve()))
-        stored_executable = (
-            _configured_program(previous_status.get("executable"))
+        current_command = _configured_command(
+            _command_line(self._probe_executable, self._probe_arguments)
+        )
+        stored_command = (
+            _configured_command(previous_status.get("executable"))
             if isinstance(previous_status, dict)
             else None
         )
         previous_active = (
             previous_status.get("active_inkstitch")
-            if isinstance(previous_status, dict) and stored_executable == current_executable
+            if isinstance(previous_status, dict) and stored_command == current_command
             else None
         )
         if isinstance(previous_active, str):
@@ -1219,11 +1225,15 @@ class InkscapeIntegrationDialog(QDialog):
         )
         if persist:
             extension_dir = str(installation.extension_dir)
+            expected_command = _configured_command(
+                _command_line(self._probe_executable, self._probe_arguments)
+            )
 
             def set_active_installation(status: Any) -> dict[str, Any]:
-                if not isinstance(status, dict) or _configured_program(
-                    status.get("executable")
-                ) != os.path.normcase(str(Path(self._probe_executable).resolve())):
+                if (
+                    not isinstance(status, dict)
+                    or _configured_command(status.get("executable")) != expected_command
+                ):
                     raise ValueError("The cached Inkscape installation status has changed.")
                 return {**status, "active_inkstitch": extension_dir}
 

@@ -27,7 +27,8 @@ def test_probe_preserves_configured_command_arguments(qtbot, tmp_path, monkeypat
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
     from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
 
-    program_path = tmp_path / "flatpak"
+    program_path = tmp_path / "O'Brien" / "flatpak"
+    program_path.parent.mkdir()
     program_path.touch()
     command = f'"{program_path}" run org.inkscape.Inkscape'
     config = Config(tmp_path / "config.toml")
@@ -53,6 +54,11 @@ def test_probe_preserves_configured_command_arguments(qtbot, tmp_path, monkeypat
     assert all(args[:2] == ["run", "org.inkscape.Inkscape"] for _, args in starts)
     saved = config.get(INKSCAPE_CONFIG_KEY)
     assert saved["executable"].endswith(" run org.inkscape.Inkscape")
+    assert ToolInfo("Inkscape", saved["executable"], "configuration").command == [
+        str(program_path.resolve()),
+        "run",
+        "org.inkscape.Inkscape",
+    ]
     dialog.close()
 
 
@@ -1637,6 +1643,13 @@ def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
         user_data / "extensions" / "inkstitch-user" / "inx" / "inkstitch_about.inx",
         system_data / "extensions" / "inkstitch-system" / "inx" / "inkstitch_alt_about.inx",
     )
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/inkscape/bin/inkscape --previous",
+            "active_inkstitch": str(system_data / "extensions" / "inkstitch-system"),
+        },
+    )
     for index, inx_path in enumerate(inx_paths):
         inx_path.parent.mkdir(parents=True)
         interpreter = ' interpreter="python"' if index == 0 else ""
@@ -1650,7 +1663,7 @@ def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
         monkeypatch,
         {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
     )
-    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape --current")
     qtbot.addWidget(dialog)
     _wait_for_probe(qtbot, dialog)
 
@@ -1667,6 +1680,15 @@ def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
     assert status["active_inkstitch"] == str(selected_installation.extension_dir)
     installation_records = {record["extension_dir"]: record for record in status["inkstitch"]}
     assert "interpreter" not in installation_records[str(inx_paths[1].parent.resolve())]
+
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {**status, "executable": "/opt/inkscape/bin/inkscape --different"},
+    )
+    dialog.inkstitch_combo.setCurrentIndex(0)
+    assert config.get(INKSCAPE_CONFIG_KEY)["active_inkstitch"] == str(
+        selected_installation.extension_dir
+    )
 
 
 def test_inkscape_dialog_reports_unresponsive_command(qtbot, tmp_path, monkeypatch):

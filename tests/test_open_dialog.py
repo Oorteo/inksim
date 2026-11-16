@@ -1026,6 +1026,42 @@ def test_copy_fallback_never_overwrites_an_existing_target(tmp_path, monkeypatch
     assert target.read_bytes() == b"existing"
 
 
+@pytest.mark.parametrize("failure_point", ["copy", "copystat"])
+def test_copy_fallback_removes_new_target_when_install_fails(tmp_path, monkeypatch, failure_point):
+    import errno
+
+    from inksim.gui.open_dialog import _install_staged_file
+
+    def unsupported_link(*_args, **_kwargs):
+        raise OSError(errno.EXDEV, "Invalid cross-device link")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.os.link", unsupported_link)
+    staged = tmp_path / "staged"
+    staged.write_bytes(b"complete contents")
+    target = tmp_path / "design.pes"
+
+    if failure_point == "copy":
+
+        def fail_copy(_source_file, target_file, _length):
+            target_file.write(b"partial contents")
+            raise OSError("copy failed")
+
+        monkeypatch.setattr("inksim.gui.open_dialog.shutil.copyfileobj", fail_copy)
+        expected_error = "copy failed"
+    else:
+
+        def fail_copystat(*_args, **_kwargs):
+            raise OSError("copystat failed")
+
+        monkeypatch.setattr("inksim.gui.open_dialog.shutil.copystat", fail_copystat)
+        expected_error = "copystat failed"
+
+    with pytest.raises(OSError, match=expected_error):
+        _install_staged_file(staged, target)
+
+    assert not target.exists()
+
+
 def test_move_transfer_removes_sources_and_clears_buffer(qtbot, tmp_path, monkeypatch):
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
     source_directory = tmp_path / "source"
