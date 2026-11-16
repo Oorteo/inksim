@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Usanidi uliotambuliwa umehifadhiwa kwenye usanidi wa InkSim."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "Usanidi haukubadilishwa kwa sababu haikuwezekana kukagua Inkscape."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Imekagua programu ya Inkscape: {path}"

@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Is-setup misjub ġie ssejvjat fil-konfigurazzjoni ta' InkSim."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "Il-konfigurazzjoni ma nbidlitx għax ma setax jiġi eżaminat Inkscape."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Eżekutibbli ta' Inkscape ċċekkjat: {path}"

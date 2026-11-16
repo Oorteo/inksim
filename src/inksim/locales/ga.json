@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Sábháladh an socrú aimsithe i gcumraíocht InkSim."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "Níor athraíodh an chumraíocht mar níorbh fhéidir Inkscape a iniúchadh."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Seiceáladh comhad inrite Inkscape: {path}"

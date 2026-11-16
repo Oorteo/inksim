@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Sazkirina hatî dîtin di mîhengên InkSim de hate tomarkirin."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "ڕێکخستنەکان وەک خۆیان مانەوە، چونکە نەکرا Inkscape بپشکنرێت."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Pelê xebatê yê Inkscape hat kontrolkirin: {path}"

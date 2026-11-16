@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "موندل شوی جوړښت د InkSim په تنظیماتو کې خوندي شو."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "تنظیمات بدل نه شول، ځکه د Inkscape کتنه ممکنه نه وه."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "د Inkscape اجرایي فایل وکتل شو: {path}"

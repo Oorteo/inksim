@@ -277,8 +277,24 @@ Inkscape auto-detection:
 
 - `shutil.which("inkscape")` on Linux.
 - Standard install locations on Windows and macOS.
+- Flatpak: `flatpak list --app --columns=application`, offered as
+  `flatpak run <application-id>` so a sandboxed Inkscape needs no wrapper
+  script.
 - Validate with `inkscape --version`.
 - Probe `--app-id-tag`, `--export-type=csv`, and `--actions` support.
+
+The configured Inkscape value is a command line, not only a path: the setup
+dialog shows it in an editable field with the detected launchers as choices,
+so launchers that need arguments (`flatpak run org.inkscape.Inkscape`, a
+wrapper script, an environment-prefixed command) can be entered directly. The
+program token is resolved to an absolute path when the dialog probes it, and
+the arguments are stored with it.
+
+A Flatpak installation reports its extensions folder inside its own config
+directory (`~/.var/app/<application-id>/config/inkscape`), which is a normal
+host path, so installing the InkSim extension works the same way. Its system
+data directory (`/app/share/inkscape`) exists only inside the sandbox and is
+reported as unavailable when the extensions there are inspected.
 
 Ink/Stitch auto-detection:
 

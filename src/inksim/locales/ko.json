@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "감지된 설정을 InkSim 설정에 저장했어."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "Inkscape를 확인할 수 없어 설정을 변경하지 않았습니다."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "확인한 Inkscape 실행 파일: {path}"

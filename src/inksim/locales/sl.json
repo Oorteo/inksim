@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Zaznana nastavitev je shranjena v konfiguracijo InkSim."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "Konfiguracija je ostala nespremenjena, ker Inkscapa ni bilo mogoče pregledati."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Preverljiva izvršna datoteka Inkscape: {path}"

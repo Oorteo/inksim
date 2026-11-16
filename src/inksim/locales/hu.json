@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Az észlelt beállítás mentve az InkSim konfigurációjába."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "A beállítás nem változott, mert az Inkscape állapotát nem sikerült ellenőrizni."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Ellenőrzött Inkscape-futtatható fájl: {path}"

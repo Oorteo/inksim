@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "دریافت شدہ سیٹ اپ InkSim کی ترتیب میں محفوظ کر دیا گیا۔"
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "ترتیب تبدیل نہیں کی گئی کیونکہ Inkscape کا معائنہ نہیں ہو سکا۔"
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Inkscape کے قابلِ اجرا پروگرام کی جانچ کی: {path}"

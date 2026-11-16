@@ -61,7 +61,13 @@ from ..integration.inkstitch import (
     inkstitch_project_python,
     link_key,
 )
-from ..integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, detect_tools
+from ..integration.paths import (
+    INKSCAPE_CONFIG_KEY,
+    ToolInfo,
+    configured_command,
+    detect_tools,
+    flatpak_inkscape_launchers,
+)
 from ..paths import _sanitize_path_text
 from .dialogs import dispose_qt_child
 
@@ -163,17 +169,6 @@ def _command_line(program: str, arguments: list[str]) -> str:
     return " ".join(_quote_command_token(token) for token in (program, *arguments))
 
 
-def _configured_command(value: str | None) -> tuple[str, ...]:
-    """Return a configured command with its program path normalized."""
-    if not isinstance(value, str) or not value.strip():
-        return ()
-    command = ToolInfo("Inkscape", value, "configuration").command
-    if not command:
-        return ()
-    program = os.path.normcase(str(Path(command[0]).expanduser().resolve()))
-    return (program, *command[1:])
-
-
 class InkscapeIntegrationDialog(QDialog):
     """Display an Inkscape executable and the extension directories it uses."""
 
@@ -232,16 +227,31 @@ class InkscapeIntegrationDialog(QDialog):
         self._preferences_file: Path | None = None
         self._interpreter_current: str | None = None
         self._interpreter_backup: str | None = None
+        self._probed_command = ""
+        self._executable_choice_cache: list[ToolInfo] | None = None
 
         application_group, application_layout = create_section(
             _("integration.inkscape.section.application", "Inkscape application"),
             "applicationSection",
         )
         program_row = QHBoxLayout()
-        self.executable_label = QLabel(self)
-        self.executable_label.setWordWrap(True)
-        self.executable_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        program_row.addWidget(self.executable_label, 1)
+        self.executable_combo = QComboBox(self)
+        self.executable_combo.setObjectName("inkscapeExecutable")
+        self.executable_combo.setEditable(True)
+        self.executable_combo.setInsertPolicy(QComboBox.NoInsert)
+        self.executable_combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.executable_combo.setToolTip(
+            _(
+                "integration.inkscape.executable_hint",
+                "Inkscape executable or a whole command line, for example"
+                ' "flatpak run org.inkscape.Inkscape". Press Enter to check it.',
+            )
+        )
+        self.executable_combo.activated.connect(self._on_executable_activated)
+        executable_edit = self.executable_combo.lineEdit()
+        if executable_edit is not None:
+            executable_edit.editingFinished.connect(self._apply_typed_executable)
+        program_row.addWidget(self.executable_combo, 1)
         self.change_button = QPushButton(_("integration.inkscape.change"), self)
         self.change_button.clicked.connect(self._choose_executable)
         program_row.addWidget(self.change_button)
@@ -249,6 +259,7 @@ class InkscapeIntegrationDialog(QDialog):
         program_details.addWidget(QLabel(_("integration.inkscape.label"), self))
         program_details.addLayout(program_row, 1)
         application_layout.addLayout(program_details)
+        self._populate_executable_choices()
         self.version_label = QLabel(
             _("integration.inkscape.version").format(
                 version=_("integration.inkscape.version_unavailable")
@@ -441,13 +452,57 @@ class InkscapeIntegrationDialog(QDialog):
         if path:
             self._set_executable(path)
 
+    def _on_executable_activated(self, index: int) -> None:
+        command = self.executable_combo.itemText(index)
+        if command:
+            self._set_executable(command)
+
+    def _apply_typed_executable(self) -> None:
+        """Probe the command line the user typed once the field loses focus."""
+        if self._is_probing:
+            return
+        command = self.executable_combo.currentText().strip()
+        if command and command != self._probed_command:
+            self._set_executable(command)
+
+    def _executable_choices(self) -> list[ToolInfo]:
+        """Return launchers the user can pick instead of typing a command."""
+        if self._executable_choice_cache is None:
+            choices: list[ToolInfo] = []
+            detected = detect_tools().inkscape
+            if detected.found:
+                choices.append(detected)
+            choices.extend(flatpak_inkscape_launchers())
+            self._executable_choice_cache = choices
+        return self._executable_choice_cache
+
+    def _populate_executable_choices(self) -> None:
+        current = self.executable_combo.currentText()
+        self.executable_combo.blockSignals(True)
+        self.executable_combo.clear()
+        seen: set[str] = set()
+        for choice in self._executable_choices():
+            command_line = choice.path or ""
+            if not command_line or command_line in seen:
+                continue
+            seen.add(command_line)
+            self.executable_combo.addItem(_sanitize_path_text(command_line))
+            self.executable_combo.setItemData(
+                self.executable_combo.count() - 1, choice.source, Qt.ToolTipRole
+            )
+        self.executable_combo.setEditText(current)
+        self.executable_combo.blockSignals(False)
+
     def _set_executable(self, executable: str | None) -> None:
         self._user_extensions_directory = None
         self._inkscape_extension_roots = ()
         self._refresh_inksim_extensions()
         self.install_extensions_button.setEnabled(False)
+        self._populate_executable_choices()
         if not executable:
-            self.executable_label.setText(_("integration.inkscape.not_found"))
+            self._probed_command = ""
+            self.executable_combo.setEditText("")
+            self.executable_combo.setPlaceholderText(_("integration.inkscape.not_found"))
             self.version_label.setText(
                 _("integration.inkscape.version").format(
                     version=_("integration.inkscape.version_unavailable")
@@ -468,7 +523,8 @@ class InkscapeIntegrationDialog(QDialog):
             self._set_report([_("integration.inkscape.report.not_found")])
             return
 
-        self.executable_label.setText(_sanitize_path_text(executable))
+        self._probed_command = _sanitize_path_text(executable)
+        self.executable_combo.setEditText(self._probed_command)
         self._start_probe(executable)
 
     def done(self, result: int) -> None:
@@ -532,7 +588,8 @@ class InkscapeIntegrationDialog(QDialog):
             return False
         self._probe_candidate_index += 1
         executable_path, arguments = self._probe_candidates[self._probe_candidate_index]
-        self.executable_label.setText(_sanitize_path_text(executable_path))
+        self._probed_command = _sanitize_path_text(executable_path)
+        self.executable_combo.setEditText(self._probed_command)
         self._start_probe_candidate(executable_path, arguments)
         return True
 
@@ -639,6 +696,7 @@ class InkscapeIntegrationDialog(QDialog):
         self._is_probing = active
         self.probe_status_label.setVisible(active)
         self.change_button.setEnabled(not active)
+        self.executable_combo.setEnabled(not active)
         if active:
             QApplication.setOverrideCursor(Qt.WaitCursor)
         else:
@@ -740,11 +798,11 @@ class InkscapeIntegrationDialog(QDialog):
                         " {path}",
                     ).format(path=_sanitize_path_text(str(target)))
                 )
-        current_command = _configured_command(
+        current_command = configured_command(
             _command_line(self._probe_executable, self._probe_arguments)
         )
         stored_command = (
-            _configured_command(previous_status.get("executable"))
+            configured_command(previous_status.get("executable"))
             if isinstance(previous_status, dict)
             else None
         )
@@ -864,7 +922,7 @@ class InkscapeIntegrationDialog(QDialog):
             if installation.interpreter is not None:
                 item["interpreter"] = installation.interpreter
             installation_data.append(item)
-        result = {
+        result: dict[str, Any] = {
             "executable": _command_line(self._probe_executable, self._probe_arguments),
             "status": (
                 "error"
@@ -873,10 +931,26 @@ class InkscapeIntegrationDialog(QDialog):
                 if installations
                 else "not_found"
             ),
-            "user_extensions": user_path,
-            "system_extensions": system_path,
-            "inkstitch": installation_data,
         }
+        if timed_out or error is not None:
+            # Keep the extension folders found by the last successful check of
+            # the same command; the command itself is always stored so a
+            # launcher that cannot be probed is not silently forgotten.
+            if isinstance(previous_status, dict) and stored_command == current_command:
+                for key in (
+                    "user_extensions",
+                    "system_extensions",
+                    "inkstitch",
+                    "active_inkstitch",
+                    "preferences_file",
+                    "python-interpretor",
+                ):
+                    if key in previous_status:
+                        result[key] = previous_status[key]
+        else:
+            result["user_extensions"] = user_path
+            result["system_extensions"] = system_path
+            result["inkstitch"] = installation_data
         if self._probe_version is not None:
             result["version"] = self._probe_version
         if preferences_file is not None:
@@ -891,25 +965,32 @@ class InkscapeIntegrationDialog(QDialog):
             result["active_inkstitch"] = str(installations[active_index].extension_dir)
         if error is not None:
             result["error"] = error
-        if timed_out or error is not None:
-            report_entries.append(_("integration.inkscape.report.config_unchanged"))
-        else:
-            try:
-                config.set(INKSCAPE_CONFIG_KEY, result)
-                report_entries.append(_("integration.inkscape.report.config_saved"))
-            except (OSError, Timeout) as ex:
-                report_entries.append(
-                    _("integration.inkscape.report.config_save_failed").format(
-                        error=_sanitize_path_text(str(ex))
-                    )
+        self._probed_command = _sanitize_path_text(result["executable"])
+        self.executable_combo.setEditText(self._probed_command)
+        try:
+            config.set(INKSCAPE_CONFIG_KEY, result)
+            report_entries.append(
+                _(
+                    "integration.inkscape.report.config_saved_incomplete",
+                    "Saved the Inkscape command, but the check failed, so the extension"
+                    " folders were not updated.",
                 )
-                QMessageBox.warning(
-                    self,
-                    _("integration.inkscape.title"),
-                    _("integration.inkscape.config_save_failed").format(
-                        error=_sanitize_path_text(str(ex))
-                    ),
+                if timed_out or error is not None
+                else _("integration.inkscape.report.config_saved")
+            )
+        except (OSError, Timeout) as ex:
+            report_entries.append(
+                _("integration.inkscape.report.config_save_failed").format(
+                    error=_sanitize_path_text(str(ex))
                 )
+            )
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _("integration.inkscape.config_save_failed").format(
+                    error=_sanitize_path_text(str(ex))
+                ),
+            )
         self._set_report(report_entries)
         self._refresh_inksim_extensions()
 
@@ -1225,14 +1306,14 @@ class InkscapeIntegrationDialog(QDialog):
         )
         if persist:
             extension_dir = str(installation.extension_dir)
-            expected_command = _configured_command(
+            expected_command = configured_command(
                 _command_line(self._probe_executable, self._probe_arguments)
             )
 
             def set_active_installation(status: Any) -> dict[str, Any]:
                 if (
                     not isinstance(status, dict)
-                    or _configured_command(status.get("executable")) != expected_command
+                    or configured_command(status.get("executable")) != expected_command
                 ):
                     raise ValueError("The cached Inkscape installation status has changed.")
                 return {**status, "active_inkstitch": extension_dir}

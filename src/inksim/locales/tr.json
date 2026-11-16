@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Bulunan kurulum InkSim yapılandırmasına kaydedildi."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "Inkscape incelenemediği için yapılandırma değiştirilmedi."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Kontrol edilen Inkscape çalıştırılabilir dosyası: {path}"
