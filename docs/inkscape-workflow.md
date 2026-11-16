@@ -23,6 +23,9 @@ alt="InkSim's open dialog with detected Inkscape and Ink/Stitch paths, file brow
 
 - Follow the clickable path breadcrumbs, or choose **Edit path**, enter or
   paste a folder path, and press **Go**.
+- The back and forward buttons walk through the folders visited in this
+  session; `Alt+Left` and `Alt+Right` do the same. The arrow up button, or
+  `Alt+Up`, opens the parent folder.
 - The **Places** panel provides common locations and drives. Use **Add to
   places** to save the current folder as a favorite; select a favorite and
   choose **Remove favorite** to remove it. The **Recent** menu returns to

@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Add to places"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Back"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Back to {folder} (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Cancel"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Press Enter or double-click the folder to browse its files."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Forward"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Forward to {folder} (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Go"
@@ -294,6 +310,22 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "This folder is not accessible."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "‹ {folder}",
+        "translation": "‹ {folder}"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Open the source folder {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "{folder} ›",
+        "translation": "{folder} ›"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Open the target folder {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -558,6 +590,10 @@
     "dialog.open_browser.unsupported": {
         "source": "This file type cannot be opened in InkSim.",
         "translation": "This file type cannot be opened in InkSim."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Open the parent folder (Alt+Up)"
     },
     "dialog.open_browser.view": {
         "source": "View",

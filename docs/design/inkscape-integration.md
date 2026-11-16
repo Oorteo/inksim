@@ -940,6 +940,10 @@ These are easy to forget and should be tracked before the first release.
 - Preflight the complete transfer batch before changing anything. If targets
   exist, ask once, list every conflict, and either replace the whole batch or
   cancel it; roll back staged changes if a file operation fails.
+- Keep the visited folders in a per-dialog history behind back and forward
+  buttons (`Alt+Left`, `Alt+Right`) plus a parent button (`Alt+Up`), and record
+  the source and target of the last transfer as jump buttons, so a user copying
+  between two folders does not have to rebuild the path each time.
 - Keep the classic dialog available until the browser passes manual testing.
 - Decide whether the browser shows unsupported files or hides them by default.
 - Provide a clear empty state and error state.
