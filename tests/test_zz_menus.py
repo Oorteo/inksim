@@ -23,12 +23,15 @@ def _close_active_modal():
 
 
 def test_probe_preserves_configured_command_arguments(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
-    from inksim.integration.paths import ToolInfo, ToolStatus
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
 
     program_path = tmp_path / "flatpak"
     program_path.touch()
     command = f'"{program_path}" run org.inkscape.Inkscape'
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
     monkeypatch.setattr(
         "inksim.gui.inkscape_dialog.detect_tools",
         lambda: ToolStatus(
@@ -48,6 +51,8 @@ def test_probe_preserves_configured_command_arguments(qtbot, tmp_path, monkeypat
     assert starts
     assert all(started_program == str(program_path.resolve()) for started_program, _args in starts)
     assert all(args[:2] == ["run", "org.inkscape.Inkscape"] for _, args in starts)
+    saved = config.get(INKSCAPE_CONFIG_KEY)
+    assert saved["executable"].endswith(" run org.inkscape.Inkscape")
     dialog.close()
 
 

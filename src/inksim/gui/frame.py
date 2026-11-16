@@ -1783,7 +1783,10 @@ class MainWindow(QMainWindow):
             if temporary_input and not was_temporary_input:
                 self._remove_temporary_file(selected_path)
             return False
-        self.document_path = None
+        if not self._is_reloading_from_disk:
+            # Replacing the design drops the source association; a reload of the
+            # same design keeps it for Save As and thumbnail naming.
+            self.document_path = None
         previous_temporary_input = self._temporary_input_path
         self._temporary_input_path = selected_path if retain_temporary_input else None
         if (

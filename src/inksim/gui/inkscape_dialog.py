@@ -148,6 +148,28 @@ class InkStitchInstallation:
         return command_path.resolve()
 
 
+def _quote_command_token(token: str) -> str:
+    """Quote a token that contains whitespace so it round-trips through parsing."""
+    return f'"{token}"' if any(character.isspace() for character in token) else token
+
+
+def _command_line(program: str, arguments: list[str]) -> str:
+    """Rebuild a command line so saved settings keep the probed arguments."""
+    if not arguments:
+        return program
+    return " ".join(_quote_command_token(token) for token in (program, *arguments))
+
+
+def _configured_program(value: str | None) -> str:
+    """Return the normalized program of a configured command line."""
+    if not isinstance(value, str) or not value.strip():
+        return ""
+    command = ToolInfo("Inkscape", value, "configuration").command
+    if not command:
+        return ""
+    return os.path.normcase(str(Path(command[0]).expanduser().resolve()))
+
+
 class InkscapeIntegrationDialog(QDialog):
     """Display an Inkscape executable and the extension directories it uses."""
 
@@ -716,9 +738,8 @@ class InkscapeIntegrationDialog(QDialog):
                 )
         current_executable = os.path.normcase(str(Path(self._probe_executable).resolve()))
         stored_executable = (
-            os.path.normcase(str(Path(previous_status["executable"]).expanduser().resolve()))
+            _configured_program(previous_status.get("executable"))
             if isinstance(previous_status, dict)
-            and isinstance(previous_status.get("executable"), str)
             else None
         )
         previous_active = (
@@ -838,7 +859,7 @@ class InkscapeIntegrationDialog(QDialog):
                 item["interpreter"] = installation.interpreter
             installation_data.append(item)
         result = {
-            "executable": self._probe_executable,
+            "executable": _command_line(self._probe_executable, self._probe_arguments),
             "status": (
                 "error"
                 if timed_out or error is not None
@@ -1200,13 +1221,8 @@ class InkscapeIntegrationDialog(QDialog):
             extension_dir = str(installation.extension_dir)
 
             def set_active_installation(status: Any) -> dict[str, Any]:
-                stored_executable = (
-                    str(Path(status["executable"]).expanduser().resolve())
-                    if isinstance(status, dict) and isinstance(status.get("executable"), str)
-                    else None
-                )
-                if not isinstance(status, dict) or os.path.normcase(
-                    stored_executable or ""
+                if not isinstance(status, dict) or _configured_program(
+                    status.get("executable")
                 ) != os.path.normcase(str(Path(self._probe_executable).resolve())):
                     raise ValueError("The cached Inkscape installation status has changed.")
                 return {**status, "active_inkstitch": extension_dir}

@@ -507,8 +507,9 @@ Before submitting a change:
 2. Run `git diff --check`.
 3. Review the complete diff and confirm that unrelated files are unchanged.
 4. Keep runtime dependencies separate from the `dev` dependency group.
-5. Give every Qt object a single owner. When an object is scheduled for
-   deletion, use `dispose_qt_child()` from `inksim.gui.dialogs` instead of
-   calling `deleteLater()` on a child that its Qt parent also destroys: the
-   parent can free the object first and the queued deferred delete then runs on
-   released memory, which aborts the process with a double free.
+5. Give every Qt object a single owner. Do not combine a Qt parent with
+   `deleteLater()`: Qt cancels a pending deferred delete when the object is
+   destroyed, but the Qt test suite aborted intermittently with a double free
+   during widget destruction while children were scheduled both ways. Detach
+   first and schedule the deletion with `dispose_qt_child()` from
+   `inksim.gui.dialogs`.

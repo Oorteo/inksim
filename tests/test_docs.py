@@ -28,7 +28,7 @@ def _slug(text: str) -> str:
     """Return the GitHub anchor of a heading."""
     plain = text.strip().lower()
     plain = re.sub(r"[^\w\s-]", "", plain)
-    return re.sub(r"\s+", "-", plain)
+    return plain.replace(" ", "-")
 
 
 def _headings(path: Path) -> set[str]:

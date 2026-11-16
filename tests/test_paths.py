@@ -3,6 +3,8 @@
 
 from pathlib import Path
 
+import pytest
+
 from inksim.paths import _sanitize_path, _unsanitize_path
 
 
@@ -19,7 +21,10 @@ def test_sanitize_path_handles_a_symlinked_home(tmp_path, monkeypatch):
     real_home = tmp_path / "real-home"
     real_home.mkdir()
     home_link = tmp_path / "home"
-    home_link.symlink_to(real_home, target_is_directory=True)
+    try:
+        home_link.symlink_to(real_home, target_is_directory=True)
+    except OSError as ex:
+        pytest.skip(f"Cannot create symbolic links here: {ex}")
     monkeypatch.setattr(Path, "home", lambda: home_link)
 
     assert _sanitize_path(real_home / "designs") == "~/designs"
