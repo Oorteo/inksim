@@ -12,7 +12,6 @@ Inkscape executable without changing the environment-based detection.
 from __future__ import annotations
 
 import os
-import shlex
 import shutil
 import sys
 from collections.abc import Sequence
@@ -29,6 +28,36 @@ _PYTHON_ENV_VARS = (
     "PYTHONPATH",
     "PYTHONSTARTUP",
 )
+
+
+def _split_command(value: str) -> list[str]:
+    """Split a command line into argv tokens.
+
+    Quotes only group characters; backslashes stay literal so Windows paths
+    such as ``C:\\Tools\\inkscape.exe`` survive unchanged.
+    """
+    tokens: list[str] = []
+    current: list[str] = []
+    quote: str | None = None
+    for character in value:
+        if quote is not None:
+            if character == quote:
+                quote = None
+            else:
+                current.append(character)
+        elif character in "\"'":
+            quote = character
+        elif character.isspace():
+            if current:
+                tokens.append("".join(current))
+                current = []
+        else:
+            current.append(character)
+    if quote is not None:
+        raise ValueError("Unterminated quote in command line")
+    if current:
+        tokens.append("".join(current))
+    return tokens
 
 
 @dataclass(frozen=True)
@@ -56,12 +85,12 @@ class ToolInfo:
             return []
         # A plain path may contain spaces; prefer it as a single program when
         # it points at an existing file.  This also covers quoted Windows paths
-        # without requiring shlex platform quirks.
+        # without relying on platform-specific tokenization.
         expanded = Path(self.path).expanduser()
         if expanded.is_file():
             return [str(expanded)]
         try:
-            return shlex.split(self.path, posix=True)
+            return _split_command(self.path)
         except ValueError:
             return [self.path]
 

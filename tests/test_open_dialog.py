@@ -7,6 +7,8 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 from inksim.gui.open_dialog import OpenBrowserDialog
 from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
 
@@ -971,6 +973,57 @@ def test_copy_transfer_includes_palette_and_thumbnail(qtbot, tmp_path, monkeypat
     assert (destination_directory / preview.name).read_bytes() == preview.read_bytes()
     assert design.is_file() and palette.is_file() and preview.is_file()
     dialog.reject()
+
+
+def test_transfer_falls_back_to_a_copy_when_hard_links_are_unsupported(
+    qtbot, tmp_path, monkeypatch
+):
+    """Copy still works on filesystems without hard links, such as FAT32."""
+    import errno
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    def unsupported_link(*_args, **_kwargs):
+        raise OSError(errno.EXDEV, "Invalid cross-device link")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.os.link", unsupported_link)
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    design = source_directory / "design.pes"
+    design.write_bytes(b"stitches")
+
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (design,))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert (destination_directory / design.name).read_bytes() == b"stitches"
+    assert design.is_file()
+    dialog.reject()
+
+
+def test_copy_fallback_never_overwrites_an_existing_target(tmp_path, monkeypatch):
+    """The copy fallback reports a conflict instead of replacing a file."""
+    import errno
+
+    from inksim.gui.open_dialog import _install_staged_file
+
+    def unsupported_link(*_args, **_kwargs):
+        raise OSError(errno.EXDEV, "Invalid cross-device link")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.os.link", unsupported_link)
+    staged = tmp_path / "staged"
+    staged.write_bytes(b"new")
+    target = tmp_path / "design.pes"
+    target.write_bytes(b"existing")
+
+    with pytest.raises(FileExistsError):
+        _install_staged_file(staged, target)
+
+    assert target.read_bytes() == b"existing"
 
 
 def test_move_transfer_removes_sources_and_clears_buffer(qtbot, tmp_path, monkeypatch):
@@ -2157,6 +2210,34 @@ def test_open_dialog_preselects_the_source_of_a_temporary_preview(qtbot, tmp_pat
     window._temporary_input_path = temporary_csv
     assert window._browser_initial_file() == design
 
+    window.close()
+
+
+def test_reload_keeps_the_source_association_but_replacement_drops_it(qtbot, tmp_path, monkeypatch):
+    """A reload of the same design keeps its source; another file replaces it."""
+    from inksim.gui.frame import MainWindow
+
+    monkeypatch.setattr(MainWindow, "_maybe_auto_check_updates", lambda self: None)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    monkeypatch.setattr(window.viewer, "load_design", lambda *args, **kwargs: True)
+    source = tmp_path / "design.svg"
+    source.write_text("<svg />", encoding="utf-8")
+    design = tmp_path / "design.pes"
+    design.write_bytes(b"")
+    replacement = tmp_path / "other.pes"
+    replacement.write_bytes(b"")
+
+    window.set_document_path(source)
+    window._is_reloading_from_disk = True
+    try:
+        assert window.open_file(str(design), precompute_density=False)
+    finally:
+        window._is_reloading_from_disk = False
+    assert window.document_path == source
+
+    assert window.open_file(str(replacement), precompute_density=False)
+    assert window.document_path is None
     window.close()
 
 

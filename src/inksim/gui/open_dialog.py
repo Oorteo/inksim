@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import errno
 import math
 import os
 import re
@@ -504,6 +505,37 @@ class SvgPreviewWidget(QWidget):
             event.accept()
             return
         super().mouseReleaseEvent(event)
+
+
+_LINK_UNSUPPORTED_ERRNOS = frozenset(
+    {
+        errno.EXDEV,
+        errno.EPERM,
+        errno.EINVAL,
+        errno.EMLINK,
+        errno.ENOSYS,
+        getattr(errno, "ENOTSUP", errno.ENOSYS),
+        getattr(errno, "EOPNOTSUPP", errno.ENOSYS),
+    }
+)
+
+
+def _install_staged_file(staged: Path, target: Path) -> None:
+    """Install a staged file without ever overwriting an existing target.
+
+    Hard links fail on filesystems that do not support them (FAT32, exFAT) and
+    across devices, so fall back to an exclusive-create copy there. A file that
+    appears at the destination still raises ``FileExistsError``.
+    """
+    try:
+        os.link(staged, target)
+        return
+    except OSError as ex:
+        if ex.errno not in _LINK_UNSUPPORTED_ERRNOS:
+            raise
+    with staged.open("rb") as source_file, target.open("xb") as target_file:
+        shutil.copyfileobj(source_file, target_file, 1024 * 1024)
+    shutil.copystat(staged, target)
 
 
 class OpenBrowserDialog(QDialog):
@@ -2223,7 +2255,7 @@ class OpenBrowserDialog(QDialog):
             for index, (source, target) in enumerate(plan):
                 staged_install = install_directory / f"{index}-{target.name}"
                 shutil.copy2(staged_sources[source], staged_install)
-                os.link(staged_install, target)
+                _install_staged_file(staged_install, target)
                 staged_install.unlink()
                 installed.append(target)
 

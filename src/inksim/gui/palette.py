@@ -183,7 +183,6 @@ def apply_palette_to_design(
 
 
 _SAVE_PALETTE_CONFIG_KEY = "save_palette_sidecar"
-_PALETTE_SUFFIXES = ("edr", "col", "inf")
 _SAVE_PALETTE_FORMAT_KEY = "save_palette_format"
 
 
