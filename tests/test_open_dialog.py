@@ -975,6 +975,112 @@ def test_copy_transfer_includes_palette_and_thumbnail(qtbot, tmp_path, monkeypat
     dialog.reject()
 
 
+def _make_directories(tmp_path: Path, *names: str) -> list[Path]:
+    directories = []
+    for name in names:
+        directory = tmp_path / name
+        directory.mkdir()
+        directories.append(directory)
+    return directories
+
+
+def test_directory_history_follows_visited_folders(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    first, second, third = _make_directories(tmp_path, "first", "second", "third")
+    dialog = OpenBrowserDialog(None, first)
+    qtbot.addWidget(dialog)
+
+    dialog.set_directory(second)
+    dialog.set_directory(third)
+    assert dialog.back_button.isEnabled()
+
+    dialog.back_button.click()
+    assert dialog.current_directory == second.resolve()
+    dialog.back_button.click()
+    assert dialog.current_directory == first.resolve()
+    assert not dialog.back_button.isEnabled()
+
+    dialog.forward_button.click()
+    assert dialog.current_directory == second.resolve()
+    dialog.forward_button.click()
+    assert dialog.current_directory == third.resolve()
+    assert not dialog.forward_button.isEnabled()
+    dialog.reject()
+
+
+def test_history_tooltips_name_the_folder_they_open(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    first, second = _make_directories(tmp_path, "first", "second")
+    dialog = OpenBrowserDialog(None, first)
+    qtbot.addWidget(dialog)
+
+    dialog.set_directory(second)
+    dialog.back_button.click()
+
+    assert "Forward to second" in dialog.forward_button.toolTip()
+    dialog.reject()
+
+
+def test_new_navigation_drops_the_abandoned_forward_history(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    first, second, third = _make_directories(tmp_path, "first", "second", "third")
+    dialog = OpenBrowserDialog(None, first)
+    qtbot.addWidget(dialog)
+
+    dialog.set_directory(second)
+    dialog.set_directory(third)
+    dialog._go_back()
+    assert dialog.current_directory == second.resolve()
+    assert dialog.forward_button.isEnabled()
+
+    dialog.set_directory(first)
+    assert not dialog.forward_button.isEnabled()
+    dialog._go_back()
+    assert dialog.current_directory == second.resolve()
+    dialog.reject()
+
+
+def test_up_button_opens_the_parent_folder(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    parent = tmp_path.resolve()
+    (child := parent / "child").mkdir()
+    dialog = OpenBrowserDialog(None, child)
+    qtbot.addWidget(dialog)
+
+    dialog.up_button.click()
+    assert dialog.current_directory == parent
+    dialog.back_button.click()
+    assert dialog.current_directory == child.resolve()
+    dialog.reject()
+
+
+def test_transfer_jump_buttons_switch_between_source_and_target(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory, destination_directory = _make_directories(tmp_path, "source", "destination")
+    design = source_directory / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    assert dialog.transfer_source_button.isHidden()
+    assert dialog.transfer_target_button.isHidden()
+
+    dialog._remember_file_transfer("copy", (design,))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert dialog.transfer_source_button.isVisibleTo(dialog)
+    assert dialog.transfer_target_button.isVisibleTo(dialog)
+    assert "source" in dialog.transfer_source_button.text()
+    assert "destination" in dialog.transfer_target_button.text()
+
+    dialog.transfer_source_button.click()
+    assert dialog.current_directory == source_directory.resolve()
+    dialog.transfer_target_button.click()
+    assert dialog.current_directory == destination_directory.resolve()
+    dialog.reject()
+
+
 def test_transfer_falls_back_to_a_copy_when_hard_links_are_unsupported(
     qtbot, tmp_path, monkeypatch
 ):

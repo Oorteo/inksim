@@ -30,6 +30,11 @@ included when present. Copy can be pasted more than once; a successful Move
 consumes the pending operation. The pending operation is cleared when the
 dialog is opened again.
 
+After a transfer, two buttons next to the activity text jump back to the
+folder the files came from and to the folder they went to. The back and
+forward buttons cover the same trip while browsing: `Alt+Left` returns to the
+source folder after a paste, `Alt+Right` to the destination.
+
 Before transferring anything, InkSim checks the complete destination batch. If
 files already exist there, one prompt lists all conflicts and lets you replace
 all of them or cancel; cancel leaves the destination unchanged. If a transfer

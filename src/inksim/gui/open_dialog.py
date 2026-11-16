@@ -146,6 +146,7 @@ _CONVERSION_TIMEOUT_MS = 180_000
 _CONVERSION_PROGRESS_INTERVAL_MS = 100
 _SELECTION_PREVIEW_DEBOUNCE_MS = 250
 _DIRECTORY_REFRESH_DEBOUNCE_MS = 200
+_DIRECTORY_HISTORY_LIMIT = 100
 _DETAILS_LINES = 6
 _INITIAL_PREVIEW_ESTIMATE_SECONDS = 10.0
 _MAX_PREVIEW_ESTIMATE_SECONDS = 60.0
@@ -167,6 +168,13 @@ _PLACE_PATH_ROLE = Qt.ItemDataRole.UserRole
 _PLACE_FAVORITE_ROLE = Qt.ItemDataRole.UserRole + 1
 # The icon-only grid draws the name under each icon instead of the item text.
 _CAPTION_ROLE = Qt.ItemDataRole.UserRole + 2
+
+
+def _folder_title(path: Path | None) -> str:
+    """Return a short folder name for navigation tooltips and jump buttons."""
+    if path is None:
+        return ""
+    return _sanitize_path_text(path.name or str(path))
 
 
 class _FileTransferRollbackError(OSError):
@@ -577,6 +585,9 @@ class OpenBrowserDialog(QDialog):
         self.launch_directory = Path.cwd().resolve()
         self.current_directory = Path(initial_directory or Path.cwd()).resolve()
         self._directory_return_path: Path | None = None
+        self._directory_history: list[Path] = [self.current_directory]
+        self._directory_history_index = 0
+        self._last_transfer_dirs: tuple[Path, Path] | None = None
         self.initial_file: Path | None = Path(selected_file).resolve() if selected_file else None
         self.extensions = get_supported_input_extensions() | {"svg"}
         self.config = Config()
@@ -650,6 +661,7 @@ class OpenBrowserDialog(QDialog):
         self._place_items: list[QListWidgetItem] = []
 
         self._build_ui(recent_directories or [])
+        self._update_history_buttons()
         self._refresh_places()
         self._update_tool_status()
         self.refresh_files(preserve_view=False)
@@ -669,6 +681,37 @@ class OpenBrowserDialog(QDialog):
         root.addLayout(status_row)
 
         directory_row = QHBoxLayout()
+        self.back_button = QPushButton(self)
+        self.back_button.setObjectName("openBack")
+        self.back_button.setAutoDefault(False)
+        self.back_button.setFixedWidth(32)
+        self.back_button.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowBack))
+        self.back_button.clicked.connect(self._go_back)
+        directory_row.addWidget(self.back_button)
+        self.forward_button = QPushButton(self)
+        self.forward_button.setObjectName("openForward")
+        self.forward_button.setAutoDefault(False)
+        self.forward_button.setFixedWidth(32)
+        self.forward_button.setIcon(
+            self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowForward)
+        )
+        self.forward_button.clicked.connect(self._go_forward)
+        directory_row.addWidget(self.forward_button)
+        self.up_button = QPushButton(self)
+        self.up_button.setObjectName("openUp")
+        self.up_button.setAutoDefault(False)
+        self.up_button.setFixedWidth(32)
+        self.up_button.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowUp))
+        self.up_button.clicked.connect(self._go_parent)
+        directory_row.addWidget(self.up_button)
+        for keys, slot in (
+            ("Alt+Left", self._go_back),
+            ("Alt+Right", self._go_forward),
+            ("Alt+Up", self._go_parent),
+        ):
+            shortcut = QShortcut(QKeySequence(keys), self)
+            shortcut.setContext(Qt.ShortcutContext.WindowShortcut)
+            shortcut.activated.connect(slot)
         directory_row.addWidget(QLabel(_("dialog.open_browser.folder", "Folder"), self))
         self.breadcrumb_scroll = QScrollArea(self)
         self.breadcrumb_scroll.setWidgetResizable(True)
@@ -920,6 +963,22 @@ class OpenBrowserDialog(QDialog):
         self.activity_label = QLabel(self)
         self.activity_label.setVisible(False)
         button_row.addWidget(self.activity_label)
+        self.transfer_source_button = QToolButton(self)
+        self.transfer_source_button.setObjectName("openTransferSource")
+        self.transfer_source_button.setAutoRaise(True)
+        self.transfer_source_button.setVisible(False)
+        self.transfer_source_button.clicked.connect(
+            lambda _checked=False: self._jump_to_transfer(0)
+        )
+        button_row.addWidget(self.transfer_source_button)
+        self.transfer_target_button = QToolButton(self)
+        self.transfer_target_button.setObjectName("openTransferTarget")
+        self.transfer_target_button.setAutoRaise(True)
+        self.transfer_target_button.setVisible(False)
+        self.transfer_target_button.clicked.connect(
+            lambda _checked=False: self._jump_to_transfer(1)
+        )
+        button_row.addWidget(self.transfer_target_button)
         button_row.addStretch(1)
         self.thumbnails_button = QToolButton(self)
         self.thumbnails_button.setObjectName("createThumbnails")
@@ -1531,7 +1590,7 @@ class OpenBrowserDialog(QDialog):
         self.path_stack.setCurrentWidget(self.breadcrumb_scroll)
         self.edit_path_button.setText(_("dialog.open_browser.edit_path", "Edit path"))
 
-    def set_directory(self, directory: str | Path) -> None:
+    def set_directory(self, directory: str | Path, *, record: bool = True) -> None:
         path = Path(_unsanitize_path(str(directory))).expanduser().resolve()
         if not path.is_dir():
             self._show_message(
@@ -1544,11 +1603,107 @@ class OpenBrowserDialog(QDialog):
             return
         self._directory_return_path = self.current_directory
         self.current_directory = path
+        if record:
+            self._record_directory(path)
         self.initial_file = None
         self.path_stack.setCurrentWidget(self.breadcrumb_scroll)
         self.edit_path_button.setText(_("dialog.open_browser.edit_path", "Edit path"))
         self.refresh_files(preserve_view=False)
         self.add_favorite_button.setEnabled(path not in self.favorite_directories)
+        self._update_history_buttons()
+
+    def _record_directory(self, directory: Path) -> None:
+        """Append a visited folder and drop the entries of an abandoned forward path."""
+        del self._directory_history[self._directory_history_index + 1 :]
+        self._directory_history.append(directory)
+        if len(self._directory_history) > _DIRECTORY_HISTORY_LIMIT:
+            del self._directory_history[0]
+        self._directory_history_index = len(self._directory_history) - 1
+
+    def _history_target(self, offset: int) -> Path | None:
+        index = self._directory_history_index + offset
+        if 0 <= index < len(self._directory_history):
+            return self._directory_history[index]
+        return None
+
+    def _navigate_history(self, offset: int) -> None:
+        """Step through the visited folders, dropping the ones that vanished."""
+        index = self._directory_history_index + offset
+        while 0 <= index < len(self._directory_history):
+            target = self._directory_history[index]
+            if target.is_dir():
+                self._directory_history_index = index
+                self.set_directory(target, record=False)
+                return
+            del self._directory_history[index]
+            if offset < 0:
+                index -= 1
+        self._update_history_buttons()
+
+    def _go_back(self) -> None:
+        self._navigate_history(-1)
+
+    def _go_forward(self) -> None:
+        self._navigate_history(1)
+
+    def _go_parent(self) -> None:
+        parent = self.current_directory.parent
+        if parent != self.current_directory:
+            self.set_directory(parent)
+
+    def _update_history_buttons(self) -> None:
+        back = self._history_target(-1)
+        forward = self._history_target(1)
+        self.back_button.setEnabled(back is not None)
+        self.forward_button.setEnabled(forward is not None)
+        self.up_button.setEnabled(self.current_directory.parent != self.current_directory)
+        self.back_button.setToolTip(
+            _("dialog.open_browser.back_hint", "Back to {folder} (Alt+Left)").format(
+                folder=_folder_title(back)
+            )
+            if back is not None
+            else _("dialog.open_browser.back", "Back")
+        )
+        self.forward_button.setToolTip(
+            _("dialog.open_browser.forward_hint", "Forward to {folder} (Alt+Right)").format(
+                folder=_folder_title(forward)
+            )
+            if forward is not None
+            else _("dialog.open_browser.forward", "Forward")
+        )
+        self.up_button.setToolTip(
+            _("dialog.open_browser.up_hint", "Open the parent folder (Alt+Up)")
+        )
+
+    def _remember_transfer_dirs(self, source: Path, target: Path) -> None:
+        """Show jump buttons back to the folder a transfer came from and went to."""
+        self._last_transfer_dirs = (source, target)
+        self.transfer_source_button.setText(
+            _("dialog.open_browser.jump_to_source", "\u2039 {folder}").format(
+                folder=_folder_title(source)
+            )
+        )
+        self.transfer_source_button.setToolTip(
+            _("dialog.open_browser.jump_to_source_hint", "Open the source folder {path}").format(
+                path=_sanitize_path_text(str(source))
+            )
+        )
+        self.transfer_target_button.setText(
+            _("dialog.open_browser.jump_to_target", "{folder} \u203a").format(
+                folder=_folder_title(target)
+            )
+        )
+        self.transfer_target_button.setToolTip(
+            _("dialog.open_browser.jump_to_target_hint", "Open the target folder {path}").format(
+                path=_sanitize_path_text(str(target))
+            )
+        )
+        self.transfer_source_button.setVisible(True)
+        self.transfer_target_button.setVisible(True)
+
+    def _jump_to_transfer(self, index: int) -> None:
+        if self._last_transfer_dirs is not None:
+            self.set_directory(self._last_transfer_dirs[index])
 
     def _current_path(self) -> Path | None:
         item = self.file_list.currentItem()
@@ -2162,6 +2317,7 @@ class OpenBrowserDialog(QDialog):
 
         if operation == "move":
             self._pending_file_transfer = None
+        self._remember_transfer_dirs(sources[0].parent, self.current_directory)
         self.refresh_files()
         label = _("dialog.open_browser.copied_files", "Copied {count} file(s)")
         if operation == "move":
