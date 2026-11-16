@@ -1071,8 +1071,11 @@ def test_transfer_jump_buttons_switch_between_source_and_target(qtbot, tmp_path,
 
     assert dialog.transfer_source_button.isVisibleTo(dialog)
     assert dialog.transfer_target_button.isVisibleTo(dialog)
+    assert "Copied 1 file(s)" == dialog.activity_label.text()
     assert "source" in dialog.transfer_source_button.text()
     assert "destination" in dialog.transfer_target_button.text()
+    assert dialog.transfer_source_button.isEnabled()
+    assert dialog.transfer_target_button.isEnabled()
 
     dialog.transfer_source_button.click()
     assert dialog.current_directory == source_directory.resolve()

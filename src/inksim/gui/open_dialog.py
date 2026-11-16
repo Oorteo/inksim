@@ -963,17 +963,21 @@ class OpenBrowserDialog(QDialog):
         self.activity_label = QLabel(self)
         self.activity_label.setVisible(False)
         button_row.addWidget(self.activity_label)
-        self.transfer_source_button = QToolButton(self)
+        self.transfer_source_button = QPushButton(self)
         self.transfer_source_button.setObjectName("openTransferSource")
-        self.transfer_source_button.setAutoRaise(True)
+        self.transfer_source_button.setIcon(self._folder_icon)
+        self.transfer_source_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.transfer_source_button.setAutoDefault(False)
         self.transfer_source_button.setVisible(False)
         self.transfer_source_button.clicked.connect(
             lambda _checked=False: self._jump_to_transfer(0)
         )
         button_row.addWidget(self.transfer_source_button)
-        self.transfer_target_button = QToolButton(self)
+        self.transfer_target_button = QPushButton(self)
         self.transfer_target_button.setObjectName("openTransferTarget")
-        self.transfer_target_button.setAutoRaise(True)
+        self.transfer_target_button.setIcon(self._folder_icon)
+        self.transfer_target_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.transfer_target_button.setAutoDefault(False)
         self.transfer_target_button.setVisible(False)
         self.transfer_target_button.clicked.connect(
             lambda _checked=False: self._jump_to_transfer(1)
@@ -1675,13 +1679,18 @@ class OpenBrowserDialog(QDialog):
             _("dialog.open_browser.up_hint", "Open the parent folder (Alt+Up)")
         )
 
-    def _remember_transfer_dirs(self, source: Path, target: Path) -> None:
-        """Show jump buttons back to the folder a transfer came from and went to."""
+    def _remember_transfer_dirs(self, source: Path, target: Path, note: str) -> None:
+        """Show what the last transfer did and where it came from and went to."""
         self._last_transfer_dirs = (source, target)
+        self.activity_label.setText(note)
+        self.activity_label.setVisible(True)
         self.transfer_source_button.setText(
-            _("dialog.open_browser.jump_to_source", "\u2039 {folder}").format(
+            _("dialog.open_browser.jump_to_source", "From: {folder}").format(
                 folder=_folder_title(source)
             )
+        )
+        self.transfer_source_button.setAccessibleName(
+            _("dialog.open_browser.jump_to_source_accessible", "Open the source folder")
         )
         self.transfer_source_button.setToolTip(
             _("dialog.open_browser.jump_to_source_hint", "Open the source folder {path}").format(
@@ -1689,9 +1698,12 @@ class OpenBrowserDialog(QDialog):
             )
         )
         self.transfer_target_button.setText(
-            _("dialog.open_browser.jump_to_target", "{folder} \u203a").format(
+            _("dialog.open_browser.jump_to_target", "To: {folder}").format(
                 folder=_folder_title(target)
             )
+        )
+        self.transfer_target_button.setAccessibleName(
+            _("dialog.open_browser.jump_to_target_accessible", "Open the target folder")
         )
         self.transfer_target_button.setToolTip(
             _("dialog.open_browser.jump_to_target_hint", "Open the target folder {path}").format(
@@ -2317,13 +2329,13 @@ class OpenBrowserDialog(QDialog):
 
         if operation == "move":
             self._pending_file_transfer = None
-        self._remember_transfer_dirs(sources[0].parent, self.current_directory)
-        self.refresh_files()
         label = _("dialog.open_browser.copied_files", "Copied {count} file(s)")
         if operation == "move":
             label = _("dialog.open_browser.moved_files", "Moved {count} file(s)")
-        self.activity_label.setText(label.format(count=count))
-        self.activity_label.setVisible(True)
+        self._remember_transfer_dirs(
+            sources[0].parent, self.current_directory, label.format(count=count)
+        )
+        self.refresh_files()
 
     def _execute_file_transfer(
         self,
