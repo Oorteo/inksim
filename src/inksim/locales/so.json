@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Habaynta la helay waxaa lagu kaydiyey qaabaynta InkSim."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "Qaabaynta sidii hore ayay u taagnayd, sababtoo ah Inkscape lama baari karin."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Faylka la fulin karo ee Inkscape waa la hubiyey: {path}"

@@ -647,6 +647,10 @@
         "source": "Unavailable",
         "translation": "Unavailable"
     },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it."
+    },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
         "translation": "Create debug script (debug_inksim.sh)"
@@ -855,9 +859,9 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Saved the detected setup to the InkSim configuration."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "The configuration was left unchanged because Inkscape could not be inspected."
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Saved the Inkscape command, but the check failed, so the extension folders were not updated."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",

@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "บันทึกการตั้งค่าที่ตรวจพบลงในการกำหนดค่า InkSim แล้ว"
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "ไม่ได้เปลี่ยนการตั้งค่า เนื่องจากตรวจสอบ Inkscape ไม่สำเร็จ"
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "ตรวจสอบไฟล์โปรแกรม Inkscape แล้ว: {path}"

@@ -1810,6 +1810,47 @@ def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_pa
     dialog.reject()
 
 
+def test_cached_inkstitch_extension_is_used_for_a_launcher_with_arguments(
+    qtbot, tmp_path, monkeypatch
+):
+    """A saved command line such as "flatpak run ..." still matches the cached status."""
+    from inksim.config import Config
+
+    extension_script = tmp_path / "extensions" / "inkstitch" / "inkstitch.py"
+    extension_script.parent.mkdir(parents=True)
+    extension_script.touch()
+    command = "flatpak run org.inkscape.Inkscape"
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": command,
+            "status": "found",
+            "inkstitch": [{"extension_dir": str(extension_script.parent.resolve())}],
+            "active_inkstitch": str(extension_script.parent.resolve()),
+        },
+    )
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape=command),
+    )
+
+    def unexpected_probe(*args, **kwargs):
+        raise AssertionError("Opening the dialog must not start an Inkscape probe.")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.QProcess", unexpected_probe)
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    assert (
+        f"Ink/Stitch extension: {extension_script.parent.resolve()}" in dialog.status_label.text()
+    )
+    dialog.reject()
+
+
 def test_open_dialog_prefers_saved_inkscape_over_path_detection(qtbot, tmp_path, monkeypatch):
     from inksim.config import Config
 

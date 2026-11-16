@@ -67,6 +67,19 @@ the resulting preview to InkSim. Its launcher starts the singleton application
 if needed, or reuses the running instance, and manages the handoff through
 local IPC.
 
+### Choosing the Inkscape command
+
+The Inkscape field in **Tools → Inkscape Setup...** accepts a plain executable
+path as well as a whole command line with arguments. The list offers the
+Inkscape found on `PATH` and every Inkscape build installed as a Flatpak; you
+can also type any other launcher, for example `flatpak run
+org.inkscape.Inkscape`, and press **Enter** to check it.
+
+A Flatpak installation keeps its own extensions folder, so InkSim installs the
+extension into `~/.var/app/<application-id>/config/inkscape/extensions` and
+Inkscape picks it up from there. Ink/Stitch has to be present in the same
+folder.
+
 The extension does not assign a keyboard shortcut. If `Ctrl+Shift+I` is free
 in your Inkscape setup, consider assigning it to **Inksim → Preview** in
 Inkscape's keyboard-shortcut settings.

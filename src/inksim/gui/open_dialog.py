@@ -108,7 +108,9 @@ from ..integration.paths import (
     INKSCAPE_CONFIG_KEY,
     ToolStatus,
     clean_child_environment,
+    configured_command,
     detect_tools,
+    normalize_command,
     prefer_saved_inkscape,
 )
 from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
@@ -1208,9 +1210,9 @@ class OpenBrowserDialog(QDialog):
         executable = result.get("executable")
         if not isinstance(executable, str):
             return None
-        current_path = os.path.normcase(str(Path(command[0]).expanduser().resolve()))
-        stored_path = os.path.normcase(str(Path(executable).expanduser().resolve()))
-        return result if current_path == stored_path else None
+        # Launchers such as "flatpak run org.inkscape.Inkscape" only compare
+        # equal when the arguments take part in the comparison.
+        return result if normalize_command(command) == configured_command(executable) else None
 
     def _active_inkstitch_preview(self) -> tuple[Path, Path | None, Path] | None:
         status = self._cached_inkstitch_extension_status()

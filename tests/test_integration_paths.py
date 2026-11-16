@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
+import subprocess
 from pathlib import Path
 
 from inksim.integration.paths import (
@@ -9,8 +10,15 @@ from inksim.integration.paths import (
     ToolStatus,
     build_inkscape_export_arguments,
     clean_child_environment,
+    configured_command,
     detect_tools,
+    flatpak_inkscape_launchers,
+    normalize_command,
 )
+
+
+def _completed(stdout: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.CompletedProcess(args=[], returncode=0, stdout=stdout, stderr="")
 
 
 def _clear_tool_environment(monkeypatch) -> None:
@@ -155,3 +163,48 @@ def test_clean_child_environment_removes_virtualenv(tmp_path, monkeypatch):
     assert "PYTHONPATH" not in environment
     assert "PYTHONHOME" not in environment
     assert environment["PATH"] == str(system_bin)
+
+
+def test_configured_command_normalizes_the_program_and_keeps_arguments():
+    assert configured_command("flatpak run org.inkscape.Inkscape") == normalize_command(
+        ["flatpak", "run", "org.inkscape.Inkscape"]
+    )
+    assert configured_command("   ") == ()
+
+
+def test_flatpak_inkscape_launchers_list_installed_app_ids(monkeypatch):
+    monkeypatch.setattr(
+        "inksim.integration.paths.shutil.which",
+        lambda name: "/usr/bin/flatpak" if name == "flatpak" else None,
+    )
+    monkeypatch.setattr(
+        "inksim.integration.paths.subprocess.run",
+        lambda *args, **kwargs: _completed(
+            "org.inkscape.Inkscape.Dev\norg.gimp.GIMP\norg.inkscape.Inkscape\n"
+        ),
+    )
+
+    launchers = flatpak_inkscape_launchers()
+
+    assert [launcher.path for launcher in launchers] == [
+        "flatpak run org.inkscape.Inkscape",
+        "flatpak run org.inkscape.Inkscape.Dev",
+    ]
+    assert all(launcher.source == "Flatpak" for launcher in launchers)
+
+
+def test_flatpak_inkscape_launchers_need_flatpak(monkeypatch):
+    monkeypatch.setattr("inksim.integration.paths.shutil.which", lambda _: None)
+
+    assert flatpak_inkscape_launchers() == []
+
+
+def test_flatpak_inkscape_launchers_survive_a_failing_query(monkeypatch):
+    monkeypatch.setattr("inksim.integration.paths.shutil.which", lambda _: "/usr/bin/flatpak")
+
+    def blocked(*args, **kwargs):
+        raise subprocess.TimeoutExpired(cmd="flatpak", timeout=1)
+
+    monkeypatch.setattr("inksim.integration.paths.subprocess.run", blocked)
+
+    assert flatpak_inkscape_launchers() == []

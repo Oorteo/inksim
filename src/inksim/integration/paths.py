@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import os
 import shutil
+import subprocess
 import sys
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -21,6 +22,8 @@ from pathlib import Path
 INKSCAPE_ENV = "INKSCAPE_EXE"
 INKSTITCH_ENV = "INKSTITCH_EXE"
 INKSCAPE_CONFIG_KEY = "inkscape"
+FLATPAK_LIST_TIMEOUT_S = 5.0
+_FLATPAK_STABLE_ID = "org.inkscape.Inkscape"
 
 _PYTHON_ENV_VARS = (
     "VIRTUAL_ENV",
@@ -119,6 +122,58 @@ class ToolStatus:
         active extension configuration instead.
         """
         return self.has_inkscape
+
+
+def normalize_command(command: Sequence[str]) -> tuple[str, ...]:
+    """Return a parsed command with the program replaced by an absolute path.
+
+    Comparing two command lines only works once ``inkscape`` and
+    ``/usr/bin/inkscape`` normalize alike, and arguments such as
+    ``flatpak run org.inkscape.Inkscape`` take part in the comparison.
+    """
+    program = command[0]
+    path = Path(program).expanduser()
+    resolved = path.resolve() if path.is_file() else Path(shutil.which(program) or program)
+    return (os.path.normcase(str(resolved)), *command[1:])
+
+
+def configured_command(value: str | None) -> tuple[str, ...]:
+    """Return a configured command line as normalized argv tokens."""
+    if not isinstance(value, str) or not value.strip():
+        return ()
+    command = ToolInfo("Inkscape", value, "configuration").command
+    if not command:
+        return ()
+    return normalize_command(command)
+
+
+def flatpak_inkscape_launchers(timeout: float = FLATPAK_LIST_TIMEOUT_S) -> list[ToolInfo]:
+    """Return ``flatpak run <app-id>`` launchers for installed Inkscape builds.
+
+    A Flatpak installation has no Inkscape binary on ``PATH``, and its
+    generated launcher only exists in the exports directory, so the app IDs
+    reported by Flatpak itself are the reliable source for a usable command.
+    """
+    executable = shutil.which("flatpak")
+    if not executable:
+        return []
+    try:
+        completed = subprocess.run(
+            [executable, "list", "--app", "--columns=application"],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return []
+    app_ids = {line.strip() for line in completed.stdout.splitlines() if "inkscape" in line.lower()}
+    ordered = sorted(app_ids, key=lambda app_id: (app_id != _FLATPAK_STABLE_ID, app_id))
+    return [
+        ToolInfo(name="Inkscape", path=f"flatpak run {app_id}", source="Flatpak")
+        for app_id in ordered
+        if app_id
+    ]
 
 
 def _from_environment(name: str, variable: str) -> ToolInfo | None:

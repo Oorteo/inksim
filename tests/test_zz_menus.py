@@ -16,6 +16,12 @@ from shiboken6 import isValid
 from inksim.gui.frame import MainWindow
 
 
+@pytest.fixture(autouse=True)
+def _no_flatpak_detection(monkeypatch):
+    """Keep the dialog tests independent of the Flatpak builds on this machine."""
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.flatpak_inkscape_launchers", lambda: [])
+
+
 def _close_active_modal():
     dialog = QApplication.activeModalWidget()
     if dialog is not None:
@@ -474,7 +480,17 @@ def test_locate_inkscape_prefers_saved_executable(qtbot, tmp_path, monkeypatch):
 def _wait_for_probe(qtbot, dialog):
     """Wait until the deferred extension probe has finished and hidden its status bubble."""
     qtbot.waitUntil(
-        lambda: dialog.executable_label.text() != "" and dialog.probe_status_label.isHidden()
+        lambda: dialog.executable_combo.currentText() != "" and dialog.probe_status_label.isHidden()
+    )
+
+
+def _missing_tools():
+    """Report no Inkscape or Ink/Stitch so a test only sees what it configures itself."""
+    from inksim.integration.paths import ToolInfo, ToolStatus
+
+    return ToolStatus(
+        inkscape=ToolInfo("Inkscape", None, "missing"),
+        inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
     )
 
 
@@ -576,7 +592,7 @@ def test_windows_probe_falls_back_to_program_files_cli_inkscape(qtbot, tmp_path,
 
     assert starts[0][0] == str(wrapper.resolve())
     assert starts[1][0] == str(cli_executable.resolve())
-    assert dialog.executable_label.text() == str(cli_executable.resolve())
+    assert dialog.executable_combo.currentText() == str(cli_executable.resolve())
     assert config.get(INKSCAPE_CONFIG_KEY)["executable"] == str(cli_executable.resolve())
 
 
@@ -597,7 +613,7 @@ def test_inkscape_dialog_shows_extension_directories(qtbot, monkeypatch):
     qtbot.addWidget(dialog)
     _wait_for_probe(qtbot, dialog)
 
-    assert dialog.executable_label.text() == "/opt/inkscape/bin/inkscape"
+    assert dialog.executable_combo.currentText() == "/opt/inkscape/bin/inkscape"
     assert (
         dialog.user_extensions_label.text()
         == f"User extensions: {Path('/home/user/.config/inkscape/extensions')}"
@@ -975,12 +991,12 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     )
     dialog = InkscapeIntegrationDialog(None, None)
     qtbot.addWidget(dialog)
-    _wait_for_probe(qtbot, dialog)
+    assert dialog.executable_combo.currentText() == ""
 
     dialog.change_button.click()
     _wait_for_probe(qtbot, dialog)
 
-    assert dialog.executable_label.text() == str(Path("/custom/bin/inkscape").resolve())
+    assert dialog.executable_combo.currentText() == str(Path("/custom/bin/inkscape").resolve())
     assert dialog.user_extensions_label.text().endswith(str(Path("/custom/user/extensions")))
     assert dialog.system_extensions_label.text().endswith(str(Path("/custom/system/extensions")))
 
@@ -1727,5 +1743,112 @@ def test_inkscape_dialog_reports_unresponsive_command(qtbot, tmp_path, monkeypat
     assert dialog.change_button.isEnabled()
     assert len(warnings) == 1
     assert "0.5 seconds" in warnings[0][2]
-    assert config.get(INKSCAPE_CONFIG_KEY) == saved_status
-    assert _("integration.inkscape.report.config_unchanged") in dialog.info_panel.toPlainText()
+    assert config.get(INKSCAPE_CONFIG_KEY)["executable"] == "/opt/inkscape/bin/inkscape"
+    assert config.get(INKSCAPE_CONFIG_KEY)["status"] == "error"
+    assert _("integration.inkscape.report.config_saved_incomplete") in (
+        dialog.info_panel.toPlainText()
+    )
+
+
+def test_unresponsive_command_keeps_extension_folders_found_last_time(qtbot, tmp_path, monkeypatch):
+    """Repeat the same check after a timeout without losing the cached extension folders."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    command = "/opt/inkscape/bin/inkscape"
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": command,
+            "status": "found",
+            "user_extensions": "/custom/user/extensions",
+            "system_extensions": "/custom/system/extensions",
+            "inkstitch": [],
+        },
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.detect_tools", _missing_tools)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_PROBE_TIMEOUT_S", 0.5)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    _fake_inkscape_probe(monkeypatch, sleep_seconds=30)
+
+    dialog = InkscapeIntegrationDialog(None, command)
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["status"] == "error"
+    assert status["executable"] == command
+    assert status["user_extensions"] == "/custom/user/extensions"
+    assert status["system_extensions"] == "/custom/system/extensions"
+
+
+def test_typed_launcher_is_saved_when_the_probe_fails(qtbot, tmp_path, monkeypatch):
+    """Keep the command the user typed even when Inkscape cannot answer the check."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    command = "/opt/inkscape/bin/inkscape --with-args"
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.detect_tools", _missing_tools)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    _fake_inkscape_probe(monkeypatch, silent_programs={"/opt/inkscape/bin/inkscape"})
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    dialog.executable_combo.setEditText(command)
+    dialog.executable_combo.lineEdit().editingFinished.emit()
+    qtbot.waitUntil(lambda: not dialog.probe_status_label.isHidden())
+    _wait_for_probe(qtbot, dialog)
+
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["executable"] == command
+    assert status["status"] == "error"
+    assert "user_extensions" not in status
+
+
+def test_detected_flatpak_launcher_can_be_selected(qtbot, monkeypatch):
+    """Offer installed Flatpak builds and probe the application ID that was chosen."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import ToolInfo
+
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.flatpak_inkscape_launchers",
+        lambda: [ToolInfo("Inkscape", "flatpak run org.inkscape.Inkscape", "Flatpak")],
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.detect_tools", _missing_tools)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda name: "/usr/bin/flatpak" if name == "flatpak" else None,
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    starts = _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": "/home/user/.var/app/org.inkscape.Inkscape/config/inkscape",
+            "--system-data-directory": "/app/share/inkscape",
+        },
+    )
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    items = [
+        dialog.executable_combo.itemText(index) for index in range(dialog.executable_combo.count())
+    ]
+    index = items.index("flatpak run org.inkscape.Inkscape")
+    dialog.executable_combo.setCurrentIndex(index)
+    dialog.executable_combo.activated.emit(index)
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts[0] == (
+        "/usr/bin/flatpak",
+        ["run", "org.inkscape.Inkscape", "--user-data-directory"],
+    )
+    assert dialog.user_extensions_label.text().endswith(
+        str(Path("/home/user/.var/app/org.inkscape.Inkscape/config/inkscape/extensions"))
+    )

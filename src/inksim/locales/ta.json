@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "கண்டறியப்பட்ட அமைப்பு InkSim அமைப்பில் சேமிக்கப்பட்டது."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "Inkscape-ஐ ஆய்வு செய்ய முடியாததால் அமைப்பில் எந்த மாற்றமும் செய்யப்படவில்லை."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "சரிபார்க்கப்பட்ட Inkscape செயல்படுத்தக்கூடிய கோப்பு: {path}"

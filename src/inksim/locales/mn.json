@@ -855,10 +855,6 @@
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Илрүүлсэн тохиргоог InkSim-ийн тохиргоонд хадгаллаа."
     },
-    "integration.inkscape.report.config_unchanged": {
-        "source": "The configuration was left unchanged because Inkscape could not be inspected.",
-        "translation": "Inkscape-г шалгаж чадсангүй тул тохиргоог өөрчлөлгүй үлдээлээ."
-    },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
         "translation": "Шалгасан Inkscape ажиллуулах файл: {path}"
