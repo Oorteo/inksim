@@ -312,16 +312,24 @@
         "translation": "This folder is not accessible."
     },
     "dialog.open_browser.jump_to_source": {
-        "source": "‹ {folder}",
-        "translation": "‹ {folder}"
+        "source": "From: {folder}",
+        "translation": "From: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Open the source folder"
     },
     "dialog.open_browser.jump_to_source_hint": {
         "source": "Open the source folder {path}",
         "translation": "Open the source folder {path}"
     },
     "dialog.open_browser.jump_to_target": {
-        "source": "{folder} ›",
-        "translation": "{folder} ›"
+        "source": "To: {folder}",
+        "translation": "To: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Open the target folder"
     },
     "dialog.open_browser.jump_to_target_hint": {
         "source": "Open the target folder {path}",
