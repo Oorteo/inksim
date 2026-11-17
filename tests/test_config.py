@@ -4,12 +4,38 @@
 """Tests for the TOML-backed Config module."""
 
 import json
+import os
+import subprocess
+import sys
 import threading
 from pathlib import Path
 
 import pytest
 
 from inksim.config import Config
+
+
+def test_subprocess_uses_isolated_user_config_directory() -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "from inksim.config import DEFAULT_CONFIG_PATH; print(DEFAULT_CONFIG_PATH)",
+        ],
+        capture_output=True,
+        check=True,
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        timeout=10,
+    )
+    if sys.platform == "win32":
+        expected = Path(os.environ["LOCALAPPDATA"]) / "InkSim" / "config.toml"
+    elif sys.platform == "darwin":
+        expected = Path.home() / "Library" / "Preferences" / "inksim" / "config.toml"
+    else:
+        expected = Path(os.environ["XDG_CONFIG_HOME"]) / "inksim" / "config.toml"
+
+    assert Path(result.stdout.strip()) == expected
 
 
 def test_config_loads_and_persists_values(tmp_path):

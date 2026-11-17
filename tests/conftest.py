@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 
 import PySide6
@@ -32,22 +33,30 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def _isolated_xdg_config_home(tmp_path_factory):
+def _isolated_subprocess_config_home(tmp_path_factory):
     """Keep subprocesses away from the developer's real config file.
 
     Tests that run ``python -m inksim`` inherit ``os.environ``, so the
     per-test monkeypatch of ``DEFAULT_CONFIG_PATH`` cannot reach them. Pointing
-    XDG_CONFIG_HOME at a throwaway directory keeps their recent directories,
-    renderer choice and palette answers out of ``~/.config/inksim``.
+    the platform's config environment at a throwaway directory keeps their
+    recent directories, renderer choice and palette answers out of the user's
+    config directory.
     """
-    xdg_config_home = tmp_path_factory.mktemp("xdg-config")
-    previous = os.environ.get("XDG_CONFIG_HOME")
-    os.environ["XDG_CONFIG_HOME"] = str(xdg_config_home)
+    config_home = tmp_path_factory.mktemp("subprocess-config")
+    environment = {"XDG_CONFIG_HOME": str(config_home)}
+    if sys.platform == "win32":
+        environment["LOCALAPPDATA"] = str(config_home / "localappdata")
+    elif sys.platform == "darwin":
+        environment["HOME"] = str(config_home / "home")
+
+    previous = {key: os.environ.get(key) for key in environment}
+    os.environ.update(environment)
     yield
-    if previous is None:
-        os.environ.pop("XDG_CONFIG_HOME", None)
-    else:
-        os.environ["XDG_CONFIG_HOME"] = previous
+    for key, value in previous.items():
+        if value is None:
+            os.environ.pop(key, None)
+        else:
+            os.environ[key] = value
 
 
 @pytest.fixture(autouse=True)
