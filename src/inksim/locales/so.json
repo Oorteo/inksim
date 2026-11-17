@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Luuqadda waxaa lagu beddelay {language}. Dib u bilow InkSim hadda si ay u dhaqangasho?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Afka waa la beddelay. Xir InkSim oo dib uga fur Inkscape si aad u adeegsato afka cusub."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Waxaa la isticmaali doonaa luuqadda asalka ah ee nidaamka. Dib u bilow InkSim hadda si ay u dhaqangasho?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "Luuqadda ayaa la beddelay"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Daaqadaha InkSim ee furan oo dhan waa la xidhi doonaa, faylka hadda jirana dib ayaa loo furi doonaa."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Midabka cirbadda"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Horudhac caadi ah"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Ku dar meelaha"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Dib u noqo"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Ku noqo {folder} (Alt+Left)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Jooji"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Hannaanka horudhaca tolmada wuu fashilmay: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Koodhka bixitaanka hannaanka: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Dhoofinta CSV ee Ink/Stitch way fashilantay."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "Diiwaanka oo dhan: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "Waqtigii loo qabtay horudhaca tolmada wuu dhammaaday."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Dhoofinta CSV ee Ink/Stitch ayaa socota..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} fayl ayaa la koobiyeeyay"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Koobiyee faylasha"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Ku qor PNG 256 px ah naqshad kasta oo la doortay agteeda (design.pes.png).\nLiiska ayaa go'aamiya in dib loo dhisayo sawirrada hore u dhacay ama dhammaan sawirrada yar-yar."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Miiska"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Midabada"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Magaca"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Cabbirka"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Tolmo"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Cabbirka: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Dukumentiyada"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Waxyaabaha la soo dejiyey"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "SVG-gan ku fur daaqad cusub oo Inkscape ah."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Ku tafatir Inkscape"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Tafatir waddada"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Galkan kuma jiraan faylal la taageero."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Kuwa la jecel yahay"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Faylkan lama akhrin karo: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Muuji"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Dhammaan kuwa la taageero"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "Xogta tolmada CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Tolmo"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "Faylka asalka ah ee SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "La jaanqaad"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Gal"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Laba jeer guji galka si aad u baadho faylashiisa."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Riix Enter ama laba jeer guji galka si aad u baadho faylashiisa."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Hore u soco"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "U gudub {folder} (Alt+Right)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Tag"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Guriga"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Hooska dambe ee astaanta ({level}, 0 = madow, 255 = caddaan)\nShift+wareeji taayirka jiirka adigoo dul jooga liiska si aad u beddesho hooska."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Cabbirka astaanta ({size} px)\nCtrl+wareeji taayirka jiirka adigoo dul jooga liiska si aad u beddesho cabbirka astaamaha."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape lama bilaabi karin: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Inkscape ayaa loo baahan yahay si loo tafatiro faylasha SVG."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Waxaa loo baahan yahay rakibaad Ink/Stitch ah oo la habeeyey iyo barnaamij-bilaabiye Python."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Galkan lama geli karo."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Laga bilaabo: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Fur galka isha"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Fur galka isha {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Ku socota: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Fur galka bartilmaameedka"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Fur galka bartilmaameedka {path}"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "La beddelay: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Dhaqaaji faylasha"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} fayl ayaa la dhaqaajiyay"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "Ma aha fayl gobo oo ansax ah"
+        "translation": "Ma aha fayl tolmo oo sax ah"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Horudhac dhab ah"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Fur"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Fur faylka daabacaadda"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Fur faylka tolmada ee la doortay."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Midabada…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Ka soo rar midabada dunta fayl palette ah ama naqshad kale.\nWaxaa lagu kaydiyaa isla galka faylkan, iyagoo loo bixiyo <name>.edr, sababtoo ah qaabkan faylku isaguba ma kaydin karo midabada."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Faylkani hore ayuu u kaydiyaa midabada duntiisa."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Ku dheji faylasha"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Geli ama ku dheji waddada galka"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Meelaha"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Horudhac"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Ka soo saar xogta tolmada SVG-kan adigoo adeegsanaya Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Lama wadi karo qoraalka Ink/Stitch ee firfircoon ama barnaamijka Python ee loo habeeyey."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Galkan lama akhrin karo: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Dhawaan:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— dooro gal —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Cusboonaysii"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Cusboonaysii galkan (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Ka saar kuwa la jecel yahay"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Sawirka yar 180° u rog"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Sawirka yar bidix u rog"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Dooro naqshad leh sawir yar si aad u rogto"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Jihadii asalka ahayd"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Sawirka yar midig u rog"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} sawir-yar ayaa {degrees}° loo rogay"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Raadi faylal"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Dooro fayl aad furto."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Cabbirka: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Kordhinnadan ka qari sanduuqa wada-hadalka.\nKu kala saar | waxaana liiska lagu kaydin doonaa config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Ka bood"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: lama helin."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Kordhinta Ink/Stitch: lama hubin karin. Isticmaal Qalab... si aad mar kale isugu daydo."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Kordhinta Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Kordhinta Ink/Stitch: lagama helin galalka kordhinta ee Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Kordhinta Ink/Stitch: lama hubin karo ilaa Inkscape la habeeyo."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Kordhinta Ink/Stitch: weli lama hubin. Isticmaal Qalab... si aad u hubiso."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Tolmo: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "Faylka asalka ah ee SVG. Horudhaca tolmada wuxuu u baahan yahay Inkscape."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "Faylka asalka ah ee SVG. Dooro Horudhac si aad xogta tolmada ugu samayso Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG-ga lama sawiri karin."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "SVG-gani aad buu u weyn yahay si halkan horudhac looga sameeyo."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Fayl ku-meelgaar ah oo horudhac ah lama samayn karin: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Sawirrada yaryar: {created} la sameeyay, {skipped} waa cusub yihiin, {failed} waa fashilmeen"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Sawirrada yaryar: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Jihadii asalka ahayd ayaa loo soo celiyay {count} sawir-yar"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Sawirrada yaryar ayaa la samaynayaa…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Fur fayl"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Qalab..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Faylalku hore ayay u jiraan"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Wareejinta faylku way fashilantay: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Wareejinta faylku way fashilantay"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Waddooyinkan meesha loo dirayo hore ayay u jiraan, waxaana ku jira galal aan faylal lagu beddeli karin. Waxba lama wareejin:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Galalka lama beddeli karo"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} waa diyaar: {count} fayl"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Faylashan meesha loo dirayo hore ayay u jiraan:\n{files}\n\nDhammaantood ma la beddelaa?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Faylashani halkan ayay hore u yaallaan."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "Xogta tolmada CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Gal"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Tolmo"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Lama taageero"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "Faylka asalka ah ee SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Nooca faylkan lagama furi karo InkSim."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Fur galka waalidka (Alt+Up)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Muuqaal"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Faahfaahin"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Astaamo keliya"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Astaamo iyo qoraal"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Weynayso"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Yaree"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Dooro palette ama naqshad midabaysan"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} ma kaydiyo midabada dunta."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Dhammaan faylasha"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Faylasha naqshadaha (midabada haddii la kaydiyay)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Faylasha palette-ka"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Naqshaddani hore ayay u kaydisaa midabada dunteeda."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} hore ayuu u kaydiyaa midabada naqshaddan.\nMa ku beddelaysaa {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Doorashadayda xusuuso"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} ma kaydiyo midabada dunta.\nMa ku kaydinaysaa {name} agta naqshadda?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Midabada dunta"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} waxa ku jira {available} midab, laakiin naqshaddu waxay leedahay {blocks} qaybood oo midab ah.\nSi kastaba ha loo isticmaalo? Midabka ugu dambeeya ayaa soo noqnoqon doona."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Midabada lama kaydin karin: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Dooro renderer-ka tolida"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Beddel"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Xaaladda kordhinta Inkscape lama kaydin karin: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Lama heli karo"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Faylka Inkscape ama amar buuxa, tusaale ahaan \"flatpak run org.inkscape.Inkscape\". Riix Enter si aad u hubiso."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Samee qoraalka khalad-baarista (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Dejinta qoraalka khalad-baarista lama beddeli karin."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Wuxuu ku qoraa debug_inksim.sh agta dukumentiga si amarka Inkscape dib loogu fulin karo."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Galalka kordhinta InkSim lama helin."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Galalka kordhinta Inkscape lama baari karin: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Amarka horudhaca waa la beddelay"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "faylalka la beddelay: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Waa cusub yahay"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Rakibid ayaa loo baahan yahay"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Xaaladda lama heli karo: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Cusboonaysiin ayaa loo baahan yahay ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Kordhinta nidaamka: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Kordhinta isticmaalaha hadda (meesha lagu rakibo/cusboonaysiiyo): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Kordhinta isticmaale kale: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch-ka ku jira galka kordhinnada Inkscape wuu isbeddelay tan iyo dejintii ugu dambaysay:\n\n{details}\n\nInkSim wuxuu adeegsanayaa xiriiriyaha hadda jira. Fur dejinta Inkscape si aad u kaydiso."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "galka ma jiro: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "hadda wuxuu tilmaamayaa: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Rakib / Cusboonaysii kordhinnada InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Faylal qaarkood ayaa hore ugu jira galka kordhinta InkSim. Faylasha loo taxay in la beddelo waxaa laga yaabaa inay ku jiraan isbeddello uu isticmaaluhu sameeyey. Faylasha kale ee la taxay waa la ilaalin doonaa, waligoodna lama tirtiri doono.\n\nFaylasha la beddelayo:\n{replace_files}\n\nFaylasha la ilaalinayo:\n{preserve_files}\n\nMa sii wadaysaa?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Kordhinnada Inkscape ee InkSim lama rakibi karin: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Kordhinnada Inkscape ee InkSim waa lagu rakibay ama lagu cusboonaysiiyey {path}. Dib u bilow Inkscape si loo raro."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Midna"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Dhaqan geli"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Ma beddelaysaa turjubaanka Python ee dhammaan kordhinnada Inkscape una beddelaysaa:\n\n{path}\n\nTani waxay beddelaysaa doorbid guud oo Inkscape ah. Ma sii waddaa?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Waddo gaar ah…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Dooro turjubaan Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Ikhtiyaari — keliya kordhinnada leh deegaan Python u gaar ah"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Keliya kordhinnada Inkscape ka codsada turjubaankiisa Python ayaa tan u baahan (tusaale, Ink/Stitch).\nKordhinnada InkSim waxay si toos ah u bilaabaan InkSim."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Deegaanka Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Ha beddelin (waa lagu talinayaa)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Ka saar dejinta turjubaanka"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Ma ka saaraysaa dejinta turjubaanka Python:\n\n{path}\n\nInkscape wuxuu kordhin kasta u adeegsan doonaa turjubaankiisa caadiga ah. Ma sii waddaa?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Soo celi kii hore"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Furaha uvr ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape lagama helin jidka nidaamka."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Xulashooyinka Inkscape lama akhrin karin: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Xulashooyinka Inkscape lama cusboonaysiin karin: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Galalka kordhinta Inkscape lama akhrin karin: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Waxa la sugayaa jawaabta Inkscape…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape waa la hubinayaa... {seconds} s"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Fasiraha Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Dib u bilow Inkscape si loo adeegsado fasiraha cusub ee Python."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Turjubaanka Python ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "lama dejin"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Ka saar nuqulladii hore ee InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Galalka kordhinta isticmaalaha ee la taxay iyo dhammaan faylasha ku jira si joogto ah ayaa loo tirtiri doonaa. Meesha rakibidda/cusboonaysiinta ee hadda iyo galalka kordhinta nidaamka lama tirtiri doono.\n\n{directories}\n\nMa sii wadaysaa?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Galkii hore ee kordhinta InkSim lama saari karin: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Galalkii hore ee kordhinta InkSim waa la saaray. Dib u bilow Inkscape si liiska kordhintiisa loo cusboonaysiiyo."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Rakibidda Ink/Stitch ee firfircoon waa la cusboonaysiiyey: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Waxa la hubinayaa Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Qaabaynta InkSim lama kaydin karin: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Habaynta la helay waxaa lagu kaydiyey qaabaynta InkSim."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Amarka Inkscape waa la kaydiyay, laakiin hubintu way fashilantay, sidaas darteed galalka kordhinta lama cusboonaysiin."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Faylka la fulin karo ee Inkscape waa la hubiyey: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Lama baari karin galalka kordhinta Inkscape: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Rakibidda Ink/Stitch ee la helay: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Xiriiriyaha Ink/Stitch ee galka kordhinnada Inkscape hadda wuxuu tilmaamayaa: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Wax rakibid Ink/Stitch ah lama helin."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Turjubaanka Python ee kordhinnada Inkscape: {path} (sidii hore ayuu u taagan yahay)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Doorbidka turjubaanka Python ee Inkscape waa la saaray."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Turjubaankii Python ee hore ayaa la soo celiyay: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Fasiraha Python waa la cusboonaysiiyey: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape lama helin. Dooro faylkiisa la fulin karo si aad u baadho habaynta."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Xulashooyinka Inkscape waa la hubiyey: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Fasiraha Python lama hubin ama lama cusboonaysiin karin: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Doorbidka fasiraha Python lama hubin sababtoo ah galka kordhinta isticmaalaha lama heli karo."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape lama baari karin: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Dib u bilow Inkscape si fasiraha la cusboonaysiiyey loo adeegsado."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Kordhinnada nidaamka: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape kama jawaabin {seconds} ilbiriqsi gudahood."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Kordhinnada isticmaalaha: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Furaha ikhtiyaariga ah ee uvr waa la heli karaa: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Furaha ikhtiyaariga ah ee uvr lama helin; doorbidka turjubaanka Inkscape sidii hore ayuu u taagan yahay."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Nooca Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Dooro faylka Inkscape ee la fulin karo si aad u baadho."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Barnaamijka Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Kordhinnada"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Warbixin"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Kordhinnada nidaamka: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape kama jawaabin {seconds} ilbiriqsi gudahood. Waxaa laga yaabaa in xiriirka ay xannibayaan tusaale kale oo Inkscape ah ama kordhin. Xir tusaalooyinka kale ee Inkscape ama demi kordhinta xannibaysa, ka dibna mar kale isku day."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Kordhinnada isticmaalaha: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Nooca Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Lama heli karo"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Amar: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Fasire: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Goobta: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Wax rakibid Ink/Stitch ah lama helin."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Ku rakib Ink/Stitch mid ka mid ah galalka kordhinta Inkscape ee kor ku xusan."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Jid: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "Dooro renderer-ka tolida..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Midabada marka la kaydinayo"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Had iyo jeer qor palette-ka"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Mar kasta i weydii"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Qaabka palette-ka"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Weligaa ha qorin palette-ka"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "GPU render-ka qaabka (textured)"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Fur faylka daabacaadda"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Soo rar palette…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Bax"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Fur..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Ka bax daaqadaha oo dhan iyo server-ka"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "Raad raac dhacdooyinka"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Qalab"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "Dejinta Inkscape..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Luuqad"
+        "source": "&Language",
+        "translation": "&Luqad"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Qaabaynta isgoyska cirbadda"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Midabada {palette} waxa loo kaydiyay sidii {name}"
     },
     "status.slider.color": {
         "source": "Color…",

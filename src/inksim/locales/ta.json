@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "மொழி {language} ஆக அமைக்கப்பட்டது. இப்போது InkSim-ஐ மறுதொடக்கம் செய்யலாமா?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "மொழி மாற்றப்பட்டது. புதிய மொழியைப் பயன்படுத்த, InkSim ஐ மூடி, Inkscape இலிருந்து மீண்டும் திறக்கவும்."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "சிஸ்டம் இயல்பு மொழி பயன்படுத்தப்படும். இப்போது InkSim-ஐ மறுதொடக்கம் செய்யலாமா?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "மொழி மாற்றப்பட்டது"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "அனைத்து திறந்த InkSim சாளரங்களும் மூடப்படும்; தற்போதைய கோப்பு மீண்டும் திறக்கப்படும்."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "ஊசி நிறம்"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "சாதாரண முன்னோட்டம்"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "இடங்களில் சேர்"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "பின்செல்"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder} கோப்புறைக்குப் பின்செல் (Alt+Left)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "ரத்து செய்"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "தையல் முன்னோட்டச் செயல்முறை தோல்வியடைந்தது: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "செயல்முறை வெளியேற்றக் குறியீடு: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV ஏற்றுமதி தோல்வியடைந்தது."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "முழுப் பதிவு: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "தையல் முன்னோட்டத்துக்கான நேரம் முடிந்துவிட்டது."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch CSV ஏற்றுமதி நடைபெறுகிறது..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} கோப்பு(கள்) நகலெடுக்கப்பட்டன"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "கோப்புகளை நகலெடு"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "தேர்ந்தெடுத்த ஒவ்வொரு வடிவமைப்பின் அருகிலும் 256 px PNG-ஐ எழுது (design.pes.png).\nபழைய கோப்புகளையா அல்லது எல்லாச் சிறுபடங்களையா மீண்டும் உருவாக்குவது என்பதை மெனு தேர்வுசெய்கிறது."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "பணிமேசை"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "நிறங்கள்"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "பெயர்"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "அளவு"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "தையல்கள்"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "அளவு: {width:.1f} x {height:.1f} மிமீ"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "ஆவணங்கள்"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "பதிவிறக்கங்கள்"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "இந்த SVG-ஐ புதிய Inkscape சாளரத்தில் திறக்கவும்."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Inkscape-இல் திருத்து"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "பாதையைத் திருத்து"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "இந்தக் கோப்புறையில் ஆதரிக்கப்படும் கோப்புகள் இல்லை."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "பிடித்தவை"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "இந்தக் கோப்பைப் படிக்க முடியவில்லை: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "காட்டு"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "ஆதரிக்கப்படும் அனைத்தும்"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV தையல் தரவு"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "எம்பிராய்டரி"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG மூலக் கோப்பு"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "பொருத்து"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "கோப்புறை"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "கோப்புகளை உலாவ கோப்புறையை இருமுறை சொடுக்கவும்."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "கோப்புறையின் கோப்புகளைப் பார்க்க Enter அழுத்தவும் அல்லது கோப்புறையை இருமுறை சொடுக்கவும்."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "முன்னேறு"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder} கோப்புறைக்கு முன்னேறு (Alt+Right)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "செல்"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "முகப்பு"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "சின்னத்தின் பின்னணி நிழல் ({level}, 0 = கருப்பு, 255 = வெள்ளை)\nபட்டியலின் மேல் Shift+சக்கரத்தைச் சுழற்றினால் நிழலை மாற்றலாம்."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "சின்னத்தின் அளவு ({size} px)\nபட்டியலின் மேல் Ctrl+சக்கரத்தைச் சுழற்றினால் சின்னங்களின் அளவை மாற்றலாம்."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape-ஐத் தொடங்க முடியவில்லை: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG கோப்புகளைத் திருத்த Inkscape தேவை."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "கட்டமைக்கப்பட்ட Ink/Stitch நிறுவலும் Python துவக்கியும் தேவை."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "இந்தக் கோப்புறையை அணுக முடியாது."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "மூலம்: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "மூலக் கோப்புறையைத் திற"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "{path} மூலக் கோப்புறையைத் திற"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "இலக்கு: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "இலக்குக் கோப்புறையைத் திற"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "{path} இலக்குக் கோப்புறையைத் திற"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "மாற்றிய நேரம்: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "கோப்புகளை நகர்த்து"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} கோப்பு(கள்) நகர்த்தப்பட்டன"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "சரியான எம்பிராய்டரி கோப்பு இல்லை"
+        "translation": "இது செல்லுபடியான எம்பிராய்டரி கோப்பு அல்ல"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "உண்மையான முன்னோட்டம்"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "திற"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "எம்பிராய்டரி கோப்பை திற"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "தேர்ந்தெடுத்த எம்பிராய்டரி கோப்பைத் திற."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "நிறங்கள்…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "நிறத்தட்டு கோப்பிலிருந்தோ மற்றொரு வடிவமைப்பிலிருந்தோ நூல் நிறங்களை ஏற்று.\nஇந்த வடிவம் நிறங்களைச் சேமிக்க முடியாததால், அவை இந்தக் கோப்பின் அருகே <name>.edr என்ற பெயரில் வைக்கப்படும்."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "இந்தக் கோப்பில் ஏற்கெனவே அதன் சொந்த நூல் நிறங்கள் சேமிக்கப்பட்டுள்ளன."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "கோப்புகளை ஒட்டு"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "கோப்புறைப் பாதையை உள்ளிடு அல்லது ஒட்டு"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "இடங்கள்"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "முன்னோட்டம்"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "இந்த SVG-யிலிருந்து Inkscape/Ink/Stitch மூலம் தையல் தரவை உருவாக்கவும்."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "செயலில் உள்ள Ink/Stitch ஸ்கிரிப்டையோ அதன் அமைக்கப்பட்ட Python துவக்கியையோ இயக்க முடியவில்லை."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "இந்தக் கோப்புறையைப் படிக்க முடியவில்லை: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "சமீபத்தியவை:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— கோப்பகத்தைத் தேர்ந்தெடு —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "புதுப்பி"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "இந்தக் கோப்புறையைப் புதுப்பி (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "பிடித்தவற்றிலிருந்து நீக்கு"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "சிறுபடத்தை 180° சுழற்று"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "சிறுபடத்தை இடப்புறம் சுழற்று"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "சுழற்ற, சிறுபடம் உள்ள வடிவமைப்பைத் தேர்ந்தெடு"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "அசல் திசை"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "சிறுபடத்தை வலப்புறம் சுழற்று"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} சிறுபடம்(கள்) {degrees}° சுழற்றப்பட்டன"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "கோப்புகளைத் தேடு"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "திறக்க ஒரு கோப்பைத் தேர்ந்தெடு."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "அளவு: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "இந்த உரையாடலில் இந்த நீட்டிப்புகளை மறை.\n| குறியால் பிரித்துக் கொடு; பட்டியல் config.toml-இல் சேமிக்கப்படும்."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "தவிர்"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: கிடைக்கவில்லை."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch நீட்டிப்பு: சரிபார்க்க முடியவில்லை. மீண்டும் முயற்சிக்க Tools... என்பதைப் பயன்படுத்து."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch நீட்டிப்பு: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch நீட்டிப்பு: Inkscape-இன் நீட்டிப்பு கோப்பகங்களில் கிடைக்கவில்லை."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch நீட்டிப்பு: Inkscape அமைக்கப்படும் வரை சரிபார்க்க முடியாது."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch நீட்டிப்பு: இன்னும் சரிபார்க்கப்படவில்லை. சரிபார்க்க Tools... என்பதைப் பயன்படுத்து."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "தையல்கள்: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG மூலக் கோப்பு. தையல் முன்னோட்டத்திற்கு Inkscape தேவை."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG மூலக் கோப்பு. Inkscape/Ink/Stitch மூலம் தையல் தரவை உருவாக்க முன்னோட்டத்தைத் தேர்ந்தெடு."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG-ஐ வரைய முடியவில்லை."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "இந்த SVG இங்கே முன்னோட்டமிடுவதற்கு மிகப் பெரியது."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "தற்காலிக முன்னோட்டக் கோப்பை உருவாக்க முடியவில்லை: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "சிறுபடங்கள்: {created} உருவாக்கப்பட்டன, {skipped} ஏற்கெனவே புதுப்பித்த நிலையில் உள்ளன, {failed} தோல்வியடைந்தன"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "சிறுபடங்கள்: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "{count} சிறுபடம்(களின்) அசல் திசை மீட்டெடுக்கப்பட்டது"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "சிறுபடங்கள் உருவாக்கப்படுகின்றன…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "கோப்பைத் திற"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "கருவிகள்..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "கோப்புகள் ஏற்கெனவே உள்ளன"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "கோப்பு பரிமாற்றம் தோல்வியடைந்தது: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "கோப்பு பரிமாற்றம் தோல்வியடைந்தது"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "கோப்புகளால் மாற்ற முடியாத கோப்புறைகள் உட்பட, இந்த இலக்குப் பாதைகள் ஏற்கெனவே உள்ளன. எதுவும் பரிமாற்றப்படவில்லை:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "கோப்புறைகளை மாற்ற முடியாது"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} தயார்: {count} கோப்பு(கள்)"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "இந்த இலக்குக் கோப்புகள் ஏற்கெனவே உள்ளன:\n{files}\n\nஅனைத்தையும் மாற்றவா?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "இந்தக் கோப்புகள் ஏற்கெனவே இங்கே உள்ளன."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV தையல் தரவு"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "கோப்புறை"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "எம்பிராய்டரி"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "ஆதரிக்கப்படாதது"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG மூலக் கோப்பு"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "இந்தக் கோப்பு வகையை InkSim-இல் திறக்க முடியாது."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "தாய் கோப்புறையைத் திற (Alt+Up)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "காட்சி"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "விவரங்கள்"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "சின்னங்கள் மட்டும்"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "சின்னங்களும் உரையும்"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "பெரிதாக்கு"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "சிறிதாக்கு"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "நிறத்தட்டையோ நிறமுள்ள வடிவமைப்பையோ தேர்ந்தெடு"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name}-இல் நூல் நிறங்கள் எதுவும் சேமிக்கப்படவில்லை."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "அனைத்துக் கோப்புகளும்"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "வடிவமைப்புக் கோப்புகள் (சேமித்திருந்தால் நிறங்கள்)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "நிறத்தட்டுக் கோப்புகள்"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "இந்த வடிவமைப்பில் ஏற்கெனவே அதன் சொந்த நூல் நிறங்கள் சேமிக்கப்பட்டுள்ளன."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name}-இல் இந்த வடிவமைப்புக்கான நிறங்கள் ஏற்கெனவே சேமிக்கப்பட்டுள்ளன.\nஅதற்குப் பதிலாக {target}-ஐப் பயன்படுத்தவா?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "எனது தேர்வை நினைவில் கொள்"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format}-இல் நூல் நிறங்களைச் சேமிக்க முடியாது.\nவடிவமைப்பின் அருகே {name} எனச் சேமிக்கவா?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "நூல் நிறங்கள்"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name}-இல் {available} நிறங்கள் உள்ளன; ஆனால் வடிவமைப்பில் {blocks} நிறத் தொகுதிகள் உள்ளன.\nஇருந்தாலும் பயன்படுத்தவா? கடைசி நிறம் மீண்டும் பயன்படுத்தப்படும்."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "நிறங்களைச் சேமிக்க முடியவில்லை: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "தையல் ரெண்டரரை தேர்வு செய்"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "மாற்று"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape நீட்டிப்பு நிலையைச் சேமிக்க முடியவில்லை: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "கிடைக்கவில்லை"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape இயங்கக்கூடிய கோப்பு அல்லது முழுக் கட்டளை வரி. உதாரணமாக, \"flatpak run org.inkscape.Inkscape\". சரிபார்க்க Enter அழுத்தவும்."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "பிழைத்திருத்த ஸ்கிரிப்டை உருவாக்கு (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "பிழைத்திருத்த ஸ்கிரிப்ட் அமைப்பை மாற்ற முடியவில்லை."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Inkscape கட்டளையை மீண்டும் இயக்குவதற்காக, ஆவணத்தின் அருகே debug_inksim.sh கோப்பை எழுதும்."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim நீட்டிப்பு கோப்புறைகள் எதுவும் கிடைக்கவில்லை."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape நீட்டிப்பு கோப்புறைகளை ஆய்வு செய்ய முடியவில்லை: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "முன்னோட்டக் கட்டளை மாற்றப்பட்டது"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "மாற்றப்பட்ட கோப்புகள்: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "புதுப்பித்த நிலையில் உள்ளது"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "நிறுவல் தேவை"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "நிலையைப் பெற முடியவில்லை: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "புதுப்பிப்பு தேவை ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "கணினி நீட்டிப்பு: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "தற்போதைய பயனர் நீட்டிப்பு (நிறுவல்/புதுப்பிப்பு இலக்கு): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "வேறொரு பயனரின் நீட்டிப்பு: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "கடைசி அமைப்புக்குப் பிறகு Inkscape நீட்டிப்புகள் கோப்புறையில் உள்ள Ink/Stitch இணைப்பு மாறிவிட்டது:\n\n{details}\n\nInkSim தற்போதைய இணைப்பைப் பயன்படுத்துகிறது. அதைச் சேமிக்க Inkscape அமைப்பைத் திற."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "கோப்புறை இல்லை: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "இப்போது இதைச் சுட்டுகிறது: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim நீட்டிப்புகளை நிறுவு / புதுப்பி"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim நீட்டிப்பு கோப்புறையில் சில கோப்புகள் ஏற்கனவே உள்ளன. மாற்றுவதற்காகப் பட்டியலிடப்பட்ட கோப்புகளில் பயனர் செய்த மாற்றங்கள் இருக்கலாம். பட்டியலிடப்பட்ட மற்ற கோப்புகள் பாதுகாக்கப்படும்; அவை ஒருபோதும் நீக்கப்படாது.\n\nமாற்ற வேண்டிய கோப்புகள்:\n{replace_files}\n\nபாதுகாக்க வேண்டிய கோப்புகள்:\n{preserve_files}\n\nதொடர வேண்டுமா?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSim-இன் Inkscape நீட்டிப்புகளை நிறுவ முடியவில்லை: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim-இன் Inkscape நீட்டிப்புகள் {path}-இல் நிறுவப்பட்டன அல்லது புதுப்பிக்கப்பட்டன. அவற்றை ஏற்ற Inkscape-ஐ மறுதொடக்கம் செய்."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "எதுவுமில்லை"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "பயன்படுத்து"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "அனைத்து Inkscape நீட்டிப்புகளுக்குமான Python interpreter-ஐ இதற்கு மாற்றவா?\n\n{path}\n\nஇது Inkscape-இன் உலகளாவிய விருப்பத்தை மாற்றும். தொடரவா?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "தனிப்பயன் பாதை…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Python interpreter-ஐத் தேர்ந்தெடு"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "விருப்பத்தேர்வு — சொந்த Python சூழல் கொண்ட நீட்டிப்புகளுக்கு மட்டும்"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Inkscape-இன் Python interpreter-ஐக் கேட்கும் நீட்டிப்புகளுக்கு மட்டுமே இது தேவை (எ.கா. Ink/Stitch).\nInkSim-இன் சொந்த நீட்டிப்புகள் InkSim-ஐ நேரடியாகத் தொடங்கும்."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch சூழல் ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "மாற்ற வேண்டாம் (பரிந்துரைக்கப்படுகிறது)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Interpreter அமைப்பை நீக்கு"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "இதிலிருந்து Python interpreter அமைப்பை நீக்கவா?\n\n{path}\n\nஒவ்வொரு நீட்டிப்புக்கும் Inkscape அதன் இயல்புநிலை interpreter-ஐப் பயன்படுத்தும். தொடரவா?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "முந்தையதை மீட்டமை"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr தொடக்கி ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "கணினியின் PATH-இல் Inkscape கிடைக்கவில்லை."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscape விருப்பத்தேர்வுகளைப் படிக்க முடியவில்லை: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscape விருப்பத்தேர்வுகளைப் புதுப்பிக்க முடியவில்லை: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscape நீட்டிப்பு கோப்பகங்களைப் படிக்க முடியவில்லை: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape பதிலளிக்கக் காத்திருக்கிறது…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape-ஐச் சரிபார்க்கிறது... {seconds} வி"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python மொழிபெயர்ப்பி: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "புதிய Python மொழிபெயர்ப்பியைப் பயன்படுத்த Inkscape-ஐ மறுதொடக்கம் செய்."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python interpreter ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "அமைக்கப்படவில்லை"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "பழைய InkSim நகல்களை அகற்று"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "பட்டியலிடப்பட்ட பயனர் நீட்டிப்பு கோப்புறைகளும் அவற்றிலுள்ள எல்லா கோப்புகளும் நிரந்தரமாக நீக்கப்படும். தற்போதைய நிறுவல்/புதுப்பிப்பு இலக்கும் கணினி நீட்டிப்பு கோப்புறைகளும் நீக்கப்படாது.\n\n{directories}\n\nதொடர வேண்டுமா?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "பழைய InkSim நீட்டிப்பு கோப்புறையை அகற்ற முடியவில்லை: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "பழைய InkSim நீட்டிப்பு கோப்புறைகள் அகற்றப்பட்டன. நீட்டிப்புப் பட்டியலைப் புதுப்பிக்க Inkscape-ஐ மறுதொடக்கம் செய்."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "செயலில் உள்ள Ink/Stitch நிறுவல் புதுப்பிக்கப்பட்டது: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape-ஐச் சரிபார்க்கிறது: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim அமைப்பைச் சேமிக்க முடியவில்லை: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "கண்டறியப்பட்ட அமைப்பு InkSim அமைப்பில் சேமிக்கப்பட்டது."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape கட்டளை சேமிக்கப்பட்டது, ஆனால் சரிபார்ப்பு தோல்வியடைந்ததால் நீட்சிக் கோப்புறைகள் புதுப்பிக்கப்படவில்லை."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "சரிபார்க்கப்பட்ட Inkscape செயல்படுத்தக்கூடிய கோப்பு: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape நீட்டிப்பு கோப்புறைகளை ஆய்வு செய்ய முடியவில்லை: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Ink/Stitch நிறுவல்கள் கிடைத்தன: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape நீட்டிப்புகள் கோப்புறையில் உள்ள Ink/Stitch இணைப்பு இப்போது இதைச் சுட்டுகிறது: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch நிறுவல் எதுவும் கிடைக்கவில்லை."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape நீட்டிப்புகளின் Python interpreter: {path} (மாற்றப்படவில்லை)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape Python interpreter விருப்பம் நீக்கப்பட்டது."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "முந்தைய Python interpreter மீட்டமைக்கப்பட்டது: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python மொழிபெயர்ப்பி புதுப்பிக்கப்பட்டது: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape கிடைக்கவில்லை. அமைப்பை ஆய்வு செய்ய அதன் செயல்படுத்தக்கூடிய கோப்பைத் தேர்ந்தெடு."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Inkscape விருப்பத்தேர்வுகள் சரிபார்க்கப்பட்டன: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python மொழிபெயர்ப்பியைச் சரிபார்க்கவோ புதுப்பிக்கவோ முடியவில்லை: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "பயனர் நீட்டிப்பு கோப்பகம் கிடைக்காததால் Python மொழிபெயர்ப்பி விருப்பத்தேர்வு சரிபார்க்கப்படவில்லை."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape-ஐ ஆய்வு செய்ய முடியவில்லை: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "புதுப்பிக்கப்பட்ட மொழிபெயர்ப்பியைப் பயன்படுத்த Inkscape-ஐ மறுதொடக்கம் செய்."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "கணினி நீட்டிப்புகள்: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "{seconds} விநாடிகளுக்குள் Inkscape பதிலளிக்கவில்லை."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "பயனர் நீட்டிப்புகள்: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "விருப்ப uvr தொடக்கி உள்ளது: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "விருப்ப uvr தொடக்கி கிடைக்கவில்லை; Inkscape interpreter விருப்பம் மாற்றப்படாமல் உள்ளது."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape பதிப்பு: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "ஆய்வு செய்ய Inkscape செயல்படுத்தக்கூடிய கோப்பைத் தேர்ந்தெடு."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape செயலி"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "விரிவாக்கங்கள்"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "அறிக்கை"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "கணினி நீட்டிப்புகள்: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "{seconds} விநாடிகளுக்குள் Inkscape பதிலளிக்கவில்லை. மற்றொரு Inkscape நிகழ்வு அல்லது நீட்டிப்பு தகவல்தொடர்பைத் தடுக்கலாம். மற்ற Inkscape நிகழ்வுகளை மூடவும் அல்லது தடுக்கும் நீட்டிப்பை முடக்கவும்; பிறகு மீண்டும் முயற்சிக்கவும்."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "பயனர் நீட்டிப்புகள்: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape பதிப்பு: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "கிடைக்கவில்லை"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "கட்டளை: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "மொழிபெயர்ப்பி: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "இடம்: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch நிறுவல் எதுவும் கிடைக்கவில்லை."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "மேலே காட்டப்பட்டுள்ள Inkscape நீட்சிக் கோப்புறைகளில் ஒன்றில் Ink/Stitch-ஐ நிறுவவும்."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "பாதை: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "தையல் ரெண்டரரை தேர்வு செய்..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "சேமிக்கும்போது நிறங்கள்"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "நிறத்தட்டையை எப்போதும் எழுது"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "ஒவ்வொரு முறையும் கேள்"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "நிறத்தட்டு வடிவம்"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "நிறத்தட்டையை ஒருபோதும் எழுதாதே"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "GPU அமைப்பு ரெண்டர்"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "எம்பிராய்டரி கோப்பை திற"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "நிறத்தட்டையை ஏற்று…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "வெளியேறு"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "திற..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "அனைத்து சாளரங்களையும் சேவையகத்தையும் வெளியேறு"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "நிகழ்வுகளை கண்டறி"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&கருவிகள்"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape அமைப்பு..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "மொழி"
+        "source": "&Language",
+        "translation": "&மொழி"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "ஊசி குறுக்கு கோடு அமைப்புகள்"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette}-இன் நிறங்கள் {name} எனச் சேமிக்கப்பட்டன"
     },
     "status.slider.color": {
         "source": "Color…",

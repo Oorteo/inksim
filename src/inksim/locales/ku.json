@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Ziman wek {language} hate danîn. Ma tu dixwazî niha InkSim ji nû ve dest pê bikî?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "زمان گۆڕدرا. بۆ جێبەجێکردنی زمانی نوێ، InkSim دابخە و لە Inkscape دووبارە بیکەرەوە."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Zimanê standard ê pergalê dê were bikaranîn. Ma tu dixwazî niha InkSim ji nû ve dest pê bikî?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "Ziman hate guhertin"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Hemû paceyên vekirî yên InkSimê dê bêne girtin û pelê niha dê ji nû ve were vekirin."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Rengê derziyê"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Pêşdîtina normal"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "زیادکردن بۆ شوێنەکان"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "پاشەوە"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "بگەڕێوە بۆ {folder} (Alt+چەپ)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Betal bike"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Pêvajoya pêşdîtina dirûtinan têk çû: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Koda derketinê ya pêvajoyê: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Derxistina CSV ya Ink/Stitch têk çû."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "تۆماری تەواو: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "کاتی پێشبینینی دوورین بەسەرچوو."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Derxistina CSV ya Ink/Stitch tê meşandin..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} پەڕگە کۆپی کرا"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "کۆپیکردنی پەڕگەکان"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "بۆ هەر دیزاینی هەڵبژێردراوێک وێنەیەکی PNG بە پانیی 256 px لەتەنیشتی بنووسە (design.pes.png).\nلە پێڕەکەوە هەڵبژێرە کە تەنها پەڕگە کۆنەکان یان هەموو وێنە بچووکەکان نوێ بکرێنەوە."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "ڕوومێز"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "ڕەنگەکان"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "ناو"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "قەبارە"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "دروزەکان"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Mezinahî: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "بەڵگەنامەکان"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "داگیراوەکان"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Vê SVG-yê di paceyeke nû ya Inkscape de veke."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Di Inkscape de sererast bike"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "دەستکاریکردنی ڕێڕەو"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Di vê peldankê de pelên piştgirîkirî tune ne."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "دڵخوازەکان"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Ev pel nayê xwendin: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Nîşan bide"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Hemû yên piştgirîkirî"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "Daneyên dirûtinê yên CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Dirûtin"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "Çavkaniya SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Li gorî ekranê"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Peldank"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Ji bo gerîna pelên wê, li peldankê du caran bitikîne."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "بۆ بینینی پەڕگەکانی بوخچەکە، Enter دابگرە یان دووجار کلیکی لەسەر بکە."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "پێشەوە"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "بڕۆ پێشەوە بۆ {folder} (Alt+ڕاست)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "بڕۆ"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "ماڵەوە"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "تۆخیی پاشبنەمای ئایکۆن ({level}، 0 = ڕەش، 255 = سپی)\nShift+سوڕاندنی چەرخەکە لەسەر لیست تۆخییەکە دەگۆڕێت."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "قەبارەی ئایکۆن ({size} px)\nCtrl+سوڕاندنی چەرخەکە لەسەر لیست قەبارەی ئایکۆنەکان دەگۆڕێت."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape nehat destpêkirin: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Ji bo sererastkirina pelên SVG, Inkscape pêwîst e."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "پێویستە دامەزراندنێکی ڕێکخراوی Ink/Stitch و لانچکەری Python هەبێت."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Ev peldank nayê gihîştin."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "لە: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "بوخچەی سەرچاوە بکەرەوە"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "بوخچەی سەرچاوەی {path} بکەرەوە"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "بۆ: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "بوخچەی ئامانج بکەرەوە"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "بوخچەی ئامانجی {path} بکەرەوە"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Guhertin: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "گواستنەوەی پەڕگەکان"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} پەڕگە گوازرایەوە"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "Ev ne pelgeyek embroidery ya derbasdar e."
+        "translation": "Pelê dirûtinê yê derbasdar nîne"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Pêşdîtina rastîn"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Veke"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Pelê dirûnê veke"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Pelê dirûtinê yê hilbijartî veke."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "ڕەنگەکان…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "ڕەنگی خوری لە پەڕگەی پالێت یان دیزاینێکی ترەوە بار بکە.\nلە تەنیشت ئەم پەڕگەیە بە ناوی <name>.edr هەڵدەگیرێن، چونکە ئەم فۆرماتە\nناتوانێت ڕەنگەکان لەخۆ بگرێت."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "ئەم پەڕگەیە ڕەنگی خوری خۆی لەخۆ گرتووە."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "لکاندنی پەڕگەکان"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "ڕێڕەوی بوخچە بنووسە یان لێرە دایبنێ"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "شوێنەکان"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Pêşdîtin"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "بە Inkscape/Ink/Stitch داتای دوورین لەم SVG ـە دروست بکە."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Nikarî skrîpta Ink/Stitch ya çalak an jî pelê destpêkerê Python-ê yê mîhengkirî bixebitîne."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Ev peldank nayê xwendin: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Yên dawî:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— peldankê hilbijêre —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "نوێکردنەوە"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "نوێکردنەوەی ئەم بوخچەیە (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "لابردنی دڵخواز"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "سوڕاندنی وێنە بچووکەکە بە 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "سوڕاندنی وێنە بچووکەکە بۆ چەپ"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "دیزاینێک کە وێنە بچووکەی هەبێت هەڵبژێرە بۆ سوڕاندنی"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "ئاڕاستەی سەرەتایی"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "سوڕاندنی وێنە بچووکەکە بۆ ڕاست"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "ئاڕاستەی {count} وێنە بچووک بە {degrees}° سوڕێنرا"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Li pelan bigere"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Ji bo vekirinê pelekê hilbijêre."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Mezinahî: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "ئەم جۆرە پاشگرییانە لەم پەنجەرەیەدا مەبینە.\nبە | لێکیان جیا بکەرەوە؛ لیستەکە لە config.toml هەڵدەگیرێت."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "بازدان"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: nehat dîtin."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Pêvekera Ink/Stitch: kontrol nehat kirin. Ji bo dîsa ceribandinê Amûr... bikar bîne."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Pêvekera Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Pêvekera Ink/Stitch: di peldankên pêvekeran ên Inkscape de nehat dîtin."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Pêvekera Ink/Stitch: heta Inkscape neyê mîhengkirin nayê kontrolkirin."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Pêvekera Ink/Stitch: hîn nehatiye kontrolkirin. Ji bo kontrolkirinê Amûr... bikar bîne."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Dirûtin: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "Çavkaniya SVG. Ji bo pêşdîtina dirûtinê Inkscape pêwîst e."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "Çavkaniya SVG. Pêşdîtinê hilbijêre da ku bi Inkscape/Ink/Stitch daneyên dirûtinê çêbike."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG nehat xuyangkirin."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Ev SVG ji bo pêşdîtinê li vir pir mezin e."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Pelê demkî yê pêşdîtinê nehat çêkirin: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "وێنە بچووکەکان: {created} دروستکرا، {skipped} نوێ بوون، {failed} سەرکەوتوو نەبوون"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "وێنە بچووکەکان: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "ئاڕاستەی سەرەتایی {count} وێنە بچووک گەڕێندرایەوە"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "دروستکردنی وێنە بچووکەکان…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Pelê veke"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Amûr..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "پەڕگەکان پێشتر هەن"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "گواستنەوەی پەڕگە سەرکەوتوو نەبوو: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "گواستنەوەی پەڕگە سەرکەوتوو نەبوو"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "ئەم ڕێڕەوانەی مەبەست پێشتر هەن؛ لەوانەش بوخچە کە ناتوانرێت بە پەڕگە جێگۆڕکێیان پێ بکرێت. هیچ شتێک نەگوازرایەوە:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "ناتوانرێت بوخچەکان جێگۆڕکێیان پێ بکرێت"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} ئامادەیە: {count} پەڕگە"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "ئەم پەڕگە مەبەستانە پێشتر هەن:\n{files}\n\nهەموویان جێگۆڕکێیان پێ بکە؟"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "ئەم پەڕگانە لێرە پێشتر هەن."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "Daneyên dirûtinê yên CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Peldank"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Dirûtin"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Ne piştgirîkirî"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "Çavkaniya SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Ev cure pel di InkSim de nayê vekirin."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "بوخچەی باوان بکەرەوە (Alt+سەرەوە)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "بینین"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "وردەکارییەکان"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "تەنها ئایکۆنەکان"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "ئایکۆن و دەق"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Nêzîktir bike"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Dûrtir bike"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "پالێتێک یان دیزاینێکی ڕەنگدار هەڵبژێرە"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} هیچ ڕەنگێکی خوری تێدا نییە."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "هەموو پەڕگەکان"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "پەڕگەکانی دیزاین (ئەگەر ڕەنگیان تێدا هەبێت)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "پەڕگەکانی پالێت"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "ئەم دیزاینە ڕەنگی خوری خۆی لەخۆ گرتووە."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} پێشتر ڕەنگی ئەم دیزاینەی تێدایە.\nبە {target} جێگۆڕکێی پێ بکە؟"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "هەڵبژاردەکەم لەبیر بگرە"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} ڕەنگی خوری لەخۆ ناگرێت.\nوەک {name} لەتەنیشت دیزاینەکە هەڵیبگرە؟"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "ڕەنگی خوری"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} {available} ڕەنگی هەیە، بەڵام دیزاینەکە {blocks} بلۆکی ڕەنگی هەیە.\nهەروا بەکاری بهێنە؟ ڕەنگی دواوە دووبارە دەبێتەوە."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "پاشەکەوتکردنی ڕەنگەکان نەکرا: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Rendererê dirûnê hilbijêre"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Biguherîne"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Rewşa pêvekera Inkscape nehat tomarkirin: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Ne berdest e"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "جێبەجێکەری Inkscape یان هێڵێکی تەواوی فەرمان، بۆ نموونە \"flatpak run org.inkscape.Inkscape\". بۆ پشکنینی فەرمانەکە Enter دابگرە."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "دروستکردنی سکریپتی دیباگ (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "گۆڕینی ڕێکخستنی سکریپتی دیباگ نەکرا."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "debug_inksim.sh لەتەنیشت بەڵگەنامەکە دەنووسێت تا بتوانرێت بانگکردنی Inkscape دووبارە بکرێتەوە."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Tu peldankên pêvekerên InkSim nehatin dîtin."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Peldankên pêvekerên Inkscape nehatin kontrolkirin: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Fermana pêşdîtinê hatiye guherandin"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "pelên hatine guherandin: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Nû ye"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Sazkirin pêwîst e"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Rewş ne berdest e: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Nûkirin pêwîst e ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "پاشکۆی سیستەم: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "پاشەکەوتی ئێستای بەکارهێنەر (ئامانجی دامەزراندن/نوێکردنەوە): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "پاشکۆی بەکارهێنەرێکی تر: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch لە بوخچەی زیادکراوەکانی Inkscape لە دوایین ڕێکخستنەوە گۆڕاوە:\n\n{details}\n\nInkSim بەستەرە ئێستاکە بەکاردەهێنێت. ڕێکخستنی Inkscape بکەرەوە بۆ پاشەکەوتکردنی."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "بوخچەکە نەماوە: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "ئێستا ئاماژە دەکات بۆ: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Pêvekerên InkSim saz bike / nû bike"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Hin pel jixwe di peldanka pêvekerên InkSim de hene. Dibe ku pelên ji bo guhertinê hatine rêzkirin guhertinên bikarhêneran di xwe de hebin. Pelên din ên rêzkirî dê bên parastin û tu carî neyên jêbirin.\n\nPelên ku dê bên guhertin:\n{replace_files}\n\nPelên ku dê bên parastin:\n{preserve_files}\n\nBerdewam bike?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Pêvekerên InkSim ên Inkscape nehatin sazkirin: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Pêvekerên InkSim ên Inkscape li {path} hatin sazkirin an nûkirin. Ji bo barkirina wan Inkscape ji nû ve veke."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Tu yek"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "جێبەجێکردن"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "گۆڕینی وەرگێڕی Python بۆ هەموو زیادکراوەکانی Inkscape بۆ:\n\n{path}\n\nئەمە هەڵبژاردەیەکی گشتیی Inkscape دەگۆڕێت. بەردەوام بیت؟"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "ڕێڕەوی تایبەت…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "وەرگێڕێکی Python هەڵبژێرە"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "ئارەزوومەندانە — تەنها بۆ ئەو زیادکراوانەی ژینگەی Pythonـی تایبەتیان هەیە"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "تەنها ئەو زیادکراوانە پێویستیان بەوەیە کە وەرگێڕی Pythonـی Inkscape بەکاربهێنن (بۆ نموونە Ink/Stitch).\nزیادکراوەکانی InkSim خۆیان InkSim دەست پێ دەکەن."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "ژینگەی Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "مەیگۆڕە (پێشنیارکراو)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "لابردنی ڕێکخستنی وەرگێڕ"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "لابردنی ڕێکخستنی وەرگێڕی Python لەمەوە:\n\n{path}\n\nInkscape بۆ هەموو زیادکراوەکان دەگەڕێتەوە بۆ وەرگێڕی بنەڕەتی. بەردەوام بیت؟"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "گەڕاندنەوەی ڕێکخستنی پێشوو"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "دەستپێکەری uvr ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape di rêça pergalê de nehat dîtin."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Vebijarkên Inkscape nehatin xwendin: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Vebijarkên Inkscape nehatin nûkirin: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Peldankên pêvekerên Inkscape nehatin xwendin: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Li benda bersiva Inkscape ye…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "پشکنینی Inkscape... {seconds} چرکە"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Wergêrê Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Ji bo sepandina wergêrê nû yê Python Inkscape ji nû ve veke."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "وەرگێڕی Python ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "nehatiye mîhengkirin"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Kopyayên kevn ên InkSim rake"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Peldankên pêvekerên bikarhêner ên hatine rêzkirin û hemû pelên di hundirê wan de dê bi awayekî daîmî bên jêbirin. Armanca sazkirin/nûkirinê ya heyî û peldankên pêvekerên pergalê dê neyên rakirin.\n\n{directories}\n\nBerdewam bike?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Peldanka kevn a pêvekerên InkSim nehat rakirin: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Peldankên kevn ên pêvekerên InkSim hatin rakirin. Ji bo nûkirina lîsteya pêvekeran Inkscape ji nû ve veke."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Sazkirina çalak a Ink/Stitch hat nûkirin: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape tê kontrolkirin: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Mîhengên InkSim nehatin tomarkirin: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Sazkirina hatî dîtin di mîhengên InkSim de hate tomarkirin."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "فەرمانی Inkscape پاشەکەوت کرا، بەڵام پشکنینەکە سەرکەوتوو نەبوو؛ بۆیە بوخچەکانی پاشکۆ نوێ نەکرانەوە."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Pelê xebatê yê Inkscape hat kontrolkirin: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Peldankên pêvekerên InkSim nehatin kontrolkirin."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Sazkirinên Ink/Stitch hatin dîtin: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "بەستەری Ink/Stitch لە بوخچەی زیادکراوەکانی Inkscape ئێستا ئاماژە دەکات بۆ: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Tu sazkirineke Ink/Stitch nehat dîtin."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "وەرگێڕی Pythonـی زیادکراوەکانی Inkscape: {path} (وەک خۆی ماوەتەوە)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "هەڵبژاردەی وەرگێڕی Pythonـی Inkscape لابرا."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "وەرگێڕی Pythonـی پێشوو گەڕێندرایەوە: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Wergêrê Python hate nûkirin: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape nehat dîtin. Ji bo kontrolkirina sazkirinê pelê xebatê hilbijêre."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Vebijarkên Inkscape hatin kontrolkirin: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Wergêrê Python nehat kontrolkirin an nûkirin: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Vebijarka wergêrê Python nehat kontrolkirin, ji ber ku peldanka pêvekerên bikarhêner ne berdest e."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape nehat kontrolkirin: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Ji bo sepandina wergêrê nûkirî Inkscape ji nû ve veke."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Pêvekerên pergalê: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape di nav {seconds} çirkeyan de bersiv neda."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Pêvekerên bikarhêner: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "دەستپێکەری ئارەزوومەندانەی uvr بەردەستە: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "دەستپێکەری ئارەزوومەندانەی uvr نەدۆزرایەوە؛ هەڵبژاردەی وەرگێڕی Inkscape وەک خۆی ماوەتەوە."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Guhertoya Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Ji bo kontrolkirinê pelê xebatê yê Inkscape hilbijêre."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Sepana Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Pêveker"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Raport"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Pêvekerên pergalê: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape di nav {seconds} çirkeyan de bersiv neda. Dibe ku paceyeke din a Inkscape an pêvekerek rê li ber danûstandinê bigire. Paceyên din ên Inkscape bigire an pêvekerê astengker neçalak bike, paşê dîsa biceribîne."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Pêvekerên bikarhêner: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Guhertoya Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Ne berdest e"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Ferman: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Wergêr: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Cih: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Tu sazkirineke Ink/Stitch nehat dîtin."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Ink/Stitch لە یەکێک لە بوخچەکانی پاشکۆی Inkscape کە لە سەرەوە نیشان دراون دابمەزرێنە."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Rêça pelê: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "Rendererê dirûnê hilbijêre..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "ڕەنگەکان لە کاتی پاشەکەوتکردندا"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "هەمیشە پالێتەکە بنووسە"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "هەر جارێک بپرسە"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "فۆرماتی پالێت"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "هەرگیز پالێتەکە مەنووسە"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "Rendera bi tekstura GPU"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Pelê dirûnê veke"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "بارکردنی پالێت…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Derkeve"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Veke..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Hemû pencere û serverê derkeve"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "Bûyeran şopîne"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Amûr"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "ڕێکخستنی Inkscape..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Ziman"
+        "source": "&Language",
+        "translation": "&Ziman"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Mîhengên xaçerêya derziyê"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "ڕەنگەکانی {palette} وەک {name} پاشەکەوت کران"
     },
     "status.slider.color": {
         "source": "Color…",

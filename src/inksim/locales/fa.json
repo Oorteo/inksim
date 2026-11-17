@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "زبان به {language} تنظیم شده است. همین حالا InkSim را دوباره راه‌اندازی کن تا اعمال شود؟"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "زبان عوض شده. InkSim رو ببند و از Inkscape دوباره باز کن تا زبان جدید اعمال بشه."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "زبان پیش‌فرض سیستم استفاده خواهد شد. همین حالا InkSim را دوباره راه‌اندازی کن تا اعمال شود؟"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "تغییر زبان"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "همه پنجره‌های باز InkSim بسته می‌شوند و فایل فعلی دوباره باز می‌شود."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "رنگ سوزن"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "پیشنمایش عادی"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "افزودن به مکان‌ها"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "برگشت"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "برگشت به {folder} (Alt+Left)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "لغو"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "فرایند پیش‌نمایش دوخت ناموفق بود: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "کد خروج فرایند: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "خروجی CSV از Ink/Stitch ناموفق بود."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "گزارش کامل: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "ساخت پیش‌نمایش دوخت بیش از حد طول کشید."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "در حال اجرای خروجی CSV از Ink/Stitch..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} فایل کپی شد"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "کپی فایل‌ها"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "برای هر طرح انتخاب‌شده، یک تصویر PNG با اندازهٔ ۲۵۶ پیکسل کنار آن ذخیره می‌کند (design.pes.png).\nمنو تعیین می‌کند فایل‌های قدیمی بازسازی شوند یا همهٔ تصاویر بندانگشتی."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "رومیزی"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "رنگ‌ها"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "نام"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "اندازه"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "کوک‌ها"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "اندازه: {width:.1f} × {height:.1f} میلی‌متر"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "اسناد"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "بارگیری‌ها"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "این SVG را در پنجرهٔ جدیدی از Inkscape باز کنید."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "ویرایش در Inkscape"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "ویرایش مسیر"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "هیچ فایل پشتیبانی‌شده‌ای در این پوشه نیست."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "موارد دلخواه"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "خواندن این فایل ممکن نیست: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "نمایش"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "همهٔ فایل‌های پشتیبانی‌شده"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "دادهٔ دوخت CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "گلدوزی"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "منبع SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "جاسازی"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "پوشه"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "برای مرور فایل‌های پوشه، روی آن دوبار کلیک کنید."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "برای دیدن فایل‌های پوشه، Enter را بزنید یا روی آن دوبار کلیک کنید."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "جلو"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "رفتن به {folder} (Alt+Right)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "برو"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "خانه"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "سایه‌روشن پس‌زمینهٔ آیکن ({level}، ۰ = سیاه، ۲۵۵ = سفید)\nبا چرخاندن چرخ ماوس روی فهرست، سایه‌روشن را تغییر دهید."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "اندازهٔ آیکن ({size} پیکسل)\nبا چرخاندن چرخ ماوس روی فهرست، اندازهٔ آیکن‌ها را تغییر دهید."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "اجرای Inkscape ممکن نشد: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "برای ویرایش فایل‌های SVG به Inkscape نیاز است."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "یک نصب پیکربندی‌شده از Ink/Stitch و یک اجراگر پایتون لازم است."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "دسترسی به این پوشه ممکن نیست."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "مبدأ: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "باز کردن پوشهٔ مبدأ"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "باز کردن پوشهٔ مبدأ {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "مقصد: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "باز کردن پوشهٔ مقصد"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "باز کردن پوشهٔ مقصد {path}"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "تاریخ ویرایش: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "انتقال فایل‌ها"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} فایل منتقل شد"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "فایل گلدوزی معتبر نیست."
+        "translation": "این فایل گلدوزی معتبر نیست"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "پیشنمایش واقعی"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "باز کردن"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "باز کردن فایل گلدوزی"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "فایل گلدوزی انتخاب‌شده را باز کنید."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "رنگ‌ها…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "رنگ نخ‌ها را از یک فایل پالت یا طرح دیگری بارگذاری کنید.\nاین رنگ‌ها در فایلی با نام <name>.edr کنار این فایل نگه‌داری می‌شوند، چون این قالب نمی‌تواند رنگ‌ها را در خودش ذخیره کند."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "این فایل رنگ نخ‌های خودش را ذخیره می‌کند."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "چسباندن فایل‌ها"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "مسیر پوشه را وارد یا جای‌گذاری کنید"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "مکان‌ها"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "پیش‌نمایش"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "داده‌های دوخت این SVG را با Inkscape/Ink/Stitch تولید کنید."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "اجرای اسکریپت Ink/Stitch فعال یا راه‌انداز Python پیکربندی‌شدهٔ آن ممکن نیست."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "خواندن این پوشه ممکن نیست: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "اخیر:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— انتخاب پوشه —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "تازه‌سازی"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "تازه‌سازی این پوشه (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "برداشتن از موارد دلخواه"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "چرخاندن تصویر بندانگشتی ۱۸۰°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "چرخاندن تصویر بندانگشتی به چپ"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "برای چرخاندن، طرحی را انتخاب کنید که تصویر بندانگشتی داشته باشد"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "جهت اصلی"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "چرخاندن تصویر بندانگشتی به راست"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "تصویر بندانگشتی {count} مورد، {degrees}° چرخانده شد"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "جست‌وجوی فایل‌ها"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "فایلی را برای باز کردن انتخاب کنید."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "اندازه: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "این پسوندها را در پنجره پنهان کنید.\nآن‌ها را با | جدا کنید؛ فهرست در config.toml ذخیره می‌شود."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "نادیده گرفتن"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: پیدا نشد."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "افزونهٔ Ink/Stitch: بررسی ممکن نشد. برای تلاش دوباره از ابزارها... استفاده کنید."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "افزونهٔ Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "افزونهٔ Ink/Stitch: در پوشه‌های افزونهٔ Inkscape پیدا نشد."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "افزونهٔ Ink/Stitch: تا وقتی Inkscape پیکربندی نشده، امکان بررسی نیست."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "افزونهٔ Ink/Stitch: هنوز بررسی نشده. برای بررسی از ابزارها... استفاده کنید."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "تعداد دوخت‌ها: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "منبع SVG. برای پیش‌نمایش دوخت به Inkscape نیاز است."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "منبع SVG. برای تولید دادهٔ دوخت با Inkscape/Ink/Stitch، «پیش‌نمایش» را انتخاب کنید."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "رندر SVG ممکن نشد."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "این SVG برای پیش‌نمایش در اینجا بیش از حد بزرگ است."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "ساخت فایل موقت پیش‌نمایش ممکن نشد: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "تصاویر بندانگشتی: {created} ساخته شد، {skipped} به‌روز بود، {failed} ناموفق بود"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "تصاویر بندانگشتی: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "جهت اصلی تصویر بندانگشتی {count} مورد بازگردانده شد"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "در حال ساخت تصاویر بندانگشتی…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "باز کردن فایل"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "ابزارها..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "فایل‌ها از قبل وجود دارند"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "انتقال فایل ناموفق بود: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "انتقال فایل ناموفق بود"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "این مسیرهای مقصد از قبل وجود دارند؛ از جمله پوشه‌هایی که نمی‌توان با فایل جایگزین‌شان کرد. هیچ فایلی منتقل نشد:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "جایگزینی پوشه‌ها ممکن نیست"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} آماده است: {count} فایل"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "این فایل‌های مقصد از قبل وجود دارند:\n{files}\n\nهمهٔ آن‌ها جایگزین شوند؟"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "این فایل‌ها از قبل همین‌جا هستند."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "دادهٔ دوخت CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "پوشه"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "گلدوزی"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "پشتیبانی‌نشده"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "منبع SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "این نوع فایل را نمی‌توان در InkSim باز کرد."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "باز کردن پوشهٔ والد (Alt+Up)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "نما"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "جزئیات"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "فقط آیکن‌ها"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "آیکن و متن"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "بزرگ‌نمایی"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "کوچک‌نمایی"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "یک پالت یا طرح رنگی انتخاب کنید"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} هیچ رنگ نخی ذخیره نکرده است."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "همهٔ فایل‌ها"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "فایل‌های طرح (رنگ‌ها، در صورت ذخیره‌شدن)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "فایل‌های پالت"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "این طرح رنگ نخ‌های خودش را ذخیره می‌کند."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} از قبل رنگ‌های این طرح را ذخیره کرده است.\nبا {target} جایگزین شود؟"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "انتخابم را به خاطر بسپار"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} رنگ نخ‌ها را ذخیره نمی‌کند.\nآن‌ها را با نام {name} کنار طرح ذخیره کنیم؟"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "رنگ نخ‌ها"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} {available} رنگ دارد، اما طرح {blocks} بلوک رنگی دارد.\nبااین‌حال از آن استفاده شود؟ رنگ آخر تکرار می‌شود."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "ذخیرهٔ رنگ‌ها ممکن نشد: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "انتخاب رندرکننده دوخت"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "تغییر"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "ذخیرهٔ وضعیت افزونهٔ Inkscape ممکن نشد: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "در دسترس نیست"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "فایل اجرایی Inkscape یا یک خط فرمان کامل؛ مثلاً «flatpak run org.inkscape.Inkscape». برای بررسی، Enter را بزنید."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "ساخت اسکریپت اشکال‌زدایی (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "تغییر تنظیم اسکریپت اشکال‌زدایی ممکن نشد."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "فایل debug_inksim.sh را کنار سند می‌سازد تا اجرای Inkscape دوباره انجام‌پذیر باشد."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "هیچ پوشه‌ای برای افزونهٔ InkSim پیدا نشد."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "بررسی پوشه‌های افزونهٔ Inkscape ممکن نشد: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "دستور پیش‌نمایش تغییر کرده است"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "فایل‌های تغییرکرده: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "به‌روز است"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "نصب لازم است"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "وضعیت در دسترس نیست: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "به‌روزرسانی لازم است ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "افزونهٔ سیستمی: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "افزونهٔ فعلی کاربر (محل نصب/به‌روزرسانی): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "افزونهٔ کاربر دیگر: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch در پوشهٔ افزونه‌های Inkscape از زمان آخرین راه‌اندازی تغییر کرده است:\n\n{details}\n\nInkSim از پیوند فعلی استفاده می‌کند. تنظیم Inkscape را باز کنید تا آن را ذخیره کنید."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "پوشه وجود ندارد: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "اکنون به این مسیر اشاره می‌کند: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "نصب / به‌روزرسانی افزونه‌های InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "بعضی فایل‌ها از قبل در پوشهٔ افزونهٔ InkSim وجود دارند. فایل‌هایی که برای جایگزینی فهرست شده‌اند ممکن است تغییرات کاربر را داشته باشند. فایل‌های دیگرِ فهرست‌شده حفظ می‌شوند و هرگز حذف نخواهند شد.\n\nفایل‌های جایگزین‌شونده:\n{replace_files}\n\nفایل‌های حفظ‌شونده:\n{preserve_files}\n\nادامه می‌دهید؟"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "نصب افزونه‌های InkSim برای Inkscape ممکن نشد: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "افزونه‌های InkSim برای Inkscape در {path} نصب یا به‌روزرسانی شدند. برای بارگذاری آن‌ها، Inkscape را دوباره راه‌اندازی کنید."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "هیچ‌کدام"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "اعمال"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "مفسر پایتون را برای همهٔ افزونه‌های Inkscape به این مسیر تغییر می‌دهید؟\n\n{path}\n\nاین کار یکی از تنظیمات سراسری Inkscape را تغییر می‌دهد. ادامه می‌دهید؟"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "مسیر دلخواه…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "انتخاب مفسر پایتون"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "اختیاری — فقط برای افزونه‌هایی که محیط پایتون جداگانه دارند"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "این تنظیم فقط برای افزونه‌هایی لازم است که از Inkscape مفسر پایتون می‌خواهند (مثلاً Ink/Stitch).\nافزونه‌های خود InkSim، InkSim را مستقیماً اجرا می‌کنند."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "محیط Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "تغییر نده (پیشنهادی)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "حذف تنظیم مفسر"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "تنظیم مفسر پایتون از این مسیر حذف شود؟\n\n{path}\n\nInkscape برای همهٔ افزونه‌ها از مفسر پیش‌فرضش استفاده می‌کند. ادامه می‌دهید؟"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "بازگرداندن مقدار قبلی"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "راه‌انداز uvr ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape در مسیر سیستم پیدا نشد."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "خواندن تنظیمات Inkscape ممکن نشد: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "به‌روزرسانی تنظیمات Inkscape ممکن نشد: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "خواندن پوشه‌های افزونهٔ Inkscape ممکن نشد: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "منتظر پاسخ Inkscape…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "در حال بررسی Inkscape... {seconds} ثانیه"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "مفسر Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "برای اعمال مفسر Python جدید، Inkscape را دوباره راه‌اندازی کنید."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "مفسر پایتون ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "تنظیم نشده"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "حذف نسخه‌های قدیمی InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "پوشه‌های افزونهٔ کاربرِ فهرست‌شده و همهٔ فایل‌های داخل آن‌ها برای همیشه حذف می‌شوند. محل نصب/به‌روزرسانی فعلی و پوشه‌های افزونهٔ سیستم حذف نخواهند شد.\n\n{directories}\n\nادامه می‌دهید؟"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "حذف پوشهٔ افزونهٔ قدیمی InkSim ممکن نشد: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "پوشه‌های افزونهٔ قدیمی InkSim حذف شدند. برای تازه‌سازی فهرست افزونه‌ها، Inkscape را دوباره راه‌اندازی کنید."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "نصب فعال Ink/Stitch به‌روزرسانی شد: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "در حال بررسی Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "ذخیرهٔ پیکربندی InkSim ممکن نشد: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "تنظیمات شناسایی‌شده در پیکربندی InkSim ذخیره شد."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "فرمان Inkscape ذخیره شد، اما بررسی ناموفق بود؛ بنابراین پوشه‌های افزونه به‌روزرسانی نشدند."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "فایل اجرایی Inkscape بررسی شد: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "بررسی پوشه‌های افزونهٔ InkSim ممکن نشد"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "تعداد نصب‌های پیدا‌شدهٔ Ink/Stitch: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "پیوند Ink/Stitch در پوشهٔ افزونه‌های Inkscape اکنون به این مسیر اشاره می‌کند: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "هیچ نصب Ink/Stitch پیدا نشد."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "مفسر پایتون افزونه‌های Inkscape: {path} (بدون تغییر)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "تنظیم مفسر پایتون Inkscape حذف شد."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "مفسر پایتون قبلی بازگردانده شد: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "مفسر Python به‌روزرسانی شد: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape پیدا نشد. برای بررسی تنظیمات، فایل اجرایی آن را انتخاب کنید."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "تنظیمات Inkscape بررسی شد: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "بررسی یا به‌روزرسانی مفسر Python ممکن نشد: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "تنظیم مفسر Python بررسی نشد، چون پوشهٔ افزونه‌های کاربر در دسترس نیست."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "بررسی Inkscape ممکن نشد: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "برای اعمال مفسر به‌روزشده، Inkscape را دوباره راه‌اندازی کنید."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "افزونه‌های سیستم: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape در مدت {seconds} ثانیه پاسخ نداد."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "افزونه‌های کاربر: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "راه‌انداز اختیاری uvr در دسترس است: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "راه‌انداز اختیاری uvr پیدا نشد؛ تنظیم مفسر Inkscape بدون تغییر ماند."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "نسخهٔ Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "برای بررسی، فایل اجرایی Inkscape را انتخاب کنید."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "برنامهٔ Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "افزونه‌ها"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "گزارش"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "افزونه‌های سیستم: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape در مدت {seconds} ثانیه پاسخ نداد. ممکن است یک نمونهٔ دیگر از Inkscape یا افزونه‌ای ارتباط را مسدود کرده باشد. نمونه‌های دیگر Inkscape را ببندید یا افزونهٔ مسدودکننده را غیرفعال کنید و دوباره تلاش کنید."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "افزونه‌های کاربر: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "نسخهٔ Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "در دسترس نیست"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "دستور: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "مفسر: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "مکان: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "هیچ نصب Ink/Stitch پیدا نشد."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Ink/Stitch را در یکی از پوشه‌های افزونهٔ Inkscape که در بالا آمده نصب کنید."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "مسیر: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "انتخاب رندرکننده دوخت..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "ذخیرهٔ رنگ‌ها"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "همیشه پالت را ذخیره کن"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "هر بار بپرس"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "قالب پالت"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "هرگز پالت را ذخیره نکن"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "رندر بافتدار GPU"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "باز کردن فایل گلدوزی"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "بارگذاری پالت…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "خروج"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "باز کردن..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "بستن همه پنجره‌ها و سرور"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "ردیابی رویدادها"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&ابزارها"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "تنظیم Inkscape..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "زبان"
+        "source": "&Language",
+        "translation": "&زبان"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "تنظیمات نشانگر سوزن"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "رنگ‌های {palette} با نام {name} ذخیره شدند"
     },
     "status.slider.color": {
         "source": "Color…",

@@ -3,14 +3,14 @@
 
 from __future__ import annotations
 
-import os
-import sys
+import shutil
 import time
 from collections.abc import Callable
 from pathlib import Path
 
 import pystitch as emb
-from PySide6.QtCore import QEvent, QObject, QProcess, QRect, QSignalBlocker, Qt, QTimer
+from filelock import Timeout
+from PySide6.QtCore import QEvent, QObject, QRect, QSignalBlocker, Qt, QTimer, Signal, Slot
 from PySide6.QtGui import (
     QAction,
     QActionGroup,
@@ -45,9 +45,13 @@ from ..config import Config
 from ..constants import APP_TITLE, DEFAULT_STATUS_TEXT
 from ..debug import logger
 from ..formats import (
+    PALETTE_SOURCE_ATTR,
+    color_block_count,
     extension_from_output_filter,
+    get_palette_output_formats,
     get_supported_output_filter,
     get_supported_output_formats,
+    sidecar_palette_candidates,
 )
 from ..i18n import (
     _,
@@ -57,8 +61,15 @@ from ..i18n import (
     get_language_name,
     set_active_locale,
 )
+from ..integration.inkscape_extensions import (
+    INSTALL_DIRECTORY,
+    InstallSafetyError,
+    prepare_install,
+)
+from ..integration.inkstitch import changed_inkstitch_targets, missing_inkstitch_links
+from ..integration.paths import INKSCAPE_CONFIG_KEY, detect_tools, prefer_saved_inkscape
+from ..paths import _sanitize_path, _sanitize_path_text, _unsanitize_path
 from ..render import render_export_image
-from ..runtime import _sanitize_path, _unsanitize_path
 from ..update_check import (
     UpdateCheckThread,
     current_version,
@@ -70,9 +81,12 @@ from ..update_check import (
 )
 from .about import show_about
 from .config_editor import show_config_editor
-from .dialogs import EmbroideryOpenDialog
+from .dialogs import dispose_qt_child
 from .export_dialog import ExportPreviewDialog
 from .help import show_command_line_help
+from .inkscape_dialog import InkscapeIntegrationDialog
+from .open_dialog import OpenBrowserDialog
+from .palette import apply_palette_to_design, palette_format, store_palette_after_save
 from .shortcuts import ViewerShortcutFilter
 from .status import ModeBar
 from .timeline import TimelineWidget
@@ -82,13 +96,16 @@ from .viewer import EmbroideryViewerWidget
 class MainWindow(QMainWindow):
     """Main InkSim window coordinating the viewer and playback controls."""
 
+    closed = Signal(object)
+    hidden = Signal(object)
+    quit_all_requested = Signal()
+    restart_requested = Signal(object)
+
     def __init__(
         self,
         fullscreen: bool = False,
         window_size: tuple[int, int] | None = None,
         window_position: tuple[int, int] | None = None,
-        server_mode: bool = False,
-        delete_input: bool = False,
         document_path: str | Path | None = None,
         snap_layout_key: str | None = None,
     ) -> None:
@@ -102,9 +119,6 @@ class MainWindow(QMainWindow):
         self.setAcceptDrops(True)
         self.is_fullscreen: bool = False
         self._fullscreen_was_maximized: bool = False
-        self.server_mode: bool = server_mode
-        self._delete_input: bool = delete_input
-        self._allow_close: bool = False
         self._startup_fullscreen: bool = fullscreen
         self._should_maximize_default: bool = not window_size and not fullscreen
         self.config: Config = Config()
@@ -118,7 +132,12 @@ class MainWindow(QMainWindow):
             self.set_document_path(document_path)
         self.recent_directories: list[str] = self._load_recent_directories()
         self.current_file_path: Path | None = None
+        self._temporary_input_path: Path | None = None
+        self._debug_script: Path | None = None
+        self._preserve_temporary_input_on_close = False
+        self._hide_on_close = False
         self._source_mtime_ns: int | None = None
+        self._source_palette_signature: tuple[tuple[Path, int | None], ...] | None = None
         self._last_source_check: float = 0.0
         self._source_check_interval_s: float = 0.4
         self._is_reloading_from_disk: bool = False
@@ -129,7 +148,10 @@ class MainWindow(QMainWindow):
         self._snapped_geometry: QRect | None = None
         self._last_geometry: QRect = self.geometry()
         self._base_title: str = APP_TITLE
+        self.command_line_args: list[str] = []
         self._update_thread: UpdateCheckThread | None = None
+        self._startup_inkscape_check_done = False
+        self._startup_inkstitch_check_done = False
         self._update_suffix: str = self._resolve_update_suffix(last_result(self.config))
         self._update_window_title()
 
@@ -277,6 +299,28 @@ class MainWindow(QMainWindow):
         except OSError:
             return None
 
+    def has_unchanged_file(self, file_path: Path | str, temporary_input: bool) -> bool:
+        selected_path = Path(file_path).resolve()
+        current_mtime = self._capture_source_mtime(selected_path)
+        return (
+            selected_path == self.current_file_path
+            and current_mtime is not None
+            and current_mtime == self._source_mtime_ns
+            and self._capture_palette_signature(selected_path) == self._source_palette_signature
+            and (self._temporary_input_path == selected_path) == temporary_input
+        )
+
+    def _capture_palette_signature(
+        self, file_path: Path | str
+    ) -> tuple[tuple[Path, int | None], ...]:
+        return tuple(
+            (candidate.resolve(), self._capture_source_mtime(candidate))
+            for candidate in sidecar_palette_candidates(Path(file_path))
+        )
+
+    def set_hide_on_close(self, enabled: bool) -> None:
+        self._hide_on_close = enabled
+
     def _show_reload_dialog(self) -> QDialog:
         dialog = QDialog(self)
         dialog.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint)
@@ -371,7 +415,7 @@ class MainWindow(QMainWindow):
             directory_path = Path(initial_directory)
             if directory_path.is_dir():
                 self.last_directory = str(directory_path.resolve())
-            QTimer.singleShot(0, self.open_file_dialog)
+            QTimer.singleShot(0, self.open_browser_dialog)
 
     def _action(
         self,
@@ -404,8 +448,12 @@ class MainWindow(QMainWindow):
 
     def _build_menus(self) -> None:
         file_menu = self.menuBar().addMenu(_("menu.file"))
-        self._action(file_menu, _("menu.file.open"), self.open_file_dialog, "Ctrl+O")
+        self._action(file_menu, _("menu.file.open_file"), self.open_browser_dialog, "Ctrl+O")
         self._action(file_menu, _("menu.file.save_as"), self._save_as_embroidery_slot, "Ctrl+S")
+        self._action(
+            file_menu, _("menu.file.load_palette", "Load palette…"), self.load_palette_for_design
+        )
+        self._build_palette_save_menu(file_menu)
         export_menu = file_menu.addMenu(_("menu.file.export"))
         self._action(
             export_menu, _("menu.file.export.shaded_print"), self.export_shaded_png, "Ctrl+E"
@@ -440,7 +488,15 @@ class MainWindow(QMainWindow):
             file_menu, _("menu.file.rotate_right"), lambda checked: self.viewer.rotate_design(1)
         )
         self._add_separator(file_menu)
-        self._action(file_menu, _("menu.file.quit"), self.request_quit, "Ctrl+Q")
+        self._action(file_menu, _("dialog.export.close"), self.close_window, "Ctrl+W")
+        self._add_separator(file_menu)
+        # Qt treats a single "&" as a mnemonic marker, so it is escaped for display.
+        self._action(
+            file_menu,
+            _("menu.file.quit_all").replace("&", "&&"),
+            self.request_quit_all,
+            "Ctrl+Q",
+        )
         self._add_separator(file_menu)
         view_menu = self.menuBar().addMenu(_("menu.view"))
         self._action(view_menu, _("menu.view.actual_size"), self._set_one_to_one_slot, "1")
@@ -502,8 +558,19 @@ class MainWindow(QMainWindow):
         self._action(
             playback, _("menu.playback.next_command"), self._next_command_slot, "Shift+Right"
         )
-        language_menu = self.menuBar().addMenu(_("menu.language", "Language"))
         current = active_locale()
+        integration_title = _("menu.integration")
+        language_title = _("menu.language", "&Language")
+        if current not in {"cs", "en"}:
+            integration_title = integration_title.replace("&", "")
+            language_title = language_title.replace("&", "")
+        integration_menu = self.menuBar().addMenu(integration_title)
+        self._action(
+            integration_menu,
+            _("menu.integration.locate_inkscape", "Inkscape Setup..."),
+            self._locate_inkscape_slot,
+        )
+        language_menu = self.menuBar().addMenu(language_title)
         language_group = QActionGroup(self)
         language_group.setExclusive(True)
 
@@ -550,6 +617,105 @@ class MainWindow(QMainWindow):
         help_menu.addSeparator()
         self._action(help_menu, _("menu.help.check_updates"), self._check_for_updates)
 
+    def _locate_inkscape_slot(self, checked: bool = False) -> None:
+        try:
+            self.config.reload()
+        except ValueError as ex:
+            logger.warning("Could not reload configuration before Inkscape setup: %s", ex)
+            return
+        executable = prefer_saved_inkscape(
+            self.config.get(INKSCAPE_CONFIG_KEY), detect_tools().inkscape
+        ).path
+        dialog = InkscapeIntegrationDialog(self, executable)
+        dialog.exec()
+
+    def check_inkscape_extension(self, launcher_path: str) -> None:
+        """Open Inkscape setup when its current-user extension targets another launcher."""
+        if self._startup_inkscape_check_done:
+            return
+        self._startup_inkscape_check_done = True
+        try:
+            self.config.reload()
+        except ValueError as ex:
+            logger.warning("Could not reload configuration for Inkscape extension check: %s", ex)
+            return
+        status = self.config.get(INKSCAPE_CONFIG_KEY)
+        if not isinstance(status, dict):
+            return
+        extension_root_value = status.get("user_extensions")
+        if not isinstance(extension_root_value, str):
+            return
+        extension_root = Path(extension_root_value).expanduser()
+        if not (extension_root / INSTALL_DIRECTORY).is_dir():
+            return
+
+        try:
+            plan = prepare_install(extension_root, Path(launcher_path))
+        except (InstallSafetyError, OSError, ValueError) as error:
+            logger.warning("Could not check the installed Inkscape extension: %s", error)
+            return
+        if not plan.command_changed:
+            return
+
+        executable = status.get("executable")
+        if not isinstance(executable, str):
+            executable = shutil.which("inkscape")
+        dialog = InkscapeIntegrationDialog(
+            self,
+            executable,
+            inksim_launcher=Path(launcher_path),
+            highlight_inksim_update=True,
+        )
+        dialog.exec()
+
+    def check_inkstitch_link(self) -> None:
+        """Warn when the cached Ink/Stitch extension folder changed since the last setup."""
+        if self._startup_inkstitch_check_done:
+            return
+        self._startup_inkstitch_check_done = True
+        try:
+            self.config.reload()
+        except ValueError as ex:
+            logger.warning("Could not reload configuration for Ink/Stitch link check: %s", ex)
+            return
+        status = self.config.get(INKSCAPE_CONFIG_KEY)
+        if not isinstance(status, dict):
+            return
+        moved = changed_inkstitch_targets(status)
+        missing = missing_inkstitch_links(status)
+        if not moved and not missing:
+            return
+
+        details = [
+            _(
+                "integration.inkscape.inkstitch_link_moved",
+                "now points to: {path}",
+            ).format(path=_sanitize_path_text(str(target)))
+            for target in moved
+        ]
+        details.extend(
+            _(
+                "integration.inkscape.inkstitch_link_missing",
+                "folder is gone: {path}",
+            ).format(path=_sanitize_path_text(path))
+            for path in missing
+        )
+        QMessageBox.warning(
+            self,
+            _("integration.inkscape.title"),
+            _(
+                "integration.inkscape.inkstitch_link_changed_notice",
+                "Ink/Stitch in the Inkscape extensions folder changed since the last setup:"
+                "\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup"
+                " to store it.",
+            ).format(details="\n".join(details)),
+        )
+
+        executable = status.get("executable")
+        if not isinstance(executable, str):
+            executable = shutil.which("inkscape")
+        InkscapeIntegrationDialog(self, executable).exec()
+
     def _center_needle_slot(self, checked: bool = False) -> None:
         self.viewer.center_needle()
 
@@ -586,7 +752,7 @@ class MainWindow(QMainWindow):
                 "The language has been set to {language}. Restart InkSim now to apply it?",
             ).format(language=name)
         )
-        if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
+        if answer == QMessageBox.Yes:
             self._apply_language_change()
         else:
             set_active_locale(previous)
@@ -602,79 +768,43 @@ class MainWindow(QMainWindow):
                 "The system default language will be used. Restart InkSim now to apply it?",
             )
         )
-        if answer == QMessageBox.Yes or (self.server_mode and answer == QMessageBox.Ok):
+        if answer == QMessageBox.Yes:
             self._apply_language_change()
         else:
             set_active_locale(previous)
             self._rebuild_menus()
 
     def _show_language_restart_prompt(self, message: str) -> int:
-        """Ask whether to restart now, with a clearer explanation in server mode.
-
-        In server mode a plain restart would reopen InkSim without the current
-        embroidery file (Inkscape provides it once via a temporary file), so the
-        user is asked to confirm closing the application. Cancelling reverts the
-        language change.
-        """
-        if self.server_mode:
-            return QMessageBox.question(
-                self,
-                _("dialog.language.title", "Language changed"),
-                _(
-                    "dialog.language.server_message",
-                    "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-                ),
-                QMessageBox.Ok | QMessageBox.Cancel,
-                QMessageBox.Ok,
-            )
+        """Ask whether to restart now; the restart closes all InkSim windows."""
         return QMessageBox.question(
             self,
             _("dialog.language.title", "Language changed"),
-            message,
+            f"{message}\n\n"
+            + _(
+                "dialog.language.windows_closed",
+                "All open InkSim windows will be closed and the current file reopened.",
+            ),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )
 
     def _apply_language_change(self) -> None:
-        """Restart in standalone mode or close in server mode.
-
-        In server mode the embroidery file is a temporary input provided once by
-        Inkscape, so a self-restart would reopen an empty window. Closing is the
-        only safe way to let the user restart from Inkscape with the new language.
-        """
-        if self.server_mode:
-            self._allow_close = True
-            self.close()
-        else:
-            self._restart_application()
+        """Ask the server to close all windows and relaunch with the current file."""
+        relaunch_args: list[str] = []
+        if self.document_path is not None:
+            relaunch_args.extend(["--document-path", str(self.document_path)])
+        if self.current_file_path is not None:
+            if self._temporary_input_path == self.current_file_path:
+                relaunch_args.extend(["--temporary-input", str(self.current_file_path)])
+                self._preserve_temporary_input_on_close = True
+            else:
+                relaunch_args.append(str(self.current_file_path))
+        self.restart_requested.emit(relaunch_args)
 
     def _rebuild_menus(self) -> None:
         """Rebuild the menu bar so checkmarks reflect the active locale."""
         self.menuBar().clear()
         self._build_menus()
-
-    def _restart_application(self) -> None:
-        """Relaunch InkSim with the same arguments and quit this instance.
-
-        The ``-l/--lang/--language`` flag is dropped so the language stored in
-        config (just set by the menu) takes effect instead of the old CLI value.
-
-        The relaunch command mirrors how InkSim was originally started:
-
-        * Installed via ``.whl`` → ``sys.argv[0]`` is the ``inksim`` console
-          script, so it is relaunched directly.
-        * Run as ``python -m inksim`` → ``sys.argv[0]`` is ``__main__.py``,
-          which has no package context, so it is relaunched as ``-m inksim``.
-        """
-        program = sys.executable
-        args = self._args_without_language_flag(sys.argv[1:])
-        if Path(sys.argv[0]).name == "__main__.py":
-            launch = ["-m", "inksim", *args]
-        else:
-            launch = [sys.argv[0], *args]
-        QProcess.startDetached(program, launch)
-        self._allow_close = True
-        self.close()
 
     def _confirm_and_close(
         self, title_key: str, title_default: str, text_key: str, text_default: str
@@ -688,31 +818,91 @@ class MainWindow(QMainWindow):
             QMessageBox.Yes,
         )
         if answer == QMessageBox.Yes:
-            self._allow_close = True
             self.close()
 
-    @staticmethod
-    def _args_without_language_flag(argv: list[str]) -> list[str]:
-        """Return *argv* with any ``-l/--lang/--language`` flag and its value removed."""
-        result: list[str] = []
-        skip_next = False
-        for arg in argv:
-            if skip_next:
-                skip_next = False
-                continue
-            if arg in ("-l", "--lang", "--language"):
-                skip_next = True
-                continue
-            if arg.startswith("--lang=") or arg.startswith("--language="):
-                continue
-            result.append(arg)
-        return result
+    def _build_palette_save_menu(self, file_menu: QMenu) -> None:
+        """Expose the remembered answer of the palette question in Save as."""
+        palette_menu = file_menu.addMenu(_("menu.file.colors_on_save", "Colors on save"))
+        self._palette_save_actions: dict[str, QAction] = {}
+        group = QActionGroup(self)
+        group.setExclusive(True)
+        for value, label in (
+            ("ask", _("menu.file.colors_on_save.ask", "Ask every time")),
+            ("always", _("menu.file.colors_on_save.always", "Always write the palette")),
+            ("never", _("menu.file.colors_on_save.never", "Never write the palette")),
+        ):
+            action = QAction(label, self)
+            action.setCheckable(True)
+            action.triggered.connect(
+                lambda _checked=False, selected=value: self.set_save_palette_choice(selected)
+            )
+            group.addAction(action)
+            palette_menu.addAction(action)
+            self._palette_save_actions[value] = action
+        self._build_palette_format_menu(palette_menu)
+        self._sync_save_palette_actions()
+
+    def _build_palette_format_menu(self, palette_menu: QMenu) -> None:
+        """Pick which palette file Save as writes (.edr, .col, .inf)."""
+        format_menu = palette_menu.addMenu(_("menu.file.colors_on_save.format", "Palette format"))
+        self._palette_format_actions: dict[str, QAction] = {}
+        group = QActionGroup(self)
+        group.setExclusive(True)
+        for item in get_palette_output_formats():
+            extension = item["extension"]
+            action = QAction(extension.upper(), self)
+            action.setCheckable(True)
+            action.triggered.connect(
+                lambda _checked=False, selected=extension: self.set_save_palette_format(selected)
+            )
+            group.addAction(action)
+            format_menu.addAction(action)
+            self._palette_format_actions[extension] = action
+        self._sync_save_palette_format_actions()
+
+    def save_palette_format(self) -> str:
+        return palette_format(self.config)
+
+    def set_save_palette_format(self, extension: str) -> None:
+        try:
+            self.config.set("save_palette_format", extension)
+        except OSError as ex:
+            logger.warning("Could not store the palette format: %s", ex)
+        self._sync_save_palette_format_actions()
+
+    def _sync_save_palette_format_actions(self) -> None:
+        actions = getattr(self, "_palette_format_actions", None)
+        if not actions:
+            return
+        current = self.save_palette_format()
+        for extension, action in actions.items():
+            action.setChecked(extension == current)
+
+    def save_palette_choice(self) -> str:
+        """Return the remembered answer for writing a palette next to a save."""
+        value = self.config.get("save_palette_sidecar", "ask")
+        return value if value in ("ask", "always", "never") else "ask"
+
+    def set_save_palette_choice(self, value: str) -> None:
+        try:
+            self.config.set("save_palette_sidecar", value)
+        except OSError as ex:
+            logger.warning("Could not store the palette answer: %s", ex)
+        self._sync_save_palette_actions()
+
+    def _sync_save_palette_actions(self) -> None:
+        actions = getattr(self, "_palette_save_actions", None)
+        if not actions:
+            return
+        current = self.save_palette_choice()
+        for value, action in actions.items():
+            action.setChecked(value == current)
 
     def _show_config_editor_slot(self, checked: bool = False) -> None:
         show_config_editor(self, self.config)
 
     def _show_command_line_help_slot(self, checked: bool = False) -> None:
-        show_command_line_help(self)
+        show_command_line_help(self, self.command_line_args)
 
     def _show_about_slot(self, checked: bool = False) -> None:
         show_about(self)
@@ -777,18 +967,30 @@ class MainWindow(QMainWindow):
         """Query PyPI for a newer version and notify the user."""
         if self._update_thread is not None and self._update_thread.isRunning():
             return
+        app = QApplication.instance()
+        if app is None:
+            raise RuntimeError("Cannot check for updates without a QApplication.")
         self.statusBar().showMessage("Checking for updates...", 3000)
-        thread = UpdateCheckThread(self)
-        thread.result_ready.connect(lambda latest: self._on_update_result(latest, automatic))
-        thread.finished.connect(thread.deleteLater)
-        thread.finished.connect(lambda: self._clear_update_thread(thread))
+        thread = UpdateCheckThread(app, automatic=automatic)
+        thread.result_ready.connect(self._on_update_result)
+        thread.finished.connect(self._dispose_update_thread)
+        thread.finished.connect(self._clear_update_thread)
+        app.aboutToQuit.connect(thread.wait)
         self._update_thread = thread
         thread.start()
 
-    def _clear_update_thread(self, thread: UpdateCheckThread) -> None:
-        if self._update_thread is thread:
+    @Slot()
+    def _dispose_update_thread(self) -> None:
+        thread = self.sender()
+        if isinstance(thread, UpdateCheckThread):
+            dispose_qt_child(thread)
+
+    @Slot()
+    def _clear_update_thread(self) -> None:
+        if self._update_thread is self.sender():
             self._update_thread = None
 
+    @Slot(str, bool)
     def _on_update_result(self, latest: str, automatic: bool = False) -> None:
         record_check(self.config)
         if not latest:
@@ -1058,14 +1260,39 @@ class MainWindow(QMainWindow):
         self._last_geometry = current
 
     def _update_window_title(self) -> None:
-        """Show layout state and update status in the window title."""
-        snap_prefix = "[snap] " if self._layout_state == "snapped" else ""
+        """Show layout and debug state plus update status in the window title."""
+        prefixes = []
+        if self._debug_script is not None:
+            prefixes.append("[debug]")
+        if self._layout_state == "snapped":
+            prefixes.append("[snap]")
+        prefix = "".join(f"{part} " for part in prefixes)
         base = self._base_title
         suffix = self._update_suffix
         # The suffix must never repeat the application name.
         if suffix and APP_TITLE in suffix:
             suffix = ""
-        self.setWindowTitle(f"{snap_prefix}{base}{suffix}")
+        self.setWindowTitle(f"{prefix}{base}{suffix}")
+
+    def set_debug_script(self, path: Path | None) -> None:
+        """Remember the debug replay script and mark it in the window title."""
+        self._debug_script = path
+        self._update_window_title()
+
+    def _design_size_text(self) -> str:
+        """Return the current design size formatted for the window title."""
+        bounds = self.viewer.bounds
+        width_mm = bounds[2] - bounds[0]
+        height_mm = bounds[3] - bounds[1]
+        return f"{width_mm:.1f}x{height_mm:.1f}mm"
+
+    def _set_design_title(self, source_path: Path) -> None:
+        """Use *source_path* in the title after loading a generated preview."""
+        total = self.viewer.stitches_np.shape[0]
+        self._base_title = (
+            f"{APP_TITLE} - {source_path.name} - {total} sts - {self._design_size_text()}"
+        )
+        self._update_window_title()
 
     def _resolve_update_suffix(self, stored: str) -> str:
         """Return a clean title suffix from the stored version, if any."""
@@ -1094,84 +1321,37 @@ class MainWindow(QMainWindow):
         if getattr(self, "clear_snap_action", None):
             self.clear_snap_action.setEnabled(enabled)
 
-    def request_quit(self, checked: bool = False) -> None:
-        """Close the application instead of hiding a server window."""
-        self._allow_close = True
+    def close_window(self, checked: bool = False) -> None:
+        """Close only this window; the server keeps running."""
         self.close()
 
-    @staticmethod
-    def _inkscape_running() -> bool:
-        """Return True when at least one Inkscape process is running.
-
-        Probing for a running process named ``inkscape`` is more reliable
-        than trusting the PID of the extension process, which exits as soon
-        as it has forwarded the design.
-        """
-        import subprocess
-
-        try:
-            if os.name == "nt":
-                # Suppress the console window that ``tasklist`` would
-                # otherwise flash on Windows.
-                creationflags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
-                result = subprocess.run(
-                    ["tasklist"],
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                    creationflags=creationflags,
-                )
-                lowered = result.stdout.lower()
-                return "inkscape.exe" in lowered or "inkscape.com" in lowered
-            result = subprocess.run(
-                ["pgrep", "-x", "inkscape"], capture_output=True, check=False, text=True
-            )
-            return result.returncode == 0
-        except OSError:
-            return False
-
-    def _save_current_layout(self) -> None:
-        """Persist whatever layout is currently active."""
-        if self.is_fullscreen or self.isMinimized():
-            return
-        if self._layout_state == "snapped":
-            self._save_snap_layout()
-        else:
-            self._save_window_layout()
+    def request_quit_all(self, checked: bool = False) -> None:
+        """Ask the server to close every window and shut down."""
+        self.quit_all_requested.emit()
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        if self.server_mode and not self._allow_close:
-            alive = self._inkscape_running()
-            if not alive:
-                answer = QMessageBox.question(
-                    self,
-                    "Close InkSim server",
-                    (
-                        "The Inkscape instance that started this server is no longer running.\n\n"
-                        "Do you want to close InkSim?"
-                    ),
-                )
-                if answer == QMessageBox.Yes:
-                    self._allow_close = True
-                    event.accept()
-                    return
-            self._save_current_layout()
-            self.setWindowState(self.windowState() | Qt.WindowMinimized)
-            event.ignore()
-            return
         if self.viewer.is_playing:
             self.viewer.play_timer.stop()
             self.viewer.is_playing = False
+        try:
+            self._save_window_layout()
+        except (OSError, Timeout, ValueError) as ex:
+            logger.warning("Could not save window layout: %s", ex)
+        if self._hide_on_close:
+            event.ignore()
+            self.hide()
+            self.hidden.emit(self)
+            return
         # Release OpenGL resources while the context is still valid so Qt does
         # not warn about textures/buffers not being destroyed.
         try:
             self.viewer._gl_widget.cleanup()
         except Exception:
             pass
-        interconnect = getattr(self, "interconnect", None)
-        if interconnect is not None:
-            interconnect.stop()
+        if not self._preserve_temporary_input_on_close:
+            self._discard_temporary_input()
         event.accept()
+        self.closed.emit(self)
 
     def toggle_grid(self, checked: bool) -> None:
         self.viewer.show_grid = checked
@@ -1220,22 +1400,46 @@ class MainWindow(QMainWindow):
             self.viewer.stop_needle_highlight()
         self.viewer.update()
 
-    def open_file_dialog(self, checked: bool = False) -> None:
-        dialog = EmbroideryOpenDialog(
-            self, self.last_directory, self.current_file_path, self.recent_directories
+    def open_browser_dialog(
+        self,
+        checked: bool = False,
+        selected_file: str | Path | None = None,
+        initial_directory: str | Path | None = None,
+    ) -> None:
+        """Open the new file browser and handle its result action."""
+        if initial_directory is None:
+            initial_directory = (
+                Path(selected_file).parent if selected_file is not None else self.last_directory
+            )
+            initial_browser_file = self._browser_initial_file(selected_file)
+        else:
+            initial_browser_file = Path(selected_file) if selected_file is not None else None
+        dialog = OpenBrowserDialog(
+            self,
+            initial_directory,
+            initial_browser_file,
+            self.recent_directories,
         )
-        if dialog.exec() == QDialog.Accepted:
-            selected = dialog.selected_path
-            if selected is not None:
-                self.open_file(selected)
-            chosen_background = dialog.background_color
-            if chosen_background != self.viewer.background_color:
-                self.viewer.background_color = chosen_background
-                self.viewer._save_view_setting("view/background_color", list(chosen_background))
-                if self.viewer.active_renderer == "gpu_textured":
-                    self.viewer._gl_widget.set_background(*chosen_background)
-                self.viewer.invalidate_cache()
-                self.viewer.repaint()
+        if dialog.exec() != QDialog.Accepted:
+            return
+        if dialog.result_action == "edit":
+            # The dialog already launched Inkscape; there is nothing to load.
+            return
+        if dialog.result_action == "preview" and dialog.preview_csv_path is not None:
+            source_path = dialog.document_path or dialog.selected_path
+            loaded = self.open_file(
+                dialog.preview_csv_path,
+                add_recent_directory=False,
+                temporary_input=True,
+            )
+            if loaded and source_path is not None:
+                self.set_document_path(source_path)
+                self.config.set("last_directory", _sanitize_path(self.last_directory))
+                self._add_recent_directory(source_path.parent)
+                self._set_design_title(source_path)
+            return
+        if dialog.selected_path is not None:
+            self.open_file(dialog.selected_path)
 
     def set_document_path(self, document_path: str | Path) -> None:
         """Set the source document used for Save As defaults."""
@@ -1243,9 +1447,44 @@ class MainWindow(QMainWindow):
         self.document_path = path
         self.last_directory = str(path.parent)
 
+    def _remember_last_file(self, path: Path) -> None:
+        """Remember the opened file so the next dialog can preselect it."""
+        self.last_directory = str(path.parent)
+        self.config.set("last_directory", _sanitize_path(self.last_directory))
+        self.config.set("last_file", _sanitize_path(path))
+
+    def _browser_initial_file(
+        self,
+        selected_file: str | Path | None = None,
+    ) -> Path | None:
+        """Return the file the open dialog should preselect."""
+        if selected_file is not None:
+            return Path(selected_file)
+        if self._temporary_input_path is not None and self.document_path is not None:
+            # The loaded file is a temporary preview CSV, so point at its source
+            # instead of a path that no longer exists in the browsed folder.
+            return self.document_path
+        if self.current_file_path is not None or self.document_path is not None:
+            return self.current_file_path or self.document_path
+        remembered = _unsanitize_path(str(self.config.get("last_file", "") or ""))
+        if remembered:
+            candidate = Path(remembered)
+            if candidate.is_file():
+                return candidate
+        return None
+
+    def set_command_line_args(self, arguments: list[str]) -> None:
+        """Store the arguments from the most recent client invocation."""
+        self.command_line_args = arguments.copy()
+
     def _preferred_source_path(self) -> Path | None:
         """Return the authoritative source path for output defaults."""
         return self.document_path or self.current_file_path
+
+    def _default_thumbnail_name(self) -> str:
+        """Return the sidecar thumbnail name for the open design (design.pes.png)."""
+        source_path = self._preferred_source_path()
+        return f"{source_path.name}.png" if source_path else "inksim.png"
 
     def _default_export_name(self, suffix: str) -> str:
         source_path = self._preferred_source_path()
@@ -1347,11 +1586,42 @@ class MainWindow(QMainWindow):
             emb.write(pattern, str(path))
         except (OSError, RuntimeError, ValueError) as error:
             QMessageBox.critical(
-                self, "Save embroidery", _("message.save_error.message").format(error=error)
+                self,
+                "Save embroidery",
+                _("message.save_error.message").format(error=_sanitize_path_text(str(error))),
             )
             return False
-        self.statusBar().showMessage(f"Saved {path}", 3000)
+        palette = store_palette_after_save(self, self.config, Path(path), pattern.threadlist)
+        self._sync_save_palette_actions()
+        if palette is not None:
+            self.statusBar().showMessage(f"Saved {path} and {palette.name}", 5000)
+        else:
+            self.statusBar().showMessage(f"Saved {path}", 3000)
         return True
+
+    def load_palette_for_design(self, checked: bool = False) -> None:
+        """Store thread colors for the open design as a sidecar palette."""
+        del checked
+        pattern = self.viewer.pattern
+        source = self._preferred_source_path()
+        if pattern is None or source is None:
+            QMessageBox.warning(self, "Save embroidery", _("message.no_file_to_save"))
+            return
+        if not getattr(pattern, PALETTE_SOURCE_ATTR, None) and getattr(pattern, "threadlist", None):
+            QMessageBox.information(
+                self,
+                _("dialog.palette.title", "Thread colors"),
+                _(
+                    "dialog.palette.has_colors",
+                    "This design already stores its own thread colors.",
+                ),
+            )
+            return
+        note = apply_palette_to_design(self, source, color_block_count(pattern), self.config)
+        if note is None:
+            return
+        self.statusBar().showMessage(note, 5000)
+        self.viewer.load_design(str(source), fit_to_screen=False, show_error_dialog=False)
 
     def _can_export_image(self) -> bool:
         if self.viewer.stitches_np.shape[0] == 0:
@@ -1510,7 +1780,7 @@ class MainWindow(QMainWindow):
         self._show_export_preview(
             "Export icon/thumbnail",
             image,
-            self._default_export_name("_thumb.png"),
+            self._default_thumbnail_name(),
             icon=True,
             dpi=96,
         )
@@ -1521,34 +1791,55 @@ class MainWindow(QMainWindow):
         precompute_density: bool = True,
         delete_after_load: bool = False,
         autoplay: bool = False,
+        add_recent_directory: bool = True,
+        temporary_input: bool = False,
+        show_error_dialog: bool = True,
     ) -> bool:
         selected_path = Path(path).resolve()
+        was_temporary_input = self._temporary_input_path == selected_path
+        retain_temporary_input = (temporary_input or was_temporary_input) and not delete_after_load
+        source_mtime = self._capture_source_mtime(selected_path)
+        palette_signature = self._capture_palette_signature(selected_path)
         if not self.viewer.load_design(
             str(selected_path),
             fit_to_screen=True,
             precompute_density=precompute_density,
             autoplay=autoplay,
+            show_error_dialog=show_error_dialog,
         ):
+            if temporary_input and not was_temporary_input:
+                self._remove_temporary_file(selected_path)
             return False
+        if not self._is_reloading_from_disk:
+            # Replacing the design drops the source association; a reload of the
+            # same design keeps it for Save As and thumbnail naming.
+            self.document_path = None
+        previous_temporary_input = self._temporary_input_path
+        self._temporary_input_path = selected_path if retain_temporary_input else None
+        if (
+            previous_temporary_input is not None
+            and previous_temporary_input != self._temporary_input_path
+        ):
+            self._remove_temporary_file(previous_temporary_input)
+
         self.current_file_path = selected_path
-        self._source_mtime_ns = self._capture_source_mtime(selected_path)
-        if not delete_after_load:
-            self.last_directory = str(selected_path.parent)
-            self.config.set("last_directory", _sanitize_path(self.last_directory))
-            self._add_recent_directory(selected_path.parent)
+        self._debug_script = None
+        self._source_mtime_ns = source_mtime
+        self._source_palette_signature = palette_signature
+        if not delete_after_load and not retain_temporary_input:
+            self._remember_last_file(selected_path)
+            if add_recent_directory:
+                self._add_recent_directory(selected_path.parent)
         total = self.viewer.stitches_np.shape[0]
-        bounds = self.viewer.bounds
-        width_mm = bounds[2] - bounds[0]
-        height_mm = bounds[3] - bounds[1]
         self._base_title = (
-            f"{APP_TITLE} - {selected_path.name} - {total} sts - {width_mm:.1f}x{height_mm:.1f}mm"
+            f"{APP_TITLE} - {selected_path.name} - {total} sts - {self._design_size_text()}"
         )
         self._update_window_title()
         self.progress.update()
         self.refresh_command_panel()
         self.viewer.invalidate_cache()
         self.viewer.update()
-        if delete_after_load and self.server_mode:
+        if delete_after_load:
             try:
                 selected_path.unlink()
             except OSError:
@@ -1556,6 +1847,22 @@ class MainWindow(QMainWindow):
                 # and the file may have been removed by other means.
                 pass
         return True
+
+    def _remove_temporary_file(self, path: Path) -> None:
+        try:
+            path.unlink(missing_ok=True)
+        except OSError as ex:
+            logger.warning(
+                "Could not remove temporary input file %s: %s",
+                _sanitize_path_text(str(path)),
+                _sanitize_path_text(str(ex)),
+            )
+
+    def _discard_temporary_input(self) -> None:
+        path = self._temporary_input_path
+        self._temporary_input_path = None
+        if path is not None:
+            self._remove_temporary_file(path)
 
     def show_command_panel(self) -> None:
         self.command_dock.show()
@@ -1598,16 +1905,12 @@ class MainWindow(QMainWindow):
             return
         dropped_path = Path(urls[0].toLocalFile())
         if dropped_path.is_dir():
-            dialog = EmbroideryOpenDialog(
-                self,
-                dropped_path,
-                self.current_file_path,
-                self.recent_directories,
-            )
-            if dialog.exec() == QDialog.Accepted:
-                selected = dialog.selected_path
-                if selected is not None:
-                    self.open_file(selected)
+            self.open_browser_dialog(initial_directory=dropped_path)
+            event.acceptProposedAction()
+            return
+        if dropped_path.suffix.lower() == ".svg":
+            if not self.open_file(dropped_path, show_error_dialog=False):
+                self.open_browser_dialog(selected_file=dropped_path)
             event.acceptProposedAction()
             return
         self.open_file(dropped_path)

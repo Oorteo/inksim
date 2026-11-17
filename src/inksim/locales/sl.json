@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Jezik je bil nastavljen na {language}. Ponovno zaženi InkSim, da ga uveljaviš?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Jezik je bil spremenjen. Zapri InkSim in ga ponovno odpri iz Inkscape, da uveljaviš novi jezik."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Uporabljen bo sistemski privzeti jezik. Ponovno zaženi InkSim, da ga uveljaviš?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "Jezik spremenjen"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Vsa odprta okna programa InkSim bodo zaprta, trenutna datoteka pa bo znova odprta."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Barva igle"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Navaden predogled"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Dodaj med mesta"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Nazaj"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Nazaj v mapo {folder} (Alt+levo)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Prekliči"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Obdelava predogleda šivov ni uspela: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Izhodna koda procesa: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Izvoz CSV-ja v Ink/Stitch ni uspel."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "Celoten dnevnik: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "Časovna omejitev predogleda šivov je potekla."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Izvažanje CSV-ja v Ink/Stitch..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Kopiranih datotek: {count}"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Kopiraj datoteke"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Zapiši PNG s širino 256 px poleg vsakega izbranega vzorca (design.pes.png).\nV meniju izberi, ali naj se znova ustvarijo zastarele sličice ali vse sličice."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Namizje"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Barve"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Ime"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Velikost"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Šivi"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Velikost: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Dokumenti"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Prenosi"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Odpri ta SVG v novem oknu Inkscape."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Uredi v Inkscape"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Uredi pot"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "V tej mapi ni podprtih datotek."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Priljubljeno"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Te datoteke ni mogoče prebrati: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Prikaži"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Vse podprte"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "Podatki o šivih CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Vezenine"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "Vir SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Prilagodi"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Mapa"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Dvoklikni mapo za ogled njenih datotek."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Pritisni Enter ali dvoklikni mapo za ogled njenih datotek."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Naprej"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Naprej v mapo {folder} (Alt+desno)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Pojdi"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Domov"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Senčenje ozadja ikon ({level}, 0 = črna, 255 = bela)\nS senčenjem upravljaš s Shift+kolesce nad seznamom."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Velikost ikon ({size} px)\nIkone spremeniš s Ctrl+kolesce nad seznamom."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape ni bilo mogoče zagnati: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Za urejanje datotek SVG je potreben Inkscape."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Potrebna sta konfigurirana namestitev Ink/Stitch in zaganjalnik Pythona."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Ta mapa ni dostopna."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Iz: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Odpri izvorno mapo"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Odpri izvorno mapo {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "V: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Odpri ciljno mapo"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Odpri ciljno mapo {path}"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Spremenjeno: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Premakni datoteke"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Premaknjenih datotek: {count}"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "Ni veljavna datoteka za vezenje"
+        "translation": "Datoteka ni veljavna datoteka za vezenje"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Pravi predogled"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Odpri"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Odpri datoteko vezenja"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Odpri izbrano datoteko za vezenje."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Barve…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Naloži barve niti iz datoteke s paleto ali drugega vzorca.\nShranijo se ob tej datoteki kot <name>.edr, ker ta format\nne more shraniti barv."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Ta datoteka že vsebuje svoje barve niti."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Prilepi datoteke"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Vnesi ali prilepi pot do mape"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Mesta"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Predogled"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Ustvari podatke o šivih iz te datoteke SVG z Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Aktivnega skripta Ink/Stitch ali nastavljenega zaganjalnika Python ni mogoče zagnati."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Te mape ni mogoče prebrati: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Nedavno:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— izberi mapo —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Osveži"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Osveži to mapo (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Odstrani iz priljubljenih"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Zavrti sličico za 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Zavrti sličico v levo"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Za vrtenje izberi vzorec s sličico"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Izvirna usmerjenost"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Zavrti sličico v desno"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Zasuk sličic: {count}, za {degrees}°"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Išči datoteke"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Izberi datoteko, ki jo želiš odpreti."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Velikost: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Skrij te končnice v pogovornem oknu.\nLoči jih z |; seznam se shrani v config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Prezri"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: ni najden."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Razširitev Ink/Stitch: preverjanje ni uspelo. Za ponovni poskus uporabi Orodja..."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Razširitev Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Razširitev Ink/Stitch: ni najdena v mapah z razširitvami Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Razširitev Ink/Stitch: preverjanje ni mogoče, dokler ni nastavljen Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Razširitev Ink/Stitch: še ni preverjena. Za preverjanje uporabi Orodja..."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Šivi: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "Vir SVG. Za predogled šivov je potreben Inkscape."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "Vir SVG. Izberi Predogled, da z Inkscape/Ink/Stitch ustvariš podatke o šivih."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG-ja ni bilo mogoče izrisati."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Ta SVG je prevelik za predogled."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Začasne datoteke za predogled ni bilo mogoče ustvariti: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Sličice: ustvarjenih {created}, posodobljenih {skipped}, neuspešnih {failed}"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Sličice: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Obnovljena izvirna usmerjenost sličic: {count}"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Ustvarjanje sličic…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Odpri datoteko"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Orodja..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Datoteke že obstajajo"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Prenos datotek ni uspel: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Prenos datotek ni uspel"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Te ciljne poti že obstajajo. Med njimi so tudi mape, ki jih ni mogoče zamenjati z datotekami. Nič ni bilo preneseno:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Map ni mogoče zamenjati"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} je pripravljen: datotek {count}"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Te ciljne datoteke že obstajajo:\n{files}\n\nAli jih želiš vse zamenjati?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Te datoteke so že tukaj."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "Podatki o šivih CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Mapa"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Vezenine"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Ni podprto"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "Vir SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Te vrste datoteke v InkSim ni mogoče odpreti."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Odpri nadrejeno mapo (Alt+gor)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Pogled"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Podrobnosti"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Samo ikone"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Ikone in besedilo"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Povečaj"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Pomanjšaj"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Izberi paleto ali obarvan vzorec"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} ne vsebuje barv niti."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Vse datoteke"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Datoteke vzorcev (če vsebujejo barve)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Datoteke palet"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Ta vzorec že vsebuje svoje barve niti."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} že vsebuje barve za ta vzorec.\nAli jih želiš zamenjati z {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Zapomni si mojo izbiro"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "Format {format} ne shranjuje barv niti.\nAli jih želiš shraniti ob vzorcu kot {name}?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Barve niti"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} vsebuje {available} barv, vzorec pa ima {blocks} barvnih blokov.\nAli jo želiš vseeno uporabiti? Zadnja barva se bo ponovila."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Barv ni bilo mogoče shraniti: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Izberi upodabljalnik šivov"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Spremeni"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Stanja razširitve Inkscape ni bilo mogoče shraniti: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Ni na voljo"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Izvedljiva datoteka Inkscape ali celoten ukaz, na primer »flatpak run org.inkscape.Inkscape«. Pritisni Enter za preverjanje."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Ustvari skript za odpravljanje napak (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Nastavitve skripta za odpravljanje napak ni bilo mogoče spremeniti."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Zapiše debug_inksim.sh poleg dokumenta, da lahko ponoviš zagon Inkscapa."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Map z razširitvami InkSim ni bilo mogoče najti."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Map z razširitvami Inkscape ni bilo mogoče pregledati: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Ukaz za predogled je spremenjen"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "spremenjene datoteke: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Posodobljeno"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Potrebna je namestitev"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Stanje ni na voljo: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Potrebna je posodobitev ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Sistemska razširitev: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Trenutna uporabniška razširitev (cilj namestitve/posodobitve): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Razširitev drugega uporabnika: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch v mapi z razširitvami Inkscapa se je spremenil od zadnje nastavitve:\n\n{details}\n\nInkSim uporablja trenutno povezavo. Odpri nastavitev Inkscapa, da jo shraniš."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "mapa ne obstaja več: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "zdaj kaže na: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Namesti/posodobi razširitve InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Nekatere datoteke v mapi z razširitvami InkSim že obstajajo. Datoteke, navedene za zamenjavo, lahko vsebujejo uporabniške spremembe. Druge navedene datoteke bodo ohranjene in nikoli izbrisane.\n\nDatoteke za zamenjavo:\n{replace_files}\n\nDatoteke za ohranitev:\n{preserve_files}\n\nŽeliš nadaljevati?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Razširitev Inkscape za InkSim ni bilo mogoče namestiti: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "Razširitve Inkscape za InkSim so bile nameščene ali posodobljene v {path}. Znova zaženi Inkscape, da jih naloži."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Brez"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Uveljavi"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Ali želiš za vse razširitve Inkscapa spremeniti tolmač Pythona na:\n\n{path}\n\nS tem spremeniš globalno nastavitev Inkscapa. Želiš nadaljevati?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Pot po meri…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Izberi tolmač Pythona"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Izbirno — samo za razširitve z lastnim okoljem Python"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "To potrebujejo samo razširitve, ki od Inkscapa zahtevajo njegov tolmač Pythona (npr. Ink/Stitch).\nInkSimove razširitve zaženejo InkSim neposredno."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Okolje Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Ne spreminjaj (priporočeno)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Odstrani nastavitev tolmača"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Ali želiš odstraniti nastavitev tolmača Pythona iz:\n\n{path}\n\nInkscape bo za vse razširitve uporabil privzeti tolmač. Želiš nadaljevati?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Obnovi prejšnjega"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Zaganjalnik uvr ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape ni bil najden na sistemski poti."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Nastavitev Inkscape ni bilo mogoče prebrati: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Nastavitev Inkscape ni bilo mogoče posodobiti: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Map z razširitvami Inkscape ni bilo mogoče prebrati: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Čakanje na odziv Inkscape…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Preverjanje Inkscape ... {seconds} s"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Tolmač Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Znova zaženi Inkscape, da uveljaviš nov tolmač Python."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Tolmač Pythona ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "ni nastavljen"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Odstrani stare kopije InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Navedene uporabniške mape z razširitvami in vse datoteke v njih bodo trajno izbrisane. Trenutni cilj namestitve/posodobitve in sistemske mape z razširitvami ne bodo odstranjeni.\n\n{directories}\n\nŽeliš nadaljevati?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Stare mape z razširitvami InkSim ni bilo mogoče odstraniti: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Stare mape z razširitvami InkSim so bile odstranjene. Znova zaženi Inkscape, da osveži seznam razširitev."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Aktivna namestitev Ink/Stitch je posodobljena: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Preverjanje Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Konfiguracije InkSim ni bilo mogoče shraniti: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Zaznana nastavitev je shranjena v konfiguracijo InkSim."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Ukaz za Inkscape je shranjen, vendar preverjanje ni uspelo, zato mape z razširitvami niso bile posodobljene."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Preverljiva izvršna datoteka Inkscape: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Pregledovanje razširitev InkSim ni uspelo."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Najdene namestitve Ink/Stitch: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Povezava Ink/Stitch v mapi z razširitvami Inkscapa zdaj kaže na: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Namestitve Ink/Stitch ni bilo mogoče najti."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Tolmač Pythona za razširitve Inkscapa: {path} (nespremenjen)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Nastavitev tolmača Pythona za Inkscape je bila odstranjena."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Prejšnji tolmač Pythona je bil obnovljen: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Tolmač Python je posodobljen: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape ni bil najden. Izberi njegovo izvršno datoteko, da pregledaš nastavitev."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Preverjene nastavitve Inkscape: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Tolmača Python ni bilo mogoče preveriti ali posodobiti: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Nastavitev tolmača Python ni bila preverjena, ker uporabniška mapa z razširitvami ni na voljo."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape ni bilo mogoče pregledati: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Znova zaženi Inkscape, da uveljaviš posodobljen tolmač."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Sistemske razširitve: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape se ni odzval v {seconds} sekundah."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Uporabniške razširitve: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Izbirni zaganjalnik uvr je na voljo: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Izbirnega zaganjalnika uvr ni bilo mogoče najti; nastavitev tolmača Inkscapa je ostala nespremenjena."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Različica Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Izberi izvršno datoteko Inkscape za pregled nastavitve."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Aplikacija Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Razširitve"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Poročilo"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Sistemske razširitve: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape se ni odzval v {seconds} sekundah. Drugi primerek Inkscape ali razširitev morda blokira komunikacijo. Zapri druge primerke Inkscape ali onemogoči razširitev, ki blokira komunikacijo, nato poskusi znova."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Uporabniške razširitve: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Različica Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Ni na voljo"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Ukaz: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Tolmač: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Mesto: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Namestitve Ink/Stitch ni bilo mogoče najti."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Namesti Ink/Stitch v eno od zgoraj prikazanih map z razširitvami Inkscape."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Pot: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "Izberi upodabljalnik šivov..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Barve ob shranjevanju"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Vedno zapiši paleto"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Vsakič vprašaj"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Format palete"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Nikoli ne zapiši palete"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "GPU teksturirano upodabljanje"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Odpri datoteko vezenja"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Naloži paleto…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Izhod"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Odpri..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Zapri vsa okna in strežnik"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "Sledi dogodkom"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Orodja"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "Nastavitev Inkscapa..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Jezik"
+        "source": "&Language",
+        "translation": "&Jezik"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Nastavitve križca igle"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Barve palete {palette} so bile shranjene kot {name}"
     },
     "status.slider.color": {
         "source": "Color…",

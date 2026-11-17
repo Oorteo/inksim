@@ -1,0 +1,1993 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+"""Dialog for inspecting the selected Inkscape executable and its extensions."""
+
+from __future__ import annotations
+
+import os
+import re
+import shlex
+import shutil
+import sys
+import tempfile
+import time
+from contextlib import suppress
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+from xml.parsers import expat
+from xml.sax.saxutils import escape as escape_xml_attribute
+
+from defusedxml import ElementTree as ET
+from defusedxml.common import DefusedXmlException
+from filelock import Timeout
+from PySide6.QtCore import QProcess, Qt, QTimer
+from PySide6.QtWidgets import (
+    QApplication,
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QFileDialog,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QMessageBox,
+    QPlainTextEdit,
+    QPushButton,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
+)
+
+from ..config import Config
+from ..i18n import _
+from ..integration.inkscape_extensions import (
+    INSTALL_DIRECTORY,
+    InstalledInkSimExtension,
+    InstallPlan,
+    InstallSafetyError,
+    debug_script_enabled,
+    find_installed_inksim_extensions,
+    install_extension,
+    list_inksim_extension_files,
+    prepare_install,
+    remove_old_inksim_extension,
+    resolve_inksim_launcher,
+    set_debug_script_enabled,
+)
+from ..integration.inkstitch import (
+    changed_inkstitch_targets,
+    inkstitch_project_python,
+    link_key,
+)
+from ..integration.paths import (
+    INKSCAPE_CONFIG_KEY,
+    ToolInfo,
+    configured_command,
+    detect_tools,
+    flatpak_inkscape_launchers,
+)
+from ..paths import _sanitize_path_text
+from .dialogs import dispose_qt_child
+
+# The first query pays for the cold start: antivirus scans, profile setup and,
+# for a Flatpak build, mounting the runtime inside the sandbox. The queries that
+# follow reuse that started instance and only read a preference. Both limits are
+# generous on purpose: a false timeout throws away the launcher the user entered.
+INKSCAPE_STARTUP_TIMEOUT_S = 60
+INKSCAPE_PROBE_TIMEOUT_S = 20
+_WINDOWS_CREATE_NO_WINDOW = 0x08000000
+_PROBE_OPTIONS = ("--user-data-directory", "--system-data-directory")
+_VERSION_PROBE_OPTION = "--version"
+_CUSTOM_INTERPRETER = "__custom__"
+_REMOVE_INTERPRETER = "__remove__"
+_XML_ATTRIBUTE_PATTERN = re.compile(
+    rb"(?P<space>[ \t\r\n]+)(?P<name>[^ \t\r\n=/>]+)"
+    rb"[ \t\r\n]*=[ \t\r\n]*(?P<quote>[\"'])(?P<value>.*?)(?P=quote)",
+    re.DOTALL,
+)
+_XML_INTERPRETER_PARAM_PATTERN = re.compile(
+    rb"<param\b(?=[^>]*\bname\s*=\s*[\"']python-interpreter[\"'])"
+    rb"(?:[^>]*?/\s*>|[^>]*?>.*?</param\s*>)",
+    re.DOTALL,
+)
+
+
+def _hide_windows_console(arguments: Any) -> None:
+    arguments.flags |= _WINDOWS_CREATE_NO_WINDOW
+
+
+def _windows_inkscape_candidates(current_executable: str) -> list[str]:
+    if sys.platform != "win32":
+        return []
+
+    current_path = Path(current_executable)
+    candidates = [
+        current_path.with_name("inkscape.com"),
+        current_path.with_name("inkscape.exe"),
+    ]
+    path_candidate = shutil.which("inkscape.com")
+    if path_candidate:
+        candidates.append(Path(path_candidate))
+
+    install_roots = [
+        Path(value)
+        for variable in ("ProgramFiles", "ProgramFiles(x86)")
+        if (value := os.environ.get(variable))
+    ]
+    local_app_data = os.environ.get("LOCALAPPDATA")
+    if local_app_data:
+        install_roots.append(Path(local_app_data) / "Programs")
+
+    for root in install_roots:
+        for install_directory in (root / "Inkscape", root / "inkscape"):
+            for directory in (install_directory / "bin", install_directory):
+                candidates.extend((directory / "inkscape.com", directory / "inkscape.exe"))
+
+    current_key = os.path.normcase(str(current_path.resolve()))
+    seen = {current_key}
+    result = []
+    for candidate in candidates:
+        if not candidate.is_file():
+            continue
+        resolved = candidate.resolve()
+        key = os.path.normcase(str(resolved))
+        if key not in seen:
+            seen.add(key)
+            result.append(str(resolved))
+    return result
+
+
+@dataclass(frozen=True)
+class InkStitchInstallation:
+    inx_path: Path
+    command: str
+    interpreter: str | None
+    location: str
+
+    @property
+    def extension_dir(self) -> Path:
+        """Return the directory Inkscape uses to resolve an INX-relative command."""
+        return self.inx_path.parent
+
+    @property
+    def resolved_extension_dir(self) -> Path:
+        """Return the checkout the extension link currently points to."""
+        return self.extension_dir.resolve()
+
+    @property
+    def resolved_path(self) -> Path:
+        command_path = Path(self.command).expanduser()
+        if self.location == "inx" and not command_path.is_absolute():
+            command_path = self.extension_dir / command_path
+        return command_path.resolve()
+
+
+def _quote_command_token(token: str) -> str:
+    """Quote whitespace and quote characters so tokens round-trip through parsing."""
+    if "'" in token or '"' in token:
+        return shlex.quote(token)
+    return f'"{token}"' if any(character.isspace() for character in token) else token
+
+
+def _expand_user_token(token: str) -> str:
+    """Expand a "~" prefix, which QProcess passes through literally."""
+    return os.path.expanduser(token) if token.startswith("~") else token
+
+
+def _command_line(program: str, arguments: list[str]) -> str:
+    """Rebuild a command line so saved settings keep the probed arguments."""
+    if not arguments:
+        return program
+    return " ".join(_quote_command_token(token) for token in (program, *arguments))
+
+
+class InkscapeIntegrationDialog(QDialog):
+    """Display an Inkscape executable and the extension directories it uses."""
+
+    def __init__(
+        self,
+        parent: QWidget | None,
+        executable: str | None,
+        *,
+        inksim_launcher: Path | None = None,
+        highlight_inksim_update: bool = False,
+    ) -> None:
+        super().__init__(parent)
+        self._inksim_launcher = inksim_launcher
+        self._highlight_inksim_update = highlight_inksim_update
+        self.setWindowTitle(_("integration.inkscape.title"))
+        self.resize(860, 800)
+        self.setMinimumSize(720, 640)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(18, 18, 18, 14)
+        layout.setSpacing(12)
+
+        def create_section(title: str, object_name: str) -> tuple[QGroupBox, QVBoxLayout]:
+            group = QGroupBox(self)
+            group.setObjectName(object_name)
+            group.setAccessibleName(title)
+            section_layout = QVBoxLayout(group)
+            heading = QLabel(title, group)
+            heading.setObjectName(f"{object_name}Title")
+            heading_font = heading.font()
+            heading_font.setBold(True)
+            heading.setFont(heading_font)
+            section_layout.addWidget(heading)
+            return group, section_layout
+
+        self.probe_status_label = QLabel(_("integration.inkscape.probing"), self)
+        self.probe_status_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.probe_status_label.setStyleSheet("padding: 6px 8px;")
+        self.probe_status_label.setVisible(False)
+        layout.addWidget(self.probe_status_label)
+        self._probe_process: QProcess | None = None
+        self._probe_results: list[str] = []
+        self._probe_candidates: list[tuple[str, list[str]]] = []
+        self._probe_candidate_index = 0
+        self._probe_version: str | None = None
+        self._probe_executable = ""
+        self._probe_arguments: list[str] = []
+        self._probe_error: str | None = None
+        self._is_probing = False
+        self._probe_step_timeout = INKSCAPE_PROBE_TIMEOUT_S
+        self._probe_started_at = 0.0
+        self._elapsed_timer = QTimer(self)
+        self._elapsed_timer.setInterval(1000)
+        self._elapsed_timer.timeout.connect(self._show_probe_elapsed)
+        self._inkscape_extension_roots: tuple[tuple[Path, bool], ...] = ()
+        self._installed_inksim_extensions: tuple[InstalledInkSimExtension, ...] = ()
+        self._probe_timer = QTimer(self)
+        self._probe_timer.setSingleShot(True)
+        self._probe_timer.timeout.connect(self._on_probe_timeout)
+        self._report_entries: list[str] = []
+        self._preferences_file: Path | None = None
+        self._interpreter_current: str | None = None
+        self._interpreter_backup: str | None = None
+        self._probed_command = ""
+        self._executable_choice_cache: list[ToolInfo] | None = None
+
+        application_group, application_layout = create_section(
+            _("integration.inkscape.section.application", "Inkscape application"),
+            "applicationSection",
+        )
+        program_row = QHBoxLayout()
+        self.executable_combo = QComboBox(self)
+        self.executable_combo.setObjectName("inkscapeExecutable")
+        self.executable_combo.setEditable(True)
+        self.executable_combo.setInsertPolicy(QComboBox.NoInsert)
+        self.executable_combo.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.executable_combo.setToolTip(
+            _(
+                "integration.inkscape.executable_hint",
+                "Inkscape executable or a whole command line, for example"
+                ' "flatpak run org.inkscape.Inkscape". Press Enter to check it.',
+            )
+        )
+        self.executable_combo.activated.connect(self._on_executable_activated)
+        executable_edit = self.executable_combo.lineEdit()
+        if executable_edit is not None:
+            executable_edit.editingFinished.connect(self._apply_typed_executable)
+        program_row.addWidget(self.executable_combo, 1)
+        self.change_button = QPushButton(_("integration.inkscape.change"), self)
+        self.change_button.clicked.connect(self._choose_executable)
+        program_row.addWidget(self.change_button)
+        program_details = QHBoxLayout()
+        program_details.addWidget(QLabel(_("integration.inkscape.label"), self))
+        program_details.addLayout(program_row, 1)
+        application_layout.addLayout(program_details)
+        self._populate_executable_choices()
+        self.version_label = QLabel(
+            _("integration.inkscape.version").format(
+                version=_("integration.inkscape.version_unavailable")
+            ),
+            self,
+        )
+        self.version_label.setWordWrap(True)
+        self.version_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        application_layout.addWidget(self.version_label)
+        layout.addWidget(application_group)
+
+        extensions_group, extensions_layout = create_section(
+            _("integration.inkscape.section.extensions", "Extensions"),
+            "extensionsSection",
+        )
+        self._user_extensions_directory: Path | None = None
+        self.user_extensions_label = QLabel(self)
+        self.system_extensions_label = QLabel(self)
+        for label in (self.user_extensions_label, self.system_extensions_label):
+            label.setWordWrap(True)
+            label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            extensions_layout.addWidget(label)
+        self.python_interpreter_label = QLabel(self)
+        self.python_interpreter_label.setWordWrap(True)
+        self.python_interpreter_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        extensions_layout.addWidget(self.python_interpreter_label)
+        interpreter_row = QHBoxLayout()
+        self.interpreter_combo = QComboBox(self)
+        self.interpreter_combo.setObjectName("extensionInterpreter")
+        self.interpreter_combo.currentIndexChanged.connect(self._sync_interpreter_buttons)
+        interpreter_row.addWidget(self.interpreter_combo, 1)
+        self.apply_interpreter_button = QPushButton(
+            _("integration.inkscape.interpreter_apply", "Apply"), self
+        )
+        self.apply_interpreter_button.setObjectName("applyExtensionInterpreter")
+        self.apply_interpreter_button.setEnabled(False)
+        self.apply_interpreter_button.clicked.connect(self._apply_selected_interpreter)
+        interpreter_row.addWidget(self.apply_interpreter_button)
+        self.restore_interpreter_button = QPushButton(
+            _("integration.inkscape.interpreter_restore", "Restore previous"), self
+        )
+        self.restore_interpreter_button.setObjectName("restoreExtensionInterpreter")
+        self.restore_interpreter_button.setEnabled(False)
+        self.restore_interpreter_button.hide()
+        self.restore_interpreter_button.clicked.connect(self._restore_previous_interpreter)
+        interpreter_row.addWidget(self.restore_interpreter_button)
+        extensions_layout.addLayout(interpreter_row)
+        self.interpreter_hint_label = QLabel(
+            _(
+                "integration.inkscape.interpreter_hint",
+                "Optional — only for extensions with their own Python environment",
+            ),
+            self,
+        )
+        self.interpreter_hint_label.setObjectName("extensionInterpreterHint")
+        self.interpreter_hint_label.setWordWrap(True)
+        self.interpreter_hint_label.setEnabled(False)
+        hint_tooltip = _(
+            "integration.inkscape.interpreter_hint_tooltip",
+            "Only extensions that ask Inkscape for its Python interpreter need this"
+            " (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        )
+        self.interpreter_hint_label.setToolTip(hint_tooltip)
+        self.interpreter_combo.setToolTip(hint_tooltip)
+        extensions_layout.addWidget(self.interpreter_hint_label)
+        self._show_python_interpreter(None)
+        self._populate_interpreter_choices(None, [])
+        layout.addWidget(extensions_group)
+
+        inkstitch_group, inkstitch_layout = create_section(
+            _("integration.inkscape.section.inkstitch", "Ink/Stitch"),
+            "inkstitchSection",
+        )
+        self.inkstitch_combo = QComboBox(self)
+        self.inkstitch_combo.currentIndexChanged.connect(self._show_inkstitch_command)
+        inkstitch_layout.addWidget(self.inkstitch_combo)
+        self.inkstitch_details_label = QLabel(self)
+        self.inkstitch_details_label.setWordWrap(True)
+        self.inkstitch_details_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        inkstitch_layout.addWidget(self.inkstitch_details_label)
+        self.inkstitch_missing_container = QWidget(self)
+        self.inkstitch_missing_container.setObjectName("inkstitchMissing")
+        missing_layout = QHBoxLayout(self.inkstitch_missing_container)
+        missing_layout.setContentsMargins(4, 2, 4, 2)
+        missing_layout.setSpacing(8)
+        self.inkstitch_missing_icon = QLabel("\u26a0", self.inkstitch_missing_container)
+        self.inkstitch_missing_icon.setObjectName("inkstitchMissingIcon")
+        self.inkstitch_missing_icon.setFixedWidth(20)
+        self.inkstitch_missing_icon.setStyleSheet(
+            "QLabel { color: #a15c00; font-size: 18px; font-weight: bold; }"
+        )
+        missing_layout.addWidget(self.inkstitch_missing_icon)
+        self.inkstitch_missing_label = QLabel(self.inkstitch_missing_container)
+        self.inkstitch_missing_label.setObjectName("inkstitchMissingText")
+        self.inkstitch_missing_label.setWordWrap(True)
+        self.inkstitch_missing_label.setStyleSheet("QLabel { color: #8a4b00; font-weight: bold; }")
+        missing_layout.addWidget(self.inkstitch_missing_label, 1)
+        self.inkstitch_missing_container.setStyleSheet(
+            "QWidget#inkstitchMissing { background-color: #fff3cd; "
+            "border: 1px solid #d39e00; border-radius: 3px; }"
+        )
+        self.inkstitch_missing_container.hide()
+        inkstitch_layout.addWidget(self.inkstitch_missing_container)
+        layout.addWidget(inkstitch_group)
+
+        inksim_group, inksim_layout = create_section(
+            _("integration.inkscape.section.inksim", "InkSim"),
+            "inksimSection",
+        )
+        self.current_inksim_extension_row = QWidget(self)
+        current_extension_layout = QHBoxLayout(self.current_inksim_extension_row)
+        current_extension_layout.setContentsMargins(0, 0, 0, 0)
+        current_extension_layout.setSpacing(8)
+        self.current_inksim_extension_label = QLabel(self)
+        self.current_inksim_extension_label.setObjectName("currentInksimExtension")
+        self.current_inksim_extension_label.setWordWrap(True)
+        self.current_inksim_extension_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        current_extension_layout.addWidget(self.current_inksim_extension_label, 1)
+        self.inksim_status_icon = QLabel(self.current_inksim_extension_row)
+        self.inksim_status_icon.setObjectName("inksimExtensionStatusIcon")
+        self.inksim_status_icon.setFixedWidth(20)
+        self.inksim_status_icon.hide()
+        current_extension_layout.addWidget(self.inksim_status_icon)
+        self.current_inksim_extension_row.hide()
+        inksim_layout.addWidget(self.current_inksim_extension_row)
+        self.inksim_status_container = QWidget(self)
+        self.inksim_status_container.setObjectName("inksimExtensionStatus")
+        status_layout = QHBoxLayout(self.inksim_status_container)
+        status_layout.setContentsMargins(4, 2, 4, 2)
+        status_layout.setSpacing(8)
+        self.inksim_warning_icon = QLabel(self.inksim_status_container)
+        self.inksim_warning_icon.setObjectName("inksimExtensionWarningIcon")
+        self.inksim_warning_icon.setFixedWidth(20)
+        status_layout.addWidget(self.inksim_warning_icon)
+        self.inksim_status_text = QLabel(self.inksim_status_container)
+        self.inksim_status_text.setObjectName("inksimExtensionStatusText")
+        self.inksim_status_text.setWordWrap(True)
+        status_layout.addWidget(self.inksim_status_text, 1)
+        self.inksim_status_container.hide()
+        inksim_layout.addWidget(self.inksim_status_container)
+        self.inksim_debug_script_checkbox = QCheckBox(
+            _(
+                "integration.inkscape.inksim_debug_script",
+                "Create debug script (debug_inksim.sh)",
+            ),
+            self,
+        )
+        self.inksim_debug_script_checkbox.setObjectName("inksimDebugScript")
+        self.inksim_debug_script_checkbox.setToolTip(
+            _(
+                "integration.inkscape.inksim_debug_script_hint",
+                "Writes debug_inksim.sh next to the document so the Inkscape "
+                "invocation can be replayed.",
+            )
+        )
+        self.inksim_debug_script_checkbox.setEnabled(False)
+        self.inksim_debug_script_checkbox.toggled.connect(self._toggle_inksim_debug_script)
+        inksim_layout.addWidget(self.inksim_debug_script_checkbox)
+        self.inksim_extensions_list = QPlainTextEdit(self)
+        self.inksim_extensions_list.setObjectName("inksimExtensionDirectories")
+        self.inksim_extensions_list.setReadOnly(True)
+        self.inksim_extensions_list.setFixedHeight(
+            self.inksim_extensions_list.fontMetrics().lineSpacing() * 3
+            + round(2 * self.inksim_extensions_list.document().documentMargin())
+            + 2 * self.inksim_extensions_list.frameWidth()
+        )
+        inksim_layout.addWidget(self.inksim_extensions_list)
+        inksim_buttons = QHBoxLayout()
+        self.install_extensions_button = QPushButton(
+            _("integration.inkscape.install_extensions"), self
+        )
+        self.install_extensions_button.setObjectName("installInkscapeExtensions")
+        self.install_extensions_button.setEnabled(False)
+        self.install_extensions_button.clicked.connect(self._install_inkscape_extensions)
+        inksim_buttons.addWidget(self.install_extensions_button)
+        self.remove_old_extensions_button = QPushButton(
+            _("integration.inkscape.remove_old_extensions"), self
+        )
+        self.remove_old_extensions_button.setObjectName("removeOldInkscapeExtensions")
+        self.remove_old_extensions_button.setEnabled(False)
+        self.remove_old_extensions_button.clicked.connect(self._remove_old_inksim_extensions)
+        inksim_buttons.addWidget(self.remove_old_extensions_button)
+        inksim_layout.addLayout(inksim_buttons)
+        layout.addWidget(inksim_group)
+
+        report_group, report_layout = create_section(
+            _("integration.inkscape.section.report", "Report"),
+            "reportSection",
+        )
+        self.info_panel = QPlainTextEdit(self)
+        self.info_panel.setObjectName("integrationReport")
+        self.info_panel.setReadOnly(True)
+        self.info_panel.setMinimumHeight(120)
+        self.info_panel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.info_panel.setPlainText(_("integration.inkscape.report.waiting"))
+        report_layout.addWidget(self.info_panel, 1)
+        layout.addWidget(report_group, 1)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Close, self)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+        # Probe after show so the status bubble is visible while Inkscape starts.
+        QTimer.singleShot(0, lambda: self._set_executable(executable))
+
+    def _choose_executable(self) -> None:
+        path, _selected_filter = QFileDialog.getOpenFileName(
+            self,
+            _("integration.inkscape.title"),
+            "",
+            "All files (*)",
+        )
+        if path:
+            self._set_executable(path)
+
+    def _on_executable_activated(self, index: int) -> None:
+        command = self.executable_combo.itemData(index, Qt.UserRole)
+        if not isinstance(command, str) or not command:
+            command = self.executable_combo.itemText(index)
+        if command:
+            self._set_executable(command)
+
+    def _apply_typed_executable(self) -> None:
+        """Probe the command line the user typed once the field loses focus."""
+        if self._is_probing:
+            return
+        command = self.executable_combo.currentText().strip()
+        if command and command != self._probed_command:
+            self._set_executable(command)
+
+    def _executable_choices(self) -> list[ToolInfo]:
+        """Return launchers the user can pick instead of typing a command."""
+        if self._executable_choice_cache is None:
+            choices: list[ToolInfo] = []
+            detected = detect_tools().inkscape
+            if detected.found:
+                choices.append(detected)
+            choices.extend(flatpak_inkscape_launchers())
+            self._executable_choice_cache = choices
+        return self._executable_choice_cache
+
+    def _populate_executable_choices(self, current: str | None = None) -> None:
+        if current is None:
+            current = self.executable_combo.currentText()
+        current_command = configured_command(current)
+        self.executable_combo.blockSignals(True)
+        self.executable_combo.clear()
+        seen: set[str] = set()
+        matching_index: int | None = None
+        for choice in self._executable_choices():
+            command_line = choice.path or ""
+            if not command_line or command_line in seen:
+                continue
+            seen.add(command_line)
+            self.executable_combo.addItem(_sanitize_path_text(command_line))
+            index = self.executable_combo.count() - 1
+            self.executable_combo.setItemData(index, choice.source, Qt.ToolTipRole)
+            # The shortened home path is display only; QProcess does not expand
+            # "~" in arguments, so probing must use the command that was found.
+            self.executable_combo.setItemData(index, command_line, Qt.UserRole)
+            if current_command and configured_command(command_line) == current_command:
+                matching_index = index
+        if matching_index is None:
+            self.executable_combo.setEditText(current)
+        else:
+            self.executable_combo.setCurrentIndex(matching_index)
+        self.executable_combo.blockSignals(False)
+
+    def _set_executable(self, executable: str | None) -> None:
+        self._user_extensions_directory = None
+        self._inkscape_extension_roots = ()
+        self._refresh_inksim_extensions()
+        self.install_extensions_button.setEnabled(False)
+        self._populate_executable_choices(_sanitize_path_text(executable or ""))
+        if not executable:
+            self._probed_command = ""
+            self.executable_combo.setEditText("")
+            self.executable_combo.setPlaceholderText(_("integration.inkscape.not_found"))
+            self.version_label.setText(
+                _("integration.inkscape.version").format(
+                    version=_("integration.inkscape.version_unavailable")
+                )
+            )
+            unavailable = _("integration.inkscape.directory_unavailable")
+            self.user_extensions_label.setText(
+                _("integration.inkscape.user_extensions").format(path=unavailable)
+            )
+            self.system_extensions_label.setText(
+                _("integration.inkscape.system_extensions").format(path=unavailable)
+            )
+            self._preferences_file = None
+            self._interpreter_current = None
+            self._interpreter_backup = None
+            self._show_python_interpreter(None)
+            self._populate_interpreter_choices(None, [])
+            self._set_report([_("integration.inkscape.report.not_found")])
+            return
+
+        self._preferences_file = None
+        self._sync_interpreter_buttons()
+        self._probed_command = _sanitize_path_text(executable)
+        self.executable_combo.setEditText(self._probed_command)
+        self._start_probe(executable)
+
+    def done(self, result: int) -> None:
+        self._cancel_probe()
+        super().done(result)
+
+    def _start_probe(self, executable_command: str) -> None:
+        command = [
+            _expand_user_token(token)
+            for token in ToolInfo("Inkscape", executable_command, "configuration").command
+        ]
+        if not command:
+            return
+
+        def normalize_program(program: str) -> str:
+            path = Path(program).expanduser()
+            if path.is_file():
+                return str(path.resolve())
+            return shutil.which(program) or program
+
+        program = normalize_program(command[0])
+        candidates = [(program, command[1:])]
+        detected_path = detect_tools().inkscape.path
+        if detected_path:
+            detected_command = ToolInfo("Inkscape", detected_path, "detected").command
+            if detected_command:
+                candidates.append((normalize_program(detected_command[0]), detected_command[1:]))
+        candidates.extend((candidate, []) for candidate in _windows_inkscape_candidates(program))
+        self._probe_candidates = []
+        seen: set[tuple[str, tuple[str, ...]]] = set()
+        for candidate, arguments in candidates:
+            key = (os.path.normcase(candidate), tuple(arguments))
+            if key not in seen:
+                seen.add(key)
+                self._probe_candidates.append((candidate, arguments))
+        self._probe_candidate_index = 0
+        self._start_probe_candidate(*self._probe_candidates[0])
+
+    def _start_probe_candidate(self, executable_path: str, arguments: list[str]) -> None:
+        self._probe_executable = executable_path
+        self._probe_arguments = arguments
+        self._probe_results = []
+        self._probe_version = None
+        self._probe_error = None
+        self.version_label.setText(
+            _("integration.inkscape.version").format(
+                version=_("integration.inkscape.version_unavailable")
+            )
+        )
+        self._set_report(
+            [
+                _("integration.inkscape.report.checking").format(
+                    path=_sanitize_path_text(executable_path)
+                )
+            ]
+        )
+        self._set_probing(True)
+        self._run_next_probe()
+
+    def _retry_next_windows_candidate(self) -> bool:
+        if sys.platform != "win32" or self._probe_candidate_index + 1 >= len(
+            self._probe_candidates
+        ):
+            return False
+        self._probe_candidate_index += 1
+        executable_path, arguments = self._probe_candidates[self._probe_candidate_index]
+        self._probed_command = _sanitize_path_text(executable_path)
+        self.executable_combo.setEditText(self._probed_command)
+        self._start_probe_candidate(executable_path, arguments)
+        return True
+
+    def _run_next_probe(self) -> None:
+        process = QProcess(self)
+        process.setProcessChannelMode(QProcess.ProcessChannelMode.SeparateChannels)
+        if sys.platform == "win32" and hasattr(process, "setCreateProcessArgumentsModifier"):
+            # Keeps the console-subsystem inkscape.com from flashing a terminal on Windows.
+            process.setCreateProcessArgumentsModifier(_hide_windows_console)
+        process.finished.connect(lambda *_, p=process: self._on_probe_step_done(p))
+        process.errorOccurred.connect(
+            lambda *_, p=process: self._on_probe_step_done(p, failed=True)
+        )
+        self._probe_process = process
+        step = len(self._probe_results)
+        option = _PROBE_OPTIONS[step] if step < len(_PROBE_OPTIONS) else _VERSION_PROBE_OPTION
+        self._probe_step_timeout = (
+            INKSCAPE_STARTUP_TIMEOUT_S if step == 0 else INKSCAPE_PROBE_TIMEOUT_S
+        )
+        self._probe_started_at = time.monotonic()
+        self._probe_timer.start(int(self._probe_step_timeout * 1000))
+        process.start(self._probe_executable, [*self._probe_arguments, option])
+
+    def _on_probe_step_done(self, process: QProcess, failed: bool = False) -> None:
+        # Ignore late signals from a process that was already replaced, killed, or handled.
+        if process is not self._probe_process:
+            return
+        self._probe_process = None
+        self._probe_timer.stop()
+        is_version_probe = len(self._probe_results) >= len(_PROBE_OPTIONS)
+        output = ""
+        step_error = None
+        if failed:
+            step_error = process.errorString()
+        elif (
+            not failed
+            and process.exitStatus() == QProcess.ExitStatus.NormalExit
+            and process.exitCode() == 0
+        ):
+            output = bytes(process.readAllStandardOutput().data()).decode(errors="replace").strip()
+            if not output and not is_version_probe:
+                step_error = "Inkscape returned no extension directory."
+        elif process.exitStatus() == QProcess.ExitStatus.CrashExit:
+            step_error = "Inkscape terminated unexpectedly."
+        else:
+            step_error = f"Inkscape exited with code {process.exitCode()}."
+        dispose_qt_child(process)
+        if is_version_probe:
+            self._probe_version = (
+                output.splitlines()[0].strip() if not step_error and output else None
+            )
+            self._probe_results.append("")
+            self._finish_probe(timed_out=False)
+            return
+        self._probe_error = step_error
+        self._probe_results.append(output)
+        if self._probe_error is not None:
+            if self._retry_next_windows_candidate():
+                return
+            self._probe_results.extend([""] * (len(_PROBE_OPTIONS) - len(self._probe_results)))
+            self._finish_probe(timed_out=False, error=self._probe_error)
+        elif len(self._probe_results) < len(_PROBE_OPTIONS) + 1:
+            self._run_next_probe()
+        else:
+            self._finish_probe(timed_out=False)
+
+    def _on_probe_timeout(self) -> None:
+        process = self._probe_process
+        if process is None:
+            return
+        self._probe_process = None
+        process.kill()
+        dispose_qt_child(process)
+        if len(self._probe_results) >= len(_PROBE_OPTIONS):
+            self._probe_version = None
+            self._probe_results.append("")
+            self._finish_probe(timed_out=False)
+            return
+        if self._retry_next_windows_candidate():
+            return
+        self._finish_probe(timed_out=True)
+
+    def _finish_probe(self, timed_out: bool, error: str | None = None) -> None:
+        self._set_probing(False)
+        if timed_out or error is not None:
+            # An unresponsive Inkscape will not answer the second query either, so do not wait twice.
+            user_path = system_path = _("integration.inkscape.directory_unavailable")
+        else:
+            user_path, system_path = (
+                self._extensions_directory(output)
+                for output in self._probe_results[: len(_PROBE_OPTIONS)]
+            )
+        self._apply_extension_directories(user_path, system_path, timed_out, error)
+
+    def _cancel_probe(self) -> None:
+        process = self._probe_process
+        if process is None:
+            return
+        self._probe_process = None
+        self._probe_timer.stop()
+        process.kill()
+        dispose_qt_child(process)
+        self._set_probing(False)
+
+    def _set_probing(self, active: bool) -> None:
+        if self._is_probing == active:
+            return
+        self._is_probing = active
+        self.probe_status_label.setVisible(active)
+        self.change_button.setEnabled(not active)
+        self.executable_combo.setEnabled(not active)
+        self._elapsed_timer.stop()
+        if active:
+            self.probe_status_label.setText(_("integration.inkscape.probing"))
+            self._elapsed_timer.start()
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+        else:
+            QApplication.restoreOverrideCursor()
+
+    def _show_probe_elapsed(self) -> None:
+        """Count the seconds spent waiting, so a slow launcher still looks alive."""
+        elapsed = int(time.monotonic() - self._probe_started_at)
+        if elapsed < 1:
+            return
+        self.probe_status_label.setText(
+            _("integration.inkscape.probing_elapsed", "Checking Inkscape... {seconds} s").format(
+                seconds=elapsed
+            )
+        )
+
+    @staticmethod
+    def _extensions_directory(data_directory: str) -> str:
+        if not data_directory:
+            return _("integration.inkscape.directory_unavailable")
+        return str(Path(data_directory).expanduser() / "extensions")
+
+    def _apply_extension_directories(
+        self, user_path: str, system_path: str, timed_out: bool, error: str | None = None
+    ) -> None:
+        report_entries = [
+            _("integration.inkscape.report.executable").format(
+                path=_sanitize_path_text(self._probe_executable)
+            )
+        ]
+        version = self._probe_version or _("integration.inkscape.version_unavailable")
+        self.version_label.setText(
+            _("integration.inkscape.version").format(version=_sanitize_path_text(version))
+        )
+        if self._probe_version is not None:
+            report_entries.append(
+                _("integration.inkscape.report.version").format(
+                    version=_sanitize_path_text(self._probe_version)
+                )
+            )
+        if timed_out:
+            report_entries.append(
+                _("integration.inkscape.report.timeout").format(seconds=self._probe_step_timeout)
+            )
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _("integration.inkscape.timeout").format(seconds=self._probe_step_timeout),
+            )
+        elif error is not None:
+            report_entries.append(
+                _("integration.inkscape.report.probe_failed").format(
+                    error=_sanitize_path_text(error)
+                )
+            )
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _("integration.inkscape.probe_failed").format(error=_sanitize_path_text(error)),
+            )
+        self.user_extensions_label.setText(
+            _("integration.inkscape.user_extensions").format(path=_sanitize_path_text(user_path))
+        )
+        self.system_extensions_label.setText(
+            _("integration.inkscape.system_extensions").format(
+                path=_sanitize_path_text(system_path)
+            )
+        )
+        if (
+            not timed_out
+            and error is None
+            and user_path != _("integration.inkscape.directory_unavailable")
+        ):
+            self._user_extensions_directory = Path(user_path)
+            self.install_extensions_button.setEnabled(True)
+        self._inkscape_extension_roots = tuple(
+            (Path(path), user_install)
+            for path, user_install in ((user_path, True), (system_path, False))
+            if path != _("integration.inkscape.directory_unavailable")
+        )
+        if not timed_out and error is None:
+            report_entries.extend(
+                (
+                    _("integration.inkscape.report.user_extensions").format(
+                        path=_sanitize_path_text(user_path)
+                    ),
+                    _("integration.inkscape.report.system_extensions").format(
+                        path=_sanitize_path_text(system_path)
+                    ),
+                )
+            )
+        extension_paths = [
+            Path(path)
+            for path in (user_path, system_path)
+            if path != _("integration.inkscape.directory_unavailable")
+        ]
+        installations = (
+            []
+            if timed_out or error is not None
+            else self._find_inkstitch_installations(extension_paths)
+        )
+        config = Config()
+        previous_status = config.get(INKSCAPE_CONFIG_KEY)
+        if isinstance(previous_status, dict):
+            for target in changed_inkstitch_targets(previous_status):
+                report_entries.append(
+                    _(
+                        "integration.inkscape.report.inkstitch_link_changed",
+                        "The Ink/Stitch link in the Inkscape extensions folder now points to:"
+                        " {path}",
+                    ).format(path=_sanitize_path_text(str(target)))
+                )
+        current_command = configured_command(
+            _command_line(self._probe_executable, self._probe_arguments)
+        )
+        stored_command = (
+            configured_command(previous_status.get("executable"))
+            if isinstance(previous_status, dict)
+            else None
+        )
+        previous_active = (
+            previous_status.get("active_inkstitch")
+            if isinstance(previous_status, dict) and stored_command == current_command
+            else None
+        )
+        if isinstance(previous_active, str):
+            previous_active = link_key(previous_active)
+        self.inkstitch_combo.blockSignals(True)
+        self.inkstitch_combo.clear()
+        for installation in installations:
+            self.inkstitch_combo.addItem(
+                _sanitize_path_text(str(installation.resolved_path)), installation
+            )
+        self.inkstitch_combo.setVisible(len(installations) > 1)
+        active_index = next(
+            (
+                index
+                for index, installation in enumerate(installations)
+                if link_key(installation.extension_dir) == previous_active
+            ),
+            0,
+        )
+        self.inkstitch_combo.setCurrentIndex(active_index if installations else -1)
+        self.inkstitch_combo.blockSignals(False)
+        if not installations:
+            if timed_out or error is not None:
+                # The extensions folder could not be read, so absence proves nothing.
+                self.inkstitch_missing_container.hide()
+                self.inkstitch_details_label.setText(_("integration.inkstitch.not_found"))
+            else:
+                self.inkstitch_details_label.clear()
+                self._show_missing_inkstitch()
+            report_entries.append(_("integration.inkscape.report.inkstitch_none"))
+        else:
+            self.inkstitch_missing_container.hide()
+            self._show_inkstitch_command(active_index, persist=False)
+            report_entries.append(
+                _("integration.inkscape.report.inkstitch_found").format(count=len(installations))
+            )
+
+        preferences_file = None
+        python_interpreter = None
+        preferences_error = None
+        unavailable = _("integration.inkscape.directory_unavailable")
+        if user_path != unavailable:
+            preferences_file = (Path(user_path).parent / "preferences.xml").resolve()
+            report_entries.append(
+                _("integration.inkscape.report.preferences").format(
+                    path=_sanitize_path_text(str(preferences_file))
+                )
+            )
+            try:
+                python_interpreter = self._read_python_interpreter(preferences_file)
+            except (OSError, ET.ParseError, DefusedXmlException) as ex:
+                preferences_error = str(ex)
+                report_entries.append(
+                    _("integration.inkscape.report.preferences_error").format(
+                        error=_sanitize_path_text(str(ex))
+                    )
+                )
+                QMessageBox.warning(
+                    self,
+                    _("integration.inkscape.title"),
+                    _("integration.inkscape.preferences_read_failed").format(
+                        error=_sanitize_path_text(str(ex))
+                    ),
+                )
+        else:
+            report_entries.append(_("integration.inkscape.report.preferences_skipped"))
+        self._preferences_file = None if preferences_error is not None else preferences_file
+        self._interpreter_current = python_interpreter
+        previous_backup = None
+        if self._preferences_file is not None and isinstance(previous_status, dict):
+            previous_preferences = previous_status.get("preferences_file")
+            if (
+                isinstance(previous_preferences, str)
+                and Path(previous_preferences).expanduser().resolve() == self._preferences_file
+            ):
+                previous_backup = previous_status.get("python-interpreter-backup")
+        self._interpreter_backup = previous_backup if isinstance(previous_backup, str) else None
+        if self._preferences_file is not None:
+            uvr_executable = self._find_uvr_executable(python_interpreter)
+            self._populate_interpreter_choices(
+                python_interpreter,
+                self._interpreter_candidates(uvr_executable, installations),
+            )
+            report_entries.append(
+                _(
+                    "integration.inkscape.report.interpreter_current",
+                    "Inkscape extension Python interpreter: {path} (left unchanged)",
+                ).format(
+                    path=_sanitize_path_text(
+                        python_interpreter or _("integration.inkscape.python_interpreter_unset")
+                    )
+                )
+            )
+            if uvr_executable is None:
+                report_entries.append(
+                    _(
+                        "integration.inkscape.report.uvr_missing",
+                        "The optional uvr launcher was not found; the Inkscape interpreter"
+                        " preference is left unchanged.",
+                    )
+                )
+            else:
+                report_entries.append(
+                    _(
+                        "integration.inkscape.report.uvr_available",
+                        "The optional uvr launcher is available: {path}",
+                    ).format(path=_sanitize_path_text(str(uvr_executable)))
+                )
+        else:
+            self._populate_interpreter_choices(None, [])
+        self._show_python_interpreter(python_interpreter)
+
+        installation_data = []
+        for installation in installations:
+            item = {
+                "extension_dir": str(installation.extension_dir),
+                "resolved_extension_dir": str(installation.resolved_extension_dir),
+                "command": installation.command,
+                "location": installation.location,
+            }
+            if installation.interpreter is not None:
+                item["interpreter"] = installation.interpreter
+            installation_data.append(item)
+        result: dict[str, Any] = {
+            "executable": _command_line(self._probe_executable, self._probe_arguments),
+            "status": (
+                "error"
+                if timed_out or error is not None
+                else "found"
+                if installations
+                else "not_found"
+            ),
+        }
+        if timed_out or error is not None:
+            # Keep the extension folders found by the last successful check of
+            # the same command; the command itself is always stored so a
+            # launcher that cannot be probed is not silently forgotten.
+            if isinstance(previous_status, dict) and stored_command == current_command:
+                for key in (
+                    "user_extensions",
+                    "system_extensions",
+                    "inkstitch",
+                    "active_inkstitch",
+                    "preferences_file",
+                    "python-interpretor",
+                    "python-interpreter-backup",
+                ):
+                    if key in previous_status:
+                        result[key] = previous_status[key]
+        else:
+            result["user_extensions"] = user_path
+            result["system_extensions"] = system_path
+            result["inkstitch"] = installation_data
+        if self._probe_version is not None:
+            result["version"] = self._probe_version
+        if preferences_file is not None:
+            result["preferences_file"] = str(preferences_file)
+        if python_interpreter is not None:
+            result["python-interpretor"] = python_interpreter
+        if self._interpreter_backup is not None:
+            result["python-interpreter-backup"] = self._interpreter_backup
+        if preferences_error is not None:
+            result["preferences_error"] = preferences_error
+        if installations:
+            result["active_inkstitch"] = str(installations[active_index].extension_dir)
+        if error is not None:
+            result["error"] = error
+        self._probed_command = _sanitize_path_text(result["executable"])
+        self.executable_combo.setEditText(self._probed_command)
+        try:
+            config.set(INKSCAPE_CONFIG_KEY, result)
+            report_entries.append(
+                _(
+                    "integration.inkscape.report.config_saved_incomplete",
+                    "Saved the Inkscape command, but the check failed, so the extension"
+                    " folders were not updated.",
+                )
+                if timed_out or error is not None
+                else _("integration.inkscape.report.config_saved")
+            )
+        except (OSError, Timeout) as ex:
+            report_entries.append(
+                _("integration.inkscape.report.config_save_failed").format(
+                    error=_sanitize_path_text(str(ex))
+                )
+            )
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _("integration.inkscape.config_save_failed").format(
+                    error=_sanitize_path_text(str(ex))
+                ),
+            )
+        self._set_report(report_entries)
+        self._refresh_inksim_extensions()
+
+    def _refresh_inksim_extensions(self) -> None:
+        try:
+            installations = find_installed_inksim_extensions(self._inkscape_extension_roots)
+        except (InstallSafetyError, OSError) as error:
+            self._installed_inksim_extensions = ()
+            self.inksim_extensions_list.setPlainText(
+                _("integration.inkscape.inksim_scan_failed").format(
+                    error=_sanitize_path_text(str(error))
+                )
+            )
+            self.remove_old_extensions_button.setEnabled(False)
+            self._append_report(
+                _(
+                    "integration.inkscape.report.inksim_scan_failed",
+                    "Could not inspect Inkscape extension folders: {error}",
+                ).format(error=_sanitize_path_text(str(error)))
+            )
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _("integration.inkscape.inksim_scan_failed").format(
+                    error=_sanitize_path_text(str(error))
+                ),
+            )
+            return
+
+        self._installed_inksim_extensions = installations
+        current_target = (
+            (self._user_extensions_directory / INSTALL_DIRECTORY).resolve()
+            if self._user_extensions_directory is not None
+            else None
+        )
+        lines = []
+        if self._user_extensions_directory is not None:
+            self.current_inksim_extension_label.setText(
+                _(
+                    "integration.inkscape.inksim_user_current_path",
+                    "Current user extension (install/update target): {path}",
+                ).format(path=_sanitize_path_text(str(current_target)))
+            )
+            self.current_inksim_extension_row.show()
+            status, is_current = self._current_inksim_update_status()
+            self._show_inksim_update_status(status, is_current)
+            self._sync_debug_script_checkbox(current_target)
+        else:
+            self.current_inksim_extension_row.hide()
+            self.inksim_status_container.hide()
+        for installation in installations:
+            is_current_target = installation.user_install and installation.path == current_target
+            if is_current_target:
+                continue
+            if installation.user_install:
+                label = _(
+                    "integration.inkscape.inksim_user_other",
+                    "Other user extension: {path}",
+                )
+            else:
+                label = _(
+                    "integration.inkscape.inksim_system",
+                    "System extension: {path}",
+                )
+            lines.append(label.format(path=_sanitize_path_text(str(installation.path))))
+        extension_list_text = (
+            "\n".join(lines)
+            if lines
+            else (_("integration.inkscape.inksim_none") if current_target is None else "")
+        )
+        self.inksim_extensions_list.setPlainText(extension_list_text)
+        self.inksim_extensions_list.setVisible(bool(extension_list_text))
+
+        has_old_user_installations = any(
+            installation.user_install and installation.path != current_target
+            for installation in installations
+        )
+        self.remove_old_extensions_button.setEnabled(has_old_user_installations)
+
+    def _sync_debug_script_checkbox(self, destination: Path | None) -> None:
+        installed = destination is not None and destination.is_dir()
+        enabled = installed and destination is not None and debug_script_enabled(destination)
+        checkbox = self.inksim_debug_script_checkbox
+        blocked = checkbox.blockSignals(True)
+        checkbox.setChecked(enabled)
+        checkbox.blockSignals(blocked)
+        checkbox.setEnabled(installed)
+        checkbox.setStyleSheet(
+            "QCheckBox { color: #1a73e8; font-weight: bold; }" if enabled else ""
+        )
+
+    def _toggle_inksim_debug_script(self, enabled: bool) -> None:
+        extension_root = self._user_extensions_directory
+        if extension_root is None:
+            return
+        if not set_debug_script_enabled(extension_root / INSTALL_DIRECTORY, enabled):
+            QMessageBox.warning(
+                self,
+                _("integration.inkscape.title"),
+                _(
+                    "integration.inkscape.inksim_debug_script_failed",
+                    "Could not change the debug script setting.",
+                ),
+            )
+        self._refresh_inksim_extensions()
+
+    def _current_inksim_update_status(self) -> tuple[str, bool]:
+        extension_root = self._user_extensions_directory
+        if extension_root is None:
+            return (
+                _("integration.inkscape.inksim_status_unavailable").format(
+                    error=_("integration.inkscape.directory_unavailable")
+                ),
+                False,
+            )
+        try:
+            launcher = self._inksim_launcher or resolve_inksim_launcher()
+            plan = prepare_install(extension_root, launcher)
+        except (InstallSafetyError, OSError, ValueError) as error:
+            return (
+                _("integration.inkscape.inksim_status_unavailable").format(
+                    error=_sanitize_path_text(str(error))
+                ),
+                False,
+            )
+
+        if not plan.destination.is_dir():
+            return _("integration.inkscape.inksim_status_install"), False
+        if not plan.update_required:
+            return _("integration.inkscape.inksim_status_current"), True
+
+        details = []
+        if plan.update_files:
+            details.append(
+                _("integration.inkscape.inksim_status_changed_files").format(
+                    files=", ".join(plan.update_files)
+                )
+            )
+        if plan.command_changed:
+            details.append(_("integration.inkscape.inksim_status_changed_command"))
+        return (
+            _("integration.inkscape.inksim_status_update").format(details="; ".join(details)),
+            False,
+        )
+
+    def _show_missing_inkstitch(self) -> None:
+        """Highlight that the extensions folder holds no Ink/Stitch installation."""
+        hint = _(
+            "integration.inkstitch.not_found_hint",
+            "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        )
+        self.inkstitch_missing_label.setText(f"{_('integration.inkstitch.not_found')} {hint}")
+        self.inkstitch_missing_icon.setToolTip(hint)
+        self.inkstitch_missing_icon.setAccessibleName(_("integration.inkstitch.not_found"))
+        self.inkstitch_missing_container.setVisible(True)
+
+    def _show_inksim_update_status(self, status: str, is_current: bool) -> None:
+        self.inksim_status_icon.setText("✓")
+        self.inksim_status_icon.setAccessibleName(status)
+        self.inksim_status_icon.setToolTip(status)
+        self.inksim_status_icon.setStyleSheet(
+            "QLabel { color: #188038; font-size: 18px; font-weight: bold; }"
+        )
+        self.inksim_status_icon.setVisible(is_current)
+        self.inksim_warning_icon.setText("⚠")
+        self.inksim_warning_icon.setAccessibleName(status)
+        self.inksim_warning_icon.setToolTip(status)
+        self.inksim_warning_icon.setStyleSheet(
+            "QLabel { color: #a15c00; font-size: 18px; font-weight: bold; }"
+        )
+        self.inksim_status_text.setText("" if is_current else status)
+        self.inksim_status_text.setVisible(not is_current)
+        self.inksim_status_text.setStyleSheet(
+            "" if is_current else "QLabel { color: #8a4b00; font-weight: bold; }"
+        )
+        self.inksim_status_container.setVisible(not is_current)
+        self.inksim_status_container.setStyleSheet(
+            "QWidget#inksimExtensionStatus { background-color: #fff3cd; "
+            "border: 1px solid #d39e00; border-radius: 3px; }"
+            if self._highlight_inksim_update and not is_current
+            else ""
+        )
+
+    def _remove_old_inksim_extensions(self) -> None:
+        user_extension_root = self._user_extensions_directory
+        if user_extension_root is None:
+            return
+        current_target = (user_extension_root / INSTALL_DIRECTORY).resolve()
+        old_installations = tuple(
+            installation
+            for installation in self._installed_inksim_extensions
+            if installation.user_install and installation.path != current_target
+        )
+        if not old_installations:
+            return
+
+        directory_details = []
+        try:
+            for installation in old_installations:
+                files = list_inksim_extension_files(installation.path)
+                file_list = "\n".join(f"  - {name}" for name in files)
+                directory_details.append(
+                    f"{_sanitize_path_text(str(installation.path))}\n{file_list}"
+                )
+        except (InstallSafetyError, OSError) as error:
+            self._show_remove_old_extensions_error(error)
+            self._refresh_inksim_extensions()
+            return
+
+        answer = QMessageBox.question(
+            self,
+            _("integration.inkscape.remove_old_extensions"),
+            _("integration.inkscape.remove_old_extensions_confirm").format(
+                directories="\n\n".join(directory_details)
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if answer != QMessageBox.Yes:
+            return
+
+        try:
+            for installation in old_installations:
+                remove_old_inksim_extension(
+                    installation.path,
+                    user_extension_root,
+                    confirmed=True,
+                )
+        except (InstallSafetyError, OSError) as error:
+            self._show_remove_old_extensions_error(error)
+            self._refresh_inksim_extensions()
+            return
+
+        message = _("integration.inkscape.remove_old_extensions_success")
+        self._append_report(message)
+        self._refresh_inksim_extensions()
+        QMessageBox.information(self, _("integration.inkscape.title"), message)
+
+    def _show_remove_old_extensions_error(self, error: Exception) -> None:
+        message = _("integration.inkscape.remove_old_extensions_failed").format(
+            error=_sanitize_path_text(str(error))
+        )
+        self._append_report(message)
+        QMessageBox.critical(self, _("integration.inkscape.title"), message)
+
+    def _install_inkscape_extensions(self) -> None:
+        extension_directory = self._user_extensions_directory
+        if extension_directory is None:
+            return
+
+        try:
+            launcher = self._inksim_launcher or resolve_inksim_launcher()
+            plan = prepare_install(extension_directory, launcher)
+        except (InstallSafetyError, OSError, ValueError) as error:
+            self._show_extension_install_error(error)
+            return
+
+        if plan.requires_confirmation and not self._confirm_extension_install(plan):
+            return
+
+        try:
+            destination = install_extension(plan, confirmed=True)
+        except (InstallSafetyError, OSError, ValueError) as error:
+            self._show_extension_install_error(error)
+            return
+
+        message = _("integration.inkscape.install_extensions_success").format(
+            path=_sanitize_path_text(str(destination))
+        )
+        self._append_report(message)
+        self._refresh_inksim_extensions()
+        QMessageBox.information(self, _("integration.inkscape.title"), message)
+
+    def _confirm_extension_install(self, plan: InstallPlan) -> bool:
+        replace_files = "\n".join(plan.replace_files) or _("integration.inkscape.install_none")
+        preserve_files = "\n".join(plan.preserved_files) or _("integration.inkscape.install_none")
+        message = _("integration.inkscape.install_extensions_confirm").format(
+            replace_files=replace_files,
+            preserve_files=preserve_files,
+        )
+        answer = QMessageBox.question(
+            self,
+            _("integration.inkscape.install_extensions"),
+            message,
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        return answer == QMessageBox.Yes
+
+    def _show_extension_install_error(self, error: Exception) -> None:
+        message = _("integration.inkscape.install_extensions_failed").format(
+            error=_sanitize_path_text(str(error))
+        )
+        self._append_report(message)
+        QMessageBox.critical(self, _("integration.inkscape.title"), message)
+
+    def _set_report(self, entries: list[str]) -> None:
+        self._report_entries = entries
+        self.info_panel.setPlainText("\n".join(entries))
+
+    def _append_report(self, entry: str) -> None:
+        self._report_entries.append(entry)
+        self.info_panel.setPlainText("\n".join(self._report_entries))
+
+    def _show_inkstitch_command(self, index: int, persist: bool = True) -> None:
+        installation = self.inkstitch_combo.itemData(index)
+        if not isinstance(installation, InkStitchInstallation):
+            return
+        self.inkstitch_details_label.setText(
+            "\n".join(
+                (
+                    _("integration.inkstitch.location").format(value=installation.location),
+                    _("integration.inkstitch.interpreter").format(
+                        value=_sanitize_path_text(installation.interpreter or "")
+                    ),
+                    _("integration.inkstitch.command").format(
+                        value=_sanitize_path_text(installation.command)
+                    ),
+                    _("integration.inkstitch.resolved_path").format(
+                        path=_sanitize_path_text(str(installation.resolved_path))
+                    ),
+                )
+            )
+        )
+        if persist:
+            extension_dir = str(installation.extension_dir)
+            expected_command = configured_command(
+                _command_line(self._probe_executable, self._probe_arguments)
+            )
+
+            def set_active_installation(status: Any) -> dict[str, Any]:
+                if (
+                    not isinstance(status, dict)
+                    or configured_command(status.get("executable")) != expected_command
+                ):
+                    raise ValueError("The cached Inkscape installation status has changed.")
+                return {**status, "active_inkstitch": extension_dir}
+
+            try:
+                Config().update(INKSCAPE_CONFIG_KEY, set_active_installation)
+                self._append_report(
+                    _("integration.inkscape.report.active_inkstitch_updated").format(
+                        path=_sanitize_path_text(extension_dir)
+                    )
+                )
+            except (OSError, Timeout, ValueError) as ex:
+                self._append_report(
+                    _("integration.inkscape.report.config_save_failed").format(
+                        error=_sanitize_path_text(str(ex))
+                    )
+                )
+                QMessageBox.warning(
+                    self,
+                    _("integration.inkscape.title"),
+                    _("integration.inkscape.config_save_failed").format(
+                        error=_sanitize_path_text(str(ex))
+                    ),
+                )
+
+    @staticmethod
+    def _read_python_interpreter(preferences_file: Path) -> str | None:
+        try:
+            root = ET.parse(preferences_file).getroot()
+        except FileNotFoundError:
+            return None
+
+        for group in root.iter():
+            if (
+                not isinstance(group.tag, str)
+                or group.tag.rsplit("}", 1)[-1] != "group"
+                or group.get("id") != "extensions"
+            ):
+                continue
+            value = (group.get("python-interpreter") or "").strip()
+            if value:
+                return value
+            for parameter in group.iter():
+                if (
+                    parameter.tag.rsplit("}", 1)[-1] == "param"
+                    and parameter.get("name") == "python-interpreter"
+                ):
+                    value = (parameter.text or "").strip() or (parameter.get("value") or "").strip()
+                    return value or None
+        return None
+
+    @staticmethod
+    def _find_uvr_executable(current_interpreter: str | None) -> Path | None:
+        command = "uvr-gui" if sys.platform == "win32" else "uvr"
+        executable = shutil.which(command)
+        if executable is None and current_interpreter is not None:
+            configured_path = Path(current_interpreter).expanduser()
+            configured_names = {
+                "uvr",
+                "uvr.exe",
+                "uvr.cmd",
+                "uvr-gui",
+                "uvr-gui.exe",
+                "uvr-gui.cmd",
+            }
+            if configured_path.name.lower() in configured_names:
+                executable = (
+                    str(configured_path)
+                    if configured_path.is_file()
+                    else shutil.which(current_interpreter)
+                )
+        if executable is None:
+            local_bin = Path.home() / ".local" / "bin"
+            candidate_names = (command, f"{command}.exe", f"{command}.cmd")
+            executable = next(
+                (
+                    str(candidate)
+                    for name in candidate_names
+                    if (candidate := local_bin / name).is_file()
+                ),
+                None,
+            )
+        if executable is None:
+            return None
+
+        executable_path = Path(executable).expanduser().absolute()
+        if not executable_path.is_file() or not os.access(executable_path, os.X_OK):
+            return None
+        return executable_path
+
+    @staticmethod
+    def _find_inkstitch_python(installations: list[InkStitchInstallation]) -> Path | None:
+        """Return the project interpreter of a source (unfrozen) Ink/Stitch install.
+
+        Frozen Ink/Stitch builds ship their own interpreter and their INX files
+        do not request Inkscape's Python, so only installations whose command
+        declares ``interpreter="python"`` are relevant here.
+        """
+        for installation in installations:
+            if (installation.interpreter or "").lower() != "python":
+                continue
+            python = inkstitch_project_python(installation.resolved_path)
+            if python is not None:
+                return python
+        return None
+
+    @classmethod
+    def _interpreter_candidates(
+        cls,
+        uvr_executable: Path | None,
+        installations: list[InkStitchInstallation],
+    ) -> list[tuple[str, str]]:
+        """Return the optional launchers offered in addition to leaving Inkscape alone."""
+        candidates: list[tuple[str, str]] = []
+        if uvr_executable is not None:
+            candidates.append(
+                (
+                    _(
+                        "integration.inkscape.interpreter_uvr",
+                        "uvr launcher ({path})",
+                    ).format(path=_sanitize_path_text(str(uvr_executable))),
+                    str(uvr_executable),
+                )
+            )
+        inkstitch_python = cls._find_inkstitch_python(installations)
+        if inkstitch_python is not None:
+            candidates.append(
+                (
+                    _(
+                        "integration.inkscape.interpreter_inkstitch",
+                        "Ink/Stitch environment ({path})",
+                    ).format(path=_sanitize_path_text(str(inkstitch_python))),
+                    str(inkstitch_python),
+                )
+            )
+        return candidates
+
+    def _populate_interpreter_choices(
+        self, current: str | None, candidates: list[tuple[str, str]]
+    ) -> None:
+        """Offer launcher choices without changing the Inkscape preference."""
+        self.interpreter_combo.blockSignals(True)
+        self.interpreter_combo.clear()
+        self.interpreter_combo.addItem(
+            _("integration.inkscape.interpreter_keep", "Do not change (recommended)"), ""
+        )
+        for label, path in candidates:
+            self.interpreter_combo.addItem(label, path)
+        self.interpreter_combo.addItem(
+            _(
+                "integration.inkscape.interpreter_remove",
+                "Remove the interpreter setting",
+            ),
+            _REMOVE_INTERPRETER,
+        )
+        self.interpreter_combo.addItem(
+            _("integration.inkscape.interpreter_custom", "Custom path…"), _CUSTOM_INTERPRETER
+        )
+        self.interpreter_combo.setCurrentIndex(self._interpreter_choice_index(current))
+        self.interpreter_combo.blockSignals(False)
+        self._sync_interpreter_buttons()
+
+    def _interpreter_choice_index(self, interpreter: str | None) -> int:
+        if not interpreter:
+            return 0
+        configured = Path(interpreter).expanduser()
+        for index in range(1, self.interpreter_combo.count()):
+            data = self.interpreter_combo.itemData(index)
+            if (
+                data
+                and data not in (_CUSTOM_INTERPRETER, _REMOVE_INTERPRETER)
+                and Path(data) == (configured)
+            ):
+                return index
+        return 0
+
+    def _sync_interpreter_buttons(self, *_args: object) -> None:
+        data = self.interpreter_combo.currentData()
+        if data == _REMOVE_INTERPRETER:
+            changed = self._interpreter_current is not None
+        else:
+            changed = bool(data) and data != self._interpreter_current
+        self.apply_interpreter_button.setEnabled(self._preferences_file is not None and changed)
+        available = self._preferences_file is not None and self._interpreter_backup is not None
+        self.restore_interpreter_button.setVisible(self._interpreter_backup is not None)
+        self.restore_interpreter_button.setEnabled(available)
+
+    def _selected_interpreter_target(self) -> str | None:
+        data = self.interpreter_combo.currentData()
+        if data != _CUSTOM_INTERPRETER:
+            return data or None
+        directory = ""
+        if self._interpreter_current:
+            directory = str(Path(self._interpreter_current).expanduser().parent)
+        path, _selected_filter = QFileDialog.getOpenFileName(
+            self,
+            _(
+                "integration.inkscape.interpreter_custom_title",
+                "Select a Python interpreter",
+            ),
+            directory,
+            "All files (*)",
+        )
+        return path or None
+
+    def _apply_selected_interpreter(self) -> None:
+        """Write or remove the chosen interpreter after an explicit confirmation."""
+        preferences_file = self._preferences_file
+        target = self._selected_interpreter_target()
+        if preferences_file is None or not target:
+            return
+        removing = target == _REMOVE_INTERPRETER
+        expected: str | None = None
+        if removing:
+            if self._interpreter_current is None:
+                return
+            message = _(
+                "integration.inkscape.interpreter_remove_confirm",
+                "Remove the Python interpreter setting from:"
+                "\n\n{path}\n\nInkscape falls back to its default interpreter for"
+                " every extension. Continue?",
+            ).format(path=_sanitize_path_text(str(preferences_file)))
+        else:
+            expected = str(Path(target).expanduser())
+            message = _(
+                "integration.inkscape.interpreter_confirm",
+                "Change the Python interpreter for all Inkscape extensions to:"
+                "\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+            ).format(path=_sanitize_path_text(expected))
+        if (
+            QMessageBox.question(self, _("integration.inkscape.title"), message)
+            != QMessageBox.StandardButton.Yes
+        ):
+            return
+        previous = self._interpreter_current
+        try:
+            if expected is None:
+                self._remove_python_interpreter(preferences_file)
+            else:
+                self._write_python_interpreter(preferences_file, Path(expected))
+            current = self._read_python_interpreter(preferences_file)
+            if current != expected:
+                raise ValueError("Inkscape did not persist the requested Python interpreter.")
+        except (OSError, ET.ParseError, expat.ExpatError, ValueError) as ex:
+            self._report_interpreter_error(ex)
+            return
+        if self._interpreter_backup is None and previous != expected:
+            self._interpreter_backup = previous or ""
+        self._set_interpreter_state(current)
+        if current is None:
+            self._append_report(
+                _(
+                    "integration.inkscape.report.interpreter_removed",
+                    "Removed the Inkscape Python interpreter preference.",
+                )
+            )
+        else:
+            self._append_report(
+                _("integration.inkscape.report.interpreter_updated").format(
+                    path=_sanitize_path_text(current)
+                )
+            )
+        self._append_report(_("integration.inkscape.report.restart"))
+
+    def _restore_previous_interpreter(self) -> None:
+        preferences_file = self._preferences_file
+        backup = self._interpreter_backup
+        if preferences_file is None or backup is None:
+            return
+        try:
+            if backup:
+                self._write_python_interpreter(preferences_file, Path(backup))
+            else:
+                self._remove_python_interpreter(preferences_file)
+            current = self._read_python_interpreter(preferences_file)
+            if current != (backup or None):
+                raise ValueError("Inkscape did not persist the requested Python interpreter.")
+        except (OSError, ET.ParseError, expat.ExpatError, ValueError) as ex:
+            self._report_interpreter_error(ex)
+            return
+        self._interpreter_backup = None
+        self._set_interpreter_state(current)
+        self._append_report(
+            _(
+                "integration.inkscape.report.interpreter_restored",
+                "Restored the previous Python interpreter: {path}",
+            ).format(path=_sanitize_path_text(current))
+            if current
+            else _(
+                "integration.inkscape.report.interpreter_removed",
+                "Removed the Inkscape Python interpreter preference.",
+            )
+        )
+
+    def _report_interpreter_error(self, error: Exception) -> None:
+        self._append_report(
+            _("integration.inkscape.report.preferences_error").format(
+                error=_sanitize_path_text(str(error))
+            )
+        )
+        QMessageBox.warning(
+            self,
+            _("integration.inkscape.title"),
+            _("integration.inkscape.preferences_write_failed").format(
+                error=_sanitize_path_text(str(error))
+            ),
+        )
+
+    def _set_interpreter_state(self, interpreter: str | None) -> None:
+        self._interpreter_current = interpreter
+        self._show_python_interpreter(interpreter, restart_required=True)
+        self._store_interpreter_status(interpreter)
+        self.interpreter_combo.blockSignals(True)
+        self.interpreter_combo.setCurrentIndex(self._interpreter_choice_index(interpreter))
+        self.interpreter_combo.blockSignals(False)
+        self._sync_interpreter_buttons()
+
+    def _store_interpreter_status(self, interpreter: str | None) -> None:
+        config = Config()
+        status = config.get(INKSCAPE_CONFIG_KEY)
+        if not isinstance(status, dict):
+            return
+        updated = dict(status)
+        if interpreter:
+            updated["python-interpretor"] = interpreter
+        else:
+            updated.pop("python-interpretor", None)
+        if self._interpreter_backup is not None:
+            updated["python-interpreter-backup"] = self._interpreter_backup
+        else:
+            updated.pop("python-interpreter-backup", None)
+        try:
+            config.set(INKSCAPE_CONFIG_KEY, updated)
+        except (OSError, Timeout) as ex:
+            self._append_report(
+                _("integration.inkscape.report.config_save_failed").format(
+                    error=_sanitize_path_text(str(ex))
+                )
+            )
+
+    @staticmethod
+    def _extensions_start_tag(
+        preferences_file: Path, original: bytes
+    ) -> tuple[int, int, bytes, int]:
+        """Return the byte offsets and the text of the extensions group start tag."""
+        group_start = None
+        group_depth = None
+        group_end = None
+        element_stack: list[str] = []
+        document_encoding = None
+        parser = expat.ParserCreate(namespace_separator="}")
+
+        def find_extensions_group(name: str, attributes: dict[str, str]) -> None:
+            nonlocal group_depth, group_start
+            if (
+                group_start is None
+                and name.rsplit("}", 1)[-1] == "group"
+                and attributes.get("id") == "extensions"
+            ):
+                group_start = parser.CurrentByteIndex
+                group_depth = len(element_stack)
+            element_stack.append(name)
+
+        def find_extensions_group_end(name: str) -> None:
+            nonlocal group_end
+            if (
+                group_depth is not None
+                and group_end is None
+                and len(element_stack) == group_depth + 1
+                and name.rsplit("}", 1)[-1] == "group"
+            ):
+                group_end = parser.CurrentByteIndex
+            element_stack.pop()
+
+        def record_encoding(version: str, encoding: str | None, standalone: int) -> None:
+            nonlocal document_encoding
+            document_encoding = encoding
+
+        parser.StartElementHandler = find_extensions_group
+        parser.EndElementHandler = find_extensions_group_end
+        parser.XmlDeclHandler = record_encoding
+        parser.Parse(original, True)
+        if document_encoding and document_encoding.lower().replace("_", "-") not in {
+            "utf-8",
+            "utf8",
+        }:
+            raise ValueError(
+                f"Cannot preserve the {document_encoding} encoding of {preferences_file}."
+            )
+        if group_start is None:
+            raise ValueError(f"Could not find the Inkscape extensions group in {preferences_file}.")
+
+        quote: int | None = None
+        tag_end = None
+        for offset in range(group_start, len(original)):
+            character = original[offset]
+            if quote is not None:
+                if character == quote:
+                    quote = None
+            elif character in (ord('"'), ord("'")):
+                quote = character
+            elif character == ord(">"):
+                tag_end = offset
+                break
+        if tag_end is None:
+            raise ValueError(
+                f"Could not find the end of the extensions group in {preferences_file}."
+            )
+        start_tag = original[group_start : tag_end + 1]
+        if start_tag.rstrip().endswith(b"/>"):
+            group_end = tag_end + 1
+        if group_end is None:
+            raise ValueError(
+                f"Could not find the end of the extensions group in {preferences_file}."
+            )
+        return group_start, tag_end, start_tag, group_end
+
+    @staticmethod
+    def _replace_preferences(preferences_file: Path, updated: bytes) -> None:
+        """Replace preferences.xml atomically while preserving its permissions."""
+        verification_parser = expat.ParserCreate(namespace_separator="}")
+        verification_parser.Parse(updated, True)
+
+        original_mode = preferences_file.stat().st_mode & 0o777
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=preferences_file.name + ".",
+            suffix=".tmp",
+            dir=preferences_file.parent,
+        )
+        temporary_path = Path(temporary_name)
+        try:
+            with os.fdopen(descriptor, "wb") as temporary_file:
+                temporary_file.write(updated)
+            os.chmod(temporary_path, original_mode)
+            os.replace(temporary_path, preferences_file)
+        finally:
+            with suppress(OSError):
+                temporary_path.unlink(missing_ok=True)
+
+    @classmethod
+    def _write_python_interpreter(cls, preferences_file: Path, interpreter: Path) -> None:
+        original = preferences_file.read_bytes()
+        group_start, tag_end, start_tag, _ = cls._extensions_start_tag(preferences_file, original)
+        attributes = list(_XML_ATTRIBUTE_PATTERN.finditer(start_tag))
+        interpreter_attribute = next(
+            (
+                attribute
+                for attribute in attributes
+                if attribute.group("name") == b"python-interpreter"
+            ),
+            None,
+        )
+        # Inkscape expects the interpreter next to the group id, so an existing
+        # attribute is moved there instead of being replaced where it happens to be.
+        base_tag = start_tag
+        if interpreter_attribute is not None:
+            base_tag = (
+                start_tag[: interpreter_attribute.start("space")]
+                + start_tag[interpreter_attribute.end() :]
+            )
+        anchor = next(
+            (
+                match
+                for match in _XML_ATTRIBUTE_PATTERN.finditer(base_tag)
+                if match.group("name") == b"id"
+            ),
+            None,
+        )
+        if anchor is None:
+            raise ValueError(f"Could not find the extensions group id in {preferences_file}.")
+        name_start = anchor.start("name")
+        line_start = base_tag.rfind(b"\n", 0, name_start) + 1
+        indentation = base_tag[line_start:name_start]
+        if b"\n" in base_tag[:name_start] and not indentation.strip(b" \t"):
+            newline = b"\r\n" if b"\r\n" in base_tag else b"\n"
+            separator = newline + indentation
+        else:
+            separator = b" "
+        addition = (
+            separator
+            + b'python-interpreter="'
+            + escape_xml_attribute(str(interpreter), {'"': "&quot;"}).encode("utf-8")
+            + b'"'
+        )
+        updated_tag = base_tag[: anchor.end()] + addition + base_tag[anchor.end() :]
+
+        updated = original[:group_start] + updated_tag + original[tag_end + 1 :]
+        cls._replace_preferences(preferences_file, updated)
+
+    @classmethod
+    def _remove_python_interpreter(cls, preferences_file: Path) -> None:
+        """Drop the extensions interpreter attribute so Inkscape falls back to its default."""
+        original = preferences_file.read_bytes()
+        group_start, tag_end, start_tag, group_end = cls._extensions_start_tag(
+            preferences_file, original
+        )
+        attribute = next(
+            (
+                match
+                for match in _XML_ATTRIBUTE_PATTERN.finditer(start_tag)
+                if match.group("name") == b"python-interpreter"
+            ),
+            None,
+        )
+        updated_content = _XML_INTERPRETER_PARAM_PATTERN.sub(b"", original[tag_end + 1 : group_end])
+        if attribute is None and updated_content == original[tag_end + 1 : group_end]:
+            return
+        updated_tag = (
+            start_tag[: attribute.start("space")] + start_tag[attribute.end() :]
+            if attribute is not None
+            else start_tag
+        )
+        updated = original[:group_start] + updated_tag + updated_content + original[group_end:]
+        cls._replace_preferences(preferences_file, updated)
+
+    def _show_python_interpreter(
+        self, interpreter: str | None, restart_required: bool = False
+    ) -> None:
+        value = interpreter or _("integration.inkscape.python_interpreter_unset")
+        if self._preferences_file is not None:
+            label = _(
+                "integration.inkscape.python_interpreter_source",
+                "Python interpreter ({file}): {path}",
+            ).format(
+                file=_sanitize_path_text(str(self._preferences_file)),
+                path=_sanitize_path_text(value),
+            )
+        else:
+            label = _(
+                "integration.inkscape.python_interpreter", "Python interpreter: {path}"
+            ).format(path=_sanitize_path_text(value))
+        if restart_required:
+            label += "\n" + _("integration.inkscape.python_interpreter_restart")
+        self.python_interpreter_label.setText(label)
+
+    @staticmethod
+    def _find_inkstitch_installations(
+        extension_paths: list[Path],
+    ) -> list[InkStitchInstallation]:
+        installations: dict[Path, InkStitchInstallation] = {}
+        for extension_path in extension_paths:
+            if not extension_path.is_dir():
+                continue
+            try:
+                extension_directories = sorted(extension_path.iterdir())
+            except OSError:
+                continue
+            for extension_directory in extension_directories:
+                if not extension_directory.is_dir():
+                    continue
+                inx_directory = extension_directory / "inx"
+                if not inx_directory.is_dir():
+                    continue
+                for inx_path in sorted(inx_directory.rglob("inkstitch*about.inx")):
+                    if not inx_path.is_file() or inx_path.suffix != ".inx":
+                        continue
+                    try:
+                        root = ET.parse(inx_path).getroot()
+                    except (ET.ParseError, DefusedXmlException, OSError):
+                        continue
+                    for element in root.iter():
+                        if element.tag.rsplit("}", 1)[-1] != "command":
+                            continue
+                        command = (element.text or "").strip()
+                        if not command:
+                            continue
+                        installations[inx_path.resolve()] = InkStitchInstallation(
+                            inx_path=inx_path,
+                            command=command,
+                            interpreter=element.get("interpreter"),
+                            location=element.get("location", ""),
+                        )
+                        break
+        return sorted(
+            installations.values(),
+            key=lambda item: str(item.resolved_path).casefold(),
+        )

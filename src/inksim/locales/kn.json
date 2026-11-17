@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "ಭಾಷೆಯನ್ನು {language} ಆಗಿ ಹೊಂದಿಸಲಾಗಿದೆ. ಅದನ್ನು ಅನ್ವಯಿಸಲು ಈಗ InkSim ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸುವಿರಾ?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "ಭಾಷೆ ಬದಲಾಯಿಸಲಾಗಿದೆ. ಹೊಸ ಭಾಷೆಯನ್ನು ಅನ್ವಯಿಸಲು InkSim ಅನ್ನು ಮುಚ್ಚಿ ಮತ್ತು Inkscape ನಿಂದ ಮತ್ತೆ ತೆರೆಯಿರಿ."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "ಸಿಸ್ಟಂ ಡೀಫಾಲ್ಟ್ ಭಾಷೆ ಬಳಸಲಾಗುವುದು. ಅದನ್ನು ಅನ್ವಯಿಸಲು ಈಗ InkSim ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸುವಿರಾ?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "ಭಾಷೆ ಬದಲಾಯಿಸಲಾಗಿದೆ"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "ತೆರೆದಿರುವ ಎಲ್ಲಾ InkSim ವಿಂಡೋಗಳನ್ನು ಮುಚ್ಚಲಾಗುತ್ತದೆ ಮತ್ತು ಪ್ರಸ್ತುತ ಫೈಲ್ ಅನ್ನು ಮತ್ತೆ ತೆರೆಯಲಾಗುತ್ತದೆ."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "ಸೂಜಿ ಬಣ್ಣ"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "ಸಾಮಾನ್ಯ ಪೂರ್ವವೀಕ್ಷಣೆ"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "ಸ್ಥಳಗಳಿಗೆ ಸೇರಿಸು"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "ಹಿಂದೆ"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder} ಗೆ ಹಿಂದಿರುಗಿ (Alt+Left)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "ರದ್ದುಮಾಡಿ"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "ಸ್ಟಿಚ್ ಪೂರ್ವವೀಕ್ಷಣೆ ಪ್ರಕ್ರಿಯೆ ವಿಫಲವಾಗಿದೆ: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "ಪ್ರಕ್ರಿಯೆಯ ನಿರ್ಗಮನ ಕೋಡ್: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV ರಫ್ತು ವಿಫಲವಾಗಿದೆ."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "ಪೂರ್ಣ ಲಾಗ್: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "ಹೊಲಿಗೆ ಪೂರ್ವವೀಕ್ಷನೆಯ ಸಮಯ ಮೀರಿದೆ."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch CSV ರಫ್ತು ನಡೆಯುತ್ತಿದೆ..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} ಫೈಲ್(ಗಳು) ನಕಲಿಸಲಾಗಿದೆ"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "ಫೈಲ್‌ಗಳನ್ನು ನಕಲಿಸು"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "ಆಯ್ಕೆಮಾಡಿದ ಪ್ರತಿಯೊಂದು ವಿನ್ಯಾಸದ ಪಕ್ಕದಲ್ಲಿ 256 px PNG ಬರೆಯಿರಿ (design.pes.png).\nಹಳೆಯ ಫೈಲ್‌ಗಳನ್ನು ಅಥವಾ ಎಲ್ಲ ಥಂಬ್‌ನೇಲ್‌ಗಳನ್ನು ಮರುನಿರ್ಮಿಸಬೇಕೆಂದು ಮೆನು ನಿರ್ಧರಿಸುತ್ತದೆ."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "ಡೆಸ್ಕ್‌ಟಾಪ್"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "ಬಣ್ಣಗಳು"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "ಹೆಸರು"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "ಗಾತ್ರ"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "ಹೊಲಿಗೆಗಳು"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "ಗಾತ್ರ: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "ದಾಖಲೆಗಳು"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "ಡೌನ್‌ಲೋಡ್‌ಗಳು"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "ಈ SVG ಅನ್ನು ಹೊಸ Inkscape ವಿಂಡೋದಲ್ಲಿ ತೆರೆಯಿರಿ."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Inkscape ನಲ್ಲಿ ಸಂಪಾದಿಸಿ"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "ಪಥವನ್ನು ಸಂಪಾದಿಸು"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "ಈ ಫೋಲ್ಡರ್‌ನಲ್ಲಿ ಬೆಂಬಲಿತ ಫೈಲ್‌ಗಳಿಲ್ಲ."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "ಮೆಚ್ಚಿನವುಗಳು"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "ಈ ಫೈಲ್ ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "ತೋರಿಸು"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "ಎಲ್ಲ ಬೆಂಬಲಿತ ಫೈಲ್‌ಗಳು"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV ಸ್ಟಿಚ್ ಡೇಟಾ"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "ಕಸೂತಿ"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG ಮೂಲ"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "ಹೊಂದಿಸು"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "ಫೋಲ್ಡರ್"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "ಫೈಲ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಲು ಫೋಲ್ಡರ್ ಮೇಲೆ ಎರಡು ಬಾರಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "ಫೋಲ್ಡರ್‌ನ ಫೈಲ್‌ಗಳನ್ನು ನೋಡಲು Enter ಒತ್ತಿ ಅಥವಾ ಫೋಲ್ಡರ್ ಮೇಲೆ ಎರಡು ಬಾರಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "ಮುಂದೆ"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder} ಗೆ ಮುಂದುವರಿಯಿರಿ (Alt+Right)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "ಹೋಗು"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "ಮುಖಪುಟ"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "ಐಕಾನ್ ಹಿನ್ನೆಲೆ ಛಾಯೆ ({level}, 0 = ಕಪ್ಪು, 255 = ಬಿಳಿ)\nಪಟ್ಟಿಯ ಮೇಲೆ Shift+wheel ತಿರುಗಿಸಿದರೆ ಛಾಯೆ ಬದಲಾಗುತ್ತದೆ."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "ಐಕಾನ್ ಗಾತ್ರ ({size} px)\nಪಟ್ಟಿಯ ಮೇಲೆ Ctrl+wheel ತಿರುಗಿಸಿದರೆ ಐಕಾನ್‌ಗಳ ಗಾತ್ರ ಬದಲಾಗುತ್ತದೆ."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape ಅನ್ನು ಪ್ರಾರಂಭಿಸಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG ಫೈಲ್‌ಗಳನ್ನು ಸಂಪಾದಿಸಲು Inkscape ಅಗತ್ಯವಿದೆ."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾದ Ink/Stitch ಸ್ಥಾಪನೆ ಮತ್ತು Python ಲಾಂಚರ್ ಅಗತ್ಯವಿದೆ."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "ಈ ಫೋಲ್ಡರ್ ಅನ್ನು ಪ್ರವೇಶಿಸಲಾಗುವುದಿಲ್ಲ."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "ಇಂದ: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "ಮೂಲ ಫೋಲ್ಡರ್ ತೆರೆಯಿರಿ"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "{path} ಮೂಲ ಫೋಲ್ಡರ್ ತೆರೆಯಿರಿ"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "ಗೆ: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "ಗುರಿ ಫೋಲ್ಡರ್ ತೆರೆಯಿರಿ"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "{path} ಗುರಿ ಫೋಲ್ಡರ್ ತೆರೆಯಿರಿ"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "ಮಾರ್ಪಡಿಸಿದ್ದು: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "ಫೈಲ್‌ಗಳನ್ನು ಸ್ಥಳಾಂತರಿಸು"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} ಫೈಲ್(ಗಳು) ಸ್ಥಳಾಂತರಿಸಲಾಗಿದೆ"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "ಇದು ಸರಿಯಾದ ಎಂಬ್ರಾಯ್ಡರಿ ಫೈಲ್ ಅಲ್ಲ"
+        "translation": "ಮಾನ್ಯವಾದ ಕಸೂತಿ ಫೈಲ್ ಅಲ್ಲ"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "ನೈಜ ಪೂರ್ವವೀಕ್ಷಣೆ"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "ತೆರೆ"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "ಕಸೂತಿ ಫೈಲ್ ತೆರೆಯಿರಿ"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "ಆಯ್ಕೆಮಾಡಿದ ಕಸೂತಿ ಫೈಲ್ ತೆರೆಯಿರಿ."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "ಬಣ್ಣಗಳು…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "ಪ್ಯಾಲೆಟ್ ಫೈಲ್ ಅಥವಾ ಇನ್ನೊಂದು ವಿನ್ಯಾಸದಿಂದ ದಾರದ ಬಣ್ಣಗಳನ್ನು ಲೋಡ್ ಮಾಡಿ.\nಈ ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಬಣ್ಣಗಳನ್ನು ಉಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲದ ಕಾರಣ,\nಅವುಗಳನ್ನು ಈ ಫೈಲ್‌ನ ಪಕ್ಕದಲ್ಲಿ <name>.edr ಎಂದು ಉಳಿಸಲಾಗುತ್ತದೆ."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "ಈ ಫೈಲ್‌ನಲ್ಲೇ ದಾರದ ಬಣ್ಣಗಳು ಈಗಾಗಲೇ ಉಳಿಸಲಾಗಿದೆ."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "ಫೈಲ್‌ಗಳನ್ನು ಅಂಟಿಸು"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "ಫೋಲ್ಡರ್ ಪಥವನ್ನು ನಮೂದಿಸಿ ಅಥವಾ ಅಂಟಿಸಿ"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "ಸ್ಥಳಗಳು"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "ಪೂರ್ವವೀಕ್ಷಣೆ"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "ಈ SVG ನಿಂದ Inkscape/Ink/Stitch ಬಳಸಿ ಹೊಲಿಗೆ ಡೇಟಾವನ್ನು ರಚಿಸಿ."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "ಸಕ್ರಿಯ Ink/Stitch ಸ್ಕ್ರಿಪ್ಟ್ ಅಥವಾ ಅದರ ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾದ Python ಲಾಂಚರ್ ಅನ್ನು ಚಲಾಯಿಸಲಾಗುವುದಿಲ್ಲ."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "ಈ ಫೋಲ್ಡರ್ ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "ಇತ್ತೀಚಿನವು:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— ಫೋಲ್ಡರ್ ಆಯ್ಕೆಮಾಡಿ —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "ರಿಫ್ರೆಶ್ ಮಾಡು"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "ಈ ಫೋಲ್ಡರ್ ಅನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡು (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "ಮೆಚ್ಚಿನವುಗಳಿಂದ ತೆಗೆದುಹಾಕು"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "ಥಂಬ್‌ನೇಲ್ ಅನ್ನು 180° ತಿರುಗಿಸು"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "ಥಂಬ್‌ನೇಲ್ ಅನ್ನು ಎಡಕ್ಕೆ ತಿರುಗಿಸು"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "ತಿರುಗಿಸಲು ಥಂಬ್‌ನೇಲ್ ಇರುವ ವಿನ್ಯಾಸವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "ಮೂಲ ದಿಕ್ಕು"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "ಥಂಬ್‌ನೇಲ್ ಅನ್ನು ಬಲಕ್ಕೆ ತಿರುಗಿಸು"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} ಥಂಬ್‌ನೇಲ್(ಗಳು) ಅನ್ನು {degrees}° ತಿರುಗಿಸಲಾಗಿದೆ"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "ಫೈಲ್‌ಗಳನ್ನು ಹುಡುಕಿ"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "ತೆರೆಯಲು ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "ಗಾತ್ರ: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "ಈ ವಿಸ್ತರಣೆಗಳನ್ನು ಸಂವಾದದಲ್ಲಿ ಮರೆಮಾಡಿ.\nಅವುಗಳನ್ನು | ಬಳಸಿ ಬೇರ್ಪಡಿಸಿ; ಈ ಪಟ್ಟಿಯನ್ನು config.toml ನಲ್ಲಿ ಉಳಿಸಲಾಗುತ್ತದೆ."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "ತೋರಿಸಬೇಡ"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: ಕಂಡುಬಂದಿಲ್ಲ."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch ವಿಸ್ತರಣೆ: ಪರಿಶೀಲಿಸಲಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಲು Tools... ಬಳಸಿ."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch ವಿಸ್ತರಣೆ: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch ವಿಸ್ತರಣೆ: Inkscape ನ ವಿಸ್ತರಣೆ ಫೋಲ್ಡರ್‌ಗಳಲ್ಲಿ ಕಂಡುಬಂದಿಲ್ಲ."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch ವಿಸ್ತರಣೆ: Inkscape ಕಾನ್ಫಿಗರ್ ಮಾಡುವವರೆಗೆ ಪರಿಶೀಲಿಸಲಾಗುವುದಿಲ್ಲ."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch ವಿಸ್ತರಣೆ: ಇನ್ನೂ ಪರಿಶೀಲಿಸಿಲ್ಲ. ಪರಿಶೀಲಿಸಲು Tools... ಬಳಸಿ."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "ಸ್ಟಿಚ್‌ಗಳು: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG ಮೂಲ. ಸ್ಟಿಚ್ ಪೂರ್ವವೀಕ್ಷಣೆಗೆ Inkscape ಅಗತ್ಯವಿದೆ."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG ಮೂಲ. Inkscape/Ink/Stitch ಬಳಸಿ ಸ್ಟಿಚ್ ಡೇಟಾ ರಚಿಸಲು Preview ಆಯ್ಕೆಮಾಡಿ."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG ಅನ್ನು ರೆಂಡರ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "ಈ SVG ಇಲ್ಲಿ ಪೂರ್ವವೀಕ್ಷಿಸಲು ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "ತಾತ್ಕಾಲಿಕ ಪೂರ್ವವೀಕ್ಷಣೆ ಫೈಲ್ ರಚಿಸಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "ಥಂಬ್‌ನೇಲ್‌ಗಳು: {created} ರಚಿಸಲಾಗಿದೆ, {skipped} ಈಗಾಗಲೇ ನವೀಕೃತವಾಗಿವೆ, {failed} ವಿಫಲವಾಗಿವೆ"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "ಥಂಬ್‌ನೇಲ್‌ಗಳು: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "{count} ಥಂಬ್‌ನೇಲ್(ಗಳು)ಗಳ ಮೂಲ ದಿಕ್ಕನ್ನು ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "ಥಂಬ್‌ನೇಲ್‌ಗಳನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "ಫೈಲ್ ತೆರೆಯಿರಿ"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "ಪರಿಕರಗಳು..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "ಫೈಲ್‌ಗಳು ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿವೆ"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "ಫೈಲ್ ವರ್ಗಾವಣೆ ವಿಫಲವಾಗಿದೆ: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "ಫೈಲ್ ವರ್ಗಾವಣೆ ವಿಫಲವಾಗಿದೆ"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "ಫೈಲ್‌ಗಳಿಂದ ಬದಲಾಯಿಸಲಾಗದ ಫೋಲ್ಡರ್‌ಗಳೂ ಸೇರಿ, ಈ ಗಮ್ಯಸ್ಥಾನದ ಪಥಗಳು ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿವೆ. ಯಾವುದನ್ನೂ ವರ್ಗಾಯಿಸಲಾಗಿಲ್ಲ:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "ಫೋಲ್ಡರ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} ಸಿದ್ಧವಾಗಿದೆ: {count} ಫೈಲ್(ಗಳು)"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "ಈ ಗಮ್ಯಸ್ಥಾನದ ಫೈಲ್‌ಗಳು ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿವೆ:\n{files}\n\nಎಲ್ಲವನ್ನೂ ಬದಲಾಯಿಸಬೇಕೆ?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "ಈ ಫೈಲ್‌ಗಳು ಈಗಾಗಲೇ ಇಲ್ಲಿವೆ."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV ಸ್ಟಿಚ್ ಡೇಟಾ"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "ಫೋಲ್ಡರ್"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "ಕಸೂತಿ"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "ಬೆಂಬಲಿತವಲ್ಲ"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG ಮೂಲ"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "ಈ ಫೈಲ್ ಪ್ರಕಾರವನ್ನು InkSim ನಲ್ಲಿ ತೆರೆಯಲಾಗುವುದಿಲ್ಲ."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "ಮೇಲಿನ ಫೋಲ್ಡರ್ ತೆರೆಯಿರಿ (Alt+Up)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "ನೋಟ"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "ವಿವರಗಳು"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "ಐಕಾನ್‌ಗಳು ಮಾತ್ರ"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "ಐಕಾನ್‌ಗಳು ಮತ್ತು ಪಠ್ಯ"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "ದೊಡ್ಡದಾಗಿಸಿ"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "ಚಿಕ್ಕದಾಗಿಸಿ"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "ಪ್ಯಾಲೆಟ್ ಅಥವಾ ಬಣ್ಣಗಳಿರುವ ವಿನ್ಯಾಸವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} ನಲ್ಲಿ ದಾರದ ಬಣ್ಣಗಳಿಲ್ಲ."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "ಎಲ್ಲಾ ಫೈಲ್‌ಗಳು"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "ವಿನ್ಯಾಸ ಫೈಲ್‌ಗಳು (ಉಳಿಸಿದ್ದರೆ ಬಣ್ಣಗಳೊಂದಿಗೆ)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "ಪ್ಯಾಲೆಟ್ ಫೈಲ್‌ಗಳು"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "ಈ ವಿನ್ಯಾಸದಲ್ಲೇ ದಾರದ ಬಣ್ಣಗಳು ಈಗಾಗಲೇ ಉಳಿಸಲಾಗಿದೆ."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} ನಲ್ಲಿ ಈ ವಿನ್ಯಾಸದ ಬಣ್ಣಗಳು ಈಗಾಗಲೇ ಉಳಿಸಲಾಗಿದೆ.\nಅದನ್ನು {target} ನಿಂದ ಬದಲಾಯಿಸಬೇಕೆ?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "ನನ್ನ ಆಯ್ಕೆಯನ್ನು ನೆನಪಿಡು"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} ನಲ್ಲಿ ದಾರದ ಬಣ್ಣಗಳನ್ನು ಉಳಿಸಲಾಗುವುದಿಲ್ಲ.\nವಿನ್ಯಾಸದ ಪಕ್ಕದಲ್ಲಿ ಅವುಗಳನ್ನು {name} ಎಂದು ಉಳಿಸಬೇಕೆ?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "ದಾರದ ಬಣ್ಣಗಳು"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} ನಲ್ಲಿ {available} ಬಣ್ಣಗಳಿವೆ, ಆದರೆ ವಿನ್ಯಾಸದಲ್ಲಿ {blocks} ಬಣ್ಣದ ವಿಭಾಗಗಳಿವೆ.\nಆದರೂ ಬಳಸಬೇಕೆ? ಕೊನೆಯ ಬಣ್ಣವನ್ನು ಮತ್ತೆ ಬಳಸಲಾಗುತ್ತದೆ."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "ಬಣ್ಣಗಳನ್ನು ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "ಹೊಲಿಗೆ ರೆಂಡರರ್ ಆಯ್ಕೆಮಾಡಿ"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "ಬದಲಾಯಿಸಿ"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape ವಿಸ್ತರಣೆಯ ಸ್ಥಿತಿಯನ್ನು ಉಳಿಸಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "ಲಭ್ಯವಿಲ್ಲ"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape ಎಕ್ಸಿಕ್ಯೂಟೇಬಲ್ ಅಥವಾ ಸಂಪೂರ್ಣ ಆಜ್ಞಾ ಸಾಲು; ಉದಾಹರಣೆಗೆ, \"flatpak run org.inkscape.Inkscape\". ಅದನ್ನು ಪರಿಶೀಲಿಸಲು Enter ಒತ್ತಿ."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "ಡೀಬಗ್ ಸ್ಕ್ರಿಪ್ಟ್ ರಚಿಸು (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "ಡೀಬಗ್ ಸ್ಕ್ರಿಪ್ಟ್ ಸೆಟ್ಟಿಂಗ್ ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Inkscape ಆಜ್ಞೆಯನ್ನು ಮತ್ತೆ ಚಲಾಯಿಸಲು, ದಾಖಲೆಯ ಪಕ್ಕದಲ್ಲಿ debug_inksim.sh ಬರೆಯುತ್ತದೆ."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "ಪೂರ್ವವೀಕ್ಷಣೆ ಆಜ್ಞೆ ಬದಲಾಗಿದೆ"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "ಬದಲಾಗಿರುವ ಫೈಲ್‌ಗಳು: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "ನವೀಕೃತವಾಗಿದೆ"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "ಸ್ಥಾಪನೆ ಅಗತ್ಯವಿದೆ"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "ಸ್ಥಿತಿ ಲಭ್ಯವಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "ನವೀಕರಣ ಅಗತ್ಯವಿದೆ ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "ಸಿಸ್ಟಮ್ ಎಕ್ಸ್ಟೆನ್ಶನ್: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "ಪ್ರಸ್ತುತ ಬಳಕೆದಾರ ವಿಸ್ತರಣೆ (ಸ್ಥಾಪನೆ/ನವೀಕರಣದ ಗುರಿ): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "ಇನ್ನೊಬ್ಬ ಬಳಕೆದಾರರ ಎಕ್ಸ್ಟೆನ್ಶನ್: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "ಕೊನೆಯ ಸೆಟಪ್‌ನಿಂದ Inkscape ವಿಸ್ತರಣೆಗಳ ಫೋಲ್ಡರ್‌ನಲ್ಲಿರುವ Ink/Stitch ಲಿಂಕ್ ಬದಲಾಗಿದೆ:\n\n{details}\n\nInkSim ಪ್ರಸ್ತುತ ಲಿಂಕ್ ಅನ್ನು ಬಳಸುತ್ತದೆ. ಅದನ್ನು ಉಳಿಸಲು Inkscape ಸೆಟಪ್ ತೆರೆಯಿರಿ."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "ಫೋಲ್ಡರ್ ಕಾಣೆಯಾಗಿದೆ: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "ಈಗ ಈ ಪಥವನ್ನು ಸೂಚಿಸುತ್ತದೆ: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim ವಿಸ್ತರಣೆಗಳನ್ನು ಸ್ಥಾಪಿಸಿ / ನವೀಕರಿಸಿ"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್‌ನಲ್ಲಿ ಕೆಲವು ಫೈಲ್‌ಗಳು ಈಗಾಗಲೇ ಇವೆ. ಬದಲಾಯಿಸಲು ಪಟ್ಟಿ ಮಾಡಿರುವ ಫೈಲ್‌ಗಳಲ್ಲಿ ಬಳಕೆದಾರರ ಬದಲಾವಣೆಗಳಿರಬಹುದು. ಪಟ್ಟಿ ಮಾಡಿರುವ ಇತರ ಫೈಲ್‌ಗಳನ್ನು ಉಳಿಸಲಾಗುತ್ತದೆ; ಎಂದಿಗೂ ಅಳಿಸಲಾಗುವುದಿಲ್ಲ.\n\nಬದಲಾಯಿಸಬೇಕಾದ ಫೈಲ್‌ಗಳು:\n{replace_files}\n\nಉಳಿಸಬೇಕಾದ ಫೈಲ್‌ಗಳು:\n{preserve_files}\n\nಮುಂದುವರಿಯಬೇಕೇ?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSim ನ Inkscape ವಿಸ್ತರಣೆಗಳನ್ನು ಸ್ಥಾಪಿಸಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim ನ Inkscape ವಿಸ್ತರಣೆಗಳನ್ನು {path} ನಲ್ಲಿ ಸ್ಥಾಪಿಸಲಾಗಿದೆ ಅಥವಾ ನವೀಕರಿಸಲಾಗಿದೆ. ಅವುಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು Inkscape ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಿ."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "ಯಾವುದೂ ಇಲ್ಲ"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "ಅನ್ವಯಿಸು"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "ಎಲ್ಲಾ Inkscape ವಿಸ್ತರಣೆಗಳ Python ಇಂಟರ್ಪ್ರಿಟರ್ ಅನ್ನು ಇದಕ್ಕೆ ಬದಲಾಯಿಸಬೇಕೆ?\n\n{path}\n\nಇದು Inkscape‌ನ ಜಾಗತಿಕ ಆದ್ಯತೆಯನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ. ಮುಂದುವರಿಸಬೇಕೆ?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "ಕಸ್ಟಮ್ ಪಥ…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Python ಇಂಟರ್ಪ್ರಿಟರ್ ಆಯ್ಕೆಮಾಡಿ"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "ಐಚ್ಛಿಕ — ತಮ್ಮದೇ Python ಪರಿಸರ ಹೊಂದಿರುವ ವಿಸ್ತರಣೆಗಳಿಗೆ ಮಾತ್ರ"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Inkscape‌ನ Python ಇಂಟರ್ಪ್ರಿಟರ್ ಕೇಳುವ ವಿಸ್ತರಣೆಗಳಿಗೆ ಮಾತ್ರ ಇದು ಬೇಕಾಗುತ್ತದೆ (ಉದಾ. Ink/Stitch).\nInkSim‌ನ ಸ್ವಂತ ವಿಸ್ತರಣೆಗಳು InkSim ಅನ್ನು ನೇರವಾಗಿ ಪ್ರಾರಂಭಿಸುತ್ತವೆ."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch ಪರಿಸರ ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "ಬದಲಾಯಿಸಬೇಡ (ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "ಇಂಟರ್ಪ್ರಿಟರ್ ಸೆಟ್ಟಿಂಗ್ ತೆಗೆದುಹಾಕು"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "ಇಲ್ಲಿಂದ Python ಇಂಟರ್ಪ್ರಿಟರ್ ಸೆಟ್ಟಿಂಗ್ ತೆಗೆದುಹಾಕಬೇಕೆ?\n\n{path}\n\nಪ್ರತಿ ವಿಸ್ತರಣೆಗೆ Inkscape ತನ್ನ ಡೀಫಾಲ್ಟ್ ಇಂಟರ್ಪ್ರಿಟರ್ ಬಳಸುತ್ತದೆ. ಮುಂದುವರಿಸಬೇಕೆ?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "ಹಿಂದಿನದನ್ನು ಮರುಸ್ಥಾಪಿಸು"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr ಲಾಂಚರ್ ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "ಸಿಸ್ಟಮ್ ಪಥದಲ್ಲಿ Inkscape ಕಂಡುಬಂದಿಲ್ಲ."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscape ಆದ್ಯತೆಗಳನ್ನು ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscape ಆದ್ಯತೆಗಳನ್ನು ನವೀಕರಿಸಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscape ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್‌ಗಳನ್ನು ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape ಪ್ರತಿಕ್ರಿಯಿಸಲು ಕಾಯಲಾಗುತ್ತಿದೆ…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ... {seconds} ಸೆಕೆಂಡು"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python ಇಂಟರ್ಪ್ರಿಟರ್: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "ಹೊಸ Python ಇಂಟರ್ಪ್ರಿಟರ್ ಅನ್ವಯಿಸಲು Inkscape ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಿ."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python ಇಂಟರ್ಪ್ರಿಟರ್ ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "ಹೊಂದಿಸಿಲ್ಲ"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "ಹಳೆಯ InkSim ಪ್ರತಿಗಳನ್ನು ತೆಗೆದುಹಾಕಿ"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "ಪಟ್ಟಿಯಲ್ಲಿರುವ ಬಳಕೆದಾರರ ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್‌ಗಳು ಮತ್ತು ಅವುಗಳೊಳಗಿನ ಎಲ್ಲಾ ಫೈಲ್‌ಗಳನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ. ಪ್ರಸ್ತುತ ಸ್ಥಾಪನೆ/ನವೀಕರಣ ಗುರಿ ಮತ್ತು ಸಿಸ್ಟಮ್ ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗುವುದಿಲ್ಲ.\n\n{directories}\n\nಮುಂದುವರಿಯಬೇಕೇ?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "ಹಳೆಯ InkSim ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್ ತೆಗೆದುಹಾಕಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "ಹಳೆಯ InkSim ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ವಿಸ್ತರಣೆಗಳ ಪಟ್ಟಿಯನ್ನು ನವೀಕರಿಸಲು Inkscape ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಿ."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "ಸಕ್ರಿಯ Ink/Stitch ಸ್ಥಾಪನೆಯನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim ಕಾನ್ಫಿಗರೇಶನ್ ಉಳಿಸಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "ಪತ್ತೆಯಾದ ಸೆಟಪ್ ಅನ್ನು InkSim ಕಾನ್ಫಿಗರೇಶನ್‌ಗೆ ಉಳಿಸಲಾಗಿದೆ."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape ಆಜ್ಞೆಯನ್ನು ಉಳಿಸಲಾಗಿದೆ, ಆದರೆ ಪರಿಶೀಲನೆ ವಿಫಲವಾದ ಕಾರಣ ಎಕ್ಸ್ಟೆನ್ಶನ್ ಫೋಲ್ಡರ್‌ಗಳನ್ನು ನವೀಕರಿಸಲಾಗಿಲ್ಲ."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Inkscape ಕಾರ್ಯಗತಗೊಳಿಸಬಹುದಾದ ಫೈಲ್ ಪರಿಶೀಲಿಸಲಾಗಿದೆ: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Ink/Stitch ಸ್ಥಾಪನೆಗಳು ಕಂಡುಬಂದಿವೆ: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape ವಿಸ್ತರಣೆಗಳ ಫೋಲ್ಡರ್‌ನಲ್ಲಿರುವ Ink/Stitch ಲಿಂಕ್ ಈಗ ಇದನ್ನು ಸೂಚಿಸುತ್ತದೆ: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch ಸ್ಥಾಪನೆ ಕಂಡುಬಂದಿಲ್ಲ."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape ವಿಸ್ತರಣೆಗಳ Python ಇಂಟರ್ಪ್ರಿಟರ್: {path} (ಬದಲಾಯಿಸಿಲ್ಲ)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape Python ಇಂಟರ್ಪ್ರಿಟರ್ ಆದ್ಯತೆಯನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "ಹಿಂದಿನ Python ಇಂಟರ್ಪ್ರಿಟರ್ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python ಇಂಟರ್ಪ್ರಿಟರ್ ನವೀಕರಿಸಲಾಗಿದೆ: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape ಕಂಡುಬಂದಿಲ್ಲ. ಸೆಟಪ್ ಪರಿಶೀಲಿಸಲು ಅದರ ಕಾರ್ಯಗತಗೊಳಿಸಬಹುದಾದ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Inkscape ಆದ್ಯತೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗಿದೆ: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python ಇಂಟರ್ಪ್ರಿಟರ್ ಅನ್ನು ಪರಿಶೀಲಿಸಲು ಅಥವಾ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "ಬಳಕೆದಾರರ ವಿಸ್ತರಣೆಯ ಫೋಲ್ಡರ್ ಲಭ್ಯವಿಲ್ಲದ ಕಾರಣ Python ಇಂಟರ್ಪ್ರಿಟರ್ ಆದ್ಯತೆಯನ್ನು ಪರಿಶೀಲಿಸಲಾಗಲಿಲ್ಲ."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape ಅನ್ನು ಪರಿಶೀಲಿಸಲಾಗಲಿಲ್ಲ: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "ನವೀಕರಿಸಿದ ಇಂಟರ್ಪ್ರಿಟರ್ ಅನ್ವಯಿಸಲು Inkscape ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಿ."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "ಸಿಸ್ಟಮ್ ವಿಸ್ತರಣೆಗಳು: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape {seconds} ಸೆಕೆಂಡುಗಳೊಳಗೆ ಪ್ರತಿಕ್ರಿಯಿಸಲಿಲ್ಲ."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "ಬಳಕೆದಾರರ ವಿಸ್ತರಣೆಗಳು: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "ಐಚ್ಛಿಕ uvr ಲಾಂಚರ್ ಲಭ್ಯವಿದೆ: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "ಐಚ್ಛಿಕ uvr ಲಾಂಚರ್ ಕಂಡುಬಂದಿಲ್ಲ; Inkscape ಇಂಟರ್ಪ್ರಿಟರ್ ಆದ್ಯತೆಯನ್ನು ಬದಲಾಯಿಸದೆ ಉಳಿಸಲಾಗಿದೆ."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape ಆವೃತ್ತಿ: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "ಪರಿಶೀಲಿಸಲು Inkscape ಕಾರ್ಯಗತಗೊಳಿಸಬಹುದಾದ ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape ಅಪ್ಲಿಕೇಶನ್"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "ವಿಸ್ತರಣೆಗಳು"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "ವರದಿ"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "ಸಿಸ್ಟಮ್ ವಿಸ್ತರಣೆಗಳು: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape {seconds} ಸೆಕೆಂಡುಗಳೊಳಗೆ ಪ್ರತಿಕ್ರಿಯಿಸಲಿಲ್ಲ. ಮತ್ತೊಂದು Inkscape ಇನ್‌ಸ್ಟಾನ್ಸ್ ಅಥವಾ ವಿಸ್ತರಣೆಯು ಸಂವಹನಕ್ಕೆ ಅಡ್ಡಿಯಾಗಿರಬಹುದು. ಇತರ Inkscape ಇನ್‌ಸ್ಟಾನ್ಸ್‌ಗಳನ್ನು ಮುಚ್ಚಿ ಅಥವಾ ಅಡ್ಡಿಪಡಿಸುವ ವಿಸ್ತರಣೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ, ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "ಬಳಕೆದಾರರ ವಿಸ್ತರಣೆಗಳು: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape ಆವೃತ್ತಿ: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "ಲಭ್ಯವಿಲ್ಲ"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "ಆಜ್ಞೆ: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "ಇಂಟರ್ಪ್ರಿಟರ್: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "ಸ್ಥಳ: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch ಸ್ಥಾಪನೆ ಕಂಡುಬಂದಿಲ್ಲ."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "ಮೇಲೆ ತೋರಿಸಿರುವ Inkscape ಎಕ್ಸ್ಟೆನ್ಶನ್ ಫೋಲ್ಡರ್‌ಗಳಲ್ಲಿ ಒಂದರಲ್ಲಿ Ink/Stitch ಅನ್ನು ಸ್ಥಾಪಿಸಿ."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "ಪಥ: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "ಹೊಲಿಗೆ ರೆಂಡರರ್ ಆಯ್ಕೆಮಾಡಿ..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "ಉಳಿಸುವಾಗ ಬಣ್ಣಗಳು"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "ಪ್ಯಾಲೆಟ್ ಅನ್ನು ಯಾವಾಗಲೂ ಬರೆಯಿರಿ"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "ಪ್ರತಿ ಬಾರಿಯೂ ಕೇಳು"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "ಪ್ಯಾಲೆಟ್ ಫಾರ್ಮ್ಯಾಟ್"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "ಪ್ಯಾಲೆಟ್ ಅನ್ನು ಎಂದಿಗೂ ಬರೆಯಬೇಡಿ"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "GPU ಟೆಕ್ಸ್ಚರ್ಡ್ ರೆಂಡರ್"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "ಕಸೂತಿ ಫೈಲ್ ತೆರೆಯಿರಿ"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "ಪ್ಯಾಲೆಟ್ ಲೋಡ್ ಮಾಡು…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "ನಿರ್ಗಮಿಸಿ"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "ತೆರೆಯಿರಿ..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "ಎಲ್ಲಾ ವಿಂಡೋಗಳು ಮತ್ತು ಸರ್ವರ್ ಅನ್ನು ನಿರ್ಗಮಿಸಿ"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "ಟ್ರೇಸ್ ಈವೆಂಟ್ಗಳು"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&ಪರಿಕರಗಳು"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape ಸೆಟಪ್..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "ಭಾಷೆ"
+        "source": "&Language",
+        "translation": "&ಭಾಷೆ"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "ಸೂಜಿ ಕ್ರಾಸ್ಹೇರ್ ಸೆಟ್ಟಿಂಗ್ಗಳು"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette} ನ ಬಣ್ಣಗಳನ್ನು {name} ಎಂದು ಉಳಿಸಲಾಗಿದೆ"
     },
     "status.slider.color": {
         "source": "Color…",

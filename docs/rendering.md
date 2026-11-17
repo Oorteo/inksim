@@ -22,8 +22,9 @@ The goal is the same in every mode: show the stitch sequence, thread
 colours, and jumps clearly. Some modes are fast, others are more realistic,
 and a few are specialised overlays for checking the design before production.
 
-Switch renderers with the **R** key, or pick one from the **File → Renderer**
-menu. Toggle overlays with the single-letter shortcuts shown below.
+Switch renderers with the **R** key, or pick one from the **File → Choose
+stitch renderer...** action. Toggle overlays with the single-letter shortcuts
+shown below.
 
 ---
 

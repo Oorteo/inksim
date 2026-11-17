@@ -78,6 +78,8 @@ from ..constants import (
     MIN_VISIBLE_DESIGN_PIXELS,
 )
 from ..debug import is_enabled, logger
+from ..formats import command_name as pystitch_command_name
+from ..formats import read_embroidery_file
 from ..render import (
     RENDERERS_BY_KEY,
     VECTOR_RENDERERS,
@@ -86,17 +88,10 @@ from ..render import (
     render_viewport_raster,
 )
 from ..runtime import is_opengl33_available
+from .dialogs import dispose_qt_child
 from .gl_viewer import GLStitchWidget, list_thread_textures, resolve_thread_texture
 from .help import show_help
 from .settings import show_settings
-
-_COMMAND_NAMES: dict[int, str] = {}
-for _name in dir(emb):
-    if not _name.isupper() or _name.endswith("_MASK"):
-        continue
-    _value = getattr(emb, _name)
-    if isinstance(_value, int) and 0 <= _value <= emb.COMMAND_MASK and _value not in _COMMAND_NAMES:
-        _COMMAND_NAMES[_value] = _name
 
 
 def density_debug(message: str) -> None:
@@ -264,6 +259,12 @@ class EmbroideryViewerWidget(QWidget):
         self.settings_dialog: QDialog | None = None
         self._last_dir = 1
         self._pending_fit_to_screen = False
+        self._fit_to_screen_retries: int = 20
+        self._fit_to_screen_timer = QTimer(self)
+        self._fit_to_screen_timer.setSingleShot(True)
+        self._fit_to_screen_timer.timeout.connect(
+            lambda: self._try_fit_to_screen(self._fit_to_screen_retries)
+        )
         self.play_timer = QTimer(self)
         self.play_speed = 20
         self.play_speed_levels = (1, 2, 3, 5, 7, 10, 15, 22, 32, 47, 68, 98)
@@ -374,8 +375,13 @@ class EmbroideryViewerWidget(QWidget):
         self._gl_widget.setGeometry(self.rect())
         self.invalidate_cache()
         if self._pending_fit_to_screen and self.stitches_np.shape[0] > 0:
-            QTimer.singleShot(0, self._try_fit_to_screen)
+            self._schedule_fit_to_screen(0)
         super().resizeEvent(event)
+
+    def _schedule_fit_to_screen(self, delay_ms: int, retries: int = 20) -> None:
+        # One reusable timer keeps retries from piling up viewer-owned timers.
+        self._fit_to_screen_retries = retries
+        self._fit_to_screen_timer.start(delay_ms)
 
     def _try_fit_to_screen(self, retries: int = 20) -> None:
         """Fit the design once Qt has assigned a usable panel size."""
@@ -387,7 +393,7 @@ class EmbroideryViewerWidget(QWidget):
         # Retry shortly until layout stabilizes.
         if w < 120 or h < 120:
             if retries > 0:
-                QTimer.singleShot(30, self, lambda: self._try_fit_to_screen(retries - 1))
+                self._schedule_fit_to_screen(30, retries - 1)
             return
         self._pending_fit_to_screen = False
         self.fit_to_screen()
@@ -1053,7 +1059,7 @@ class EmbroideryViewerWidget(QWidget):
             f"load start path={path!r} precompute_density={precompute_density} autoplay={autoplay}"
         )
         try:
-            pattern = emb.read(path)
+            pattern = read_embroidery_file(path)
         except Exception as ex:
             if show_error_dialog:
                 QMessageBox.critical(self, "Error", f"Failed to load embroidery file: {ex}")
@@ -1147,7 +1153,7 @@ class EmbroideryViewerWidget(QWidget):
                 color_change_in_group = True
                 last_x, last_y = x, y
                 continue
-            command_name = _COMMAND_NAMES.get(cmd)
+            command_name = pystitch_command_name(cmd)
             if command_name is not None and command_name != "STITCH":
                 event_position = len(segs)
                 self.command_events.setdefault(event_position, []).append(command_name)
@@ -1205,7 +1211,7 @@ class EmbroideryViewerWidget(QWidget):
             self.color_count = len(self.color_boundaries)
             if fit_to_screen:
                 self._pending_fit_to_screen = True
-                QTimer.singleShot(0, self._try_fit_to_screen)
+                self._schedule_fit_to_screen(0)
         else:
             if show_error_dialog:
                 QMessageBox.critical(
@@ -1634,29 +1640,46 @@ class EmbroideryViewerWidget(QWidget):
             e.accept()
             return
         position = e.position().toPoint()
-        mx, my = position.x(), position.y()
+        delta = e.angleDelta().y()
+        if delta == 0:
+            delta = e.pixelDelta().y()
+        if delta == 0:
+            e.accept()
+            return
+        self._trace_event("wheel zoom" if delta > 0 else "wheel zoom out")
+        self.zoom_at(position, 1.15 if delta > 0 else 1 / 1.15)
+
+    def zoom_at(self, position: QPoint, factor: float) -> None:
+        """Zoom around a screen position, preserving the point under it."""
         old = self.zoom
-        self.zoom *= 1.15 if e.angleDelta().y() > 0 else 1 / 1.15
-        self._trace_event("wheel zoom" if e.angleDelta().y() > 0 else "wheel zoom out")
-        self.zoom = max(self.minimum_zoom(), min(self.maximum_zoom(), self.zoom))
+        self.zoom = max(self.minimum_zoom(), min(self.maximum_zoom(), self.zoom * factor))
+        if self.zoom == old:
+            return
+        mx, my = position.x(), position.y()
         scale = self.zoom / old
         self.pan_x = float(mx - scale * (mx - self.pan_x))
         self.pan_y = float(my - scale * (my - self.pan_y))
         if self.zoom_render_timer is not None:
             self.zoom_render_timer.stop()
+            dispose_qt_child(self.zoom_render_timer)
+            self.zoom_render_timer = None
         if self.cached_bitmap:
             self._cache_valid = True
-            self.zoom_render_timer = QTimer(self)
-            self.zoom_render_timer.setSingleShot(True)
-            self.zoom_render_timer.timeout.connect(self._finish_zoom_render)
-            self.zoom_render_timer.start(140)
+            timer = QTimer(self)
+            timer.setSingleShot(True)
+            timer.timeout.connect(lambda timer=timer: self._finish_zoom_render(timer))
+            self.zoom_render_timer = timer
+            timer.start(140)
         else:
             self.invalidate_cache()
         self.update()
 
-    def _finish_zoom_render(self) -> None:
+    def _finish_zoom_render(self, timer: QTimer) -> None:
         """Schedule a full-quality render after zooming settles."""
+        if timer is not self.zoom_render_timer:
+            return
         self.zoom_render_timer = None
+        dispose_qt_child(timer)
         self.invalidate_cache()
         self.update()
 
@@ -2054,7 +2077,7 @@ class EmbroideryViewerWidget(QWidget):
         self.invalidate_cache()
         self.update()
         if self.progress_bar and self.progress_bar.dragging:
-            self.progress_bar.dragging = False
+            self.progress_bar.dragging = None
             self.progress_bar.releaseMouse()
 
     def mouseDoubleClickEvent(self, e: QMouseEvent | None) -> None:

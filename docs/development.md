@@ -11,7 +11,7 @@
 - [Internationalization (i18n)](#internationalization-i18n)
   - [Fallback chain](#fallback-chain)
   - [Adding or changing a UI string](#adding-or-changing-a-ui-string)
-  - [Translating locales via Ollama](#translating-locales-via-ollama)
+  - [Managing locales and translations](#managing-locales-and-translations)
   - [Running the application in another language](#running-the-application-in-another-language)
 - [Rendering Architecture](#rendering-architecture)
 - [Runtime Diagnostics](#runtime-diagnostics)
@@ -50,26 +50,29 @@ InkSim ships with a small interactive task menu in the project root:
 ./run.py
 ```
 
-The menu uses numbers so there is no risk of typos. The most common quick
-checks are first, the slow test suite is on `0`, and one-off setup tasks are
-at the end:
+The menu puts the most common quick checks first, the slow test suite on `0`,
+and one-off setup tasks at the end. Translation tasks use the `i` prefix:
 
 ```text
-1: lint + typecheck      -> uv run poe check
-2: run linter            -> uv run poe lint
-3: run type checker      -> uv run poe typecheck
-4: preview format changes -> uv run ruff format . --diff
-5: format source files   -> uv run poe format
-6: preview auto-fixes    -> uv run ruff check . --diff
-7: auto-fix lint issues  -> uv run poe fix
-8: install git hooks     -> uv run poe install-hooks
-9: install dev env       -> uv sync --all-groups
-0: run tests             -> uv run poe test
+1: lint + typecheck                 -> uv run poe check
+2: run linter                       -> uv run poe lint
+3: run type checker                 -> uv run poe typecheck
+4: preview format changes           -> uv run ruff format . --diff
+5: format source files              -> uv run poe format
+6: preview auto-fixes               -> uv run ruff check . --diff
+7: auto-fix lint issues             -> uv run poe fix
+8: install git pre-commit hooks      -> uv run poe install-hooks
+9: install dev environment          -> uv sync --all-groups
+0: run tests                        -> uv run poe test
+i1: sync translation strings        -> uv run python scripts/i18n/010_manage_locales.py sync
+i2: list translation status         -> uv run python scripts/i18n/010_manage_locales.py list
+i3: test translations               -> uv run pytest tests/test_i18n.py
 q: quit
 ```
 
-You can also run tasks directly with `uv run poe <task>`. Available tasks are
-`test`, `lint`, `format`, `typecheck`, `fix`, `check` and `install-hooks`.
+You can also run a menu task directly with `./run.py <key>`, for example
+`./run.py i3`. Poe tasks can be run with `uv run poe <task>`; available tasks
+are `test`, `lint`, `format`, `typecheck`, `fix`, `check` and `install-hooks`.
 
 ### Linting and formatting
 
@@ -102,6 +105,11 @@ uv run poe test
 ```
 
 It produces a terminal coverage summary and an HTML report in `htmlcov/`.
+`tests/test_docs.py` also validates every link and heading anchor in the
+Markdown documentation, so a renamed section or moved page fails the suite.
+Automatic PyPI update checks are disabled for the test session so GUI tests stay
+deterministic; the update worker and its window slot have explicit tests in
+`tests/test_zz_menus.py`.
 
 ### Pre-commit hooks
 
@@ -110,6 +118,10 @@ Git hooks are optional but recommended. Install them once with:
 ```bash
 uv run poe install-hooks
 ```
+
+After installation, Git automatically runs the configured hooks before each
+commit: `ruff check`, `ruff format --check` and `mypy`. The hooks do not run the
+test suite; run `uv run poe test` separately.
 
 ## Internationalization (i18n)
 
@@ -134,41 +146,70 @@ language.
 
 ### Adding or changing a UI string
 
-1. Use the imported `_` helper in source code:
+Use the imported `_` helper with a stable, namespaced message ID and a
+human-readable English fallback:
 
-   ```python
-   from ..i18n import _
+```python
+from ..i18n import _
 
-   button = QPushButton(_("status.slider.width"))
-   ```
-
-2. Run the extractor to update the English catalog:
-
-   ```bash
-   uv run python scripts/i18n/_extract.py
-   ```
-
-   This scans the source for `_()` calls, adds new IDs to `en.json` with the
-   source text, and preserves existing translations in the other locale files.
-
-### Translating locales via Ollama
-
-The translator sends only **missing or stale** strings to a local Ollama model,
-so repeated runs are cheap:
-
-```bash
-# Translate a single locale
-uv run python scripts/i18n/_translate.py --lang cs --model deepseek-v4-flash:cloud
-
-# Regional variant, e.g. Brazilian Portuguese
-uv run python scripts/i18n/_translate.py --lang pt-BR --model deepseek-v4-flash:cloud
-
-# Translate every roadmap locale up to a tier
-uv run python scripts/i18n/010_manage.py translate-all --tier 2 --model deepseek-v4-flash:cloud
+button = QPushButton(_("menu.file.open_file", "Open file"))
 ```
 
-The script accepts both `pt-BR` and `pt_BR.UTF-8` style tags. Use `--dry-run`
-to preview the prompt without calling the model.
+The first argument is the message ID; keep it stable if the English wording
+changes. The second argument is the English source text and the runtime
+fallback when no translation is available. Use named placeholders for
+interpolated values, and format the translated string afterwards:
+
+```python
+message = _("message.save_error", "Failed to save {path}").format(path=path)
+```
+
+Do not use the English sentence as the only argument, such as
+`_("Open file")`: it is treated as the message ID, not as source text. The
+one-argument form `_("menu.file.open_file")` remains valid for existing
+messages whose English source is already maintained in `en.json`, but new
+messages should include both arguments.
+
+Synchronize the catalogs through the locale manager:
+
+```bash
+uv run python scripts/i18n/010_manage_locales.py sync
+```
+
+The extractor recognizes literal IDs and fallback strings. For a new ID, it
+uses the fallback as the English source in `en.json`; without a literal
+fallback, the ID itself is only a placeholder source. It also removes keys
+from locale catalogs that no longer exist in the source. It does not translate
+strings. If you change the English wording of an existing message, update its
+source in `en.json` as well, then translate the affected locales.
+
+### Managing locales and translations
+
+Use `010_manage_locales.py` to view locale coverage, create a catalog for a locale
+listed in `scripts/i18n/locales.json`, and translate missing or stale strings:
+
+```bash
+# List locale status (optionally limit to a roadmap tier)
+uv run python scripts/i18n/010_manage_locales.py list --tier 2
+
+# Create an empty catalog for a locale in the roadmap
+uv run python scripts/i18n/010_manage_locales.py add fr
+
+# Translate one locale, or all locales up to a roadmap tier
+uv run python scripts/i18n/010_manage_locales.py translate fr
+uv run python scripts/i18n/010_manage_locales.py translate-all --tier 2
+```
+
+Copilot is the default provider. To use Ollama instead, pass
+`--provider ollama`; `--model` selects a specific model. Both translation
+commands accept `--dry-run` to preview prompts without calling a model.
+When using Copilot, `translate-all` reuses one client and starts a separate
+session for each locale, keeping translation context isolated without reconnecting
+for every language. It reports per-locale progress and saves each completed
+catalog immediately. A locale whose catalog cannot be prepared or validated
+does not stop the remaining locales; the command reports it and exits with a
+non-zero status. Model output that is not a string is rejected instead of being
+converted.
 
 ### Running the application in another language
 
@@ -197,10 +238,6 @@ priority list) → `LC_ALL` → `LANG` → `en`. Each locale also falls back to 
 base language (e.g. `pt-BR` → `pt`) before the next priority entry is tried.
 GitHub issues or pull requests; the JSON format is self-contained and diffs
 well.
-
-Before each commit the hooks run a quick `ruff check`, `ruff format --check`
-and `mypy`. The full test suite is intentionally not in the hook so commits
-stay fast.
 
 ## Rendering Architecture
 
@@ -309,8 +346,22 @@ can be replaced without changing the tests:
 ```text
 tests/data/sample.csv
 tests/data/sample.pes
+tests/data/sample.svg
+tests/data/sample_svg.svg
 tests/data/square.pes
+tests/data/two_tect.csv
+tests/data/two_tect.dst
+tests/data/two_tect.edr
+tests/data/two_tect.svg
 ```
+
+`two_tect.dst` with `two_tect.edr` is a committed pair used to check that a
+design without its own palette borrows colors from a sidecar.
+
+The folder also collects files that tests generate: PNG thumbnails, `debug_*`
+logs and the occasional `.zip` archive. Git ignores them. Never commit
+generated or hand-made files from this folder, and never delete files you did
+not create; restore generated churn with `git checkout -- tests/data`.
 
 The `sample_design` pytest fixture selects an available sample from this
 folder. Test data and the `tests/` directory are excluded from application
@@ -331,9 +382,13 @@ test fixtures, or pytest dependencies.
 
 Releases are cut from Git tags. The `Release wheel` workflow builds and tests
 the project whenever a `v*` tag is pushed, attaches the wheel and the source
-distribution to a GitHub release, and publishes it. Artifacts uploaded by the
-`PR check` workflow are not releases: they require a GitHub login and expire
-after a few days, so they are only meant for CI verification.
+distribution to a GitHub release. It does not publish to PyPI.
+
+Test wheels:
+
+- **PR check:** wheel in the Actions run's **Artifacts**; expires after 7 days.
+- **RC tag:** `Release wheel` attaches the tested wheel and source archive to
+  the GitHub pre-release. No PyPI upload.
 
 ### The tag is the source of truth
 
@@ -365,39 +420,91 @@ Tag the current commit and push the tag; no commit is created:
 ./scripts/release/010_pre_release.sh
 ```
 
-The script reads the version from `pyproject.toml`, counts the existing
-`v<version>-rc.*` tags and creates the next candidate, so repeated runs produce
-`rc.1`, `rc.2`, `rc.3`. It refuses to run with a dirty working tree, because a
-tag points at a commit and uncommitted work would not be released. Testers can
-install a candidate directly from the release page:
+- Reads `pyproject.toml`; creates the next `v<version>-rc.N` tag.
+- Allows only one pre-release tag per commit. A final release may later share
+  that commit with its matching RC tag. To create another candidate, make a
+  new commit; to retry a build, rerun the workflow for the existing tag.
+- If `HEAD` is not synchronized with its upstream, the script disables fetch
+  and push automatically. It uses local tags only and warns that the next RC
+  number may differ from the tags on `origin`.
+- With a dirty worktree, offers a local-only tag for `HEAD`; uncommitted and
+  untracked changes are excluded, and declining leaves the repository unchanged.
+- Does not change `pyproject.toml` or build locally.
+- Pushing the tag starts `Release wheel`: tests, then `.whl` + source archive
+  attached to the GitHub pre-release.
+- `--no-push` creates a local tag only; push it manually to start the workflow.
+
+After the workflow succeeds, testers install the wheel from the release page:
 
 ```bash
 pip install https://github.com/Oorteo/inksim/releases/download/v0.5.4-rc.1/inksim-0.5.4rc1-py3-none-any.whl
 ```
 
+Pushing the `v<version>-rc.<number>` tag starts the GitHub Actions `Release
+wheel` workflow. It runs the test suite, builds the wheel and source
+distribution, and attaches them to a GitHub pre-release marked as not latest.
+This does not upload anything to PyPI.
+
+The PyPI build script can also build from an RC tag for local inspection, but
+the upload script rejects every pre-release. RCs are distributed through the
+GitHub pre-release only. To build a local copy, check out the RC tag and run:
+
+```bash
+git switch --detach v0.5.4-rc.1
+./scripts/pypi/010_build.sh
+```
+
+The script requires the tag to point at `HEAD`; it fails rather than guessing
+an RC version from an untagged checkout.
+
 ### Publishing a final release
 
 Once the work is merged, tag the default branch. The version in
 `pyproject.toml` has to be the release version by then, because it names the
-release:
+release. The script targets the origin default branch even if another branch
+is checked out:
 
 ```bash
-./scripts/release/030_final_release.sh --dry-run   # inspect the plan first
-./scripts/release/030_final_release.sh
+./scripts/release/020_final_release.sh --dry-run   # inspect the plan first
+./scripts/release/020_final_release.sh
 ```
 
-The script tags the checked-out commit, reports the CI status of that commit and
-refuses to tag unless every check passed; pass `--no-require-green` to override,
-`--branch` to tag another branch, and `--no-push` to create the tag locally.
+The script reports the CI status of the selected commit and refuses to tag
+unless every check passed; pass `--no-require-green` to override, `--branch`
+with a branch name to explicitly target another branch for testing, and
+`--no-push` to create the tag locally.
+- A final release may share its commit with a matching `v<version>-rc.N` tag;
+  unrelated release tags still block the final tag.
+- If the selected commit is not present in the local `origin` tracking refs, or
+  the worktree is dirty, fetch and push are disabled automatically. In that
+  local-only mode, the script uses local tags only and skips remote tag and CI
+  checks; the tag can still be created locally, and uncommitted changes are not
+  included in it.
 
 If the tag already exists and points at an older commit, the script does not
 move it. It prints both commits and offers three options: leave the tag alone,
 move it deliberately with `git tag -fa`, or release a different version. Silently
 retagging would change what an already published release contains.
 
-The PyPI upload stays a separate, manual step: run
-`./scripts/pypi/010_build.sh`, verify the wheel, then
-`./scripts/pypi/030_send_pypi.sh`.
+The PyPI upload stays a separate, manual step. Both scripts require the
+corresponding release tag to point at `HEAD`; the build derives its package
+version from that tag, and the upload script accepts only matching stable
+artifacts. Uploads are restricted to commits reachable from the origin default
+branch. `--allow-non-main` explicitly bypasses that check for exceptional
+testing, but still uploads to PyPI:
+
+```bash
+./scripts/pypi/010_build.sh --yes --tag v0.5.4
+./scripts/pypi/030_send_pypi.sh --tag v0.5.4
+```
+
+Use the non-main override only when intentionally publishing that commit to
+PyPI; it is not a dry-run or a test-index option.
+
+`010_build.sh` builds from a temporary archive of the tag, so it does not
+rewrite the working tree's `pyproject.toml` or README. Use `uv build` directly
+for an untagged development build; it is not eligible for the guarded PyPI
+upload script.
 
 ### Pruning old pre-releases
 
@@ -405,9 +512,9 @@ GitHub expires Actions artifacts and caches automatically, but releases and
 their tags remain until they are deleted. To keep the release page clean:
 
 ```bash
-./scripts/release/040_prune_releases.sh --dry-run   # list what would go
-./scripts/release/040_prune_releases.sh             # keep the newest 5
-./scripts/release/040_prune_releases.sh --keep 2
+./scripts/release/030_prune_releases.sh --dry-run   # list what would go
+./scripts/release/030_prune_releases.sh             # keep the newest 5
+./scripts/release/030_prune_releases.sh --keep 2
 ```
 
 The script only deletes pre-releases, never published ones, and removes the
@@ -422,3 +529,9 @@ Before submitting a change:
 2. Run `git diff --check`.
 3. Review the complete diff and confirm that unrelated files are unchanged.
 4. Keep runtime dependencies separate from the `dev` dependency group.
+5. Give every Qt object a single owner. Do not combine a Qt parent with
+   `deleteLater()`: Qt cancels a pending deferred delete when the object is
+   destroyed, but the Qt test suite aborted intermittently with a double free
+   during widget destruction while children were scheduled both ways. Detach
+   first and schedule the deletion with `dispose_qt_child()` from
+   `inksim.gui.dialogs`.

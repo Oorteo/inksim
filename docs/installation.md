@@ -3,6 +3,7 @@
 ## Contents
 
 - [Quick start](#quick-start)
+- [Inkscape integration](#inkscape-integration)
 - [Update](#update)
 - [Alternative installers](#alternative-installers)
 - [Developer install](#developer-install)
@@ -10,11 +11,9 @@
 - [Running options](#running-options)
 - [GPU textured renderer](#gpu-textured-renderer)
 
-InkSim is a **standalone GUI application**, not an Inkscape extension. You do
-not copy files into Inkscape's `extensions` folder.
-
-> **Ink/Stitch integration** is still in PR review. Until it is merged, export
-> the embroidery as CSV from Ink/Stitch and open that file in InkSim.
+InkSim is a **standalone GUI application** with an optional, bundled Inkscape
+extension. The extension is shipped with InkSim; Ink/Stitch supplies the
+embroidery exporter that it uses.
 
 ## Quick start
 
@@ -48,11 +47,62 @@ not copy files into Inkscape's `extensions` folder.
 
 On Windows, `inksim-gui design.pes` starts without a console window.
 
+## Inkscape integration
+
+InkSim installs its own **Preview** extension into Inkscape's user extensions
+folder. You need Inkscape and Ink/Stitch installed. The extension is installed
+from the InkSim GUI, so launch InkSim at least once after installing it:
+
+1. In InkSim, choose **Tools → Inkscape Setup...**.
+2. Click **Install / Update InkSim extensions**.
+3. Restart Inkscape so it loads the new extension.
+4. Open a document in Inkscape and choose **Extensions → Inksim → Preview**.
+
+
+<p align="center"><img src="assets/basic_usage/020_inkscape_setup.webp" alt="Inkscape Setup" width="500"></p>
+
+
+The extension asks Ink/Stitch to export the current document, then forwards
+the resulting preview to InkSim. Its launcher starts the singleton application
+if needed, or reuses the running instance, and manages the handoff through
+local IPC.
+
+### Choosing the Inkscape command
+
+The Inkscape field in **Tools → Inkscape Setup...** accepts a plain executable
+path as well as a whole command line with arguments. The list offers the
+Inkscape found on `PATH` and every Inkscape build installed as a Flatpak; you
+can also type any other launcher, for example `flatpak run
+org.inkscape.Inkscape`, and press **Enter** to check it.
+
+A Flatpak installation keeps its own extensions folder, so InkSim installs the
+extension into `~/.var/app/<application-id>/config/inkscape/extensions` and
+Inkscape picks it up from there. Ink/Stitch has to be present in the same
+folder.
+
+The extension does not assign a keyboard shortcut. If `Ctrl+Shift+I` is free
+in your Inkscape setup, consider assigning it to **Inksim → Preview** in
+Inkscape's keyboard-shortcut settings.
+
 ## Update
+
+For an installation made with `uv`, update from PyPI with:
 
 ```bash
 uv tool upgrade inksim
 ```
+
+For a standard PyPI installation, this upgrades InkSim from PyPI. InkSim
+release candidates are published through GitHub Releases, not PyPI; install a
+candidate directly from its GitHub release page if you want to test one.
+
+In the GUI, **Help → Check for updates** checks the newest stable version on
+PyPI and reports whether an update is available; it does not install anything.
+It also checks automatically once per day by default. Pre-releases are not
+offered by this regular update check. Once the matching final release is
+published on PyPI, the update check offers it. The automatic check can be
+disabled with `update_check_enabled = false` and its interval changed with
+`update_check_interval_days` in the InkSim configuration file.
 
 ## Alternative installers
 
@@ -95,6 +145,10 @@ identical. Only on Windows do they differ: `inksim-gui` is a GUI-subsystem
 executable (a legacy of Windows' DOS heritage) that starts without a console
 window, while `inksim` opens one. Use `inksim-gui` on Windows for shortcuts,
 file associations, and `Win+R`.
+
+The installed extension uses the InkSim launcher selected during setup. On
+Windows, use `inksim-gui` when you want the GUI launcher to run without a
+console window.
 
 ## Running options
 

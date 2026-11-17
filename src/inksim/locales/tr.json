@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Dil {language} olarak ayarlandı. Uygulamak için InkSim'i yeniden başlatmak ister misin?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Dil değiştirildi. Yeni dili uygulamak için InkSim'i kapat ve Inkscape'ten yeniden aç."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Sistem varsayılan dili kullanılacak. Uygulamak için InkSim'i yeniden başlatmak ister misin?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "Dil değişti"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Açık tüm InkSim pencereleri kapatılacak ve geçerli dosya yeniden açılacak."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "İğne rengi"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normal önizleme"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Konumlara ekle"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Geri"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder} klasörüne geri dön (Alt+Sol)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "İptal"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Dikiş önizleme işlemi başarısız oldu: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "İşlem çıkış kodu: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV dışa aktarımı başarısız oldu."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "Tam günlük: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "Dikiş önizlemesi zaman aşımına uğradı."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Ink/Stitch CSV dışa aktarımı çalışıyor..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "{count} dosya kopyalandı"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Dosyaları kopyala"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Seçili her desenin yanına 256 px PNG yaz (desen.pes.png).\nMenüden güncel olmayan dosyaların mı yoksa tüm küçük resimlerin mi yeniden oluşturulacağını seç."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Masaüstü"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Renkler"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Ad"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Boyut"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Dikişler"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Boyut: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Belgeler"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "İndirilenler"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Bu SVG'yi yeni bir Inkscape penceresinde aç."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Inkscape'te düzenle"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Yolu düzenle"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Bu klasörde desteklenen dosya yok."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Favoriler"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Bu dosya okunamıyor: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Göster"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Desteklenen tüm dosyalar"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV dikiş verisi"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Nakış"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG kaynağı"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Sığdır"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Klasör"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "İçindeki dosyalara göz atmak için klasöre çift tıkla."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Dosyalarına göz atmak için Enter'a bas veya klasöre çift tıkla."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "İleri"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder} klasörüne ilerle (Alt+Sağ)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Git"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Ana klasör"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Simge arka planı gölgelendirmesi ({level}, 0 = siyah, 255 = beyaz)\nListe üzerinde Shift+tekerlek ile gölgelendirmeyi değiştir."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Simge boyutu ({size} px)\nListe üzerinde Ctrl+tekerlek ile simgeleri ölçeklendir."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape başlatılamadı: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG dosyalarını düzenlemek için Inkscape gerekir."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Yapılandırılmış bir Ink/Stitch kurulumu ve Python başlatıcısı gerekiyor."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Bu klasöre erişilemiyor."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Kaynak: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Kaynak klasörü aç"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "{path} kaynak klasörünü aç"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Hedef: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Hedef klasörü aç"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "{path} hedef klasörünü aç"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Değiştirilme: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Dosyaları taşı"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "{count} dosya taşındı"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "Geçerli bir nakış dosyası değil."
+        "translation": "Geçerli bir nakış dosyası değil"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Gerçek önizleme"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Aç"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Nakış dosyası aç"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Seçili nakış dosyasını aç."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Renkler…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "İplik renklerini bir palet dosyasından veya başka bir desenden yükle.\nBu biçim renkleri kendi içinde saklayamadığı için renkler bu dosyanın yanında <name>.edr olarak tutulur."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Bu dosya kendi iplik renklerini zaten saklıyor."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Dosyaları yapıştır"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Bir klasör yolu yaz veya yapıştır"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Konumlar"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Önizle"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Bu SVG'den Inkscape/Ink/Stitch ile dikiş verisi oluştur."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Etkin Ink/Stitch betiği veya yapılandırılmış Python başlatıcısı çalıştırılamıyor."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Bu klasör okunamıyor: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Son kullanılanlar:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— dizin seç —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Yenile"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Bu klasörü yenile (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Favorilerden kaldır"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Küçük resmi 180° döndür"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Küçük resmi sola döndür"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Döndürmek için küçük resmi olan bir desen seç"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Özgün yön"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Küçük resmi sağa döndür"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "{count} küçük resim {degrees}° döndürüldü"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Dosyalarda ara"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Açmak için bir dosya seç."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Boyut: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Bu uzantıları iletişim kutusunda gizle.\nAralarına | koy; liste config.toml dosyasında saklanır."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Atla"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: bulunamadı."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch uzantısı: kontrol edilemedi. Yeniden denemek için Araçlar... menüsünü kullan."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch uzantısı: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch uzantısı: Inkscape'in uzantı dizinlerinde bulunamadı."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch uzantısı: Inkscape yapılandırılana kadar kontrol edilemiyor."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch uzantısı: henüz kontrol edilmedi. Kontrol etmek için Araçlar... menüsünü kullan."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Dikiş sayısı: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG kaynağı. Dikiş önizlemesi için Inkscape gerekir."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG kaynağı. Inkscape/Ink/Stitch ile dikiş verisi oluşturmak için Önizle'yi seç."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG görüntülenemedi."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Bu SVG burada önizlenemeyecek kadar büyük."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Geçici önizleme dosyası oluşturulamadı: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Küçük resimler: {created} oluşturuldu, {skipped} güncel, {failed} başarısız"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Küçük resimler: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "{count} küçük resmin özgün yönü geri yüklendi"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Küçük resimler oluşturuluyor…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Dosya aç"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Araçlar..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Dosyalar zaten var"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Dosya aktarımı başarısız: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Dosya aktarımı başarısız"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Dosyaların değiştirilemeyeceği klasörler de dahil, bu hedef yollar zaten mevcut. Hiçbir şey aktarılmadı:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Klasörler değiştirilemiyor"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} hazır: {count} dosya"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Bu hedef dosyalar zaten mevcut:\n{files}\n\nHepsi değiştirilsin mi?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Bu dosyalar zaten burada."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV dikiş verisi"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Klasör"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Nakış"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Desteklenmiyor"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG kaynağı"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Bu dosya türü InkSim'de açılamaz."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Üst klasörü aç (Alt+Yukarı)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Görünüm"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Ayrıntılar"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Yalnızca simgeler"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Simgeler ve metin"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Yakınlaştır"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Uzaklaştır"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Bir palet veya renkli bir desen seç"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} hiçbir iplik rengi saklamıyor."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Tüm dosyalar"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Desen dosyaları (saklanmışsa renkler)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Palet dosyaları"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Bu desen kendi iplik renklerini zaten saklıyor."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} bu desen için zaten renkler saklıyor.\nBunları {target} ile değiştirmek istiyor musun?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Seçimimi hatırla"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} iplik renklerini saklamaz.\nBunları desenin yanına {name} olarak kaydetmek istiyor musun?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "İplik renkleri"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} dosyasında {available} renk var, ancak desende {blocks} renk bloğu bulunuyor.\nYine de kullanılsın mı? Son renk tekrarlanacak."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Renkler kaydedilemedi: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Dikiş işleyici seç"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Değiştir"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape uzantı durumu kaydedilemedi: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Kullanılamıyor"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape çalıştırılabilir dosyasını veya tam komut satırını gir. Örneğin: \"flatpak run org.inkscape.Inkscape\". Kontrol etmek için Enter'a bas."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Hata ayıklama betiği oluştur (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Hata ayıklama betiği ayarı değiştirilemedi."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Inkscape komutunun yeniden çalıştırılabilmesi için belgenin yanına debug_inksim.sh yazar."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim uzantı klasörü bulunamadı."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape uzantı klasörleri incelenemedi: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Önizleme komutu değişti"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "değişen dosyalar: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Güncel"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Kurulum gerekiyor"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Durum alınamıyor: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Güncelleme gerekiyor ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Sistem uzantısı: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Geçerli kullanıcı eklentisi (kurulum/güncelleme hedefi): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Diğer kullanıcı uzantısı: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Inkscape eklentileri klasöründeki Ink/Stitch bağlantısı son kurulumdan bu yana değişmiş:\n\n{details}\n\nInkSim mevcut bağlantıyı kullanıyor. Kaydetmek için Inkscape kurulumunu aç."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "klasör artık yok: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "artık şurayı gösteriyor: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "InkSim uzantılarını kur / güncelle"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim uzantı klasöründe bazı dosyalar zaten var. Değiştirilmek üzere listelenen dosyalarda kullanıcı değişiklikleri olabilir. Listelenen diğer dosyalar korunacak ve hiçbir zaman silinmeyecek.\n\nDeğiştirilecek dosyalar:\n{replace_files}\n\nKorunacak dosyalar:\n{preserve_files}\n\nDevam edilsin mi?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSim'in Inkscape uzantıları kurulamadı: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim'in Inkscape uzantıları {path} konumuna kuruldu veya güncellendi. Yüklemek için Inkscape'i yeniden başlat."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Yok"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Uygula"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Tüm Inkscape eklentileri için Python yorumlayıcısını şununla değiştir:\n\n{path}\n\nBu, Inkscape'in genel bir tercihini değiştirir. Devam edilsin mi?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Özel yol…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Bir Python yorumlayıcısı seç"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "İsteğe bağlı — yalnızca kendi Python ortamı olan eklentiler için"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Buna yalnızca Inkscape'ten Python yorumlayıcısını isteyen eklentiler ihtiyaç duyar (ör. Ink/Stitch).\nInkSim'in kendi eklentileri InkSim'i doğrudan başlatır."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch ortamı ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Değiştirme (önerilen)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Yorumlayıcı ayarını kaldır"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Python yorumlayıcısı ayarını şuradan kaldır:\n\n{path}\n\nInkscape tüm eklentiler için varsayılan yorumlayıcısına döner. Devam edilsin mi?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Öncekini geri yükle"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr başlatıcısı ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape sistem yolunda bulunamadı."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscape tercihleri okunamadı: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscape tercihleri güncellenemedi: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscape uzantı dizinleri okunamadı: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Inkscape'in yanıt vermesi bekleniyor…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape kontrol ediliyor... {seconds} sn"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python yorumlayıcısı: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Yeni Python yorumlayıcısını uygulamak için Inkscape'i yeniden başlat."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python yorumlayıcısı ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "ayarlanmamış"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Eski InkSim kopyalarını kaldır"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Listelenen kullanıcı uzantı klasörleri ve içlerindeki tüm dosyalar kalıcı olarak silinecek. Geçerli kurulum/güncelleme hedefi ve sistem uzantı klasörleri silinmeyecek.\n\n{directories}\n\nDevam edilsin mi?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Eski InkSim uzantı klasörü kaldırılamadı: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Eski InkSim uzantı klasörleri kaldırıldı. Uzantı listesini yenilemek için Inkscape'i yeniden başlat."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Etkin Ink/Stitch kurulumu güncellendi: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Inkscape kontrol ediliyor: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim yapılandırması kaydedilemedi: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Bulunan kurulum InkSim yapılandırmasına kaydedildi."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape komutu kaydedildi ancak kontrol başarısız oldu; bu nedenle uzantı klasörleri güncellenmedi."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Kontrol edilen Inkscape çalıştırılabilir dosyası: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscape uzantı klasörleri incelenemedi: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Bulunan Ink/Stitch kurulumları: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscape eklentileri klasöründeki Ink/Stitch bağlantısı artık şurayı gösteriyor: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch kurulumu bulunamadı."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape eklentilerinin Python yorumlayıcısı: {path} (değiştirilmedi)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape Python yorumlayıcısı tercihi kaldırıldı."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Önceki Python yorumlayıcısı geri yüklendi: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python yorumlayıcısı güncellendi: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape bulunamadı. Kurulumu incelemek için çalıştırılabilir dosyasını seç."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Kontrol edilen Inkscape tercihleri: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python yorumlayıcısı kontrol edilemedi veya güncellenemedi: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Kullanıcı uzantı dizinine erişilemediği için Python yorumlayıcısı tercihi kontrol edilmedi."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscape incelenemedi: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Güncellenen yorumlayıcıyı uygulamak için Inkscape'i yeniden başlat."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Sistem uzantıları: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape {seconds} saniye içinde yanıt vermedi."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Kullanıcı uzantıları: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "İsteğe bağlı uvr başlatıcısı kullanılabilir: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "İsteğe bağlı uvr başlatıcısı bulunamadı; Inkscape yorumlayıcısı tercihi değiştirilmedi."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape sürümü: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "İncelemek için bir Inkscape çalıştırılabilir dosyası seç."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape uygulaması"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Eklentiler"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Rapor"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Sistem uzantıları: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape {seconds} saniye içinde yanıt vermedi. Başka bir Inkscape örneği veya bir uzantı iletişimi engelliyor olabilir. Diğer Inkscape örneklerini kapat ya da iletişimi engelleyen uzantıyı devre dışı bırak, ardından tekrar dene."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Kullanıcı uzantıları: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape sürümü: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Kullanılamıyor"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Komut: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Yorumlayıcı: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Konum: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch kurulumu bulunamadı."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Ink/Stitch'i yukarıda gösterilen Inkscape uzantı klasörlerinden birine yükle."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Yol: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "Dikiş işleyici seç..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Kaydederken renkler"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Paleti her zaman yaz"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Her seferinde sor"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Palet biçimi"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Paleti hiçbir zaman yazma"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "GPU dokulu işleme"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Nakış dosyası aç"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Palet yükle…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Çıkış"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Aç..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Tüm pencereleri ve sunucuyu kapat"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,8 +1187,16 @@
         "source": "Trace events",
         "translation": "Olayları izle"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "Araçlar"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape Kurulumu..."
+    },
     "menu.language": {
-        "source": "Language",
+        "source": "&Language",
         "translation": "Dil"
     },
     "menu.language.system_default": {
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "İğne artı işareti ayarları"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette} renkleri {name} olarak kaydedildi"
     },
     "status.slider.color": {
         "source": "Color…",

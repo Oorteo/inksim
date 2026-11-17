@@ -13,10 +13,11 @@ from __future__ import annotations
 
 import importlib.metadata
 import json
+import re
 import time
 import urllib.request
 
-from PySide6.QtCore import QThread, Signal
+from PySide6.QtCore import QObject, QThread, Signal
 
 from .config import Config
 
@@ -30,6 +31,10 @@ CONFIG_LAST_CHECK = "last_update_check"
 CONFIG_LAST_RESULT = "last_update_result"
 
 DEFAULT_INTERVAL_DAYS = 1
+_VERSION_PATTERN = re.compile(
+    r"^v?(?P<release>\d+(?:\.\d+)*)(?:-?rc\.?(?P<rc>\d+))?$",
+    re.IGNORECASE,
+)
 
 
 def current_version() -> str:
@@ -40,18 +45,36 @@ def current_version() -> str:
         return "0"
 
 
-def _parse_version(version: str) -> tuple[int, ...]:
-    """Split a version string into a comparable tuple of ints."""
-    parts: list[int] = []
-    for chunk in version.replace("-", ".").split("."):
-        digits = "".join(ch for ch in chunk if ch.isdigit())
-        parts.append(int(digits) if digits else 0)
-    return tuple(parts)
+def _parse_version(version: str) -> tuple[tuple[int, ...], int, int]:
+    """Parse the stable and RC forms produced by the release workflow."""
+    match = _VERSION_PATTERN.fullmatch(version)
+    if match is None:
+        raise ValueError(f"Unsupported InkSim version format: {version!r}")
+
+    release = [int(part) for part in match["release"].split(".")]
+    while len(release) > 1 and release[-1] == 0:
+        release.pop()
+
+    rc = match["rc"]
+    return tuple(release), 0 if rc is not None else 1, int(rc or 0)
 
 
 def is_newer(latest: str, current: str) -> bool:
     """Return True when *latest* is a newer release than *current*."""
     return _parse_version(latest) > _parse_version(current)
+
+
+def _latest_stable_version(versions: list[str]) -> str | None:
+    """Return the newest stable version, excluding release candidates."""
+    stable = []
+    for version in versions:
+        try:
+            is_stable = _parse_version(version)[1] == 1
+        except ValueError:
+            continue
+        if is_stable:
+            stable.append(version)
+    return max(stable, key=_parse_version, default=None)
 
 
 def fetch_latest_version(timeout: float = REQUEST_TIMEOUT_S) -> str | None:
@@ -66,8 +89,20 @@ def fetch_latest_version(timeout: float = REQUEST_TIMEOUT_S) -> str | None:
             data = json.load(response)
     except (OSError, ValueError):
         return None
+    releases = data.get("releases", {})
+    if isinstance(releases, dict):
+        latest_stable = _latest_stable_version(list(releases))
+        if latest_stable is not None:
+            return latest_stable
+
     version = data.get("info", {}).get("version")
-    return version or None
+    if version:
+        try:
+            if _parse_version(version)[1] == 1:
+                return version
+        except ValueError:
+            pass
+    return None
 
 
 def should_check(config: Config, now: float | None = None) -> bool:
@@ -124,8 +159,12 @@ def last_check_text(config: Config) -> str:
 class UpdateCheckThread(QThread):
     """Fetch the latest version off the GUI thread and report the result."""
 
-    result_ready = Signal(str)  # latest version, or "" when none/error
+    result_ready = Signal(str, bool)  # latest version, or "" when none/error; automatic check
+
+    def __init__(self, parent: QObject | None = None, *, automatic: bool = False) -> None:
+        super().__init__(parent)
+        self.automatic = automatic
 
     def run(self) -> None:  # type: ignore[override]
         latest = fetch_latest_version()
-        self.result_ready.emit(latest or "")
+        self.result_ready.emit(latest or "", self.automatic)

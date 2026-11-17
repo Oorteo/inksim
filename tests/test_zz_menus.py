@@ -3,18 +3,69 @@
 
 """Smoke tests that every menu action can be triggered without crashing."""
 
+import sys
+import threading
 import time
+from pathlib import Path
 
-from PySide6.QtCore import QTimer
+import pytest
+from PySide6.QtCore import QEvent, QThread, QTimer
 from PySide6.QtWidgets import QApplication
+from shiboken6 import isValid
 
 from inksim.gui.frame import MainWindow
+
+
+@pytest.fixture(autouse=True)
+def _no_flatpak_detection(monkeypatch):
+    """Keep the dialog tests independent of the Flatpak builds on this machine."""
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.flatpak_inkscape_launchers", lambda: [])
 
 
 def _close_active_modal():
     dialog = QApplication.activeModalWidget()
     if dialog is not None:
         dialog.close()
+
+
+def test_probe_preserves_configured_command_arguments(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
+
+    program_path = tmp_path / "O'Brien" / "flatpak"
+    program_path.parent.mkdir()
+    program_path.touch()
+    command = f'"{program_path}" run org.inkscape.Inkscape'
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.detect_tools",
+        lambda: ToolStatus(
+            inkscape=ToolInfo("Inkscape", command, "environment"),
+            inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+        ),
+    )
+    starts = _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, command)
+    qtbot.addWidget(dialog)
+    qtbot.waitUntil(lambda: dialog._probe_version is not None)
+
+    assert starts
+    assert all(started_program == str(program_path.resolve()) for started_program, _args in starts)
+    assert all(args[:2] == ["run", "org.inkscape.Inkscape"] for _, args in starts)
+    saved = config.get(INKSCAPE_CONFIG_KEY)
+    assert saved["executable"].endswith(" run org.inkscape.Inkscape")
+    assert ToolInfo("Inkscape", saved["executable"], "configuration").command == [
+        str(program_path.resolve()),
+        "run",
+        "org.inkscape.Inkscape",
+    ]
+    dialog.close()
 
 
 def _collect_menu_actions(menu):
@@ -44,19 +95,60 @@ def _all_frame_actions(window):
     return unique
 
 
+def test_file_menu_has_only_one_open_action(qtbot, monkeypatch):
+    monkeypatch.setattr(MainWindow, "_maybe_auto_check_updates", lambda self: None)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    open_shortcuts = [
+        action.shortcut().toString()
+        for action in _all_frame_actions(window)
+        if action.shortcut().toString() in {"Ctrl+O", "Ctrl+Shift+O"}
+    ]
+
+    assert open_shortcuts == ["Ctrl+O"]
+    window.close()
+
+
+def test_inkscape_setup_menu_action_has_descriptive_label(qtbot, monkeypatch):
+    monkeypatch.setattr("inksim.i18n._current_locale", "en")
+    monkeypatch.setattr(MainWindow, "_maybe_auto_check_updates", lambda self: None)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    labels = [action.text() for action in _all_frame_actions(window)]
+
+    assert "Inkscape Setup..." in labels
+    window.close()
+
+
 def _patch_blocking_dialogs(monkeypatch):
     """Replace modal dialogs so the test does not block on user interaction."""
-    from inksim.gui.dialogs import EmbroideryOpenDialog as RealOpenDialog
 
-    class NoopOpenDialog(RealOpenDialog):
+    class NoopBrowserDialog:
+        def __init__(self, *args, **kwargs):
+            self.result_action = None
+            self.preview_csv_path = None
+            self.document_path = None
+            self.selected_path = None
+
         def exec(self):
             return 0  # QDialog.Rejected
 
-    monkeypatch.setattr("inksim.gui.frame.EmbroideryOpenDialog", NoopOpenDialog)
+    monkeypatch.setattr("inksim.gui.frame.OpenBrowserDialog", NoopBrowserDialog)
     monkeypatch.setattr("inksim.gui.frame.QFileDialog.getSaveFileName", lambda *a, **k: ("", ""))
     monkeypatch.setattr("inksim.gui.frame.QMessageBox.critical", lambda *a, **k: None)
     monkeypatch.setattr("inksim.gui.frame.QMessageBox.information", lambda *a, **k: None)
     monkeypatch.setattr("inksim.gui.frame.QMessageBox.warning", lambda *a, **k: None)
+
+    class NoopInkscapeDialog:
+        def __init__(self, parent, executable):
+            pass
+
+        def exec(self):
+            return 0
+
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", NoopInkscapeDialog)
 
     # The renderer picker launches a GPU preview that requires a real GL
     # context; stub it out so the menu action can be exercised safely.
@@ -114,3 +206,1906 @@ def _run_menu_smoke_test(qtbot, monkeypatch, sample_design, renderer_key):
 def test_all_menu_actions_trigger_cpu(qtbot, monkeypatch, sample_design):
     """Trigger every menu action with the default CPU renderer active."""
     _run_menu_smoke_test(qtbot, monkeypatch, sample_design, "shaded_volume")
+
+
+def test_update_check_result_is_delivered_on_window_thread(qtbot, monkeypatch):
+    """Deliver the worker result through MainWindow's GUI-thread slot."""
+    monkeypatch.setattr(MainWindow, "_maybe_auto_check_updates", lambda self: None)
+    monkeypatch.setattr("inksim.update_check.fetch_latest_version", lambda: "0.0.1")
+    monkeypatch.setattr("inksim.gui.frame.current_version", lambda: "0.0.0")
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    handled_threads = []
+    update_window_title = window._update_window_title
+
+    def record_update_thread():
+        handled_threads.append(QThread.currentThread())
+        update_window_title()
+
+    monkeypatch.setattr(window, "_update_window_title", record_update_thread)
+    window._check_for_updates(automatic=True)
+    qtbot.waitUntil(lambda: window._update_thread is None)
+
+    assert handled_threads == [QApplication.instance().thread()]
+    window.close()
+
+
+def test_update_check_thread_survives_window_close(qtbot, monkeypatch):
+    """Keep the worker alive until its result can be safely discarded."""
+    monkeypatch.setattr(MainWindow, "_maybe_auto_check_updates", lambda self: None)
+    started = threading.Event()
+    release = threading.Event()
+
+    def wait_for_release():
+        started.set()
+        release.wait(2)
+        return "0.0.1"
+
+    monkeypatch.setattr("inksim.update_check.fetch_latest_version", wait_for_release)
+    window = MainWindow(window_size=(320, 240))
+
+    try:
+        window._check_for_updates(automatic=True)
+        qtbot.waitUntil(started.is_set)
+        thread = window._update_thread
+        assert thread is not None
+        assert thread.parent() is QApplication.instance()
+
+        window.close()
+        window.deleteLater()
+        QApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        assert not isValid(window)
+
+        with qtbot.waitSignal(thread.finished, timeout=3000):
+            release.set()
+    finally:
+        release.set()
+
+
+def test_load_palette_action_stores_colors_next_to_the_open_design(qtbot, tmp_path, monkeypatch):
+    """File > Load palette keeps the colors a palette-less format would lose."""
+    import pystitch as emb
+
+    from inksim.config import Config
+    from inksim.formats import read_palette_file, write_palette_file
+
+    chart = tmp_path / "chart.edr"
+    write_palette_file(chart, ["#112233", "#445566"])
+    monkeypatch.setattr(
+        "inksim.gui.palette.choose_palette_file",
+        lambda parent, source: chart,
+    )
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    design = tmp_path / "design.dst"
+    emb.write_dst(emb.read(str(sample)), str(design))
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    assert window.open_file(str(design), precompute_density=False)
+    # The action reloads the viewer to pick the new colors up; that reload is
+    # covered elsewhere, and stubbing it keeps GL out of this menu test.
+    reload_calls: list[str] = []
+    monkeypatch.setattr(
+        window.viewer, "load_design", lambda path, **kwargs: reload_calls.append(path) or True
+    )
+
+    window.load_palette_for_design()
+
+    assert reload_calls == [str(design)]
+    sidecar = tmp_path / "design.edr"
+    assert sidecar.is_file()
+    assert [thread.hex_color() for thread in read_palette_file(sidecar)] == [
+        "#112233",
+        "#445566",
+    ]
+    window.close()
+
+
+def test_load_palette_explains_designs_that_already_have_colors(qtbot, tmp_path, monkeypatch):
+    """The action stays out of the way when the file stores its own palette."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.config import Config
+
+    messages: list[str] = []
+    monkeypatch.setattr(
+        "inksim.gui.frame.QMessageBox.information",
+        lambda parent, title, text, *args, **kwargs: messages.append(text),
+    )
+    monkeypatch.setattr(
+        "inksim.gui.palette.choose_palette_file",
+        lambda parent, source: None,
+    )
+    design = tmp_path / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    assert window.open_file(str(design), precompute_density=False)
+
+    window.load_palette_for_design()
+
+    assert messages and "already stores" in messages[0]
+    assert not (tmp_path / "design.edr").exists()
+    assert QMessageBox is not None
+    window.close()
+
+
+def test_colors_on_save_menu_remembers_the_answer(qtbot, tmp_path, monkeypatch):
+    """The saved answer to the palette question stays reachable from the menu."""
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    assert window.save_palette_choice() == "ask"
+    assert window._palette_save_actions["ask"].isChecked()
+
+    window.set_save_palette_choice("never")
+
+    assert config.get("save_palette_sidecar") == "never"
+    assert window._palette_save_actions["never"].isChecked()
+    assert not window._palette_save_actions["ask"].isChecked()
+    window.close()
+
+
+def test_colors_on_save_offers_every_palette_format(qtbot, tmp_path, monkeypatch):
+    """Save as can write EDR, COL or INF, and remembers which one."""
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    assert set(window._palette_format_actions) >= {"edr", "col", "inf"}
+    assert window._palette_format_actions["edr"].isChecked()
+
+    window.set_save_palette_format("inf")
+
+    assert config.get("save_palette_format") == "inf"
+    assert window._palette_format_actions["inf"].isChecked()
+    assert not window._palette_format_actions["edr"].isChecked()
+    window.close()
+
+
+def test_menu_mnemonics_are_omitted_for_other_locales(qtbot, monkeypatch):
+    """Avoid English/Czech menu mnemonics in other localized menus."""
+    monkeypatch.setattr("inksim.i18n._current_locale", "fr")
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    menu_labels = [action.text() for action in window.menuBar().actions()]
+    plain_labels = [label.replace("&", "") for label in menu_labels]
+
+    assert "Outils" in plain_labels
+    assert "Langue" in plain_labels
+    assert all(
+        "&" not in label for label in menu_labels if label.replace("&", "") in {"Outils", "Langue"}
+    )
+    window.close()
+
+
+def test_locate_inkscape_shows_resolved_path(qtbot, tmp_path, monkeypatch):
+    """Open the integration dialog with the executable found on PATH."""
+    from inksim.config import Config
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    executables = []
+
+    class RecordingDialog:
+        def __init__(self, parent, executable):
+            executables.append(executable)
+
+        def exec(self):
+            return 0
+
+    monkeypatch.delenv("INKSCAPE_EXE", raising=False)
+    monkeypatch.setattr(
+        "inksim.integration.paths.shutil.which", lambda name: "/opt/inkscape/bin/inkscape"
+    )
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
+
+    window._locate_inkscape_slot()
+
+    assert executables == ["/opt/inkscape/bin/inkscape"]
+    window.close()
+
+
+def test_locate_inkscape_reports_missing_executable(qtbot, tmp_path, monkeypatch):
+    """Open the integration dialog with no executable selected when missing."""
+    from inksim.config import Config
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = Config(tmp_path / "config.toml")
+    executables = []
+
+    class RecordingDialog:
+        def __init__(self, parent, executable):
+            executables.append(executable)
+
+        def exec(self):
+            return 0
+
+    monkeypatch.delenv("INKSCAPE_EXE", raising=False)
+    monkeypatch.setattr("inksim.integration.paths.shutil.which", lambda name: None)
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
+
+    window._locate_inkscape_slot()
+
+    assert executables == [None]
+    window.close()
+
+
+def test_locate_inkscape_prefers_saved_executable(qtbot, tmp_path, monkeypatch):
+    """Reopen setup with the Inkscape executable previously selected by the user."""
+    from inksim.config import Config
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    selected = str(tmp_path / "selected" / "inkscape.exe")
+    config.set(INKSCAPE_CONFIG_KEY, {"executable": selected})
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.config = config
+    executables = []
+
+    class RecordingDialog:
+        def __init__(self, parent, executable):
+            executables.append(executable)
+
+        def exec(self):
+            return 0
+
+    monkeypatch.setenv("INKSCAPE_EXE", "C:/ProgramData/chocolatey/inkscape.exe")
+    monkeypatch.setattr(
+        "inksim.integration.paths.shutil.which",
+        lambda name: "C:/ProgramData/chocolatey/inkscape.exe",
+    )
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
+
+    window._locate_inkscape_slot()
+
+    assert executables == [selected]
+    window.close()
+
+
+def test_inkscape_checks_ignore_malformed_config_without_rewriting_it(
+    qtbot, tmp_path, monkeypatch, caplog
+):
+    import logging
+
+    from inksim.config import Config
+
+    path = tmp_path / "config.toml"
+    config = Config(path)
+    original = "not valid toml"
+    path.write_text(original, encoding="utf-8")
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    with caplog.at_level(logging.WARNING):
+        window._locate_inkscape_slot()
+        window._startup_inkscape_check_done = False
+        window.check_inkscape_extension("/opt/inksim")
+        window._startup_inkscape_check_done = False
+        window.check_inkstitch_link()
+
+    assert caplog.text.count("Could not reload configuration") == 3
+    assert path.read_text(encoding="utf-8") == original
+    window.close()
+
+
+def _wait_for_probe(qtbot, dialog):
+    """Wait until the deferred extension probe has finished and hidden its status bubble."""
+    qtbot.waitUntil(
+        lambda: dialog.executable_combo.currentText() != "" and dialog.probe_status_label.isHidden()
+    )
+
+
+def test_interpreter_actions_are_disabled_during_a_new_inkscape_probe(tmp_path, qtbot, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    (user_data / "preferences.xml").write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape-a/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    dialog.interpreter_combo.setCurrentIndex(1)
+    assert dialog.apply_interpreter_button.isEnabled()
+    dialog._interpreter_backup = "previous-python"
+    dialog._sync_interpreter_buttons()
+    assert dialog.restore_interpreter_button.isEnabled()
+
+    def leave_probe_pending(_executable):
+        assert dialog._preferences_file is None
+        assert not dialog.apply_interpreter_button.isEnabled()
+        assert not dialog.restore_interpreter_button.isEnabled()
+
+    monkeypatch.setattr(dialog, "_start_probe", leave_probe_pending)
+    dialog._set_executable("/opt/inkscape-b/bin/inkscape")
+
+
+def _missing_tools():
+    """Report no Inkscape or Ink/Stitch so a test only sees what it configures itself."""
+    from inksim.integration.paths import ToolInfo, ToolStatus
+
+    return ToolStatus(
+        inkscape=ToolInfo("Inkscape", None, "missing"),
+        inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+    )
+
+
+def _fake_inkscape_probe(
+    monkeypatch, data_directories=None, sleep_seconds=None, silent_programs=()
+):
+    """Run the Inkscape probe as a real Python child process that prints the given data directories."""
+    from PySide6.QtCore import QProcess
+
+    starts = []
+
+    class FakeInkscapeProbe(QProcess):
+        def start(self, program, arguments):
+            starts.append((program, arguments))
+            if sleep_seconds is None:
+                if program in silent_programs:
+                    code = "pass"
+                else:
+                    outputs = {"--version": "Inkscape 1.4.2", **data_directories}
+                    code = (
+                        f"import sys; value = {outputs!r}[sys.argv[-1]]; "
+                        "sys.exit(1) if value is None else print(value)"
+                    )
+                super().start(sys.executable, ["-c", code, *arguments])
+            else:
+                super().start(sys.executable, ["-c", f"import time; time.sleep({sleep_seconds})"])
+
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QProcess", FakeInkscapeProbe)
+    return starts
+
+
+def test_windows_keeps_functional_saved_inkscape_over_detected_wrapper(
+    qtbot, tmp_path, monkeypatch
+):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
+
+    saved = str(tmp_path / "Program Files" / "Inkscape" / "bin" / "inkscape.com")
+    Path(saved).parent.mkdir(parents=True)
+    Path(saved).touch()
+    detected = "C:/ProgramData/chocolatey/bin/inkscape.exe"
+    config = Config(tmp_path / "config.toml")
+    config.set(INKSCAPE_CONFIG_KEY, {"executable": saved})
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.detect_tools",
+        lambda: ToolStatus(
+            inkscape=ToolInfo("Inkscape", detected, "PATH"),
+            inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+        ),
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.sys.platform", "win32")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    starts = _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
+    )
+    dialog = InkscapeIntegrationDialog(None, saved)
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts
+    assert all(program == str(Path(saved).resolve()) for program, _args in starts)
+    assert config.get(INKSCAPE_CONFIG_KEY)["executable"] == str(Path(saved).resolve())
+
+
+def test_windows_probe_falls_back_to_program_files_cli_inkscape(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    wrapper = tmp_path / "chocolatey" / "inkscape.exe"
+    wrapper.parent.mkdir()
+    wrapper.touch()
+    program_files = tmp_path / "Program Files"
+    cli_executable = program_files / "Inkscape" / "bin" / "inkscape.com"
+    cli_executable.parent.mkdir(parents=True)
+    cli_executable.touch()
+    config = Config(tmp_path / "config.toml")
+    config.set(INKSCAPE_CONFIG_KEY, {"executable": str(wrapper)})
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setenv("ProgramFiles", str(program_files))
+    monkeypatch.setenv("INKSCAPE_EXE", str(wrapper))
+    monkeypatch.delenv("ProgramFiles(x86)", raising=False)
+    monkeypatch.delenv("LOCALAPPDATA", raising=False)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.sys.platform", "win32")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    starts = _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
+        silent_programs={str(wrapper.resolve())},
+    )
+    dialog = InkscapeIntegrationDialog(None, str(wrapper))
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts[0][0] == str(wrapper.resolve())
+    assert starts[1][0] == str(cli_executable.resolve())
+    assert dialog.executable_combo.currentText() == str(cli_executable.resolve())
+    assert config.get(INKSCAPE_CONFIG_KEY)["executable"] == str(cli_executable.resolve())
+
+
+def test_inkscape_dialog_shows_extension_directories(qtbot, monkeypatch):
+    """Display the extension directories reported by the selected executable."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": "/home/user/.config/inkscape",
+            "--system-data-directory": "/usr/share/inkscape",
+        },
+    )
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert dialog.executable_combo.currentText() == "/opt/inkscape/bin/inkscape"
+    assert (
+        dialog.user_extensions_label.text()
+        == f"User extensions: {Path('/home/user/.config/inkscape/extensions')}"
+    )
+    assert (
+        dialog.system_extensions_label.text()
+        == f"System extensions: {Path('/usr/share/inkscape/extensions')}"
+    )
+    assert dialog.version_label.text() == "Inkscape version: Inkscape 1.4.2"
+    assert dialog.install_extensions_button.isEnabled()
+
+
+def test_inkscape_version_probe_failure_keeps_detected_directories(tmp_path, qtbot, monkeypatch):
+    """Keep useful extension paths when an Inkscape build cannot report its version."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": str(user_data),
+            "--system-data-directory": str(system_data),
+            "--version": None,
+        },
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert dialog.user_extensions_label.text().endswith(str(user_data / "extensions"))
+    assert dialog.version_label.text() == "Inkscape version: Unavailable"
+    assert "version" not in config.get(INKSCAPE_CONFIG_KEY)
+
+
+def test_inksim_section_lists_and_removes_confirmed_old_user_copy(tmp_path, qtbot, monkeypatch):
+    """Show duplicate extension folders and remove only the confirmed old user copy."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.inkscape_extensions import install_extension, prepare_install
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.information", lambda *args: None)
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    extension_root = user_data / "extensions"
+    current_copy = extension_root / "inksim"
+    old_copy = extension_root / "inksim-old"
+    launcher = tmp_path / "inksim"
+    launcher.write_text("#!/bin/sh\n", encoding="utf-8")
+    launcher.chmod(0o755)
+    install_extension(prepare_install(extension_root, launcher))
+    old_copy.mkdir()
+    (old_copy / "preview.inx").write_text(
+        "<inkscape-extension><id>oorteo.inksim.preview</id></inkscape-extension>",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.resolve_inksim_launcher",
+        lambda: launcher,
+    )
+    confirmation = []
+
+    def confirm(parent, title, message, *_args):
+        confirmation.append(message)
+        return QMessageBox.Yes
+
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.question", confirm)
+    _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": str(user_data),
+            "--system-data-directory": str(system_data),
+        },
+    )
+
+    dialog = InkscapeIntegrationDialog(
+        None,
+        "/opt/inkscape/bin/inkscape",
+        highlight_inksim_update=True,
+    )
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert str(current_copy) in dialog.current_inksim_extension_label.text()
+    assert dialog.inksim_status_icon.text() == "✓"
+    assert (
+        dialog.current_inksim_extension_label.parentWidget()
+        is dialog.inksim_status_icon.parentWidget()
+    )
+    assert not dialog.inksim_status_icon.isHidden()
+    assert dialog.inksim_status_container.isHidden()
+    assert dialog.inksim_status_icon.toolTip() == "Up to date"
+    debug_checkbox = dialog.inksim_debug_script_checkbox
+    assert debug_checkbox.isEnabled()
+    assert not debug_checkbox.isChecked()
+
+    debug_checkbox.setChecked(True)
+
+    assert debug_checkbox.isChecked()
+    assert "#1a73e8" in debug_checkbox.styleSheet()
+    status, is_current = dialog._current_inksim_update_status()
+    assert status == "Up to date"
+    assert is_current
+    assert dialog.inksim_status_container.isHidden()
+
+    debug_checkbox.setChecked(False)
+
+    assert not debug_checkbox.isChecked()
+    assert debug_checkbox.styleSheet() == ""
+    status, is_current = dialog._current_inksim_update_status()
+    assert status == "Up to date"
+    assert is_current
+    extension_lines = dialog.inksim_extensions_list.toPlainText().splitlines()
+    assert not any(line.endswith(str(current_copy)) for line in extension_lines)
+    assert any(line.endswith(str(old_copy)) for line in extension_lines)
+    assert not dialog.inksim_extensions_list.isHidden()
+    expected_height = (
+        dialog.inksim_extensions_list.fontMetrics().lineSpacing() * 3
+        + round(2 * dialog.inksim_extensions_list.document().documentMargin())
+        + 2 * dialog.inksim_extensions_list.frameWidth()
+    )
+    assert dialog.inksim_extensions_list.height() == expected_height
+    assert dialog.remove_old_extensions_button.isEnabled()
+
+    about_file = current_copy / "about.inx"
+    about_file.write_text(
+        about_file.read_text(encoding="utf-8") + "\n",
+        encoding="utf-8",
+    )
+    status, is_current = dialog._current_inksim_update_status()
+    assert "changed files: about.inx" in status
+    assert not is_current
+    dialog._show_inksim_update_status(status, is_current)
+    assert dialog.inksim_warning_icon.text() == "⚠"
+    assert dialog.inksim_status_icon.isHidden()
+    assert not dialog.inksim_status_container.isHidden()
+    assert "changed files: about.inx" in dialog.inksim_status_text.text()
+
+    replacement_launcher = tmp_path / "inksim-updated"
+    replacement_launcher.write_text("#!/bin/sh\n", encoding="utf-8")
+    replacement_launcher.chmod(0o755)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.resolve_inksim_launcher",
+        lambda: replacement_launcher,
+    )
+    status, is_current = dialog._current_inksim_update_status()
+    assert "Preview command changed" in status
+    assert not is_current
+    dialog._show_inksim_update_status(status, is_current)
+    assert "background-color: #fff3cd" in dialog.inksim_status_container.styleSheet()
+
+    dialog.remove_old_extensions_button.click()
+
+    assert not old_copy.exists()
+    assert current_copy.exists()
+    assert "preview.inx" in confirmation[0]
+    assert not dialog.remove_old_extensions_button.isEnabled()
+    assert dialog.inksim_extensions_list.toPlainText() == ""
+    assert dialog.inksim_extensions_list.isHidden()
+
+
+def test_startup_warns_and_opens_inkscape_setup_for_stale_extension(tmp_path, qtbot, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+    from inksim.integration.inkscape_extensions import install_extension, prepare_install
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    extension_root = tmp_path / "extensions"
+    current_launcher = tmp_path / "current" / "bin" / "inksim"
+    old_launcher = tmp_path / "old" / "bin" / "inksim"
+    for launcher in (current_launcher, old_launcher):
+        launcher.parent.mkdir(parents=True, exist_ok=True)
+        launcher.write_text("#!/bin/sh\n", encoding="utf-8")
+        launcher.chmod(0o755)
+    install_extension(prepare_install(extension_root, old_launcher))
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/inkscape/bin/inkscape",
+            "user_extensions": str(extension_root),
+        },
+    )
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    opened = []
+
+    class RecordingDialog:
+        def __init__(
+            self,
+            parent,
+            executable,
+            *,
+            inksim_launcher,
+            highlight_inksim_update,
+        ):
+            opened.append((parent, executable, inksim_launcher, highlight_inksim_update))
+
+        def exec(self):
+            return 0
+
+    monkeypatch.setattr("inksim.gui.frame.InkscapeIntegrationDialog", RecordingDialog)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    window.check_inkscape_extension(str(current_launcher))
+
+    assert opened == [(window, "/opt/inkscape/bin/inkscape", current_launcher, True)]
+    window.close()
+
+
+class _NoopIntegrationDialog:
+    def exec(self) -> int:
+        return 0
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="symlinked extension folders are POSIX-only")
+def test_startup_warns_when_the_inkstitch_link_changed(tmp_path, qtbot, monkeypatch):
+    """A repointed Ink/Stitch link must not slip through a silent startup."""
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    old_checkout = tmp_path / "old-checkout"
+    new_checkout = tmp_path / "new-checkout"
+    for checkout in (old_checkout, new_checkout):
+        (checkout / "inx").mkdir(parents=True)
+    link = tmp_path / "extensions" / "inkstitch-dev"
+    link.parent.mkdir()
+    link.symlink_to(new_checkout, target_is_directory=True)
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/inkscape/bin/inkscape",
+            "inkstitch": [
+                {
+                    "extension_dir": str(link / "inx"),
+                    "resolved_extension_dir": str((old_checkout / "inx").resolve()),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                }
+            ],
+            "active_inkstitch": str(link / "inx"),
+        },
+    )
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    warnings: list[tuple[object, ...]] = []
+    monkeypatch.setattr("inksim.gui.frame.QMessageBox.warning", lambda *args: warnings.append(args))
+    opened: list[object] = []
+    monkeypatch.setattr(
+        "inksim.gui.frame.InkscapeIntegrationDialog",
+        lambda parent, executable: opened.append(executable) or _NoopIntegrationDialog(),
+    )
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    window.check_inkstitch_link()
+
+    assert len(warnings) == 1
+    assert "Ink/Stitch in the Inkscape extensions folder changed" in warnings[0][2]
+    assert str((new_checkout / "inx").resolve()) in warnings[0][2]
+    assert opened == ["/opt/inkscape/bin/inkscape"]
+
+    window.check_inkstitch_link()
+    assert len(warnings) == 1
+    window.close()
+
+
+def test_startup_warns_when_the_inkstitch_folder_disappeared(tmp_path, qtbot, monkeypatch):
+    """A renamed extension folder changes the link path, so startup reports it too."""
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    gone = tmp_path / "extensions" / "inkstitch-gone" / "inx"
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "inkstitch": [
+                {
+                    "extension_dir": str(gone),
+                    "resolved_extension_dir": str(gone),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                }
+            ]
+        },
+    )
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.frame.shutil.which", lambda _: None)
+    warnings: list[tuple[object, ...]] = []
+    monkeypatch.setattr("inksim.gui.frame.QMessageBox.warning", lambda *args: warnings.append(args))
+    opened: list[object] = []
+    monkeypatch.setattr(
+        "inksim.gui.frame.InkscapeIntegrationDialog",
+        lambda parent, executable: opened.append(executable) or _NoopIntegrationDialog(),
+    )
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    window.check_inkstitch_link()
+
+    assert len(warnings) == 1
+    assert str(gone) in warnings[0][2]
+    assert opened == [None]
+    window.close()
+
+
+def test_startup_is_quiet_when_the_inkstitch_link_is_unchanged(tmp_path, qtbot, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    checkout = tmp_path / "checkout"
+    (checkout / "inx").mkdir(parents=True)
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "inkstitch": [
+                {
+                    "extension_dir": str(checkout / "inx"),
+                    "resolved_extension_dir": str((checkout / "inx").resolve()),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                }
+            ]
+        },
+    )
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    warnings: list[tuple[object, ...]] = []
+    monkeypatch.setattr("inksim.gui.frame.QMessageBox.warning", lambda *args: warnings.append(args))
+    opened: list[object] = []
+    monkeypatch.setattr(
+        "inksim.gui.frame.InkscapeIntegrationDialog",
+        lambda parent, executable: opened.append(executable) or _NoopIntegrationDialog(),
+    )
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    window.check_inkstitch_link()
+
+    assert warnings == []
+    assert opened == []
+    window.close()
+
+
+def test_inkscape_dialog_change_reloads_selected_program(qtbot, tmp_path, monkeypatch):
+    """Selecting another executable refreshes its extension directories."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    executable = tmp_path / "bin" / "inkscape"
+    executable.parent.mkdir()
+    executable.touch()
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QFileDialog.getOpenFileName",
+        lambda *args, **kwargs: (str(executable), ""),
+    )
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    assert dialog.executable_combo.currentText() == ""
+
+    dialog.change_button.click()
+    _wait_for_probe(qtbot, dialog)
+
+    assert dialog.executable_combo.currentText() == str(executable.resolve())
+    assert dialog.user_extensions_label.text().endswith(str(Path("/custom/user/extensions")))
+    assert dialog.system_extensions_label.text().endswith(str(Path("/custom/system/extensions")))
+
+
+def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeypatch):
+    """Read Ink/Stitch command metadata from its about INX file."""
+
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    uvr_name = "uvr-gui" if sys.platform == "win32" else "uvr"
+    uvr_file_name = "uvr-gui.exe" if sys.platform == "win32" else "uvr"
+    uvr_executable = tmp_path / "uv-tool-bin" / uvr_file_name
+    uvr_executable.parent.mkdir()
+    uvr_executable.touch()
+    uvr_executable.chmod(0o755)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda command: str(uvr_executable) if command == uvr_name else None,
+    )
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    preferences_file = user_data / "preferences.xml"
+    user_data.mkdir(parents=True)
+    preferences_file.write_text(
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        "<inkscape>\n"
+        "  <!--preserve comment-->\n"
+        "  <group\n"
+        '     id="extensions"\n'
+        '     python-interpreter="python3"\n'
+        '     keep="yes">\n'
+        '    <param name="untouched">value</param>\n'
+        "  </group>\n"
+        "</inkscape>\n",
+        encoding="utf-8",
+    )
+    original_preferences = preferences_file.read_bytes()
+    inx_path = user_data / "extensions" / "inkstitch" / "inx" / "inkstitch_about.inx"
+    inx_path.parent.mkdir(parents=True)
+    inx_path.write_text(
+        '<inkscape-extension><command location="inx" interpreter="python">'
+        "../inkstitch.py</command></inkscape-extension>",
+        encoding="utf-8",
+    )
+    ignored_inx = user_data / "extensions" / "inkstitch" / "xxx" / "inkstitch_ignored_about.inx"
+    ignored_inx.parent.mkdir(parents=True)
+    ignored_inx.write_text(
+        '<inkscape-extension><command location="inx" interpreter="python">'
+        "../ignored.py</command></inkscape-extension>",
+        encoding="utf-8",
+    )
+    backup_inx = inx_path.parent / "inkstitch_backup_about.inx.bak"
+    backup_inx.write_text(inx_path.read_text(encoding="utf-8"), encoding="utf-8")
+    directory_inx = inx_path.parent / "inkstitch_directory_about.inx"
+    directory_inx.mkdir()
+
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    expected_script = (inx_path.parent / "../inkstitch.py").resolve()
+    assert dialog.inkstitch_combo.isHidden()
+    assert dialog.inkstitch_combo.count() == 1
+    assert dialog.inkstitch_combo.itemText(0) == str(expected_script)
+    assert "Location: inx" in dialog.inkstitch_details_label.text()
+    assert "Interpreter: python" in dialog.inkstitch_details_label.text()
+    assert "Command: ../inkstitch.py" in dialog.inkstitch_details_label.text()
+    assert f"Path: {expected_script}" in dialog.inkstitch_details_label.text()
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["status"] == "found"
+    assert status["executable"] == "/opt/inkscape/bin/inkscape"
+    assert status["version"] == "Inkscape 1.4.2"
+    assert status["preferences_file"] == str(preferences_file.resolve())
+    assert status["python-interpretor"] == "python3"
+    assert status["active_inkstitch"] == str(inx_path.parent.resolve())
+    label = dialog.python_interpreter_label.text()
+    assert label.startswith("Python interpreter (")
+    assert "preferences.xml): python3" in label
+    assert "python3 (left unchanged)" in dialog.info_panel.toPlainText()
+    assert "<!--preserve comment-->" in preferences_file.read_text(encoding="utf-8")
+    assert preferences_file.read_bytes() == original_preferences
+    assert dialog.interpreter_combo.currentIndex() == 0
+    assert dialog.interpreter_combo.itemData(1) == str(uvr_executable.resolve())
+    assert dialog.apply_interpreter_button.isEnabled() is False
+    assert dialog.restore_interpreter_button.isHidden()
+    assert status["inkstitch"] == [
+        {
+            "extension_dir": str(inx_path.parent),
+            "resolved_extension_dir": str(inx_path.parent.resolve()),
+            "command": "../inkstitch.py",
+            "location": "inx",
+            "interpreter": "python",
+        }
+    ]
+    assert "commands" not in status
+    assert "[inkscape]" in config.as_text()
+    assert "[[inkscape.inkstitch]]" in config.as_text()
+    assert 'python-interpretor = "python3"' in config.as_text()
+    assert "inkscape_extension_status" not in config.as_text()
+    report = dialog.info_panel.toPlainText()
+    assert "Checked Inkscape executable:" in report
+    assert "Inkscape version: Inkscape 1.4.2" in report
+    assert "User extensions:" in report
+    assert "The optional uvr launcher is available:" in report
+    assert "Updated Python interpreter:" not in report
+    assert "Restart Inkscape" not in report
+    assert "Saved the detected setup to the InkSim configuration." in report
+
+
+def test_interpreter_backup_is_not_reused_for_another_preferences_file(
+    tmp_path, qtbot, monkeypatch
+):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    old_preferences = tmp_path / "old-profile" / "preferences.xml"
+    old_preferences.parent.mkdir()
+    old_preferences.write_text("<inkscape />", encoding="utf-8")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/old-inkscape/bin/inkscape",
+            "preferences_file": str(old_preferences.resolve()),
+            "python-interpreter-backup": "/opt/old-inkscape/python",
+            "python-interpretor": "/opt/old-inkscape/uvr",
+        },
+    )
+
+    user_data = tmp_path / "new-profile"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    system_data.mkdir()
+    preferences_file = user_data / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/new-inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert dialog._preferences_file == preferences_file.resolve()
+    assert dialog._interpreter_backup is None
+    assert dialog.restore_interpreter_button.isHidden()
+    assert "python-interpreter-backup" not in config.get(INKSCAPE_CONFIG_KEY)
+
+
+def test_python_interpreter_is_inserted_right_after_the_extensions_id(tmp_path):
+    """Insert the preference on its own line right after the group id, not at the end."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_bytes(
+        b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        b"<inkscape>\n"
+        b"  <group\n"
+        b'     id="extensions"\n'
+        b'     python-interpreter_old="/old/uvr"\n'
+        b'     keep="yes">\n'
+        b"  </group>\n"
+        b"</inkscape>\n"
+    )
+    original_preferences = preferences_file.read_bytes()
+    interpreter = Path("/new/uvr")
+    from xml.sax.saxutils import escape
+
+    expected_interpreter = escape(str(interpreter), {'"': "&quot;"}).encode("utf-8")
+    expected_preferences = original_preferences.replace(
+        b'     id="extensions"\n',
+        b'     id="extensions"\n     python-interpreter="' + expected_interpreter + b'"\n',
+        1,
+    )
+
+    InkscapeIntegrationDialog._write_python_interpreter(preferences_file, interpreter)
+
+    assert preferences_file.read_bytes() == expected_preferences
+
+
+def test_existing_interpreter_is_moved_next_to_the_extensions_id(tmp_path):
+    """Move an interpreter that sits at the end of the group tag back to the top."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_bytes(
+        b"<inkscape>\n"
+        b"  <group\n"
+        b'     id="extensions"\n'
+        b'     keep="yes"\n'
+        b'     python-interpreter="/old/uvr">\n'
+        b"  </group>\n"
+        b"</inkscape>\n"
+    )
+
+    interpreter = Path("/new/uvr")
+    from xml.sax.saxutils import escape
+
+    expected_interpreter = escape(str(interpreter), {'"': "&quot;"}).encode("utf-8")
+    InkscapeIntegrationDialog._write_python_interpreter(preferences_file, interpreter)
+
+    assert preferences_file.read_bytes() == (
+        b"<inkscape>\n"
+        b"  <group\n"
+        b'     id="extensions"\n'
+        b'     python-interpreter="' + expected_interpreter + b'"\n'
+        b'     keep="yes">\n'
+        b"  </group>\n"
+        b"</inkscape>\n"
+    )
+
+
+def test_python_interpreter_follows_the_id_of_a_single_line_group(tmp_path):
+    """Keep a compact group tag compact and put the preference next to its id."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_bytes(
+        b'<inkscape><group id="extensions" keep="yes"><param name="x">1</param></group></inkscape>'
+    )
+
+    interpreter = Path("/new/uvr")
+    from xml.sax.saxutils import escape
+
+    expected_interpreter = escape(str(interpreter), {'"': "&quot;"}).encode("utf-8")
+    InkscapeIntegrationDialog._write_python_interpreter(preferences_file, interpreter)
+
+    assert (
+        b'<group id="extensions" python-interpreter="' + expected_interpreter + b'" keep="yes">'
+        in preferences_file.read_bytes()
+    )
+
+
+def test_integration_sections_are_bold_and_report_expands(qtbot):
+    """Make section headings obvious and let the report use the dialog's free height."""
+    from PySide6.QtWidgets import QLabel, QWidget
+
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    main_layout = dialog.layout()
+    assert main_layout is not None
+    inkstitch_group = dialog.findChild(QWidget, "inkstitchSection")
+    inksim_group = dialog.findChild(QWidget, "inksimSection")
+    report_group = dialog.findChild(QWidget, "reportSection")
+    assert inkstitch_group is not None
+    assert inksim_group is not None
+    assert report_group is not None
+    assert (
+        main_layout.indexOf(inkstitch_group)
+        < main_layout.indexOf(inksim_group)
+        < main_layout.indexOf(report_group)
+    )
+    assert dialog.install_extensions_button.parentWidget() is inksim_group
+    assert dialog.remove_old_extensions_button.parentWidget() is inksim_group
+
+    for object_name in (
+        "applicationSectionTitle",
+        "extensionsSectionTitle",
+        "inkstitchSectionTitle",
+        "inksimSectionTitle",
+        "reportSectionTitle",
+    ):
+        heading = dialog.findChild(QLabel, object_name)
+        assert heading is not None
+        assert heading.font().bold()
+
+    dialog.resize(860, 900)
+    dialog.show()
+    qtbot.waitUntil(lambda: dialog.info_panel.height() > 170)
+
+
+def test_python_interpreter_dialog_path_is_anonymized(qtbot):
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    qtbot.wait(1)
+
+    interpreter_path = Path.home() / ".local" / "bin" / "uvr"
+    dialog._show_python_interpreter(str(interpreter_path))
+
+    assert str(Path.home()) not in dialog.python_interpreter_label.text()
+    assert "~/.local/bin/uvr" in dialog.python_interpreter_label.text()
+
+
+def test_missing_uvr_is_only_reported_without_modifying_preferences(tmp_path, qtbot, monkeypatch):
+    """Report a missing uvr launcher but never install it or replace the interpreter."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr(
+        InkscapeIntegrationDialog,
+        "_find_uvr_executable",
+        staticmethod(lambda _: None),
+    )
+    warnings = []
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QMessageBox.warning",
+        lambda *args: warnings.append(args),
+    )
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    preferences_file = user_data / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    original_preferences = preferences_file.read_bytes()
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert warnings == []
+    assert "python3" in dialog.python_interpreter_label.text()
+    assert "The optional uvr launcher was not found" in dialog.info_panel.toPlainText()
+    assert preferences_file.read_bytes() == original_preferences
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == "python3"
+    assert config.get(INKSCAPE_CONFIG_KEY)["python-interpretor"] == "python3"
+    assert dialog.interpreter_combo.itemData(1) == "__remove__"
+    assert dialog.interpreter_combo.count() == 3
+    assert dialog.apply_interpreter_button.isEnabled() is False
+
+
+def test_uvr_is_written_only_after_an_explicit_request_and_can_be_restored(
+    tmp_path, qtbot, monkeypatch
+):
+    """Offer uvr as an alternative, then write and revert it on explicit user actions."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    uvr_name = "uvr-gui" if sys.platform == "win32" else "uvr"
+    uvr_file_name = "uvr-gui.exe" if sys.platform == "win32" else "uvr"
+    uvr_executable = tmp_path / "uv-tool-bin" / uvr_file_name
+    uvr_executable.parent.mkdir()
+    uvr_executable.touch()
+    uvr_executable.chmod(0o755)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda command: str(uvr_executable) if command == uvr_name else None,
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QMessageBox.question",
+        lambda *args: QMessageBox.StandardButton.Yes,
+    )
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    preferences_file = user_data / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    original_preferences = preferences_file.read_bytes()
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+    assert preferences_file.read_bytes() == original_preferences
+
+    dialog.interpreter_combo.setCurrentIndex(1)
+    assert dialog.apply_interpreter_button.isEnabled()
+    dialog._apply_selected_interpreter()
+
+    interpreter = str(uvr_executable.resolve())
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == interpreter
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["python-interpretor"] == interpreter
+    assert status["python-interpreter-backup"] == "python3"
+    assert not dialog.restore_interpreter_button.isHidden()
+    assert dialog.restore_interpreter_button.isEnabled()
+    assert dialog.apply_interpreter_button.isEnabled() is False
+    assert "Updated Python interpreter:" in dialog.info_panel.toPlainText()
+    assert "Restart Inkscape" in dialog.info_panel.toPlainText()
+
+    dialog._restore_previous_interpreter()
+
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == "python3"
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["python-interpretor"] == "python3"
+    assert "python-interpreter-backup" not in status
+    assert dialog.restore_interpreter_button.isHidden()
+    assert "Restored the previous Python interpreter: python3" in dialog.info_panel.toPlainText()
+
+
+def test_interpreter_setting_can_be_removed_and_restored(tmp_path, qtbot, monkeypatch):
+    """Remove the preference on request and keep the old value for Restore previous."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr(
+        InkscapeIntegrationDialog,
+        "_find_uvr_executable",
+        staticmethod(lambda _: None),
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QMessageBox.question",
+        lambda *args: QMessageBox.StandardButton.Yes,
+    )
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    preferences_file = user_data / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    remove_index = next(
+        index
+        for index in range(dialog.interpreter_combo.count())
+        if dialog.interpreter_combo.itemData(index) == "__remove__"
+    )
+    dialog.interpreter_combo.setCurrentIndex(remove_index)
+    assert dialog.apply_interpreter_button.isEnabled()
+    dialog._apply_selected_interpreter()
+
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) is None
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert "python-interpretor" not in status
+    assert status["python-interpreter-backup"] == "python3"
+    assert not dialog.restore_interpreter_button.isHidden()
+    assert "Removed the Inkscape Python interpreter preference." in dialog.info_panel.toPlainText()
+    assert dialog.apply_interpreter_button.isEnabled() is False
+
+    dialog._restore_previous_interpreter()
+
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) == "python3"
+    assert config.get(INKSCAPE_CONFIG_KEY)["python-interpretor"] == "python3"
+
+
+def test_removing_the_interpreter_needs_a_configured_value(tmp_path, qtbot, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr(
+        InkscapeIntegrationDialog,
+        "_find_uvr_executable",
+        staticmethod(lambda _: None),
+    )
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    (user_data / "preferences.xml").write_text(
+        '<inkscape><group id="extensions" /></inkscape>',
+        encoding="utf-8",
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    remove_index = next(
+        index
+        for index in range(dialog.interpreter_combo.count())
+        if dialog.interpreter_combo.itemData(index) == "__remove__"
+    )
+    dialog.interpreter_combo.setCurrentIndex(remove_index)
+    assert dialog.apply_interpreter_button.isEnabled() is False
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="symlinked extension folders are POSIX-only")
+def test_extension_link_repoint_is_reported(tmp_path, qtbot, monkeypatch):
+    """Tell the user when the Ink/Stitch link in Inkscape points at another checkout."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    old_checkout = tmp_path / "old-checkout"
+    (old_checkout / "inx").mkdir(parents=True)
+    (old_checkout / "inkstitch.py").write_text("", encoding="utf-8")
+    new_checkout = tmp_path / "new-checkout"
+    (new_checkout / "inx").mkdir(parents=True)
+    (new_checkout / "inkstitch.py").write_text("", encoding="utf-8")
+    inx_path = new_checkout / "inx" / "inkstitch_about.inx"
+    inx_path.write_text(
+        '<inkscape-extension><command location="inx" interpreter="python">'
+        "../inkstitch.py</command></inkscape-extension>",
+        encoding="utf-8",
+    )
+
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    extensions = user_data / "extensions"
+    extensions.mkdir(parents=True)
+    (extensions / "inkstitch-dev").symlink_to(new_checkout, target_is_directory=True)
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr(
+        InkscapeIntegrationDialog, "_find_uvr_executable", staticmethod(lambda _: None)
+    )
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/inkscape/bin/inkscape",
+            "status": "found",
+            "inkstitch": [
+                {
+                    "extension_dir": str(extensions / "inkstitch-dev" / "inx"),
+                    "resolved_extension_dir": str((old_checkout / "inx").resolve()),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                    "interpreter": "python",
+                }
+            ],
+            "active_inkstitch": str(extensions / "inkstitch-dev" / "inx"),
+        },
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    report = dialog.info_panel.toPlainText()
+    assert "Ink/Stitch link in the Inkscape extensions folder now points to" in report
+    assert str((new_checkout / "inx").resolve()) in report.replace("~", str(Path.home()))
+
+
+def test_inkstitch_interpreter_candidate_comes_from_the_checkout(tmp_path):
+    """Offer the checkout virtualenv for source installs and nothing for frozen builds."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog, InkStitchInstallation
+
+    project = tmp_path / "inkstitch"
+    (project / "inx").mkdir(parents=True)
+    (project / "inkstitch.py").write_text("", encoding="utf-8")
+    venv_bin = project / ".venv" / ("Scripts" if sys.platform == "win32" else "bin")
+    venv_bin.mkdir(parents=True)
+    interpreter = venv_bin / ("python.exe" if sys.platform == "win32" else "python")
+    interpreter.write_text("", encoding="utf-8")
+    about_inx = project / "inx" / "inkstitch_about.inx"
+    about_inx.write_text("<inkscape-extension />", encoding="utf-8")
+    source_install = InkStitchInstallation(
+        inx_path=about_inx,
+        command="../inkstitch.py",
+        interpreter="python",
+        location="inx",
+    )
+    frozen_install = InkStitchInstallation(
+        inx_path=about_inx,
+        command="../bin/inkstitch",
+        interpreter=None,
+        location="inx",
+    )
+
+    assert InkscapeIntegrationDialog._interpreter_candidates(None, [frozen_install]) == []
+    candidates = InkscapeIntegrationDialog._interpreter_candidates(
+        None, [frozen_install, source_install]
+    )
+    assert [path for _label, path in candidates] == [str(interpreter)]
+    assert str(project) in candidates[0][0]
+
+
+def test_python_interpreter_attribute_can_be_removed(tmp_path):
+    """Drop both interpreter representations and keep unrelated XML intact."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_bytes(
+        b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        b"<inkscape>\n"
+        b"  <group\n"
+        b'     id="extensions"\n'
+        b'     python-interpreter="/old/uvr"\n'
+        b'     keep="yes">\n'
+        b'    <param name="python-interpreter">/old/uvr</param>\n'
+        b'    <param name="python-interpreter" value="/old/uvr"/>\n'
+        b'    <param name="untouched">value</param>\n'
+        b"  </group>\n"
+        b"</inkscape>\n"
+    )
+
+    InkscapeIntegrationDialog._remove_python_interpreter(preferences_file)
+
+    text = preferences_file.read_text(encoding="utf-8")
+    assert "python-interpreter" not in text
+    assert 'keep="yes"' in text
+    assert '<param name="untouched">value</param>' in text
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) is None
+
+
+def test_python_interpreter_param_can_be_removed_without_attribute(tmp_path):
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions">'
+        '<param name="python-interpreter">/old/uvr</param>'
+        '<param name="untouched">value</param>'
+        "</group></inkscape>",
+        encoding="utf-8",
+    )
+
+    InkscapeIntegrationDialog._remove_python_interpreter(preferences_file)
+
+    text = preferences_file.read_text(encoding="utf-8")
+    assert "python-interpreter" not in text
+    assert '<param name="untouched">value</param>' in text
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) is None
+
+
+def test_python_interpreter_removal_stays_within_the_extensions_group(tmp_path):
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions">'
+        '<param name="python-interpreter">/remove</param></group>'
+        '<group id="other"><param name="python-interpreter">keep</param></group>'
+        "</inkscape>",
+        encoding="utf-8",
+    )
+
+    InkscapeIntegrationDialog._remove_python_interpreter(preferences_file)
+
+    text = preferences_file.read_text(encoding="utf-8")
+    assert '<param name="python-interpreter">keep</param>' in text
+    assert '<group id="extensions"></group>' in text
+
+
+def test_windows_uses_uvr_gui_launcher(tmp_path, monkeypatch):
+    """Choose uvr-gui on Windows to avoid opening a console for GUI extensions."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    uvr_gui = tmp_path / "uvr-gui.exe"
+    uvr_gui.touch()
+    uvr_gui.chmod(0o755)
+    commands = []
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.sys.platform", "win32")
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda command: commands.append(command) or str(uvr_gui),
+    )
+
+    assert InkscapeIntegrationDialog._find_uvr_executable(None) == uvr_gui.resolve()
+    assert commands == ["uvr-gui"]
+
+
+def test_configured_uvr_launcher_can_be_resolved_from_path(tmp_path, monkeypatch):
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    uvr = tmp_path / "uvr.exe"
+    uvr.touch()
+    uvr.chmod(0o755)
+    calls = []
+
+    def which(command):
+        calls.append(command)
+        return str(uvr) if command == "uvr" else None
+
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.sys.platform", "win32")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", which)
+
+    assert InkscapeIntegrationDialog._find_uvr_executable("uvr") == uvr.resolve()
+    assert calls == ["uvr-gui", "uvr"]
+
+
+def test_empty_interpreter_backup_is_persisted(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    config.set(INKSCAPE_CONFIG_KEY, {"status": "found"})
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    dialog._interpreter_backup = ""
+
+    dialog._store_interpreter_status(None)
+
+    assert config.get(INKSCAPE_CONFIG_KEY)["python-interpreter-backup"] == ""
+    dialog.close()
+
+
+def test_inkstitch_multiple_paths_can_be_selected(tmp_path, qtbot, monkeypatch):
+    """Show a combo box and update details when multiple INX files are found."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    inx_paths = (
+        user_data / "extensions" / "inkstitch-user" / "inx" / "inkstitch_about.inx",
+        system_data / "extensions" / "inkstitch-system" / "inx" / "inkstitch_alt_about.inx",
+    )
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/inkscape/bin/inkscape --previous",
+            "active_inkstitch": str(system_data / "extensions" / "inkstitch-system"),
+        },
+    )
+    for index, inx_path in enumerate(inx_paths):
+        inx_path.parent.mkdir(parents=True)
+        interpreter = ' interpreter="python"' if index == 0 else ""
+        inx_path.write_text(
+            f'<inkscape-extension><command location="inx"{interpreter}>'
+            "../inkstitch.py</command></inkscape-extension>",
+            encoding="utf-8",
+        )
+
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape --current")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert not dialog.inkstitch_combo.isHidden()
+    assert dialog.inkstitch_combo.count() == 2
+    default_installation = dialog.inkstitch_combo.itemData(0)
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["active_inkstitch"] == str(default_installation.extension_dir)
+    selected_installation = dialog.inkstitch_combo.itemData(1)
+    dialog.inkstitch_combo.setCurrentIndex(1)
+    selected_path = dialog.inkstitch_combo.currentText()
+    assert f"Path: {selected_path}" in dialog.inkstitch_details_label.text()
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["active_inkstitch"] == str(selected_installation.extension_dir)
+    installation_records = {record["extension_dir"]: record for record in status["inkstitch"]}
+    assert "interpreter" not in installation_records[str(inx_paths[1].parent.resolve())]
+
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {**status, "executable": "/opt/inkscape/bin/inkscape --different"},
+    )
+    dialog.inkstitch_combo.setCurrentIndex(0)
+    assert config.get(INKSCAPE_CONFIG_KEY)["active_inkstitch"] == str(
+        selected_installation.extension_dir
+    )
+
+
+def test_inkscape_dialog_reports_unresponsive_command(qtbot, tmp_path, monkeypatch):
+    """Show a status bubble while probing and report a stuck Inkscape once, without waiting twice."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.i18n import _
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
+
+    config = Config(tmp_path / "config.toml")
+    saved_status = {"executable": "/working/inkscape"}
+    config.set(INKSCAPE_CONFIG_KEY, saved_status)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.detect_tools",
+        lambda: ToolStatus(
+            inkscape=ToolInfo("Inkscape", None, "missing"),
+            inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+        ),
+    )
+    warnings = []
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_STARTUP_TIMEOUT_S", 0.5)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_PROBE_TIMEOUT_S", 0.5)
+    starts = _fake_inkscape_probe(monkeypatch, sleep_seconds=30)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.QMessageBox.warning",
+        lambda *args: warnings.append(args),
+    )
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    qtbot.waitUntil(lambda: not dialog.probe_status_label.isHidden())
+    assert not dialog.change_button.isEnabled()
+
+    _wait_for_probe(qtbot, dialog)
+
+    assert len(starts) == 1
+    assert dialog.change_button.isEnabled()
+    assert len(warnings) == 1
+    assert "0.5 seconds" in warnings[0][2]
+    assert config.get(INKSCAPE_CONFIG_KEY)["executable"] == "/opt/inkscape/bin/inkscape"
+    assert config.get(INKSCAPE_CONFIG_KEY)["status"] == "error"
+    assert _("integration.inkscape.report.config_saved_incomplete") in (
+        dialog.info_panel.toPlainText()
+    )
+
+
+def test_unresponsive_command_keeps_extension_folders_found_last_time(qtbot, tmp_path, monkeypatch):
+    """Repeat the same check after a timeout without losing the cached extension folders."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    command = "/opt/inkscape/bin/inkscape"
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": command,
+            "status": "found",
+            "user_extensions": "/custom/user/extensions",
+            "system_extensions": "/custom/system/extensions",
+            "inkstitch": [],
+            "preferences_file": "/cached/preferences.xml",
+            "python-interpretor": "python3",
+            "python-interpreter-backup": "/cached/previous-python",
+        },
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.detect_tools", _missing_tools)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_STARTUP_TIMEOUT_S", 0.5)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_PROBE_TIMEOUT_S", 0.5)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    _fake_inkscape_probe(monkeypatch, sleep_seconds=30)
+
+    dialog = InkscapeIntegrationDialog(None, command)
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["status"] == "error"
+    assert status["executable"] == command
+    assert status["user_extensions"] == "/custom/user/extensions"
+    assert status["system_extensions"] == "/custom/system/extensions"
+    assert status["preferences_file"] == "/cached/preferences.xml"
+    assert status["python-interpretor"] == "python3"
+    assert status["python-interpreter-backup"] == "/cached/previous-python"
+    assert dialog.apply_interpreter_button.isEnabled() is False
+
+
+def test_typed_launcher_is_saved_when_the_probe_fails(qtbot, tmp_path, monkeypatch):
+    """Keep the command the user typed even when Inkscape cannot answer the check."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    command = "/opt/inkscape/bin/inkscape --with-args"
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.detect_tools", _missing_tools)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    _fake_inkscape_probe(monkeypatch, silent_programs={"/opt/inkscape/bin/inkscape"})
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    dialog.executable_combo.setEditText(command)
+    dialog.executable_combo.lineEdit().editingFinished.emit()
+    qtbot.waitUntil(lambda: not dialog.probe_status_label.isHidden())
+    _wait_for_probe(qtbot, dialog)
+
+    status = config.get(INKSCAPE_CONFIG_KEY)
+    assert status["executable"] == command
+    assert status["status"] == "error"
+    assert "user_extensions" not in status
+
+
+def test_activated_launcher_is_probed_with_the_real_home_path(qtbot, tmp_path, monkeypatch):
+    """The shortened display text must not become the argument handed to the probe."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import ToolInfo, ToolStatus
+
+    home = tmp_path / "home"
+    home.mkdir()
+    script = home / "launcher.py"
+    script.touch()
+    command = f"/usr/bin/python3 {script}"
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.Config", lambda: Config(tmp_path / "config.toml")
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.detect_tools",
+        lambda: ToolStatus(
+            inkscape=ToolInfo("Inkscape", command, "PATH"),
+            inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+        ),
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    starts = _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    shown = dialog.executable_combo.itemText(0)
+    assert "~" in shown
+    assert str(home) not in shown
+
+    dialog.executable_combo.setCurrentIndex(0)
+    dialog.executable_combo.activated.emit(0)
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts[0][1][0] == str(script)
+
+    # A hand-edited command can still carry the shortcut QProcess does not expand.
+    dialog.executable_combo.setEditText("/usr/bin/python3 ~/launcher.py --flag")
+    dialog.executable_combo.lineEdit().editingFinished.emit()
+    qtbot.waitUntil(lambda: not dialog.probe_status_label.isHidden())
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts[-1][1][:2] == [str(script), "--flag"]
+
+
+def test_detected_flatpak_launcher_can_be_selected(qtbot, monkeypatch):
+    """Offer installed Flatpak builds and probe the application ID that was chosen."""
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import ToolInfo
+
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.flatpak_inkscape_launchers",
+        lambda: [ToolInfo("Inkscape", "flatpak run org.inkscape.Inkscape", "Flatpak")],
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.detect_tools", _missing_tools)
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda name: "/usr/bin/flatpak" if name == "flatpak" else None,
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    starts = _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": "/home/user/.var/app/org.inkscape.Inkscape/config/inkscape",
+            "--system-data-directory": "/app/share/inkscape",
+        },
+    )
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    items = [
+        dialog.executable_combo.itemText(index) for index in range(dialog.executable_combo.count())
+    ]
+    index = items.index("flatpak run org.inkscape.Inkscape")
+    dialog.executable_combo.setCurrentIndex(index)
+    dialog.executable_combo.activated.emit(index)
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts[0] == (
+        "/usr/bin/flatpak",
+        ["run", "org.inkscape.Inkscape", "--user-data-directory"],
+    )
+    assert dialog.user_extensions_label.text().endswith(
+        str(Path("/home/user/.var/app/org.inkscape.Inkscape/config/inkscape/extensions"))
+    )
+
+
+def test_configured_flatpak_launcher_is_selected_in_executable_choices(qtbot, monkeypatch):
+    """Keep the configured launcher selected when the combo also has other choices."""
+    from PySide6.QtCore import Qt
+
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import ToolInfo, ToolStatus
+
+    command = "flatpak run org.inkscape.Inkscape"
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.detect_tools",
+        lambda: ToolStatus(
+            inkscape=ToolInfo("Inkscape", "/usr/bin/inksim", "PATH"),
+            inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+        ),
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.flatpak_inkscape_launchers",
+        lambda: [ToolInfo("Inkscape", command, "Flatpak")],
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda name: "/usr/bin/flatpak" if name == "flatpak" else None,
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": "/home/user/.var/app/org.inkscape.Inkscape/config/inkscape",
+            "--system-data-directory": "/app/share/inkscape",
+        },
+    )
+
+    dialog = InkscapeIntegrationDialog(None, command)
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    flatpak_index = next(
+        index
+        for index in range(dialog.executable_combo.count())
+        if dialog.executable_combo.itemData(index, Qt.UserRole) == command
+    )
+    assert dialog.executable_combo.currentIndex() == flatpak_index

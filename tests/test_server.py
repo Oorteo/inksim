@@ -1,0 +1,618 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+from __future__ import annotations
+
+import subprocess
+import sys
+import uuid
+from pathlib import Path
+from types import SimpleNamespace
+
+from PySide6.QtCore import QObject, Signal
+
+from inksim.constants import IPC_PROTOCOL_VERSION
+from inksim.ipc import IpcServer, endpoint_is_active
+from inksim.server import InkSimServer
+
+
+class FakeWindow(QObject):
+    closed = Signal(object)
+    hidden = Signal(object)
+    quit_all_requested = Signal()
+    restart_requested = Signal(object)
+
+    def __init__(self):
+        super().__init__()
+        self.document_path = None
+        self.open_file_args = None
+        self.open_file_calls = []
+        self.browser_dialog_args = None
+        self.command_line_args = None
+        self.inksim_launcher = None
+        self.open_file_result = True
+        self.current_file_path = None
+        self.debug_script = None
+        self.visible = True
+        self.hide_on_close = False
+
+    def set_document_path(self, path):
+        self.document_path = path
+
+    def check_inkscape_extension(self, launcher_path):
+        self.inksim_launcher = launcher_path
+
+    def check_inkstitch_link(self):
+        self.inkstitch_check_count = getattr(self, "inkstitch_check_count", 0) + 1
+
+    def set_command_line_args(self, arguments):
+        self.command_line_args = arguments.copy()
+
+    def set_debug_script(self, path):
+        self.debug_script = path
+
+    def set_hide_on_close(self, enabled):
+        self.hide_on_close = enabled
+
+    def isVisible(self):
+        return self.visible
+
+    def focus_window(self):
+        self.visible = True
+
+    def has_unchanged_file(self, path, temporary_input):
+        return (
+            self.current_file_path == Path(path).resolve()
+            and temporary_input is self.open_file_args["temporary_input"]
+        )
+
+    def open_browser_dialog(self, selected_file=None, initial_directory=None):
+        self.browser_dialog_args = {
+            "selected_file": selected_file,
+            "initial_directory": initial_directory,
+        }
+
+    def open_file(
+        self,
+        path,
+        delete_after_load=False,
+        autoplay=False,
+        temporary_input=False,
+        show_error_dialog=True,
+    ):
+        self.open_file_calls.append(path)
+        self.open_file_args = {
+            "path": path,
+            "delete_after_load": delete_after_load,
+            "autoplay": autoplay,
+            "temporary_input": temporary_input,
+            "show_error_dialog": show_error_dialog,
+        }
+        if self.open_file_result:
+            self.current_file_path = Path(path).resolve()
+        return self.open_file_result
+
+    def close(self):
+        if self.hide_on_close:
+            self.visible = False
+            self.hidden.emit(self)
+            return
+        self.closed.emit(self)
+
+
+def _server(qapp, idle_timeout=0, open_file_result=True):
+    created = []
+
+    def create_window(options):
+        window = FakeWindow()
+        window.open_file_result = open_file_result
+        created.append(window)
+        return window
+
+    server = InkSimServer(qapp, create_window, idle_timeout, server_name="inksim-test-server")
+    return server, created
+
+
+def test_second_ipc_server_cannot_remove_the_active_endpoint(qapp):
+    server_name = f"inksim-test-{uuid.uuid4().hex}"
+    first = IpcServer(lambda request: {"ok": True}, server_name)
+    second = IpcServer(lambda request: {"ok": True}, server_name)
+
+    try:
+        assert first.start()
+        assert not second.start()
+
+        second.stop()
+
+        assert endpoint_is_active(server_name)
+    finally:
+        second.stop()
+        first.stop()
+
+
+def test_ipc_server_recovers_after_owner_process_crashes(qapp):
+    server_name = f"inksim-crash-test-{uuid.uuid4().hex}"
+    script = """
+import os
+import sys
+from PySide6.QtCore import QCoreApplication
+from inksim.ipc import IpcServer
+
+app = QCoreApplication([])
+app.setApplicationName("InkSim")
+app.setOrganizationName("InkSim")
+server = IpcServer(lambda request: {"ok": True}, sys.argv[1])
+if not server.start():
+    raise SystemExit(1)
+print("started", flush=True)
+os._exit(0)
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", script, server_name],
+        capture_output=True,
+        check=False,
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        timeout=10,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "started"
+
+    server = IpcServer(lambda request: {"ok": True}, server_name)
+    try:
+        assert server.start()
+    finally:
+        server.stop()
+
+
+def test_hello_reports_protocol_and_window_count(qapp):
+    server, _ = _server(qapp)
+    response = server._handle_request({"type": "hello"})
+    assert response["ok"] is True
+    assert response["protocol_version"] == IPC_PROTOCOL_VERSION
+    assert response["windows"] == 0
+
+
+def test_open_rejects_index_outside_window_list(qapp):
+    server, created = _server(qapp)
+    server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "new_window": True}
+    )
+    assert len(created) == 1
+
+    response = server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "index": 3, "path": "a.dst"}
+    )
+    assert response["ok"] is False
+    assert len(server.windows) == 1
+
+
+def test_open_forwards_temporary_input_ownership(qapp, tmp_path):
+    server, created = _server(qapp)
+    input_path = tmp_path / "preview.csv"
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+            "temporary_input": True,
+        }
+    )
+    assert response["ok"] is True
+    assert created[0].open_file_args == {
+        "path": str(input_path),
+        "delete_after_load": False,
+        "autoplay": False,
+        "temporary_input": True,
+        "show_error_dialog": True,
+    }
+
+
+def test_open_loads_svg_before_showing_browser_dialog(qapp, tmp_path):
+    server, created = _server(qapp)
+    input_path = tmp_path / "design.svg"
+    input_path.write_text("<svg/>", encoding="utf-8")
+
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+        }
+    )
+
+    assert response["ok"] is True
+    assert created[0].open_file_args == {
+        "path": str(input_path),
+        "delete_after_load": False,
+        "autoplay": False,
+        "temporary_input": False,
+        "show_error_dialog": False,
+    }
+    assert created[0].browser_dialog_args is None
+
+
+def test_open_routes_svg_to_browser_after_ipc_response_if_loading_fails(qapp, tmp_path, qtbot):
+    server, created = _server(qapp, open_file_result=False)
+    input_path = tmp_path / "design.svg"
+    input_path.write_text("<svg/>", encoding="utf-8")
+
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+        }
+    )
+
+    assert response["ok"] is True
+    assert created[0].browser_dialog_args is None
+    qtbot.waitUntil(lambda: created[0].browser_dialog_args is not None)
+    assert created[0].browser_dialog_args == {
+        "selected_file": input_path.resolve(),
+        "initial_directory": None,
+    }
+    assert created[0].open_file_args is not None
+    assert created[0].open_file_args["show_error_dialog"] is False
+
+
+def test_open_forwards_command_line_to_window(qapp):
+    server, created = _server(qapp)
+    command_line = ["inksim", "--extension=preview", "--id=selection"]
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "command_line": command_line,
+        }
+    )
+    assert response["ok"] is True
+    assert created[0].command_line_args == command_line
+
+
+def test_open_applies_forwarded_debug_log_path(qapp, monkeypatch, tmp_path):
+    from inksim import server as server_module
+
+    calls = []
+    monkeypatch.setattr(
+        server_module,
+        "configure_logging",
+        lambda enabled, path, *, append=False: calls.append((enabled, Path(path), append)),
+    )
+    server, _created = _server(qapp)
+    log_path = tmp_path / "inksim.log"
+
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "debug_log_path": str(log_path),
+        }
+    )
+
+    assert response["ok"] is True
+    assert calls == [(True, log_path, True)]
+
+
+def test_open_schedules_inkscape_extension_check(qapp):
+    server, created = _server(qapp)
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "inksim_launcher": "/opt/inksim/bin/inksim",
+        }
+    )
+    qapp.processEvents()
+
+    assert response["ok"] is True
+    assert created[0].inksim_launcher == "/opt/inksim/bin/inksim"
+    assert created[0].inkstitch_check_count == 1
+
+
+def test_open_checks_the_inkstitch_link_without_a_launcher(qapp):
+    """The Ink/Stitch check does not depend on the InkSim launcher path."""
+    server, created = _server(qapp)
+    server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "new_window": True}
+    )
+    qapp.processEvents()
+
+    assert created[0].inkstitch_check_count == 1
+
+
+def test_hiding_last_window_keeps_it_and_starts_idle_timer(qapp):
+    server, _ = _server(qapp, idle_timeout=300)
+    server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "new_window": True}
+    )
+    assert not server._idle_timer.isActive()
+    window = server.windows[0]
+
+    window.close()
+
+    assert server.windows == [window]
+    assert not window.isVisible()
+    assert server._idle_timer.isActive()
+
+
+def test_idle_timer_disabled_when_timeout_is_zero(qapp):
+    server, _ = _server(qapp, idle_timeout=0)
+    server._handle_request(
+        {"type": "open", "protocol_version": IPC_PROTOCOL_VERSION, "new_window": True}
+    )
+    server.windows[0].close()
+
+    assert len(server.windows) == 1
+    assert not server._idle_timer.isActive()
+
+
+def test_server_managed_close_hides_window_and_preserves_view_state(qtbot):
+    from inksim.gui.frame import MainWindow
+
+    window = MainWindow()
+    qtbot.addWidget(window)
+    window.viewer.visible_count = 12
+    window.set_hide_on_close(True)
+    window.show()
+
+    window.close()
+
+    assert not window.isVisible()
+    assert window.viewer.visible_count == 12
+    window.focus_window()
+    assert window.isVisible()
+    assert window.viewer.visible_count == 12
+    window.set_hide_on_close(False)
+    window.close()
+
+
+def test_open_reuses_hidden_window_and_unchanged_input(qapp, tmp_path):
+    server, created = _server(qapp)
+    input_path = tmp_path / "design.pes"
+    input_path.write_bytes(b"design")
+    request = {
+        "type": "open",
+        "protocol_version": IPC_PROTOCOL_VERSION,
+        "new_window": True,
+        "path": str(input_path),
+    }
+
+    response = server._handle_request(request)
+    window = created[0]
+    window.close()
+    assert not window.isVisible()
+
+    response = server._handle_request({**request, "new_window": False})
+
+    assert response["ok"] is True
+    assert created == [window]
+    assert len(window.open_file_calls) == 1
+    assert window.isVisible()
+    assert not server._idle_timer.isActive()
+
+    different_path = tmp_path / "other.pes"
+    different_path.write_bytes(b"other design")
+    response = server._handle_request({**request, "new_window": False, "path": str(different_path)})
+
+    assert response["ok"] is True
+    assert len(window.open_file_calls) == 2
+    assert window.current_file_path == different_path.resolve()
+
+
+def test_palette_change_invalidates_window_file_reuse(qapp, tmp_path):
+    import os
+
+    from inksim.gui.frame import MainWindow
+
+    input_path = tmp_path / "design.dst"
+    palette_path = tmp_path / "design.edr"
+    input_path.write_bytes(b"design")
+    palette_path.write_bytes(b"palette-v1")
+    window = MainWindow()
+    window.current_file_path = input_path.resolve()
+    window._temporary_input_path = None
+    window._source_mtime_ns = window._capture_source_mtime(input_path)
+    window._source_palette_signature = window._capture_palette_signature(input_path)
+    assert window.has_unchanged_file(input_path, temporary_input=False)
+
+    palette_mtime = palette_path.stat().st_mtime_ns + 1_000_000_000
+    palette_path.write_bytes(b"palette-v2")
+    os.utime(palette_path, ns=(palette_mtime, palette_mtime))
+
+    assert not window.has_unchanged_file(input_path, temporary_input=False)
+    window.close()
+
+
+def test_open_file_records_source_mtime_before_loading(qapp, tmp_path, monkeypatch):
+    import os
+
+    from inksim.gui.frame import MainWindow
+
+    input_path = tmp_path / "design.dst"
+    input_path.write_bytes(b"design")
+    original_mtime = input_path.stat().st_mtime_ns
+    window = MainWindow()
+
+    def load_design(path, **_kwargs):
+        changed_mtime = original_mtime + 1_000_000_000
+        os.utime(path, ns=(changed_mtime, changed_mtime))
+        return True
+
+    monkeypatch.setattr(window.viewer, "load_design", load_design)
+    monkeypatch.setattr(window, "_remember_last_file", lambda _path: None)
+    monkeypatch.setattr(window, "_design_size_text", lambda: "1 × 1 mm")
+    monkeypatch.setattr(window, "refresh_command_panel", lambda: None)
+
+    assert window.open_file(input_path, add_recent_directory=False)
+
+    assert window._source_mtime_ns == original_mtime
+    assert not window.has_unchanged_file(input_path, temporary_input=False)
+    window.close()
+
+
+def test_language_restart_preserves_document_path(qapp, tmp_path):
+    from inksim.gui.frame import MainWindow
+
+    document_path = tmp_path / "source.svg"
+    input_path = tmp_path / "preview.csv"
+    window = MainWindow(document_path=document_path)
+    window.current_file_path = input_path
+    restarts = []
+    window.restart_requested.connect(restarts.append)
+
+    window._apply_language_change()
+
+    assert restarts == [
+        ["--document-path", str(document_path.resolve()), str(input_path.resolve())]
+    ]
+    window.close()
+
+
+def test_stale_code_fingerprint_replaces_running_server(monkeypatch):
+    from inksim import server as server_module
+
+    calls = []
+    hello = {
+        "ok": True,
+        "app_version": server_module.app_version(),
+        "code_fingerprint": "stale",
+        "protocol_version": IPC_PROTOCOL_VERSION,
+    }
+    monkeypatch.setattr(server_module, "_hello_or_none", lambda: hello)
+    monkeypatch.setattr(
+        server_module,
+        "send_request",
+        lambda request, **kwargs: calls.append(request) or {"ok": True},
+    )
+    monkeypatch.setattr(server_module, "_wait_until_stopped", lambda timeout: None)
+    monkeypatch.setattr(
+        server_module,
+        "spawn_detached",
+        lambda args: calls.append("spawn") or SimpleNamespace(pid=123, poll=lambda: None),
+    )
+
+    server_module.forward_request({"type": "status"})
+    assert calls[0] == {"type": "shutdown"}
+    assert "spawn" in calls
+
+
+def test_open_request_uses_extended_response_timeout(monkeypatch):
+    from inksim import server as server_module
+
+    calls = []
+    monkeypatch.setattr(server_module, "app_version", lambda: "test")
+    monkeypatch.setattr(server_module, "code_fingerprint", lambda: "current")
+    monkeypatch.setattr(
+        server_module,
+        "_hello_or_none",
+        lambda: {
+            "app_version": "test",
+            "code_fingerprint": "current",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+        },
+    )
+    monkeypatch.setattr(
+        server_module,
+        "send_request",
+        lambda request, **kwargs: calls.append((request, kwargs)) or {"ok": True},
+    )
+
+    server_module.forward_request({"type": "open", "path": "design.pes"})
+
+    assert calls == [
+        (
+            {"type": "open", "path": "design.pes"},
+            {"timeout_ms": 120_000},
+        )
+    ]
+
+
+def test_server_start_timeout_reports_child_process_state(monkeypatch):
+    import pytest
+
+    from inksim import server as server_module
+    from inksim.ipc import IpcUnavailable
+
+    class ExitedProcess:
+        pid = 123
+
+        @staticmethod
+        def poll():
+            return 2
+
+    monkeypatch.setattr(server_module, "_hello_or_none", lambda: None)
+    monkeypatch.setattr(server_module, "spawn_detached", lambda args: ExitedProcess())
+    monkeypatch.setattr(server_module, "SERVER_START_TIMEOUT_SECONDS", 0)
+
+    with pytest.raises(
+        IpcUnavailable,
+        match=r"within .* seconds \(process 123 exited with code 2\)",
+    ):
+        server_module.forward_request({"type": "status"})
+
+
+def test_frozen_build_is_rejected_explicitly(monkeypatch):
+    import pytest
+
+    from inksim import server as server_module
+
+    server_module.code_fingerprint.cache_clear()
+    monkeypatch.setattr(server_module.sys, "frozen", True, raising=False)
+    with pytest.raises(NotImplementedError):
+        server_module.code_fingerprint()
+    server_module.code_fingerprint.cache_clear()
+
+
+def test_open_marks_the_window_with_the_debug_script(qapp, tmp_path):
+    server, created = _server(qapp)
+    script = tmp_path / "debug_inksim.sh"
+    input_path = tmp_path / "preview.csv"
+
+    response = server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+            "temporary_input": True,
+            "debug_script": str(script),
+        }
+    )
+
+    assert response["ok"] is True
+    assert created[0].debug_script == script
+
+
+def test_open_without_debug_script_clears_the_marker(qapp, tmp_path):
+    server, created = _server(qapp)
+    script = tmp_path / "debug_inksim.sh"
+    input_path = tmp_path / "preview.csv"
+    server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "new_window": True,
+            "path": str(input_path),
+            "temporary_input": True,
+            "debug_script": str(script),
+        }
+    )
+
+    server._handle_request(
+        {
+            "type": "open",
+            "protocol_version": IPC_PROTOCOL_VERSION,
+            "index": 0,
+            "path": str(input_path),
+            "temporary_input": True,
+        }
+    )
+
+    assert created[0].debug_script is None

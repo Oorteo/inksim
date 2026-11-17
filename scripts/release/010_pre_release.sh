@@ -19,9 +19,17 @@ fetch=true
 usage() {
     printf 'Usage: %s [-y|--yes] [-n|--dry-run] [--no-push] [--no-fetch]\n' "${0##*/}"
     printf '\n'
-    printf 'Creates a pre-release tag for the current commit. The version comes\n'
-    printf 'from pyproject.toml, the candidate counter is incremented from the\n'
-    printf 'existing tags. pyproject.toml is never modified.\n'
+    printf 'Creates the next pre-release tag for the current commit.\n'
+    printf '  Version:    from pyproject.toml (unchanged)\n'
+    printf '  Tag:        next v<version>-rc.N\n'
+    printf '  Push:       starts GitHub Actions "Release wheel"\n'
+    printf '  On success: test wheel + source archive attached to GitHub pre-release\n'
+    printf '  PyPI:       never\n'
+    printf '  --no-push:  local tag only; push it to start the workflow\n'
+    printf '\n'
+    printf 'When HEAD differs from its upstream, fetch and push are disabled automatically.\n'
+    printf 'The local tag list may differ from origin in that mode.\n'
+    printf 'With uncommitted changes, you can create a local tag for HEAD; those changes are excluded.\n'
     printf '\n'
     printf 'Options:\n'
     printf '  -y, --yes      Do not ask for confirmation.\n'
@@ -74,10 +82,42 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
     exit 1
 }
 
-if ! git diff --quiet || ! git diff --cached --quiet; then
-    echo "The working tree has uncommitted changes; commit or stash them first." >&2
-    echo "A tag points at a commit, so uncommitted work would not be released." >&2
-    exit 1
+branch="$(git rev-parse --abbrev-ref HEAD)"
+commit="$(git rev-parse HEAD)"
+working_tree_changes="$(git status --porcelain --untracked-files=normal)"
+dirty_worktree=false
+if [[ -n "$working_tree_changes" ]]; then
+    dirty_worktree=true
+fi
+
+upstream=""
+if [[ "$branch" != "HEAD" ]]; then
+    upstream="$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null || true)"
+fi
+
+local_only=false
+upstream_commit=""
+if [[ -n "$upstream" ]]; then
+    upstream_commit="$(git rev-parse --verify -q "${upstream}^{commit}" || true)"
+fi
+if [[ -z "$upstream_commit" || "$upstream_commit" != "$commit" ]]; then
+    local_only=true
+fi
+if [[ "$dirty_worktree" == true ]]; then
+    local_only=true
+fi
+if [[ "$local_only" == true ]]; then
+    fetch=false
+    push=false
+    if [[ -z "$upstream_commit" || "$upstream_commit" != "$commit" ]]; then
+        echo "HEAD is not synchronized with its upstream; disabling fetch and push." >&2
+    fi
+    echo "Using local tags only; the next RC number may differ from origin." >&2
+    echo "Any tag created will remain local." >&2
+fi
+if [[ "$dirty_worktree" == true ]]; then
+    echo "The working tree has uncommitted changes; disabling fetch and push." >&2
+    echo "A local tag will point to HEAD; uncommitted and untracked changes are excluded." >&2
 fi
 
 if [[ "$fetch" == true ]]; then
@@ -86,8 +126,14 @@ if [[ "$fetch" == true ]]; then
     fi
 fi
 
-branch="$(git rev-parse --abbrev-ref HEAD)"
-commit="$(git rev-parse HEAD)"
+mapfile -t current_release_tags < <(git tag --points-at "$commit" --list 'v*')
+if ((${#current_release_tags[@]})); then
+    printf 'Commit %s already has release tag(s): %s\n' \
+        "${commit:0:12}" "${current_release_tags[*]}" >&2
+    echo "Each commit may have only one v* release tag." >&2
+    echo "Create a new commit before creating another release candidate." >&2
+    exit 1
+fi
 
 # pyproject.toml holds the version the branch is heading towards. It is only
 # read here, never rewritten.
@@ -101,7 +147,7 @@ base_version="$(printf '%s' "$target_version" | sed -E 's/(a|b|rc|\.dev)[0-9]+$/
 }
 
 # The candidate counter comes from the tags that already exist for this
-# version, so repeated runs produce rc.1, rc.2, rc.3 and so on.
+# version. A new candidate must tag a new commit.
 last_candidate=0
 while IFS= read -r existing; do
     [[ "$existing" =~ ^v${base_version}-rc\.([0-9]+)$ ]] || continue
@@ -145,8 +191,12 @@ if [[ "$push" == true ]]; then
 fi
 set +x
 
-printf '\nPre-release %s is building. Testers install it with:\n' "$tag"
-printf '  pip install https://github.com/<owner>/<repo>/releases/download/%s/inksim-%s-py3-none-any.whl\n' \
-    "$tag" "$dist_version"
+if [[ "$push" == true ]]; then
+    printf '\nTag %s pushed; install the test wheel after Actions succeeds:\n' "$tag"
+    printf '  pip install https://github.com/<owner>/<repo>/releases/download/%s/inksim-%s-py3-none-any.whl\n' \
+        "$tag" "$dist_version"
+else
+    printf '\nLocal tag only; push to start the test build:\n  git push origin %s\n' "$tag"
+fi
 printf '\nWhen the candidate is accepted, merge the work and tag the release:\n'
-printf '  ./scripts/release/030_final_release.sh\n'
+printf '  ./scripts/release/020_final_release.sh\n'

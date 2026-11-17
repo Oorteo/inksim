@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Kieli on asetettu kieleen {language}. Käynnistä InkSim uudelleen ottaaksesi sen käyttöön?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Kieli on vaihdettu. Sulje InkSim ja avaa se uudelleen Inkscapesta ottaaksesi uuden kielen käyttöön."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Järjestelmän oletuskieltä käytetään. Käynnistä InkSim uudelleen ottaaksesi sen käyttöön?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "Kieli vaihdettu"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Kaikki avoimet InkSim-ikkunat suljetaan ja nykyinen tiedosto avataan uudelleen."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Neulan väri"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Normaali esikatselu"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Lisää sijainteihin"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Takaisin"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Takaisin kansioon {folder} (Alt+vasen)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Peruuta"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Tikkien esikatselun luonti epäonnistui: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Prosessin paluukoodi: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch-CSV-vienti epäonnistui."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "Koko loki: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "Ommel-esikatselun aikakatkaisu."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Suoritetaan Ink/Stitch-CSV-vientiä..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Kopioitu {count} tiedosto(a)"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Kopioi tiedostot"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Luo 256 px:n PNG-kuva jokaisen valitun mallin viereen (malli.pes.png).\nValikosta voit valita, luodaanko uudelleen vanhentuneet tiedostot vai kaikki pikkukuvat."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Työpöytä"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Värit"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Nimi"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Koko"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Pistot"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Koko: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Tiedostot"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Lataukset"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Avaa tämä SVG uudessa Inkscape-ikkunassa."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Muokkaa Inkscapessa"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Muokkaa polkua"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Kansiossa ei ole tuettuja tiedostoja."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Suosikit"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Tätä tiedostoa ei voi lukea: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Näytä"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Kaikki tuetut"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV-tikkitiedot"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Kirjonta"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG-lähde"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Sovita"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Kansio"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Avaa kansion tiedostot kaksoisnapsauttamalla kansiota."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Avaa kansion tiedostot painamalla Enteriä tai kaksoisnapsauttamalla kansiota."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Eteenpäin"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Eteenpäin kansioon {folder} (Alt+oikea)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Siirry"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Koti"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Kuvakkeiden taustan sävy ({level}, 0 = musta, 255 = valkoinen)\nVaihto + hiiren rulla luettelon päällä muuttaa sävyä."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Kuvakkeen koko ({size} px)\nCtrl + hiiren rulla luettelon päällä muuttaa kuvakkeiden kokoa."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscapen käynnistys epäonnistui: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG-tiedostojen muokkaamiseen tarvitaan Inkscape."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Määritetty Ink/Stitch-asennus ja Python-käynnistin vaaditaan."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Tähän kansioon ei ole pääsyä."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Lähde: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Avaa lähdekansio"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Avaa lähdekansio {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Kohde: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Avaa kohdekansio"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Avaa kohdekansio {path}"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Muokattu: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Siirrä tiedostot"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Siirretty {count} tiedosto(a)"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "Ei kelvollinen kirjontatiedosto"
+        "translation": "Tiedosto ei ole kelvollinen kirjontatiedosto"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Todellinen esikatselu"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Avaa"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Avaa brodeeraustiedosto"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Avaa valittu kirjontatiedosto."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Värit…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Lataa lankavärit palettitiedostosta tai toisesta mallista.\nVärit tallennetaan tämän tiedoston viereen tiedostoon <name>.edr, koska tämä tiedostomuoto ei voi tallentaa värejä itse."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Tämä tiedosto sisältää jo omat lankavärinsä."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Liitä tiedostot"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Kirjoita tai liitä kansion polku"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Sijainnit"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Esikatselu"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Luo tästä SVG:stä ommeldataa Inkscapella/Ink/Stitchillä."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Käytössä olevaa Ink/Stitch-komentosarjaa tai sille määritettyä Python-käynnistintä ei voi suorittaa."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Tätä kansiota ei voi lukea: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Viimeksi käytetyt:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— valitse kansio —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Päivitä"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Päivitä tämä kansio (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Poista suosikeista"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Kierrä pikkukuvaa 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Kierrä pikkukuvaa vasemmalle"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Valitse kierrettävä malli, jolla on pikkukuva"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Alkuperäinen suunta"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Kierrä pikkukuvaa oikealle"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Kierretty {count} pikkukuva(a) {degrees}°"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Etsi tiedostoja"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Valitse avattava tiedosto."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Koko: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Piilota nämä tiedostopäätteet valintaikkunassa.\nErota ne merkillä |. Luettelo tallennetaan config.toml-tiedostoon."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Ohita"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: ei löydy."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch-laajennus: tarkistus epäonnistui. Yritä uudelleen kohdasta Työkalut..."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch-laajennus: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch-laajennus: ei löydy Inkscapen laajennuskansioista."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch-laajennus: tarkistaminen ei onnistu ennen Inkscapen määritystä."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch-laajennus: ei vielä tarkistettu. Tarkista kohdasta Työkalut..."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Tikkejä: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG-lähde. Tikkien esikatseluun tarvitaan Inkscape."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG-lähde. Luo tikkitiedot Inkscapella/Ink/Stitchillä valitsemalla Esikatselu."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "SVG:tä ei voitu piirtää."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Tämä SVG on liian suuri esikatseltavaksi täällä."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Väliaikaisen esikatselutiedoston luonti epäonnistui: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Pikkukuvat: {created} luotu, {skipped} ajan tasalla, {failed} epäonnistui"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Pikkukuvat: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Palautettu {count} pikkukuvan alkuperäinen suunta"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Luodaan pikkukuvia…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Avaa tiedosto"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Työkalut..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Tiedostot ovat jo olemassa"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Tiedostojen siirto epäonnistui: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Tiedostojen siirto epäonnistui"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Nämä kohdepolut ovat jo olemassa. Mukana on kansioita, joita ei voi korvata tiedostoilla. Mitään ei siirretty:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Kansioita ei voi korvata"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} valmis: {count} tiedosto(a)"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Nämä kohdetiedostot ovat jo olemassa:\n{files}\n\nKorvataanko ne kaikki?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Nämä tiedostot ovat jo täällä."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV-tikkitiedot"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Kansio"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Kirjonta"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Ei tuettu"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG-lähde"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "InkSim ei voi avata tämän tyyppistä tiedostoa."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Avaa ylätason kansio (Alt+ylös)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Näkymä"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Tiedot"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Vain kuvakkeet"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Kuvakkeet ja teksti"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Lähennä"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Loitonna"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Valitse paletti tai värejä sisältävä malli"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} ei sisällä lankavärejä."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Kaikki tiedostot"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Mallitiedostot (sisältävät värit, jos ne on tallennettu)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Palettitiedostot"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Tämä malli sisältää jo omat lankavärinsä."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} sisältää jo tämän mallin värit.\nKorvataanko ne tiedostolla {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Muista valintani"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} ei tallenna lankavärejä.\nTallennetaanko ne mallin viereen tiedostona {name}?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Lankavärit"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "Tiedostossa {name} on {available} väriä, mutta mallissa on {blocks} värialuetta.\nKäytetäänkö sitä silti? Viimeinen väri toistuu."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Värien tallentaminen epäonnistui: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Valitse ommelrenderöijä"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Vaihda"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Inkscape-laajennuksen tilan tallennus epäonnistui: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Ei käytettävissä"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape-ohjelman suoritustiedosto tai koko komentorivi, esimerkiksi \"flatpak run org.inkscape.Inkscape\". Tarkista painamalla Enter."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Luo virheenjäljitysskripti (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Virheenjäljitysskriptin asetuksen muuttaminen epäonnistui."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Tallentaa debug_inksim.sh-tiedoston asiakirjan viereen, jotta Inkscape-käynnistys voidaan toistaa."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim-laajennuskansioita ei löytynyt."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Inkscapen laajennuskansioiden tarkistus epäonnistui: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Esikatselukomento muuttui"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "muuttuneet tiedostot: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Ajan tasalla"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Asennus tarvitaan"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Tila ei ole käytettävissä: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Päivitys tarvitaan ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Järjestelmälaajennus: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Nykyinen käyttäjälaajennus (asennus-/päivityskohde): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Toisen käyttäjän laajennus: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Inkscapen laajennuskansiossa oleva Ink/Stitch-linkki on muuttunut edellisen asetuksen jälkeen:\n\n{details}\n\nInkSim käyttää nykyistä linkkiä. Tallenna se avaamalla Inkscape-asetukset."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "kansio puuttuu: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "osoittaa nyt kohteeseen: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Asenna / päivitä InkSim-laajennukset"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim-laajennuskansiossa on joitakin tiedostoja. Korvattaviksi merkityt tiedostot saattavat sisältää omia muutoksiasi. Muut luetellut tiedostot säilytetään eikä niitä koskaan poisteta.\n\nKorvattavat tiedostot:\n{replace_files}\n\nSäilytettävät tiedostot:\n{preserve_files}\n\nJatketaanko?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "InkSimin Inkscape-laajennusten asennus epäonnistui: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSimin Inkscape-laajennukset asennettiin tai päivitettiin kansioon {path}. Käynnistä Inkscape uudelleen ladataksesi ne."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Ei mitään"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Käytä"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Vaihdetaanko kaikkien Inkscape-laajennusten Python-tulkiksi:\n\n{path}\n\nTämä muuttaa Inkscapen yleistä asetusta. Jatketaanko?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Muu polku…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Valitse Python-tulkki"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Valinnainen — vain laajennuksille, joilla on oma Python-ympäristö"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Tätä tarvitsevat vain laajennukset, jotka pyytävät Inkscapelta Python-tulkkia (esim. Ink/Stitch).\nInkSimin omat laajennukset käynnistävät InkSimin suoraan."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch-ympäristö ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Älä muuta (suositus)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Poista tulkkiasetus"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Poistetaanko Python-tulkkiasetus kohteesta:\n\n{path}\n\nInkscape käyttää jatkossa kaikille laajennuksille oletustulkkiaan. Jatketaanko?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Palauta aiempi"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr-käynnistin ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscapea ei löytynyt järjestelmän hakupolusta."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Inkscapen asetusten lukeminen epäonnistui: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Inkscapen asetusten päivitys epäonnistui: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Inkscapen laajennuskansioiden lukeminen epäonnistui: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Odotetaan Inkscapen vastausta…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Tarkistetaan Inkscapea... {seconds} s"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python-tulkki: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Käynnistä Inkscape uudelleen ottaaksesi uuden Python-tulkin käyttöön."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python-tulkki ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "ei määritetty"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Poista vanhat InkSim-kopiot"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Luetellut käyttäjän laajennuskansiot ja kaikki niiden sisältämät tiedostot poistetaan pysyvästi. Nykyistä asennus-/päivityskohdetta ja järjestelmän laajennuskansioita ei poisteta.\n\n{directories}\n\nJatketaanko?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Vanhan InkSim-laajennuskansion poistaminen epäonnistui: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Vanhat InkSim-laajennuskansiot poistettiin. Päivitä laajennusluettelo käynnistämällä Inkscape uudelleen."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Käytössä oleva Ink/Stitch-asennus päivitettiin: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Tarkistetaan Inkscapea: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "InkSim-määrityksen tallennus epäonnistui: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Havaittu kokoonpano tallennettiin InkSim-määritykseen."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape-komento tallennettiin, mutta tarkistus epäonnistui, joten laajennuskansioita ei päivitetty."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Tarkistettu Inkscape-suoritustiedosto: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "InkSim-laajennuskansioiden tarkistus epäonnistui: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Löydetyt Ink/Stitch-asennukset: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Inkscapen laajennuskansiossa oleva Ink/Stitch-linkki osoittaa nyt kohteeseen: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch-asennusta ei löytynyt."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscapen laajennusten Python-tulkki: {path} (ei muutettu)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscapen Python-tulkariasetus poistettiin."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Aiempi Python-tulkki palautettiin: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python-tulkki päivitettiin: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscapea ei löytynyt. Tarkista kokoonpano valitsemalla sen suoritustiedosto."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Tarkistetut Inkscapen asetukset: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Python-tulkin tarkistus tai päivitys epäonnistui: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Python-tulkin asetusta ei tarkistettu, koska käyttäjän laajennuskansio ei ole käytettävissä."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Inkscapen tarkistus epäonnistui: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Käynnistä Inkscape uudelleen ottaaksesi päivitetyn tulkin käyttöön."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Järjestelmän laajennukset: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape ei vastannut {seconds} sekunnin kuluessa."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Käyttäjän laajennukset: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Valinnainen uvr-käynnistin on käytettävissä: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Valinnaista uvr-käynnistintä ei löytynyt. Inkscapen tulkkiasetusta ei muutettu."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscapen versio: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Valitse Inkscapen suoritustiedosto tarkistaaksesi kokoonpanon."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape-sovellus"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Laajennukset"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Raportti"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Järjestelmän laajennukset: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape ei vastannut {seconds} sekunnin kuluessa. Toinen Inkscape-istunto tai laajennus saattaa estää yhteydenpidon. Sulje muut Inkscape-istunnot tai poista estävä laajennus käytöstä ja yritä uudelleen."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Käyttäjän laajennukset: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscapen versio: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Ei käytettävissä"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Komento: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Tulkki: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Sijainti: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch-asennusta ei löytynyt."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Asenna Ink/Stitch johonkin yllä näkyvistä Inkscapen laajennuskansioista."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Polku: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "Valitse ommelrenderöijä..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Värit tallennettaessa"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Tallenna paletti aina"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Kysy joka kerta"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Paletin tiedostomuoto"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Älä koskaan tallenna palettia"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "GPU-teksturoitu renderöinti"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Avaa brodeeraustiedosto"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Lataa paletti…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Lopeta"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Avaa..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Lopeta kaikki ikkunat ja palvelin"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "Jäljitä tapahtumat"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Työkalut"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "Inkscapen asetukset..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Kieli"
+        "source": "&Language",
+        "translation": "&Kieli"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Neulan ristikkäisviivan asetukset"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Paletin {palette} värit tallennettiin tiedostoon {name}"
     },
     "status.slider.color": {
         "source": "Color…",

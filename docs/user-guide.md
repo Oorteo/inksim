@@ -2,6 +2,7 @@
 
 ## Contents
 
+- [Opening Files](#opening-files)
 - [Mouse and Window](#mouse-and-window)
 - [Playback and Navigation](#playback-and-navigation)
 - [View and Analysis](#view-and-analysis)
@@ -10,6 +11,69 @@
 - [Rendering Notes](#rendering-notes)
   - [Density Map](#density-map)
 - [Performance Diagnostics](#performance-diagnostics)
+
+## Opening Files
+
+**File → Open...** (`Ctrl+O`) opens the file browser. It lists supported
+embroidery files and `.svg` sources, shows a preview, and reports which
+external tools were detected.
+
+The browser watches the current directory and refreshes its listing when files
+change or the window regains focus. If a change is not picked up, use the
+Refresh button or press `Ctrl+R`.
+
+To copy or move files, select them in the file list and use the right-click
+menu's **Copy** or **Move** action, then navigate to the destination and choose
+**Paste** from the right-click menu. These actions transfer files only, not
+folders. A matching color-palette file and an existing PNG thumbnail are
+included when present. Copy can be pasted more than once; a successful Move
+consumes the pending operation. The pending operation is cleared when the
+dialog is opened again.
+
+After a transfer, two buttons next to the activity text jump back to the
+folder the files came from and to the folder they went to. The back and
+forward buttons cover the same trip while browsing: `Alt+Left` returns to the
+source folder after a paste, `Alt+Right` to the destination.
+
+Before transferring anything, InkSim checks the complete destination batch. If
+files already exist there, one prompt lists all conflicts and lets you replace
+all of them or cancel; cancel leaves the destination unchanged. If a transfer
+fails, InkSim attempts to roll it back and reports any recovery files that
+could not be removed.
+
+For an `.svg` source:
+
+- **Preview** converts the document to stitch data through Inkscape and
+  Ink/Stitch, then loads the result in the viewer.
+- **Edit in Inkscape** opens the source in a new tagged Inkscape window.
+- If Inkscape or Ink/Stitch is missing, the status area explains what is
+  needed. The **Tools...** button opens the Inkscape detection dialog.
+
+In **Tools → Inkscape Setup...**, use **Install / Update InkSim extensions** to add the
+Preview and About commands to Inkscape's user extensions folder. InkSim asks
+before replacing changed files and preserves unrelated files. Restart Inkscape
+after installation or update to load the extensions. The **InkSim extensions**
+section lists recognized user and system copies. **Remove old InkSim copies**
+shows the exact files and asks for confirmation before deleting duplicate user
+folders; the current install target is protected, and system copies must be
+removed manually. The current install target also shows whether installation or
+an update is needed, including changed files or a changed Preview command.
+
+After installation and restarting Inkscape, use **Extensions → Inksim →
+Preview** to send the current document to InkSim. The extension starts the
+singleton application if needed or reuses the running instance. If you use the
+action often, consider assigning **Ctrl+Shift+I** to it in Inkscape's keyboard
+shortcuts.
+
+The browser preview reads the saved `.svg` from disk. Unsaved changes in
+Inkscape are not included there. Use **Edit in Inkscape**, save the document,
+and preview again. By contrast, **Extensions → Inksim → Preview** uses the SVG
+supplied by Inkscape for the document currently open in the editor.
+Dropping an `.svg` on the main window opens the same browser.
+
+SVG, embroidery, and CSV previews share the same controls: use the mouse wheel
+to zoom around the cursor, left-drag to pan, or use the preview toolbar's
+**−**, **+**, and **Fit** buttons.
 
 ## Mouse and Window
 
@@ -22,8 +86,19 @@
 | Double-click design        | Seek to visible stitch       |
 | `W` / `A` / `S` / `D`      | Pan up / left / down / right |
 | Click or drag the timeline | Seek to a stitch position    |
+| `Ctrl` + wheel over timeline | Zoom around the pointer     |
+| `Shift` + wheel over timeline | Pan the timeline range     |
+| Wheel over upper timeline   | Adjust waveform scale      |
+| Drag the `BG` gradient      | Change the waveform background |
+| Wheel over `BG` gradient    | Adjust the waveform background |
+| Drag the overview range    | Pan the zoomed timeline; needle marker shows current position |
+| `−` / `+` / `All`          | Zoom or show the full timeline |
 | Drop a file on the viewer  | Open the file                |
 | `F11`                      | Toggle fullscreen            |
+
+The upper timeline always shows stitch lengths as a symmetric waveform. The
+default scale covers 0–5 mm; longer stitches are clipped and marked at the
+edge. Use the wheel over the upper timeline to change its vertical scale.
 
 ## Playback and Navigation
 
@@ -91,7 +166,7 @@ inksim *.pes --icon exports/ -y
 | `--simple-png [PATH]`     | Simple/flat renderer; defaults to `INPUT_TYPE-simple.png`                                     |
 | `--png [PATH]`            | Shaded volume renderer (default); defaults to `INPUT_TYPE.png`                                |
 | `--webp [PATH]`           | Shaded volume renderer (default); defaults to `INPUT_TYPE.webp`                               |
-| `--icon [PATH]`           | 256 x 256 icon/thumbnail, simple renderer; defaults to `INPUT_TYPE_thumb.png`                 |
+| `--icon [PATH]`           | 256 x 256 icon/thumbnail, simple renderer; defaults to `INPUT_FILE.png` (`design.pes.png`)      |
 | `--active-renderer`       | For `--png`/`--webp`, use the viewer's active renderer instead of the default `shaded_volume` |
 | `--dpi N`                 | DPI for print-sized exports; default is 300                                                   |
 | `--bg transparent\|white` | Select the export background                                                                  |
@@ -118,9 +193,45 @@ InkSim supports all embroidery file formats with a reader reported by
 `pystitch.EmbPattern.supported_formats()`. The open dialog builds its file
 filter from those formats, so the supported extensions follow the installed
 version of the pystitch library rather than a separate hard-coded list.
-Thread colors are read from the pattern thread list when available; files
-without colors use a deterministic fallback palette. Jumps, color changes,
+Palette-only formats such as `.edr`, `.col` and `.inf` are excluded: pystitch
+registers them as readable, but they carry thread colors instead of stitches.
+Thread colors are read from the pattern thread list when available. A design
+stored without a palette (DST, for example) borrows the colors of a file with
+the same name next to it — `.edr`, `.col`, `.inf` first, then a colored design
+such as `.hus` or `.pes` — applied in color-block order. Files without any
+sidecar use a deterministic fallback palette. Jumps, color changes,
 trims, stops, slow, fast, and end markers are interpreted while loading.
+
+`Colors…` in the open dialog and `File > Load palette…` in the main window load
+thread colors from a palette file or another design. They are only offered for
+designs whose format stores no colors of its own (DST, EXP, …); such a design is
+tinted with colors borrowed from `<name>.edr` sitting next to it. The picker
+opens on the file with the closest name, and the choice is written back as
+`<name>.edr`, so the preview, the thumbnails and the next session keep it. Saving to a format that drops
+colors (DST, EXP) asks once whether the palette should be written next to the
+file; the answer is remembered as `save_palette_sidecar` (`ask`, `always` or
+`never`) and can be changed later in `File > Colors on save` or in the
+configuration file. If a sidecar beside the design already stores the same
+colors, InkSim reuses it and removes duplicate palette files; if it stores
+different colors, InkSim asks before replacing it unless you chose `always`.
+The **Palette format** submenu under `File > Colors on save` picks which
+sidecar format is written (`save_palette_format`, `edr` by default).
+
+Right-clicking a selection in the open dialog opens a context menu. Its
+thumbnail rotation actions come before Copy, Move, and Paste. Rotation changes
+the **thumbnail images** only — 90° left, 90° right, 180°, or back to the
+original orientation. The rotation is written into the PNG metadata next to
+the pixels, so updating or regenerating thumbnails keeps it, and the design
+file itself is never touched.
+Thumbnails keep their transparent background. The icon-only grid puts every
+icon on a neutral tile so light thread stays visible on a light theme, captions
+each cell with the name in small type, and outlines selected items, because the
+image covers the whole cell that Qt would otherwise highlight.
+
+With the pointer over the file list, `Ctrl`+wheel scales the icons and
+`Shift`+wheel shades the tile from white to black. The shading has a slider too
+(0 = black, 255 = white); both values are remembered as
+`open_dialog_icon_size` and `open_dialog_icon_background`.
 
 ## Rendering Notes
 
@@ -182,7 +293,7 @@ creates missing parent directories. The same settings can be supplied through
 the `INKSIM_DEBUG` and `INKSIM_LOG` environment variables.
 
 The log records file loading, preview painting, and density-worker lifecycle
-events, including thread IDs and elapsed times. In the open dialog, entries
-with `precompute_density=False` confirm that density is not being calculated
-for arrow-key preview navigation. The logger is silent and creates no file
-unless debug logging is enabled.
+events, including thread IDs and elapsed times. To keep file browsing
+responsive, quick previews skip density-map precomputation; the full viewer
+calculates the map on demand. The logger is silent and creates no file unless
+debug logging is enabled.

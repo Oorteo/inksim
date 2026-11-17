@@ -1,0 +1,10 @@
+reviews:
+  path_filters:
+    - "**"
+    - "!src/inksim/locales/**"
+    - "!docs/assets/**"
+    - "!tests/data/**/*.pes"
+    - "!tests/data/**/*.dst"
+    - "!tests/data/**/*.edr"
+    - "!**/*.svg"
+    - "!**/*.csv"

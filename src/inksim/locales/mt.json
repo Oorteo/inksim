@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Il-lingwa ġiet issettjata għal {language}. Erġa' ibda InkSim issa biex tapplikaha?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Il-lingwa nbidlet. Agħlaq InkSim u iftaħ mill-ġdid minn Inkscape biex tapplika l-lingwa l-ġdida."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Il-lingwa default tas-sistema se tintuża. Erġa' ibda InkSim issa biex tapplikaha?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "Il-lingwa nbidlet"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Il-finestri kollha miftuħa ta' InkSim se jingħalqu u l-fajl attwali se jerġa' jinfetaħ."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Kulur tal-labra"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Preview normali"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Żid mal-postijiet"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Lura"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Lura għal {folder} (Alt+Left)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Ikkanċella"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Il-proċess tal-previżjoni tal-ponti falla: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Kodiċi tal-ħruġ tal-proċess: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "L-esportazzjoni CSV ta' Ink/Stitch falliet."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "Reġistru sħiħ: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "Il-previżjoni tal-ponti qabżet il-limitu taż-żmien."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Qed titħaddem l-esportazzjoni CSV ta' Ink/Stitch..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Ikkupjati {count} fajl/fajls"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Ikkopja l-fajls"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Oħloq PNG ta’ 256 px ħdejn kull disinn magħżul (disinn.pes.png).\nMill-menu tista’ tagħżel jekk terġax toħloq fajls skaduti jew il-minjaturi kollha."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Id-desktop"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Kuluri"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Isem"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Daqs"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Punti"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Daqs: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Dokumenti"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Tniżżil"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Iftaħ dan l-SVG f'tieqa ġdida ta' Inkscape."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Editja f'Inkscape"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Editja l-mogħdija"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "M'hemmx fajls appoġġati f'dan il-folder."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Favoriti"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Ma jistax jinqara dan il-fajl: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Uri"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Dawk kollha appoġġati"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "Dejta tal-ponti CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Rakkmu"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "Sors SVG"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Adatta"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Folder"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Ikklikkja darbtejn fuq il-folder biex tara l-fajls tiegħu."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Agħfas Enter jew ikklikkja darbtejn fuq il-folder biex tara l-fajls tiegħu."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Quddiem"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Quddiem għal {folder} (Alt+Right)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Mur"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Dar"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Sfumatura tal-isfond tal-ikona ({level}, 0 = iswed, 255 = abjad)\nŻomm Shift u dawwar ir-rota tal-maws fuq il-lista biex tibdel is-sfumatura."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Daqs tal-ikona ({size} px)\nŻomm Ctrl u dawwar ir-rota tal-maws fuq il-lista biex tibdel id-daqs tal-ikoni."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Inkscape ma setax jitħaddem: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Inkscape huwa meħtieġ biex teditja fajls SVG."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Huma meħtieġa installazzjoni kkonfigurata ta’ Ink/Stitch u llanċjatur ta’ Python."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Dan il-folder mhuwiex aċċessibbli."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Minn: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Iftaħ il-fowlder tas-sors"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Iftaħ il-fowlder tas-sors {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Għal: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Iftaħ il-fowlder tad-destinazzjoni"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Iftaħ il-fowlder tad-destinazzjoni {path}"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Immodifikat: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Mexxi l-fajls"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Imċaqilqa {count} fajl/fajls"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "Mhux fajl ta' rakkmu validu"
+        "translation": "Mhuwiex fajl validu tar-rakkmu"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Preview reali"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Iftaħ"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Iftaħ fajl tar-rakkmu"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Iftaħ il-fajl tar-rakkmu magħżul."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Kuluri…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Tella’ l-kuluri tal-ħjut minn fajl tal-paletta jew minn disinn ieħor.\nDawn jinżammu ħdejn dan il-fajl bħala <name>.edr, għax dan il-format\nma jistax jaħżen il-kuluri hu stess."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Dan il-fajl diġà jaħżen il-kuluri tal-ħjut tiegħu."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Waħħal il-fajls"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Daħħal jew waħħal il-mogħdija ta’ folder"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Postijiet"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Previżjoni"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Iġġenera d-dejta tal-ponti minn dan l-SVG b’Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Ma jistax jitħaddem l-iskript attiv ta' Ink/Stitch jew il-programm Python ikkonfigurat għalih."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Ma jistax jinqara dan il-folder: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Riċenti:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— agħżel direttorju —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Aġġorna"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Aġġorna dan il-folder (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Neħħi mill-favoriti"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Dawwar il-minjatura 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Dawwar il-minjatura lejn ix-xellug"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Agħżel disinn b’minjatura biex iddawwarha"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Orjentazzjoni oriġinali"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Dawwar il-minjatura lejn il-lemin"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Dawru {count} minjatura/i b’{degrees}°"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Fittex fajls"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Agħżel fajl biex tiftaħ."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Daqs: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Aħbi dawn l-estensjonijiet fid-djalogu.\nIfredhom b’|; il-lista tinżamm f’config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Aħbi"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: ma nstabx."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Estensjoni ta' Ink/Stitch: ma setgħetx tiġi ċċekkjata. Uża Għodod... biex terġa' tipprova."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Estensjoni ta' Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Estensjoni ta' Ink/Stitch: ma nstabitx fid-direttorji tal-estensjonijiet ta' Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Estensjoni ta' Ink/Stitch: ma tistax tiġi ċċekkjata qabel ma jiġi kkonfigurat Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Estensjoni ta' Ink/Stitch: għadha ma ġietx iċċekkjata. Uża Għodod... biex tiċċekkja."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Ponti: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "Sors SVG. Inkscape huwa meħtieġ għall-previżjoni tal-ponti."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "Sors SVG. Agħżel Previżjoni biex tiġġenera dejta tal-ponti b'Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "L-SVG ma setax jintwera."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Dan l-SVG huwa kbir wisq biex turi previżjoni tiegħu hawn."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Ma setax jinħoloq fajl temporanju għall-previżjoni: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Minjaturi: inħolqu {created}, {skipped} kienu aġġornati, {failed} fallew"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Minjaturi: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Treġġgħet lura l-orjentazzjoni oriġinali ta’ {count} minjatura/i"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Qed jinħolqu l-minjaturi…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Iftaħ fajl"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Għodod..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Il-fajls diġà jeżistu"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "It-trasferiment tal-fajls falla: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "It-trasferiment tal-fajls falla"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Dawn il-mogħdijiet tad-destinazzjoni diġà jeżistu, inklużi folders li ma jistgħux jinbidlu b’fajls. Ma ġie trasferit xejn:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Ma jistgħux jinbidlu l-folders"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} lest: {count} fajl/fajls"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Dawn il-fajls tad-destinazzjoni diġà jeżistu:\n{files}\n\nTrid tissostitwixxihom kollha?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Dawn il-fajls diġà qegħdin hawn."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "Dejta tal-ponti CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Folder"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Rakkmu"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Mhux appoġġat"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "Sors SVG"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Dan it-tip ta' fajl ma jistax jinfetaħ f'InkSim."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Iftaħ il-fowlder ġenitur (Alt+Up)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Dehra"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Dettalji"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Ikoni biss"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Ikoni u test"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Kabbar"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Ċekken"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Agħżel paletta jew disinn bil-kuluri"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} ma jaħżen l-ebda kulur tal-ħjut."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Il-fajls kollha"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Fajls tad-disinn (jekk fihom il-kuluri)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Fajls tal-paletta"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Dan id-disinn diġà jaħżen il-kuluri tal-ħjut tiegħu."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} diġà jaħżen il-kuluri għal dan id-disinn.\nTrid tibdilhom b’{target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Ftakar l-għażla tiegħi"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} ma jaħżinx il-kuluri tal-ħjut.\nTrid issalvahom bħala {name} ħdejn id-disinn?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Kuluri tal-ħjut"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} fih {available} kulur, iżda d-disinn għandu {blocks} blokka ta’ kulur.\nTrid tużah xorta waħda? L-aħħar kulur se jerġa’ jintuża."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Ma setgħux jiġu ssejvjati l-kuluri: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Agħżel renderer tal-ponti"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Ibdel"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Ma setax jiġi ssejvjat l-istatus tal-estensjoni ta' Inkscape: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Mhux disponibbli"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Il-fajl eżekutibbli ta' Inkscape jew linja sħiħa ta' kmand, pereżempju \"flatpak run org.inkscape.Inkscape\". Agħfas Enter biex tiċċekkjah."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Oħloq skript għad-debugging (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Ma setgħetx tinbidel l-għażla tal-iskript għad-debugging."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Jikteb debug_inksim.sh ħdejn id-dokument sabiex tkun tista’ terġa’ titħaddem l-istruzzjoni li bdiet Inkscape."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "Ma nstab l-ebda folder tal-estensjonijiet ta' InkSim."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Ma setgħux jiġu eżaminati l-folders tal-estensjonijiet ta' Inkscape: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Il-kmand tal-previżjoni nbidel"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "fajls mibdula: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Aġġornat"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Jeħtieġ l-installazzjoni"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "L-istatus mhux disponibbli: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Jeħtieġ aġġornament ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Estensjoni tas-sistema: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Estensjoni tal-utent attwali (post fejn tiġi installata/aġġornata): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Estensjoni ta’ utent ieħor: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch fil-folder tal-estensjonijiet ta’ Inkscape inbidel mill-aħħar konfigurazzjoni:\n\n{details}\n\nInkSim juża l-link attwali. Iftaħ is-setup ta’ Inkscape biex issalvah."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "il-folder ma għadux jeżisti: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "issa jindika lejn: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Installa / Aġġorna l-estensjonijiet ta' InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Xi fajls diġà jeżistu fil-folder tal-estensjonijiet ta' InkSim. Il-fajls elenkati għas-sostituzzjoni jista' jkun fihom bidliet magħmula mill-utent. Il-fajls l-oħra elenkati se jinżammu u qatt ma jitħassru.\n\nFajls li se jiġu sostitwiti:\n{replace_files}\n\nFajls li se jinżammu:\n{preserve_files}\n\nTkompli?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Ma setgħux jiġu installati l-estensjonijiet ta' Inkscape ta' InkSim: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "L-estensjonijiet ta' Inkscape ta' InkSim ġew installati jew aġġornati f'{path}. Erġa' ibda Inkscape biex jitgħabbew."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Xejn"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Applika"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Trid tibdel l-interpretu Python għall-estensjonijiet kollha ta’ Inkscape għal:\n\n{path}\n\nDan ibiddel preferenza globali ta’ Inkscape. Trid tkompli?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Mogħdija apposta…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Agħżel interpretu Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Mhux obbligatorju — biss għal estensjonijiet bl-ambjent Python tagħhom"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Dan hemm bżonnu biss għal estensjonijiet li jitolbu lil Inkscape l-interpretu Python tiegħu (eż. Ink/Stitch).\nL-estensjonijiet ta’ InkSim jibdew InkSim direttament."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ambjent ta’ Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Tibdilx (rakkomandat)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Neħħi l-issettjar tal-interpretu"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Trid tneħħi l-issettjar tal-interpretu Python minn:\n\n{path}\n\nInkscape se jerġa’ juża l-interpretu awtomatiku tiegħu għall-estensjonijiet kollha. Trid tkompli?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Irrestawra l-issettjar ta’ qabel"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "Llanċjar uvr ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape ma nstabx fil-mogħdija tas-sistema."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Ma setgħux jinqraw il-preferenzi ta' Inkscape: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Ma setgħux jiġu aġġornati l-preferenzi ta' Inkscape: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Ma setgħux jinqraw id-direttorji tal-estensjonijiet ta' Inkscape: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Qed nistenna li Inkscape jirrispondi…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Qed niċċekkja Inkscape... {seconds} s"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Interpretu Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Erġa' ibda Inkscape biex tapplika l-interpretu Python il-ġdid."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Interpretu Python ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "mhux issettjat"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Neħħi l-kopji l-qodma ta' InkSim"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Il-folders tal-estensjonijiet tal-utent elenkati u l-fajls kollha fihom se jitħassru għal dejjem. Id-destinazzjoni attwali tal-installazzjoni/aġġornament u l-folders tal-estensjonijiet tas-sistema mhux se jitneħħew.\n\n{directories}\n\nTkompli?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Ma setax jitneħħa l-folder l-antik tal-estensjonijiet ta' InkSim: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Il-folders l-antiki tal-estensjonijiet ta' InkSim tneħħew. Erġa' ibda Inkscape biex tiġġedded il-lista tal-estensjonijiet."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "L-installazzjoni attiva ta' Ink/Stitch ġiet aġġornata: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Qed niċċekkja Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Ma setgħetx tiġi ssejvjata l-konfigurazzjoni ta' InkSim: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Is-setup misjub ġie ssejvjat fil-konfigurazzjoni ta' InkSim."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Il-kmand ta' Inkscape ġie ssejvjat, iżda l-iċċekkjar falla, għalhekk il-fowlders tal-estensjonijiet ma ġewx aġġornati."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Eżekutibbli ta' Inkscape ċċekkjat: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Ma setgħux jiġu eżaminati l-folders tal-estensjonijiet ta' InkSim: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Installazzjonijiet ta' Ink/Stitch misjuba: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Il-link ta’ Ink/Stitch fil-folder tal-estensjonijiet ta’ Inkscape issa jindika lejn: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ma nstabet l-ebda installazzjoni ta' Ink/Stitch."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Interpretu Python tal-estensjonijiet ta’ Inkscape: {path} (ma nbidilx)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Tneħħiet il-preferenza tal-interpretu Python ta’ Inkscape."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Treġġa’ lura l-interpretu Python ta’ qabel: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "L-interpretu Python ġie aġġornat: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape ma nstabx. Agħżel l-eżekutibbli tiegħu biex teżamina s-setup."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Preferenzi ta' Inkscape ċċekkjati: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Ma setax jiġi ċċekkjat jew aġġornat l-interpretu Python: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Il-preferenza tal-interpretu Python ma ġietx iċċekkjata għax id-direttorju tal-estensjonijiet tal-utent mhuwiex disponibbli."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Ma setax jiġi eżaminat Inkscape: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Erġa' ibda Inkscape biex tapplika l-interpretu aġġornat."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Estensjonijiet tas-sistema: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape ma rrispondiex fi żmien {seconds} sekonda."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Estensjonijiet tal-utent: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Il-lanċjar fakultattiv uvr huwa disponibbli: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Il-lanċjar fakultattiv uvr ma nstabx; il-preferenza tal-interpretu ta’ Inkscape ma nbidlitx."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Verżjoni ta' Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Agħżel eżekutibbli ta' Inkscape biex teżamina."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Applikazzjoni Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Estensjonijiet"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Rapport"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Estensjonijiet tas-sistema: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape ma rrispondiex fi żmien {seconds} sekonda. Jista' jkun hemm istanza oħra ta' Inkscape jew estensjoni li qed timblokka l-komunikazzjoni. Agħlaq l-istanzi l-oħra ta' Inkscape jew iddiżattiva l-estensjoni li qed timblokka, imbagħad erġa' pprova."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Estensjonijiet tal-utent: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Verżjoni ta' Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Mhux disponibbli"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Kmand: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Interpretu: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Post: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ma nstabet l-ebda installazzjoni ta' Ink/Stitch."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Installa Ink/Stitch f'wieħed mill-fowlders tal-estensjonijiet ta' Inkscape murija hawn fuq."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Mogħdija: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "Agħżel renderer tal-ponti..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Kuluri meta tissejvja"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Dejjem ikteb il-paletta"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Staqsi kull darba"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Format tal-paletta"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Qatt tikteb il-paletta"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "Render b'tessut GPU"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Iftaħ fajl tar-rakkmu"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Tella’ paletta…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Oħroġ"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Iftaħ..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Oħroġ mill-finestri kollha u mis-server"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "Avvenimenti tat-traċċa"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Għodod"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "Setup ta’ Inkscape..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Lingwa"
+        "source": "&Language",
+        "translation": "&Lingwa"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Settings tal-crosshair tal-labra"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "Il-kuluri ta’ {palette} ġew issejvjati bħala {name}"
     },
     "status.slider.color": {
         "source": "Color…",

@@ -1,0 +1,2612 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import pytest
+
+from inksim.gui.open_dialog import OpenBrowserDialog
+from inksim.integration.paths import INKSCAPE_CONFIG_KEY, ToolInfo, ToolStatus
+
+_SVG = """<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80">
+  <rect width="120" height="80" fill="#d04a4a"/>
+</svg>
+"""
+
+
+def _tool_status(
+    inkscape: str | None = "/usr/bin/inkscape",
+    inkstitch: str | None = None,
+) -> ToolStatus:
+    return ToolStatus(
+        inkscape=ToolInfo("Inkscape", inkscape, "PATH" if inkscape else "missing"),
+        inkstitch=ToolInfo("Ink/Stitch", inkstitch, "PATH" if inkstitch else "missing"),
+    )
+
+
+def _select_file(dialog: OpenBrowserDialog, name: str) -> None:
+    for index in range(dialog.file_list.count()):
+        item = dialog.file_list.item(index)
+        if item.text().rstrip("/") == name:
+            dialog.file_list.setCurrentRow(index)
+            return
+    raise AssertionError(f"{name!r} not found in {dialog.file_list.count()} rows")
+
+
+def _send_wheel(widget, modifier, notches: int) -> None:
+    from PySide6.QtCore import QPoint, QPointF, Qt
+    from PySide6.QtGui import QWheelEvent
+    from PySide6.QtWidgets import QApplication
+
+    for _ in range(notches):
+        event = QWheelEvent(
+            QPointF(50.0, 50.0),
+            QPointF(50.0, 50.0),
+            QPoint(0, 0),
+            QPoint(0, 120),
+            Qt.MouseButton.NoButton,
+            modifier,
+            Qt.ScrollPhase.NoScrollPhase,
+            False,
+        )
+        QApplication.sendEvent(widget, event)
+
+
+def test_lists_supported_files_and_folders(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    (tmp_path / "design.svg").write_text(_SVG, encoding="utf-8")
+    (tmp_path / "notes.txt").write_text("not supported", encoding="utf-8")
+    (tmp_path / "subfolder").mkdir()
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    labels = [
+        dialog.file_list.item(index).text().rstrip("/") for index in range(dialog.file_list.count())
+    ]
+    assert "design.svg" in labels
+    assert "subfolder" in labels
+    assert ".." in labels
+    assert "notes.txt" not in labels
+    dialog.reject()
+
+
+def test_refresh_button_reloads_current_directory(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    (tmp_path / "new-folder").mkdir()
+    dialog.refresh_button.click()
+
+    labels = [
+        dialog.file_list.item(index).text().rstrip("/") for index in range(dialog.file_list.count())
+    ]
+    assert "new-folder" in labels
+    dialog.reject()
+
+
+def test_ctrl_r_reloads_current_directory(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import Qt
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    (tmp_path / "new-folder").mkdir()
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_R, Qt.KeyboardModifier.ControlModifier)
+
+    labels = [
+        dialog.file_list.item(index).text().rstrip("/") for index in range(dialog.file_list.count())
+    ]
+    assert "new-folder" in labels
+    dialog.reject()
+
+
+def test_directory_changes_refresh_listing_automatically(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    (tmp_path / "new-folder").mkdir()
+
+    qtbot.waitUntil(
+        lambda: any(
+            dialog.file_list.item(index).text().rstrip("/") == "new-folder"
+            for index in range(dialog.file_list.count())
+        ),
+        timeout=3000,
+    )
+    dialog.reject()
+
+
+def test_window_activation_refreshes_current_directory(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import QEvent
+    from PySide6.QtWidgets import QApplication
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    (tmp_path / "new-folder").mkdir()
+    QApplication.sendEvent(dialog, QEvent(QEvent.Type.WindowActivate))
+
+    labels = [
+        dialog.file_list.item(index).text().rstrip("/") for index in range(dialog.file_list.count())
+    ]
+    assert "new-folder" in labels
+    dialog.reject()
+
+
+def test_selected_designs_get_sidecar_thumbnails(qtbot, tmp_path, monkeypatch):
+    """Create thumbnails for the whole multi-selection; details follow the last one."""
+    from PySide6.QtCore import QItemSelectionModel
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    first = tmp_path / "first.pes"
+    second = tmp_path / "second.pes"
+    first.write_bytes(sample.read_bytes())
+    second.write_bytes(sample.read_bytes())
+    (tmp_path / "poster.svg").write_text(_SVG, encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    items = {
+        dialog.file_list.item(index).text(): dialog.file_list.item(index)
+        for index in range(dialog.file_list.count())
+    }
+    dialog.file_list.setCurrentItem(items["first.pes"])
+    dialog.file_list.setCurrentItem(items["second.pes"], QItemSelectionModel.SelectionFlag.Select)
+    dialog.file_list.setCurrentItem(items["poster.svg"], QItemSelectionModel.SelectionFlag.Select)
+    assert dialog.selected_path == tmp_path / "poster.svg"
+    assert dialog.thumbnails_button.isEnabled()
+
+    dialog._create_thumbnails()
+
+    qtbot.waitUntil(lambda: dialog._thumbnail_job is None, timeout=20000)
+    assert (tmp_path / "first.pes.png").is_file()
+    assert (tmp_path / "second.pes.png").is_file()
+    assert (tmp_path / "poster.svg.png").is_file()
+    assert "3 created" in dialog.activity_label.text()
+    assert not items["first.pes"].icon().isNull()
+    assert not items["poster.svg"].icon().isNull()
+    dialog.reject()
+
+
+def test_thumbnail_job_skips_current_files_and_regenerates_on_request(tmp_path):
+    """A repeated run only touches outdated files; the menu can force a rebuild."""
+    from inksim.gui.open_dialog import ThumbnailJob
+    from inksim.render.thumbnails import write_thumbnail
+
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    source = tmp_path / "design.pes"
+    source.write_bytes(sample.read_bytes())
+    write_thumbnail(source)
+
+    results: list[tuple[int, int, int]] = []
+    job = ThumbnailJob([source])
+    job.signals.finished.connect(lambda *args: results.append(args))
+    job.run()
+    assert results == [(0, 1, 0)]
+
+    job = ThumbnailJob([source], regenerate=True)
+    job.signals.finished.connect(lambda *args: results.append(args))
+    job.run()
+    assert results[-1] == (1, 0, 0)
+
+
+def test_thumbnail_button_shows_the_active_action(qtbot, tmp_path, monkeypatch):
+    """The button caption states what a click does; the menu only switches modes."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+
+    menu = dialog.thumbnails_button.menu()
+    assert menu is not None
+    labels = [action.text() for action in menu.actions()]
+    assert labels == ["Update outdated thumbnails", "Regenerate all thumbnails"]
+    assert dialog.thumbnails_button.text() == "Update outdated thumbnails"
+
+    menu.actions()[1].trigger()
+
+    assert dialog.thumbnails_button.text() == "Regenerate all thumbnails"
+    assert dialog._thumbnail_job is None
+
+    menu.actions()[0].trigger()
+
+    assert dialog.thumbnails_button.text() == "Update outdated thumbnails"
+    dialog.reject()
+
+
+def test_thumbnail_action_needs_a_selected_design(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "folder").mkdir()
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "folder")
+    assert not dialog.thumbnails_button.isEnabled()
+    dialog.reject()
+
+
+def test_details_view_shows_size_stitches_and_colors(qtbot, tmp_path, monkeypatch):
+    """The details mode lists the facts stored with each thumbnail."""
+    from PySide6.QtWidgets import QListView
+
+    from inksim.render.thumbnails import write_thumbnail
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    design = tmp_path / "design.pes"
+    design.write_bytes(sample.read_bytes())
+    write_thumbnail(design)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("details")
+    )
+    qtbot.wait(10)
+
+    assert dialog.details_header.isVisible()
+    labels = {
+        dialog.file_list.item(index).text().split()[0]: dialog.file_list.item(index).text()
+        for index in range(dialog.file_list.count())
+    }
+    row = labels["design.pes"].split()
+    assert row[-2:] == ["7207", "2"]
+    assert dialog.file_list.viewMode() == QListView.ViewMode.ListMode
+    dialog.reject()
+
+
+def test_icons_only_view_hides_names(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtWidgets import QListView
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    qtbot.wait(10)
+
+    assert dialog.file_list.viewMode() == QListView.ViewMode.IconMode
+    assert dialog.file_list.iconSize().width() == 96
+    assert not dialog.details_header.isVisible()
+    labels = [dialog.file_list.item(i).text() for i in range(dialog.file_list.count())]
+    assert labels == [""] * len(labels)
+    dialog.reject()
+
+
+def test_icons_only_view_captions_every_cell(qtbot, tmp_path, monkeypatch):
+    """Names are drawn under the icons, so an empty grid is never ambiguous."""
+    from inksim.gui.open_dialog import _CAPTION_ROLE
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "designs").mkdir()
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    qtbot.wait(30)
+
+    captions = [
+        dialog.file_list.item(row).data(_CAPTION_ROLE) for row in range(dialog.file_list.count())
+    ]
+    assert "designs" in captions
+    assert ".." in captions
+    assert "design.pes" in captions
+    # The item text stays empty: the delegate draws the caption itself.
+    assert all(dialog.file_list.item(row).text() == "" for row in range(dialog.file_list.count()))
+    dialog.reject()
+
+
+def test_icons_only_view_scrolls_faster_than_a_few_pixels_per_notch(qtbot, tmp_path, monkeypatch):
+    """A whole grid of icons must not crawl by three pixels per wheel notch."""
+    from PySide6.QtCore import QPoint, QPointF, Qt
+    from PySide6.QtGui import QWheelEvent
+    from PySide6.QtWidgets import QApplication
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    for index in range(60):
+        (tmp_path / f"design{index:02d}.pes").write_bytes(sample)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    qtbot.wait(10)
+
+    scrollbar = dialog.file_list.verticalScrollBar()
+    assert scrollbar.maximum() > 0
+    scrollbar.setValue(0)
+    for _ in range(3):
+        event = QWheelEvent(
+            QPointF(10.0, 10.0),
+            QPointF(10.0, 10.0),
+            QPoint(0, 0),
+            QPoint(0, -120),
+            Qt.MouseButton.NoButton,
+            Qt.KeyboardModifier.NoModifier,
+            Qt.ScrollPhase.NoScrollPhase,
+            False,
+        )
+        QApplication.sendEvent(dialog.file_list.viewport(), event)
+    qtbot.wait(10)
+
+    assert scrollbar.value() > 20
+    dialog.reject()
+
+
+def test_icon_grid_marks_the_selected_designs(qtbot, tmp_path, monkeypatch):
+    """The icon covers its cell, so selection needs a frame to be visible."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    for name in ("a.pes", "b.pes", "c.pes"):
+        (tmp_path / name).write_bytes(sample)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    qtbot.wait(30)
+    dialog.file_list.setCurrentRow(1)
+
+    model = dialog.file_list.model()
+    selected_rect = dialog.file_list.visualRect(model.index(1, 0))
+    plain_rect = dialog.file_list.visualRect(model.index(2, 0))
+    picture = dialog.file_list.viewport().grab().toImage()
+
+    def border_colors(rect):
+        return {
+            picture.pixelColor(rect.left() + 3, rect.top() + 3).name(),
+            picture.pixelColor(rect.center().x(), rect.top() + 3).name(),
+        }
+
+    assert border_colors(selected_rect) != border_colors(plain_rect)
+    dialog.reject()
+
+
+def test_ctrl_wheel_scales_the_icons(qtbot, tmp_path, monkeypatch):
+    """The wheel gesture works over the file list only, and keeps scrolling free."""
+    from PySide6.QtCore import Qt
+
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+    start = dialog.icon_size_slider.value()
+
+    _send_wheel(dialog.file_list.viewport(), Qt.KeyboardModifier.ControlModifier, 3)
+    qtbot.wait(20)
+
+    assert dialog.icon_size_slider.value() == start + 24
+    assert dialog.file_list.iconSize().width() == start + 24
+    assert config.get("open_dialog_icon_size") == start + 24
+
+    _send_wheel(dialog.file_list.viewport(), Qt.KeyboardModifier.NoModifier, 3)
+    qtbot.wait(20)
+    assert dialog.icon_size_slider.value() == start + 24
+    dialog.reject()
+
+
+def test_each_slider_documents_its_own_wheel_gesture(qtbot, tmp_path, monkeypatch):
+    """The zoom hint belongs to the size slider, the shading hint to the other."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    size_tip = dialog.icon_size_slider.toolTip()
+    background_tip = dialog.background_slider.toolTip()
+    assert "Ctrl+wheel" in size_tip
+    assert "Shift+wheel" not in size_tip
+    assert "Shift+wheel" in background_tip
+    assert "Ctrl+wheel" not in background_tip
+    dialog.reject()
+
+
+def test_background_slider_sits_in_the_view_row(qtbot, tmp_path, monkeypatch):
+    """Both sliders belong to the view row; a loose widget would cover the status text."""
+    from PySide6.QtCore import QPoint
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    icon_position = dialog.icon_size_slider.mapTo(dialog, QPoint(0, 0))
+    background_position = dialog.background_slider.mapTo(dialog, QPoint(0, 0))
+    assert background_position.y() == icon_position.y()
+    assert background_position.x() > icon_position.x()
+    assert background_position.y() > dialog.status_label.geometry().bottom()
+
+    modes = [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())]
+    dialog.view_combo.setCurrentIndex(modes.index("details"))
+    assert not dialog.background_slider.isEnabled()
+    dialog.view_combo.setCurrentIndex(modes.index("icons"))
+    assert dialog.background_slider.isEnabled()
+    dialog.reject()
+
+
+def test_shift_wheel_shades_the_icon_background(qtbot, tmp_path, monkeypatch):
+    """Shift+wheel moves the tile from white to black and remembers the level."""
+    from PySide6.QtCore import Qt
+
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+    start = dialog.background_slider.value()
+
+    _send_wheel(dialog.file_list.viewport(), Qt.KeyboardModifier.ShiftModifier, 2)
+    qtbot.wait(20)
+
+    assert dialog.background_slider.value() == min(255, start + 24)
+    assert dialog._icon_delegate.tile_level == dialog.background_slider.value()
+    level = dialog.background_slider.value()
+
+    def stored() -> object:
+        config.reload()
+        return config.get("open_dialog_icon_background")
+
+    qtbot.waitUntil(lambda: stored() == level, timeout=3000)
+    dialog.reject()
+
+
+def test_icon_size_slider_scales_the_list_and_is_remembered(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    modes = [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())]
+    dialog.view_combo.setCurrentIndex(modes.index("icons"))
+    dialog.icon_size_slider.setValue(48)
+    qtbot.wait(10)
+
+    assert dialog.file_list.iconSize().width() == 48
+    assert dialog.file_list.gridSize().width() == 64
+    assert config.get("open_dialog_icon_size") == 48
+
+    dialog.view_combo.setCurrentIndex(modes.index("details"))
+    assert not dialog.icon_size_slider.isEnabled()
+
+    dialog.view_combo.setCurrentIndex(modes.index("icons_text"))
+    assert dialog.file_list.iconSize().width() == 48
+    dialog.reject()
+
+
+def test_view_mode_is_remembered(qtbot, tmp_path, monkeypatch):
+    """The dialog reopens in the view the user left it in."""
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    modes = [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())]
+    assert dialog.view_combo.currentData() == "icons_text"
+
+    dialog.view_combo.setCurrentIndex(modes.index("details"))
+    dialog.reject()
+
+    assert config.get("open_dialog_view") == "details"
+
+    reopened = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(reopened)
+
+    assert reopened.view_combo.currentData() == "details"
+    reopened.reject()
+
+
+def test_icon_size_is_restored_from_the_config(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    config.set("open_dialog_icon_size", 72)
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+
+    assert dialog.icon_size_slider.value() == 72
+    assert dialog.file_list.iconSize().width() == 72
+    dialog.reject()
+
+
+def test_search_keeps_folders_navigable(qtbot, tmp_path, monkeypatch):
+    """Filtering files by suffix must not hide folders, or navigation stops."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "subfolder").mkdir()
+    (tmp_path / "design.dst").write_bytes(b"")
+    (tmp_path / "design.pes").write_bytes(b"")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.search_edit.setText(".dst")
+    qtbot.wait(10)
+
+    labels = [
+        dialog.file_list.item(index).text().rstrip("/") for index in range(dialog.file_list.count())
+    ]
+    assert "subfolder" in labels
+    assert ".." in labels
+    assert "design.dst" in labels
+    assert "design.pes" not in labels
+    dialog.reject()
+
+
+def test_skipped_extensions_are_hidden_and_remembered(qtbot, tmp_path, monkeypatch):
+    """Formats InkSim cannot read stay registered but are hidden from the list."""
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    config.set("open_dialog_skip_extensions", "edr")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "subfolder").mkdir()
+    for name in ("design.edr", "design.dst", "design.pes"):
+        (tmp_path / name).write_bytes(b"")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    def labels() -> list[str]:
+        return [
+            dialog.file_list.item(index).text().rstrip("/")
+            for index in range(dialog.file_list.count())
+        ]
+
+    assert dialog.skip_edit.text() == "edr"
+    assert "design.edr" not in labels()
+    assert "design.dst" in labels()
+    assert "subfolder" in labels()
+
+    dialog.skip_edit.setText("edr|dst")
+    qtbot.wait(10)
+    assert "design.dst" not in labels()
+    assert "design.pes" in labels()
+
+    def saved_skips() -> str | None:
+        config.reload()
+        return config.get("open_dialog_skip_extensions")
+
+    qtbot.waitUntil(lambda: saved_skips() == "edr|dst", timeout=3000)
+    dialog.reject()
+
+
+def test_open_dialog_survives_malformed_config_reload(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    path = tmp_path / "config.toml"
+    config = Config(path)
+    original = "not valid toml"
+    path.write_text(original, encoding="utf-8")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+
+    assert path.read_text(encoding="utf-8") == original
+    dialog.reject()
+
+
+def test_typed_skip_extensions_are_saved_when_the_dialog_closes(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(b"")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    dialog.skip_edit.setText(".EDR, dst")
+    dialog.reject()
+
+    assert Config(tmp_path / "config.toml").get("open_dialog_skip_extensions") == "edr|dst"
+
+
+def test_colors_button_only_offers_palette_less_designs(qtbot, tmp_path, monkeypatch):
+    """A design that stores its own colors has nothing to load colors for."""
+    import pystitch as emb
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    (tmp_path / "with_colors.pes").write_bytes(sample.read_bytes())
+    emb.write_dst(emb.read(str(sample)), str(tmp_path / "no_colors.dst"))
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "with_colors.pes")
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert not dialog.palette_button.isEnabled()
+    assert "already stores" in dialog.palette_button.toolTip()
+
+    _select_file(dialog, "no_colors.dst")
+    assert not dialog.palette_button.isEnabled()
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert dialog.palette_button.isEnabled()
+    assert "Load thread colors" in dialog.palette_button.toolTip()
+    dialog.reject()
+
+
+def test_colors_button_stores_a_palette_next_to_the_design(qtbot, tmp_path, monkeypatch):
+    """The Colors action writes the sidecar that palette-less formats need."""
+    import pystitch as emb
+
+    from inksim.formats import read_palette_file, write_palette_file
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "folder").mkdir()
+    sample = Path(__file__).parent / "data" / "sample.pes"
+    design = tmp_path / "design.dst"
+    emb.write_dst(emb.read(str(sample)), str(design))
+    chart = tmp_path / "chart.edr"
+    write_palette_file(chart, ["#112233", "#445566"])
+    monkeypatch.setattr(
+        "inksim.gui.palette.choose_palette_file",
+        lambda parent, source: chart,
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "folder")
+    assert not dialog.palette_button.isEnabled()
+
+    _select_file(dialog, "design.dst")
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert dialog.palette_button.isEnabled()
+
+    dialog.palette_button.click()
+
+    sidecar = tmp_path / "design.edr"
+    assert sidecar.is_file()
+    assert [thread.hex_color() for thread in read_palette_file(sidecar)] == [
+        "#112233",
+        "#445566",
+    ]
+    assert "chart.edr" in dialog.activity_label.text()
+    dialog.reject()
+
+
+def test_storing_a_palette_replaces_a_sidecar_of_another_format(qtbot, tmp_path, monkeypatch):
+    """One palette per design: the old format does not linger and win later."""
+    from PySide6.QtWidgets import QMessageBox
+
+    from inksim.formats import read_palette_file, write_palette_file
+    from inksim.gui import palette as palette_module
+
+    write_palette_file(tmp_path / "design.edr", ["#111111"])
+    monkeypatch.setattr(
+        palette_module.QMessageBox,
+        "question",
+        lambda *args, **kwargs: QMessageBox.StandardButton.Yes,
+    )
+
+    target = palette_module.store_palette(None, tmp_path / "design.dst", ["#112233"], "col")
+
+    assert target == tmp_path / "design.col"
+    assert not (tmp_path / "design.edr").exists()
+    assert [thread.hex_color() for thread in read_palette_file(target)] == ["#112233"]
+
+
+def test_second_svg_conversion_is_ignored_while_one_is_running(qtbot, tmp_path, monkeypatch):
+    import pytest
+    from PySide6.QtCore import QProcess
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    svg_path = tmp_path / "design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    process = QProcess(dialog)
+    dialog._conversion_process = process
+    monkeypatch.setattr(
+        dialog,
+        "_active_inkstitch_preview",
+        lambda: pytest.fail("A concurrent conversion must not be started."),
+    )
+
+    dialog._start_svg_conversion(svg_path)
+
+    assert dialog._conversion_process is process
+    dialog._conversion_process = None
+    dialog.reject()
+
+
+@pytest.mark.parametrize("busy_operation", ["conversion", "thumbnails"])
+def test_open_selected_ignores_requests_while_busy(qtbot, tmp_path, monkeypatch, busy_operation):
+    from PySide6.QtCore import QProcess
+
+    from inksim.gui.open_dialog import KIND_EMBROIDERY
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    design_path = tmp_path / "design.dst"
+    monkeypatch.setattr(dialog, "_current_path", lambda: design_path)
+    monkeypatch.setattr(dialog, "_kind_for_path", lambda path: KIND_EMBROIDERY)
+    dialog._preview_loaded = True
+    if busy_operation == "conversion":
+        dialog._conversion_process = QProcess(dialog)
+    else:
+        dialog._thumbnail_job = object()
+
+    dialog._open_selected()
+
+    assert dialog.selected_path is None
+    assert dialog.result_action is None
+
+    dialog._conversion_process = None
+    dialog._thumbnail_job = None
+    dialog.reject()
+
+
+def test_info_box_keeps_its_height_between_files(qtbot, tmp_path, monkeypatch):
+    """A shorter info text must not resize the dialog while browsing."""
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+    (tmp_path / "drawing.svg").write_text(_SVG, encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "design.pes")
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert dialog.details_label.text().count("\n") + 1 == 6
+    design_height = dialog.details_label.height()
+    design_button_top = dialog.open_button.mapTo(dialog, dialog.open_button.rect().topLeft())
+    controls_top = dialog.preview_controls.mapTo(dialog, dialog.preview_controls.rect().topLeft())
+    assert dialog.fit_button.isEnabled()
+
+    _select_file(dialog, "drawing.svg")
+    qtbot.wait(50)
+
+    assert dialog.details_label.text().count("\n") + 1 == 4
+    assert dialog.details_label.height() == design_height
+    assert (
+        dialog.open_button.mapTo(dialog, dialog.open_button.rect().topLeft()) == design_button_top
+    )
+    assert (
+        dialog.preview_controls.mapTo(dialog, dialog.preview_controls.rect().topLeft())
+        == controls_top
+    )
+    assert dialog.preview_controls.isVisible()
+
+    _select_file(dialog, "..")
+    qtbot.wait(50)
+
+    assert not dialog.fit_button.isEnabled()
+    assert dialog.preview_controls.isVisible()
+    assert dialog.details_label.height() == design_height
+    dialog.reject()
+
+
+def test_right_click_rotates_only_the_thumbnail_png(qtbot, tmp_path, monkeypatch):
+    """Rotation applies to the sidecar image, never to the design file."""
+    from inksim.render.thumbnails import thumbnail_path, thumbnail_rotation, write_thumbnail
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    design = tmp_path / "design.pes"
+    payload = (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    design.write_bytes(payload)
+    write_thumbnail(design)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "design.pes")
+    dialog._rotate_thumbnails(90)
+
+    assert design.read_bytes() == payload
+    assert thumbnail_rotation(design) == 90
+    assert thumbnail_path(design).is_file()
+    assert "90" in dialog.activity_label.text()
+
+    # "Original orientation" takes the stored angle back to zero.
+    dialog._rotate_thumbnails(None)
+
+    assert thumbnail_rotation(design) == 0
+    assert "original" in dialog.activity_label.text().lower()
+    dialog.reject()
+
+
+def test_thumbnail_menu_is_disabled_without_a_thumbnail(qtbot, tmp_path, monkeypatch):
+    from inksim.render.thumbnails import thumbnail_path
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    (tmp_path / "design.pes").write_bytes(
+        (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    _select_file(dialog, "design.pes")
+    dialog._rotate_thumbnails(90)
+
+    assert not thumbnail_path(tmp_path / "design.pes").exists()
+    dialog.reject()
+
+
+def test_file_transfer_menu_actions_follow_thumbnail_actions(qtbot, tmp_path, monkeypatch):
+    from inksim.i18n import _
+    from inksim.render.thumbnails import write_thumbnail
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    design = tmp_path / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    write_thumbnail(design)
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+    _select_file(dialog, design.name)
+
+    menu = dialog._create_file_context_menu()
+    actions = menu.actions()
+    separator_index = max(index for index, action in enumerate(actions) if action.isSeparator())
+    rotation_actions = [action for action in actions[:separator_index] if not action.isSeparator()]
+    transfer_actions = [
+        action for action in actions[separator_index + 1 :] if not action.isSeparator()
+    ]
+
+    assert len(rotation_actions) == 4
+    assert [action.text() for action in transfer_actions] == [
+        _("dialog.open_browser.copy_files", "Copy files"),
+        _("dialog.open_browser.move_files", "Move files"),
+        _("dialog.open_browser.paste_files", "Paste files"),
+    ]
+    assert dialog._pending_file_transfer is None
+    transfer_actions[0].trigger()
+    assert dialog._pending_file_transfer == ("copy", (design,))
+    menu.deleteLater()
+    dialog.reject()
+
+
+def test_copy_transfer_includes_palette_and_thumbnail(qtbot, tmp_path, monkeypatch):
+    from inksim.render.thumbnails import thumbnail_path
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    design = source_directory / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    palette = design.with_suffix(".edr")
+    palette.write_bytes(b"color map")
+    preview = thumbnail_path(design)
+    preview.write_bytes(b"thumbnail")
+
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (design,))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert (destination_directory / design.name).read_bytes() == design.read_bytes()
+    assert (destination_directory / palette.name).read_bytes() == palette.read_bytes()
+    assert (destination_directory / preview.name).read_bytes() == preview.read_bytes()
+    assert design.is_file() and palette.is_file() and preview.is_file()
+    dialog.reject()
+
+
+def _make_directories(tmp_path: Path, *names: str) -> list[Path]:
+    directories = []
+    for name in names:
+        directory = tmp_path / name
+        directory.mkdir()
+        directories.append(directory)
+    return directories
+
+
+def test_directory_history_follows_visited_folders(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    first, second, third = _make_directories(tmp_path, "first", "second", "third")
+    dialog = OpenBrowserDialog(None, first)
+    qtbot.addWidget(dialog)
+
+    dialog.set_directory(second)
+    dialog.set_directory(third)
+    assert dialog.back_button.isEnabled()
+
+    dialog.back_button.click()
+    assert dialog.current_directory == second.resolve()
+    dialog.back_button.click()
+    assert dialog.current_directory == first.resolve()
+    assert not dialog.back_button.isEnabled()
+
+    dialog.forward_button.click()
+    assert dialog.current_directory == second.resolve()
+    dialog.forward_button.click()
+    assert dialog.current_directory == third.resolve()
+    assert not dialog.forward_button.isEnabled()
+    dialog.reject()
+
+
+def test_history_tooltips_name_the_folder_they_open(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    first, second = _make_directories(tmp_path, "first", "second")
+    dialog = OpenBrowserDialog(None, first)
+    qtbot.addWidget(dialog)
+
+    dialog.set_directory(second)
+    dialog.back_button.click()
+
+    assert "Forward to second" in dialog.forward_button.toolTip()
+    dialog.reject()
+
+
+def test_new_navigation_drops_the_abandoned_forward_history(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    first, second, third = _make_directories(tmp_path, "first", "second", "third")
+    dialog = OpenBrowserDialog(None, first)
+    qtbot.addWidget(dialog)
+
+    dialog.set_directory(second)
+    dialog.set_directory(third)
+    dialog._go_back()
+    assert dialog.current_directory == second.resolve()
+    assert dialog.forward_button.isEnabled()
+
+    dialog.set_directory(first)
+    assert not dialog.forward_button.isEnabled()
+    dialog._go_back()
+    assert dialog.current_directory == second.resolve()
+    dialog.reject()
+
+
+def test_up_button_opens_the_parent_folder(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    parent = tmp_path.resolve()
+    (child := parent / "child").mkdir()
+    dialog = OpenBrowserDialog(None, child)
+    qtbot.addWidget(dialog)
+
+    dialog.up_button.click()
+    assert dialog.current_directory == parent
+    dialog.back_button.click()
+    assert dialog.current_directory == child.resolve()
+    dialog.reject()
+
+
+def test_transfer_jump_buttons_switch_between_source_and_target(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory, destination_directory = _make_directories(tmp_path, "source", "destination")
+    design = source_directory / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    assert dialog.transfer_source_button.isHidden()
+    assert dialog.transfer_target_button.isHidden()
+
+    dialog._remember_file_transfer("copy", (design,))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert dialog.transfer_source_button.isVisibleTo(dialog)
+    assert dialog.transfer_target_button.isVisibleTo(dialog)
+    assert "Copied 1 file(s)" == dialog.activity_label.text()
+    assert "source" in dialog.transfer_source_button.text()
+    assert "destination" in dialog.transfer_target_button.text()
+    assert dialog.transfer_source_button.isEnabled()
+    assert dialog.transfer_target_button.isEnabled()
+
+    dialog.transfer_source_button.click()
+    assert dialog.current_directory == source_directory.resolve()
+    dialog.transfer_target_button.click()
+    assert dialog.current_directory == destination_directory.resolve()
+    dialog.reject()
+
+
+def test_transfer_falls_back_to_a_copy_when_hard_links_are_unsupported(
+    qtbot, tmp_path, monkeypatch
+):
+    """Copy still works on filesystems without hard links, such as FAT32."""
+    import errno
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    def unsupported_link(*_args, **_kwargs):
+        raise OSError(errno.EXDEV, "Invalid cross-device link")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.os.link", unsupported_link)
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    design = source_directory / "design.pes"
+    design.write_bytes(b"stitches")
+
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (design,))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert (destination_directory / design.name).read_bytes() == b"stitches"
+    assert design.is_file()
+    dialog.reject()
+
+
+def test_copy_fallback_never_overwrites_an_existing_target(tmp_path, monkeypatch):
+    """The copy fallback reports a conflict instead of replacing a file."""
+    import errno
+
+    from inksim.gui.open_dialog import _install_staged_file
+
+    def unsupported_link(*_args, **_kwargs):
+        raise OSError(errno.EXDEV, "Invalid cross-device link")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.os.link", unsupported_link)
+    staged = tmp_path / "staged"
+    staged.write_bytes(b"new")
+    target = tmp_path / "design.pes"
+    target.write_bytes(b"existing")
+
+    with pytest.raises(FileExistsError):
+        _install_staged_file(staged, target)
+
+    assert target.read_bytes() == b"existing"
+
+
+@pytest.mark.parametrize("failure_point", ["copy", "copystat"])
+def test_copy_fallback_removes_new_target_when_install_fails(tmp_path, monkeypatch, failure_point):
+    import errno
+
+    from inksim.gui.open_dialog import _install_staged_file
+
+    def unsupported_link(*_args, **_kwargs):
+        raise OSError(errno.EXDEV, "Invalid cross-device link")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.os.link", unsupported_link)
+    staged = tmp_path / "staged"
+    staged.write_bytes(b"complete contents")
+    target = tmp_path / "design.pes"
+
+    if failure_point == "copy":
+
+        def fail_copy(_source_file, target_file, _length):
+            target_file.write(b"partial contents")
+            raise OSError("copy failed")
+
+        monkeypatch.setattr("inksim.gui.open_dialog.shutil.copyfileobj", fail_copy)
+        expected_error = "copy failed"
+    else:
+
+        def fail_copystat(*_args, **_kwargs):
+            raise OSError("copystat failed")
+
+        monkeypatch.setattr("inksim.gui.open_dialog.shutil.copystat", fail_copystat)
+        expected_error = "copystat failed"
+
+    with pytest.raises(OSError, match=expected_error):
+        _install_staged_file(staged, target)
+
+    assert not target.exists()
+
+
+def test_move_transfer_removes_sources_and_clears_buffer(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    design = source_directory / "design.pes"
+    design.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("move", (design,))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert not design.exists()
+    assert (destination_directory / design.name).is_file()
+    assert dialog._pending_file_transfer is None
+    dialog.reject()
+
+
+def test_transfer_buffer_is_empty_in_a_new_dialog(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    design = tmp_path / "design.pes"
+    design.write_bytes(b"design")
+
+    first = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(first)
+    first._remember_file_transfer("copy", (design,))
+    assert first._pending_file_transfer is not None
+
+    second = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(second)
+    assert second._pending_file_transfer is None
+    first.reject()
+    second.reject()
+
+
+def test_transfer_conflict_cancels_the_entire_batch(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    third = source_directory / "third.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"new second")
+    third.write_bytes(b"new third")
+    existing_second = destination_directory / second.name
+    existing_third = destination_directory / third.name
+    existing_second.write_bytes(b"existing second")
+    existing_third.write_bytes(b"existing third")
+
+    prompts: list[str] = []
+
+    def cancel_conflicts(_parent, _title, text, *_args):
+        prompts.append(text)
+        return QMessageBox.StandardButton.Cancel
+
+    monkeypatch.setattr(QMessageBox, "question", cancel_conflicts)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (first, second, third))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert len(prompts) == 1
+    assert second.name in prompts[0]
+    assert third.name in prompts[0]
+    assert not (destination_directory / first.name).exists()
+    assert existing_second.read_bytes() == b"existing second"
+    assert existing_third.read_bytes() == b"existing third"
+    assert first.is_file() and second.is_file() and third.is_file()
+    assert dialog._pending_file_transfer is not None
+    dialog.reject()
+
+
+def test_transfer_conflicts_replace_the_whole_batch_after_one_confirmation(
+    qtbot, tmp_path, monkeypatch
+):
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"new second")
+    existing_second = destination_directory / second.name
+    existing_second.write_bytes(b"existing second")
+
+    prompts: list[str] = []
+
+    def replace_all(_parent, _title, text, *_args):
+        prompts.append(text)
+        return QMessageBox.StandardButton.Yes
+
+    monkeypatch.setattr(QMessageBox, "question", replace_all)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (first, second))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert len(prompts) == 1
+    assert second.name in prompts[0]
+    assert (destination_directory / first.name).read_bytes() == b"first"
+    assert existing_second.read_bytes() == b"new second"
+    assert first.is_file() and second.is_file()
+    dialog.reject()
+
+
+def test_transfer_does_not_replace_destination_changed_after_confirmation(
+    qtbot, tmp_path, monkeypatch
+):
+    import os
+
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"new second")
+    destination = destination_directory / second.name
+    destination.write_bytes(b"old destination")
+    replacement = destination_directory / "external-file"
+    prompts = []
+
+    def replace_during_confirmation(_parent, _title, text, *_args):
+        prompts.append(text)
+        replacement.write_bytes(b"external replacement")
+        os.replace(replacement, destination)
+        return QMessageBox.StandardButton.Yes
+
+    monkeypatch.setattr(QMessageBox, "question", replace_during_confirmation)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_args: None)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (first, second))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert prompts
+    assert destination.read_bytes() == b"external replacement"
+    assert not (destination_directory / first.name).exists()
+    dialog.reject()
+
+
+def test_move_rechecks_each_source_before_deleting(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtWidgets import QMessageBox
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"second")
+    original_unlink = Path.unlink
+    first_deleted = False
+
+    def change_second_after_first_delete(path, *args, **kwargs):
+        nonlocal first_deleted
+        if path == first and not first_deleted:
+            first_deleted = True
+            result = original_unlink(path, *args, **kwargs)
+            second.write_bytes(b"changed during move")
+            return result
+        return original_unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "unlink", change_second_after_first_delete)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_args: None)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("move", (first, second))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert first.read_bytes() == b"first"
+    assert second.read_bytes() == b"changed during move"
+    assert not (destination_directory / first.name).exists()
+    assert not (destination_directory / second.name).exists()
+    dialog.reject()
+
+
+def test_transfer_failure_rolls_back_installed_files(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtWidgets import QMessageBox
+
+    import inksim.gui.open_dialog as open_dialog_module
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"first")
+    second.write_bytes(b"second")
+
+    original_copy = open_dialog_module.shutil.copy2
+    calls = 0
+
+    def fail_during_install(source, target, *args, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 4:
+            raise OSError("simulated install failure")
+        return original_copy(source, target, *args, **kwargs)
+
+    monkeypatch.setattr(open_dialog_module.shutil, "copy2", fail_during_install)
+    monkeypatch.setattr(QMessageBox, "warning", lambda *_args: None)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog._remember_file_transfer("copy", (first, second))
+    dialog.set_directory(destination_directory)
+    dialog._paste_file_transfer()
+
+    assert not (destination_directory / first.name).exists()
+    assert not (destination_directory / second.name).exists()
+    assert first.read_bytes() == b"first"
+    assert second.read_bytes() == b"second"
+    dialog.reject()
+
+
+def test_transfer_rollback_preserves_destination_created_during_install(
+    qtbot, tmp_path, monkeypatch
+):
+    import inksim.gui.open_dialog as open_dialog_module
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"new first")
+    second.write_bytes(b"new second")
+    first_target = destination_directory / first.name
+    second_target = destination_directory / second.name
+    first_target.write_bytes(b"old first")
+    second_target.write_bytes(b"old second")
+
+    original_install = open_dialog_module._install_staged_file
+
+    def fail_install(staged, target):
+        if staged.parent.name == "install":
+            assert target == first_target
+            second_target.write_bytes(b"created during transfer")
+            raise OSError("simulated install failure")
+        original_install(staged, target)
+
+    monkeypatch.setattr("inksim.gui.open_dialog._install_staged_file", fail_install)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog.set_directory(destination_directory)
+    plan = [(first, first_target), (second, second_target)]
+    approved_conflicts = {
+        target: dialog._transfer_path_signature(target) for target in (first_target, second_target)
+    }
+
+    with pytest.raises(
+        open_dialog_module._FileTransferRollbackError, match="rollback was incomplete"
+    ):
+        dialog._execute_file_transfer("copy", plan, approved_conflicts)
+
+    assert first_target.read_bytes() == b"old first"
+    assert second_target.read_bytes() == b"created during transfer"
+    staging_roots = list(destination_directory.glob(".inksim-transfer-*"))
+    assert len(staging_roots) == 1
+    backup = staging_roots[0] / "backups" / f"1-{second_target.name}"
+    assert backup.read_bytes() == b"old second"
+    dialog.reject()
+
+
+def test_transfer_rollback_preserves_replacement_of_installed_target(qtbot, tmp_path, monkeypatch):
+    import os
+
+    import inksim.gui.open_dialog as open_dialog_module
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"new first")
+    second.write_bytes(b"new second")
+    first_target = destination_directory / first.name
+    replacement = destination_directory / "external-file"
+    replacement.write_bytes(b"external replacement")
+
+    original_install = open_dialog_module._install_staged_file
+
+    def replace_after_install(staged, target):
+        identity = original_install(staged, target)
+        if target == first_target:
+            os.replace(replacement, target)
+            return identity
+        raise OSError("simulated install failure")
+
+    monkeypatch.setattr("inksim.gui.open_dialog._install_staged_file", replace_after_install)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    plan = [(first, first_target), (second, destination_directory / second.name)]
+
+    with pytest.raises(
+        open_dialog_module._FileTransferRollbackError, match="rollback was incomplete"
+    ):
+        dialog._execute_file_transfer("copy", plan, {})
+
+    assert first_target.read_bytes() == b"external replacement"
+    dialog.reject()
+
+
+def test_enter_opens_folders_and_arrows_stay_in_the_list(qtbot, tmp_path, monkeypatch):
+    """Enter activates the current row, so the arrows can move between icons."""
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QListView
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    subdirectory = tmp_path / "designs"
+    subdirectory.mkdir()
+    (subdirectory / "nested.svg").write_text(_SVG, encoding="utf-8")
+    for index in range(4):
+        (tmp_path / f"design{index}.pes").write_bytes(
+            (Path(__file__).parent / "data" / "sample.pes").read_bytes()
+        )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    dialog.view_combo.setCurrentIndex(
+        [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())].index("icons")
+    )
+    assert dialog.file_list.viewMode() == QListView.ViewMode.IconMode
+    dialog.file_list.setCurrentRow(1)
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Right)
+    assert dialog.file_list.currentRow() == 2
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Left)
+    assert dialog.file_list.currentRow() == 1
+    assert dialog.current_directory == tmp_path
+
+    def row_for(name: str) -> int:
+        for row in range(dialog.file_list.count()):
+            item = dialog.file_list.item(row)
+            if Path(item.data(Qt.ItemDataRole.UserRole)).name == name:
+                return row
+        raise AssertionError(name)
+
+    dialog.file_list.setCurrentRow(row_for("designs"))
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Return)
+    assert dialog.current_directory == subdirectory
+
+    parent_row = next(
+        row
+        for row in range(dialog.file_list.count())
+        if Path(dialog.file_list.item(row).data(Qt.ItemDataRole.UserRole)) == tmp_path
+    )
+    dialog.file_list.setCurrentRow(parent_row)
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Return)
+    assert dialog.current_directory == tmp_path
+    current = dialog.file_list.currentItem()
+    assert Path(current.data(Qt.ItemDataRole.UserRole)).name == "designs"
+    dialog.reject()
+
+
+def test_path_editor_navigates_to_typed_directory(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import Qt
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    target = tmp_path / "custom location"
+    target.mkdir()
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    assert not hasattr(dialog, "directory_combo")
+    dialog.edit_path_button.click()
+    assert dialog.path_stack.currentWidget() is dialog.path_editor_page
+    dialog.path_entry.setText(str(target))
+    qtbot.keyClick(dialog.path_entry, Qt.Key.Key_Return)
+    assert dialog.current_directory == target
+    assert dialog.path_stack.currentWidget() is dialog.breadcrumb_scroll
+
+    dialog.edit_path_button.click()
+    dialog.path_entry.setText(str(tmp_path / "missing"))
+    dialog.path_go_button.click()
+    assert dialog.current_directory == target
+    assert dialog.path_stack.currentWidget() is dialog.path_editor_page
+    dialog.edit_path_button.click()
+    assert dialog.path_stack.currentWidget() is dialog.breadcrumb_scroll
+    dialog.reject()
+
+
+def test_places_breadcrumbs_and_favorite_directories(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QPushButton
+
+    from inksim.config import Config
+
+    favorite = tmp_path / "favorite"
+    favorite.mkdir()
+    nested = favorite / "nested"
+    nested.mkdir()
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+
+    launch_directory = Path.cwd().resolve()
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    launch_place = next(
+        dialog.places_list.item(index)
+        for index in range(dialog.places_list.count())
+        if dialog.places_list.item(index).data(Qt.ItemDataRole.UserRole) == str(launch_directory)
+    )
+    assert launch_place.text() == launch_directory.name or launch_place.text() == str(
+        launch_directory
+    )
+    dialog.show()
+    dialog.set_directory(nested)
+    qtbot.wait(10)
+    assert any(
+        dialog.places_list.item(index).data(Qt.ItemDataRole.UserRole) == str(launch_directory)
+        and dialog.places_list.item(index).text() == launch_place.text()
+        for index in range(dialog.places_list.count())
+    )
+
+    buttons = {
+        button.text(): button for button in dialog.breadcrumb_widget.findChildren(QPushButton)
+    }
+    breadcrumb = buttons["favorite"]
+    assert buttons["favorite"].width() > buttons["nested"].width()
+    breadcrumb.click()
+    assert dialog.current_directory == favorite
+
+    dialog.set_directory(nested)
+    dialog.add_favorite_button.click()
+    assert config.get("favorite_directories") == [str(nested)]
+    favorite_item = next(
+        item
+        for index in range(dialog.places_list.count())
+        if (item := dialog.places_list.item(index)).data(Qt.ItemDataRole.UserRole + 1)
+    )
+    dialog.places_list.setCurrentItem(favorite_item)
+    assert dialog.current_directory == nested
+    dialog.remove_favorite_button.click()
+    assert config.get("favorite_directories") == []
+    assert dialog.remove_favorite_button.isEnabled() is False
+    dialog.reject()
+
+
+def test_clicking_selected_place_navigates_back_to_it(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import Qt
+
+    from inksim.config import Config
+
+    favorite = tmp_path / "favorite"
+    favorite.mkdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    config = Config(tmp_path / "config.toml")
+    config.set("favorite_directories", [str(favorite)])
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    favorite_item = next(
+        dialog.places_list.item(index)
+        for index in range(dialog.places_list.count())
+        if dialog.places_list.item(index).data(Qt.ItemDataRole.UserRole + 1)
+    )
+
+    dialog.places_list.setCurrentItem(favorite_item)
+    assert dialog.current_directory == favorite
+    dialog.set_directory(elsewhere)
+    assert dialog.current_directory == elsewhere
+    qtbot.mouseClick(
+        dialog.places_list.viewport(),
+        Qt.MouseButton.LeftButton,
+        pos=dialog.places_list.visualItemRect(favorite_item).center(),
+    )
+    assert dialog.current_directory == favorite
+    dialog.reject()
+
+
+def test_embroidery_preview_waits_for_selection_to_settle(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    for name in ("first.pes", "second.pes", "third.pes"):
+        (tmp_path / name).touch()
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    loaded_paths = []
+    monkeypatch.setattr(
+        dialog.preview,
+        "load_design",
+        lambda path, **_kwargs: loaded_paths.append(path) or True,
+    )
+    dialog.show()
+
+    _select_file(dialog, "second.pes")
+    _select_file(dialog, "third.pes")
+    qtbot.wait(100)
+    assert loaded_paths == []
+    qtbot.waitUntil(lambda: len(loaded_paths) == 1)
+    assert loaded_paths == [str(tmp_path / "third.pes")]
+    dialog.reject()
+
+
+def test_invalid_embroidery_preview_shows_message(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    bad_json = tmp_path / "not_embroidery.json"
+    bad_json.write_text('{"foo": "bar"}', encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, bad_json.name)
+
+    qtbot.waitUntil(
+        lambda: dialog.preview_stack.currentWidget() == dialog.message_page,
+        timeout=5000,
+    )
+    assert "Not a valid embroidery file" in dialog.message_label.text()
+    dialog.reject()
+
+
+def test_stitchblock_svg_is_opened_as_embroidery(qtbot, tmp_path, monkeypatch):
+    from inksim.gui.open_dialog import KIND_EMBROIDERY
+
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape=None, inkstitch=None),
+    )
+    sample_svg = Path(__file__).parent / "data" / "sample_svg.svg"
+    svg_path = tmp_path / sample_svg.name
+    svg_path.write_bytes(sample_svg.read_bytes())
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, svg_path.name)
+
+    assert dialog._kind_for_path(svg_path) == KIND_EMBROIDERY
+    qtbot.waitUntil(lambda: dialog._preview_loaded, timeout=5000)
+    assert "Embroidery" in dialog.details_label.text()
+    assert dialog.open_button.isEnabled()
+
+    dialog.open_button.click()
+    assert dialog.result_action == "open"
+    assert dialog.selected_path == svg_path
+
+
+def test_stitchblock_svg_can_be_edited_in_inkscape(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape="/usr/bin/inkscape", inkstitch=None),
+    )
+    monkeypatch.setattr("inksim.gui.open_dialog.clean_child_environment", lambda: {})
+    launched = []
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.subprocess.Popen",
+        lambda *args, **kwargs: launched.append((args, kwargs)),
+    )
+    sample_svg = Path(__file__).parent / "data" / "sample_svg.svg"
+    svg_path = tmp_path / sample_svg.name
+    svg_path.write_bytes(sample_svg.read_bytes())
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, svg_path.name)
+    qtbot.waitUntil(lambda: dialog._preview_loaded, timeout=5000)
+
+    assert dialog.edit_button.isEnabled()
+    dialog.edit_button.click()
+
+    assert dialog.result_action == "edit"
+    assert dialog.document_path == svg_path
+    assert len(launched) == 1
+    arguments = launched[0][0][0]
+    assert arguments[0] == "/usr/bin/inkscape"
+    assert arguments[-1] == str(svg_path)
+    assert any(argument.startswith("--app-id-tag=inksim-") for argument in arguments)
+
+
+def test_filter_limits_files_to_svg(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    (tmp_path / "design.svg").write_text(_SVG, encoding="utf-8")
+    (tmp_path / "notes.pes").write_bytes(b"not a real design")
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    index = dialog.filter_combo.findData("svg")
+    assert index >= 0
+    dialog.filter_combo.setCurrentIndex(index)
+    qtbot.wait(30)
+
+    labels = [
+        dialog.file_list.item(row).text().rstrip("/") for row in range(dialog.file_list.count())
+    ]
+    assert labels == ["..", "design.svg"]
+    dialog.reject()
+
+
+def test_svg_preview_is_disabled_without_inkscape(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape=None, inkstitch=None),
+    )
+    (tmp_path / "design.svg").write_text(_SVG, encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path, tmp_path / "design.svg")
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(50)
+    _select_file(dialog, "design.svg")
+
+    assert not dialog.open_button.isEnabled()
+    assert not dialog.edit_button.isEnabled()
+    assert "Inkscape" in dialog.status_label.text()
+    assert dialog.svg_caption.text()
+    dialog.reject()
+
+
+def test_svg_edit_is_enabled_with_inkscape_without_active_inkstitch(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape="/usr/bin/inkscape"),
+    )
+    (tmp_path / "design.svg").write_text(_SVG, encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path, tmp_path / "design.svg")
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(50)
+    _select_file(dialog, "design.svg")
+
+    assert not dialog.open_button.isEnabled()
+    assert dialog.edit_button.isEnabled()
+    assert "/usr/bin/inkscape" in dialog.status_label.text()
+    dialog.reject()
+
+
+def test_svg_preview_preserves_content_aspect_and_can_be_zoomed(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    svg_path = tmp_path / "sparse.svg"
+    svg_path.write_text(
+        """<svg xmlns="http://www.w3.org/2000/svg" width="300" height="100"
+             viewBox="0 0 300 100">
+          <rect x="10" y="10" width="40" height="40" fill="#d04a4a"/>
+        </svg>""",
+        encoding="utf-8",
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(50)
+    _select_file(dialog, "sparse.svg")
+
+    assert dialog._svg_source is not None
+    assert dialog._svg_source.width() == dialog._svg_source.height()
+    assert dialog.fit_button.isEnabled()
+    dialog.zoom_in_button.click()
+    assert dialog.svg_preview.zoom > 1.0
+    dialog.zoom_out_button.click()
+    assert dialog.svg_preview.zoom == 1.0
+    dialog.zoom_in_button.click()
+    dialog.fit_button.click()
+    assert dialog.svg_preview.zoom == 1.0
+
+    dialog.reject()
+
+
+def test_svg_preview_mouse_wheel_zoom_and_drag_pan(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import QPoint, QPointF, Qt
+    from PySide6.QtGui import QMouseEvent, QWheelEvent
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    svg_path = tmp_path / "design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(50)
+    _select_file(dialog, "design.svg")
+    canvas = dialog.svg_preview
+    assert canvas.zoom == 1.0
+
+    wheel_event = QWheelEvent(
+        QPoint(100, 100),
+        QPoint(100, 100),
+        QPoint(0, 0),
+        QPoint(0, 120),
+        Qt.NoButton,
+        Qt.NoModifier,
+        Qt.ScrollPhase.ScrollUpdate,
+        False,
+    )
+    canvas.wheelEvent(wheel_event)
+    assert canvas.zoom > 1.0
+
+    start_pan = canvas.pan
+
+    def mouse_event(event_type, x, y, button, buttons):
+        local_position = QPointF(x, y)
+        global_position = QPointF(canvas.mapToGlobal(QPoint(x, y)))
+        return QMouseEvent(
+            event_type,
+            local_position,
+            local_position,
+            global_position,
+            button,
+            buttons,
+            Qt.KeyboardModifier.NoModifier,
+        )
+
+    canvas.mousePressEvent(
+        mouse_event(
+            QMouseEvent.Type.MouseButtonPress,
+            100,
+            100,
+            Qt.MouseButton.LeftButton,
+            Qt.MouseButton.LeftButton,
+        )
+    )
+    canvas.mouseMoveEvent(
+        mouse_event(
+            QMouseEvent.Type.MouseMove,
+            120,
+            130,
+            Qt.MouseButton.NoButton,
+            Qt.MouseButton.LeftButton,
+        )
+    )
+    canvas.mouseReleaseEvent(
+        mouse_event(
+            QMouseEvent.Type.MouseButtonRelease,
+            120,
+            130,
+            Qt.MouseButton.LeftButton,
+            Qt.MouseButton.NoButton,
+        )
+    )
+    assert abs(canvas.pan.x() - (start_pan.x() + 20)) < 1e-6
+    assert abs(canvas.pan.y() - (start_pan.y() + 30)) < 1e-6
+
+    dialog.fit_button.click()
+    assert canvas.zoom == 1.0
+    assert canvas.pan == QPointF()
+    dialog.reject()
+
+
+def test_shows_cached_inkstitch_extension_without_starting_a_probe(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    inkscape = tmp_path / "inkscape"
+    inkscape.touch()
+    extension_script = tmp_path / "extensions" / "inkstitch" / "inkstitch.py"
+    extension_script.parent.mkdir(parents=True)
+    extension_script.touch()
+    config_path = tmp_path / "config.toml"
+    config = Config(config_path)
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": str(inkscape.resolve()),
+            "status": "found",
+            "inkstitch": [
+                {"extension_dir": str(extension_script.parent.resolve())},
+                {"extension_dir": str(tmp_path / "extensions" / "inkstitch-other")},
+            ],
+            "active_inkstitch": str(extension_script.parent.resolve()),
+        },
+    )
+    dialog_config = Config(config_path)
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: dialog_config)
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape=str(inkscape)),
+    )
+
+    def unexpected_probe(*args, **kwargs):
+        raise AssertionError("Opening the dialog must not start an Inkscape probe.")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.QProcess", unexpected_probe)
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    assert (
+        f"Ink/Stitch extension: {extension_script.parent.resolve()}" in dialog.status_label.text()
+    )
+    assert str(tmp_path / "extensions" / "inkstitch-other") not in dialog.status_label.text()
+    assert "PATH" not in dialog.status_label.text()
+
+    class FakeIntegrationDialog:
+        def __init__(self, parent, executable):
+            pass
+
+        def exec(self):
+            config.set(
+                INKSCAPE_CONFIG_KEY,
+                {"executable": str(inkscape.resolve()), "status": "not_found", "inkstitch": []},
+            )
+
+    monkeypatch.setattr("inksim.gui.open_dialog.InkscapeIntegrationDialog", FakeIntegrationDialog)
+    dialog.tools_button.click()
+    assert "not found in Inkscape" in dialog.status_label.text()
+    dialog.reject()
+
+
+def test_cached_inkstitch_extension_is_used_for_a_launcher_with_arguments(
+    qtbot, tmp_path, monkeypatch
+):
+    """A saved command line such as "flatpak run ..." still matches the cached status."""
+    from inksim.config import Config
+
+    extension_script = tmp_path / "extensions" / "inkstitch" / "inkstitch.py"
+    extension_script.parent.mkdir(parents=True)
+    extension_script.touch()
+    command = "flatpak run org.inkscape.Inkscape"
+    config = Config(tmp_path / "config.toml")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": command,
+            "status": "found",
+            "inkstitch": [{"extension_dir": str(extension_script.parent.resolve())}],
+            "active_inkstitch": str(extension_script.parent.resolve()),
+        },
+    )
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape=command),
+    )
+
+    def unexpected_probe(*args, **kwargs):
+        raise AssertionError("Opening the dialog must not start an Inkscape probe.")
+
+    monkeypatch.setattr("inksim.gui.open_dialog.QProcess", unexpected_probe)
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(30)
+
+    assert (
+        f"Ink/Stitch extension: {extension_script.parent.resolve()}" in dialog.status_label.text()
+    )
+    dialog.reject()
+
+
+def test_open_dialog_prefers_saved_inkscape_over_path_detection(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    selected = str(tmp_path / "selected-inkscape.exe")
+    config = Config(tmp_path / "config.toml")
+    config.set(INKSCAPE_CONFIG_KEY, {"executable": selected})
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape="C:/ProgramData/chocolatey/inkscape.exe"),
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+
+    assert dialog.tool_status.inkscape.path == selected
+    dialog.reject()
+
+
+def test_preview_runs_active_inkstitch_directly_and_saves_output_streams(
+    qtbot, tmp_path, monkeypatch
+):
+    from inksim.config import Config
+
+    script = tmp_path / "extensions" / "inkstitch" / "inkstitch.py"
+    script.parent.mkdir(parents=True)
+    script.write_text(
+        "import json, os, sys, time\n"
+        "time.sleep(0.2)\n"
+        "sys.stdout.write('csv-data')\n"
+        "details = {\n"
+        "    'arguments': sys.argv[1:],\n"
+        "    'cwd': os.getcwd(),\n"
+        "    'environment': {key: os.environ.get(key) for key in (\n"
+        "        'INKSTITCH_OFFLINE_SCRIPT', 'INKEX_GETTEXT_DOMAIN',\n"
+        "        'INKEX_GETTEXT_DIRECTORY', 'INKSCAPE_PROFILE_DIR',\n"
+        "        'DOCUMENT_PATH', 'PYTHONPATH',\n"
+        "    )},\n"
+        "}\n"
+        "target = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'details.json')\n"
+        "with open(target, 'w', encoding='utf-8') as handle:\n"
+        "    json.dump(details, handle)\n",
+        encoding="utf-8",
+    )
+    inx_directory = script.parent / "inx"
+    inx_directory.mkdir()
+    locale_directory = inx_directory / "locale"
+    locale_directory.mkdir()
+    profile_directory = tmp_path / "inkscape-profile"
+    profile_directory.mkdir()
+    preferences_file = profile_directory / "preferences.xml"
+    svg_path = tmp_path / "input design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+    config_path = tmp_path / "config.toml"
+    config = Config(config_path)
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "status": "found",
+            "active_inkstitch": str(inx_directory),
+            "preferences_file": str(preferences_file),
+            "inkstitch": [
+                {
+                    "extension_dir": str(inx_directory),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                    "interpreter": "python",
+                }
+            ],
+            "python-interpretor": sys.executable,
+        },
+    )
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: Config(config_path))
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, svg_path.name)
+
+    assert dialog.open_button.isEnabled()
+    dialog.open_button.click()
+
+    assert dialog.progress.isVisible()
+    assert dialog.progress.value() == 0
+    assert dialog.progress.maximum() == 100
+    assert dialog.activity_label.isVisible()
+    qtbot.waitUntil(lambda: dialog.result_action == "preview", timeout=5000)
+    assert dialog.progress.value() == 100
+    csv_path = dialog.preview_csv_path
+    assert csv_path is not None
+    assert csv_path.name.startswith("inksim-preview-")
+    assert csv_path.suffix == ".csv"
+    assert csv_path.read_text(encoding="utf-8") == "csv-data"
+    assert not (tmp_path / "output.csv").exists()
+    process_details = json.loads((script.parent / "details.json").read_text(encoding="utf-8"))
+    assert process_details == {
+        "arguments": [
+            "--extension=output",
+            "--format=csv",
+            "--skip_palette=true",
+            str(svg_path),
+        ],
+        "cwd": str(script.parent),
+        "environment": {
+            "INKSTITCH_OFFLINE_SCRIPT": "True",
+            "INKEX_GETTEXT_DOMAIN": "inkstitch",
+            "INKEX_GETTEXT_DIRECTORY": str(locale_directory),
+            "INKSCAPE_PROFILE_DIR": str(profile_directory),
+            "DOCUMENT_PATH": "",
+            "PYTHONPATH": None,
+        },
+    }
+    assert not (tmp_path / "output.err").exists()
+    assert not list(tmp_path.glob("*.inksim.log"))
+    csv_path.unlink()
+
+
+def test_failed_preview_keeps_log_next_to_the_source_file(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    script = tmp_path / "extensions" / "inkstitch" / "inkstitch.py"
+    script.parent.mkdir(parents=True)
+    script.write_text(
+        "import sys\nsys.stderr.write('Traceback: satin column is empty\\n')\nsys.exit(2)\n",
+        encoding="utf-8",
+    )
+    inx_directory = script.parent / "inx"
+    inx_directory.mkdir()
+    svg_path = tmp_path / "input design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+    config_path = tmp_path / "config.toml"
+    config = Config(config_path)
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "status": "found",
+            "active_inkstitch": str(inx_directory),
+            "inkstitch": [
+                {
+                    "extension_dir": str(inx_directory),
+                    "command": "../inkstitch.py",
+                    "location": "inx",
+                    "interpreter": "python",
+                }
+            ],
+            "python-interpretor": sys.executable,
+        },
+    )
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: Config(config_path))
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    warnings: list[str] = []
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.QMessageBox.warning",
+        lambda _parent, _title, message: warnings.append(message),
+    )
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    _select_file(dialog, svg_path.name)
+    dialog.open_button.click()
+
+    qtbot.waitUntil(lambda: bool(warnings), timeout=5000)
+    log_path = tmp_path / "input design.svg.inksim.log"
+    assert log_path.is_file()
+    assert "satin column is empty" in log_path.read_text(encoding="utf-8")
+    assert log_path.name in warnings[0]
+    assert dialog.result_action != "preview"
+    assert not (tmp_path / "output.err").exists()
+
+
+def test_svg_preview_progress_uses_bounded_average_and_records_runs(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    assert dialog._get_conversion_estimate() == 10.0
+    assert dialog.progress.minimum() == 0
+    assert dialog.progress.maximum() == 100
+
+    config.set("svg_preview_timing", {"total_seconds": 8.0, "count": 1})
+    assert dialog._get_conversion_estimate() == 10.0
+    config.set("svg_preview_timing", {"total_seconds": 200.0, "count": 2})
+    dialog._conversion_estimate_seconds = dialog._get_conversion_estimate()
+    assert dialog._conversion_estimate_seconds == 60.0
+
+    monkeypatch.setattr("inksim.gui.open_dialog.time.monotonic", lambda: 200.0)
+    dialog._conversion_started_at = 100.0
+    dialog._update_conversion_progress()
+    assert dialog.progress.value() == 99
+
+    monkeypatch.setattr("inksim.gui.open_dialog.time.monotonic", lambda: 112.0)
+    dialog._conversion_started_at = 100.0
+    dialog._record_conversion_duration()
+    assert config.get("svg_preview_timing") == {"total_seconds": 212.0, "count": 3}
+    assert dialog._get_conversion_estimate() == 60.0
+    dialog.reject()
+
+
+def test_temporary_preview_input_is_removed_on_replacement_or_close(qtbot, tmp_path, monkeypatch):
+    import numpy as np
+
+    from inksim.gui.frame import MainWindow
+
+    first_path = tmp_path / "first.csv"
+    second_path = tmp_path / "second.csv"
+    failed_path = tmp_path / "failed.csv"
+    for path in (first_path, second_path, failed_path):
+        path.write_text("csv-data", encoding="utf-8")
+
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    monkeypatch.setattr(window.viewer, "load_design", lambda *args, **kwargs: True)
+    monkeypatch.setattr(window.viewer, "stitches_np", np.empty((0, 2)), raising=False)
+    monkeypatch.setattr(window.viewer, "invalidate_cache", lambda: None)
+    monkeypatch.setattr(window.viewer, "update", lambda: None)
+    monkeypatch.setattr(window, "_design_size_text", lambda: "0 x 0")
+    monkeypatch.setattr(window, "refresh_command_panel", lambda: None)
+
+    assert window.open_file(first_path, temporary_input=True)
+    assert window._temporary_input_path == first_path.resolve()
+    assert window.open_file(second_path, temporary_input=True)
+    assert not first_path.exists()
+    assert second_path.exists()
+
+    monkeypatch.setattr(window.viewer, "load_design", lambda *args, **kwargs: False)
+    assert not window.open_file(failed_path, temporary_input=True)
+    assert not failed_path.exists()
+    assert second_path.exists()
+
+    window.close()
+    assert not second_path.exists()
+
+
+def test_temporary_preview_input_survives_language_restart(qtbot, tmp_path):
+    from inksim.gui.frame import MainWindow
+
+    input_path = tmp_path / "preview.csv"
+    input_path.write_text("csv-data", encoding="utf-8")
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    window.current_file_path = input_path.resolve()
+    window._temporary_input_path = input_path.resolve()
+    restart_arguments = []
+    window.restart_requested.connect(restart_arguments.append)
+
+    window._apply_language_change()
+
+    assert restart_arguments == [["--temporary-input", str(input_path.resolve())]]
+    window.close()
+    assert input_path.exists()
+    input_path.unlink()
+
+
+def test_edit_in_inkscape_launches_tagged_process(qtbot, tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        "inksim.gui.open_dialog.detect_tools",
+        lambda: _tool_status(inkscape="/usr/bin/inkscape"),
+    )
+    calls = []
+
+    def fake_popen(args, **kwargs):
+        calls.append((args, kwargs))
+        return object()
+
+    monkeypatch.setattr("inksim.gui.open_dialog.subprocess.Popen", fake_popen)
+    svg_path = tmp_path / "design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+
+    dialog = OpenBrowserDialog(None, tmp_path, svg_path)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.wait(50)
+    _select_file(dialog, "design.svg")
+    dialog._edit_in_inkscape()
+
+    assert calls
+    args, _kwargs = calls[0]
+    assert args[0] == "/usr/bin/inkscape"
+    assert any(str(arg).startswith("--app-id-tag=inksim-") for arg in args)
+    assert str(svg_path) in args
+    assert dialog.result_action == "edit"
+
+
+def test_open_embroidery_accepts_selected_file(qtbot, sample_design, monkeypatch):
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+
+    dialog = OpenBrowserDialog(None, sample_design.parent, sample_design)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    qtbot.waitUntil(lambda: dialog._preview_loaded, timeout=10000)
+    assert dialog.fit_button.isEnabled()
+    # Fit explicitly so the captured zoom does not race a pending deferred fit.
+    dialog.fit_button.click()
+    fit_zoom = dialog.preview.zoom
+    dialog.zoom_in_button.click()
+    assert dialog.preview.zoom > fit_zoom
+    dialog.fit_button.click()
+    qtbot.waitUntil(lambda: abs(dialog.preview.zoom - fit_zoom) < 0.001, timeout=10000)
+    assert abs(dialog.preview.zoom - fit_zoom) < 0.001
+    dialog.open_button.click()
+
+    assert dialog.selected_path == sample_design.resolve()
+    assert dialog.result_action == "open"
+
+
+def test_enter_opens_the_selected_design(qtbot, sample_design, monkeypatch):
+    from PySide6.QtCore import Qt
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+
+    dialog = OpenBrowserDialog(None, sample_design.parent, sample_design)
+    qtbot.addWidget(dialog)
+    dialog.show()
+
+    for _ in range(20):
+        qtbot.wait(50)
+        if dialog._preview_loaded:
+            break
+    assert dialog._preview_loaded
+
+    qtbot.keyClick(dialog.file_list, Qt.Key.Key_Return)
+
+    assert dialog.selected_path == sample_design.resolve()
+    assert dialog.result_action == "open"
+
+
+def test_svg_drop_opens_new_browser(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import QMimeData, Qt, QUrl
+    from PySide6.QtGui import QDropEvent
+
+    from inksim.gui.frame import MainWindow
+
+    svg_path = tmp_path / "design.svg"
+    svg_path.write_text(_SVG, encoding="utf-8")
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    calls = []
+    open_calls = []
+    monkeypatch.setattr(
+        window,
+        "open_file",
+        lambda path, show_error_dialog=True: (
+            open_calls.append((Path(path), show_error_dialog)) or False
+        ),
+    )
+
+    class RecordingBrowserDialog:
+        def __init__(self, parent, initial_directory, selected_file=None, recent_directories=None):
+            calls.append((Path(initial_directory), Path(selected_file)))
+
+        def exec(self):
+            return 0
+
+    monkeypatch.setattr("inksim.gui.frame.OpenBrowserDialog", RecordingBrowserDialog)
+    mime_data = QMimeData()
+    mime_data.setUrls([QUrl.fromLocalFile(str(svg_path))])
+    drop_event = QDropEvent(
+        window.rect().center().toPointF(),
+        Qt.CopyAction,
+        mime_data,
+        Qt.LeftButton,
+        Qt.NoModifier,
+    )
+
+    window.dropEvent(drop_event)
+
+    assert calls == [(tmp_path, svg_path)]
+    assert open_calls == [(svg_path, False)]
+    window.close()
+
+
+def test_directory_drop_opens_browser_in_dropped_directory(qtbot, tmp_path, monkeypatch):
+    from PySide6.QtCore import QMimeData, Qt, QUrl
+    from PySide6.QtGui import QDropEvent
+
+    from inksim.gui.frame import MainWindow
+
+    dropped_directory = tmp_path / "designs"
+    dropped_directory.mkdir()
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    calls = []
+    monkeypatch.setattr(
+        window,
+        "open_browser_dialog",
+        lambda checked=False, selected_file=None, initial_directory=None: calls.append(
+            (selected_file, Path(initial_directory))
+        ),
+    )
+
+    mime_data = QMimeData()
+    mime_data.setUrls([QUrl.fromLocalFile(str(dropped_directory))])
+    drop_event = QDropEvent(
+        window.rect().center().toPointF(),
+        Qt.CopyAction,
+        mime_data,
+        Qt.LeftButton,
+        Qt.NoModifier,
+    )
+
+    window.dropEvent(drop_event)
+
+    assert calls == [(None, dropped_directory)]
+    window.close()
+
+
+def test_open_dialog_preselects_the_source_of_a_temporary_preview(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    design = tmp_path / "design.svg"
+    design.write_text("<svg />", encoding="utf-8")
+    temporary_csv = tmp_path / "inksim-preview-123.csv"
+
+    assert window._browser_initial_file() is None
+
+    window.current_file_path = design
+    assert window._browser_initial_file() == design
+    assert window._browser_initial_file("other.pes") == Path("other.pes")
+
+    window.set_document_path(design)
+    window.current_file_path = temporary_csv
+    window._temporary_input_path = temporary_csv
+    assert window._browser_initial_file() == design
+
+    window.close()
+
+
+def test_reload_keeps_the_source_association_but_replacement_drops_it(qtbot, tmp_path, monkeypatch):
+    """A reload of the same design keeps its source; another file replaces it."""
+    from inksim.gui.frame import MainWindow
+
+    monkeypatch.setattr(MainWindow, "_maybe_auto_check_updates", lambda self: None)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    monkeypatch.setattr(window.viewer, "load_design", lambda *args, **kwargs: True)
+    source = tmp_path / "design.svg"
+    source.write_text("<svg />", encoding="utf-8")
+    design = tmp_path / "design.pes"
+    design.write_bytes(b"")
+    replacement = tmp_path / "other.pes"
+    replacement.write_bytes(b"")
+
+    window.set_document_path(source)
+    window._is_reloading_from_disk = True
+    try:
+        assert window.open_file(str(design), precompute_density=False)
+    finally:
+        window._is_reloading_from_disk = False
+    assert window.document_path == source
+
+    assert window.open_file(str(replacement), precompute_density=False)
+    assert window.document_path is None
+    window.close()
+
+
+def test_open_dialog_preselects_the_last_opened_file_after_a_restart(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    config_path = tmp_path / "config.toml"
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: Config(config_path))
+    design = tmp_path / "design.pes"
+    design.write_bytes(b"")
+    first = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(first)
+    first._remember_last_file(design)
+    first.close()
+
+    restored = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(restored)
+
+    assert restored.last_directory == str(tmp_path)
+    assert restored._browser_initial_file() == design
+    assert Config(config_path).get("last_file")
+    restored.close()
+
+
+def test_debug_script_marks_the_window_until_another_file_is_opened(
+    qtbot, tmp_path, monkeypatch, sample_design
+):
+    from inksim.config import Config
+    from inksim.gui.frame import MainWindow
+
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: Config(tmp_path / "config.toml"))
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+    script = tmp_path / "debug_inksim.sh"
+
+    window.set_debug_script(script)
+
+    assert window.windowTitle().startswith("[debug] ")
+
+    assert window.open_file(sample_design)
+    assert "[debug]" not in window.windowTitle()
+
+    window.set_debug_script(script)
+    window.set_debug_script(None)
+    assert "[debug]" not in window.windowTitle()
+    window.close()

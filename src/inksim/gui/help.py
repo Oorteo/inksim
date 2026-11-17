@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import io
+import json
 import re
 from typing import TYPE_CHECKING
 
@@ -29,6 +30,13 @@ HELP_SECTIONS = (
 | Double-click design | Seek to visible stitch |
 | W / A / S / D | Pan up / left / down / right |
 | Click timeline | Seek stitch |
+| Ctrl + Wheel over timeline | Zoom around pointer |
+| Shift + Wheel over timeline | Pan timeline range |
+| Wheel over upper timeline | Adjust waveform scale |
+| Drag BG gradient | Change waveform background |
+| Wheel over BG gradient | Adjust waveform background |
+| Drag overview range | Pan zoomed timeline |
+| − / + / All | Zoom or show full timeline |
 """,
     ),
     (
@@ -102,15 +110,20 @@ def show_help(viewer: EmbroideryViewerWidget) -> None:
     )
 
 
-def show_command_line_help(parent: QWidget) -> None:
-    """Show a read-only dialog with the inksim command-line help text."""
-    from ..cli import build_argument_parser
+def _command_line_help_text(command_line: list[str]) -> str:
+    from ..cli_parser import build_argument_parser
 
     parser = build_argument_parser()
     help_stream = io.StringIO()
     parser.print_help(help_stream)
-    help_text = _ANSI_ESCAPE.sub("", help_stream.getvalue())
+    options_help = _ANSI_ESCAPE.sub("", help_stream.getvalue())
+    current_command = json.dumps(command_line, ensure_ascii=False)
+    separator = "-" * 80
+    return f"Current command line: {current_command}\n{separator}\n\n{options_help}"
 
+
+def show_command_line_help(parent: QWidget, command_line: list[str]) -> None:
+    """Show a read-only dialog with the inksim command-line help text."""
     dialog = QDialog(parent)
     dialog.setWindowTitle("Command line options - InkSim")
     dialog.resize(1200, 800)
@@ -118,7 +131,7 @@ def show_command_line_help(parent: QWidget) -> None:
     layout = QVBoxLayout(dialog)
     text_edit = QTextEdit(dialog)
     text_edit.setReadOnly(True)
-    text_edit.setPlainText(help_text)
+    text_edit.setPlainText(_command_line_help_text(command_line))
     text_edit.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
     layout.addWidget(text_edit)
 

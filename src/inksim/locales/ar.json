@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "تم ضبط اللغة على {language}. هل تريد إعادة تشغيل InkSim الآن لتطبيقها؟"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "تم تغيير اللغة. أغلق InkSim وأعد فتحه من Inkscape لتطبيق اللغة الجديدة."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "سيتم استخدام لغة النظام الافتراضية. هل تريد إعادة تشغيل InkSim الآن لتطبيقها؟"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "تم تغيير اللغة"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "سيتم إغلاق جميع نوافذ InkSim المفتوحة وإعادة فتح الملف الحالي."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "لون الإبرة"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "معاينة عادية"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "أضف إلى المواقع"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "رجوع"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "الرجوع إلى {folder} (Alt+Left)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "إلغاء"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "فشلت عملية معاينة الغرز: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "رمز خروج العملية: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "فشل تصدير CSV من Ink/Stitch."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "السجل الكامل: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "انتهت مهلة معاينة الغرز."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "جارٍ تصدير CSV من Ink/Stitch..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "نُسخت {count} من الملفات"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "نسخ الملفات"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "اكتب صورة PNG بحجم 256 بكسل بجانب كل تصميم محدد (design.pes.png).\nتحدد القائمة ما إذا كان سيُعاد إنشاء الملفات القديمة فقط أم كل الصور المصغرة."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "سطح المكتب"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "الألوان"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "الاسم"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "الحجم"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "الغرز"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "الأبعاد: {width:.1f} × {height:.1f} مم"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "المستندات"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "التنزيلات"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "افتح ملف SVG هذا في نافذة Inkscape جديدة."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "تحرير في Inkscape"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "تعديل المسار"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "لا توجد ملفات مدعومة في هذا المجلد."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "المفضلة"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "تعذّرت قراءة هذا الملف: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "عرض"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "كل الملفات المدعومة"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "بيانات الغرز CSV"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "تطريز"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "ملف SVG المصدر"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "ملاءمة"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "مجلد"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "انقر نقرًا مزدوجًا على المجلد لاستعراض ملفاته."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "اضغط Enter أو انقر نقرًا مزدوجًا على المجلد لاستعراض ملفاته."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "للأمام"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "الانتقال للأمام إلى {folder} (Alt+Right)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "انتقال"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "المجلد الرئيسي"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "تظليل خلفية الأيقونة ({level}، 0 = أسود، 255 = أبيض)\nغيّر التظليل باستخدام Shift مع عجلة الفأرة فوق القائمة."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "حجم الأيقونة ({size} بكسل)\nغيّر حجم الأيقونات باستخدام Ctrl مع عجلة الفأرة فوق القائمة."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "تعذّر تشغيل Inkscape: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "يلزم Inkscape لتحرير ملفات SVG."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "يلزم وجود تثبيت مُعَدّ لـ Ink/Stitch ومشغّل Python."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "هذا المجلد غير متاح."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "من: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "فتح مجلد المصدر"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "فتح مجلد المصدر {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "إلى: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "فتح مجلد الوجهة"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "فتح مجلد الوجهة {path}"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "آخر تعديل: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "نقل الملفات"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "نُقلت {count} من الملفات"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "ليس ملف تطريز صالحًا"
+        "translation": "ملف تطريز غير صالح"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "معاينة حقيقية"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "فتح"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "فتح ملف تطريز"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "افتح ملف التطريز المحدد."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "الألوان…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "حمّل ألوان الخيوط من ملف لوحة ألوان أو من تصميم آخر.\nتُحفظ بجانب هذا الملف باسم <name>.edr، لأن هذا التنسيق\nلا يخزّن الألوان بنفسه."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "هذا الملف يخزّن ألوان خيوطه بنفسه بالفعل."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "لصق الملفات"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "أدخل مسار مجلد أو الصقه"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "المواقع"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "معاينة"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "أنشئ بيانات الغرز من ملف SVG هذا باستخدام Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "تعذّر تشغيل سكربت Ink/Stitch النشط أو مشغّل Python المُعدّ له."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "تعذّرت قراءة هذا المجلد: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "الأخيرة:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— اختر مجلدًا —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "تحديث"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "تحديث هذا المجلد (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "إزالة من المفضلة"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "تدوير الصورة المصغرة 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "تدوير الصورة المصغرة لليسار"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "حدّد تصميمًا له صورة مصغرة لتدويرها"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "الاتجاه الأصلي"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "تدوير الصورة المصغرة لليمين"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "دُوّرت {count} من الصور المصغرة بمقدار {degrees}°"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "البحث عن ملفات"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "اختر ملفًا لفتحه."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "الحجم: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "أخفِ هذه الامتدادات في مربع الحوار.\nافصل بينها بعلامة |، وستُحفظ القائمة في config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "تخطي"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: غير موجود."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "امتداد Ink/Stitch: تعذّر التحقق. استخدم «أدوات...» لإعادة المحاولة."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "امتداد Ink/Stitch: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "امتداد Ink/Stitch: غير موجود في مجلدات امتدادات Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "امتداد Ink/Stitch: لا يمكن التحقق حتى يتم إعداد Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "امتداد Ink/Stitch: لم يتم التحقق بعد. استخدم «أدوات...» للتحقق."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "الغرز: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "ملف SVG المصدر. يلزم Inkscape لمعاينة الغرز."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "ملف SVG المصدر. اختر «معاينة» لإنشاء بيانات الغرز باستخدام Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "تعذّر عرض ملف SVG."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "ملف SVG هذا كبير جدًا لمعاينته هنا."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "تعذّر إنشاء ملف معاينة مؤقت: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "الصور المصغرة: أُنشئت {created}، محدّثة {skipped}، فشل {failed}"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "الصور المصغرة: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "أُعيد الاتجاه الأصلي لـ {count} من الصور المصغرة"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "جارٍ إنشاء الصور المصغرة…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "فتح ملف"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "أدوات..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "الملفات موجودة بالفعل"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "تعذّر نقل الملفات: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "فشل نقل الملفات"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "مسارات الوجهة التالية موجودة بالفعل، بما فيها مجلدات لا يمكن استبدالها بملفات. لم يُنقل أي شيء:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "تعذّر استبدال المجلدات"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} جاهز: {count} من الملفات"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "ملفات الوجهة التالية موجودة بالفعل:\n{files}\n\nهل تريد استبدالها كلها؟"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "هذه الملفات موجودة هنا بالفعل."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "بيانات الغرز CSV"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "مجلد"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "تطريز"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "غير مدعوم"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "ملف SVG المصدر"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "لا يمكن فتح هذا النوع من الملفات في InkSim."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "فتح المجلد الأب (Alt+Up)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "عرض"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "تفاصيل"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "أيقونات فقط"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "أيقونات ونص"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "تكبير"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "تصغير"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "اختر لوحة ألوان أو تصميمًا ملوّنًا"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "لا يحتوي {name} على ألوان خيوط."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "كل الملفات"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "ملفات التصميم (الألوان إن كانت مخزّنة)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "ملفات لوحات الألوان"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "هذا التصميم يخزّن ألوان خيوطه بنفسه بالفعل."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "يحتوي {name} بالفعل على ألوان لهذا التصميم.\nهل تريد استبدالها بـ {target}؟"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "تذكّر اختياري"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "لا يحتفظ تنسيق {format} بألوان الخيوط.\nهل تريد حفظها باسم {name} بجانب التصميم؟"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "ألوان الخيوط"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "يحتوي {name} على {available} من الألوان، بينما يحتوي التصميم على {blocks} من كتل الألوان.\nهل تريد استخدامه رغم ذلك؟ سيتكرر اللون الأخير."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "تعذّر حفظ الألوان: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "اختيار عارض الغرز"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "تغيير"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "تعذّر حفظ حالة امتداد Inkscape: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "غير متاح"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "ملف Inkscape التنفيذي أو سطر أوامر كامل، مثل \"flatpak run org.inkscape.Inkscape\". اضغط Enter للتحقق منه."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "إنشاء سكربت لتصحيح الأخطاء (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "تعذّر تغيير إعداد سكربت تصحيح الأخطاء."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "يكتب debug_inksim.sh بجانب المستند لإعادة تنفيذ استدعاء Inkscape."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "لم يُعثر على مجلدات امتدادات InkSim."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "تعذّر فحص مجلدات امتدادات InkSim."
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "تغيّر أمر المعاينة"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "الملفات المتغيرة: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "محدّث"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "التثبيت مطلوب"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "الحالة غير متاحة: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "التحديث مطلوب ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "إضافة النظام: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "امتداد المستخدم الحالي (هدف التثبيت/التحديث): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "إضافة مستخدم آخر: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "تغيّر رابط Ink/Stitch في مجلد امتدادات Inkscape منذ آخر إعداد:\n\n{details}\n\nيستخدم InkSim الرابط الحالي. افتح إعداد Inkscape لحفظه."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "المجلد غير موجود: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "يشير الآن إلى: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "تثبيت / تحديث امتدادات InkSim"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "بعض الملفات موجودة بالفعل في مجلد امتدادات InkSim. قد تحتوي الملفات المدرجة للاستبدال على تغييرات أجراها المستخدم. ستُحفظ الملفات الأخرى المدرجة ولن تُحذف أبدًا.\n\nالملفات المراد استبدالها:\n{replace_files}\n\nالملفات المراد الاحتفاظ بها:\n{preserve_files}\n\nهل تريد المتابعة؟"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "تعذّر تثبيت امتدادات InkSim لـ Inkscape: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "تم تثبيت امتدادات InkSim أو تحديثها في {path}. أعد تشغيل Inkscape لتحميلها."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "لا شيء"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "تطبيق"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "هل تريد تغيير مفسّر Python لكل امتدادات Inkscape إلى:\n\n{path}\n\nسيغيّر هذا إعدادًا عامًا في Inkscape. هل تريد المتابعة؟"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "مسار مخصص…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "اختر مفسّر Python"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "اختياري — للامتدادات التي لها بيئة Python خاصة بها فقط"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "تحتاج إلى ذلك فقط الامتدادات التي تطلب من Inkscape مفسّر Python الخاص به (مثل Ink/Stitch).\nأما امتدادات InkSim فتشغّل InkSim مباشرةً."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "بيئة Ink/Stitch ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "عدم التغيير (موصى به)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "إزالة إعداد المفسّر"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "هل تريد إزالة إعداد مفسّر Python من:\n\n{path}\n\nسيعود Inkscape إلى المفسّر الافتراضي لكل الامتدادات. هل تريد المتابعة؟"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "استعادة السابق"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "مشغّل uvr ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "لم يُعثر على Inkscape في مسار النظام."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "تعذّرت قراءة تفضيلات Inkscape: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "تعذّر تحديث تفضيلات Inkscape: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "تعذّرت قراءة مجلدات امتدادات Inkscape: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "بانتظار استجابة Inkscape…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "جارٍ التحقق من Inkscape... {seconds} ثانية"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "مفسّر Python: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "أعد تشغيل Inkscape لتطبيق مفسّر Python الجديد."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "مفسّر Python ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "غير مُعدّ"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "إزالة نسخ InkSim القديمة"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "سيتم حذف مجلدات امتدادات المستخدم المدرجة وجميع الملفات الموجودة فيها نهائيًا. لن تتم إزالة هدف التثبيت/التحديث الحالي ولا مجلدات امتدادات النظام.\n\n{directories}\n\nهل تريد المتابعة؟"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "تعذّرت إزالة مجلد امتدادات InkSim القديم: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "تمت إزالة مجلدات امتدادات InkSim القديمة. أعد تشغيل Inkscape لتحديث قائمة الامتدادات."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "تم تحديث تثبيت Ink/Stitch النشط: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "جارٍ التحقق من Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "تعذّر حفظ إعدادات InkSim: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "تم حفظ الإعدادات المكتشفة في إعدادات InkSim."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "تم حفظ أمر Inkscape، لكن تعذّر التحقق منه، لذلك لم تُحدَّث مجلدات الإضافات."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "تم التحقق من الملف التنفيذي لـ Inkscape: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "تعذّر فحص مجلدات امتدادات InkSim."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "عدد تثبيتات Ink/Stitch التي عُثر عليها: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "يشير رابط Ink/Stitch في مجلد امتدادات Inkscape الآن إلى: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "لم يُعثر على أي تثبيت لـ Ink/Stitch."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "مفسّر Python لامتدادات Inkscape: {path} (لم يتغير)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "أُزيل إعداد مفسّر Python في Inkscape."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "استُعيد مفسّر Python السابق: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "تم تحديث مفسّر Python: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "لم يُعثر على Inkscape. اختر ملفه التنفيذي لفحص الإعداد."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "تم التحقق من تفضيلات Inkscape: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "تعذّر التحقق من مفسّر Python أو تحديثه: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "لم يتم التحقق من تفضيل مفسّر Python لأن مجلد امتدادات المستخدم غير متاح."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "تعذّر فحص Inkscape: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "أعد تشغيل Inkscape لتطبيق مفسّر Python المحدّث."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "امتدادات النظام: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "لم يستجب Inkscape خلال {seconds} ثانية."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "امتدادات المستخدم: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "مشغّل uvr الاختياري متاح: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "لم يُعثر على مشغّل uvr الاختياري؛ لم يتغير إعداد مفسّر Inkscape."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "إصدار Inkscape: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "اختر ملف Inkscape التنفيذي للفحص."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "تطبيق Inkscape"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "الإضافات"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "التقرير"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "امتدادات النظام: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "لم يستجب Inkscape خلال {seconds} ثانية. قد تكون هناك نسخة أخرى من Inkscape أو أحد الامتدادات يعيق الاتصال. أغلق نسخ Inkscape الأخرى أو عطّل الامتداد المعيق، ثم حاول مجددًا."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "امتدادات المستخدم: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "إصدار Inkscape: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "غير متاح"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "الأمر: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "المفسّر: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "الموقع: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "لم يُعثر على أي تثبيت لـ Ink/Stitch."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "ثبّت Ink/Stitch في أحد مجلدات إضافات Inkscape الظاهرة أعلاه."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "المسار: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "اختيار عارض الغرز..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "الألوان عند الحفظ"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "اكتب لوحة الألوان دائمًا"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "اسأل في كل مرة"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "تنسيق لوحة الألوان"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "لا تكتب لوحة الألوان أبدًا"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "عرض محكم بواسطة GPU"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "فتح ملف تطريز"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "تحميل لوحة ألوان…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "خروج"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "فتح..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "إنهاء جميع النوافذ والخادم"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "تتبع الأحداث"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&الأدوات"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "إعداد Inkscape..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "اللغة"
+        "source": "&Language",
+        "translation": "&اللغة"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "إعدادات شبكاني الإبرة"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "حُفظت ألوان {palette} باسم {name}"
     },
     "status.slider.color": {
         "source": "Color…",

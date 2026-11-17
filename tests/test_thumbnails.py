@@ -1,0 +1,310 @@
+# SPDX-FileCopyrightText: 2026 Authors (see git history)
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+from __future__ import annotations
+
+import os
+from pathlib import Path
+from types import SimpleNamespace
+
+import pystitch as emb
+from PySide6.QtGui import QImage, QImageReader
+
+from inksim.render.thumbnails import (
+    STAMP_KEY,
+    THUMBNAIL_SIZE,
+    _drawn_area,
+    build_design_preview,
+    thumbnail_is_current,
+    thumbnail_path,
+    thumbnail_stamp,
+    write_thumbnail,
+)
+
+SAMPLE = Path(__file__).parent / "data" / "sample.pes"
+
+
+def _copy_sample(tmp_path: Path, name: str = "design.pes") -> Path:
+    target = tmp_path / name
+    target.write_bytes(SAMPLE.read_bytes())
+    return target
+
+
+def _thread(red: int, green: int, blue: int) -> SimpleNamespace:
+    return SimpleNamespace(
+        get_red=lambda: red,
+        get_green=lambda: green,
+        get_blue=lambda: blue,
+    )
+
+
+def test_thumbnail_path_keeps_the_source_name(tmp_path):
+    """Each format keeps its own sidecar image: design.pes.png vs design.csv.png."""
+    assert thumbnail_path(tmp_path / "design.pes") == tmp_path / "design.pes.png"
+    assert thumbnail_path(tmp_path / "design.csv") == tmp_path / "design.csv.png"
+    assert thumbnail_path(tmp_path / "design.pes") != thumbnail_path(tmp_path / "design.csv")
+
+
+def test_write_thumbnail_creates_a_square_png(tmp_path):
+    source = _copy_sample(tmp_path)
+
+    thumbnail = write_thumbnail(source)
+
+    assert thumbnail == source.with_name("design.pes.png")
+    assert thumbnail is not None and thumbnail.is_file()
+    assert thumbnail.stat().st_size > 0
+    image = QImage(str(thumbnail))
+    assert image.size().width() == THUMBNAIL_SIZE
+    assert image.size().height() == THUMBNAIL_SIZE
+    assert thumbnail_is_current(source)
+
+
+def test_write_thumbnail_renders_a_plain_svg(tmp_path):
+    """SVGs that are not stitch files are rasterised with Qt instead of stitches."""
+    source = tmp_path / "poster.svg"
+    source.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80" viewBox="0 0 120 80">'
+        '<rect width="120" height="80" fill="#d04a4a"/>'
+        '<circle cx="60" cy="40" r="28" fill="#2c6fa8"/>'
+        "</svg>",
+        encoding="utf-8",
+    )
+
+    thumbnail = write_thumbnail(source)
+
+    assert thumbnail == tmp_path / "poster.svg.png"
+    assert thumbnail is not None and thumbnail.is_file()
+    image = QImage(str(thumbnail))
+    assert image.size().width() == THUMBNAIL_SIZE
+    assert image.size().height() == THUMBNAIL_SIZE
+    drawn = sum(
+        1
+        for x in range(0, THUMBNAIL_SIZE, 8)
+        for y in range(0, THUMBNAIL_SIZE, 8)
+        if image.pixelColor(x, y).alpha() > 0
+    )
+    assert drawn > 0
+
+
+def test_svg_thumbnail_crops_to_the_drawing(tmp_path):
+    """A small drawing on a large page still fills the thumbnail canvas."""
+    source = tmp_path / "page.svg"
+    source.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"'
+        ' viewBox="0 0 1000 1000">'
+        '<circle cx="500" cy="500" r="120" fill="#2c6fa8"/></svg>',
+        encoding="utf-8",
+    )
+
+    thumbnail = write_thumbnail(source)
+
+    assert thumbnail is not None
+    drawn = _drawn_area(QImage(str(thumbnail)))
+    assert drawn is not None
+    assert drawn.width() >= THUMBNAIL_SIZE * 0.7
+    assert drawn.height() >= THUMBNAIL_SIZE * 0.7
+
+
+def test_write_thumbnail_keeps_a_current_file(tmp_path):
+    source = _copy_sample(tmp_path)
+    thumbnail = write_thumbnail(source)
+    assert thumbnail is not None
+    first_mtime = thumbnail.stat().st_mtime_ns
+
+    assert write_thumbnail(source) == thumbnail
+    assert thumbnail.stat().st_mtime_ns == first_mtime
+
+
+def test_write_thumbnail_checks_currentness_at_requested_size(tmp_path):
+    source = _copy_sample(tmp_path)
+
+    thumbnail = write_thumbnail(source, size=128)
+
+    assert thumbnail is not None
+    assert QImage(str(thumbnail)).size().width() == 128
+    assert thumbnail_is_current(source, size=128)
+    assert not thumbnail_is_current(source)
+    first_mtime = thumbnail.stat().st_mtime_ns
+    assert write_thumbnail(source, size=128) == thumbnail
+    assert thumbnail.stat().st_mtime_ns == first_mtime
+
+
+def test_write_thumbnail_refreshes_a_stale_file(tmp_path):
+    source = _copy_sample(tmp_path)
+    thumbnail = write_thumbnail(source)
+    assert thumbnail is not None
+
+    source_mtime_ns = 1_700_000_000_000_000_000
+    os.utime(source, ns=(source_mtime_ns, source_mtime_ns))
+    stale_mtime_ns = source_mtime_ns - 10_000_000_000
+    os.utime(thumbnail, ns=(stale_mtime_ns, stale_mtime_ns))
+    assert not thumbnail_is_current(source)
+
+    assert write_thumbnail(source) == thumbnail
+    assert thumbnail.stat().st_mtime_ns >= source.stat().st_mtime_ns
+    assert thumbnail_is_current(source)
+
+
+def test_palette_sidecar_changes_invalidate_thumbnail(tmp_path):
+    from inksim.formats import write_palette_file
+
+    source = tmp_path / "design.dst"
+    source.write_bytes((Path(__file__).parent / "data" / "two_tect.dst").read_bytes())
+    palette = source.with_suffix(".edr")
+
+    thumbnail = write_thumbnail(source)
+    assert thumbnail is not None
+    assert thumbnail_is_current(source)
+
+    write_palette_file(palette, ["#112233", "#445566"])
+    assert not thumbnail_is_current(source)
+
+    assert write_thumbnail(source) == thumbnail
+    assert thumbnail_is_current(source)
+
+    write_palette_file(palette, ["#AABBCC", "#DDEEFF"])
+    assert not thumbnail_is_current(source)
+
+    assert write_thumbnail(source) == thumbnail
+    assert thumbnail_is_current(source)
+
+    palette.unlink()
+    assert not thumbnail_is_current(source)
+
+
+def test_source_revision_during_render_is_not_written_as_current(tmp_path, monkeypatch):
+    from inksim.render import thumbnails
+
+    source = _copy_sample(tmp_path)
+
+    def render_and_modify_source(_source, size):
+        source.write_bytes(source.read_bytes() + b"\0")
+        return QImage(size, size, QImage.Format_RGBA8888), None
+
+    monkeypatch.setattr(thumbnails, "_render_with_details", render_and_modify_source)
+
+    assert write_thumbnail(source, overwrite=True) is None
+    assert not thumbnail_path(source).exists()
+    assert not thumbnail_is_current(source)
+
+
+def test_thumbnail_without_a_stamp_is_outdated(tmp_path):
+    """Images written before the parameters were recorded are rebuilt once."""
+    source = _copy_sample(tmp_path)
+    thumbnail = source.with_name("design.pes.png")
+    QImage(THUMBNAIL_SIZE, THUMBNAIL_SIZE, QImage.Format_RGBA8888).save(str(thumbnail), "PNG")
+
+    assert not thumbnail_is_current(source)
+
+    assert write_thumbnail(source) == thumbnail
+    assert QImageReader(str(thumbnail)).text(STAMP_KEY) == thumbnail_stamp()
+
+
+def test_thumbnail_with_other_parameters_is_outdated(tmp_path, monkeypatch):
+    """Changing the render settings invalidates existing thumbnails."""
+    source = _copy_sample(tmp_path)
+    assert write_thumbnail(source) is not None
+    assert thumbnail_is_current(source)
+
+    monkeypatch.setattr("inksim.render.thumbnails.THUMBNAIL_RENDERER", "shaded_volume")
+
+    assert not thumbnail_is_current(source)
+
+
+def test_write_thumbnail_reports_unreadable_designs(tmp_path):
+    broken = tmp_path / "broken.pes"
+    broken.write_bytes(b"not an embroidery file")
+
+    assert write_thumbnail(broken) is None
+    assert not (tmp_path / "broken.pes.png").exists()
+
+
+def test_build_design_preview_skips_jumps_and_switches_threads():
+    """Jumps move the needle without drawing; a colour change picks the next thread."""
+    pattern = SimpleNamespace(
+        stitches=[
+            (0, 0, emb.STITCH),
+            (100, 0, emb.STITCH),
+            (200, 0, emb.JUMP),
+            (200, 100, emb.STITCH),
+            (300, 100, emb.COLOR_CHANGE),
+            (400, 100, emb.STITCH),
+        ],
+        threadlist=[_thread(255, 0, 0), _thread(0, 0, 255)],
+    )
+
+    preview = build_design_preview(pattern)
+
+    assert preview.stitches.shape == (4, 7)
+    colors = preview.stitches[:, 4:7].astype(int).tolist()
+    assert colors[0] == [255, 0, 0]
+    assert colors[-1] == [0, 0, 255]
+    assert preview.thread_colors == 2
+    assert preview.bounds == (0.0, 0.0, 40.0, 10.0)
+
+
+def test_build_design_preview_switches_threads_on_color_break():
+    pattern = SimpleNamespace(
+        stitches=[
+            (0, 0, emb.STITCH),
+            (100, 0, emb.COLOR_BREAK),
+            (200, 0, emb.STITCH),
+        ],
+        threadlist=[_thread(255, 0, 0), _thread(0, 0, 255)],
+    )
+
+    preview = build_design_preview(pattern)
+
+    colors = preview.stitches[:, 4:7].astype(int).tolist()
+    assert colors == [[255, 0, 0], [0, 0, 255]]
+
+
+def test_build_design_preview_handles_an_empty_pattern():
+    preview = build_design_preview(SimpleNamespace(stitches=[], threadlist=[]))
+
+    assert preview.stitches.shape == (0, 7)
+    assert preview.thread_colors == 0
+
+
+def test_rotating_a_thumbnail_is_remembered_and_survives_regeneration(tmp_path):
+    """The angle lives in the PNG, so update and regenerate keep the rotation."""
+    from PySide6.QtCore import Qt
+    from PySide6.QtGui import QImage, QTransform
+
+    from inksim.render.thumbnails import (
+        rotate_thumbnail,
+        thumbnail_path,
+        thumbnail_rotation,
+        write_thumbnail,
+    )
+
+    source = tmp_path / "design.pes"
+    source.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    write_thumbnail(source)
+    original = QImage(str(thumbnail_path(source)))
+
+    assert rotate_thumbnail(source, 90) == 90
+    assert thumbnail_rotation(source) == 90
+    assert thumbnail_is_current(source)
+    quarter = original.transformed(
+        QTransform().rotate(90), Qt.TransformationMode.FastTransformation
+    )
+    assert QImage(str(thumbnail_path(source))) == quarter
+
+    assert rotate_thumbnail(source, 90) == 180
+    write_thumbnail(source, overwrite=True)
+
+    assert thumbnail_rotation(source) == 180
+    half = original.transformed(QTransform().rotate(180), Qt.TransformationMode.FastTransformation)
+    assert QImage(str(thumbnail_path(source))) == half
+
+
+def test_thumbnail_rotation_defaults_to_zero(tmp_path):
+    from inksim.render.thumbnails import rotate_thumbnail, thumbnail_rotation, write_thumbnail
+
+    source = tmp_path / "design.pes"
+    source.write_bytes((Path(__file__).parent / "data" / "sample.pes").read_bytes())
+    write_thumbnail(source)
+
+    assert thumbnail_rotation(source) == 0
+    assert rotate_thumbnail(tmp_path / "missing.pes", 90) is None

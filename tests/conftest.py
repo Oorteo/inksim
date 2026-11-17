@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 
 import PySide6
@@ -31,6 +32,33 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
         os._exit(0)
 
 
+@pytest.fixture(scope="session", autouse=True)
+def _isolated_subprocess_config_home(tmp_path_factory):
+    """Keep subprocesses away from the developer's real config file.
+
+    Tests that run ``python -m inksim`` inherit ``os.environ``, so the
+    per-test monkeypatch of ``DEFAULT_CONFIG_PATH`` cannot reach them. Pointing
+    the platform's config environment at a throwaway directory keeps their
+    recent directories, renderer choice and palette answers out of the user's
+    config directory.
+    """
+    config_home = tmp_path_factory.mktemp("subprocess-config")
+    environment = {"XDG_CONFIG_HOME": str(config_home)}
+    if sys.platform == "win32":
+        environment["LOCALAPPDATA"] = str(config_home / "localappdata")
+    elif sys.platform == "darwin":
+        environment["HOME"] = str(config_home / "home")
+
+    previous = {key: os.environ.get(key) for key in environment}
+    os.environ.update(environment)
+    yield
+    for key, value in previous.items():
+        if value is None:
+            os.environ.pop(key, None)
+        else:
+            os.environ[key] = value
+
+
 @pytest.fixture(autouse=True)
 def _isolate_config(tmp_path, monkeypatch):
     """Redirect the default config path to a temp dir for every test.
@@ -48,6 +76,12 @@ def _isolate_config(tmp_path, monkeypatch):
         "DEFAULT_CONFIG_PATH",
         tmp_path / "config.toml",
     )
+
+
+@pytest.fixture(autouse=True)
+def _disable_automatic_update_checks(monkeypatch):
+    """Keep GUI tests independent of network update checks."""
+    monkeypatch.setattr("inksim.gui.frame.should_check", lambda _config: False)
 
 
 @pytest.fixture

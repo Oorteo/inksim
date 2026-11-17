@@ -12,24 +12,7 @@ import sys
 from pathlib import Path
 
 from .constants import APP_TITLE
-
-
-def _sanitize_path(path: str | Path) -> str:
-    """Return a path string with the user's home directory replaced by '~'."""
-    resolved = Path(path).resolve()
-    home = Path.home()
-    try:
-        relative = resolved.relative_to(home)
-        return f"~/{relative.as_posix()}"
-    except ValueError:
-        return str(resolved)
-
-
-def _unsanitize_path(path_str: str) -> str:
-    """Expand a '~' prefix back to the user's home directory."""
-    if path_str.startswith("~/"):
-        return str(Path.home() / path_str[2:])
-    return path_str
+from .paths import _sanitize_path
 
 
 def is_opengl33_available() -> bool:

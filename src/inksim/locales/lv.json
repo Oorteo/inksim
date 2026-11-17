@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Valoda ir iestatīta uz {language}. Vai restartēt InkSim, lai to piemērotu?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Valoda ir mainīta. Aizver InkSim un atver to vēlreiz no Inkscape, lai piemērotu jauno valodu."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Sistēmas noklusētā valoda tiks izmantota. Vai restartēt InkSim tagad, lai to piemērotu?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "Valoda mainīta"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Visi atvērtie InkSim logi tiks aizvērti un pašreizējais fails tiks atvērts no jauna."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Adatas krāsa"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Parastais priekšskatījums"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Pievienot vietām"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Atpakaļ"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Atpakaļ uz {folder} (Alt+Left)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Atcelt"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Dūrienu priekšskatījuma process neizdevās: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Procesa izejas kods: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Ink/Stitch CSV eksports neizdevās."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "Pilns žurnāls: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "Dūrienu priekšskatījuma ģenerēšanas laiks beidzās."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Notiek Ink/Stitch CSV eksports..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Nokopēti {count} faili"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Kopēt failus"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Blakus katram atlasītajam dizainam saglabāt 256 px PNG attēlu (design.pes.png).\nIzvēlnē vari izvēlēties, vai atjaunot novecojušos attēlus vai visus attēlus."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Darbvirsma"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Krāsas"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Nosaukums"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Izmērs"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Dūrieni"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Izmērs: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Dokumenti"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Lejupielādes"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Atvērt šo SVG jaunā Inkscape logā."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Rediģēt programmā Inkscape"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Rediģēt ceļu"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Šajā mapē nav atbalstītu failu."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Izlase"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Nevar nolasīt šo failu: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Rādīt"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Visi atbalstītie"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV dūrienu dati"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Izšuvumi"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG avots"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Ietilpināt"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Mape"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Veic dubultklikšķi uz mapes, lai pārlūkotu tās failus."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Nospied Enter vai veic dubultklikšķi uz mapes, lai pārlūkotu tās failus."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Uz priekšu"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Uz priekšu uz {folder} (Alt+Right)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Doties"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Sākums"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Ikonu fona tonējums ({level}, 0 = melns, 255 = balts)\nTurot nospiestu Shift un ritinot virs saraksta, mainās tonējums."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Ikonu izmērs ({size} px)\nTurot nospiestu Ctrl un ritinot virs saraksta, mainās ikonu izmērs."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Neizdevās palaist Inkscape: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "Lai rediģētu SVG failus, nepieciešama programma Inkscape."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Nepieciešama konfigurēta Ink/Stitch instalācija un Python palaidējs."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Šai mapei nevar piekļūt."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "No: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Atvērt avota mapi"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Atvērt avota mapi {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Uz: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Atvērt mērķa mapi"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Atvērt mērķa mapi {path}"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Mainīts: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Pārvietot failus"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Pārvietoti {count} faili"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
-        "translation": "Nav derīgs izšūšanas fails"
+        "translation": "Nederīgs izšuvuma fails"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Reālais priekšskatījums"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Atvērt"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Atvērt izšūšanas failu"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Atvērt atlasīto izšuvuma failu."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Krāsas…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Ielādē diegu krāsas no paletes faila vai cita dizaina.\nTās tiek saglabātas blakus šim failam kā <name>.edr, jo šajā formātā\nkrāsas nevar saglabāt pašā failā."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Šajā failā jau ir saglabātas diegu krāsas."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Ielīmēt failus"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Ievadi vai ielīmē mapes ceļu"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Vietas"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Priekšskatīt"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Ģenerē dūrienu datus no šī SVG, izmantojot Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Nevar palaist aktīvo Ink/Stitch skriptu vai tam konfigurēto Python palaidēju."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Nevar nolasīt šo mapi: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Nesenās:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— izvēlēties mapi —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Atsvaidzināt"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Atsvaidzināt šo mapi (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Noņemt no izlases"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Pagriezt sīktēlu par 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Pagriezt sīktēlu pa kreisi"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Lai pagrieztu sīktēlu, atlasi dizainu, kuram tas ir"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Sākotnējā orientācija"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Pagriezt sīktēlu pa labi"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Pagriezti {count} sīktēli par {degrees}°"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Meklēt failus"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Atlasiet atveramo failu."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Izmērs: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Paslēpt šos paplašinājumus dialoglodziņā.\nAtdali tos ar |; saraksts tiek saglabāts failā config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Izlaist"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "Inkscape: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "Inkscape: nav atrasts."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "Ink/Stitch paplašinājums: pārbaude neizdevās. Mēģini vēlreiz, izmantojot “Rīki...”."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "Ink/Stitch paplašinājums: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "Ink/Stitch paplašinājums: Inkscape paplašinājumu mapēs nav atrasts."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "Ink/Stitch paplašinājums: nevar pārbaudīt, kamēr nav konfigurēts Inkscape."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "Ink/Stitch paplašinājums: vēl nav pārbaudīts. Lai pārbaudītu, izmanto “Rīki...”."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Dūrieni: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG avots. Dūrienu priekšskatījumam nepieciešams Inkscape."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG avots. Izvēlies “Priekšskatīt”, lai ģenerētu dūrienu datus ar Inkscape/Ink/Stitch."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "Neizdevās attēlot SVG."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Šis SVG ir pārāk liels, lai to šeit priekšskatītu."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Neizdevās izveidot pagaidu priekšskatījuma failu: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Sīktēli: izveidoti {created}, aktuāli {skipped}, neizdevās {failed}"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Sīktēli: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Atjaunota sākotnējā orientācija {count} sīktēliem"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Tiek veidoti sīktēli…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Atvērt failu"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Rīki..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Faili jau pastāv"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Neizdevās pārsūtīt failus: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Neizdevās pārsūtīt failus"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Tālāk norādītie mērķa ceļi jau pastāv, tostarp mapes, kuras nevar aizstāt ar failiem. Nekas netika pārsūtīts:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Mapes nevar aizstāt"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} ir gatava: {count} faili"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Tālāk norādītie mērķa faili jau pastāv:\n{files}\n\nVai aizstāt visus?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Šie faili jau atrodas šeit."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV dūrienu dati"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Mape"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Izšuvums"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Neatbalstīts"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG avots"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "Šo faila tipu InkSim nevar atvērt."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Atvērt vecākmapi (Alt+Up)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Skats"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Detaļas"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Tikai ikonas"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Ikonas un teksts"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Tuvināt"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Tālināt"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Izvēlies paleti vai krāsainu dizainu"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "Failā {name} nav saglabātas diegu krāsas."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Visi faili"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Dizainu faili (saglabātās krāsas)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Paletes faili"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Šajā dizainā jau ir saglabātas diegu krāsas."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "Failā {name} jau ir saglabātas šī dizaina krāsas.\nVai aizstāt tās ar {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Atcerēties manu izvēli"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "Formātā {format} diegu krāsas netiek saglabātas.\nVai saglabāt tās failā {name} blakus dizainam?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Diegu krāsas"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "Failā {name} ir {available} krāsas, bet dizainā ir {blocks} krāsu bloki.\nVai tomēr izmantot? Pēdējā krāsa tiks atkārtota."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Neizdevās saglabāt krāsas: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Izvēlieties dūrienu renderētāju"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Mainīt"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Neizdevās saglabāt Inkscape paplašinājuma statusu: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Nav pieejama"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape izpildfails vai pilna komandrinda, piemēram, \"flatpak run org.inkscape.Inkscape\". Nospied Enter, lai to pārbaudītu."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Izveidot atkļūdošanas skriptu (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Neizdevās mainīt atkļūdošanas skripta iestatījumu."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Saglabā failu debug_inksim.sh blakus dokumentam, lai varētu atkārtot Inkscape palaišanu."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "InkSim paplašinājumu mapes nav atrastas."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Neizdevās pārbaudīt Inkscape paplašinājumu mapes: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Priekšskatījuma komanda ir mainīta"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "mainītie faili: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Atjaunināts"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Nepieciešama instalēšana"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Statuss nav pieejams: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Nepieciešams atjauninājums ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Sistēmas paplašinājums: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Pašreizējais lietotāja paplašinājums (instalēšanas/atjaunināšanas mērķis): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Cita lietotāja paplašinājums: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch saite Inkscape paplašinājumu mapē kopš pēdējās iestatīšanas ir mainījusies:\n\n{details}\n\nInkSim izmanto pašreizējo saiti. Atver Inkscape iestatīšanu, lai to saglabātu."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "mape vairs nepastāv: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "tagad norāda uz: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Instalēt / atjaunināt InkSim paplašinājumus"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "InkSim paplašinājumu mapē jau ir daži faili. Aizstāšanai norādītajos failos var būt lietotāja veiktas izmaiņas. Pārējie norādītie faili tiks saglabāti un nekad netiks dzēsti.\n\nAizstājamie faili:\n{replace_files}\n\nSaglabājamie faili:\n{preserve_files}\n\nTurpināt?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Neizdevās instalēt InkSim Inkscape paplašinājumus: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "InkSim Inkscape paplašinājumi tika instalēti vai atjaunināti mapē {path}. Restartē Inkscape, lai tos ielādētu."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Nav"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Lietot"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Mainīt Python interpretatoru visiem Inkscape paplašinājumiem uz:\n\n{path}\n\nTas mainīs globālu Inkscape iestatījumu. Vai turpināt?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Pielāgots ceļš…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Atlasīt Python interpretatoru"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Neobligāti — tikai paplašinājumiem ar atsevišķu Python vidi"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Tas vajadzīgs tikai tiem paplašinājumiem, kuri pieprasa Inkscape Python interpretatoru (piem., Ink/Stitch).\nInkSim paplašinājumi palaiž InkSim tieši."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch vide ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Nemainīt (ieteicams)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Noņemt interpretatora iestatījumu"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Noņemt Python interpretatora iestatījumu no:\n\n{path}\n\nInkscape visiem paplašinājumiem izmantos noklusēto interpretatoru. Vai turpināt?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Atjaunot iepriekšējo"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr palaidējs ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "Inkscape:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "Inkscape nav atrasts sistēmas ceļā."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Neizdevās nolasīt Inkscape iestatījumus: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Neizdevās atjaunināt Inkscape iestatījumus: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Neizdevās nolasīt Inkscape paplašinājumu mapes: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Gaida Inkscape atbildi…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Pārbauda Inkscape... {seconds} s"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "Python interpretētājs: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Restartē Inkscape, lai lietotu jauno Python interpretētāju."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python interpretators ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "nav iestatīts"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Noņemt vecās InkSim kopijas"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Norādītās lietotāja paplašinājumu mapes un visi tajās esošie faili tiks neatgriezeniski izdzēsti. Pašreizējais instalēšanas/atjaunināšanas mērķis un sistēmas paplašinājumu mapes netiks noņemtas.\n\n{directories}\n\nTurpināt?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Neizdevās noņemt veco InkSim paplašinājumu mapi: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Vecās InkSim paplašinājumu mapes tika noņemtas. Restartē Inkscape, lai atsvaidzinātu paplašinājumu sarakstu."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Aktīvā Ink/Stitch instalācija atjaunināta: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Pārbauda Inkscape: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Neizdevās saglabāt InkSim konfigurāciju: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Atrasta iestatījumu konfigurācija saglabāta InkSim konfigurācijā."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape komanda tika saglabāta, taču pārbaude neizdevās, tāpēc paplašinājumu mapes netika atjauninātas."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Pārbaudītais Inkscape izpildfails: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Neizdevās pārbaudīt InkSim paplašinājumu mapes: {error}"
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Atrasto Ink/Stitch instalāciju skaits: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Ink/Stitch saite Inkscape paplašinājumu mapē tagad norāda uz: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch instalācija nav atrasta."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape paplašinājumu Python interpretators: {path} (nemainīts)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape Python interpretatora iestatījums ir noņemts."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Atjaunots iepriekšējais Python interpretators: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Python interpretētājs atjaunināts: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "Inkscape nav atrasts. Izvēlies tā izpildfailu, lai pārbaudītu iestatījumus."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Pārbaudītie Inkscape iestatījumi: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Neizdevās pārbaudīt vai atjaunināt Python interpretētāju: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "Python interpretētāja iestatījums netika pārbaudīts, jo lietotāja paplašinājumu mape nav pieejama."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Neizdevās pārbaudīt Inkscape: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Restartē Inkscape, lai lietotu atjaunināto interpretētāju."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Sistēmas paplašinājumi: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "Inkscape neatbildēja {seconds} sekunžu laikā."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Lietotāja paplašinājumi: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Neobligātais uvr palaidējs ir pieejams: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Neobligātais uvr palaidējs netika atrasts; Inkscape interpretatora iestatījums nav mainīts."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape versija: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Izvēlies Inkscape izpildfailu, lai pārbaudītu iestatījumus."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape lietotne"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Paplašinājumi"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Ziņojums"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Sistēmas paplašinājumi: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "Inkscape neatbildēja {seconds} sekunžu laikā. Komunikāciju var bloķēt cita Inkscape instance vai paplašinājums. Aizver citas Inkscape instances vai atspējo traucējošo paplašinājumu un mēģini vēlreiz."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "Inkscape"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Lietotāja paplašinājumi: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "Inkscape versija: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Nav pieejama"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Komanda: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Interpretētājs: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Atrašanās vieta: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "Ink/Stitch instalācija nav atrasta."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Instalē Ink/Stitch vienā no iepriekš norādītajām Inkscape paplašinājumu mapēm."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Ceļš: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "Izvēlieties dūrienu renderētāju..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Krāsas saglabājot"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Vienmēr rakstīt paleti"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Jautāt katru reizi"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Paletes formāts"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Nekad nerakstīt paleti"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "GPU teksturēts renderējums"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Atvērt izšūšanas failu"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Ielādēt paleti…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Iziet"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Atvērt..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Iziet no visiem logiem un servera"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "Izsekošanas notikumi"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Rīki"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape iestatīšana..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Valoda"
+        "source": "&Language",
+        "translation": "&Valoda"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Adatas krustpunktu iestatījumi"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette} krāsas saglabātas kā {name}"
     },
     "status.slider.color": {
         "source": "Color…",

@@ -3,11 +3,40 @@
 
 """Tests for the TOML-backed Config module."""
 
+import json
+import os
+import subprocess
+import sys
 import threading
+import tomllib
+from pathlib import Path
 
 import pytest
 
 from inksim.config import Config
+
+
+def test_subprocess_uses_isolated_user_config_directory() -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "from inksim.config import DEFAULT_CONFIG_PATH; print(DEFAULT_CONFIG_PATH)",
+        ],
+        capture_output=True,
+        check=True,
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        timeout=10,
+    )
+    if sys.platform == "win32":
+        expected = Path(os.environ["LOCALAPPDATA"]) / "InkSim" / "config.toml"
+    elif sys.platform == "darwin":
+        expected = Path.home() / "Library" / "Preferences" / "inksim" / "config.toml"
+    else:
+        expected = Path(os.environ["XDG_CONFIG_HOME"]) / "inksim" / "config.toml"
+
+    assert Path(result.stdout.strip()) == expected
 
 
 def test_config_loads_and_persists_values(tmp_path):
@@ -59,6 +88,71 @@ def test_config_as_text_and_load_text(tmp_path):
     assert config.get("answer") == 7
 
 
+def test_config_anonymizes_home_paths_in_nested_values(tmp_path):
+    path = tmp_path / "config.toml"
+    home_path = Path.home() / "tools" / "uvr"
+    path.write_text(f"legacy_path = {json.dumps(str(home_path))}\n", encoding="utf-8")
+    config = Config(path)
+    portable_path = f"~/{home_path.relative_to(Path.home()).as_posix()}"
+    assert config.get("legacy_path") == portable_path
+    assert json.dumps(str(home_path)) in path.read_text(encoding="utf-8")
+
+    config.save()
+    assert str(Path.home()) not in path.read_text(encoding="utf-8")
+
+    config.set(
+        "integration",
+        {
+            "interpreter": str(home_path),
+            "error": f"Could not load {home_path}",
+        },
+    )
+
+    expected = {"interpreter": portable_path, "error": f"Could not load {portable_path}"}
+    assert config.get("integration") == expected
+    assert Config(path).get("integration") == expected
+    assert str(Path.home()) not in path.read_text(encoding="utf-8")
+    assert str(Path.home()) not in config.as_text()
+
+
+def test_config_defers_home_path_migration_until_write(tmp_path, monkeypatch):
+    path = tmp_path / "config.toml"
+    home_path = Path.home() / "tools" / "uvr"
+    original = f"legacy_path = {json.dumps(str(home_path))}\n"
+    path.write_text(original, encoding="utf-8")
+
+    def fail_lock(*_args, **_kwargs):
+        raise PermissionError("config directory is not writable")
+
+    monkeypatch.setattr("inksim.config.FileLock.acquire", fail_lock)
+
+    config = Config(path)
+
+    assert config.get("legacy_path") == "~/tools/uvr"
+    assert path.read_text(encoding="utf-8") == original
+
+
+def test_config_read_error_does_not_overwrite_existing_values(tmp_path, monkeypatch):
+    path = tmp_path / "config.toml"
+    original = 'answer = 41\npreserve = "yes"\n'
+    path.write_text(original, encoding="utf-8")
+    config = Config(path)
+    original_open = Path.open
+
+    def fail_config_read(self, *args, **kwargs):
+        if self == path:
+            raise PermissionError("config file cannot be read")
+        return original_open(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", fail_config_read)
+
+    with pytest.raises(PermissionError, match="config file cannot be read"):
+        config.set("answer", 42)
+
+    monkeypatch.setattr(Path, "open", original_open)
+    assert path.read_text(encoding="utf-8") == original
+
+
 def test_config_load_text_rejects_invalid_toml(tmp_path):
     config = Config(tmp_path / "config.toml")
     with pytest.raises(ValueError, match="Invalid TOML"):
@@ -97,11 +191,35 @@ def test_config_does_not_write_until_save(tmp_path):
     assert not path.exists()
 
 
+def test_config_keeps_pending_values_when_save_fails(tmp_path, monkeypatch):
+    from inksim import config as config_module
+
+    path = tmp_path / "config.toml"
+    config = Config(path)
+    original_dump = config_module.tomli_w.dump
+
+    def fail_dump(*_args, **_kwargs):
+        raise OSError("simulated write failure")
+
+    monkeypatch.setattr("inksim.config.tomli_w.dump", fail_dump)
+    with pytest.raises(OSError, match="simulated write failure"):
+        config.set("answer", 42)
+
+    monkeypatch.setattr("inksim.config.tomli_w.dump", original_dump)
+    config.save()
+
+    assert Config(path).get("answer") == 42
+
+
 def test_config_corrupt_file_is_ignored(tmp_path):
     path = tmp_path / "config.toml"
-    path.write_text("this is not valid toml", encoding="utf-8")
+    original = "this is not valid toml"
+    path.write_text(original, encoding="utf-8")
     config = Config(path)
     assert config.get("answer", "default") == "default"
+    with pytest.raises(tomllib.TOMLDecodeError):
+        config.set("answer", 42)
+    assert path.read_text(encoding="utf-8") == original
 
 
 def test_config_lock_file_is_created_next_to_config(tmp_path):
@@ -110,3 +228,24 @@ def test_config_lock_file_is_created_next_to_config(tmp_path):
     config.set("x", 1)
     assert config._lock_path == path.parent / "config.toml.lock"
     assert config._lock_path.exists()
+
+
+def test_stale_instance_does_not_roll_back_newer_values(tmp_path):
+    """A long-lived window config must not undo a dialog's fresh settings."""
+    from inksim.config import Config
+
+    path = tmp_path / "config.toml"
+    window_config = Config(path)
+    window_config.set("open_dialog_icon_size", 96)
+
+    dialog_config = Config(path)
+    dialog_config.set("open_dialog_icon_size", 140)
+    dialog_config.set("open_dialog_view", "icons")
+
+    # The main window writes something else later; its snapshot still holds 96.
+    window_config.set("last_directory", "~/brother")
+
+    stored = Config(path)
+    assert stored.get("open_dialog_icon_size") == 140
+    assert stored.get("open_dialog_view") == "icons"
+    assert stored.get("last_directory") == "~/brother"

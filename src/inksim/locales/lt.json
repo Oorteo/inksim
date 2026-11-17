@@ -111,10 +111,6 @@
         "source": "The language has been set to {language}. Restart InkSim now to apply it?",
         "translation": "Kalba nustatyta į {language}. Paleisk InkSim iš naujo dabar, kad pritaikytum?"
     },
-    "dialog.language.server_message": {
-        "source": "The language has been changed. Close InkSim and reopen it from Inkscape to apply the new language.",
-        "translation": "Kalba pakeista. Uždaryk InkSim ir iš naujo atidaryk iš Inkscape, kad pritaikytum naują kalbą."
-    },
     "dialog.language.system_default_message": {
         "source": "The system default language will be used. Restart InkSim now to apply it?",
         "translation": "Sistemos numatytoji kalba bus naudojama. Paleisk InkSim iš naujo dabar, kad pritaikytum?"
@@ -123,29 +119,953 @@
         "source": "Language changed",
         "translation": "Kalba pakeista"
     },
+    "dialog.language.windows_closed": {
+        "source": "All open InkSim windows will be closed and the current file reopened.",
+        "translation": "Visi atvērtie InkSim logi tiks aizvērti, un pašreizējais fails tiks atvērts no jauna."
+    },
     "dialog.needle_color.title": {
         "source": "Needle color",
         "translation": "Adatos spalva"
     },
-    "dialog.open.normal_preview": {
-        "source": "Normal preview",
-        "translation": "Įprasta peržiūra"
+    "dialog.open_browser.add_favorite": {
+        "source": "Add to places",
+        "translation": "Pridėti prie vietų"
     },
-    "dialog.open.not_embroidery": {
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Atgal"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Grįžti į aplanką {folder} (Alt+Left)"
+    },
+    "dialog.open_browser.cancel": {
+        "source": "Cancel",
+        "translation": "Atšaukti"
+    },
+    "dialog.open_browser.conversion_error": {
+        "source": "The stitch preview process failed: {error}",
+        "translation": "Nepavyko paruošti dygsnių peržiūros: {error}"
+    },
+    "dialog.open_browser.conversion_exit_code": {
+        "source": "Process exit code: {code}",
+        "translation": "Proceso išėjimo kodas: {code}"
+    },
+    "dialog.open_browser.conversion_failed": {
+        "source": "Ink/Stitch CSV export failed.",
+        "translation": "Nepavyko eksportuoti CSV failo naudojant „Ink/Stitch“."
+    },
+    "dialog.open_browser.conversion_hint": {
+        "source": "Full log: {path}",
+        "translation": "Visas žurnalas: {path}"
+    },
+    "dialog.open_browser.conversion_timeout": {
+        "source": "Stitch preview timed out.",
+        "translation": "Baigėsi dygsnių peržiūros laukimo laikas."
+    },
+    "dialog.open_browser.converting": {
+        "source": "Running Ink/Stitch CSV export...",
+        "translation": "Eksportuojamas CSV failas naudojant „Ink/Stitch“..."
+    },
+    "dialog.open_browser.copied_files": {
+        "source": "Copied {count} file(s)",
+        "translation": "Nukopijuota failų: {count}"
+    },
+    "dialog.open_browser.copy_files": {
+        "source": "Copy files",
+        "translation": "Kopijuoti failus"
+    },
+    "dialog.open_browser.create_thumbnails_hint": {
+        "source": "Write a 256 px PNG next to each selected design (design.pes.png).\nThe menu picks whether outdated files or every thumbnail is rebuilt.",
+        "translation": "Šalia kiekvieno pasirinkto dizaino įrašyti 256 px PNG failą (design.pes.png).\nMeniu pasirinkite, ar atnaujinti pasenusias miniatiūras, ar visas."
+    },
+    "dialog.open_browser.desktop": {
+        "source": "Desktop",
+        "translation": "Darbalaukis"
+    },
+    "dialog.open_browser.details.colors": {
+        "source": "Colors",
+        "translation": "Spalvos"
+    },
+    "dialog.open_browser.details.name": {
+        "source": "Name",
+        "translation": "Pavadinimas"
+    },
+    "dialog.open_browser.details.size": {
+        "source": "Size",
+        "translation": "Dydis"
+    },
+    "dialog.open_browser.details.stitches": {
+        "source": "Stitches",
+        "translation": "Dygsniai"
+    },
+    "dialog.open_browser.dimensions": {
+        "source": "Size: {width:.1f} x {height:.1f} mm",
+        "translation": "Matmenys: {width:.1f} x {height:.1f} mm"
+    },
+    "dialog.open_browser.documents": {
+        "source": "Documents",
+        "translation": "Dokumentai"
+    },
+    "dialog.open_browser.downloads": {
+        "source": "Downloads",
+        "translation": "Atsisiuntimai"
+    },
+    "dialog.open_browser.edit_hint": {
+        "source": "Open this SVG in a new Inkscape window.",
+        "translation": "Atidaryti šį SVG naujame „Inkscape“ lange."
+    },
+    "dialog.open_browser.edit_inkscape": {
+        "source": "Edit in Inkscape",
+        "translation": "Redaguoti naudojant „Inkscape“"
+    },
+    "dialog.open_browser.edit_path": {
+        "source": "Edit path",
+        "translation": "Redaguoti kelią"
+    },
+    "dialog.open_browser.empty": {
+        "source": "No supported files in this folder.",
+        "translation": "Šiame aplanke nėra palaikomų failų."
+    },
+    "dialog.open_browser.favorites": {
+        "source": "Favorites",
+        "translation": "Mėgstamiausi"
+    },
+    "dialog.open_browser.file_read_failed": {
+        "source": "Cannot read this file: {error}",
+        "translation": "Nepavyko perskaityti šio failo: {error}"
+    },
+    "dialog.open_browser.filter": {
+        "source": "Show",
+        "translation": "Rodyti"
+    },
+    "dialog.open_browser.filter.all": {
+        "source": "All supported",
+        "translation": "Visi palaikomi"
+    },
+    "dialog.open_browser.filter.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV dygsnių duomenys"
+    },
+    "dialog.open_browser.filter.embroidery": {
+        "source": "Embroidery",
+        "translation": "Siuvinėjimas"
+    },
+    "dialog.open_browser.filter.svg": {
+        "source": "SVG source",
+        "translation": "SVG šaltinis"
+    },
+    "dialog.open_browser.fit": {
+        "source": "Fit",
+        "translation": "Pritaikyti"
+    },
+    "dialog.open_browser.folder": {
+        "source": "Folder",
+        "translation": "Aplankas"
+    },
+    "dialog.open_browser.folder_hint": {
+        "source": "Double-click the folder to browse its files.",
+        "translation": "Dukart spustelėk aplanką, kad peržiūrėtum jo failus."
+    },
+    "dialog.open_browser.folder_open_hint": {
+        "source": "Press Enter or double-click the folder to browse its files.",
+        "translation": "Paspauskite Enter arba dukart spustelėkite aplanką, kad peržiūrėtumėte jo failus."
+    },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Pirmyn"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Pirmyn į aplanką {folder} (Alt+Right)"
+    },
+    "dialog.open_browser.go": {
+        "source": "Go",
+        "translation": "Eiti"
+    },
+    "dialog.open_browser.home": {
+        "source": "Home",
+        "translation": "Namai"
+    },
+    "dialog.open_browser.icon_background": {
+        "source": "Icon background shading ({level}, 0 = black, 255 = white)\nShift+wheel over the list changes the shading.",
+        "translation": "Piktogramų fono šviesumas ({level}, 0 = juoda, 255 = balta)\nLaikydami Shift sukite pelės ratuką virš sąrašo, kad pakeistumėte šviesumą."
+    },
+    "dialog.open_browser.icon_size": {
+        "source": "Icon size ({size} px)\nCtrl+wheel over the list scales the icons.",
+        "translation": "Piktogramų dydis ({size} px)\nLaikydami Ctrl sukite pelės ratuką virš sąrašo, kad pakeistumėte piktogramų mastelį."
+    },
+    "dialog.open_browser.inkscape_launch_failed": {
+        "source": "Inkscape could not be started: {error}",
+        "translation": "Nepavyko paleisti „Inkscape“: {error}"
+    },
+    "dialog.open_browser.inkscape_required": {
+        "source": "Inkscape is required to edit SVG files.",
+        "translation": "SVG failams redaguoti reikia „Inkscape“."
+    },
+    "dialog.open_browser.inkstitch_required": {
+        "source": "A configured Ink/Stitch installation and Python launcher are required.",
+        "translation": "Būtina sukonfigūruota „Ink/Stitch“ instaliacija ir „Python“ paleidimo priemonė."
+    },
+    "dialog.open_browser.invalid_folder": {
+        "source": "This folder is not accessible.",
+        "translation": "Šis aplankas nepasiekiamas."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Iš: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Atidaryti šaltinio aplanką"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Atidaryti šaltinio aplanką {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Į: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Atidaryti paskirties aplanką"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Atidaryti paskirties aplanką {path}"
+    },
+    "dialog.open_browser.modified": {
+        "source": "Modified: {time}",
+        "translation": "Pakeista: {time}"
+    },
+    "dialog.open_browser.move_files": {
+        "source": "Move files",
+        "translation": "Perkelti failus"
+    },
+    "dialog.open_browser.moved_files": {
+        "source": "Moved {count} file(s)",
+        "translation": "Perkelta failų: {count}"
+    },
+    "dialog.open_browser.not_embroidery": {
         "source": "Not a valid embroidery file",
         "translation": "Netinkamas siuvinėjimo failas"
     },
-    "dialog.open.real_preview": {
-        "source": "Real preview",
-        "translation": "Tikroviška peržiūra"
+    "dialog.open_browser.open": {
+        "source": "Open",
+        "translation": "Atidaryti"
     },
-    "dialog.open.title": {
-        "source": "Open embroidery file",
-        "translation": "Atidaryti siuvinėjimo failą"
+    "dialog.open_browser.open_hint": {
+        "source": "Open the selected embroidery file.",
+        "translation": "Atidaryti pasirinktą siuvinėjimo failą."
+    },
+    "dialog.open_browser.palette": {
+        "source": "Colors…",
+        "translation": "Spalvos…"
+    },
+    "dialog.open_browser.palette_hint": {
+        "source": "Load thread colors from a palette file or another design.\nThey are kept next to this file as <name>.edr, because this format\ncannot store colors itself.",
+        "translation": "Įkelti siūlų spalvas iš paletės failo arba kito dizaino.\nJos saugomos šalia šio failo kaip <name>.edr, nes šis formatas\nnegali saugoti spalvų."
+    },
+    "dialog.open_browser.palette_hint_has_colors": {
+        "source": "This file already stores its own thread colors.",
+        "translation": "Šiame faile jau saugomos jo siūlų spalvos."
+    },
+    "dialog.open_browser.paste_files": {
+        "source": "Paste files",
+        "translation": "Įklijuoti failus"
+    },
+    "dialog.open_browser.path_placeholder": {
+        "source": "Enter or paste a folder path",
+        "translation": "Įveskite arba įklijuokite aplanko kelią"
+    },
+    "dialog.open_browser.places": {
+        "source": "Places",
+        "translation": "Vietos"
+    },
+    "dialog.open_browser.preview": {
+        "source": "Preview",
+        "translation": "Peržiūra"
+    },
+    "dialog.open_browser.preview_hint": {
+        "source": "Generate stitch data from this SVG with Inkscape/Ink/Stitch.",
+        "translation": "Sugeneruok dygsnių duomenis iš šio SVG naudodamas „Inkscape“ / „Ink/Stitch“."
+    },
+    "dialog.open_browser.preview_unavailable": {
+        "source": "Cannot run the active Ink/Stitch script or its configured Python launcher.",
+        "translation": "Nepavyko paleisti aktyvaus „Ink/Stitch“ scenarijaus arba sukonfigūruotos „Python“ paleidimo priemonės."
+    },
+    "dialog.open_browser.read_failed": {
+        "source": "Cannot read this folder: {error}",
+        "translation": "Nepavyko perskaityti šio aplanko: {error}"
+    },
+    "dialog.open_browser.recent": {
+        "source": "Recent:",
+        "translation": "Neseniai naudoti:"
+    },
+    "dialog.open_browser.recent_placeholder": {
+        "source": "— choose directory —",
+        "translation": "— pasirinkti aplanką —"
+    },
+    "dialog.open_browser.refresh": {
+        "source": "Refresh",
+        "translation": "Atnaujinti"
+    },
+    "dialog.open_browser.refresh_hint": {
+        "source": "Refresh this folder (Ctrl+R)",
+        "translation": "Atnaujinti šį aplanką (Ctrl+R)"
+    },
+    "dialog.open_browser.remove_favorite": {
+        "source": "Remove favorite",
+        "translation": "Pašalinti iš mėgstamiausių"
+    },
+    "dialog.open_browser.rotate_half": {
+        "source": "Rotate thumbnail 180°",
+        "translation": "Pasukti miniatiūrą 180°"
+    },
+    "dialog.open_browser.rotate_left": {
+        "source": "Rotate thumbnail left",
+        "translation": "Pasukti miniatiūrą į kairę"
+    },
+    "dialog.open_browser.rotate_needs_thumbnail": {
+        "source": "Select a design with a thumbnail to rotate it",
+        "translation": "Pasirinkite dizainą su miniatiūra, kad galėtumėte ją pasukti"
+    },
+    "dialog.open_browser.rotate_original": {
+        "source": "Original orientation",
+        "translation": "Pradinė padėtis"
+    },
+    "dialog.open_browser.rotate_right": {
+        "source": "Rotate thumbnail right",
+        "translation": "Pasukti miniatiūrą į dešinę"
+    },
+    "dialog.open_browser.rotated_thumbnails": {
+        "source": "Rotated {count} thumbnail(s) by {degrees}°",
+        "translation": "Pasuktų miniatiūrų: {count} ({degrees}°)"
+    },
+    "dialog.open_browser.search": {
+        "source": "Search files",
+        "translation": "Ieškoti failų"
+    },
+    "dialog.open_browser.select_file": {
+        "source": "Select a file to open.",
+        "translation": "Pasirink failą, kurį nori atidaryti."
+    },
+    "dialog.open_browser.size": {
+        "source": "Size: {size}",
+        "translation": "Dydis: {size}"
+    },
+    "dialog.open_browser.skip": {
+        "source": "dst|exp",
+        "translation": "dst|exp"
+    },
+    "dialog.open_browser.skip_hint": {
+        "source": "Hide these extensions in the dialog.\nSeparate them with | and the list is stored in config.toml.",
+        "translation": "Slėpti šiuos plėtinius dialogo lange.\nAtskirkite juos simboliu |; sąrašas įrašomas į config.toml."
+    },
+    "dialog.open_browser.skip_label": {
+        "source": "Skip",
+        "translation": "Praleisti"
+    },
+    "dialog.open_browser.status.inkscape": {
+        "source": "Inkscape: {path}",
+        "translation": "„Inkscape“: {path}"
+    },
+    "dialog.open_browser.status.inkscape_missing": {
+        "source": "Inkscape: not found.",
+        "translation": "„Inkscape“: nerasta."
+    },
+    "dialog.open_browser.status.inkstitch_check_failed": {
+        "source": "Ink/Stitch extension: could not check. Use Tools... to retry.",
+        "translation": "„Ink/Stitch“ plėtinys: nepavyko patikrinti. Bandyk dar kartą per „Įrankiai...“."
+    },
+    "dialog.open_browser.status.inkstitch_extension": {
+        "source": "Ink/Stitch extension: {path}",
+        "translation": "„Ink/Stitch“ plėtinys: {path}"
+    },
+    "dialog.open_browser.status.inkstitch_missing": {
+        "source": "Ink/Stitch extension: not found in Inkscape's extension directories.",
+        "translation": "„Ink/Stitch“ plėtinys: „Inkscape“ plėtinių aplankuose nerastas."
+    },
+    "dialog.open_browser.status.inkstitch_no_inkscape": {
+        "source": "Ink/Stitch extension: cannot check until Inkscape is configured.",
+        "translation": "„Ink/Stitch“ plėtinys: negalima patikrinti, kol nesukonfigūruota „Inkscape“."
+    },
+    "dialog.open_browser.status.inkstitch_unchecked": {
+        "source": "Ink/Stitch extension: not checked yet. Use Tools... to check.",
+        "translation": "„Ink/Stitch“ plėtinys: dar netikrintas. Patikrink per „Įrankiai...“."
+    },
+    "dialog.open_browser.stitches": {
+        "source": "Stitches: {count}",
+        "translation": "Dygsniai: {count}"
+    },
+    "dialog.open_browser.svg_caption_needs_inkscape": {
+        "source": "SVG source. Inkscape is required for stitch preview.",
+        "translation": "SVG šaltinis. Dygsnių peržiūrai reikia „Inkscape“."
+    },
+    "dialog.open_browser.svg_caption_ready": {
+        "source": "SVG source. Choose Preview to generate stitch data with Inkscape/Ink/Stitch.",
+        "translation": "SVG šaltinis. Pasirink „Peržiūra“, kad sugeneruotum dygsnių duomenis su „Inkscape“ / „Ink/Stitch“."
+    },
+    "dialog.open_browser.svg_invalid": {
+        "source": "The SVG could not be rendered.",
+        "translation": "Nepavyko atvaizduoti SVG failo."
+    },
+    "dialog.open_browser.svg_too_large": {
+        "source": "This SVG is too large to preview here.",
+        "translation": "Šis SVG failas per didelis peržiūrai."
+    },
+    "dialog.open_browser.temp_file_failed": {
+        "source": "Could not create a temporary preview file: {error}",
+        "translation": "Nepavyko sukurti laikino peržiūros failo: {error}"
+    },
+    "dialog.open_browser.thumbnails_done": {
+        "source": "Thumbnails: {created} created, {skipped} up to date, {failed} failed",
+        "translation": "Miniatiūros: sukurta {created}, atnaujintų {skipped}, nepavyko {failed}"
+    },
+    "dialog.open_browser.thumbnails_progress": {
+        "source": "Thumbnails: {done}/{total}",
+        "translation": "Miniatiūros: {done}/{total}"
+    },
+    "dialog.open_browser.thumbnails_restored": {
+        "source": "Restored the original orientation of {count} thumbnail(s)",
+        "translation": "Atkurta pradinė {count} miniatiūrų padėtis"
+    },
+    "dialog.open_browser.thumbnails_running": {
+        "source": "Creating thumbnails…",
+        "translation": "Kuriamos miniatiūros…"
+    },
+    "dialog.open_browser.title": {
+        "source": "Open file",
+        "translation": "Atidaryti failą"
+    },
+    "dialog.open_browser.tools": {
+        "source": "Tools...",
+        "translation": "Įrankiai..."
+    },
+    "dialog.open_browser.transfer_conflict_title": {
+        "source": "Files already exist",
+        "translation": "Failai jau yra"
+    },
+    "dialog.open_browser.transfer_failed": {
+        "source": "File transfer failed: {error}",
+        "translation": "Nepavyko perkelti failų: {error}"
+    },
+    "dialog.open_browser.transfer_failed_title": {
+        "source": "File transfer failed",
+        "translation": "Nepavyko perkelti failų"
+    },
+    "dialog.open_browser.transfer_folder_conflict": {
+        "source": "These destination paths already exist, including folders that cannot be replaced by files. Nothing was transferred:\n{files}",
+        "translation": "Šie paskirties keliai jau naudojami, įskaitant aplankus, kurių negalima pakeisti failais. Nieko neperkelta:\n{files}"
+    },
+    "dialog.open_browser.transfer_folder_conflict_title": {
+        "source": "Cannot replace folders",
+        "translation": "Negalima pakeisti aplankų"
+    },
+    "dialog.open_browser.transfer_ready": {
+        "source": "{operation} ready: {count} file(s)",
+        "translation": "{operation} paruošta: failų {count}"
+    },
+    "dialog.open_browser.transfer_replace_all": {
+        "source": "These destination files already exist:\n{files}\n\nReplace all of them?",
+        "translation": "Šie paskirties failai jau yra:\n{files}\n\nPakeisti juos visus?"
+    },
+    "dialog.open_browser.transfer_same_folder": {
+        "source": "These files are already here.",
+        "translation": "Šie failai jau yra čia."
+    },
+    "dialog.open_browser.type.csv": {
+        "source": "CSV stitch data",
+        "translation": "CSV dygsnių duomenys"
+    },
+    "dialog.open_browser.type.directory": {
+        "source": "Folder",
+        "translation": "Aplankas"
+    },
+    "dialog.open_browser.type.embroidery": {
+        "source": "Embroidery",
+        "translation": "Siuvinėjimas"
+    },
+    "dialog.open_browser.type.other": {
+        "source": "Unsupported",
+        "translation": "Nepalaikomas"
+    },
+    "dialog.open_browser.type.svg": {
+        "source": "SVG source",
+        "translation": "SVG šaltinis"
+    },
+    "dialog.open_browser.unsupported": {
+        "source": "This file type cannot be opened in InkSim.",
+        "translation": "„InkSim“ negali atidaryti šio tipo failo."
+    },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Atidaryti aukštesnio lygio aplanką (Alt+Up)"
+    },
+    "dialog.open_browser.view": {
+        "source": "View",
+        "translation": "Rodinys"
+    },
+    "dialog.open_browser.view.details": {
+        "source": "Details",
+        "translation": "Išsami informacija"
+    },
+    "dialog.open_browser.view.icons": {
+        "source": "Icons only",
+        "translation": "Tik piktogramos"
+    },
+    "dialog.open_browser.view.icons_text": {
+        "source": "Icons & text",
+        "translation": "Piktogramos ir tekstas"
+    },
+    "dialog.open_browser.zoom_in": {
+        "source": "Zoom in",
+        "translation": "Priartinti"
+    },
+    "dialog.open_browser.zoom_out": {
+        "source": "Zoom out",
+        "translation": "Nutolinti"
+    },
+    "dialog.palette.choose": {
+        "source": "Choose a palette or a colored design",
+        "translation": "Pasirinkite paletę arba spalvotą dizainą"
+    },
+    "dialog.palette.empty": {
+        "source": "{name} stores no thread colors.",
+        "translation": "{name} neišsaugota siūlų spalvų."
+    },
+    "dialog.palette.filter.all": {
+        "source": "All files",
+        "translation": "Visi failai"
+    },
+    "dialog.palette.filter.designs": {
+        "source": "Design files (colors when stored)",
+        "translation": "Dizaino failai (jei išsaugotos spalvos)"
+    },
+    "dialog.palette.filter.palette": {
+        "source": "Palette files",
+        "translation": "Paletės failai"
+    },
+    "dialog.palette.has_colors": {
+        "source": "This design already stores its own thread colors.",
+        "translation": "Šiame dizaine jau išsaugotos jo siūlų spalvos."
+    },
+    "dialog.palette.replace": {
+        "source": "{name} already stores colors for this design.\nReplace it with {target}?",
+        "translation": "{name} jau saugomos šio dizaino spalvos.\nPakeisti jas į {target}?"
+    },
+    "dialog.palette.save_sidecar.remember": {
+        "source": "Remember my choice",
+        "translation": "Atsiminti mano pasirinkimą"
+    },
+    "dialog.palette.save_sidecar.text": {
+        "source": "{format} keeps no thread colors.\nSave them as {name} next to the design?",
+        "translation": "{format} formatas neišsaugo siūlų spalvų.\nIšsaugoti jas kaip {name} šalia dizaino?"
+    },
+    "dialog.palette.title": {
+        "source": "Thread colors",
+        "translation": "Siūlų spalvos"
+    },
+    "dialog.palette.too_few": {
+        "source": "{name} has {available} colors but the design has {blocks} color blocks.\nUse it anyway? The last color will repeat.",
+        "translation": "{name} yra {available} spalvų, o dizaine – {blocks} spalvų blokų.\nVis tiek naudoti? Paskutinė spalva bus kartojama."
+    },
+    "dialog.palette.write_failed": {
+        "source": "Could not save the colors: {error}",
+        "translation": "Nepavyko išsaugoti spalvų: {error}"
     },
     "dialog.renderer.title": {
         "source": "Choose stitch renderer",
         "translation": "Pasirink dygsnių atvaizdavimo būdą"
+    },
+    "integration.inkscape.change": {
+        "source": "Change",
+        "translation": "Keisti"
+    },
+    "integration.inkscape.config_save_failed": {
+        "source": "Could not save the Inkscape extension status: {error}",
+        "translation": "Nepavyko išsaugoti „Inkscape“ plėtinio būsenos: {error}"
+    },
+    "integration.inkscape.directory_unavailable": {
+        "source": "Unavailable",
+        "translation": "Nepasiekiamas"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape vykdomasis failas arba visa komandinė eilutė, pavyzdžiui, „flatpak run org.inkscape.Inkscape“. Paspausk Enter, kad patikrintum."
+    },
+    "integration.inkscape.inksim_debug_script": {
+        "source": "Create debug script (debug_inksim.sh)",
+        "translation": "Sukurti derinimo scenarijų (debug_inksim.sh)"
+    },
+    "integration.inkscape.inksim_debug_script_failed": {
+        "source": "Could not change the debug script setting.",
+        "translation": "Nepavyko pakeisti derinimo scenarijaus nustatymo."
+    },
+    "integration.inkscape.inksim_debug_script_hint": {
+        "source": "Writes debug_inksim.sh next to the document so the Inkscape invocation can be replayed.",
+        "translation": "Šalia dokumento įrašo debug_inksim.sh, kad būtų galima pakartoti Inkscape paleidimą."
+    },
+    "integration.inkscape.inksim_none": {
+        "source": "No InkSim extension folders were found.",
+        "translation": "„InkSim“ plėtinių aplankų nerasta."
+    },
+    "integration.inkscape.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Nepavyko patikrinti „Inkscape“ plėtinių aplankų: {error}"
+    },
+    "integration.inkscape.inksim_status_changed_command": {
+        "source": "Preview command changed",
+        "translation": "Peržiūros komanda pasikeitė"
+    },
+    "integration.inkscape.inksim_status_changed_files": {
+        "source": "changed files: {files}",
+        "translation": "pakeisti failai: {files}"
+    },
+    "integration.inkscape.inksim_status_current": {
+        "source": "Up to date",
+        "translation": "Atnaujinta"
+    },
+    "integration.inkscape.inksim_status_install": {
+        "source": "Installation required",
+        "translation": "Reikia įdiegti"
+    },
+    "integration.inkscape.inksim_status_unavailable": {
+        "source": "Status unavailable: {error}",
+        "translation": "Būsena nepasiekiama: {error}"
+    },
+    "integration.inkscape.inksim_status_update": {
+        "source": "Update required ({details})",
+        "translation": "Reikia atnaujinti ({details})"
+    },
+    "integration.inkscape.inksim_system": {
+        "source": "System extension: {path}",
+        "translation": "Sistemos plėtinys: {path}"
+    },
+    "integration.inkscape.inksim_user_current_path": {
+        "source": "Current user extension (install/update target): {path}",
+        "translation": "Dabartinis naudotojo plėtinys (diegimo / atnaujinimo vieta): {path}"
+    },
+    "integration.inkscape.inksim_user_other": {
+        "source": "Other user extension: {path}",
+        "translation": "Kito naudotojo plėtinys: {path}"
+    },
+    "integration.inkscape.inkstitch_link_changed_notice": {
+        "source": "Ink/Stitch in the Inkscape extensions folder changed since the last setup:\n\n{details}\n\nInkSim uses the current link. Open the Inkscape setup to store it.",
+        "translation": "Ink/Stitch nuoroda Inkscape plėtinių aplanke pasikeitė nuo paskutinio nustatymo:\n\n{details}\n\nInkSim naudoja dabartinę nuorodą. Atidarykite Inkscape sąranką, kad ją išsaugotumėte."
+    },
+    "integration.inkscape.inkstitch_link_missing": {
+        "source": "folder is gone: {path}",
+        "translation": "aplanko nebėra: {path}"
+    },
+    "integration.inkscape.inkstitch_link_moved": {
+        "source": "now points to: {path}",
+        "translation": "dabar nurodo į: {path}"
+    },
+    "integration.inkscape.install_extensions": {
+        "source": "Install / Update InkSim extensions",
+        "translation": "Įdiegti / atnaujinti „InkSim“ plėtinius"
+    },
+    "integration.inkscape.install_extensions_confirm": {
+        "source": "Some files already exist in the InkSim extension folder. Files listed for replacement may contain user changes. Other listed files will be preserved and never deleted.\n\nFiles to replace:\n{replace_files}\n\nFiles to preserve:\n{preserve_files}\n\nContinue?",
+        "translation": "Kai kurie failai „InkSim“ plėtinių aplanke jau yra. Keičiami failai gali turėti tavo pakeitimų. Kiti išvardyti failai bus išsaugoti ir niekada nebus ištrinti.\n\nKeičiami failai:\n{replace_files}\n\nIšsaugomi failai:\n{preserve_files}\n\nTęsti?"
+    },
+    "integration.inkscape.install_extensions_failed": {
+        "source": "Could not install InkSim's Inkscape extensions: {error}",
+        "translation": "Nepavyko įdiegti „InkSim“ „Inkscape“ plėtinių: {error}"
+    },
+    "integration.inkscape.install_extensions_success": {
+        "source": "InkSim's Inkscape extensions were installed or updated in {path}. Restart Inkscape to load them.",
+        "translation": "„InkSim“ „Inkscape“ plėtiniai įdiegti arba atnaujinti vietoje {path}. Paleisk „Inkscape“ iš naujo, kad jie būtų įkelti."
+    },
+    "integration.inkscape.install_none": {
+        "source": "None",
+        "translation": "Nėra"
+    },
+    "integration.inkscape.interpreter_apply": {
+        "source": "Apply",
+        "translation": "Taikyti"
+    },
+    "integration.inkscape.interpreter_confirm": {
+        "source": "Change the Python interpreter for all Inkscape extensions to:\n\n{path}\n\nThis changes a global Inkscape preference. Continue?",
+        "translation": "Pakeisti visų Inkscape plėtinių Python interpretatorių į:\n\n{path}\n\nTai pakeis bendrą Inkscape nuostatą. Tęsti?"
+    },
+    "integration.inkscape.interpreter_custom": {
+        "source": "Custom path…",
+        "translation": "Pasirinktinis kelias…"
+    },
+    "integration.inkscape.interpreter_custom_title": {
+        "source": "Select a Python interpreter",
+        "translation": "Pasirinkite Python interpretatorių"
+    },
+    "integration.inkscape.interpreter_hint": {
+        "source": "Optional — only for extensions with their own Python environment",
+        "translation": "Pasirinktinai — tik plėtiniams, turintiems atskirą Python aplinką"
+    },
+    "integration.inkscape.interpreter_hint_tooltip": {
+        "source": "Only extensions that ask Inkscape for its Python interpreter need this (e.g. Ink/Stitch).\nInkSim's own extensions start InkSim directly.",
+        "translation": "Tai reikalinga tik tiems plėtiniams, kurie prašo Inkscape Python interpretatoriaus (pvz., Ink/Stitch).\nInkSim plėtiniai paleidžia InkSim tiesiogiai."
+    },
+    "integration.inkscape.interpreter_inkstitch": {
+        "source": "Ink/Stitch environment ({path})",
+        "translation": "Ink/Stitch aplinka ({path})"
+    },
+    "integration.inkscape.interpreter_keep": {
+        "source": "Do not change (recommended)",
+        "translation": "Nekeisti (rekomenduojama)"
+    },
+    "integration.inkscape.interpreter_remove": {
+        "source": "Remove the interpreter setting",
+        "translation": "Pašalinti interpretatoriaus nuostatą"
+    },
+    "integration.inkscape.interpreter_remove_confirm": {
+        "source": "Remove the Python interpreter setting from:\n\n{path}\n\nInkscape falls back to its default interpreter for every extension. Continue?",
+        "translation": "Pašalinti Python interpretatoriaus nuostatą iš:\n\n{path}\n\nInkscape visiems plėtiniams naudos numatytąjį interpretatorių. Tęsti?"
+    },
+    "integration.inkscape.interpreter_restore": {
+        "source": "Restore previous",
+        "translation": "Atkurti ankstesnį"
+    },
+    "integration.inkscape.interpreter_uvr": {
+        "source": "uvr launcher ({path})",
+        "translation": "uvr paleidyklė ({path})"
+    },
+    "integration.inkscape.label": {
+        "source": "Inkscape:",
+        "translation": "„Inkscape“:"
+    },
+    "integration.inkscape.not_found": {
+        "source": "Inkscape was not found on the system path.",
+        "translation": "„Inkscape“ nerasta sistemos paieškos kelyje."
+    },
+    "integration.inkscape.preferences_read_failed": {
+        "source": "Could not read Inkscape preferences: {error}",
+        "translation": "Nepavyko perskaityti „Inkscape“ nuostatų: {error}"
+    },
+    "integration.inkscape.preferences_write_failed": {
+        "source": "Could not update Inkscape preferences: {error}",
+        "translation": "Nepavyko atnaujinti „Inkscape“ nuostatų: {error}"
+    },
+    "integration.inkscape.probe_failed": {
+        "source": "Could not read Inkscape extension directories: {error}",
+        "translation": "Nepavyko perskaityti „Inkscape“ plėtinių aplankų: {error}"
+    },
+    "integration.inkscape.probing": {
+        "source": "Waiting for Inkscape to respond…",
+        "translation": "Laukiama „Inkscape“ atsakymo…"
+    },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Tikrinama „Inkscape“... {seconds} s"
+    },
+    "integration.inkscape.python_interpreter": {
+        "source": "Python interpreter: {path}",
+        "translation": "„Python“ interpretatorius: {path}"
+    },
+    "integration.inkscape.python_interpreter_restart": {
+        "source": "Restart Inkscape to apply the new Python interpreter.",
+        "translation": "Paleisk „Inkscape“ iš naujo, kad būtų pritaikytas naujas „Python“ interpretatorius."
+    },
+    "integration.inkscape.python_interpreter_source": {
+        "source": "Python interpreter ({file}): {path}",
+        "translation": "Python interpretatorius ({file}): {path}"
+    },
+    "integration.inkscape.python_interpreter_unset": {
+        "source": "not set",
+        "translation": "nenustatytas"
+    },
+    "integration.inkscape.remove_old_extensions": {
+        "source": "Remove old InkSim copies",
+        "translation": "Pašalinti senas „InkSim“ kopijas"
+    },
+    "integration.inkscape.remove_old_extensions_confirm": {
+        "source": "The listed user extension folders and all files inside them will be permanently deleted. The current install/update target and system extension folders will not be removed.\n\n{directories}\n\nContinue?",
+        "translation": "Išvardyti naudotojo plėtinių aplankai ir visi juose esantys failai bus negrįžtamai ištrinti. Dabartinė diegimo / atnaujinimo vieta ir sistemos plėtinių aplankai nebus pašalinti.\n\n{directories}\n\nTęsti?"
+    },
+    "integration.inkscape.remove_old_extensions_failed": {
+        "source": "Could not remove the old InkSim extension folder: {error}",
+        "translation": "Nepavyko pašalinti seno „InkSim“ plėtinio aplanko: {error}"
+    },
+    "integration.inkscape.remove_old_extensions_success": {
+        "source": "Old InkSim extension folders were removed. Restart Inkscape to refresh its extension list.",
+        "translation": "Seni „InkSim“ plėtinių aplankai pašalinti. Paleisk „Inkscape“ iš naujo, kad plėtinių sąrašas būtų atnaujintas."
+    },
+    "integration.inkscape.report.active_inkstitch_updated": {
+        "source": "Active Ink/Stitch installation updated: {path}",
+        "translation": "Aktyvus „Ink/Stitch“ dieginys atnaujintas: {path}"
+    },
+    "integration.inkscape.report.checking": {
+        "source": "Checking Inkscape: {path}",
+        "translation": "Tikrinama „Inkscape“: {path}"
+    },
+    "integration.inkscape.report.config_save_failed": {
+        "source": "Could not save the InkSim configuration: {error}",
+        "translation": "Nepavyko išsaugoti „InkSim“ konfigūracijos: {error}"
+    },
+    "integration.inkscape.report.config_saved": {
+        "source": "Saved the detected setup to the InkSim configuration.",
+        "translation": "Aptikta sąranka išsaugota „InkSim“ konfigūracijoje."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "„Inkscape“ komanda išsaugota, bet patikra nepavyko, todėl plėtinių aplankai nebuvo atnaujinti."
+    },
+    "integration.inkscape.report.executable": {
+        "source": "Checked Inkscape executable: {path}",
+        "translation": "Patikrinta „Inkscape“ vykdomoji programa: {path}"
+    },
+    "integration.inkscape.report.inksim_scan_failed": {
+        "source": "Could not inspect Inkscape extension folders: {error}",
+        "translation": "Nepavyko patikrinti „InkSim“ plėtinių aplankų."
+    },
+    "integration.inkscape.report.inkstitch_found": {
+        "source": "Ink/Stitch installations found: {count}",
+        "translation": "Rasta „Ink/Stitch“ dieginių: {count}"
+    },
+    "integration.inkscape.report.inkstitch_link_changed": {
+        "source": "The Ink/Stitch link in the Inkscape extensions folder now points to: {path}",
+        "translation": "Ink/Stitch nuoroda Inkscape plėtinių aplanke dabar nurodo į: {path}"
+    },
+    "integration.inkscape.report.inkstitch_none": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "„Ink/Stitch“ dieginys nerastas."
+    },
+    "integration.inkscape.report.interpreter_current": {
+        "source": "Inkscape extension Python interpreter: {path} (left unchanged)",
+        "translation": "Inkscape plėtinių Python interpretatorius: {path} (nepakeistas)"
+    },
+    "integration.inkscape.report.interpreter_removed": {
+        "source": "Removed the Inkscape Python interpreter preference.",
+        "translation": "Inkscape Python interpretatoriaus nuostata pašalinta."
+    },
+    "integration.inkscape.report.interpreter_restored": {
+        "source": "Restored the previous Python interpreter: {path}",
+        "translation": "Atkurtas ankstesnis Python interpretatorius: {path}"
+    },
+    "integration.inkscape.report.interpreter_updated": {
+        "source": "Updated Python interpreter: {path}",
+        "translation": "Atnaujintas „Python“ interpretatorius: {path}"
+    },
+    "integration.inkscape.report.not_found": {
+        "source": "Inkscape was not found. Choose its executable to inspect the setup.",
+        "translation": "„Inkscape“ nerasta. Pasirink jos vykdomąjį failą, kad patikrintum sąranką."
+    },
+    "integration.inkscape.report.preferences": {
+        "source": "Checked Inkscape preferences: {path}",
+        "translation": "Patikrintos „Inkscape“ nuostatos: {path}"
+    },
+    "integration.inkscape.report.preferences_error": {
+        "source": "Could not check or update the Python interpreter: {error}",
+        "translation": "Nepavyko patikrinti arba atnaujinti „Python“ interpretatoriaus: {error}"
+    },
+    "integration.inkscape.report.preferences_skipped": {
+        "source": "Python interpreter preference was not checked because the user extensions directory is unavailable.",
+        "translation": "„Python“ interpretatoriaus nuostata nepatikrinta, nes naudotojo plėtinių aplankas nepasiekiamas."
+    },
+    "integration.inkscape.report.probe_failed": {
+        "source": "Could not inspect Inkscape: {error}",
+        "translation": "Nepavyko patikrinti „Inkscape“: {error}"
+    },
+    "integration.inkscape.report.restart": {
+        "source": "Restart Inkscape to apply the updated interpreter.",
+        "translation": "Paleisk „Inkscape“ iš naujo, kad būtų pritaikytas atnaujintas interpretatorius."
+    },
+    "integration.inkscape.report.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Sistemos plėtiniai: {path}"
+    },
+    "integration.inkscape.report.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds.",
+        "translation": "„Inkscape“ neatsakė per {seconds} sek."
+    },
+    "integration.inkscape.report.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Naudotojo plėtiniai: {path}"
+    },
+    "integration.inkscape.report.uvr_available": {
+        "source": "The optional uvr launcher is available: {path}",
+        "translation": "Pasirinktinė uvr paleidyklė pasiekiama: {path}"
+    },
+    "integration.inkscape.report.uvr_missing": {
+        "source": "The optional uvr launcher was not found; the Inkscape interpreter preference is left unchanged.",
+        "translation": "Pasirinktinė uvr paleidyklė nerasta; Inkscape interpretatoriaus nuostata nepakeista."
+    },
+    "integration.inkscape.report.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "„Inkscape“ versija: {version}"
+    },
+    "integration.inkscape.report.waiting": {
+        "source": "Choose an Inkscape executable to inspect.",
+        "translation": "Pasirink „Inkscape“ vykdomąjį failą, kad patikrintum."
+    },
+    "integration.inkscape.section.application": {
+        "source": "Inkscape application",
+        "translation": "Inkscape programa"
+    },
+    "integration.inkscape.section.extensions": {
+        "source": "Extensions",
+        "translation": "Plėtiniai"
+    },
+    "integration.inkscape.section.inksim": {
+        "source": "InkSim",
+        "translation": "InkSim"
+    },
+    "integration.inkscape.section.inkstitch": {
+        "source": "Ink/Stitch",
+        "translation": "Ink/Stitch"
+    },
+    "integration.inkscape.section.report": {
+        "source": "Report",
+        "translation": "Ataskaita"
+    },
+    "integration.inkscape.system_extensions": {
+        "source": "System extensions: {path}",
+        "translation": "Sistemos plėtiniai: {path}"
+    },
+    "integration.inkscape.timeout": {
+        "source": "Inkscape did not respond within {seconds} seconds. Another Inkscape instance or an extension may be blocking communication. Close other Inkscape instances or disable the blocking extension, then try again.",
+        "translation": "„Inkscape“ neatsakė per {seconds} sek. Ryšį gali blokuoti kitas „Inkscape“ egzempliorius arba plėtinys. Uždaryk kitus „Inkscape“ egzempliorius arba išjunk blokuojantį plėtinį ir bandyk dar kartą."
+    },
+    "integration.inkscape.title": {
+        "source": "Inkscape",
+        "translation": "„Inkscape“"
+    },
+    "integration.inkscape.user_extensions": {
+        "source": "User extensions: {path}",
+        "translation": "Naudotojo plėtiniai: {path}"
+    },
+    "integration.inkscape.version": {
+        "source": "Inkscape version: {version}",
+        "translation": "„Inkscape“ versija: {version}"
+    },
+    "integration.inkscape.version_unavailable": {
+        "source": "Unavailable",
+        "translation": "Nepasiekiama"
+    },
+    "integration.inkstitch.command": {
+        "source": "Command: {value}",
+        "translation": "Komanda: {value}"
+    },
+    "integration.inkstitch.interpreter": {
+        "source": "Interpreter: {value}",
+        "translation": "Interpretatorius: {value}"
+    },
+    "integration.inkstitch.location": {
+        "source": "Location: {value}",
+        "translation": "Vieta: {value}"
+    },
+    "integration.inkstitch.not_found": {
+        "source": "No Ink/Stitch installation was found.",
+        "translation": "„Ink/Stitch“ dieginys nerastas."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Įdiek „Ink/Stitch“ į vieną iš aukščiau nurodytų „Inkscape“ plėtinių aplankų."
+    },
+    "integration.inkstitch.resolved_path": {
+        "source": "Path: {path}",
+        "translation": "Kelias: {path}"
     },
     "menu.file": {
         "source": "&File",
@@ -162,6 +1082,26 @@
     "menu.file.choose_renderer": {
         "source": "Choose stitch renderer...",
         "translation": "Pasirinkti dygsnių atvaizdavimo būdą..."
+    },
+    "menu.file.colors_on_save": {
+        "source": "Colors on save",
+        "translation": "Spalvos išsaugant"
+    },
+    "menu.file.colors_on_save.always": {
+        "source": "Always write the palette",
+        "translation": "Visada įrašyti paletę"
+    },
+    "menu.file.colors_on_save.ask": {
+        "source": "Ask every time",
+        "translation": "Klausti kaskart"
+    },
+    "menu.file.colors_on_save.format": {
+        "source": "Palette format",
+        "translation": "Paletės formatas"
+    },
+    "menu.file.colors_on_save.never": {
+        "source": "Never write the palette",
+        "translation": "Niekada neįrašyti paletės"
     },
     "menu.file.export": {
         "source": "Export",
@@ -187,13 +1127,17 @@
         "source": "GPU textured render",
         "translation": "GPU tekstūrinis atvaizdavimas"
     },
-    "menu.file.open": {
-        "source": "Open embroidery file",
-        "translation": "Atidaryti siuvinėjimo failą"
+    "menu.file.load_palette": {
+        "source": "Load palette…",
+        "translation": "Įkelti paletę…"
     },
-    "menu.file.quit": {
-        "source": "Quit",
-        "translation": "Išeiti"
+    "menu.file.open_file": {
+        "source": "Open...",
+        "translation": "Atidaryti..."
+    },
+    "menu.file.quit_all": {
+        "source": "Quit all windows & server",
+        "translation": "Išeiti iš visų langų ir serverio"
     },
     "menu.file.rotate_left": {
         "source": "Rotate left 90 deg",
@@ -243,9 +1187,17 @@
         "source": "Trace events",
         "translation": "Įvykių sekimas"
     },
+    "menu.integration": {
+        "source": "&Tools",
+        "translation": "&Įrankiai"
+    },
+    "menu.integration.locate_inkscape": {
+        "source": "Inkscape Setup...",
+        "translation": "Inkscape sąranka..."
+    },
     "menu.language": {
-        "source": "Language",
-        "translation": "Kalba"
+        "source": "&Language",
+        "translation": "&Kalba"
     },
     "menu.language.system_default": {
         "source": "System default",
@@ -374,6 +1326,10 @@
     "status.needle.settings": {
         "source": "Needle crosshair settings",
         "translation": "Adatos kryželio nustatymai"
+    },
+    "status.palette_saved": {
+        "source": "Colors of {palette} saved as {name}",
+        "translation": "{palette} spalvos išsaugotos kaip {name}"
     },
     "status.slider.color": {
         "source": "Color…",
