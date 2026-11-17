@@ -975,10 +975,13 @@ def test_startup_is_quiet_when_the_inkstitch_link_is_unchanged(tmp_path, qtbot, 
     window.close()
 
 
-def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
+def test_inkscape_dialog_change_reloads_selected_program(qtbot, tmp_path, monkeypatch):
     """Selecting another executable refreshes its extension directories."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
 
+    executable = tmp_path / "bin" / "inkscape"
+    executable.parent.mkdir()
+    executable.touch()
     monkeypatch.setattr("inksim.gui.inkscape_dialog.shutil.which", lambda _: None)
     monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
     _fake_inkscape_probe(
@@ -987,7 +990,7 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     )
     monkeypatch.setattr(
         "inksim.gui.inkscape_dialog.QFileDialog.getOpenFileName",
-        lambda *args, **kwargs: ("/custom/bin/inkscape", ""),
+        lambda *args, **kwargs: (str(executable), ""),
     )
     dialog = InkscapeIntegrationDialog(None, None)
     qtbot.addWidget(dialog)
@@ -996,7 +999,7 @@ def test_inkscape_dialog_change_reloads_selected_program(qtbot, monkeypatch):
     dialog.change_button.click()
     _wait_for_probe(qtbot, dialog)
 
-    assert dialog.executable_combo.currentText() == str(Path("/custom/bin/inkscape").resolve())
+    assert dialog.executable_combo.currentText() == str(executable.resolve())
     assert dialog.user_extensions_label.text().endswith(str(Path("/custom/user/extensions")))
     assert dialog.system_extensions_label.text().endswith(str(Path("/custom/system/extensions")))
 
@@ -1812,6 +1815,55 @@ def test_typed_launcher_is_saved_when_the_probe_fails(qtbot, tmp_path, monkeypat
     assert status["executable"] == command
     assert status["status"] == "error"
     assert "user_extensions" not in status
+
+
+def test_activated_launcher_is_probed_with_the_real_home_path(qtbot, tmp_path, monkeypatch):
+    """The shortened display text must not become the argument handed to the probe."""
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import ToolInfo, ToolStatus
+
+    home = tmp_path / "home"
+    home.mkdir()
+    script = home / "launcher.py"
+    script.touch()
+    command = f"/usr/bin/python3 {script}"
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.Config", lambda: Config(tmp_path / "config.toml")
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.detect_tools",
+        lambda: ToolStatus(
+            inkscape=ToolInfo("Inkscape", command, "PATH"),
+            inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+        ),
+    )
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
+    starts = _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": "/custom/user", "--system-data-directory": "/custom/system"},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, None)
+    qtbot.addWidget(dialog)
+    shown = dialog.executable_combo.itemText(0)
+    assert "~" in shown
+    assert str(home) not in shown
+
+    dialog.executable_combo.setCurrentIndex(0)
+    dialog.executable_combo.activated.emit(0)
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts[0][1][0] == str(script)
+
+    # A hand-edited command can still carry the shortcut QProcess does not expand.
+    dialog.executable_combo.setEditText("/usr/bin/python3 ~/launcher.py --flag")
+    dialog.executable_combo.lineEdit().editingFinished.emit()
+    qtbot.waitUntil(lambda: not dialog.probe_status_label.isHidden())
+    _wait_for_probe(qtbot, dialog)
+
+    assert starts[-1][1][:2] == [str(script), "--flag"]
 
 
 def test_detected_flatpak_launcher_can_be_selected(qtbot, monkeypatch):
