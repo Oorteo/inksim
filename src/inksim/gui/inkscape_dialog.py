@@ -573,6 +573,8 @@ class InkscapeIntegrationDialog(QDialog):
             self._set_report([_("integration.inkscape.report.not_found")])
             return
 
+        self._preferences_file = None
+        self._sync_interpreter_buttons()
         self._probed_command = _sanitize_path_text(executable)
         self.executable_combo.setEditText(self._probed_command)
         self._start_probe(executable)

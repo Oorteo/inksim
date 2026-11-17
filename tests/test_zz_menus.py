@@ -484,6 +484,43 @@ def _wait_for_probe(qtbot, dialog):
     )
 
 
+def test_interpreter_actions_are_disabled_during_a_new_inkscape_probe(tmp_path, qtbot, monkeypatch):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    user_data = tmp_path / "user-data"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    (user_data / "preferences.xml").write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/inkscape-a/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    dialog.interpreter_combo.setCurrentIndex(1)
+    assert dialog.apply_interpreter_button.isEnabled()
+    dialog._interpreter_backup = "previous-python"
+    dialog._sync_interpreter_buttons()
+    assert dialog.restore_interpreter_button.isEnabled()
+
+    def leave_probe_pending(_executable):
+        assert dialog._preferences_file is None
+        assert not dialog.apply_interpreter_button.isEnabled()
+        assert not dialog.restore_interpreter_button.isEnabled()
+
+    monkeypatch.setattr(dialog, "_start_probe", leave_probe_pending)
+    dialog._set_executable("/opt/inkscape-b/bin/inkscape")
+
+
 def _missing_tools():
     """Report no Inkscape or Ink/Stitch so a test only sees what it configures itself."""
     from inksim.integration.paths import ToolInfo, ToolStatus
