@@ -938,13 +938,16 @@ class InkscapeIntegrationDialog(QDialog):
                 )
         else:
             report_entries.append(_("integration.inkscape.report.preferences_skipped"))
-        previous_backup = (
-            previous_status.get("python-interpreter-backup")
-            if isinstance(previous_status, dict)
-            else None
-        )
         self._preferences_file = None if preferences_error is not None else preferences_file
         self._interpreter_current = python_interpreter
+        previous_backup = None
+        if self._preferences_file is not None and isinstance(previous_status, dict):
+            previous_preferences = previous_status.get("preferences_file")
+            if (
+                isinstance(previous_preferences, str)
+                and Path(previous_preferences).expanduser().resolve() == self._preferences_file
+            ):
+                previous_backup = previous_status.get("python-interpreter-backup")
         self._interpreter_backup = previous_backup if isinstance(previous_backup, str) else None
         if self._preferences_file is not None:
             uvr_executable = self._find_uvr_executable(python_interpreter)

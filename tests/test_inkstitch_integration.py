@@ -238,6 +238,30 @@ def test_preview_uses_the_configured_interpreter_without_a_checkout_virtualenv(t
     )
 
 
+def test_preview_resolves_configured_interpreter_name_from_path(tmp_path, monkeypatch):
+    project = _checkout(tmp_path, virtualenv=False)
+    python_name = "python3.exe" if sys.platform == "win32" else "python3"
+    python_bin = tmp_path / "python-bin"
+    python_bin.mkdir()
+    configured_python = python_bin / python_name
+    configured_python.write_text("", encoding="utf-8")
+    configured_python.chmod(0o755)
+    monkeypatch.setenv("PATH", str(python_bin))
+    status = {
+        "active_inkstitch": str(project / "inx"),
+        "inkstitch": [_installation(project)],
+        "python-interpretor": "python3",
+    }
+
+    resolved = resolve_inkstitch_preview(status)
+
+    assert resolved == (
+        (project / "inkstitch.py").resolve(),
+        configured_python.resolve(),
+        (project / "inx").resolve(),
+    )
+
+
 def test_preview_runs_frozen_builds_without_an_interpreter(tmp_path):
     """Frozen Ink/Stitch ships its own executable, so no Python preference is needed."""
     project = _checkout(tmp_path, virtualenv=False)

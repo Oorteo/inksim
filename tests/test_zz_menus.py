@@ -1117,6 +1117,52 @@ def test_inkstitch_command_is_discovered_from_about_inx(tmp_path, qtbot, monkeyp
     assert "Saved the detected setup to the InkSim configuration." in report
 
 
+def test_interpreter_backup_is_not_reused_for_another_preferences_file(
+    tmp_path, qtbot, monkeypatch
+):
+    from inksim.config import Config
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import INKSCAPE_CONFIG_KEY
+
+    config = Config(tmp_path / "config.toml")
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
+    old_preferences = tmp_path / "old-profile" / "preferences.xml"
+    old_preferences.parent.mkdir()
+    old_preferences.write_text("<inkscape />", encoding="utf-8")
+    config.set(
+        INKSCAPE_CONFIG_KEY,
+        {
+            "executable": "/opt/old-inkscape/bin/inkscape",
+            "preferences_file": str(old_preferences.resolve()),
+            "python-interpreter-backup": "/opt/old-inkscape/python",
+            "python-interpretor": "/opt/old-inkscape/uvr",
+        },
+    )
+
+    user_data = tmp_path / "new-profile"
+    system_data = tmp_path / "system-data"
+    user_data.mkdir()
+    system_data.mkdir()
+    preferences_file = user_data / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions" python-interpreter="python3" /></inkscape>',
+        encoding="utf-8",
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {"--user-data-directory": str(user_data), "--system-data-directory": str(system_data)},
+    )
+
+    dialog = InkscapeIntegrationDialog(None, "/opt/new-inkscape/bin/inkscape")
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    assert dialog._preferences_file == preferences_file.resolve()
+    assert dialog._interpreter_backup is None
+    assert dialog.restore_interpreter_button.isHidden()
+    assert "python-interpreter-backup" not in config.get(INKSCAPE_CONFIG_KEY)
+
+
 def test_python_interpreter_is_inserted_right_after_the_extensions_id(tmp_path):
     """Insert the preference on its own line right after the group id, not at the end."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog

@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import sys
 from pathlib import Path
 from typing import Any
@@ -35,7 +36,10 @@ def _configured_python(status: dict[str, Any]) -> Path | None:
     if not isinstance(configured, str) or not configured:
         return None
     path = Path(configured).expanduser()
-    return path if path.is_file() else None
+    if path.is_file():
+        return path
+    resolved = shutil.which(configured)
+    return Path(resolved) if resolved is not None else None
 
 
 def link_key(value: str | Path) -> str:
