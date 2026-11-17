@@ -88,7 +88,11 @@ def sidecar_palette_candidates(source: Path) -> list[Path]:
     candidates: list[Path] = []
     for suffix in (*_SIDECAR_PALETTE_SUFFIXES, *_SIDECAR_SOURCE_SUFFIXES):
         candidate = source.with_suffix(f".{suffix}")
-        if candidate != source and candidate.is_file():
+        if candidate.suffix.lower() == source.suffix.lower():
+            continue
+        if not candidate.is_file():
+            candidate = source.with_suffix(f".{suffix.upper()}")
+        if candidate.is_file():
             candidates.append(candidate)
     return candidates
 

@@ -102,6 +102,17 @@ def test_palette_less_design_borrows_the_sidecar_edr(tmp_path):
     assert [thread.hex_color() for thread in pattern.threadlist] == ["#112233", "#445566"]
 
 
+def test_palette_less_design_borrows_an_uppercase_sidecar_edr(tmp_path):
+    design = _write_palette_less_design(tmp_path)
+    palette = tmp_path / "design.edr"
+    _write_palette(palette, ["#112233", "#445566"])
+    palette.rename(tmp_path / "design.EDR")
+
+    pattern = read_embroidery_file(design)
+
+    assert [thread.hex_color() for thread in pattern.threadlist] == ["#112233", "#445566"]
+
+
 def test_sidecar_edr_wins_over_a_coloured_design_next_to_it(tmp_path):
     design = _write_palette_less_design(tmp_path)
     _write_palette(tmp_path / "design.edr", ["#112233", "#445566"])
