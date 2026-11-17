@@ -68,6 +68,9 @@ def test_config_anonymizes_home_paths_in_nested_values(tmp_path):
     config = Config(path)
     portable_path = f"~/{home_path.relative_to(Path.home()).as_posix()}"
     assert config.get("legacy_path") == portable_path
+    assert str(home_path) in path.read_text(encoding="utf-8")
+
+    config.save()
     assert str(Path.home()) not in path.read_text(encoding="utf-8")
 
     config.set(
@@ -83,6 +86,44 @@ def test_config_anonymizes_home_paths_in_nested_values(tmp_path):
     assert Config(path).get("integration") == expected
     assert str(Path.home()) not in path.read_text(encoding="utf-8")
     assert str(Path.home()) not in config.as_text()
+
+
+def test_config_defers_home_path_migration_until_write(tmp_path, monkeypatch):
+    path = tmp_path / "config.toml"
+    home_path = Path.home() / "tools" / "uvr"
+    original = f"legacy_path = {json.dumps(str(home_path))}\n"
+    path.write_text(original, encoding="utf-8")
+
+    def fail_lock(*_args, **_kwargs):
+        raise PermissionError("config directory is not writable")
+
+    monkeypatch.setattr("inksim.config.FileLock.acquire", fail_lock)
+
+    config = Config(path)
+
+    assert config.get("legacy_path") == "~/tools/uvr"
+    assert path.read_text(encoding="utf-8") == original
+
+
+def test_config_read_error_does_not_overwrite_existing_values(tmp_path, monkeypatch):
+    path = tmp_path / "config.toml"
+    original = 'answer = 41\npreserve = "yes"\n'
+    path.write_text(original, encoding="utf-8")
+    config = Config(path)
+    original_open = Path.open
+
+    def fail_config_read(self, *args, **kwargs):
+        if self == path:
+            raise PermissionError("config file cannot be read")
+        return original_open(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", fail_config_read)
+
+    with pytest.raises(PermissionError, match="config file cannot be read"):
+        config.set("answer", 42)
+
+    monkeypatch.setattr(Path, "open", original_open)
+    assert path.read_text(encoding="utf-8") == original
 
 
 def test_config_load_text_rejects_invalid_toml(tmp_path):

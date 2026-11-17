@@ -56,26 +56,25 @@ class Config:
         self._lock = FileLock(str(self._lock_path))
         self._data: dict[str, Any] = {}
         self._pending: dict[str, Any] = {}
-        if self._load():
-            with self._lock.acquire(timeout=5.0):
-                self._load()
-                self._save_locked()
+        self._load()
 
-    def _load(self) -> bool:
-        """Read the TOML file, returning whether home paths need migration."""
-        if not self.path.is_file():
-            self._data = {}
-            return False
+    def _load(self) -> None:
+        """Read the TOML file and sanitize values in memory without persisting."""
         import tomllib
 
         try:
-            with self.path.open("rb") as f:
-                loaded = tomllib.load(f)
-                self._data = _sanitize_config_value(loaded)
-                return self._data != loaded
-        except Exception:  # noqa: BLE001 - corrupt config is not fatal
+            config_file = self.path.open("rb")
+        except FileNotFoundError:
             self._data = {}
-            return False
+            return
+
+        try:
+            with config_file as f:
+                loaded = tomllib.load(f)
+        except (tomllib.TOMLDecodeError, UnicodeDecodeError):
+            self._data = {}
+            return
+        self._data = _sanitize_config_value(loaded)
 
     def reload(self) -> None:
         """Reload the on-disk TOML file into this instance."""
