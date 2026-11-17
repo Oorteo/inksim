@@ -27,6 +27,10 @@ usage() {
     printf '  PyPI:       never\n'
     printf '  --no-push:  local tag only; push it to start the workflow\n'
     printf '\n'
+    printf 'When HEAD differs from its upstream, fetch and push are disabled automatically.\n'
+    printf 'The local tag list may differ from origin in that mode.\n'
+    printf 'With uncommitted changes, you can create a local tag for HEAD; those changes are excluded.\n'
+    printf '\n'
     printf 'Options:\n'
     printf '  -y, --yes      Do not ask for confirmation.\n'
     printf '  -n, --dry-run  Print the plan and exit without changing anything.\n'
@@ -78,10 +82,42 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
     exit 1
 }
 
-if ! git diff --quiet || ! git diff --cached --quiet; then
-    echo "The working tree has uncommitted changes; commit or stash them first." >&2
-    echo "A tag points at a commit, so uncommitted work would not be released." >&2
-    exit 1
+branch="$(git rev-parse --abbrev-ref HEAD)"
+commit="$(git rev-parse HEAD)"
+working_tree_changes="$(git status --porcelain --untracked-files=normal)"
+dirty_worktree=false
+if [[ -n "$working_tree_changes" ]]; then
+    dirty_worktree=true
+fi
+
+upstream=""
+if [[ "$branch" != "HEAD" ]]; then
+    upstream="$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null || true)"
+fi
+
+local_only=false
+upstream_commit=""
+if [[ -n "$upstream" ]]; then
+    upstream_commit="$(git rev-parse --verify -q "${upstream}^{commit}" || true)"
+fi
+if [[ -z "$upstream_commit" || "$upstream_commit" != "$commit" ]]; then
+    local_only=true
+fi
+if [[ "$dirty_worktree" == true ]]; then
+    local_only=true
+fi
+if [[ "$local_only" == true ]]; then
+    fetch=false
+    push=false
+    if [[ -z "$upstream_commit" || "$upstream_commit" != "$commit" ]]; then
+        echo "HEAD is not synchronized with its upstream; disabling fetch and push." >&2
+    fi
+    echo "Using local tags only; the next RC number may differ from origin." >&2
+    echo "Any tag created will remain local." >&2
+fi
+if [[ "$dirty_worktree" == true ]]; then
+    echo "The working tree has uncommitted changes; disabling fetch and push." >&2
+    echo "A local tag will point to HEAD; uncommitted and untracked changes are excluded." >&2
 fi
 
 if [[ "$fetch" == true ]]; then
@@ -89,9 +125,6 @@ if [[ "$fetch" == true ]]; then
         echo "Could not fetch tags from origin; continuing with the local ones." >&2
     fi
 fi
-
-branch="$(git rev-parse --abbrev-ref HEAD)"
-commit="$(git rev-parse HEAD)"
 
 mapfile -t current_release_tags < <(git tag --points-at "$commit" --list 'v*')
 if ((${#current_release_tags[@]})); then
@@ -166,4 +199,4 @@ else
     printf '\nLocal tag only; push to start the test build:\n  git push origin %s\n' "$tag"
 fi
 printf '\nWhen the candidate is accepted, merge the work and tag the release:\n'
-printf '  ./scripts/release/030_final_release.sh\n'
+printf '  ./scripts/release/020_final_release.sh\n'

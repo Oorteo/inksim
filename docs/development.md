@@ -423,7 +423,12 @@ Tag the current commit and push the tag; no commit is created:
 - Reads `pyproject.toml`; creates the next `v<version>-rc.N` tag.
 - Allows only one `v*` release tag per commit. To create another candidate,
   make a new commit; to retry a build, rerun the workflow for the existing tag.
-- Refuses a dirty worktree; does not change `pyproject.toml` or build locally.
+- If `HEAD` is not synchronized with its upstream, the script disables fetch
+  and push automatically. It uses local tags only and warns that the next RC
+  number may differ from the tags on `origin`.
+- With a dirty worktree, offers a local-only tag for `HEAD`; uncommitted and
+  untracked changes are excluded, and declining leaves the repository unchanged.
+- Does not change `pyproject.toml` or build locally.
 - Pushing the tag starts `Release wheel`: tests, then `.whl` + source archive
   attached to the GitHub pre-release.
 - `--no-push` creates a local tag only; push it manually to start the workflow.
@@ -459,14 +464,19 @@ release. The script targets the origin default branch even if another branch
 is checked out:
 
 ```bash
-./scripts/release/030_final_release.sh --dry-run   # inspect the plan first
-./scripts/release/030_final_release.sh
+./scripts/release/020_final_release.sh --dry-run   # inspect the plan first
+./scripts/release/020_final_release.sh
 ```
 
 The script reports the CI status of the selected commit and refuses to tag
 unless every check passed; pass `--no-require-green` to override, `--branch`
 with a branch name to explicitly target another branch for testing, and
 `--no-push` to create the tag locally.
+- If the selected commit is not present in the local `origin` tracking refs, or
+  the worktree is dirty, fetch and push are disabled automatically. In that
+  local-only mode, the script uses local tags only and skips remote tag and CI
+  checks; the tag can still be created locally, and uncommitted changes are not
+  included in it.
 
 If the tag already exists and points at an older commit, the script does not
 move it. It prints both commits and offers three options: leave the tag alone,
@@ -499,9 +509,9 @@ GitHub expires Actions artifacts and caches automatically, but releases and
 their tags remain until they are deleted. To keep the release page clean:
 
 ```bash
-./scripts/release/040_prune_releases.sh --dry-run   # list what would go
-./scripts/release/040_prune_releases.sh             # keep the newest 5
-./scripts/release/040_prune_releases.sh --keep 2
+./scripts/release/030_prune_releases.sh --dry-run   # list what would go
+./scripts/release/030_prune_releases.sh             # keep the newest 5
+./scripts/release/030_prune_releases.sh --keep 2
 ```
 
 The script only deletes pre-releases, never published ones, and removes the
