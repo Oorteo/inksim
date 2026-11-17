@@ -6,18 +6,22 @@
 set -euo pipefail
 
 assume_yes=false
-case "${1:-}" in
-"") ;;
--y | --yes) assume_yes=true ;;
--h | --help)
-    printf 'Usage: %s [-y|--yes]\n' "$0"
-    exit 0
-    ;;
-*)
-    printf 'Usage: %s [-y|--yes]\n' "$0" >&2
-    exit 1
-    ;;
-esac
+allow_non_main=false
+while (($#)); do
+    case "$1" in
+    -y | --yes) assume_yes=true ;;
+    --allow-non-main) allow_non_main=true ;;
+    -h | --help)
+        printf 'Usage: %s [-y|--yes] [--allow-non-main]\n' "$0"
+        exit 0
+        ;;
+    *)
+        printf 'Usage: %s [-y|--yes] [--allow-non-main]\n' "$0" >&2
+        exit 1
+        ;;
+    esac
+    shift
+done
 
 source_path="${BASH_SOURCE[0]}"
 # Resolve symlinks portably; this is the Bash equivalent of readlink -f.
@@ -59,6 +63,25 @@ else
     exit 1
 fi
 
+default_branch="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
+default_branch="${default_branch:-main}"
+default_branch_ref="refs/remotes/origin/$default_branch"
+if [[ "$allow_non_main" == true ]]; then
+    echo "WARNING: --allow-non-main bypasses the main-branch check; this still uploads to PyPI." >&2
+else
+    if ! git show-ref --verify --quiet "$default_branch_ref"; then
+        printf 'Cannot verify the release against origin/%s.\n' "$default_branch" >&2
+        printf 'Fetch the default branch or pass --allow-non-main for an exceptional upload.\n' >&2
+        exit 1
+    fi
+    if ! git merge-base --is-ancestor HEAD "$default_branch_ref"; then
+        printf 'PyPI uploads are restricted to commits reachable from origin/%s.\n' \
+            "$default_branch" >&2
+        echo "For an exceptional non-main upload, pass --allow-non-main." >&2
+        exit 1
+    fi
+fi
+
 # install twine: uv tool install twine
 # upload to pypi  (check you have valid token, ~/.pypirc
 shopt -s nullglob
@@ -81,6 +104,7 @@ done
 
 printf '\nUpload plan for: %s\n' "$project_root"
 printf '  Stable tag: %s\n' "$tag"
+printf '  Default branch: origin/%s\n' "$default_branch"
 printf '  Upload the following distribution(s) to PyPI:\n'
 for artifact in "${artifacts[@]}"; do
     printf '    %s\n' "${artifact#"$project_root"/}"

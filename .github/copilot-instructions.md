@@ -7,6 +7,7 @@
 - The project supports Python 3.12 or newer, as specified by `pyproject.toml`. The local setup script currently defaults to Python 3.14.
 - Run the application with `uv run inksim` or `uv run python -m inksim`.
 - Never add `Co-authored-by` trailers to commit messages for this repository.
+- For pull requests, keep changes local until all requested work is complete. Do not push commits or update remote branches or PRs during partial work; pushes trigger resource-limited CodeRabbit reviews. Push only after explicit user approval of the complete changes. If approval is absent or ambiguous, do not push; ask first.
 - Before changing code, inspect the relevant source and existing project conventions.
 - Keep code and comments in English.
 

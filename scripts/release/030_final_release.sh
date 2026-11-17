@@ -4,10 +4,9 @@
 #
 # Tag a final release from the default branch.
 #
-# Run this from the worktree that holds the default branch, once the work for
-# the release has been merged. The version in pyproject.toml names the release
-# and is never rewritten; the tag is what the release workflow builds from, so
-# the script tags the current commit and leaves the file alone.
+# Once the work for the release has been merged, the script targets the origin
+# default branch unless --branch explicitly selects another branch. The version
+# in pyproject.toml names the release and is never rewritten.
 set -euo pipefail
 
 push=true
@@ -20,13 +19,14 @@ usage() {
     printf 'Usage: %s [-y|--yes] [-n|--dry-run]\n' "${0##*/}"
     printf '          [--branch <name>] [--no-push] [--no-fetch] [--no-require-green]\n'
     printf '\n'
-    printf 'Tags the current commit with the final version from pyproject.toml and\n'
+    printf 'Tags the selected branch commit with the final version from pyproject.toml and\n'
     printf 'pushes the tag, which publishes the release and its distributions.\n'
+    printf 'The default target is the origin default branch; --branch explicitly selects another.\n'
     printf '\n'
     printf 'Options:\n'
     printf '  -y, --yes             Do not ask for confirmation.\n'
     printf '  -n, --dry-run         Print the plan and exit without changing anything.\n'
-    printf '      --branch <name>   Branch to tag (default: the checked-out branch).\n'
+    printf '      --branch <name>   Explicitly select a branch other than the default branch.\n'
     printf '      --no-push         Create the tag locally, but do not push it.\n'
     printf '      --no-fetch        Use the existing remote refs without fetching.\n'
     printf '      --no-require-green\n'
@@ -93,16 +93,11 @@ if [[ "$fetch" == true ]]; then
 fi
 
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
-if [[ -z "${branch:-}" ]]; then
-    branch="$current_branch"
-fi
-if [[ "$branch" == "HEAD" ]]; then
-    echo "The repository is in a detached HEAD state; switch to a branch first." >&2
-    exit 1
-fi
-
 default_branch="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
 default_branch="${default_branch:-main}"
+if [[ -z "${branch:-}" ]]; then
+    branch="$default_branch"
+fi
 
 # pyproject.toml holds the version this branch is heading towards.
 version="$(uv version --short --dry-run)"
@@ -122,8 +117,16 @@ fi
 
 if [[ "$branch" == "$current_branch" ]]; then
     sha="$(git rev-parse HEAD)"
+elif [[ "$branch" == "$default_branch" ]] && \
+    git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+    sha="$(git rev-parse "refs/remotes/origin/$branch")"
+elif git show-ref --verify --quiet "refs/heads/$branch"; then
+    sha="$(git rev-parse "refs/heads/$branch")"
+elif git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+    sha="$(git rev-parse "refs/remotes/origin/$branch")"
 else
-    sha="$(git rev-parse "$branch")"
+    printf 'Branch %s was not found locally or on origin.\n' "$branch" >&2
+    exit 1
 fi
 tag="v$version"
 
@@ -162,6 +165,14 @@ if [[ -n "$existing_local" || -n "$existing_remote" ]]; then
     exit 1
 fi
 
+mapfile -t release_tags_at_commit < <(git tag --points-at "$sha" --list 'v*')
+if ((${#release_tags_at_commit[@]})); then
+    printf 'Commit %s already has release tag(s): %s\n' \
+        "${sha:0:12}" "${release_tags_at_commit[*]}" >&2
+    echo "Each commit may have only one v* release tag." >&2
+    exit 1
+fi
+
 printf '\nFinal release plan\n'
 printf '  Project:      %s\n' "$project_root"
 printf '  Branch:       %s%s\n' "$branch" \
@@ -170,8 +181,8 @@ printf '  Commit:       %s\n' "${sha:0:12}"
 printf '  Version:      %s (from pyproject.toml)\n' "$version"
 printf '  Tag:          %s (published release, becomes latest)\n' "$tag"
 if [[ "$branch" != "$default_branch" ]]; then
-    printf '  Note:         %s is not the default branch (%s); the tag will point at\n' "$branch" "$default_branch"
-    printf '                a commit that is not on %s.\n' "$default_branch"
+    printf '  Note:         --branch selected non-default branch %s (default: %s).\n' \
+        "$branch" "$default_branch"
 fi
 
 # Report the CI status of the commit that is about to be tagged.

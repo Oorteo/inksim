@@ -421,6 +421,8 @@ Tag the current commit and push the tag; no commit is created:
 ```
 
 - Reads `pyproject.toml`; creates the next `v<version>-rc.N` tag.
+- Allows only one `v*` release tag per commit. To create another candidate,
+  make a new commit; to retry a build, rerun the workflow for the existing tag.
 - Refuses a dirty worktree; does not change `pyproject.toml` or build locally.
 - Pushing the tag starts `Release wheel`: tests, then `.whl` + source archive
   attached to the GitHub pre-release.
@@ -453,16 +455,18 @@ an RC version from an untagged checkout.
 
 Once the work is merged, tag the default branch. The version in
 `pyproject.toml` has to be the release version by then, because it names the
-release:
+release. The script targets the origin default branch even if another branch
+is checked out:
 
 ```bash
 ./scripts/release/030_final_release.sh --dry-run   # inspect the plan first
 ./scripts/release/030_final_release.sh
 ```
 
-The script tags the checked-out commit, reports the CI status of that commit and
-refuses to tag unless every check passed; pass `--no-require-green` to override,
-`--branch` to tag another branch, and `--no-push` to create the tag locally.
+The script reports the CI status of the selected commit and refuses to tag
+unless every check passed; pass `--no-require-green` to override, `--branch`
+with a branch name to explicitly target another branch for testing, and
+`--no-push` to create the tag locally.
 
 If the tag already exists and points at an older commit, the script does not
 move it. It prints both commits and offers three options: leave the tag alone,
@@ -472,12 +476,17 @@ retagging would change what an already published release contains.
 The PyPI upload stays a separate, manual step. Both scripts require the
 corresponding release tag to point at `HEAD`; the build derives its package
 version from that tag, and the upload script accepts only matching stable
-artifacts:
+artifacts. Uploads are restricted to commits reachable from the origin default
+branch. `--allow-non-main` explicitly bypasses that check for exceptional
+testing, but still uploads to PyPI:
 
 ```bash
 ./scripts/pypi/010_build.sh --yes
 ./scripts/pypi/030_send_pypi.sh
 ```
+
+Use the non-main override only when intentionally publishing that commit to
+PyPI; it is not a dry-run or a test-index option.
 
 `010_build.sh` builds from a temporary archive of the tag, so it does not
 rewrite the working tree's `pyproject.toml` or README. Use `uv build` directly

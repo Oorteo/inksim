@@ -93,6 +93,15 @@ fi
 branch="$(git rev-parse --abbrev-ref HEAD)"
 commit="$(git rev-parse HEAD)"
 
+mapfile -t current_release_tags < <(git tag --points-at "$commit" --list 'v*')
+if ((${#current_release_tags[@]})); then
+    printf 'Commit %s already has release tag(s): %s\n' \
+        "${commit:0:12}" "${current_release_tags[*]}" >&2
+    echo "Each commit may have only one v* release tag." >&2
+    echo "Create a new commit before creating another release candidate." >&2
+    exit 1
+fi
+
 # pyproject.toml holds the version the branch is heading towards. It is only
 # read here, never rewritten.
 target_version="$(uv version --short --dry-run)"
@@ -105,7 +114,7 @@ base_version="$(printf '%s' "$target_version" | sed -E 's/(a|b|rc|\.dev)[0-9]+$/
 }
 
 # The candidate counter comes from the tags that already exist for this
-# version, so repeated runs produce rc.1, rc.2, rc.3 and so on.
+# version. A new candidate must tag a new commit.
 last_candidate=0
 while IFS= read -r existing; do
     [[ "$existing" =~ ^v${base_version}-rc\.([0-9]+)$ ]] || continue
