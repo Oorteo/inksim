@@ -243,6 +243,22 @@ def test_build_design_preview_skips_jumps_and_switches_threads():
     assert preview.bounds == (0.0, 0.0, 40.0, 10.0)
 
 
+def test_build_design_preview_switches_threads_on_color_break():
+    pattern = SimpleNamespace(
+        stitches=[
+            (0, 0, emb.STITCH),
+            (100, 0, emb.COLOR_BREAK),
+            (200, 0, emb.STITCH),
+        ],
+        threadlist=[_thread(255, 0, 0), _thread(0, 0, 255)],
+    )
+
+    preview = build_design_preview(pattern)
+
+    colors = preview.stitches[:, 4:7].astype(int).tolist()
+    assert colors == [[255, 0, 0], [0, 0, 255]]
+
+
 def test_build_design_preview_handles_an_empty_pattern():
     preview = build_design_preview(SimpleNamespace(stitches=[], threadlist=[]))
 

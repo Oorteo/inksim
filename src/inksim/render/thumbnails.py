@@ -225,7 +225,7 @@ def build_design_preview(pattern: Any) -> DesignPreview:
             continue
         if hasattr(emb, "END") and cmd == emb.END:
             break
-        if hasattr(emb, "COLOR_CHANGE") and cmd == emb.COLOR_CHANGE:
+        if cmd in (emb.COLOR_CHANGE, emb.COLOR_BREAK):
             color_index += 1
             last_x, last_y = x, y
             continue
