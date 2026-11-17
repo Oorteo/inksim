@@ -32,7 +32,7 @@ def _slug(text: str) -> str:
 
 
 def _headings(path: Path) -> set[str]:
-    text = path.read_text(encoding="utf-8")
+    text = FENCED_BLOCK.sub("", path.read_text(encoding="utf-8"))
     return {_slug(match.group("text")) for match in HEADING.finditer(text)}
 
 
@@ -52,6 +52,14 @@ def _resolved_path(document: Path, path_part: str) -> Path:
     if path_part.startswith("/"):
         return ROOT / path_part.lstrip("/")
     return document.parent / path_part
+
+
+def test_document_anchors_ignore_headings_in_fenced_code(tmp_path: Path):
+    document = tmp_path / "guide.md"
+    document.write_text("# Real heading\n\n```\n# Example heading\n```\n", encoding="utf-8")
+
+    assert _slug("real heading") in _headings(document)
+    assert _slug("example heading") not in _headings(document)
 
 
 @pytest.mark.parametrize("document", DOCUMENTS, ids=lambda path: str(path.relative_to(ROOT)))
