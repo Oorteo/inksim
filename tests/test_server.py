@@ -457,6 +457,24 @@ def test_open_file_records_source_mtime_before_loading(qapp, tmp_path, monkeypat
     window.close()
 
 
+def test_language_restart_preserves_document_path(qapp, tmp_path):
+    from inksim.gui.frame import MainWindow
+
+    document_path = tmp_path / "source.svg"
+    input_path = tmp_path / "preview.csv"
+    window = MainWindow(document_path=document_path)
+    window.current_file_path = input_path
+    restarts = []
+    window.restart_requested.connect(restarts.append)
+
+    window._apply_language_change()
+
+    assert restarts == [
+        ["--document-path", str(document_path.resolve()), str(input_path.resolve())]
+    ]
+    window.close()
+
+
 def test_stale_code_fingerprint_replaces_running_server(monkeypatch):
     from inksim import server as server_module
 

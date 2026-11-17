@@ -779,12 +779,14 @@ class MainWindow(QMainWindow):
     def _apply_language_change(self) -> None:
         """Ask the server to close all windows and relaunch with the current file."""
         relaunch_args: list[str] = []
+        if self.document_path is not None:
+            relaunch_args.extend(["--document-path", str(self.document_path)])
         if self.current_file_path is not None:
             if self._temporary_input_path == self.current_file_path:
-                relaunch_args = ["--temporary-input", str(self.current_file_path)]
+                relaunch_args.extend(["--temporary-input", str(self.current_file_path)])
                 self._preserve_temporary_input_on_close = True
             else:
-                relaunch_args = [str(self.current_file_path)]
+                relaunch_args.append(str(self.current_file_path))
         self.restart_requested.emit(relaunch_args)
 
     def _rebuild_menus(self) -> None:
