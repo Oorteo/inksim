@@ -1491,6 +1491,47 @@ def test_transfer_rollback_preserves_destination_created_during_install(
     dialog.reject()
 
 
+def test_transfer_rollback_preserves_replacement_of_installed_target(qtbot, tmp_path, monkeypatch):
+    import os
+
+    import inksim.gui.open_dialog as open_dialog_module
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"new first")
+    second.write_bytes(b"new second")
+    first_target = destination_directory / first.name
+    replacement = destination_directory / "external-file"
+    replacement.write_bytes(b"external replacement")
+
+    original_install = open_dialog_module._install_staged_file
+
+    def replace_after_install(staged, target):
+        identity = original_install(staged, target)
+        if target == first_target:
+            os.replace(replacement, target)
+            return identity
+        raise OSError("simulated install failure")
+
+    monkeypatch.setattr("inksim.gui.open_dialog._install_staged_file", replace_after_install)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    plan = [(first, first_target), (second, destination_directory / second.name)]
+
+    with pytest.raises(
+        open_dialog_module._FileTransferRollbackError, match="rollback was incomplete"
+    ):
+        dialog._execute_file_transfer("copy", plan, {})
+
+    assert first_target.read_bytes() == b"external replacement"
+    dialog.reject()
+
+
 def test_enter_opens_folders_and_arrows_stay_in_the_list(qtbot, tmp_path, monkeypatch):
     """Enter activates the current row, so the arrows can move between icons."""
     from PySide6.QtCore import Qt

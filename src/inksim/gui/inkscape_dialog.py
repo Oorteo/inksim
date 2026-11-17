@@ -89,8 +89,8 @@ _XML_ATTRIBUTE_PATTERN = re.compile(
     re.DOTALL,
 )
 _XML_INTERPRETER_PARAM_PATTERN = re.compile(
-    rb"<param\b(?=[^>]*\bname\s*=\s*[\"']python-interpreter[\"'])[^>]*"
-    rb"(?:/>|>.*?</param\s*>)",
+    rb"<param\b(?=[^>]*\bname\s*=\s*[\"']python-interpreter[\"'])"
+    rb"(?:[^>]*?/\s*>|[^>]*?>.*?</param\s*>)",
     re.DOTALL,
 )
 
@@ -1032,6 +1032,7 @@ class InkscapeIntegrationDialog(QDialog):
                     "active_inkstitch",
                     "preferences_file",
                     "python-interpretor",
+                    "python-interpreter-backup",
                 ):
                     if key in previous_status:
                         result[key] = previous_status[key]
@@ -1780,6 +1781,7 @@ class InkscapeIntegrationDialog(QDialog):
             nonlocal group_end
             if (
                 group_depth is not None
+                and group_end is None
                 and len(element_stack) == group_depth + 1
                 and name.rsplit("}", 1)[-1] == "group"
             ):

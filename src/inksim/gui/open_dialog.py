@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import errno
+import hashlib
 import math
 import os
 import re
@@ -530,21 +531,26 @@ _LINK_UNSUPPORTED_ERRNOS = frozenset(
 )
 
 
-def _install_staged_file(staged: Path, target: Path) -> None:
+def _install_staged_file(staged: Path, target: Path) -> tuple[int, int]:
     """Install a staged file without ever overwriting an existing target.
 
     Hard links fail on filesystems that do not support them (FAT32, exFAT) and
     across devices, so fall back to an exclusive-create copy there. A file that
-    appears at the destination still raises ``FileExistsError``.
+    appears at the destination still raises ``FileExistsError``. Return the
+    installed file's identity from before another process can replace it.
     """
+    staged_stat = staged.stat()
+    identity = (staged_stat.st_dev, staged_stat.st_ino)
     try:
         os.link(staged, target)
-        return
+        return identity
     except OSError as ex:
         if ex.errno not in _LINK_UNSUPPORTED_ERRNOS:
             raise
     with staged.open("rb") as source_file:
         target_file = target.open("xb")
+        target_stat = os.fstat(target_file.fileno())
+        identity = (target_stat.st_dev, target_stat.st_ino)
         try:
             with target_file:
                 shutil.copyfileobj(source_file, target_file, 1024 * 1024)
@@ -557,6 +563,7 @@ def _install_staged_file(staged: Path, target: Path) -> None:
             except OSError as cleanup_error:
                 error.add_note(f"Could not remove incomplete copy at {target}: {cleanup_error}")
             raise
+    return identity
 
 
 class OpenBrowserDialog(QDialog):
@@ -2381,6 +2388,11 @@ class OpenBrowserDialog(QDialog):
             stat.st_ctime_ns,
         )
 
+    @staticmethod
+    def _transfer_file_digest(path: Path) -> bytes:
+        with path.open("rb") as source:
+            return hashlib.file_digest(source, "sha256").digest()
+
     def _execute_staged_file_transfer(
         self,
         operation: str,
@@ -2419,7 +2431,7 @@ class OpenBrowserDialog(QDialog):
                 raise IsADirectoryError(f"Destination is a folder: {target}")
 
         backups: list[tuple[Path, Path]] = []
-        installed: list[tuple[Path, tuple[int, int, int, int, int, int]]] = []
+        installed: list[tuple[Path, tuple[int, int], bytes]] = []
         deleted_sources: list[Path] = []
         try:
             for index, (_, target) in enumerate(plan):
@@ -2436,9 +2448,10 @@ class OpenBrowserDialog(QDialog):
             for index, (source, target) in enumerate(plan):
                 staged_install = install_directory / f"{index}-{target.name}"
                 shutil.copy2(staged_sources[source], staged_install)
-                _install_staged_file(staged_install, target)
+                expected_digest = self._transfer_file_digest(staged_install)
+                installed_identity = _install_staged_file(staged_install, target)
                 staged_install.unlink()
-                installed.append((target, self._transfer_path_signature(target)))
+                installed.append((target, installed_identity, expected_digest))
 
             if operation == "move":
                 for source in sources:
@@ -2461,10 +2474,15 @@ class OpenBrowserDialog(QDialog):
                         shutil.copy2(staged_sources[source], source)
                     except OSError as rollback_error:
                         rollback_errors.append(str(rollback_error))
-            for target, installed_signature in reversed(installed):
+            for target, installed_identity, expected_digest in reversed(installed):
                 try:
                     if target.exists() or target.is_symlink():
-                        if self._transfer_path_signature(target) != installed_signature:
+                        target_stat = target.lstat()
+                        identity = (target_stat.st_dev, target_stat.st_ino)
+                        if (
+                            identity != installed_identity
+                            or self._transfer_file_digest(target) != expected_digest
+                        ):
                             raise FileExistsError(
                                 f"Cannot remove destination changed during rollback: {target}"
                             )

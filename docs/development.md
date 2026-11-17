@@ -421,8 +421,9 @@ Tag the current commit and push the tag; no commit is created:
 ```
 
 - Reads `pyproject.toml`; creates the next `v<version>-rc.N` tag.
-- Allows only one `v*` release tag per commit. To create another candidate,
-  make a new commit; to retry a build, rerun the workflow for the existing tag.
+- Allows only one pre-release tag per commit. A final release may later share
+  that commit with its matching RC tag. To create another candidate, make a
+  new commit; to retry a build, rerun the workflow for the existing tag.
 - If `HEAD` is not synchronized with its upstream, the script disables fetch
   and push automatically. It uses local tags only and warns that the next RC
   number may differ from the tags on `origin`.
@@ -472,6 +473,8 @@ The script reports the CI status of the selected commit and refuses to tag
 unless every check passed; pass `--no-require-green` to override, `--branch`
 with a branch name to explicitly target another branch for testing, and
 `--no-push` to create the tag locally.
+- A final release may share its commit with a matching `v<version>-rc.N` tag;
+  unrelated release tags still block the final tag.
 - If the selected commit is not present in the local `origin` tracking refs, or
   the worktree is dirty, fetch and push are disabled automatically. In that
   local-only mode, the script uses local tags only and skips remote tag and CI
@@ -491,8 +494,8 @@ branch. `--allow-non-main` explicitly bypasses that check for exceptional
 testing, but still uploads to PyPI:
 
 ```bash
-./scripts/pypi/010_build.sh --yes
-./scripts/pypi/030_send_pypi.sh
+./scripts/pypi/010_build.sh --yes --tag v0.5.4
+./scripts/pypi/030_send_pypi.sh --tag v0.5.4
 ```
 
 Use the non-main override only when intentionally publishing that commit to

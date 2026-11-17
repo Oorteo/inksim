@@ -7,16 +7,25 @@ set -euo pipefail
 
 assume_yes=false
 allow_non_main=false
+selected_tag=""
 while (($#)); do
     case "$1" in
     -y | --yes) assume_yes=true ;;
     --allow-non-main) allow_non_main=true ;;
+    --tag)
+        shift
+        [[ -n "${1:-}" ]] || {
+            printf 'The --tag option expects a tag name.\n' >&2
+            exit 1
+        }
+        selected_tag="$1"
+        ;;
     -h | --help)
-        printf 'Usage: %s [-y|--yes] [--allow-non-main]\n' "$0"
+        printf 'Usage: %s [-y|--yes] [--allow-non-main] [--tag <tag>]\n' "$0"
         exit 0
         ;;
     *)
-        printf 'Usage: %s [-y|--yes] [--allow-non-main]\n' "$0" >&2
+        printf 'Usage: %s [-y|--yes] [--allow-non-main] [--tag <tag>]\n' "$0" >&2
         exit 1
         ;;
     esac
@@ -49,12 +58,25 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
     exit 1
 }
 
-mapfile -t release_tags < <(git tag --points-at HEAD --list 'v*')
-if ((${#release_tags[@]} != 1)); then
-    echo "PyPI upload requires exactly one v* release tag pointing at HEAD." >&2
-    exit 1
+if [[ -n "$selected_tag" ]]; then
+    if ! git show-ref --verify --quiet "refs/tags/$selected_tag"; then
+        printf 'Release tag does not exist: %s\n' "$selected_tag" >&2
+        exit 1
+    fi
+    tag_commit="$(git rev-parse --verify "refs/tags/$selected_tag^{commit}")"
+    if [[ "$tag_commit" != "$(git rev-parse HEAD)" ]]; then
+        printf 'Release tag %s does not point at HEAD.\n' "$selected_tag" >&2
+        exit 1
+    fi
+    tag="$selected_tag"
+else
+    mapfile -t release_tags < <(git tag --points-at HEAD --list 'v*')
+    if ((${#release_tags[@]} != 1)); then
+        echo "Select a release tag with --tag when HEAD has zero or multiple v* tags." >&2
+        exit 1
+    fi
+    tag="${release_tags[0]}"
 fi
-tag="${release_tags[0]}"
 if [[ "$tag" =~ ^v([0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?)$ ]]; then
     release_version="${BASH_REMATCH[1]}"
 else
@@ -63,7 +85,10 @@ else
     exit 1
 fi
 
-default_branch="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
+default_branch="$(
+    git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null |
+        sed 's|^origin/||' || true
+)"
 default_branch="${default_branch:-main}"
 default_branch_ref="refs/remotes/origin/$default_branch"
 if [[ "$allow_non_main" == true ]]; then

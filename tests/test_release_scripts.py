@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import os
+import shlex
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +30,7 @@ def _create_project(tmp_path: Path) -> tuple[Path, str]:
     for relative_path in (
         "scripts/release/010_pre_release.sh",
         "scripts/release/020_final_release.sh",
+        "scripts/pypi/010_build.sh",
         "scripts/pypi/030_send_pypi.sh",
     ):
         destination = project / relative_path
@@ -40,7 +43,7 @@ def _create_project(tmp_path: Path) -> tuple[Path, str]:
     _git(project, "init", "--quiet", "--initial-branch", "main")
     _git(project, "config", "user.name", "Release Script Test")
     _git(project, "config", "user.email", "release-test@example.invalid")
-    _git(project, "add", "pyproject.toml")
+    _git(project, "add", "pyproject.toml", "scripts")
     _git(project, "commit", "--quiet", "-m", "Initial commit")
     main_commit = _git(project, "rev-parse", "HEAD")
     _git(project, "update-ref", "refs/remotes/origin/main", main_commit)
@@ -57,7 +60,18 @@ def _fake_tools(
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir()
     uv = bin_dir / "uv"
-    uv.write_text("#!/bin/sh\nprintf '%s\\n' '1.2.3'\n", encoding="utf-8")
+    uv.write_text(
+        "#!/bin/sh\n"
+        'if [ "$1" = "run" ]; then\n'
+        "  shift\n"
+        '  while [ "$#" -gt 0 ] && [ "$1" != "python" ]; do shift; done\n'
+        '  [ "$#" -gt 0 ] || exit 2\n'
+        "  shift\n"
+        f'  exec {shlex.quote(sys.executable)} "$@"\n'
+        "fi\n"
+        "printf '%s\\n' '1.2.3'\n",
+        encoding="utf-8",
+    )
     uv.chmod(0o755)
     gh = bin_dir / "gh"
     gh.write_text(
@@ -259,6 +273,59 @@ def test_final_release_defaults_to_main_but_allows_explicit_branch(tmp_path):
     assert feature_commit[:12] in explicit_target.stdout
 
 
+def test_final_release_uses_remote_default_commit_and_its_version(tmp_path):
+    project, _ = _create_project(tmp_path)
+    (project / "pyproject.toml").write_text(
+        '[project]\nname = "inksim"\nversion = "1.3.0"\n',
+        encoding="utf-8",
+    )
+    _git(project, "add", "pyproject.toml")
+    _git(project, "commit", "--quiet", "-m", "Local version")
+    local_commit = _git(project, "rev-parse", "HEAD")
+
+    _git(project, "switch", "--quiet", "-c", "incoming")
+    (project / "pyproject.toml").write_text(
+        '[project]\nname = "inksim"\nversion = "1.2.4"\n',
+        encoding="utf-8",
+    )
+    _git(project, "add", "pyproject.toml")
+    _git(project, "commit", "--quiet", "-m", "Remote release version")
+    remote_commit = _git(project, "rev-parse", "HEAD")
+    _git(project, "update-ref", "refs/remotes/origin/main", remote_commit)
+    _git(project, "switch", "--quiet", "main")
+    assert _git(project, "rev-parse", "HEAD") == local_commit
+
+    result = _run_script(
+        project,
+        "scripts/release/020_final_release.sh",
+        _fake_tools(tmp_path),
+        "--dry-run",
+        "--no-fetch",
+        "--no-require-green",
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert remote_commit[:12] in result.stdout
+    assert "Version:      1.2.4" in result.stdout
+
+
+def test_final_release_falls_back_when_origin_head_is_missing(tmp_path):
+    project, _ = _create_project(tmp_path)
+    _git(project, "symbolic-ref", "--delete", "refs/remotes/origin/HEAD")
+
+    result = _run_script(
+        project,
+        "scripts/release/020_final_release.sh",
+        _fake_tools(tmp_path),
+        "--dry-run",
+        "--no-fetch",
+        "--no-require-green",
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "Branch:       main" in result.stdout
+
+
 def test_final_release_keeps_a_local_only_commit_off_origin(tmp_path):
     project, _ = _create_project(tmp_path)
     _git(project, "config", "branch.main.remote", "origin")
@@ -304,7 +371,7 @@ def test_final_release_keeps_a_dirty_worktree_off_origin(tmp_path):
     assert not Path(env["GIT_REMOTE_ACTIONS"]).exists()
 
 
-def test_final_release_refuses_a_second_release_tag_on_the_commit(tmp_path):
+def test_final_release_allows_a_matching_rc_tag_on_the_commit(tmp_path):
     project, _ = _create_project(tmp_path)
     _git(project, "tag", "-a", "v1.2.3-rc.1", "-m", "v1.2.3-rc.1")
 
@@ -317,8 +384,96 @@ def test_final_release_refuses_a_second_release_tag_on_the_commit(tmp_path):
         "--no-require-green",
     )
 
+    assert result.returncode == 0, result.stderr
+    assert "Tag:          v1.2.3" in result.stdout
+
+
+def test_final_release_rejects_an_unrelated_rc_tag_on_the_commit(tmp_path):
+    project, _ = _create_project(tmp_path)
+    _git(project, "tag", "v1.2.2-rc.1")
+
+    result = _run_script(
+        project,
+        "scripts/release/020_final_release.sh",
+        _fake_tools(tmp_path),
+        "--dry-run",
+        "--no-fetch",
+        "--no-require-green",
+    )
+
     assert result.returncode != 0
-    assert "already has release tag(s): v1.2.3-rc.1" in result.stderr
+    assert "already has release tag(s): v1.2.2-rc.1" in result.stderr
+
+
+def test_build_selects_a_release_tag_when_multiple_tags_share_head(tmp_path):
+    project, _ = _create_project(tmp_path)
+    _git(project, "tag", "v1.2.3-rc.1")
+    _git(project, "tag", "v1.2.3-rc.2")
+    env = _fake_tools(tmp_path)
+    script = "scripts/pypi/010_build.sh"
+
+    ambiguous = _run_script(project, script, env, input_text="n\n")
+    assert ambiguous.returncode != 0
+    assert "Select a release tag with --tag" in ambiguous.stderr
+
+    selected = _run_script(
+        project,
+        script,
+        env,
+        "--tag",
+        "v1.2.3-rc.2",
+        input_text="n\n",
+    )
+    assert selected.returncode == 0, selected.stderr
+    assert "Tag:          v1.2.3-rc.2" in selected.stdout
+    assert "Version:      1.2.3rc2" in selected.stdout
+
+
+def test_pypi_upload_selects_stable_tag_when_rc_tag_shares_head(tmp_path):
+    project, _ = _create_project(tmp_path)
+    _git(project, "tag", "v1.2.3")
+    _git(project, "tag", "v1.2.3-rc.1")
+    dist = project / "dist"
+    dist.mkdir()
+    (dist / "inksim-1.2.3-py3-none-any.whl").write_bytes(b"wheel")
+    (dist / "inksim-1.2.3.tar.gz").write_bytes(b"source")
+    env = _fake_tools(tmp_path, include_twine=True)
+
+    result = _run_script(
+        project,
+        "scripts/pypi/030_send_pypi.sh",
+        env,
+        "--tag",
+        "v1.2.3",
+        "--allow-non-main",
+        "--yes",
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "Stable tag: v1.2.3" in result.stdout
+    assert Path(env["TWINE_MARKER"]).read_text(encoding="utf-8") == "called"
+
+
+def test_pypi_upload_allows_override_without_origin_head(tmp_path):
+    project, _ = _create_project(tmp_path)
+    _git(project, "tag", "v1.2.3")
+    _git(project, "symbolic-ref", "--delete", "refs/remotes/origin/HEAD")
+    dist = project / "dist"
+    dist.mkdir()
+    (dist / "inksim-1.2.3-py3-none-any.whl").write_bytes(b"wheel")
+    (dist / "inksim-1.2.3.tar.gz").write_bytes(b"source")
+    env = _fake_tools(tmp_path, include_twine=True)
+
+    result = _run_script(
+        project,
+        "scripts/pypi/030_send_pypi.sh",
+        env,
+        "--allow-non-main",
+        "--yes",
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert Path(env["TWINE_MARKER"]).read_text(encoding="utf-8") == "called"
 
 
 def test_pypi_upload_requires_default_branch_unless_explicitly_overridden(tmp_path):

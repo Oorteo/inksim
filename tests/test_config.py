@@ -8,6 +8,7 @@ import os
 import subprocess
 import sys
 import threading
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -94,7 +95,7 @@ def test_config_anonymizes_home_paths_in_nested_values(tmp_path):
     config = Config(path)
     portable_path = f"~/{home_path.relative_to(Path.home()).as_posix()}"
     assert config.get("legacy_path") == portable_path
-    assert str(home_path) in path.read_text(encoding="utf-8")
+    assert json.dumps(str(home_path)) in path.read_text(encoding="utf-8")
 
     config.save()
     assert str(Path.home()) not in path.read_text(encoding="utf-8")
@@ -212,9 +213,13 @@ def test_config_keeps_pending_values_when_save_fails(tmp_path, monkeypatch):
 
 def test_config_corrupt_file_is_ignored(tmp_path):
     path = tmp_path / "config.toml"
-    path.write_text("this is not valid toml", encoding="utf-8")
+    original = "this is not valid toml"
+    path.write_text(original, encoding="utf-8")
     config = Config(path)
     assert config.get("answer", "default") == "default"
+    with pytest.raises(tomllib.TOMLDecodeError):
+        config.set("answer", 42)
+    assert path.read_text(encoding="utf-8") == original
 
 
 def test_config_lock_file_is_created_next_to_config(tmp_path):

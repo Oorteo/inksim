@@ -1663,6 +1663,7 @@ def test_python_interpreter_attribute_can_be_removed(tmp_path):
         b'     python-interpreter="/old/uvr"\n'
         b'     keep="yes">\n'
         b'    <param name="python-interpreter">/old/uvr</param>\n'
+        b'    <param name="python-interpreter" value="/old/uvr"/>\n'
         b'    <param name="untouched">value</param>\n'
         b"  </group>\n"
         b"</inkscape>\n"
@@ -1695,6 +1696,25 @@ def test_python_interpreter_param_can_be_removed_without_attribute(tmp_path):
     assert "python-interpreter" not in text
     assert '<param name="untouched">value</param>' in text
     assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) is None
+
+
+def test_python_interpreter_removal_stays_within_the_extensions_group(tmp_path):
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions">'
+        '<param name="python-interpreter">/remove</param></group>'
+        '<group id="other"><param name="python-interpreter">keep</param></group>'
+        "</inkscape>",
+        encoding="utf-8",
+    )
+
+    InkscapeIntegrationDialog._remove_python_interpreter(preferences_file)
+
+    text = preferences_file.read_text(encoding="utf-8")
+    assert '<param name="python-interpreter">keep</param>' in text
+    assert '<group id="extensions"></group>' in text
 
 
 def test_windows_uses_uvr_gui_launcher(tmp_path, monkeypatch):
@@ -1876,6 +1896,9 @@ def test_unresponsive_command_keeps_extension_folders_found_last_time(qtbot, tmp
             "user_extensions": "/custom/user/extensions",
             "system_extensions": "/custom/system/extensions",
             "inkstitch": [],
+            "preferences_file": "/cached/preferences.xml",
+            "python-interpretor": "python3",
+            "python-interpreter-backup": "/cached/previous-python",
         },
     )
     monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
@@ -1894,6 +1917,10 @@ def test_unresponsive_command_keeps_extension_folders_found_last_time(qtbot, tmp
     assert status["executable"] == command
     assert status["user_extensions"] == "/custom/user/extensions"
     assert status["system_extensions"] == "/custom/system/extensions"
+    assert status["preferences_file"] == "/cached/preferences.xml"
+    assert status["python-interpretor"] == "python3"
+    assert status["python-interpreter-backup"] == "/cached/previous-python"
+    assert dialog.apply_interpreter_button.isEnabled() is False
 
 
 def test_typed_launcher_is_saved_when_the_probe_fails(qtbot, tmp_path, monkeypatch):

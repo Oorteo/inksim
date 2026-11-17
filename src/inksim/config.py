@@ -58,7 +58,7 @@ class Config:
         self._pending: dict[str, Any] = {}
         self._load()
 
-    def _load(self) -> None:
+    def _load(self, *, reject_invalid: bool = False) -> None:
         """Read the TOML file and sanitize values in memory without persisting."""
         import tomllib
 
@@ -72,13 +72,15 @@ class Config:
             with config_file as f:
                 loaded = tomllib.load(f)
         except (tomllib.TOMLDecodeError, UnicodeDecodeError):
+            if reject_invalid:
+                raise
             self._data = {}
             return
         self._data = _sanitize_config_value(loaded)
 
     def reload(self) -> None:
         """Reload the on-disk TOML file into this instance."""
-        self._load()
+        self._load(reject_invalid=True)
 
     def _save_locked(self) -> None:
         """Write the in-memory data atomically to ``self.path``."""
@@ -115,7 +117,7 @@ class Config:
         """
         with self._lock.acquire(timeout=timeout):
             pending = dict(self._pending)
-            self._load()
+            self._load(reject_invalid=True)
             if pending:
                 self._data.update(pending)
             self._save_locked()
@@ -140,7 +142,7 @@ class Config:
         """
         with self._lock.acquire(timeout=5.0):
             self._pending.pop(key, None)
-            self._load()
+            self._load(reject_invalid=True)
             self._data.pop(key, None)
             self._save_locked()
 

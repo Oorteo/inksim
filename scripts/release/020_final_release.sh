@@ -14,6 +14,7 @@ dry_run=false
 assume_yes=false
 require_green=true
 fetch=true
+branch_explicit=false
 
 usage() {
     printf 'Usage: %s [-y|--yes] [-n|--dry-run]\n' "${0##*/}"
@@ -47,6 +48,7 @@ while (($#)); do
             exit 1
         }
         branch="$1"
+        branch_explicit=true
         ;;
     --no-push) push=false ;;
     --no-fetch) fetch=false ;;
@@ -89,7 +91,10 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
 }
 
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
-default_branch="$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')"
+default_branch="$(
+    git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null |
+        sed 's|^origin/||' || true
+)"
 default_branch="${default_branch:-main}"
 if [[ -z "${branch:-}" ]]; then
     branch="$default_branch"
@@ -133,15 +138,31 @@ if [[ -z "$remote_branches_containing_target" || -n "$working_tree_changes" ]]; 
     echo "Any tag created will remain local; uncommitted changes are excluded." >&2
 fi
 
+if [[ "$branch_explicit" != true && "$local_only" != true && \
+    "$branch" == "$default_branch" ]] && \
+    git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+    sha="$(git rev-parse "refs/remotes/origin/$branch")"
+fi
+
 if [[ "$fetch" == true ]]; then
     if ! git fetch --quiet origin; then
         echo "Could not fetch from origin; continuing with the existing refs." >&2
     fi
-    sha="$(resolve_target_commit)"
+    if [[ "$branch_explicit" != true && "$local_only" != true && \
+        "$branch" == "$default_branch" ]] && \
+        git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+        sha="$(git rev-parse "refs/remotes/origin/$branch")"
+    else
+        sha="$(resolve_target_commit)"
+    fi
 fi
 
-# pyproject.toml holds the version this branch is heading towards.
-version="$(uv version --short --dry-run)"
+# Read the release version from the selected commit, not the current worktree.
+version="$(
+    git show "$sha:pyproject.toml" |
+        uv run --project "$project_root" --no-sync python -c \
+            'import sys, tomllib; print(tomllib.load(sys.stdin.buffer)["project"]["version"])'
+)"
 [[ -n "$version" ]] || {
     echo "Could not read the version from pyproject.toml." >&2
     exit 1
@@ -195,10 +216,18 @@ if [[ -n "$existing_local" || -n "$existing_remote" ]]; then
 fi
 
 mapfile -t release_tags_at_commit < <(git tag --points-at "$sha" --list 'v*')
-if ((${#release_tags_at_commit[@]})); then
+unexpected_release_tags=()
+for release_tag in "${release_tags_at_commit[@]}"; do
+    if [[ "$release_tag" =~ ^v([0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?)-rc\.[0-9]+$ ]] && \
+        [[ "${BASH_REMATCH[1]}" == "$version" ]]; then
+        continue
+    fi
+    unexpected_release_tags+=("$release_tag")
+done
+if ((${#unexpected_release_tags[@]})); then
     printf 'Commit %s already has release tag(s): %s\n' \
-        "${sha:0:12}" "${release_tags_at_commit[*]}" >&2
-    echo "Each commit may have only one v* release tag." >&2
+        "${sha:0:12}" "${unexpected_release_tags[*]}" >&2
+    echo "Only a matching release-candidate tag may share the final-release commit." >&2
     exit 1
 fi
 

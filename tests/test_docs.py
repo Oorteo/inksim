@@ -18,7 +18,6 @@ DOCUMENTS = sorted(
     for path in ROOT.rglob("*.md")
     if not SKIPPED_DIRECTORIES.intersection(path.relative_to(ROOT).parts)
 )
-FENCED_BLOCK = re.compile(r"^```.*?^```", re.MULTILINE | re.DOTALL)
 MARKDOWN_LINK = re.compile(r"\]\((?P<target>[^)\s]+)")
 HTML_LINK = re.compile(r"(?:src|href)=(?P<quote>[\"'])(?P<target>.+?)(?P=quote)")
 HEADING = re.compile(r"^#{1,6}\s+(?P<text>.+)$", re.MULTILINE)
@@ -31,13 +30,46 @@ def _slug(text: str) -> str:
     return plain.replace(" ", "-")
 
 
+def _without_fenced_code(text: str) -> str:
+    """Remove complete Markdown fenced blocks, respecting their marker and length."""
+    visible_lines = []
+    fence_character = None
+    fence_length = 0
+    for line in text.splitlines(keepends=True):
+        content = line.rstrip("\r\n")
+        indentation = len(content) - len(content.lstrip(" "))
+        marker_start = indentation
+        if indentation <= 3 and marker_start < len(content):
+            marker = content[marker_start]
+            if marker in {"`", "~"}:
+                marker_end = marker_start
+                while marker_end < len(content) and content[marker_end] == marker:
+                    marker_end += 1
+                run_length = marker_end - marker_start
+                remainder = content[marker_end:]
+                if fence_character is None:
+                    if run_length >= 3 and not (marker == "`" and "`" in remainder):
+                        fence_character = marker
+                        fence_length = run_length
+                    if fence_character is not None:
+                        continue
+                elif marker == fence_character:
+                    if run_length >= fence_length and not remainder.strip(" \t"):
+                        fence_character = None
+                        fence_length = 0
+                    continue
+        if fence_character is None:
+            visible_lines.append(line)
+    return "".join(visible_lines)
+
+
 def _headings(path: Path) -> set[str]:
-    text = FENCED_BLOCK.sub("", path.read_text(encoding="utf-8"))
+    text = _without_fenced_code(path.read_text(encoding="utf-8"))
     return {_slug(match.group("text")) for match in HEADING.finditer(text)}
 
 
 def _link_targets(path: Path) -> list[str]:
-    text = FENCED_BLOCK.sub("", path.read_text(encoding="utf-8"))
+    text = _without_fenced_code(path.read_text(encoding="utf-8"))
     targets = [match.group("target") for match in MARKDOWN_LINK.finditer(text)]
     targets.extend(match.group("target") for match in HTML_LINK.finditer(text))
     return [unquote(target) for target in targets]
@@ -60,6 +92,30 @@ def test_document_anchors_ignore_headings_in_fenced_code(tmp_path: Path):
 
     assert _slug("real heading") in _headings(document)
     assert _slug("example heading") not in _headings(document)
+
+
+def test_document_anchors_respect_fence_character_length_and_closing_lines(tmp_path: Path):
+    document = tmp_path / "guide.md"
+    document.write_text(
+        "# Visible heading\n\n"
+        "````python\n"
+        "```\n"
+        "# Hidden backtick heading\n"
+        "``` trailing text\n"
+        "````\n\n"
+        "~~~text\n"
+        "# Hidden tilde heading\n"
+        "~~~~\n\n"
+        "# Another visible heading\n",
+        encoding="utf-8",
+    )
+
+    headings = _headings(document)
+
+    assert _slug("visible heading") in headings
+    assert _slug("another visible heading") in headings
+    assert _slug("hidden backtick heading") not in headings
+    assert _slug("hidden tilde heading") not in headings
 
 
 @pytest.mark.parametrize("document", DOCUMENTS, ids=lambda path: str(path.relative_to(ROOT)))
