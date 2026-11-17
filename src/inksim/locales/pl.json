@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Dodaj do miejsc"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Wstecz"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Wróć do folderu {folder} (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Anuluj"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Naciśnij Enter lub kliknij dwukrotnie folder, aby wyświetlić jego pliki."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Dalej"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Przejdź do folderu {folder} (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Przejdź"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Ten folder jest niedostępny."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Z: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Otwórz folder źródłowy"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Otwórz folder źródłowy {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Do: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Otwórz folder docelowy"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Otwórz folder docelowy {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Tego typu pliku nie można otworzyć w InkSim."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Otwórz folder nadrzędny (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Widok"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Niedostępny"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Plik wykonywalny Inkscape lub pełne polecenie, na przykład „flatpak run org.inkscape.Inkscape”. Naciśnij Enter, aby je sprawdzić."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Oczekiwanie na odpowiedź Inkscape…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Sprawdzanie Inkscape... {seconds} s"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Interpreter Pythona: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Zapisano wykrytą konfigurację w ustawieniach InkSim."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Polecenie Inkscape zostało zapisane, ale sprawdzanie nie powiodło się, więc foldery rozszerzeń nie zostały zaktualizowane."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Nie znaleziono instalacji Ink/Stitch."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Zainstaluj Ink/Stitch w jednym z widocznych wyżej folderów rozszerzeń Inkscape."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "ప్రదేశాలకు జోడించు"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "వెనక్కి"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder}కు వెనక్కి వెళ్లండి (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "రద్దు చేయి"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "ఫోల్డర్‌లోని ఫైళ్లను చూడటానికి Enter నొక్కండి లేదా ఫోల్డర్‌పై రెండుసార్లు క్లిక్ చేయండి."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "ముందుకు"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder}కు ముందుకు వెళ్లండి (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "వెళ్లు"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "ఈ ఫోల్డర్‌ను యాక్సెస్ చేయలేము."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "మూలం: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "మూల ఫోల్డర్‌ను తెరవండి"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "{path} మూల ఫోల్డర్‌ను తెరవండి"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "గమ్యం: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "గమ్య ఫోల్డర్‌ను తెరవండి"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "{path} గమ్య ఫోల్డర్‌ను తెరవండి"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "ఈ ఫైల్ రకాన్ని InkSimలో తెరవలేము."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "మాతృ ఫోల్డర్‌ను తెరవండి (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "వీక్షణ"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "అందుబాటులో లేదు"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape ఎక్జిక్యూటబుల్ లేదా పూర్తి కమాండ్ లైన్‌ను నమోదు చేయండి. ఉదాహరణకు, \"flatpak run org.inkscape.Inkscape\". తనిఖీ చేయడానికి Enter నొక్కండి."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Inkscape స్పందించే వరకు వేచి ఉంది…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape‌ను తనిఖీ చేస్తోంది... {seconds} సె."
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python ఇంటర్‌ప్రెటర్: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "గుర్తించిన సెటప్‌ను InkSim కాన్ఫిగరేషన్‌లో సేవ్ చేశాం."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape కమాండ్ సేవ్ అయింది, కానీ తనిఖీ విఫలమైంది. అందువల్ల ఎక్స్‌టెన్షన్ ఫోల్డర్‌లు నవీకరించబడలేదు."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch ఇన్‌స్టాలేషన్ ఏదీ కనుగొనబడలేదు."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "పైన చూపిన Inkscape ఎక్స్‌టెన్షన్ ఫోల్డర్‌లలో ఒకదానిలో Ink/Stitch‌ను ఇన్‌స్టాల్ చేయండి."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

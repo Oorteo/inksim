@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "أضف إلى المواقع"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "رجوع"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "الرجوع إلى {folder} (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "إلغاء"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "اضغط Enter أو انقر نقرًا مزدوجًا على المجلد لاستعراض ملفاته."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "للأمام"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "الانتقال للأمام إلى {folder} (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "انتقال"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "هذا المجلد غير متاح."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "من: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "فتح مجلد المصدر"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "فتح مجلد المصدر {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "إلى: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "فتح مجلد الوجهة"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "فتح مجلد الوجهة {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "لا يمكن فتح هذا النوع من الملفات في InkSim."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "فتح المجلد الأب (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "عرض"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "غير متاح"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "ملف Inkscape التنفيذي أو سطر أوامر كامل، مثل \"flatpak run org.inkscape.Inkscape\". اضغط Enter للتحقق منه."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "بانتظار استجابة Inkscape…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "جارٍ التحقق من Inkscape... {seconds} ثانية"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "مفسّر Python: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "تم حفظ الإعدادات المكتشفة في إعدادات InkSim."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "تم حفظ أمر Inkscape، لكن تعذّر التحقق منه، لذلك لم تُحدَّث مجلدات الإضافات."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "لم يُعثر على أي تثبيت لـ Ink/Stitch."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "ثبّت Ink/Stitch في أحد مجلدات إضافات Inkscape الظاهرة أعلاه."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Legg til i steder"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Tilbake"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Tilbake til {folder} (Alt+Venstre)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Avbryt"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Trykk Enter eller dobbeltklikk på mappen for å bla gjennom filene."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Frem"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Frem til {folder} (Alt+Høyre)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Gå"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Denne mappen er ikke tilgjengelig."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Fra: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Åpne kildemappen"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Åpne kildemappen {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Til: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Åpne målmappen"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Åpne målmappen {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Denne filtypen kan ikke åpnes i InkSim."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Åpne overordnet mappe (Alt+Opp)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Visning"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Utilgjengelig"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape-program eller en hel kommandolinje, for eksempel «flatpak run org.inkscape.Inkscape». Trykk Enter for å sjekke den."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Venter på svar fra Inkscape…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Sjekker Inkscape... {seconds} s"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python-tolker: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Det oppdagede oppsettet ble lagret i InkSim-konfigurasjonen."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape-kommandoen ble lagret, men sjekken mislyktes, så utvidelsesmappene ble ikke oppdatert."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Fant ingen Ink/Stitch-installasjon."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Installer Ink/Stitch i en av Inkscapes utvidelsesmapper vist ovenfor."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

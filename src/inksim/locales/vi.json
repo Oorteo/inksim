@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Thêm vào vị trí"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Quay lại"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Quay lại {folder} (Alt+Trái)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Hủy"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Nhấn Enter hoặc nhấp đúp vào thư mục để xem các tệp bên trong."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Tiến tới"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Tiến tới {folder} (Alt+Phải)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Đi"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Không thể truy cập thư mục này."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Từ: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Mở thư mục nguồn"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Mở thư mục nguồn {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Đến: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Mở thư mục đích"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Mở thư mục đích {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "InkSim không thể mở loại tệp này."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Mở thư mục cha (Alt+Lên)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Xem"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Không khả dụng"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Tệp thực thi Inkscape hoặc toàn bộ dòng lệnh, ví dụ \"flatpak run org.inkscape.Inkscape\". Nhấn Enter để kiểm tra."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Đang chờ Inkscape phản hồi…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Đang kiểm tra Inkscape... {seconds} giây"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Trình thông dịch Python: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Đã lưu thiết lập được phát hiện vào cấu hình InkSim."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Đã lưu lệnh Inkscape, nhưng kiểm tra không thành công nên các thư mục tiện ích mở rộng chưa được cập nhật."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Không tìm thấy bản cài đặt Ink/Stitch nào."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Cài Ink/Stitch vào một trong các thư mục tiện ích mở rộng của Inkscape ở trên."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

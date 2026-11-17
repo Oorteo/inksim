@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Lisää sijainteihin"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Takaisin"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Takaisin kansioon {folder} (Alt+vasen)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Peruuta"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Avaa kansion tiedostot painamalla Enteriä tai kaksoisnapsauttamalla kansiota."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Eteenpäin"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Eteenpäin kansioon {folder} (Alt+oikea)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Siirry"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Tähän kansioon ei ole pääsyä."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Lähde: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Avaa lähdekansio"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Avaa lähdekansio {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Kohde: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Avaa kohdekansio"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Avaa kohdekansio {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "InkSim ei voi avata tämän tyyppistä tiedostoa."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Avaa ylätason kansio (Alt+ylös)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Näkymä"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Ei käytettävissä"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape-ohjelman suoritustiedosto tai koko komentorivi, esimerkiksi \"flatpak run org.inkscape.Inkscape\". Tarkista painamalla Enter."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Odotetaan Inkscapen vastausta…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Tarkistetaan Inkscapea... {seconds} s"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python-tulkki: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Havaittu kokoonpano tallennettiin InkSim-määritykseen."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape-komento tallennettiin, mutta tarkistus epäonnistui, joten laajennuskansioita ei päivitetty."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch-asennusta ei löytynyt."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Asenna Ink/Stitch johonkin yllä näkyvistä Inkscapen laajennuskansioista."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

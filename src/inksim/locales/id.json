@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Tambahkan ke lokasi"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Kembali"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Kembali ke {folder} (Alt+Kiri)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Batal"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Tekan Enter atau klik dua kali folder untuk melihat file di dalamnya."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Maju"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Maju ke {folder} (Alt+Kanan)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Buka"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Folder ini tidak dapat diakses."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Dari: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Buka folder sumber"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Buka folder sumber {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Ke: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Buka folder tujuan"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Buka folder tujuan {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Jenis file ini tidak dapat dibuka di InkSim."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Buka folder induk (Alt+Atas)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Tampilan"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Tidak tersedia"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Executable Inkscape atau baris perintah lengkap, misalnya \"flatpak run org.inkscape.Inkscape\". Tekan Enter untuk memeriksanya."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Menunggu respons Inkscape…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Memeriksa Inkscape... {seconds} dtk"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Interpreter Python: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Konfigurasi InkSim telah menyimpan pengaturan yang terdeteksi."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Perintah Inkscape berhasil disimpan, tetapi pemeriksaan gagal, jadi folder ekstensi tidak diperbarui."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Tidak ditemukan instalasi Ink/Stitch."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Instal Ink/Stitch di salah satu folder ekstensi Inkscape yang ditampilkan di atas."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

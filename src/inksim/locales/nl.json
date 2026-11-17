@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Toevoegen aan locaties"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Terug"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Terug naar {folder} (Alt+Links)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Annuleren"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Druk op Enter of dubbelklik op de map om de bestanden erin te bekijken."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Vooruit"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Vooruit naar {folder} (Alt+Rechts)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Ga"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Deze map is niet toegankelijk."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Van: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Open de bronmap"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Open de bronmap {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Naar: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Open de doelmap"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Open de doelmap {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Dit bestandstype kan niet worden geopend in InkSim."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Open de bovenliggende map (Alt+Omhoog)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Weergave"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Niet beschikbaar"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Het Inkscape-uitvoerbare bestand of een volledige opdrachtregel, bijvoorbeeld \"flatpak run org.inkscape.Inkscape\". Druk op Enter om dit te controleren."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Wachten op antwoord van Inkscape…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape controleren... {seconds} s"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python-interpreter: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "De gevonden instellingen zijn opgeslagen in de InkSim-configuratie."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "De Inkscape-opdracht is opgeslagen, maar de controle is mislukt. De extensiemappen zijn daarom niet bijgewerkt."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Er is geen Ink/Stitch-installatie gevonden."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Installeer Ink/Stitch in een van de hierboven vermelde Inkscape-extensiemappen."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

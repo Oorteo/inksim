@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Cuir le háiteanna"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Ar ais"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Ar ais go {folder} (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Cealaigh"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Brúigh Enter nó cliceáil faoi dhó ar an bhfillteán chun a chomhaid a bhrabhsáil."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Ar aghaidh"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Ar aghaidh go {folder} (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Téigh"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Ní féidir rochtain a fháil ar an bhfillteán seo."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Ó: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Oscail an fillteán foinseach"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Oscail an fillteán foinseach {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Chuige: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Oscail an fillteán sprice"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Oscail an fillteán sprice {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Ní féidir an cineál comhaid seo a oscailt in InkSim."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Oscail an fillteán tuismitheora (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Amharc"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Níl sé ar fáil"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inrite Inkscape nó líne ordaithe iomlán, mar shampla \"flatpak run org.inkscape.Inkscape\". Brúigh Enter lena sheiceáil."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Ag fanacht le freagra ó Inkscape…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape á sheiceáil... {seconds} s"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Ateangaire Python: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Sábháladh an socrú aimsithe i gcumraíocht InkSim."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Sábháladh ordú Inkscape, ach theip ar an tseiceáil, mar sin níor nuashonraíodh na fillteáin eisínteachta."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Níor aimsíodh aon suiteáil Ink/Stitch."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Suiteáil Ink/Stitch i gceann de na fillteáin eisínteachta Inkscape thuas."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

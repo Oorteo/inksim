@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Dodaj u lokacije"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Natrag"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Natrag u mapu {folder} (Alt+Lijevo)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Odustani"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Pritisni Enter ili dvaput klikni mapu za pregled njezinih datoteka."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Naprijed"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Naprijed u mapu {folder} (Alt+Desno)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Idi"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Nije moguće pristupiti ovoj mapi."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Iz: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Otvori izvornu mapu"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Otvori izvornu mapu {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "U: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Otvori odredišnu mapu"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Otvori odredišnu mapu {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Ova vrsta datoteke ne može se otvoriti u InkSimu."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Otvori nadređenu mapu (Alt+Gore)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Prikaz"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Nije dostupno"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Izvršna datoteka Inkscapea ili cijeli redak naredbe, na primjer \"flatpak run org.inkscape.Inkscape\". Pritisni Enter da je provjeriš."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Čekanje odgovora Inkscapea…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Provjera Inkscapea... {seconds} s"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python interpreter: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Otkrivena konfiguracija spremljena je u postavke InkSima."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Naredba za Inkscape je spremljena, ali provjera nije uspjela pa mape proširenja nisu ažurirane."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Nije pronađena instalacija Ink/Stitcha."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Instaliraj Ink/Stitch u jednu od gore prikazanih mapa proširenja Inkscapea."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

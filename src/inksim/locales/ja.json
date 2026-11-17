@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "場所に追加"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "戻る"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder}に戻る（Alt+←）"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "キャンセル"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Enter キーを押すか、フォルダーをダブルクリックして中のファイルを表示します。"
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "進む"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder}に進む（Alt+→）"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "移動"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "このフォルダーにアクセスできません。"
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "元: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "元のフォルダーを開く"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "元のフォルダー {path} を開く"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "先: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "先のフォルダーを開く"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "先のフォルダー {path} を開く"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "このファイル形式は InkSim で開けません。"
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "親フォルダーを開く（Alt+↑）"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "表示"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "利用できません"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscapeの実行ファイル、またはコマンドライン全体を入力してね。例: \"flatpak run org.inkscape.Inkscape\"。Enterキーで確認するよ。"
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Inkscape の応答を待っています…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscapeを確認中... {seconds} 秒"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python インタープリター: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "検出した設定を InkSim の設定に保存しました。"
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscapeのコマンドは保存したけど、確認に失敗したため拡張機能フォルダーは更新されなかったよ。"
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch が見つかりません。"
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "上に表示されているInkscapeの拡張機能フォルダーのいずれかにInk/Stitchをインストールしてね。"
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

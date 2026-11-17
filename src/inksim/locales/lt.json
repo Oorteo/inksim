@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Pridėti prie vietų"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Atgal"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "Grįžti į aplanką {folder} (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Atšaukti"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Paspauskite Enter arba dukart spustelėkite aplanką, kad peržiūrėtumėte jo failus."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Pirmyn"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "Pirmyn į aplanką {folder} (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Eiti"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Šis aplankas nepasiekiamas."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Iš: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Atidaryti šaltinio aplanką"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "Atidaryti šaltinio aplanką {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Į: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Atidaryti paskirties aplanką"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "Atidaryti paskirties aplanką {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "„InkSim“ negali atidaryti šio tipo failo."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Atidaryti aukštesnio lygio aplanką (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Rodinys"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Nepasiekiamas"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape vykdomasis failas arba visa komandinė eilutė, pavyzdžiui, „flatpak run org.inkscape.Inkscape“. Paspausk Enter, kad patikrintum."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Laukiama „Inkscape“ atsakymo…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Tikrinama „Inkscape“... {seconds} s"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "„Python“ interpretatorius: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Aptikta sąranka išsaugota „InkSim“ konfigūracijoje."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "„Inkscape“ komanda išsaugota, bet patikra nepavyko, todėl plėtinių aplankai nebuvo atnaujinti."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "„Ink/Stitch“ dieginys nerastas."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Įdiek „Ink/Stitch“ į vieną iš aukščiau nurodytų „Inkscape“ plėtinių aplankų."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Байршлуудад нэмэх"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Буцах"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder} руу буцах (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Цуцлах"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Файлуудыг үзэхийн тулд Enter дар эсвэл хавтас дээр давхар товш."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "Урагшлах"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder} руу урагшлах (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Очих"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Энэ хавтас руу хандах боломжгүй."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Эх хавтас: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Эх хавтсыг нээх"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "{path} эх хавтсыг нээх"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Очих хавтас: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Очих хавтсыг нээх"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "{path} очих хавтсыг нээх"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Энэ төрлийн файлыг InkSim дээр нээх боломжгүй."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Эцэг хавтсыг нээх (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Харагдац"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Боломжгүй"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape-ийн ажиллуулах файл эсвэл командын мөрийг бүхэлд нь оруулна уу. Жишээ нь: \"flatpak run org.inkscape.Inkscape\". Шалгахын тулд Enter дарна уу."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Inkscape хариу өгөхийг хүлээж байна…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape-г шалгаж байна... {seconds} с"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python тайлбарлагч: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Илрүүлсэн тохиргоог InkSim-ийн тохиргоонд хадгаллаа."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape-ийн командыг хадгалсан ч шалгалт амжилтгүй болсон тул өргөтгөлийн хавтаснуудыг шинэчилсэнгүй."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch суулгалт олдсонгүй."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Ink/Stitch-ийг дээр харуулсан Inkscape-ийн өргөтгөлийн хавтаснуудын аль нэгэнд суулгана уу."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",
