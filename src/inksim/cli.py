@@ -307,6 +307,11 @@ def _run_inkscape_preview(
     debug_script: Path | None = None
     if create_bash_script:
         debug_script = _create_inksim_debug_script(extension_arguments)
+    document_path = args.document_path
+    if document_path is None:
+        original_document = os.environ.get("DOCUMENT_PATH")
+        if original_document:
+            document_path = Path(original_document).expanduser()
 
     status = Config().get(INKSCAPE_CONFIG_KEY)
     preview = resolve_inkstitch_preview(status) if isinstance(status, dict) else None
@@ -371,6 +376,7 @@ def _run_inkscape_preview(
                 temporary_input=True,
                 autoplay=True,
                 debug_script=debug_script,
+                document_path=document_path,
             )
         except SystemExit as error:
             retained = error.code == 0
@@ -389,9 +395,11 @@ def _forward_to_server(
     autoplay: bool | None = None,
     check_inkscape_extension: bool = False,
     debug_script: Path | None = None,
+    document_path: Path | None = None,
 ) -> None:
     """Ask the singleton server to show the first input, then exit the client."""
     _ensure_core_application()
+    request_document_path = args.document_path if document_path is None else document_path
     request: dict[str, Any] = {
         "type": "open",
         "index": args.index,
@@ -401,7 +409,9 @@ def _forward_to_server(
         "delete_after_load": args.delete_input,
         "temporary_input": (args.temporary_input if temporary_input is None else temporary_input),
         "command_line": sys.argv.copy(),
-        "document_path": str(args.document_path.resolve()) if args.document_path else None,
+        "document_path": (
+            str(request_document_path.resolve()) if request_document_path is not None else None
+        ),
         "window": {
             "fullscreen": args.fullscreen,
             "window_size": args.size,

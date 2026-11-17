@@ -304,6 +304,7 @@ def test_inkscape_preview_waits_for_csv_then_forwards_temporary_input(
         assert csv_path.read_bytes() == b"csv stitch data"
         assert request["temporary_input"] is True
         assert request["autoplay"] is True
+        assert request["document_path"] == str(document_path.resolve())
         return {"ok": True}
 
     monkeypatch.setattr(cli, "Config", FakeConfig)
