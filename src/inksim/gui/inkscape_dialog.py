@@ -167,6 +167,11 @@ def _quote_command_token(token: str) -> str:
     return f'"{token}"' if any(character.isspace() for character in token) else token
 
 
+def _expand_user_token(token: str) -> str:
+    """Expand a "~" prefix, which QProcess passes through literally."""
+    return os.path.expanduser(token) if token.startswith("~") else token
+
+
 def _command_line(program: str, arguments: list[str]) -> str:
     """Rebuild a command line so saved settings keep the probed arguments."""
     if not arguments:
@@ -486,7 +491,9 @@ class InkscapeIntegrationDialog(QDialog):
             self._set_executable(path)
 
     def _on_executable_activated(self, index: int) -> None:
-        command = self.executable_combo.itemText(index)
+        command = self.executable_combo.itemData(index, Qt.UserRole)
+        if not isinstance(command, str) or not command:
+            command = self.executable_combo.itemText(index)
         if command:
             self._set_executable(command)
 
@@ -520,9 +527,11 @@ class InkscapeIntegrationDialog(QDialog):
                 continue
             seen.add(command_line)
             self.executable_combo.addItem(_sanitize_path_text(command_line))
-            self.executable_combo.setItemData(
-                self.executable_combo.count() - 1, choice.source, Qt.ToolTipRole
-            )
+            index = self.executable_combo.count() - 1
+            self.executable_combo.setItemData(index, choice.source, Qt.ToolTipRole)
+            # The shortened home path is display only; QProcess does not expand
+            # "~" in arguments, so probing must use the command that was found.
+            self.executable_combo.setItemData(index, command_line, Qt.UserRole)
         self.executable_combo.setEditText(current)
         self.executable_combo.blockSignals(False)
 
@@ -565,7 +574,10 @@ class InkscapeIntegrationDialog(QDialog):
         super().done(result)
 
     def _start_probe(self, executable_command: str) -> None:
-        command = ToolInfo("Inkscape", executable_command, "configuration").command
+        command = [
+            _expand_user_token(token)
+            for token in ToolInfo("Inkscape", executable_command, "configuration").command
+        ]
         if not command:
             return
 
