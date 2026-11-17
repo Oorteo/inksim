@@ -815,6 +815,34 @@ def test_second_svg_conversion_is_ignored_while_one_is_running(qtbot, tmp_path, 
     dialog.reject()
 
 
+@pytest.mark.parametrize("busy_operation", ["conversion", "thumbnails"])
+def test_open_selected_ignores_requests_while_busy(qtbot, tmp_path, monkeypatch, busy_operation):
+    from PySide6.QtCore import QProcess
+
+    from inksim.gui.open_dialog import KIND_EMBROIDERY
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status())
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+    design_path = tmp_path / "design.dst"
+    monkeypatch.setattr(dialog, "_current_path", lambda: design_path)
+    monkeypatch.setattr(dialog, "_kind_for_path", lambda path: KIND_EMBROIDERY)
+    dialog._preview_loaded = True
+    if busy_operation == "conversion":
+        dialog._conversion_process = QProcess(dialog)
+    else:
+        dialog._thumbnail_job = object()
+
+    dialog._open_selected()
+
+    assert dialog.selected_path is None
+    assert dialog.result_action is None
+
+    dialog._conversion_process = None
+    dialog._thumbnail_job = None
+    dialog.reject()
+
+
 def test_info_box_keeps_its_height_between_files(qtbot, tmp_path, monkeypatch):
     """A shorter info text must not resize the dialog while browsing."""
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))

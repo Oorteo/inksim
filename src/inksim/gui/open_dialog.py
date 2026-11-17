@@ -2675,6 +2675,8 @@ class OpenBrowserDialog(QDialog):
 
     def _open_selected(self, checked: bool = False) -> None:
         del checked
+        if self._conversion_process is not None or self._thumbnail_job is not None:
+            return
         path = self._current_path()
         if path is None:
             return
