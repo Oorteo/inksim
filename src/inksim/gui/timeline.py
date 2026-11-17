@@ -448,7 +448,7 @@ class TimelineWidget(QWidget):
                 if color is None and command.startswith("COLOR CHANGE"):
                     color = command_colors["COLOR CHANGE"]
                 color = color or QColor(80, 80, 80)
-                marker_y = rect.top() if overview else rect.top() - 5 + marker_index * 5
+                marker_y = rect.top() if overview else rect.top() + marker_index * 5
                 painter.setPen(QPen(QColor(30, 30, 30), 1))
                 painter.drawLine(x, marker_y, x, rect.bottom())
                 if not overview:

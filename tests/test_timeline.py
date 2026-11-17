@@ -242,6 +242,18 @@ def test_timeline_renders_zoomed_view_with_command_markers(qtbot):
     assert outside_pixel.lightness() > selected_pixel.lightness()
 
 
+def test_first_command_marker_is_visible_inside_the_timeline(qtbot):
+    timeline, viewer = make_timeline(qtbot)
+    viewer.command_events = {50: ["COLOR CHANGE"]}
+
+    image = timeline.grab().toImage()
+    main_bar, _, _ = timeline._layout_rects()
+    marker_x = timeline._view_position_x(50, main_bar)
+    marker_pixel = image.pixelColor(marker_x, main_bar.top() + 2)
+
+    assert marker_pixel.red() > marker_pixel.blue() * 2
+
+
 def test_zoomed_timeline_draws_stitch_lengths_symmetrically(qtbot):
     timeline, viewer = make_timeline(qtbot, total=2)
     viewer.stitches_np = np.array(
