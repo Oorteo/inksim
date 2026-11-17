@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "زیادکردن بۆ شوێنەکان"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "پاشەوە"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "بگەڕێوە بۆ {folder} (Alt+چەپ)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "Betal bike"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "بۆ بینینی پەڕگەکانی بوخچەکە، Enter دابگرە یان دووجار کلیکی لەسەر بکە."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "پێشەوە"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "بڕۆ پێشەوە بۆ {folder} (Alt+ڕاست)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "بڕۆ"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Ev peldank nayê gihîştin."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "لە: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "بوخچەی سەرچاوە بکەرەوە"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "بوخچەی سەرچاوەی {path} بکەرەوە"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "بۆ: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "بوخچەی ئامانج بکەرەوە"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "بوخچەی ئامانجی {path} بکەرەوە"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Ev cure pel di InkSim de nayê vekirin."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "بوخچەی باوان بکەرەوە (Alt+سەرەوە)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "بینین"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Ne berdest e"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "جێبەجێکەری Inkscape یان هێڵێکی تەواوی فەرمان، بۆ نموونە \"flatpak run org.inkscape.Inkscape\". بۆ پشکنینی فەرمانەکە Enter دابگرە."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Li benda bersiva Inkscape ye…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "پشکنینی Inkscape... {seconds} چرکە"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Wergêrê Python: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Sazkirina hatî dîtin di mîhengên InkSim de hate tomarkirin."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "فەرمانی Inkscape پاشەکەوت کرا، بەڵام پشکنینەکە سەرکەوتوو نەبوو؛ بۆیە بوخچەکانی پاشکۆ نوێ نەکرانەوە."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Tu sazkirineke Ink/Stitch nehat dîtin."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Ink/Stitch لە یەکێک لە بوخچەکانی پاشکۆی Inkscape کە لە سەرەوە نیشان دراون دابمەزرێنە."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "위치에 추가"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "뒤로"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder}(으)로 돌아가기 (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "취소"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Enter 키를 누르거나 폴더를 두 번 클릭해 파일을 살펴보세요."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "앞으로"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder}(으)로 이동 (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "이동"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "이 폴더에 접근할 수 없어."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "출처: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "출처 폴더 열기"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "출처 폴더 {path} 열기"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "대상: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "대상 폴더 열기"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "대상 폴더 {path} 열기"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "InkSim에서 열 수 없는 파일 형식이야."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "상위 폴더 열기 (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "보기"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "사용할 수 없음"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape 실행 파일 또는 전체 명령줄을 입력해. 예: \"flatpak run org.inkscape.Inkscape\". Enter 키를 눌러 확인해."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Inkscape 응답을 기다리는 중…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape 확인 중... {seconds}초"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python 인터프리터: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "감지된 설정을 InkSim 설정에 저장했어."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape 명령은 저장했지만 확인에 실패해서 확장 프로그램 폴더를 업데이트하지 않았어."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch 설치를 찾을 수 없어."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "위에 표시된 Inkscape 확장 프로그램 폴더 중 하나에 Ink/Stitch를 설치해."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "Konumlara ekle"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "Geri"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder} klasörüne geri dön (Alt+Sol)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "İptal"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "Dosyalarına göz atmak için Enter'a bas veya klasöre çift tıkla."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "İleri"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder} klasörüne ilerle (Alt+Sağ)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "Git"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "Bu klasöre erişilemiyor."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "Kaynak: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "Kaynak klasörü aç"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "{path} kaynak klasörünü aç"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "Hedef: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "Hedef klasörü aç"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "{path} hedef klasörünü aç"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "Bu dosya türü InkSim'de açılamaz."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "Üst klasörü aç (Alt+Yukarı)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "Görünüm"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "Kullanılamıyor"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape çalıştırılabilir dosyasını veya tam komut satırını gir. Örneğin: \"flatpak run org.inkscape.Inkscape\". Kontrol etmek için Enter'a bas."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Inkscape'in yanıt vermesi bekleniyor…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape kontrol ediliyor... {seconds} sn"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python yorumlayıcısı: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "Bulunan kurulum InkSim yapılandırmasına kaydedildi."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape komutu kaydedildi ancak kontrol başarısız oldu; bu nedenle uzantı klasörleri güncellenmedi."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch kurulumu bulunamadı."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "Ink/Stitch'i yukarıda gösterilen Inkscape uzantı klasörlerinden birine yükle."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

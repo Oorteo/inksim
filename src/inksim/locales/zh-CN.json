@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "添加到常用位置"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "返回"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "返回到 {folder}（Alt+左方向键）"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "取消"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "按 Enter 或双击文件夹即可浏览其中的文件。"
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "前进"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "前进到 {folder}（Alt+右方向键）"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "前往"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "无法访问此文件夹。"
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "来源：{folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "打开来源文件夹"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "打开来源文件夹 {path}"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "目标：{folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "打开目标文件夹"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "打开目标文件夹 {path}"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "InkSim 无法打开此文件类型。"
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "打开上级文件夹（Alt+上方向键）"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "视图"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "不可用"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape 可执行文件或完整命令行，例如“flatpak run org.inkscape.Inkscape”。按 Enter 检查。"
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "正在等待 Inkscape 响应…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "正在检查 Inkscape... {seconds} 秒"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python 解释器：{path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "已将检测到的设置保存到 InkSim 配置中。"
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "已保存 Inkscape 命令，但检查失败，因此未更新扩展文件夹。"
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "未找到 Ink/Stitch 安装。"
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "请将 Ink/Stitch 安装到上方显示的某个 Inkscape 扩展文件夹中。"
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

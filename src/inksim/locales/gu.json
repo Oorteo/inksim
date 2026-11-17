@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "સ્થાનોમાં ઉમેરો"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "પાછળ"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder} પર પાછા જાઓ (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "રદ કરો"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "તેની ફાઇલો જોવા માટે Enter દબાવો અથવા ફોલ્ડર પર ડબલ-ક્લિક કરો."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "આગળ"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder} પર આગળ વધો (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "જાઓ"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "આ ફોલ્ડર ઍક્સેસ કરી શકાતું નથી."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "અહીંથી: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "સ્રોત ફોલ્ડર ખોલો"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "સ્રોત ફોલ્ડર {path} ખોલો"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "અહીં સુધી: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "લક્ષ્ય ફોલ્ડર ખોલો"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "લક્ષ્ય ફોલ્ડર {path} ખોલો"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "આ ફાઇલ પ્રકાર InkSimમાં ખોલી શકાતો નથી."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "પેરન્ટ ફોલ્ડર ખોલો (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "દૃશ્ય"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "ઉપલબ્ધ નથી"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape એક્ઝિક્યુટેબલ અથવા આખી કમાન્ડ લાઇન, ઉદાહરણ તરીકે \"flatpak run org.inkscape.Inkscape\". તપાસવા માટે Enter દબાવો."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Inkscapeના પ્રતિસાદની રાહ જોઈ રહ્યું છે…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape તપાસી રહ્યા છીએ... {seconds} સેકન્ડ"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python ઇન્ટરપ્રિટર: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "શોધાયેલ સેટઅપ InkSimના કન્ફિગરેશનમાં સાચવ્યું."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape કમાન્ડ સાચવી, પણ તપાસ નિષ્ફળ ગઈ, તેથી એક્સ્ટેન્શન ફોલ્ડર્સ અપડેટ થયા નથી."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "કોઈ Ink/Stitch ઇન્સ્ટોલેશન મળ્યું નથી."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "ઉપર બતાવેલા Inkscape એક્સ્ટેન્શન ફોલ્ડર્સમાંથી કોઈ એકમાં Ink/Stitch ઇન્સ્ટોલ કરો."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

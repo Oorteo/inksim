@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "இடங்களில் சேர்"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "பின்செல்"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder} கோப்புறைக்குப் பின்செல் (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "ரத்து செய்"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "கோப்புறையின் கோப்புகளைப் பார்க்க Enter அழுத்தவும் அல்லது கோப்புறையை இருமுறை சொடுக்கவும்."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "முன்னேறு"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder} கோப்புறைக்கு முன்னேறு (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "செல்"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "இந்தக் கோப்புறையை அணுக முடியாது."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "மூலம்: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "மூலக் கோப்புறையைத் திற"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "{path} மூலக் கோப்புறையைத் திற"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "இலக்கு: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "இலக்குக் கோப்புறையைத் திற"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "{path} இலக்குக் கோப்புறையைத் திற"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "இந்தக் கோப்பு வகையை InkSim-இல் திறக்க முடியாது."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "தாய் கோப்புறையைத் திற (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "காட்சி"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "கிடைக்கவில்லை"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape இயங்கக்கூடிய கோப்பு அல்லது முழுக் கட்டளை வரி. உதாரணமாக, \"flatpak run org.inkscape.Inkscape\". சரிபார்க்க Enter அழுத்தவும்."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Inkscape பதிலளிக்கக் காத்திருக்கிறது…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape-ஐச் சரிபார்க்கிறது... {seconds} வி"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python மொழிபெயர்ப்பி: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "கண்டறியப்பட்ட அமைப்பு InkSim அமைப்பில் சேமிக்கப்பட்டது."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape கட்டளை சேமிக்கப்பட்டது, ஆனால் சரிபார்ப்பு தோல்வியடைந்ததால் நீட்சிக் கோப்புறைகள் புதுப்பிக்கப்படவில்லை."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch நிறுவல் எதுவும் கிடைக்கவில்லை."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "மேலே காட்டப்பட்டுள்ள Inkscape நீட்சிக் கோப்புறைகளில் ஒன்றில் Ink/Stitch-ஐ நிறுவவும்."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",

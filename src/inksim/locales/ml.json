@@ -131,6 +131,14 @@
         "source": "Add to places",
         "translation": "ഇഷ്ടപ്പെട്ട ഇടങ്ങളിൽ ചേർക്കുക"
     },
+    "dialog.open_browser.back": {
+        "source": "Back",
+        "translation": "പിന്നിലേക്ക്"
+    },
+    "dialog.open_browser.back_hint": {
+        "source": "Back to {folder} (Alt+Left)",
+        "translation": "{folder}-ലേക്ക് പിന്നിലേക്ക് (Alt+Left)"
+    },
     "dialog.open_browser.cancel": {
         "source": "Cancel",
         "translation": "റദ്ദാക്കുക"
@@ -263,6 +271,14 @@
         "source": "Press Enter or double-click the folder to browse its files.",
         "translation": "ഫോൾഡറിലെ ഫയലുകൾ കാണാൻ Enter അമർത്തുകയോ ഫോൾഡറിൽ ഇരട്ട-ക്ലിക്ക് ചെയ്യുകയോ ചെയ്യുക."
     },
+    "dialog.open_browser.forward": {
+        "source": "Forward",
+        "translation": "മുന്നോട്ട്"
+    },
+    "dialog.open_browser.forward_hint": {
+        "source": "Forward to {folder} (Alt+Right)",
+        "translation": "{folder}-ലേക്ക് മുന്നോട്ട് (Alt+Right)"
+    },
     "dialog.open_browser.go": {
         "source": "Go",
         "translation": "പോകുക"
@@ -294,6 +310,30 @@
     "dialog.open_browser.invalid_folder": {
         "source": "This folder is not accessible.",
         "translation": "ഈ ഫോൾഡർ ആക്സസ് ചെയ്യാനാകില്ല."
+    },
+    "dialog.open_browser.jump_to_source": {
+        "source": "From: {folder}",
+        "translation": "ഇതിൽ നിന്ന്: {folder}"
+    },
+    "dialog.open_browser.jump_to_source_accessible": {
+        "source": "Open the source folder",
+        "translation": "സോഴ്‌സ് ഫോൾഡർ തുറക്കുക"
+    },
+    "dialog.open_browser.jump_to_source_hint": {
+        "source": "Open the source folder {path}",
+        "translation": "{path} എന്ന സോഴ്‌സ് ഫോൾഡർ തുറക്കുക"
+    },
+    "dialog.open_browser.jump_to_target": {
+        "source": "To: {folder}",
+        "translation": "ഇതിലേക്ക്: {folder}"
+    },
+    "dialog.open_browser.jump_to_target_accessible": {
+        "source": "Open the target folder",
+        "translation": "ലക്ഷ്യ ഫോൾഡർ തുറക്കുക"
+    },
+    "dialog.open_browser.jump_to_target_hint": {
+        "source": "Open the target folder {path}",
+        "translation": "{path} എന്ന ലക്ഷ്യ ഫോൾഡർ തുറക്കുക"
     },
     "dialog.open_browser.modified": {
         "source": "Modified: {time}",
@@ -559,6 +599,10 @@
         "source": "This file type cannot be opened in InkSim.",
         "translation": "ഈ ഫയൽ തരം InkSim-ൽ തുറക്കാനാകില്ല."
     },
+    "dialog.open_browser.up_hint": {
+        "source": "Open the parent folder (Alt+Up)",
+        "translation": "പാരന്റ് ഫോൾഡർ തുറക്കുക (Alt+Up)"
+    },
     "dialog.open_browser.view": {
         "source": "View",
         "translation": "കാഴ്ച"
@@ -646,6 +690,10 @@
     "integration.inkscape.directory_unavailable": {
         "source": "Unavailable",
         "translation": "ലഭ്യമല്ല"
+    },
+    "integration.inkscape.executable_hint": {
+        "source": "Inkscape executable or a whole command line, for example \"flatpak run org.inkscape.Inkscape\". Press Enter to check it.",
+        "translation": "Inkscape എക്സിക്യൂട്ടബിൾ അല്ലെങ്കിൽ പൂർണ്ണ കമാൻഡ് ലൈൻ നൽകുക; ഉദാഹരണത്തിന്, \"flatpak run org.inkscape.Inkscape\". പരിശോധിക്കാൻ Enter അമർത്തുക."
     },
     "integration.inkscape.inksim_debug_script": {
         "source": "Create debug script (debug_inksim.sh)",
@@ -807,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Inkscape പ്രതികരിക്കാൻ കാത്തിരിക്കുന്നു…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Inkscape പരിശോധിക്കുന്നു... {seconds} സെ."
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python ഇന്റർപ്രിറ്റർ: {path}"
@@ -854,6 +906,10 @@
     "integration.inkscape.report.config_saved": {
         "source": "Saved the detected setup to the InkSim configuration.",
         "translation": "കണ്ടെത്തിയ സജ്ജീകരണം InkSim ക്രമീകരണത്തിൽ സംരക്ഷിച്ചു."
+    },
+    "integration.inkscape.report.config_saved_incomplete": {
+        "source": "Saved the Inkscape command, but the check failed, so the extension folders were not updated.",
+        "translation": "Inkscape കമാൻഡ് സേവ് ചെയ്തു, പക്ഷേ പരിശോധന പരാജയപ്പെട്ടതിനാൽ എക്സ്റ്റൻഷൻ ഫോൾഡറുകൾ അപ്‌ഡേറ്റ് ചെയ്തില്ല."
     },
     "integration.inkscape.report.executable": {
         "source": "Checked Inkscape executable: {path}",
@@ -1002,6 +1058,10 @@
     "integration.inkstitch.not_found": {
         "source": "No Ink/Stitch installation was found.",
         "translation": "Ink/Stitch ഇൻസ്റ്റാളേഷനൊന്നും കണ്ടെത്തിയില്ല."
+    },
+    "integration.inkstitch.not_found_hint": {
+        "source": "Install Ink/Stitch into one of the Inkscape extensions folders shown above.",
+        "translation": "മുകളിൽ കാണിച്ചിരിക്കുന്ന Inkscape എക്സ്റ്റൻഷൻ ഫോൾഡറുകളിലൊന്നിൽ Ink/Stitch ഇൻസ്റ്റാൾ ചെയ്യുക."
     },
     "integration.inkstitch.resolved_path": {
         "source": "Path: {path}",
