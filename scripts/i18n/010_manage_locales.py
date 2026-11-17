@@ -106,7 +106,12 @@ def _count_needs_update(code: str, en_data: dict[str, Any]) -> int:
             if isinstance(english_entry, dict)
             else english_entry
         )
-        return not translation or translation == msg_id or target_source != english_source
+        return (
+            not isinstance(translation, str)
+            or not translation.strip()
+            or translation == msg_id
+            or target_source != english_source
+        )
 
     return sum(1 for msg_id in message_ids if msg_id in target and needs_update(msg_id))
 

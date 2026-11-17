@@ -284,6 +284,7 @@ def test_locale_list_counts_stale_and_untranslated_entries(
                     "source": "Placeholder",
                     "translation": "placeholder",
                 },
+                "whitespace": {"source": "Whitespace", "translation": " \t\n"},
                 "ready": {"source": "Ready", "translation": "Připraveno"},
             }
         ),
@@ -295,11 +296,12 @@ def test_locale_list_counts_stale_and_untranslated_entries(
         "stale": {"source": "Current source"},
         "empty": {"source": "Empty"},
         "placeholder": {"source": "Placeholder"},
+        "whitespace": {"source": "Whitespace"},
         "ready": {"source": "Ready"},
         "missing": {"source": "Missing"},
     }
     target_messages = json.loads((locale_dir / "cs.json").read_text(encoding="utf-8"))
 
     assert _manage._count_missing("cs", en_messages) == 1
-    assert _manage._count_needs_update("cs", en_messages) == 3
-    assert len(_translate.find_translation_work(en_messages, target_messages)) == 4
+    assert _manage._count_needs_update("cs", en_messages) == 4
+    assert len(_translate.find_translation_work(en_messages, target_messages)) == 5

@@ -111,10 +111,12 @@ def find_translation_work(
         if target_entry is None:
             work[msg_id] = en_source
             continue
+        translation = target_entry.get("translation")
         if (
             target_entry.get("source") != en_source
-            or not target_entry.get("translation")
-            or target_entry.get("translation") == msg_id
+            or not isinstance(translation, str)
+            or not translation.strip()
+            or translation == msg_id
         ):
             work[msg_id] = en_source
     return work
