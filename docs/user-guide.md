@@ -65,8 +65,10 @@ singleton application if needed or reuses the running instance. If you use the
 action often, consider assigning **Ctrl+Shift+I** to it in Inkscape's keyboard
 shortcuts.
 
-The preview reads the saved `.svg` from disk. Unsaved changes in Inkscape are
-not included. Use **Edit in Inkscape**, save the document, and preview again.
+The browser preview reads the saved `.svg` from disk. Unsaved changes in
+Inkscape are not included there. Use **Edit in Inkscape**, save the document,
+and preview again. By contrast, **Extensions → Inksim → Preview** uses the SVG
+supplied by Inkscape for the document currently open in the editor.
 Dropping an `.svg` on the main window opens the same browser.
 
 SVG, embroidery, and CSV previews share the same controls: use the mouse wheel
