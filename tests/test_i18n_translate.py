@@ -52,6 +52,26 @@ def test_translation_cli_defaults_to_copilot_and_gpt6_luna(
     assert "using copilot (GPT-6 Luna)" in capsys.readouterr().out
 
 
+def test_translation_dry_run_does_not_create_locale_directory(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source_directory = tmp_path / "source"
+    source_directory.mkdir()
+    en_catalog = source_directory / "en.json"
+    en_catalog.write_text(
+        json.dumps({"_meta": {"language": "en", "name": "English"}, "hello": "Hello"}),
+        encoding="utf-8",
+    )
+    locale_directory = tmp_path / "generated" / "locales"
+    monkeypatch.setattr(_translate, "LOCALES_DIR", locale_directory)
+    monkeypatch.setattr(_translate, "EN_CATALOG", en_catalog)
+
+    assert _translate.translate_locales(["cs"], "ollama", "test-model", dry_run=True) == 0
+
+    assert not locale_directory.exists()
+
+
 def test_translation_cli_uses_ollama_default_model_when_selected(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
