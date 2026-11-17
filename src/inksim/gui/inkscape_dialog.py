@@ -516,11 +516,14 @@ class InkscapeIntegrationDialog(QDialog):
             self._executable_choice_cache = choices
         return self._executable_choice_cache
 
-    def _populate_executable_choices(self) -> None:
-        current = self.executable_combo.currentText()
+    def _populate_executable_choices(self, current: str | None = None) -> None:
+        if current is None:
+            current = self.executable_combo.currentText()
+        current_command = configured_command(current)
         self.executable_combo.blockSignals(True)
         self.executable_combo.clear()
         seen: set[str] = set()
+        matching_index: int | None = None
         for choice in self._executable_choices():
             command_line = choice.path or ""
             if not command_line or command_line in seen:
@@ -532,7 +535,12 @@ class InkscapeIntegrationDialog(QDialog):
             # The shortened home path is display only; QProcess does not expand
             # "~" in arguments, so probing must use the command that was found.
             self.executable_combo.setItemData(index, command_line, Qt.UserRole)
-        self.executable_combo.setEditText(current)
+            if current_command and configured_command(command_line) == current_command:
+                matching_index = index
+        if matching_index is None:
+            self.executable_combo.setEditText(current)
+        else:
+            self.executable_combo.setCurrentIndex(matching_index)
         self.executable_combo.blockSignals(False)
 
     def _set_executable(self, executable: str | None) -> None:
@@ -540,7 +548,7 @@ class InkscapeIntegrationDialog(QDialog):
         self._inkscape_extension_roots = ()
         self._refresh_inksim_extensions()
         self.install_extensions_button.setEnabled(False)
-        self._populate_executable_choices()
+        self._populate_executable_choices(_sanitize_path_text(executable or ""))
         if not executable:
             self._probed_command = ""
             self.executable_combo.setEditText("")

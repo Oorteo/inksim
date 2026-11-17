@@ -1952,3 +1952,46 @@ def test_detected_flatpak_launcher_can_be_selected(qtbot, monkeypatch):
     assert dialog.user_extensions_label.text().endswith(
         str(Path("/home/user/.var/app/org.inkscape.Inkscape/config/inkscape/extensions"))
     )
+
+
+def test_configured_flatpak_launcher_is_selected_in_executable_choices(qtbot, monkeypatch):
+    """Keep the configured launcher selected when the combo also has other choices."""
+    from PySide6.QtCore import Qt
+
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+    from inksim.integration.paths import ToolInfo, ToolStatus
+
+    command = "flatpak run org.inkscape.Inkscape"
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.detect_tools",
+        lambda: ToolStatus(
+            inkscape=ToolInfo("Inkscape", "/usr/bin/inksim", "PATH"),
+            inkstitch=ToolInfo("Ink/Stitch", None, "missing"),
+        ),
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.flatpak_inkscape_launchers",
+        lambda: [ToolInfo("Inkscape", command, "Flatpak")],
+    )
+    monkeypatch.setattr(
+        "inksim.gui.inkscape_dialog.shutil.which",
+        lambda name: "/usr/bin/flatpak" if name == "flatpak" else None,
+    )
+    _fake_inkscape_probe(
+        monkeypatch,
+        {
+            "--user-data-directory": "/home/user/.var/app/org.inkscape.Inkscape/config/inkscape",
+            "--system-data-directory": "/app/share/inkscape",
+        },
+    )
+
+    dialog = InkscapeIntegrationDialog(None, command)
+    qtbot.addWidget(dialog)
+    _wait_for_probe(qtbot, dialog)
+
+    flatpak_index = next(
+        index
+        for index in range(dialog.executable_combo.count())
+        if dialog.executable_combo.itemData(index, Qt.UserRole) == command
+    )
+    assert dialog.executable_combo.currentIndex() == flatpak_index
