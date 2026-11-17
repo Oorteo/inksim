@@ -1651,7 +1651,7 @@ def test_inkstitch_interpreter_candidate_comes_from_the_checkout(tmp_path):
 
 
 def test_python_interpreter_attribute_can_be_removed(tmp_path):
-    """Drop only the interpreter attribute and keep the rest of the XML intact."""
+    """Drop both interpreter representations and keep unrelated XML intact."""
     from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
 
     preferences_file = tmp_path / "preferences.xml"
@@ -1662,6 +1662,8 @@ def test_python_interpreter_attribute_can_be_removed(tmp_path):
         b'     id="extensions"\n'
         b'     python-interpreter="/old/uvr"\n'
         b'     keep="yes">\n'
+        b'    <param name="python-interpreter">/old/uvr</param>\n'
+        b'    <param name="untouched">value</param>\n'
         b"  </group>\n"
         b"</inkscape>\n"
     )
@@ -1671,6 +1673,27 @@ def test_python_interpreter_attribute_can_be_removed(tmp_path):
     text = preferences_file.read_text(encoding="utf-8")
     assert "python-interpreter" not in text
     assert 'keep="yes"' in text
+    assert '<param name="untouched">value</param>' in text
+    assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) is None
+
+
+def test_python_interpreter_param_can_be_removed_without_attribute(tmp_path):
+    from inksim.gui.inkscape_dialog import InkscapeIntegrationDialog
+
+    preferences_file = tmp_path / "preferences.xml"
+    preferences_file.write_text(
+        '<inkscape><group id="extensions">'
+        '<param name="python-interpreter">/old/uvr</param>'
+        '<param name="untouched">value</param>'
+        "</group></inkscape>",
+        encoding="utf-8",
+    )
+
+    InkscapeIntegrationDialog._remove_python_interpreter(preferences_file)
+
+    text = preferences_file.read_text(encoding="utf-8")
+    assert "python-interpreter" not in text
+    assert '<param name="untouched">value</param>' in text
     assert InkscapeIntegrationDialog._read_python_interpreter(preferences_file) is None
 
 

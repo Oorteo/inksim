@@ -88,6 +88,11 @@ _XML_ATTRIBUTE_PATTERN = re.compile(
     rb"[ \t\r\n]*=[ \t\r\n]*(?P<quote>[\"'])(?P<value>.*?)(?P=quote)",
     re.DOTALL,
 )
+_XML_INTERPRETER_PARAM_PATTERN = re.compile(
+    rb"<param\b(?=[^>]*\bname\s*=\s*[\"']python-interpreter[\"'])[^>]*"
+    rb"(?:/>|>.*?</param\s*>)",
+    re.DOTALL,
+)
 
 
 def _hide_windows_console(arguments: Any) -> None:
@@ -1749,26 +1754,44 @@ class InkscapeIntegrationDialog(QDialog):
             )
 
     @staticmethod
-    def _extensions_start_tag(preferences_file: Path, original: bytes) -> tuple[int, int, bytes]:
+    def _extensions_start_tag(
+        preferences_file: Path, original: bytes
+    ) -> tuple[int, int, bytes, int]:
         """Return the byte offsets and the text of the extensions group start tag."""
         group_start = None
+        group_depth = None
+        group_end = None
+        element_stack: list[str] = []
         document_encoding = None
         parser = expat.ParserCreate(namespace_separator="}")
 
         def find_extensions_group(name: str, attributes: dict[str, str]) -> None:
-            nonlocal group_start
+            nonlocal group_depth, group_start
             if (
                 group_start is None
                 and name.rsplit("}", 1)[-1] == "group"
                 and attributes.get("id") == "extensions"
             ):
                 group_start = parser.CurrentByteIndex
+                group_depth = len(element_stack)
+            element_stack.append(name)
+
+        def find_extensions_group_end(name: str) -> None:
+            nonlocal group_end
+            if (
+                group_depth is not None
+                and len(element_stack) == group_depth + 1
+                and name.rsplit("}", 1)[-1] == "group"
+            ):
+                group_end = parser.CurrentByteIndex
+            element_stack.pop()
 
         def record_encoding(version: str, encoding: str | None, standalone: int) -> None:
             nonlocal document_encoding
             document_encoding = encoding
 
         parser.StartElementHandler = find_extensions_group
+        parser.EndElementHandler = find_extensions_group_end
         parser.XmlDeclHandler = record_encoding
         parser.Parse(original, True)
         if document_encoding and document_encoding.lower().replace("_", "-") not in {
@@ -1797,7 +1820,14 @@ class InkscapeIntegrationDialog(QDialog):
             raise ValueError(
                 f"Could not find the end of the extensions group in {preferences_file}."
             )
-        return group_start, tag_end, original[group_start : tag_end + 1]
+        start_tag = original[group_start : tag_end + 1]
+        if start_tag.rstrip().endswith(b"/>"):
+            group_end = tag_end + 1
+        if group_end is None:
+            raise ValueError(
+                f"Could not find the end of the extensions group in {preferences_file}."
+            )
+        return group_start, tag_end, start_tag, group_end
 
     @staticmethod
     def _replace_preferences(preferences_file: Path, updated: bytes) -> None:
@@ -1824,7 +1854,7 @@ class InkscapeIntegrationDialog(QDialog):
     @classmethod
     def _write_python_interpreter(cls, preferences_file: Path, interpreter: Path) -> None:
         original = preferences_file.read_bytes()
-        group_start, tag_end, start_tag = cls._extensions_start_tag(preferences_file, original)
+        group_start, tag_end, start_tag, _ = cls._extensions_start_tag(preferences_file, original)
         attributes = list(_XML_ATTRIBUTE_PATTERN.finditer(start_tag))
         interpreter_attribute = next(
             (
@@ -1875,7 +1905,9 @@ class InkscapeIntegrationDialog(QDialog):
     def _remove_python_interpreter(cls, preferences_file: Path) -> None:
         """Drop the extensions interpreter attribute so Inkscape falls back to its default."""
         original = preferences_file.read_bytes()
-        group_start, tag_end, start_tag = cls._extensions_start_tag(preferences_file, original)
+        group_start, tag_end, start_tag, group_end = cls._extensions_start_tag(
+            preferences_file, original
+        )
         attribute = next(
             (
                 match
@@ -1884,10 +1916,15 @@ class InkscapeIntegrationDialog(QDialog):
             ),
             None,
         )
-        if attribute is None:
+        updated_content = _XML_INTERPRETER_PARAM_PATTERN.sub(b"", original[tag_end + 1 : group_end])
+        if attribute is None and updated_content == original[tag_end + 1 : group_end]:
             return
-        updated_tag = start_tag[: attribute.start("space")] + start_tag[attribute.end() :]
-        updated = original[:group_start] + updated_tag + original[tag_end + 1 :]
+        updated_tag = (
+            start_tag[: attribute.start("space")] + start_tag[attribute.end() :]
+            if attribute is not None
+            else start_tag
+        )
+        updated = original[:group_start] + updated_tag + updated_content + original[group_end:]
         cls._replace_preferences(preferences_file, updated)
 
     def _show_python_interpreter(
