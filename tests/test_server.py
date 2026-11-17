@@ -430,6 +430,33 @@ def test_palette_change_invalidates_window_file_reuse(qapp, tmp_path):
     window.close()
 
 
+def test_open_file_records_source_mtime_before_loading(qapp, tmp_path, monkeypatch):
+    import os
+
+    from inksim.gui.frame import MainWindow
+
+    input_path = tmp_path / "design.dst"
+    input_path.write_bytes(b"design")
+    original_mtime = input_path.stat().st_mtime_ns
+    window = MainWindow()
+
+    def load_design(path, **_kwargs):
+        changed_mtime = original_mtime + 1_000_000_000
+        os.utime(path, ns=(changed_mtime, changed_mtime))
+        return True
+
+    monkeypatch.setattr(window.viewer, "load_design", load_design)
+    monkeypatch.setattr(window, "_remember_last_file", lambda _path: None)
+    monkeypatch.setattr(window, "_design_size_text", lambda: "1 × 1 mm")
+    monkeypatch.setattr(window, "refresh_command_panel", lambda: None)
+
+    assert window.open_file(input_path, add_recent_directory=False)
+
+    assert window._source_mtime_ns == original_mtime
+    assert not window.has_unchanged_file(input_path, temporary_input=False)
+    window.close()
+
+
 def test_stale_code_fingerprint_replaces_running_server(monkeypatch):
     from inksim import server as server_module
 

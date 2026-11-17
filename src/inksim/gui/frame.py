@@ -1784,6 +1784,7 @@ class MainWindow(QMainWindow):
         selected_path = Path(path).resolve()
         was_temporary_input = self._temporary_input_path == selected_path
         retain_temporary_input = (temporary_input or was_temporary_input) and not delete_after_load
+        source_mtime = self._capture_source_mtime(selected_path)
         palette_signature = self._capture_palette_signature(selected_path)
         if not self.viewer.load_design(
             str(selected_path),
@@ -1809,7 +1810,7 @@ class MainWindow(QMainWindow):
 
         self.current_file_path = selected_path
         self._debug_script = None
-        self._source_mtime_ns = self._capture_source_mtime(selected_path)
+        self._source_mtime_ns = source_mtime
         self._source_palette_signature = palette_signature
         if not delete_after_load and not retain_temporary_input:
             self._remember_last_file(selected_path)
