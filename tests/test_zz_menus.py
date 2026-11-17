@@ -1726,6 +1726,7 @@ def test_inkscape_dialog_reports_unresponsive_command(qtbot, tmp_path, monkeypat
         ),
     )
     warnings = []
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_STARTUP_TIMEOUT_S", 0.5)
     monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_PROBE_TIMEOUT_S", 0.5)
     starts = _fake_inkscape_probe(monkeypatch, sleep_seconds=30)
     monkeypatch.setattr(
@@ -1770,6 +1771,7 @@ def test_unresponsive_command_keeps_extension_folders_found_last_time(qtbot, tmp
     )
     monkeypatch.setattr("inksim.gui.inkscape_dialog.Config", lambda: config)
     monkeypatch.setattr("inksim.gui.inkscape_dialog.detect_tools", _missing_tools)
+    monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_STARTUP_TIMEOUT_S", 0.5)
     monkeypatch.setattr("inksim.gui.inkscape_dialog.INKSCAPE_PROBE_TIMEOUT_S", 0.5)
     monkeypatch.setattr("inksim.gui.inkscape_dialog.QMessageBox.warning", lambda *args: None)
     _fake_inkscape_probe(monkeypatch, sleep_seconds=30)

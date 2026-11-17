@@ -855,6 +855,10 @@
         "source": "Waiting for Inkscape to respond…",
         "translation": "Waiting for Inkscape to respond…"
     },
+    "integration.inkscape.probing_elapsed": {
+        "source": "Checking Inkscape... {seconds} s",
+        "translation": "Checking Inkscape... {seconds} s"
+    },
     "integration.inkscape.python_interpreter": {
         "source": "Python interpreter: {path}",
         "translation": "Python interpreter: {path}"
