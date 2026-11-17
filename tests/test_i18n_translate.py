@@ -101,6 +101,39 @@ def test_translation_preparation_failure_does_not_skip_other_locales(
     assert "Preparing translation for cs failed" in capsys.readouterr().err
 
 
+def test_catalog_write_failure_does_not_skip_other_locales(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    _prepare_catalogs(tmp_path, monkeypatch)
+    save_catalog = _translate.save_catalog
+
+    def fail_czech_catalog(path, meta, messages):
+        if path.name == "cs.json":
+            raise OSError("permission denied")
+        save_catalog(path, meta, messages)
+
+    monkeypatch.setattr(_translate, "save_catalog", fail_czech_catalog)
+    monkeypatch.setattr(
+        _translate,
+        "call_ollama",
+        lambda _prompt, _model: {"hello": "Ahoj"},
+    )
+
+    result = _translate.translate_locales(["cs", "sk"], "ollama", "test-model")
+
+    assert result == -1
+    assert not (_translate.LOCALES_DIR / "cs.json").exists()
+    assert json.loads((_translate.LOCALES_DIR / "sk.json").read_text(encoding="utf-8"))[
+        "hello"
+    ] == {
+        "source": "Hello",
+        "translation": "Ahoj",
+    }
+    assert "Ollama translation for cs failed" in capsys.readouterr().err
+
+
 def test_ollama_non_string_translation_is_reported_for_affected_locale(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
