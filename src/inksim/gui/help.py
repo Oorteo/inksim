@@ -111,7 +111,7 @@ def show_help(viewer: EmbroideryViewerWidget) -> None:
 
 
 def _command_line_help_text(command_line: list[str]) -> str:
-    from ..cli import build_argument_parser
+    from ..cli_parser import build_argument_parser
 
     parser = build_argument_parser()
     help_stream = io.StringIO()

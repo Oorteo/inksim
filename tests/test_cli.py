@@ -7,6 +7,24 @@ import subprocess
 import sys
 
 
+def test_command_line_help_does_not_import_cli_module():
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import sys; "
+            "from inksim.gui.help import _command_line_help_text; "
+            "help_text = _command_line_help_text([]); "
+            "assert 'usage:' in help_text.lower(); "
+            "assert 'inksim.cli' not in sys.modules",
+        ],
+        capture_output=True,
+        check=False,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
+
+
 def test_server_window_only_shows_splash_before_first_renderer_warmup(qapp, monkeypatch):
     from inksim import cli
 
