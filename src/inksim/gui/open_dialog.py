@@ -2419,7 +2419,7 @@ class OpenBrowserDialog(QDialog):
                 raise IsADirectoryError(f"Destination is a folder: {target}")
 
         backups: list[tuple[Path, Path]] = []
-        installed: list[Path] = []
+        installed: list[tuple[Path, tuple[int, int, int, int, int, int]]] = []
         deleted_sources: list[Path] = []
         try:
             for index, (_, target) in enumerate(plan):
@@ -2438,7 +2438,7 @@ class OpenBrowserDialog(QDialog):
                 shutil.copy2(staged_sources[source], staged_install)
                 _install_staged_file(staged_install, target)
                 staged_install.unlink()
-                installed.append(target)
+                installed.append((target, self._transfer_path_signature(target)))
 
             if operation == "move":
                 for source in sources:
@@ -2461,14 +2461,32 @@ class OpenBrowserDialog(QDialog):
                         shutil.copy2(staged_sources[source], source)
                     except OSError as rollback_error:
                         rollback_errors.append(str(rollback_error))
-            for target in reversed(installed):
+            for target, installed_signature in reversed(installed):
                 try:
-                    target.unlink(missing_ok=True)
+                    if target.exists() or target.is_symlink():
+                        if self._transfer_path_signature(target) != installed_signature:
+                            raise FileExistsError(
+                                f"Cannot remove destination changed during rollback: {target}"
+                            )
+                        target.unlink()
+                except FileNotFoundError:
+                    pass
                 except OSError as rollback_error:
                     rollback_errors.append(str(rollback_error))
             for backup, target in reversed(backups):
                 try:
-                    os.replace(backup, target)
+                    if target.exists() or target.is_symlink():
+                        raise FileExistsError(
+                            f"Cannot restore destination because a file appeared: {target}"
+                        )
+                    if backup.is_symlink():
+                        os.symlink(
+                            os.readlink(backup),
+                            target,
+                            target_is_directory=backup.is_dir(),
+                        )
+                    else:
+                        _install_staged_file(backup, target)
                 except OSError as rollback_error:
                     rollback_errors.append(str(rollback_error))
             if rollback_errors:

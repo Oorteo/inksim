@@ -1410,6 +1410,57 @@ def test_transfer_failure_rolls_back_installed_files(qtbot, tmp_path, monkeypatc
     dialog.reject()
 
 
+def test_transfer_rollback_preserves_destination_created_during_install(
+    qtbot, tmp_path, monkeypatch
+):
+    import inksim.gui.open_dialog as open_dialog_module
+
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+    source_directory = tmp_path / "source"
+    destination_directory = tmp_path / "destination"
+    source_directory.mkdir()
+    destination_directory.mkdir()
+    first = source_directory / "first.pes"
+    second = source_directory / "second.pes"
+    first.write_bytes(b"new first")
+    second.write_bytes(b"new second")
+    first_target = destination_directory / first.name
+    second_target = destination_directory / second.name
+    first_target.write_bytes(b"old first")
+    second_target.write_bytes(b"old second")
+
+    original_install = open_dialog_module._install_staged_file
+
+    def fail_install(staged, target):
+        if staged.parent.name == "install":
+            assert target == first_target
+            second_target.write_bytes(b"created during transfer")
+            raise OSError("simulated install failure")
+        original_install(staged, target)
+
+    monkeypatch.setattr("inksim.gui.open_dialog._install_staged_file", fail_install)
+    dialog = OpenBrowserDialog(None, source_directory)
+    qtbot.addWidget(dialog)
+    dialog.set_directory(destination_directory)
+    plan = [(first, first_target), (second, second_target)]
+    approved_conflicts = {
+        target: dialog._transfer_path_signature(target) for target in (first_target, second_target)
+    }
+
+    with pytest.raises(
+        open_dialog_module._FileTransferRollbackError, match="rollback was incomplete"
+    ):
+        dialog._execute_file_transfer("copy", plan, approved_conflicts)
+
+    assert first_target.read_bytes() == b"old first"
+    assert second_target.read_bytes() == b"created during transfer"
+    staging_roots = list(destination_directory.glob(".inksim-transfer-*"))
+    assert len(staging_roots) == 1
+    backup = staging_roots[0] / "backups" / f"1-{second_target.name}"
+    assert backup.read_bytes() == b"old second"
+    dialog.reject()
+
+
 def test_enter_opens_folders_and_arrows_stay_in_the_list(qtbot, tmp_path, monkeypatch):
     """Enter activates the current row, so the arrows can move between icons."""
     from PySide6.QtCore import Qt
