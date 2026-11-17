@@ -618,7 +618,11 @@ class MainWindow(QMainWindow):
         self._action(help_menu, _("menu.help.check_updates"), self._check_for_updates)
 
     def _locate_inkscape_slot(self, checked: bool = False) -> None:
-        self.config.reload()
+        try:
+            self.config.reload()
+        except ValueError as ex:
+            logger.warning("Could not reload configuration before Inkscape setup: %s", ex)
+            return
         executable = prefer_saved_inkscape(
             self.config.get(INKSCAPE_CONFIG_KEY), detect_tools().inkscape
         ).path
@@ -630,7 +634,11 @@ class MainWindow(QMainWindow):
         if self._startup_inkscape_check_done:
             return
         self._startup_inkscape_check_done = True
-        self.config.reload()
+        try:
+            self.config.reload()
+        except ValueError as ex:
+            logger.warning("Could not reload configuration for Inkscape extension check: %s", ex)
+            return
         status = self.config.get(INKSCAPE_CONFIG_KEY)
         if not isinstance(status, dict):
             return
@@ -665,7 +673,11 @@ class MainWindow(QMainWindow):
         if self._startup_inkstitch_check_done:
             return
         self._startup_inkstitch_check_done = True
-        self.config.reload()
+        try:
+            self.config.reload()
+        except ValueError as ex:
+            logger.warning("Could not reload configuration for Ink/Stitch link check: %s", ex)
+            return
         status = self.config.get(INKSCAPE_CONFIG_KEY)
         if not isinstance(status, dict):
             return
@@ -1323,7 +1335,7 @@ class MainWindow(QMainWindow):
             self.viewer.is_playing = False
         try:
             self._save_window_layout()
-        except (OSError, Timeout) as ex:
+        except (OSError, Timeout, ValueError) as ex:
             logger.warning("Could not save window layout: %s", ex)
         if self._hide_on_close:
             event.ignore()

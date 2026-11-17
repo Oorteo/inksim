@@ -673,6 +673,23 @@ def test_skipped_extensions_are_hidden_and_remembered(qtbot, tmp_path, monkeypat
     dialog.reject()
 
 
+def test_open_dialog_survives_malformed_config_reload(qtbot, tmp_path, monkeypatch):
+    from inksim.config import Config
+
+    path = tmp_path / "config.toml"
+    config = Config(path)
+    original = "not valid toml"
+    path.write_text(original, encoding="utf-8")
+    monkeypatch.setattr("inksim.gui.open_dialog.Config", lambda: config)
+    monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
+
+    dialog = OpenBrowserDialog(None, tmp_path)
+    qtbot.addWidget(dialog)
+
+    assert path.read_text(encoding="utf-8") == original
+    dialog.reject()
+
+
 def test_typed_skip_extensions_are_saved_when_the_dialog_closes(qtbot, tmp_path, monkeypatch):
     from inksim.config import Config
 

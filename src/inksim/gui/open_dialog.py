@@ -1219,7 +1219,10 @@ class OpenBrowserDialog(QDialog):
         )
 
     def _update_tool_status(self) -> None:
-        self.config.reload()
+        try:
+            self.config.reload()
+        except ValueError as ex:
+            logger.warning("Could not reload configuration before refreshing tool status: %s", ex)
         self.tool_status = self._detect_tools()
         lines = []
         if self.tool_status.has_inkscape:

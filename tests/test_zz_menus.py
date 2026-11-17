@@ -477,6 +477,33 @@ def test_locate_inkscape_prefers_saved_executable(qtbot, tmp_path, monkeypatch):
     window.close()
 
 
+def test_inkscape_checks_ignore_malformed_config_without_rewriting_it(
+    qtbot, tmp_path, monkeypatch, caplog
+):
+    import logging
+
+    from inksim.config import Config
+
+    path = tmp_path / "config.toml"
+    config = Config(path)
+    original = "not valid toml"
+    path.write_text(original, encoding="utf-8")
+    monkeypatch.setattr("inksim.gui.frame.Config", lambda: config)
+    window = MainWindow(window_size=(320, 240))
+    qtbot.addWidget(window)
+
+    with caplog.at_level(logging.WARNING):
+        window._locate_inkscape_slot()
+        window._startup_inkscape_check_done = False
+        window.check_inkscape_extension("/opt/inksim")
+        window._startup_inkscape_check_done = False
+        window.check_inkstitch_link()
+
+    assert caplog.text.count("Could not reload configuration") == 3
+    assert path.read_text(encoding="utf-8") == original
+    window.close()
+
+
 def _wait_for_probe(qtbot, dialog):
     """Wait until the deferred extension probe has finished and hidden its status bubble."""
     qtbot.waitUntil(
