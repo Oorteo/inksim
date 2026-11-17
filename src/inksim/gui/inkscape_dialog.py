@@ -11,6 +11,7 @@ import shlex
 import shutil
 import sys
 import tempfile
+import time
 from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
@@ -71,8 +72,12 @@ from ..integration.paths import (
 from ..paths import _sanitize_path_text
 from .dialogs import dispose_qt_child
 
-# Cold starts of Inkscape on Windows (antivirus scans, profile setup) can exceed a few seconds.
-INKSCAPE_PROBE_TIMEOUT_S = 10
+# The first query pays for the cold start: antivirus scans, profile setup and,
+# for a Flatpak build, mounting the runtime inside the sandbox. The queries that
+# follow reuse that started instance and only read a preference. Both limits are
+# generous on purpose: a false timeout throws away the launcher the user entered.
+INKSCAPE_STARTUP_TIMEOUT_S = 60
+INKSCAPE_PROBE_TIMEOUT_S = 20
 _WINDOWS_CREATE_NO_WINDOW = 0x08000000
 _PROBE_OPTIONS = ("--user-data-directory", "--system-data-directory")
 _VERSION_PROBE_OPTION = "--version"
@@ -218,6 +223,11 @@ class InkscapeIntegrationDialog(QDialog):
         self._probe_arguments: list[str] = []
         self._probe_error: str | None = None
         self._is_probing = False
+        self._probe_step_timeout = INKSCAPE_PROBE_TIMEOUT_S
+        self._probe_started_at = 0.0
+        self._elapsed_timer = QTimer(self)
+        self._elapsed_timer.setInterval(1000)
+        self._elapsed_timer.timeout.connect(self._show_probe_elapsed)
         self._inkscape_extension_roots: tuple[tuple[Path, bool], ...] = ()
         self._installed_inksim_extensions: tuple[InstalledInkSimExtension, ...] = ()
         self._probe_timer = QTimer(self)
@@ -627,9 +637,13 @@ class InkscapeIntegrationDialog(QDialog):
             lambda *_, p=process: self._on_probe_step_done(p, failed=True)
         )
         self._probe_process = process
-        self._probe_timer.start(int(INKSCAPE_PROBE_TIMEOUT_S * 1000))
         step = len(self._probe_results)
         option = _PROBE_OPTIONS[step] if step < len(_PROBE_OPTIONS) else _VERSION_PROBE_OPTION
+        self._probe_step_timeout = (
+            INKSCAPE_STARTUP_TIMEOUT_S if step == 0 else INKSCAPE_PROBE_TIMEOUT_S
+        )
+        self._probe_started_at = time.monotonic()
+        self._probe_timer.start(int(self._probe_step_timeout * 1000))
         process.start(self._probe_executable, [*self._probe_arguments, option])
 
     def _on_probe_step_done(self, process: QProcess, failed: bool = False) -> None:
@@ -720,10 +734,24 @@ class InkscapeIntegrationDialog(QDialog):
         self.probe_status_label.setVisible(active)
         self.change_button.setEnabled(not active)
         self.executable_combo.setEnabled(not active)
+        self._elapsed_timer.stop()
         if active:
+            self.probe_status_label.setText(_("integration.inkscape.probing"))
+            self._elapsed_timer.start()
             QApplication.setOverrideCursor(Qt.WaitCursor)
         else:
             QApplication.restoreOverrideCursor()
+
+    def _show_probe_elapsed(self) -> None:
+        """Count the seconds spent waiting, so a slow launcher still looks alive."""
+        elapsed = int(time.monotonic() - self._probe_started_at)
+        if elapsed < 1:
+            return
+        self.probe_status_label.setText(
+            _("integration.inkscape.probing_elapsed", "Checking Inkscape... {seconds} s").format(
+                seconds=elapsed
+            )
+        )
 
     @staticmethod
     def _extensions_directory(data_directory: str) -> str:
@@ -751,12 +779,12 @@ class InkscapeIntegrationDialog(QDialog):
             )
         if timed_out:
             report_entries.append(
-                _("integration.inkscape.report.timeout").format(seconds=INKSCAPE_PROBE_TIMEOUT_S)
+                _("integration.inkscape.report.timeout").format(seconds=self._probe_step_timeout)
             )
             QMessageBox.warning(
                 self,
                 _("integration.inkscape.title"),
-                _("integration.inkscape.timeout").format(seconds=INKSCAPE_PROBE_TIMEOUT_S),
+                _("integration.inkscape.timeout").format(seconds=self._probe_step_timeout),
             )
         elif error is not None:
             report_entries.append(
