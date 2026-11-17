@@ -170,6 +170,19 @@ def test_seek_maps_pointer_to_zoomed_range(qtbot):
     assert seeks == [40]
 
 
+def test_seek_rounds_to_the_nearest_stitch(qtbot):
+    timeline, _ = make_timeline(qtbot)
+    timeline._view_start = 0
+    timeline._view_end = 3
+    main_bar, _, _ = timeline._layout_rects()
+    seeks = []
+    timeline.seek_requested.connect(seeks.append)
+
+    timeline.seek(main_bar.left() + 0.55 * (main_bar.width() - 1))
+
+    assert seeks == [2]
+
+
 def test_overview_moves_zoomed_range_without_changing_its_scale(qtbot):
     timeline, _ = make_timeline(qtbot)
     timeline._view_start = 20

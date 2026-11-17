@@ -253,7 +253,7 @@ class TimelineWidget(QWidget):
         main_bar, _, _ = self._layout_rects()
         ratio = max(0.0, min(1.0, (mouse_x - main_bar.left()) / max(1, main_bar.width() - 1)))
         self.seek_requested.emit(
-            int(self._view_start + ratio * (self._view_end - self._view_start))
+            int(round(self._view_start + ratio * (self._view_end - self._view_start)))
         )
         self.update()
 
