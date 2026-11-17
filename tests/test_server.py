@@ -406,6 +406,30 @@ def test_open_reuses_hidden_window_and_unchanged_input(qapp, tmp_path):
     assert window.current_file_path == different_path.resolve()
 
 
+def test_palette_change_invalidates_window_file_reuse(qapp, tmp_path):
+    import os
+
+    from inksim.gui.frame import MainWindow
+
+    input_path = tmp_path / "design.dst"
+    palette_path = tmp_path / "design.edr"
+    input_path.write_bytes(b"design")
+    palette_path.write_bytes(b"palette-v1")
+    window = MainWindow()
+    window.current_file_path = input_path.resolve()
+    window._temporary_input_path = None
+    window._source_mtime_ns = window._capture_source_mtime(input_path)
+    window._source_palette_signature = window._capture_palette_signature(input_path)
+    assert window.has_unchanged_file(input_path, temporary_input=False)
+
+    palette_mtime = palette_path.stat().st_mtime_ns + 1_000_000_000
+    palette_path.write_bytes(b"palette-v2")
+    os.utime(palette_path, ns=(palette_mtime, palette_mtime))
+
+    assert not window.has_unchanged_file(input_path, temporary_input=False)
+    window.close()
+
+
 def test_stale_code_fingerprint_replaces_running_server(monkeypatch):
     from inksim import server as server_module
 

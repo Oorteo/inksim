@@ -51,6 +51,7 @@ from ..formats import (
     get_palette_output_formats,
     get_supported_output_filter,
     get_supported_output_formats,
+    sidecar_palette_candidates,
 )
 from ..i18n import (
     _,
@@ -136,6 +137,7 @@ class MainWindow(QMainWindow):
         self._preserve_temporary_input_on_close = False
         self._hide_on_close = False
         self._source_mtime_ns: int | None = None
+        self._source_palette_signature: tuple[tuple[Path, int | None], ...] | None = None
         self._last_source_check: float = 0.0
         self._source_check_interval_s: float = 0.4
         self._is_reloading_from_disk: bool = False
@@ -304,7 +306,16 @@ class MainWindow(QMainWindow):
             selected_path == self.current_file_path
             and current_mtime is not None
             and current_mtime == self._source_mtime_ns
+            and self._capture_palette_signature(selected_path) == self._source_palette_signature
             and (self._temporary_input_path == selected_path) == temporary_input
+        )
+
+    def _capture_palette_signature(
+        self, file_path: Path | str
+    ) -> tuple[tuple[Path, int | None], ...]:
+        return tuple(
+            (candidate.resolve(), self._capture_source_mtime(candidate))
+            for candidate in sidecar_palette_candidates(Path(file_path))
         )
 
     def set_hide_on_close(self, enabled: bool) -> None:
@@ -1773,6 +1784,7 @@ class MainWindow(QMainWindow):
         selected_path = Path(path).resolve()
         was_temporary_input = self._temporary_input_path == selected_path
         retain_temporary_input = (temporary_input or was_temporary_input) and not delete_after_load
+        palette_signature = self._capture_palette_signature(selected_path)
         if not self.viewer.load_design(
             str(selected_path),
             fit_to_screen=True,
@@ -1798,6 +1810,7 @@ class MainWindow(QMainWindow):
         self.current_file_path = selected_path
         self._debug_script = None
         self._source_mtime_ns = self._capture_source_mtime(selected_path)
+        self._source_palette_signature = palette_signature
         if not delete_after_load and not retain_temporary_input:
             self._remember_last_file(selected_path)
             if add_recent_directory:
