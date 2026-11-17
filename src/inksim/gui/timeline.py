@@ -11,7 +11,6 @@ import numpy as np
 from PySide6.QtCore import QPoint, QRect, Qt, Signal
 from PySide6.QtGui import (
     QColor,
-    QLinearGradient,
     QMouseEvent,
     QPainter,
     QPaintEvent,
@@ -19,6 +18,8 @@ from PySide6.QtGui import (
     QWheelEvent,
 )
 from PySide6.QtWidgets import QWidget
+
+from .slider_controls import paint_background_slider
 
 if TYPE_CHECKING:
     from .viewer import EmbroideryViewerWidget
@@ -478,21 +479,7 @@ class TimelineWidget(QWidget):
         slider = self._background_slider_rect()
         painter.setPen(QColor(45, 45, 45))
         painter.drawText(QRect(3, 7, 20, 14), Qt.AlignCenter, "BG")
-        gradient = QLinearGradient(
-            slider.left(),
-            slider.top(),
-            slider.right(),
-            slider.top(),
-        )
-        gradient.setColorAt(0, QColor(0, 0, 0))
-        gradient.setColorAt(1, QColor(255, 255, 255))
-        painter.setBrush(gradient)
-        painter.setPen(QPen(QColor(90, 90, 90), 1))
-        painter.drawRoundedRect(slider, 3, 3)
-        slider_x = slider.left() + int(round(self.waveform_background / 255 * (slider.width() - 1)))
-        painter.setBrush(QColor(255, 255, 255))
-        painter.setPen(QPen(QColor(20, 20, 20), 1))
-        painter.drawEllipse(slider_x - 4, slider.center().y() - 5, 9, 10)
+        paint_background_slider(painter, slider, self.waveform_background)
 
         background_color = QColor(
             self.waveform_background,

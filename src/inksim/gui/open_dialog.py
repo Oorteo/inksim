@@ -77,7 +77,6 @@ from PySide6.QtWidgets import (
     QPushButton,
     QScrollArea,
     QSizePolicy,
-    QSlider,
     QSplitter,
     QStackedWidget,
     QStyle,
@@ -126,6 +125,7 @@ from ..render.thumbnails import (
 from .dialogs import dispose_qt_child
 from .inkscape_dialog import InkscapeIntegrationDialog
 from .palette import apply_palette_to_design
+from .slider_controls import BackgroundValueSlider, IconSizeSlider
 from .viewer import EmbroideryViewerWidget
 
 KIND_DIRECTORY = "directory"
@@ -787,14 +787,14 @@ class OpenBrowserDialog(QDialog):
         self.view_combo.setCurrentIndex(max(0, self.view_combo.findData(stored_view)))
         self.view_combo.currentIndexChanged.connect(self._on_view_mode_changed)
         search_row.addWidget(self.view_combo)
-        self.icon_size_slider = QSlider(Qt.Orientation.Horizontal, self)
+        self.icon_size_slider = IconSizeSlider(self)
         self.icon_size_slider.setObjectName("iconSizeSlider")
         self.icon_size_slider.setRange(_ICON_SIZE_MIN, _ICON_SIZE_MAX)
         self.icon_size_slider.setValue(self._icon_size)
         self.icon_size_slider.setFixedWidth(110)
         self.icon_size_slider.setToolTip(self._icon_size_tooltip())
         self.icon_size_slider.valueChanged.connect(self._on_icon_size_changed)
-        self.background_slider = QSlider(Qt.Orientation.Horizontal, self)
+        self.background_slider = BackgroundValueSlider(self)
         self.background_slider.setObjectName("iconBackgroundSlider")
         self.background_slider.setRange(0, 255)
         self.background_slider.setFixedWidth(80)

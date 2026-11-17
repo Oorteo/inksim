@@ -471,6 +471,8 @@ def test_each_slider_documents_its_own_wheel_gesture(qtbot, tmp_path, monkeypatc
 
 def test_background_slider_sits_in_the_view_row(qtbot, tmp_path, monkeypatch):
     """Both sliders belong to the view row; a loose widget would cover the status text."""
+    from PySide6.QtCore import QPoint
+
     monkeypatch.setattr("inksim.gui.open_dialog.detect_tools", lambda: _tool_status(inkscape=None))
     (tmp_path / "design.pes").write_bytes(
         (Path(__file__).parent / "data" / "sample.pes").read_bytes()
@@ -481,11 +483,11 @@ def test_background_slider_sits_in_the_view_row(qtbot, tmp_path, monkeypatch):
     dialog.show()
     qtbot.wait(30)
 
-    icon_geometry = dialog.icon_size_slider.geometry()
-    background_geometry = dialog.background_slider.geometry()
-    assert background_geometry.top() == icon_geometry.top()
-    assert background_geometry.left() > icon_geometry.left()
-    assert background_geometry.top() > dialog.status_label.geometry().bottom()
+    icon_position = dialog.icon_size_slider.mapTo(dialog, QPoint(0, 0))
+    background_position = dialog.background_slider.mapTo(dialog, QPoint(0, 0))
+    assert background_position.y() == icon_position.y()
+    assert background_position.x() > icon_position.x()
+    assert background_position.y() > dialog.status_label.geometry().bottom()
 
     modes = [dialog.view_combo.itemData(i) for i in range(dialog.view_combo.count())]
     dialog.view_combo.setCurrentIndex(modes.index("details"))
